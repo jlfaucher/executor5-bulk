@@ -1,0 +1,265 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . s
+
+group = .TestGroup~new(s)
+group~add(.rxsubcom.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+
+::class rxsubcom.testGroup subclass ooTestCase public
+
+/*
+RXSUBCOM_OK           0       /* Function Complete           */
+RXSUBCOM_DUP         10       /* Duplicate Environment Name- */
+                              /* but Registration Completed  */
+RXSUBCOM_MAXREG      20       /* Cannot register more        */
+                              /* handlers                    */
+RXSUBCOM_NOTREG      30       /* Name Not Registered         */
+RXSUBCOM_NOCANDROP   40       /* Name not droppable          */
+RXSUBCOM_LOADERR     50       /* Could not load function     */
+RXSUBCOM_NOPROC     127       /* RXSUBCOM routine - not found*/
+*/
+
+-- we use a copycat command handler from our classic API tests
+-- this will require orxclassic1.dll on Windows or liborxclassic1.so
+-- on Linux
+-- the command handler's entry point name is MyTestSubcomHandler
+::constant library "orxclassic1"
+::attribute haveLibrary class
+::attribute haveLibrary get
+  return self~class~haveLibrary
+
+-- thanks to our test framework, it's difficult to have a one-time setup
+-- method running once before all of the tests run, and impossible to
+-- use instance attributes
+-- as a work-around we use method "test" which we just happen to know
+-- will run initially due to our test methods being sorted by name, and
+-- we use a class attribute
+::method test
+  -- check if our library is accessible, i. e. in PATH or LD_LIBRARY_PATH
+  if self~register("have-library") = 0, self~load("have-library") = 0 then
+    self~class~haveLibrary = .true
+  else
+    self~class~haveLibrary = .false
+  self~drop("have-library")
+
+::method register
+  use strict arg env, library = (self~library), entry = "MyTestSubcomHandler"
+  return self~rxsubcom("register", env, library, entry)
+
+::method query
+  use strict arg env, library = ""
+  return self~rxsubcom("query", env, library)
+
+::method load
+  use strict arg env, library = ""
+  return self~rxsubcom("load", env, library)
+
+::method drop
+  use strict arg env, library = ""
+  return self~rxsubcom("drop", env, library)
+
+::method rxsubcom
+  address "path" "rxsubcom" arg(1, "a")~makeString(, " ") with output stem ignore.
+  return rc
+
+::method cmd
+  use strict arg env, command
+  signal on failure
+  trace off
+  address value env
+  command
+  return rc
+
+  failure:
+  return "FAILURE"
+
+
+::method test_invalid_args
+  self~assertRc(-1, self~rxsubcom)
+  self~assertRc(-1, self~rxsubcom("invalid"))
+
+  self~assertRc(-1, self~rxsubcom("register"))
+  self~assertRc(-1, self~rxsubcom("register", "env"))
+  self~assertRc(-1, self~rxsubcom("register", "env", "library"))
+  self~assertRc(-1, self~rxsubcom("register", "env", "library", "entry", "additional"))
+
+  do action over "query", "load", "drop"
+    self~assertRc(-1, self~rxsubcom(action))
+    self~assertRc(-1, self~rxsubcom(action, "env", "library", "additional"))
+  end
+
+-- all actions fail if environment is unregistered
+::method test_unregistered
+  self~assertRc(30, self~query("unregistered"))
+  self~assertRc(30, self~load("unregistered"))
+  self~assertRc(30, self~drop("unregistered"))
+  self~assertSame("FAILURE", self~cmd("unregistered", "failing"))
+
+  -- same with library specified
+  self~assertRc(30, self~query("unregistered", "invalid-library"))
+  self~assertRc(30, self~load("unregistered", "invalid-library"))
+  self~assertRc(30, self~drop("unregistered", "invalid-library"))
+
+-- actions and environment can be specified in mixed case
+::method test_actions_environment_caseless
+  self~assertRc( 0, self~rxsubcom("REGISTER   case lib entry"))
+  self~assertRc( 0, self~rxsubcom("Query Case  "))
+  self~assertRc( 0, self~rxsubcom("  droP CASE"))
+
+-- cannot override builtin environments; @@bug or not?
+::method test_register_builtin_environment
+  -- only run this test if we have a working command handler
+  if \self~haveLibrary then
+    return
+
+  self~assertRc( 0, self~register("COMMAND"))
+  -- this is still the builtin COMMAND environment
+  self~assertRc( 1, self~cmd("command", "exit 1"))
+  self~assertRc( 0, self~drop("Command"))
+
+  self~assertRc( 0, self~register("system"))
+  -- still the builtin SYSTEM environment
+  self~assertRc( 2, self~cmd("system", "exit 2"))
+  self~assertRc( 0, self~drop("system"))
+
+-- environment registered with an invalid library
+::method test_register_invalid_library
+  self~assertRc( 0, self~register("nolibrary", "invalid-library"))
+  self~assertRc( 0, self~query("nolibrary"))
+  -- both LOAD and runnning a command fails
+  self~assertRc(30, self~load("nolibrary"))
+  self~assertRc(30, self~load("nolibrary", "invalid-library"))
+  self~assertSame("FAILURE", self~cmd("nolibrary", "failing"))
+  self~assertRc( 0, self~drop("nolibrary"))
+
+-- environment registered with an invalid entry point
+::method test_register_invalid_handler
+  self~assertRc( 0, self~register("nohandler", self~library, "nohandler"))
+  self~assertRc( 0, self~query("nohandler"))
+  -- both LOAD and runnning a command fails
+  self~assertRc(30, self~load("nohandler"))
+  self~assertRc(30, self~load("nohandler", "invalid-library"))
+  self~assertSame("FAILURE", self~cmd("nohandler", "failing"))
+  self~assertRc( 0, self~drop("nohandler"))
+
+-- duplicate REGISTER
+::method test_register_twice
+  self~assertRc( 0, self~register("twice"))
+  -- a RXSUBCOM_DUP warning
+  self~assertRc(10, self~register("twice"))
+  self~assertRc( 0, self~drop("twice"))
+  self~assertRc( 0, self~drop("twice", self~library))
+  self~assertRc(30, self~drop("twice"))
+
+-- duplicate DROP
+::method test_drop_twice
+  self~assertRc( 0, self~register("drop"))
+  self~assertRc( 0, self~drop("drop"))
+  self~assertRc(30, self~drop("drop", self~library))
+
+-- test environment name-only QUERY and DROP
+::method test_drop_query_simple
+  -- only run this test if we have a working command handler
+  if \self~haveLibrary then
+    return
+
+  -- register, query, run command, and drop
+  self~assertRc(30, self~query("test1"))
+  self~assertRc( 0, self~register("test1"))
+  self~assertRc( 0, self~query("test1"))
+  self~assertSame("command", self~cmd("test1", "command"))
+  self~assertRc( 0, self~drop("test1"))
+  self~assertRc(30, self~query("test1"))
+  -- @@although dropped, and confirmed by QUERY, "test1" is
+  -- still available at this point - bug or not?
+  -- self~assertSame("FAILURE", self~cmd("test", "c"))
+
+-- test two-argument (environment plus library) QUERY and DROP
+::method test_drop_query_extended
+  -- only run this test if we have a working command handler
+  if \self~haveLibrary then
+    return
+
+  self~assertRc( 0, self~register("test2"))
+  self~assertSame("copycat", self~cmd("test2", "copycat"))
+  -- specify an invalid library on DROP
+  self~assertRc(30, self~drop("test2", "invalid-library"))
+  -- "tst" should still be available
+  self~assertRc( 0, self~query("test2", self~library))
+  self~assertSame("c", self~cmd("test2", "c"))
+
+  -- now specify the correct library on DROP
+  self~assertRc( 0, self~drop("test2", self~library))
+  self~assertRc(30, self~drop("test2", self~library))
+  self~assertRc(30, self~query("test2", self~library))
+
+-- run our copycat command
+::method test_command
+  -- only run this test if we have a working command handler
+  if \self~haveLibrary then
+    return
+
+  self~assertRc( 0, self~register("c"))
+  self~assertRc(123456789, self~cmd("C", 123456789))
+  self~assertRc( 0, self~drop("C"))
+
+-- test LOAD
+::method test_load
+  -- only run this test if we have a working command handler
+  if \self~haveLibrary then
+    return
+
+  self~assertRc( 0, self~register("load"))
+  self~assertRc( 0, self~load("load"))
+  self~assertRc( 0, self~load("Load", self~library))
+  self~assertSame("-----", self~cmd("LOAD", "-----"))
+  self~assertRc( 0, self~drop("load", self~library))
+
+
+::options novalue syntax
