@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*
-  SVN Revision: $Rev: 11759 $
-  Change Date:  $Date: 2019-02-15 00:19:21 +0100 (Fr., 15 Feb 2019) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -319,6 +319,34 @@ F H  21 .d/.h
     end
   end
 
+-- test paths longer than the Windows standard limit of 260 chars (Windows-only)
+::method test_long_paths_windowsonly
+  if \self~isWindows then
+    return
+
+  -- by using the Win32 namespace prefix \\?\ we can create paths longer
+  -- than the Windows standard limit of 260 chars
+  root = "\\?\" || filespec("l", self~class~package~name)
+  -- each path component must still be shorter than 256 chars
+  dir = .String~alpha || '\'
+  -- create nested directories
+  dirs = .Array~new
+  do n = 1 to 75 -- this gives us a total path length of approx. 4K
+    dirPath = root || dir~copies(n)
+    dirs~append(dirPath)
+    -- we don't mind if it already exists
+    -- 183: Cannot create a file when that file already exists.
+    self~assertOneOrAnother(0, 183, SysMkDir(dirPath))
+  end
+
+  -- assert that SysFileTree can handle this
+  self~assert(root || dir, "so", dirs~section(2))
+
+  -- remove our nested directory tree
+  do i = dirs~items to 1 by -1
+    call SysRmDir dirs[i]
+  end
+
 -- single-file tests, no wildcard characters
 ::method test_tree_single_file
 
@@ -560,8 +588,12 @@ lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER/sysfiletree/
   use strict arg line, typeT, typeS, file, message
 
   if typeT = "O" then
+do
     -- the "O" format returns one field: the file path
     self~assertSame(file~absolutePath, line, message "file path")
+say "act" file~absolutePath
+say "exp" line
+end
   else do
     -- the full layout has four fields: timestamp, file size,
     -- attributes, and file path
@@ -690,12 +722,14 @@ lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER/sysfiletree/
 
 /*
 Todos:
+* add matches to many files test (short name/long name issue): *.rex, (a.rex1 == A~1235.REX, a.rex) test
 * add nattrib tests
 * add tests for Windows \\?\ and \\server\share
 
 Issues:
 * [bugs:#1682] Windows short names don't work
 * wildcards in path don't raise an error
+* rc=123 for |<>" chars is probably a bug
 */
 
 ::options novalue syntax
