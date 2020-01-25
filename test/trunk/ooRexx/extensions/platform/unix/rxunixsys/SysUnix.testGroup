@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -58,6 +58,16 @@ return testResult
 
 ::requires 'ooTest.frm'
 ::class 'SysUnix.testgroup' subclass ooTestCase public
+
+-- these are file system entities wich we assume to always exist
+-- this source file, our current directory, our rxapi socket, and /dev/null
+::constant file (.context~package~name)
+::constant directory (directory())
+::constant socket ((value("XDG_RUNTIME_DIR", , "environment") "/tmp")~word(1) || "/.ooRexx-" || .RexxInfo~version || "-" || .RexxInfo~architecture || "-" || userid() || ".service")
+::constant characterDevice "/dev/null"
+
+::constant names (.Array~of(self~file, self~directory, self~socket, self~characterDevice))
+::constant fileNotThere "/non-existing-directory/non-existing-file"
 
 ::method 'testSysUname_1'
     self~assertNotEquals("", SysUname("SYSTEM"))
@@ -128,19 +138,107 @@ return testResult
     self~assertEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'PW'))
     self~assertTrue(SysGetgrnam(SysGetgrgid(gid, 'N'), 'MEMBER')~isa(.array))
 
-::method 'testSysStat_1'
-    parse source . . file
-    self~assertNotEquals("", SysStat(file, 'device'))
-    self~assertNotEquals("", SysStat(file, 'inode'))
-    self~assertNotEquals("", SysStat(file, 'permissions'))
-    self~assertNotEquals("", SysStat(file, 'numberlinks'))
-    self~assertNotEquals("", SysStat(file, 'UID'))
-    self~assertNotEquals("", SysStat(file, 'GID'))
-    self~assertNotEquals("", SysStat(file, 'realdev'))
-    self~assertNotEquals("", SysStat(file, 'size'))
-    self~assertNotEquals("", SysStat(file, 'access'))
-    self~assertNotEquals("", SysStat(file, 'modified'))
-    self~assertNotEquals("", SysStat(file, 'changed'))
+
+-- SysStat tests
+
+::method test_sysstat_invalid_file
+  self~expectSyntax((40.1, "SYSSTAT")) -- External routine "SYSSTAT" failed
+  call SysStat "", "size"
+
+::method test_sysstat_invalid_option_empty
+  self~expectSyntax((40.1, "SYSSTAT")) -- External routine "SYSSTAT" failed
+  call SysStat self~file, ""
+
+::method test_sysstat_invalid_option
+  self~expectSyntax((40.1, "SYSSTAT")) -- External routine "SYSSTAT" failed
+  call SysStat self~file, "xyzzy"
+
+::method test_sysstat_file_not_exists
+  -- all options return the nullstring if the file doesn't exist
+  do option over "dipnugrdsamc"~makeArray("")
+    self~assertSame("", SysStat(self~fileNotThere, option))
+  end
+
+::method test_sysstat_device
+  -- we expect a device ID to be a non-negative whole number
+
+  -- the file and the directory are assumed to reside on the same device
+  self~assertSame(SysStat(self~file, "D"), SysStat(self~directory, "DEV"), "file and directory device IDs expected to be the same")
+
+  -- /dev/null is a device of its own
+  id = SysStat(self~characterDevice, "d")
+  self~assertTrue(id~dataType("Whole"), self~characterDevice "device ID should be a whole number; found" id)
+  self~assertTrue(id >= 0, self~characterDevice "device ID should not be negative; found" id)
+
+  -- st_rdev, device ID (if special file)
+  do name over self~names
+    id = SysStat(name, "r")
+    self~assertTrue(id~dataType("Whole"), name "rdev should be a whole number; found" id)
+    self~assertTrue(id >= 0, name "rdev should not be negative; found" id)
+  end
+
+::method test_sysstat_inode
+  -- we expect inodes to be unique positive whole numbers
+  unique = .Set~new
+  do name over self~names
+    inode = SysStat(name, "i")
+    self~assertTrue(inode~dataType("Whole"), name "inode should be a whole number; found" inode)
+    self~assertTrue(inode > 0, name "inode should be positive; found" inode)
+    self~assertFalse(unique~hasItem(inode), name "inode should be unique; found" inode)
+    unique~put(inode)
+  end
+
+::method test_sysstat_permissions
+  do name over self~names
+    permission = SysStat(name, "perm")
+    self~assertSame(10, permission~length)
+    self~assertSame(0, permission~verify("dlscbp-rwxsStT"), name "permission should consist of chars 'dlscbp-rwxsStT' only; found" permission)
+    select case name
+      when self~directory       then self~assertSame("d", permission~left(1))
+      when self~socket          then self~assertSame("s", permission~left(1))
+      when self~characterDevice then self~assertSame("c", permission~left(1))
+      otherwise nop
+    end
+  end
+
+::method test_sysstat_numberlinks
+  -- we expect the number of links to be a non-negative whole number
+  do name over self~names
+    links = SysStat(name, "NUMBERLINKS")
+    self~assertTrue(links~dataType("Whole"), name "links should be a whole number; found" links)
+    self~assertTrue(links >= 0, name "links should not be negative; found" links)
+  end
+
+::method test_sysstat_ids
+  -- we expect owner ID and group ID to be non-negative whole numbers
+  do name over self~names
+    do option over "UID", "GID"
+      id = SysStat(name, option)
+      self~assertTrue(id~dataType("Whole"), name "ID should be a whole number; found" id)
+      self~assertTrue(id >= 0, name "ID should not be negative; found" id)
+    end
+  end
+
+::method test_sysstat_size
+  do name over self~names
+    self~assertSame(.File~new(name)~length, SysStat(name, "size"), name "file size")
+  end
+
+::method test_sysstat_times
+  -- last access time, last modification time, last change to inode time
+  do name over self~names
+    do option over "access", "modified", "changed"
+      timestamp = SysStat(name, option)
+      if timestamp~length > 0 then do           -- some time fields may be missing
+        self~assertSame(19, timestamp~length)   -- e. g. 2019-10-08 23:01:52
+        self~assertSame(2, timestamp~words)     -- must be two words
+        self~assertSame(10, timestamp~wordLength(1))
+        call date , timestamp~word(1), "ISO"    -- verify it's a valid date
+        call time , timestamp~word(2), "Normal" -- verify it's a valid time
+      end
+    end
+  end
+
 
 ::method 'testSysAccess_1'
     parse source . . file
@@ -226,4 +324,4 @@ return testResult
   return .String~alnum || "./"
 
 
-::options novalue error
+::options novalue syntax
