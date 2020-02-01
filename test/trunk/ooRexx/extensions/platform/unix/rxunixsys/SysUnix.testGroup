@@ -167,13 +167,13 @@ return testResult
 
   -- /dev/null is a device of its own
   id = SysStat(self~characterDevice, "d")
-  self~assertTrue(id~dataType("Whole"), self~characterDevice "device ID should be a whole number; found" id)
+  self~assertTrue(id~dataType("Internal whole"), self~characterDevice "device ID should be a whole number; found" id)
   self~assertTrue(id >= 0, self~characterDevice "device ID should not be negative; found" id)
 
   -- st_rdev, device ID (if special file)
   do name over self~names
     id = SysStat(name, "r")
-    self~assertTrue(id~dataType("Whole"), name "rdev should be a whole number; found" id)
+    self~assertTrue(id~dataType("Internal whole"), name "rdev should be a whole number; found" id)
     self~assertTrue(id >= 0, name "rdev should not be negative; found" id)
   end
 
@@ -182,7 +182,7 @@ return testResult
   unique = .Set~new
   do name over self~names
     inode = SysStat(name, "i")
-    self~assertTrue(inode~dataType("Whole"), name "inode should be a whole number; found" inode)
+    self~assertTrue(inode~dataType("Internal whole"), name "inode should be a whole number; found" inode)
     self~assertTrue(inode > 0, name "inode should be positive; found" inode)
     self~assertFalse(unique~hasItem(inode), name "inode should be unique; found" inode)
     unique~put(inode)
@@ -191,7 +191,7 @@ return testResult
 ::method test_sysstat_permissions
   do name over self~names
     permission = SysStat(name, "perm")
-    self~assertSame(10, permission~length)
+    self~assertSame(10, permission~length, name "permission should be 10 chars; found" permission)
     self~assertSame(0, permission~verify("dlscbp-rwxsStT"), name "permission should consist of chars 'dlscbp-rwxsStT' only; found" permission)
     select case name
       when self~directory       then self~assertSame("d", permission~left(1))
@@ -205,7 +205,7 @@ return testResult
   -- we expect the number of links to be a non-negative whole number
   do name over self~names
     links = SysStat(name, "NUMBERLINKS")
-    self~assertTrue(links~dataType("Whole"), name "links should be a whole number; found" links)
+    self~assertTrue(links~dataType("Internal whole"), name "links should be a whole number; found" links)
     self~assertTrue(links >= 0, name "links should not be negative; found" links)
   end
 
@@ -214,7 +214,7 @@ return testResult
   do name over self~names
     do option over "UID", "GID"
       id = SysStat(name, option)
-      self~assertTrue(id~dataType("Whole"), name "ID should be a whole number; found" id)
+      self~assertTrue(id~dataType("Internal whole"), name "ID should be a whole number; found" id)
       self~assertTrue(id >= 0, name "ID should not be negative; found" id)
     end
   end

@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2019 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2019-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -588,12 +588,8 @@ lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER/sysfiletree/
   use strict arg line, typeT, typeS, file, message
 
   if typeT = "O" then
-do
     -- the "O" format returns one field: the file path
     self~assertSame(file~absolutePath, line, message "file path")
-say "act" file~absolutePath
-say "exp" line
-end
   else do
     -- the full layout has four fields: timestamp, file size,
     -- attributes, and file path
