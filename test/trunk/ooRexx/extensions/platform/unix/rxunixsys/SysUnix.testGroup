@@ -160,7 +160,8 @@ return testResult
   end
 
 ::method test_sysstat_device
-  -- we expect a device ID to be a non-negative whole number
+  -- we expect a device ID to be a whole number
+  -- (on Darwin Catalina 19.3.0 /dev/null device ID is returned as -783243024)
 
   -- the file and the directory are assumed to reside on the same device
   self~assertSame(SysStat(self~file, "D"), SysStat(self~directory, "DEV"), "file and directory device IDs expected to be the same")
@@ -168,13 +169,11 @@ return testResult
   -- /dev/null is a device of its own
   id = SysStat(self~characterDevice, "d")
   self~assertTrue(id~dataType("Internal whole"), self~characterDevice "device ID should be a whole number; found" id)
-  self~assertTrue(id >= 0, self~characterDevice "device ID should not be negative; found" id)
 
   -- st_rdev, device ID (if special file)
   do name over self~names
     id = SysStat(name, "r")
     self~assertTrue(id~dataType("Internal whole"), name "rdev should be a whole number; found" id)
-    self~assertTrue(id >= 0, name "rdev should not be negative; found" id)
   end
 
 ::method test_sysstat_inode
