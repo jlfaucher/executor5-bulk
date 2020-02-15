@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -500,11 +500,6 @@ return testResult
     self~expectSyntax(expected)
     a_dateTime = .dateTime~new(0001,1,1,0,,0,0)
 
-::method 'test_BadArg6'
-    expected = '93.903'
-    self~expectSyntax(expected)
-    a_dateTime = .dateTime~new(0001,1,1,0,0,,0)
-
 ::method 'test_InitA'
     a_dateTime  = .dateTime~new
     timeN       = time('n')
@@ -839,13 +834,97 @@ return testResult
   d = .datetime~fromStandardDate(date)
 
   self~assertSame(weekNumber, d~weekNumber, "Incorrect weekNumber for date" date)
-  self~assertSame(dayNumber, d~weekDayNumber, "Incorrect weekDayNumber for date" date)
+  self~assertSame(dayNumber, d~weekDay, "Incorrect weekDayNumber for date" date)
   self~assertSame(weeksInYear, d~weeksInYear, "Incorrect weeksInYear for date" date)
   self~assertSame(weekNumberYear, d~weekNumberYear, "Incorrect weeksNumberYear for date" date)
   self~assertSame(formatted, d~weekNumberDate, "Incorrect weekNumberDate for date" date)
 
   self~assertSame(d, .DateTime~fromWeekNumberDate(d~weekNumberDate), "Incorrect weekNumberDate parsing for date" date)
 
+-- more exhaustive tests for the new ISO ordinal date and week-date methods
+::method test_brute_force
+  -- these tests just assume that addDays works correctly, without
+  -- implementing any ISO algorithms
+  -- (the strange use of "if .. then self~fail" is partially due to
+  --- runtime considerations)
+  do with index startingYear item nrOfYears over .StringTable~of((1, 4), (91, 10), (198, 4), (294, 7),  (396, 5), (491, 10), (998, 4), (1798, 4), (1894, 7), (1968, 65), (2091, 10),  (9996, 5))
+    -- Jan 1st of the starting year must be a Monday to give us a known start
+    d = .DateTime~new(startingYear, 1, 1)
+    self~assertSame(1, d~weekDay, "this test requires" startingYear "to be a Monday")
+
+    weekYear = startingYear
+    weekDay = 0
+    weekNumber = 0
+    yearDay = 0
+    hadFeb29 = .false
+
+    -- a block has approx. 400 years, but we must stop on 9999-12-31
+    do min((365.25 * nrOfYears)~ceiling, (.DateTime~new(9999, 12, 31) - d)~days)
+      day = d~day
+      month = d~month
+      year = d~year
+
+      -- calculate our day of week number
+      weekDay = weekDay // 7 + 1
+
+      -- bump yearDay and reset it back to 1 on each Jan 1st
+      yearDay += 1
+      if day = 1, month = 1 then
+        yearDay = 1
+
+      -- each Monday we calculate and check our week number
+      if weekDay = 1 then do
+        weekNumber += 1
+        -- we reset our week number in Jan or in late Dec
+        if weekNumber > 52, month = 1 | day >= 29 then do
+          weekNumber = 1
+          weekYear += 1
+        end
+        if d~weekNumber \= weekNumber then
+          self~fail("weekNumber expected" weekNumber", found" d~weekNumber "("d")")
+      end
+
+      -- on Feb 29 we check whether this is a leap year
+      if day = 29, month = 2 then do
+        if \d~isLeapYear then
+          self~fail("isleapYear expected .true, found" d~isleapYear "("d")")
+        hadFeb29 = .true
+      end
+
+      -- on each March 1, if we had no Feb 29, we confirm that this is no leap year
+      if day = 1, month = 3, \hadFeb29 then do
+        if d~isLeapYear then
+          self~fail("isleapYear expected .false, found" d~isleapYear "("d")")
+        hadFeb29 = .false
+      end
+
+      -- on Dec 31 we calculate and check number of weeks in year
+      if day = 31, month = 12 then do
+        weeksInYear = (weekNumber = 1)~?(52, weekNumber)
+        if d~weeksInYear \= weeksInYear then
+          self~fail("weeksInYear expected" weeksInYear", found" d~weeksInYear "("d")")
+      end
+
+      ordinal = year"-"yearDay~right(3, '0')
+      if d~ordinalDate \= ordinal then
+        self~fail("ordinalDate expected" ordinal", found" d~ordinalDate "("d")")
+      if .DateTime~fromOrdinalDate(ordinal) \= d then
+        self~fail("fromOrdinalDate("ordinal") expected" d", found" .DateTime~fromOrdinalDate(ordinal))
+
+      weekDate = weekYear~right(4, '0')"-W"||weekNumber~right(2, '0')"-"weekDay
+      if d~weekDay \= weekDay then
+        self~fail("weekDay expected" weekDay", found" d~weekDay "("d")")
+      if d~weekNumberDate \= weekDate then
+        self~fail("weekNumberDate expected" weekDate", found" d~weekNumberDate "("d")")
+      if .DateTime~fromWeekNumberDate(weekDate) \= d then
+        self~fail("fromWeekNumberDate("weekDate") expected" d", found" .DateTime~fromWeekNumberDate(weekDate))
+
+      if d~yearDay \= yearDay then
+        self~fail("yearDay expected" yearDay", found" d~yearDay "("d")")
+
+      d = d~addDays(1)
+    end
+  end
 
 
 ::method getUtcTime

@@ -1235,7 +1235,8 @@ December 31, 2016 at 23:59:60 UTC.
 
 <!-- modified: change class methods list to 2-column format for better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!-- $GENERATED-20190429-START rexxrefClassTable(DateTime) -->
+<!--   <member><xref linkend="mthDateTimeInit" xrefstyle="template:new (Inherited Class Method)"/></member> -->
+<!-- $GENERATED-20200207-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
 <tgroup cols="1">
@@ -1273,10 +1274,12 @@ December 31, 2016 at 23:59:60 UTC.
    <member><xref linkend="mthDateTimeFromNormalDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromNormalTime" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromOrderedDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeFromOrdinalDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromStandardDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromTicks" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromUsaDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromUtcIsoDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeFromWeekNumberDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeMaxDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeMinDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeToday" xrefstyle="select:title"/></member>
@@ -1319,6 +1322,7 @@ December 31, 2016 at 23:59:60 UTC.
    <member><xref linkend="mthDateTimeNormalTime" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeOffset" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeOrderedDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeOrdinalDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeSeconds" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeStandardDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeString" xrefstyle="select:title"/></member>
@@ -1331,6 +1335,10 @@ December 31, 2016 at 23:59:60 UTC.
    <member><xref linkend="mthDateTimeUtcDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeUtcIsoDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeWeekDay" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeWeekNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeWeekNumberDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeWeekNumberYear" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeWeeksInYear" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeYear" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeYearDay" xrefstyle="select:title"/></member>
   </simplelist>
@@ -1338,7 +1346,7 @@ December 31, 2016 at 23:59:60 UTC.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190429-END rexxrefClassTable(DateTime) -->
+<!-- $GENERATED-20200207-END rexxrefClassTable(DateTime) -->
 
 <section id="mthDateTimeMinDate"><title>minDate (Class Method)</title>
 <indexterm><primary>minDate method</primary>
@@ -1392,40 +1400,28 @@ maximum supported Rexx date, 31 December 9999 at 23:59:59.999999.
 <para>Returns a <classname>DateTime</classname> instance for the current day,
 with a time value of 00:00:00.000000.
 </para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
-<section id="mthDateTimeFromNormalDate"><title>fromNormalDate (Class Method)</title>
-<indexterm><primary>fromNormalDate method</primary>
+<section id="mthDateTimeFromBaseDate"><title>fromBaseDate (Class Method)</title>
+<indexterm><primary>fromBaseDate method</primary>
 <secondary>of DateTime class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>fromNormalDate method</secondary>
+<secondary>fromBaseDate method</secondary>
 <tertiary>of DateTime class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromnormaldate.svg" scale="55" />
+<imagedata fileref="images/classes/datetime_frombasedate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns a new <classname>DateTime</classname> object, created from
-a string in the format returned by the <option>Normal</option> option
+a string in the format returned by the <option>Base</option> option
 of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
-(<literal>dd mon yyyy</literal>).
+(<literal>dddddd</literal>).
 The time component will be set to 00:00:00.000000.</para>
-<para>
-If specified, <emphasis role="italic">separator</emphasis>
-identifies the field separator character used in the string.  The separator must be a single character
-or the null string ("").  A blank (" ") is the default separator.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromEuropeanDate"><title>fromEuropeanDate (Class Method)</title>
@@ -1451,11 +1447,32 @@ If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
 The time component will be set to 00:00:00.000000.</para>
+&utc_offset_default_system;
+</section>
+
+<section id="mthDateTimeFromNormalDate"><title>fromNormalDate (Class Method)</title>
+<indexterm><primary>fromNormalDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromNormalDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/datetime_fromnormaldate.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Normal</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>dd mon yyyy</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+If specified, <emphasis role="italic">separator</emphasis>
+identifies the field separator character used in the string.  The separator must be a single character
+or the null string ("").  A blank (" ") is the default separator.</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromOrderedDate"><title>fromOrderedDate (Class Method)</title>
@@ -1481,12 +1498,45 @@ If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
 The time component will be set to 00:00:00.000000.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
+
+
+<!-- Class DateTime - method fromOrdinalDate ======================= -->
+<section id="mthDateTimeFromOrdinalDate" revisionflag="added"><title>&added50;fromOrdinalDate (Class Method)</title>
+<indexterm><primary>fromOrdinalDate method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>fromOrdinalDate method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_fromordinaldate.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a new <classname>DateTime</classname> object, created
+from a string in ISO ordinal date format.
+The time component will be set to 00:00:00.000000.
+</para>
+<para>Both the basic format <literal>yyyyddd</literal> and the extended
+format <literal>yyyy-ddd</literal> are accepted, where
+<literal>ddd</literal> is the ordinal number of a day within year
+<literal>yyyy</literal>.
+The allowed range for <literal>ddd</literal> is 1 through the number of
+days in year <literal>yyyy</literal>, which is either 365 or 366.
+Leading zeros are required for both <literal>yyyy</literal> and
+<literal>ddd</literal>.
+</para>
+&utc_offset_default_system;
+<para>See also method
+<xref linkend="mthDateTimeOrdinalDate" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-fromordinaldate">
+<title>DateTime class &mdash; fromOrdinalDate method
+<indexterm><primary>examples</primary><secondary>fromOrdinalDate method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .DateTime~fromOrdinalDate("2020-041")    -- 2020-02-10T00:00:00.000000
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthDateTimeFromStandardDate"><title>fromStandardDate (Class Method)</title>
 <indexterm><primary>fromStandardDate method</primary>
@@ -1510,11 +1560,7 @@ The time component will be set to 00:00:00.000000.</para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A null string ("") is the default separator.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromUsaDate"><title>fromUsaDate (Class Method)</title>
@@ -1539,12 +1585,50 @@ The time component will be set to 00:00:00.000000.</para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
+
+
+<!-- Class DateTime - method fromWeekNumberDate ==================== -->
+<section id="mthDateTimeFromWeekNumberDate" revisionflag="added"><title>&added50;fromWeekNumberDate (Class Method)</title>
+<indexterm><primary>fromWeekNumberDate method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>fromWeekNumberDate method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_fromweeknumberdate.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a new <classname>DateTime</classname> object, created
+from a string in ISO week date format.
+The time component will be set to 00:00:00.000000.
+</para>
+<para>Both the basic format <literal>yyyyWwwd</literal> and the extended
+format <literal>yyyy-Www-d</literal> are accepted, where
+<literal>ww</literal> is the ordinal number of an ISO week within year
+<literal>yyyy</literal>, and <literal>d</literal> is the ordinal number
+of the calender day within the week.
+The allowed range for <literal>ww</literal> is 1 through the number of
+ISO weeks in year <literal>yyyy</literal>, which is either 52 or 53.
+Leading zeros are required for both <literal>yyyy</literal> and
+<literal>ww</literal>.
+The allowed range for <literal>d</literal> is 1 through 7,
+where Monday is 1, Tuesday is 2, running through 7 for Sunday.
+</para>
+&utc_offset_default_system;
+<para>See also methods
+<xref linkend="mthDateTimeWeekNumberDate" xrefstyle="select:title"/>,
+<xref linkend="mthDateTimeWeekNumberYear" xrefstyle="select:title"/>, and
+<xref linkend="mthDateTimeWeekDay" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-fromweeknumberdate">
+<title>DateTime class &mdash; fromWeekNumberDate method
+<indexterm><primary>examples</primary><secondary>fromWeekNumberDate method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .DateTime~fromWeekNumberDate("2020-W07-1")    -- 2020-02-10T00:00:00.000000
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthDateTimeFromNormalTime"><title>fromNormalTime (Class Method)</title>
 <indexterm><primary>fromNormalTime method</primary>
@@ -1564,11 +1648,7 @@ a string in the format returned by the <option>Normal</option> option
 of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
 (<literal>hh:mm:ss</literal>).
 The date component will be set to 1 January 0001.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromCivilTime"><title>fromCivilTime (Class Method)</title>
@@ -1589,11 +1669,7 @@ a string in the format returned by the <option>Civil</option> option
 of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
 (<literal>hh:mmxx</literal>).
 The date component will be set to 1 January 0001.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromLongTime"><title>fromLongTime (Class Method)</title>
@@ -1614,36 +1690,7 @@ a string in the format returned by the <option>Long</option> option
 of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
 (<literal>hh:mm:ss.uuuuuu</literal>).
 The date component will be set to 1 January 0001.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
-</section>
-
-<section id="mthDateTimeFromBaseDate"><title>fromBaseDate (Class Method)</title>
-<indexterm><primary>fromBaseDate method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>fromBaseDate method</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/datetime_frombasedate.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Returns a new <classname>DateTime</classname> object, created from
-a string in the format returned by the <option>Base</option> option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
-(<literal>dddddd</literal>).
-The time component will be set to 00:00:00.000000.</para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromTicks"><title>fromTicks (Class Method)</title>
@@ -1665,11 +1712,7 @@ of the <xref linkend="bifDate" xrefstyle="select:title"/> or
 <xref linkend="bifTime" xrefstyle="select:title"/> built-in functions
 (<literal>dddddddddddd</literal>).
 </para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
 <section id="mthDateTimeFromIsoDate"><title>fromIsoDate (Class Method)</title>
@@ -1686,20 +1729,17 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Returns a new <classname>DateTime</classname> object, created from
-a string in ISO date format (<literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>).
+a string in extended ISO format <literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
 </para>
 <para>The <xref linkend="mthDateTimeIsoDate" xrefstyle="select:title"/> and the
 <xref linkend="mthDateTimeString" xrefstyle="select:title"/> methods return
-a string in ISO date format as the string form of a <classname>DateTime</classname> instance.
+a string in extended ISO format as the string form of a
+<classname>DateTime</classname> instance.
 </para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 </section>
 
-<section id="mthDateTimeFromUtcIsoDate"><title>fromUtcIsoDate (Class Method)</title>
+<section id="mthDateTimeFromUtcIsoDate" revisionflag="changed"><title>&changed50;fromUtcIsoDate (Class Method)</title>
 <indexterm><primary>fromUtcIsoDate method</primary>
 <secondary>of DateTime class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1713,8 +1753,8 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Returns a new <classname>DateTime</classname> object, created from
-a string in ISO timezone-qualified date format
-(<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm</literal>).
+a string in timezone-qualified extended ISO format
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hh:mm</literal>.
 </para>
 </section>
 
@@ -1765,11 +1805,7 @@ components.  Each of these components must be a valid whole number within the ac
 component.  For example, <emphasis role="italic">year</emphasis> must be in the range 1-9999, while
 <emphasis role="italic">minutes</emphasis> must be in the range 0-59.
 </para>
-<para>
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
-</para>
+&utc_offset_default_system;
 <example>
 <title>DateTime class</title>
 <programlisting>
@@ -1869,7 +1905,7 @@ say d + .TimeSpan~new(24, 0, 1)   -- 2017-01-01T00:00:01.000000
 
                                   -- "real" start of next century
 nextCentury = .dateTime~new(2101, 1, 1)
--- "The next century starts in 30544.06:29:18.517000 days", perhaps
+-- "The next century starts in 29547.07:15:42.721000 days", perhaps
 say "The next century starts in" (nextCentury - .dateTime~new) "days"
 ]]></programlisting>
 </example>
@@ -1894,6 +1930,146 @@ say "The next century starts in" (nextCentury - .dateTime~new) "days"
 <literal>1</literal> if <emphasis role="italic">other</emphasis> is
 smaller than the receiving object.</para>
 </section>
+
+<!-- Class DateTime - method weekNumber ============================ -->
+<section id="mthDateTimeWeekNumber" revisionflag="added"><title>&added50;weekNumber</title>
+<indexterm><primary>weekNumber method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>weekNumber method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_weeknumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the timestamp's ISO week number.
+</para>
+<para>Any given year will have week numbers either between 1 and 52,
+or between 1 and 53.
+</para>
+<para>See also methods
+<xref linkend="mthDateTimeWeekNumberYear" xrefstyle="select:title"/>,
+<xref linkend="mthDateTimeWeekNumberDate" xrefstyle="select:title"/>, and
+<xref linkend="mthDateTimeWeeksInYear" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-weeknumber">
+<title>DateTime class &mdash; weekNumber method
+<indexterm><primary>examples</primary><secondary>weekNumber method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say weekNumber(2018, 12, 31)    -- 1 2019-W01-1
+say weekNumber(2019,  1,  1)    -- 1 2019-W01-2
+
+say weekNumber(2020, 12, 31)    -- 53 2020-W53-4
+say weekNumber(2021,  1,  1)    -- 53 2020-W53-5
+return
+
+weekNumber: procedure
+  date = .DateTime~new(arg(1), arg(2), arg(3))
+  return date~weekNumber date~weekNumberDate
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class DateTime - method weekNumberDate ======================== -->
+<section id="mthDateTimeWeekNumberDate" revisionflag="added"><title>&added50;weekNumberDate</title>
+<indexterm><primary>weekNumberDate method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>weekNumberDate method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_weeknumberdate.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the timestamp formatted as a string in extended ISO week
+number date format <literal>yyyy-Www-d</literal> with leading zeros as
+required.
+</para>
+<para>See also methods
+<xref linkend="mthDateTimeFromWeekNumberDate" xrefstyle="select:title"/> and
+<xref linkend="mthDateTimeWeekNumberYear" xrefstyle="select:title"/>, and
+<xref linkend="mthDateTimeWeekDay" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-weeknumberdate">
+<title>DateTime class &mdash; weekNumberDate method
+<indexterm><primary>examples</primary><secondary>weekNumberDate method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .DateTime~new(2018, 12, 31)~weekNumberDate    -- 2019-W01-1
+say .DateTime~new(2019,  1,  1)~weekNumberDate    -- 2019-W01-2
+
+say .DateTime~new(2020, 12, 31)~weekNumberDate    -- 2020-W53-4
+say .DateTime~new(2021,  1,  1)~weekNumberDate    -- 2020-W53-5
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class DateTime - method weekNumberYear ======================== -->
+<section id="mthDateTimeWeekNumberYear" revisionflag="added"><title>&added50;weekNumberYear</title>
+<indexterm><primary>weekNumberYear method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>weekNumberYear method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_weeknumberyear.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the year associated with this date's ISO week number.
+The returned year may be the next or the previous year for dates at the
+beginning or end of the year.
+</para>
+<para>See also methods
+<xref linkend="mthDateTimeWeekNumber" xrefstyle="select:title"/>,
+<xref linkend="mthDateTimeWeekNumberDate" xrefstyle="select:title"/>, and
+<xref linkend="mthDateTimeWeeksInYear" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-weeknumberyear">
+<title>DateTime class &mdash; weekNumberYear method
+<indexterm><primary>examples</primary><secondary>weekNumberYear method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say weekNumber(2018, 12, 31)    -- 2019 2019-W01-1
+say weekNumber(2019,  1,  1)    -- 2019 2019-W01-2
+
+say weekNumber(2020, 12, 31)    -- 2020 2020-W53-4
+say weekNumber(2021,  1,  1)    -- 2020 2020-W53-5
+return
+
+weekNumber: procedure
+  date = .DateTime~new(arg(1), arg(2), arg(3))
+  return date~weekNumberYear date~weekNumberDate
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class DateTime - method weeksInYear =========================== -->
+<section id="mthDateTimeWeeksInYear" revisionflag="added"><title>&added50;weeksInYear</title>
+<indexterm><primary>weeksInYear method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>weeksInYear method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_weeksinyear.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the number of weeks in this date's year according to the
+ISO week number rules.
+</para>
+<para>There are either 52 or 53 ISO weeks in any given year.
+</para>
+<para>See also methods
+<xref linkend="mthDateTimeWeekNumber" xrefstyle="select:title"/>,
+<xref linkend="mthDateTimeWeekNumberYear" xrefstyle="select:title"/>, and
+<xref linkend="mthDateTimeWeekNumberDate" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-weeksinyear">
+<title>DateTime class &mdash; weeksInYear method
+<indexterm><primary>examples</primary><secondary>weeksInYear method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+do year = 2010 to 2030
+  d = .DateTime~new(year, 6, 30)
+  if d~weeksInYear \= 52 then
+    say year":" d~weeksinYear -- 2015: 53, 2020: 53, 2026: 53
+end
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthDateTimeYear"><title>year</title>
 <indexterm><primary>year method</primary>
@@ -1984,6 +2160,34 @@ Returns number of whole hours in the timestamp since midnight.
 Returns the minutes portion of the timestamp time-of-day.
 </para>
 </section>
+
+
+<!-- Class DateTime - method ordinalDate =========================== -->
+<section id="mthDateTimeOrdinalDate" revisionflag="added"><title>&added50;ordinalDate</title>
+<indexterm><primary>ordinalDate method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>ordinalDate method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_ordinaldate.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the timestamp formatted as a string in extended ISO
+ordinal date format <literal>yyyy-ddd</literal> with leading zeros
+as required.
+</para>
+<para>See also methods
+<xref linkend="mthDateTimeFromOrdinalDate" xrefstyle="select:title"/> and
+<xref linkend="mthDateTimeYearDay" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-ordinaldate">
+<title>DateTime class &mdash; ordinalDate method
+<indexterm><primary>examples</primary><secondary>ordinalDate method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .DateTime~new(2020, 2, 10)~ordinalDate    -- 2020-041
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthDateTimeSeconds"><title>seconds</title>
 <indexterm><primary>seconds method</primary>
@@ -2285,7 +2489,7 @@ Negative values result in microseconds being subtracted.
 </imageobject>
 </mediaobject>
 
-<para>Returns the timestamp formatted as a string in ISO date format
+<para>Returns the timestamp formatted as a string in extended ISO format
 <literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
 </para>
 <para>The <xref linkend="mthDateTimeString" xrefstyle="select:title"/> method
@@ -2293,7 +2497,7 @@ will also return this value.
 </para>
 </section>
 
-<section id="mthDateTimeUtcIsoDate"><title>utcIsoDate</title>
+<section id="mthDateTimeUtcIsoDate" revisionflag="changed"><title>&changed50;utcIsoDate</title>
 <indexterm><primary>utcIsoDate method</primary>
 <secondary>of DateTime class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2306,13 +2510,13 @@ will also return this value.
 </imageobject>
 </mediaobject>
 
-<para>Returns the timestamp formatted as a string in ISO timezone-qualified date format.
+<para>Returns the timestamp formatted as a string in extended timezone-qualified ISO format.
 If the timezone offset is 0, the format is
 <literal>yyyy-mm-ddThh:mm:ss.uuuuuuZ</literal>.
 If the offset is positive, the string is formatted as
-<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm</literal>.
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hh:mm</literal>.
 If the offset is negative, the result will be in the format
-<literal>yyyy-mm-ddThh:mm:ss.uuuuuu-hhmm</literal>.
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu-hh:mm</literal>.
 </para>
 </section>
 
@@ -2358,6 +2562,16 @@ system that created the Gregorian calendar originally.</para>
 in the year the timestamp represents in the format <literal>ddd</literal>
 (no leading zeros or blanks).
 </para>
+<para>See also method
+<xref linkend="mthDateTimeOrdinalDate" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.datetime-yearday">
+<title>DateTime class &mdash; yearDay method
+<indexterm><primary>examples</primary><secondary>yearDay method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .DateTime~new(2020, 2, 10)~yearDay    -- 41
+]]></programlisting></example></para>
 </section>
 
 <section id="mthDateTimeWeekDay"><title>weekDay</title>
@@ -2716,11 +2930,8 @@ for the UTC timezone (offset 0).
 
 <para>Returns a new <classname>DateTime</classname> instance representing the time
 for the timezone indicated by <emphasis role="italic">offset</emphasis>.
-If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
-in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> is 0, which
-is equivalent to UTC.
 </para>
+&utc_offset_default_zero;
 </section>
 
 <section id="mthDateTimeTicks"><title>ticks</title>
@@ -2890,7 +3101,7 @@ For leap years, <literal>366</literal> is returned, and
 </imageobject>
 </mediaobject>
 
-<para>Returns the timestamp formatted as a string in ISO date format
+<para>Returns the timestamp formatted as a string in extended ISO format
 <literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
 </para>
 <para>The <xref linkend="mthDateTimeIsoDate" xrefstyle="select:title"/> method
@@ -3013,9 +3224,10 @@ and will not change if you change the default directory.
 </mediaobject>
 
 <para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
-If a Unix-like file system may have mounted both case-sensitive and case-insensitive
-file systems, this method returns &true; if the file system root "<literal>/</literal>"
-is case-sensitive, and otherwise &false;.
+</para>
+<para>On Unix-like systems where both case-sensitive and case-insensitive
+file systems may be mounted, this method returns &true; if the file system
+root "<literal>/</literal>" is case-sensitive, and otherwise &false;.
 </para>
 <para>See also instance method <xref linkend="mthFileIsCaseSensitive" xrefstyle="select:title"/>.
 </para>
@@ -3538,7 +3750,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
     Otherwise it does nothing.
     </para>
     <para>The <emphasis role="italic">date</emphasis> parameter must be a
-    <classname>DateTime</classname> object.
+    <xref linkend="clsDateTime" xrefstyle="template:DateTime"/> object.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3555,7 +3767,7 @@ Also, on Windows last access time is not updated for NTFS volumes by default.
 <indexterm><primary>examples</primary><secondary>lastAccessed attribute</secondary></indexterm>
 </title>
 <programlisting><![CDATA[
-say .File~new(".")~lastAccessed  -- e. g. 2019-01-07T20:03:14.000000
+say .File~new(".")~lastAccessed  -- e. g. 2020-02-06T13:03:42.143095
 ]]>
 </programlisting></example></para>
 </section>
@@ -7188,8 +7400,8 @@ other instances cannot be created or copied.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; architecture method</title>
-<programlisting><![CDATA[say .rexxinfo~architecture    -- 32 /* ooRexx 32-bit */
-say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
+<programlisting><![CDATA[say .RexxInfo~architecture    -- 32 /* ooRexx 32-bit */
+say .RexxInfo~architecture    -- 64 /* ooRexx 64-bit */
 ]]></programlisting></example></para>
 </section>
 
@@ -7203,9 +7415,10 @@ say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 </imageobject></mediaobject>
 </para>
 <para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
-If a Unix-like file system may have mounted both case-sensitive and case-insensitive
-file systems, this method returns &true; if the file system root "<literal>/</literal>"
-is case-sensitive, and otherwise &false;.
+</para>
+<para>On Unix-like systems where both case-sensitive and case-insensitive
+file systems may be mounted, this method returns &true; if the file system
+root "<literal>/</literal>" is case-sensitive, and otherwise &false;.
 </para>
 <para>See also <classname>File</classname> class method
 <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="template:isCaseSensitive"/>

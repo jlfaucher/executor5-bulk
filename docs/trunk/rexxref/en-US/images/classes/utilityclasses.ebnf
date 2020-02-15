@@ -54,11 +54,14 @@ datetime_fromisodate ::= 'fromIsoDate(' date ( ',' offset )? ')'
 
 datetime_fromutcisodate ::= 'fromUtcIsoDate(' date ')'
 
+datetime_fromordinaldate ::= 'fromOrdinalDate(' date (',' offset)? ')'
+datetime_fromweeknumberdate ::= 'fromWeekNumberDate(' date (',' offset)? ')'
+
 /* keep four separate diagrams, so that the fourth can get split into two lines */
 datetime_init1 ::= 'init'
 datetime_init2 ::= 'init(' fulldate ( ',' offset )? ')'
 datetime_init3 ::= 'init(' year ',' month ',' day ( ',' offset )? ')'
-datetime_init4 ::= 'init(' year ',' month ',' day ',' hours ',' minutes ',' seconds
+datetime_init4 ::= 'init(' year ',' month ',' day ',' hours ',' minutes ',' seconds?
                           ',' microseconds? (',' offset)? ')'
 
 datetime_arithmeticoperator ::= arithmetic_operator '(' argument ')'
@@ -161,6 +164,12 @@ datetime_daysinyear ::= 'daysInYear'
 
 datetime_string ::= 'string'
 
+datetime_ordinaldate    ::= 'ordinalDate'
+datetime_weeknumber     ::= 'weekNumber'
+datetime_weeknumberdate ::= 'weekNumberDate'
+datetime_weeknumberyear ::= 'weekNumberYear'
+datetime_weeksinyear    ::= 'weeksInYear'
+
 timespan_fromdays ::= 'fromDays(' days ')'
 
 timespan_fromhours ::= 'fromHours(' hours ')'
@@ -180,8 +189,8 @@ timespan_fromlongtime ::= 'fromLongTime(' time ')'
 timespan_fromstringformat ::= 'fromStringFormat(' time ')'
 
 timespan_init ::= 'init(' fullDate ')'
-timespan_init ::= 'init(' hours ',' minutes ',' seconds ')'
-timespan_init ::= 'init(' days ',' hours ',' minutes ',' seconds ',' microseconds ')'
+timespan_init ::= 'init(' hours ',' minutes (',' seconds)? ')'
+timespan_init ::= 'init(' days ',' hours ',' minutes ',' seconds (',' microseconds)? ')'
 
 timespan_arithmeticoperator ::= arithmetic_operator '(' argument ')'
 
