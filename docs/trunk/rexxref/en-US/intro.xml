@@ -2158,20 +2158,20 @@ say (,)~size       -- 2
 <!-- Variable Reference Term ====================================== -->
 <section id="varrefterm" revisionflag="added"><title>&added50;Variable Reference Term</title>
 <indexterm><primary>array term</primary></indexterm>
-<para>A variable reference term creates a reference to a variable.
-References to variables can be used as arguments to subroutines, functions,
-methods, or routines, allowing the original variable to be created or modified
-by the called Rexx code.
+<para>A variable reference term represents a reference to a variable.
+Variable reference terms can be used as arguments to subroutines, functions,
+methods, or routines, thus allowing the original variable to be modified or
+created by the called Rexx code.
 </para>
-<para>While subroutines, functions, methods, or routines can modify arguments
-accessed with the USE ARG instruction without using a variable reference,
-changing the value of arguments to new objects&mdash;setting them to a new
-string, creating a new Array, or setting it to <literal>.nil</literal>&mdash;can
-only be done using a variable reference.
+<para>While subroutines, functions, methods, or routines can modify argument
+objects when accessed with the USE ARG instruction without using a variable
+reference, changing the value of arguments to new objects&mdash;like setting
+them to a new string, a new Array, or to <literal>.nil</literal>&mdash;can
+only be done using a variable reference term.
 </para>
-<para>Variable references can be created by prepending a simple variable name
-or a stem variable name with either of the two reference operators
-<literal>&gt;</literal> or <literal>&lt;</literal>.
+<para>Variable reference terms start with either of the two reference
+operators, <literal>&gt;</literal> or <literal>&lt;</literal>,
+followed by a simple variable name or a stem variable name.
 Variable references to compound variables are not allowed.
 </para>
 <para>Here is an example:
@@ -2191,7 +2191,7 @@ say files~items "files with extension .txt"
 <para>Variable reference arguments and
 <xref linkend="keyUseArg" xrefstyle="template:USE ARG"/> names must
 match.
-They must be either both simple variable references, or
+They must either be both simple variable references, or
 both stem references.
 USE ARG reference variables can never be optional, a default value is not
 allowed.
