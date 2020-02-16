@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -56,18 +56,23 @@ return testResult
 ::requires 'ooTest.frm'
 ::class 'SysFileSystemType.testgroup' subclass ooTestCase public
 
-::method 'testFileSystemType1'
-    self~assertNotNull(SysFileSystemType())
+::method test_FileSystemType_no_arg
+    self~assertNotSame("", SysFileSystemType())
 
-::method 'testFileSystemType2'
-    self~assertNotNull(SysFileSystemType('c:'))
+::method test_FileSystemType_two_args
+    -- Too many arguments in invocation; 1 expected.
+    self~expectSyntax((88.922, 1))
+    call SysFileSystemType "", ""
 
-::method 'testFileSystemType3'
-    self~expectSyntax(40.900)
-    rv = SysFileSystemType('c:\')
+::method test_FileSystemType_simple_root
+    do drive over "c", "c:", "c:\"
+      self~assertNotSame("", SysFileSystemType(drive))
+      self~assertNotSame("", SysFileSystemType(drive~upper))
+    end
+    self~assertNotSame("", SysFileSystemType("\"))
 
-::method 'testFileSystemType4'
-    self~assertSame(SysFileSystemType(1),'')
+::method test_FileSystemType_no_root
+    self~assertSame("", SysFileSystemType(1))
 
 
 ::options novalue error

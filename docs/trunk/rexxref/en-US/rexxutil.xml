@@ -1535,12 +1535,14 @@ H:5
 </imageobject>
 </mediaobject>
 
-<para>Returns the name of the file system used for a drive. If the drive is not
-accessible, it returns a null string (&quot;&quot;).</para>
+<para>Returns the type of file system (e. g. FAT or NTFS) used on a drive.
+Returns the null string if the drive is not accessible.
+</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">drive</emphasis></term>
-<listitem><para>The drive of interest, for example "C:".
+<listitem><para>The drive root of interest, for example <literal>C:\</literal>.
+If this argument is omitted, the current drive is used.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -1551,12 +1553,9 @@ accessible, it returns a null string (&quot;&quot;).</para>
 <indexterm><primary>examples</primary>
 <secondary>SysFileSystemType</secondary></indexterm>
 <example id="ex.sysfilesystemtype">
-<title>RexxUtil &mdash; SysFilesystemtype</title>
+<title>RexxUtil &mdash; SysFileSystemType</title>
 <programlisting>
-/* Code */
-say "File System="SysFileSystemType("C:")
-/* Output */
-File System=NTFS
+say SysFileSystemType("C:\")    -- NTFS
 </programlisting>
 </example>
 </section>
@@ -2260,7 +2259,7 @@ The first replacement string is for placeholder <literal>&amp;1</literal>,
 the second for <literal>&amp;2</literal>, up to placeholder
 <literal>&amp;9</literal>.
 If a placeholder has no replacement string specified, it is replaced by
-the nullstring.
+the null string.
 Any unused replacement string is ignored.
 Other placeholders like <literal>%s</literal> are not replaced and are
 returned unchanged with the message.
@@ -2326,7 +2325,7 @@ The first replacement string is for placeholder <literal>&amp;1</literal>,
 the second for <literal>&amp;2</literal>, up to placeholder
 <literal>&amp;9</literal>.
 If a placeholder has no replacement string specified, it is replaced by
-the nullstring.
+the null string.
 Any unused replacement string is ignored.
 Other placeholders like <literal>%s</literal> are not replaced and are
 returned unchanged with the message.
