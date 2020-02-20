@@ -294,7 +294,7 @@ how these external files are located.
 postorder execution.</para></listitem>
 </orderedlist>
 
-<section id="filesearch"><title>Locating External Rexx Files</title>
+<section id="filesearch" revisionflag="changed"><title>&changed50;Locating External Rexx Files</title>
 <para>Rexx uses an extensive search procedure for locating program files.  The first
 element of the search procedure is the locations that will be checked for files.  The
 locations, in order of checking, are:</para>
@@ -324,13 +324,26 @@ Any directories specified via the PATH environment variable.
 routine name contains at least one period, then this routine is extension
 qualified.  The search locations above will be checked for the target file unchanged, and
 no additional steps will be taken.  If the routine name is not extension qualified, then
-additional searches will be performed by adding file extensions to the name.  The following
-extensions may be used:</para>
+additional searches will be performed by adding file extensions to the name.
+All directory locations will be checked for a given extension before
+moving to the next potential extension.
+The following extensions may be used:
+</para>
 <orderedlist>
+<listitem><para revisionflag="added">&added50;
+If the searched file is requested by a
+<xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>
+without a <option>LIBRARY</option> option, or
+the <classname>Package</classname> class
+<xref linkend="mthPackageNew" xrefstyle="template:new"/> method with
+only the <emphasis role="italic">name</emphasis> argument specified, or
+the <classname>Package</classname> class
+<xref linkend="mthPackageFindProgram" xrefstyle="select:title"/> method,
+an attempt to locate a file using the extension <literal>.cls</literal> is made.
+</para></listitem>
 <listitem><para>
 If the calling program has a file extension, then the interpreter will attempt to locate
-a file using the same extension as the caller.  All directory locations will be checked for
-a given extension before moving to the next potential extension.
+a file using the same extension as the caller.
 </para></listitem>
 <listitem><para>
 Some applications using Rexx as a scripting language may define additional extension types.
@@ -338,8 +351,8 @@ For example, an editor might define a preferred extension that should be
 used for editor macros.  This extension would be searched next.
 </para></listitem>
 <listitem><para>
-The default system extension (<literal>.REX</literal> on Windows,
-and both <literal>.rex</literal> and <literal>.REX</literal> on Unix-based systems)
+The default system extension, which is <literal>.REX</literal> on Windows,
+and both <literal>.rex</literal> and <literal>.REX</literal> on Unix-based systems.
 </para></listitem>
 <listitem><para>
 If the target file has not been located using any of the above extensions, the file name

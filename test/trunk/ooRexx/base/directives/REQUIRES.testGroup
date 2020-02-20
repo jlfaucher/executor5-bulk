@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -335,6 +335,56 @@ return testResult
   self~assertSame(test2, .local~activateTest)
 
   .local~removeEntry('ACTIVATETEST')
+
+-- test that the REQUIRES directive correctly searches the requested file
+-- according to the documented external search order
+-- for a requires file without extension, the expected search order is
+-- 1) .cls, 2) parent extension, 3) .rex, 4) none
+-- NOTE: required files, once loaded, are cached, which means we will
+-- have to create differently named groups of test files for each test
+::method test_search_order_cls
+  self~createRequires("search_order_cls", ("cls", "testGroup", "rex", "other", ""))
+
+  -- a requires file with extension should work as-is
+  self~assertSame("other", self~runDynamicSource(("return .c~extension", "::requires search_order_cls.other")))
+
+  -- this requires file without extension should resolve to .cls
+  self~assertSame("cls", self~runDynamicSource(("return .c~extension", "::requires search_order_cls")))
+
+::method test_search_order_testGroup
+  self~createRequires("search_order_testGroup", ("testGroup", "rex", "other", ""))
+
+  -- this requires file without extension should resolve to .testGroup
+  -- OK, there seems to be a quirk here: when run from within the same
+  -- directory as the test group, this test fails because it resolves to
+  -- .rex instead of .testGroup (tested on Windows only)
+  -- TO DO: verify what's going on here
+  self~assertSame("testGroup", self~runDynamicSource(("return .c~extension", "::requires search_order_testGroup")), "this ::REQUIRES search order tests fails when run from within the same directory, but works as expected otherwise")
+
+::method test_search_order_rex
+  self~createRequires("search_order_rex", ("rex", "other", ""))
+
+  -- this requires file without extension should resolve to .rex
+  self~assertSame("rex", self~runDynamicSource(("return .c~extension", "::requires search_order_rex")))
+
+::method test_search_order_none
+  self~createRequires("search_order_none", ("other", ""))
+
+  -- this requires file without extension should resolve to .testGroup
+  self~assertSame("(none)", self~runDynamicSource(("return .c~extension", "::requires search_order_none")))
+
+-- create temporary requires files with a range of extensions
+::method createRequires
+  use strict arg baseName, extensionList
+
+  requires = .Stringtable~new
+  do extension over extensionList
+    file = .TemporaryTestFile~new(self, (baseName || "." || extension)~strip("t", "."))
+    constant = (extension = "")~?("(none)", extension)
+    file~create(("::class c public", "::constant extension '" || constant || "'"))
+    requires[extension] = file
+  end
+  return requires
 
 
 ::options any syntax

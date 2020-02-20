@@ -3673,6 +3673,8 @@ array of strings containing individual method lines.
 If <emphasis role="italic">source</emphasis> isn't specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be
 used as the package source.
+The file is searched for using the
+<xref linkend="filesearch" xrefstyle="template:external program search order"/>.
 </para>
 
 <para>The <emphasis role="italic">context</emphasis> allows the created package
@@ -3969,7 +3971,8 @@ say .context~package~findNamespace("windows")   -- a Package
 target package context and returns the fully resolved filename.
 <emphasis role="italic">name</emphasis> must be a string that specifies the
 filename or path to an external program.
-The program is searched for using normal external program search order.
+The program is searched for using the
+<xref linkend="filesearch" xrefstyle="template:external program search order"/>.
 </para>
 <para>Returns &nil; if <emphasis role="italic">name</emphasis> cannot be located.
 </para>
