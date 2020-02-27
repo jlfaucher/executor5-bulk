@@ -4170,7 +4170,8 @@ packages.</para>
 by the interpreter. The <emphasis role="italic">name</emphasis> identifies a
 native external library file that will be located and loaded as if it had been
 named on a ::REQUIRES LIBRARY directive.  If the library is successfully loaded,
-loadLibrary will return &true;, otherwise it returns &false;.</para>
+<methodname>loadLibrary</methodname> will return &true;, otherwise it returns &false;.
+</para>
 </section>
 
 <section id="mthPackageLoadPackage"><title>loadPackage</title>
@@ -4189,12 +4190,20 @@ loadLibrary will return &true;, otherwise it returns &false;.</para>
 <para>Loads a package and adds it to the list of packages loaded by the package
 manager.   If only <emphasis role="italic">name</emphasis> is specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be located
-and loaded as if it had been named on a ::REQUIRES directive.  If
-<emphasis role="italic">source</emphasis> is given, it must be an array of
-strings that is the source for the loaded package.  If a package
-<emphasis role="italic">name</emphasis> has already been loaded by the package
-manager, the previously loaded version will be used.  The resolved package object
-will be added to the receiving package object's dependent packages.</para>
+and loaded as if it had been named on a
+<xref linkend="requ" xrefstyle="select:title"/> directive.
+The file is searched for using the
+<xref linkend="filesearch" xrefstyle="template:external program search order"/>.
+</para>
+<para>If <emphasis role="italic">source</emphasis> is given, it must be an array of
+strings that is the source for the loaded package.
+</para>
+<para>If a package <emphasis role="italic">name</emphasis> has already been
+loaded by the package manager, the previously loaded version will be used.
+</para>
+<para>The resolved package object will be added to the receiving package object's
+dependent packages.
+</para>
 </section>
 
 
@@ -4208,12 +4217,12 @@ will be added to the receiving package object's dependent packages.</para>
 <imagedata fileref="images/classes/package_local.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns a <classname>Directory</classname> of objects local to the
-receiving package.
+<para>Returns a <xref linkend="clsDirectory" xrefstyle="template:Directory"/>
+of objects local to the receiving package.
 </para>
 <para>See also
 <xref linkend="locenv" xrefstyle="template:.LOCAL"/> for a
-<classname>Directory</classname> of objects local the interpreter instance.
+Directory of objects local to the interpreter instance.
 </para>
 </section>
 
@@ -7971,9 +7980,13 @@ expression.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a string value that is used as a hash value for MapCollection
-such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
-the same hash value for all pairs of string instances for which the <methodname>==</methodname> operator is &true;.
+<para>Returns a string value that is used as a hash value for
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollections"/>
+such as <classname>Table</classname>, <classname>Relation</classname>,
+<classname>Set</classname>, <classname>Bag</classname>, or <classname>Directory</classname>.
+The String <methodname>hashCode</methodname> method will return the same
+hash value for all pairs of string instances for which the
+<methodname>==</methodname> operator is &true;.
 </para>
 <para>See also <classname>Object</classname> method
 <xref linkend="mthObjectHashCode" xrefstyle="select:title"/> for details.
