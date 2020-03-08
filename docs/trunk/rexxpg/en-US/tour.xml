@@ -658,7 +658,8 @@ say left(word("John Q. Public",3),2)
 </section>
 
 <section id="progcon"><title>Program Control</title>
-<para>Rexx has instructions such as
+<para>Rexx has instructions such as DO, LOOP, IF, and SELECT to control your program. Here is a
+typical Rexx IF instruction:
 <indexterm><primary>DO instruction</primary></indexterm>
 <indexterm><primary>LOOP instruction</primary></indexterm>
 <indexterm><primary>IF instruction</primary></indexterm>
@@ -681,8 +682,7 @@ say left(word("John Q. Public",3),2)
 <secondary>SELECT instruction</secondary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>for program control (DO, LOOP, IF, SELECT ...)</secondary></indexterm>
-DO, LOOP, IF, and SELECT to control your program. Here is a
-typical Rexx IF instruction: </para>
+</para>
 <example>
 <title>IF instruction</title>
 <programlisting>
@@ -698,8 +698,9 @@ end
 in C, which is &amp;&amp;. Other relational operators differ as well, so you
 may want to review the appropriate section in the
 <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>.</para>
-<para>Here is a list of some Rexx comparison operators and operations: </para>
+<para>Here is a list of some Rexx comparison operators and operations:
 <indexterm><primary>operators and operations, partial list of</primary></indexterm>
+</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
@@ -742,7 +743,9 @@ is synonymous with the backslash
 <indexterm><primary>\ (backslash)</primary></indexterm>
 <indexterm><primary>backslash (\)</primary></indexterm>
 (\). You can use both characters. The backslash
-can appear in the \ (prefix not), \=, and \== operators.</para></note>
+can appear in the \ (prefix not), \=, and \== operators.</para>
+</note>
+
 <para>A character string has the value false if it is 0, and true if it is 1.
 A logical operator can take at least two values and return 0 or 1 as appropriate:</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
@@ -781,7 +784,9 @@ The appearance of the character on your screen might not
 match the character engraved on the key. If you receive error 13,
 <computeroutput>invalid character in program</computeroutput>,
 on an instruction including a vertical bar, make
-sure this character is ASCII character encoding 124.</para></note>
+sure this character is ASCII character encoding 124.</para>
+</note>
+
 <para>Using the wrong relational or comparison operator is a common mistake when
 switching between C and Rexx. The familiar C language braces { } are not used
 in Rexx for blocks of instructions. Instead, Rexx uses DO/END pairs. The THEN
