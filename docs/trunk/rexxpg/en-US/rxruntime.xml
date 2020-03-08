@@ -43,13 +43,16 @@
     #
     #########################################################################
 -->
-<appendix id="xnosorcpg"><title>Distributing Programs without Source</title>
+<appendix id="xnosorcpg">
+<title>Distributing Programs without Source</title>
 <indexterm><primary>programs without source</primary></indexterm>
+<indexterm><primary>rexxc utility</primary></indexterm>
 <para>Open Object Rexx comes with
-a utility called RexxC. You can use this utility to produce versions of your
+a utility called <code>rexxc</code>. You can use this utility to produce versions of your
 programs that do not include the original program source. You can use these
 programs to replace any Rexx program file that includes the source, with the
 following restrictions: </para>
+
 <orderedlist>
 <listitem><para>The SOURCELINE built-in function returns
 <computeroutput>0</computeroutput> for the number of
@@ -57,13 +60,20 @@ lines in the program and raises an error for all attempts to retrieve a line.
 </para></listitem>
 <listitem><para>A sourceless program may not be traced. The TRACE instruction runs without
 error, but no tracing of instruction lines, expression results, or intermediate
-expression values occurs.</para></listitem></orderedlist>
-<para>The syntax of the REXXC utility is:</para>
-<indexterm><primary>REXXC utility</primary></indexterm>
+expression values occurs.</para></listitem>
+</orderedlist>
 
+<para>The syntax of the <code>rexxc</code> utility on Unix systems is:</para>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxc.svg" align="center" scale="50" />
+<imagedata fileref="images/rexxc_unix.svg" align="center" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>The syntax of the <code>rexxc</code> utility on Windows systems is:</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rexxc_windows.svg" align="center" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -71,27 +81,28 @@ expression values occurs.</para></listitem></orderedlist>
 the language processor processes the
 <emphasis role="italic">inputfile</emphasis>
 and writes the executable version of the program to the
-<emphasis role="italic">outputfile</emphasis>. If the
+<emphasis role="italic">outputfile</emphasis> (a binary file). If the
 <emphasis role="italic">outputfile</emphasis> already exists, it is
 replaced.</para>
+
 <para>If the language processor detects a syntax error while processing the program,
 it reports the error and stops processing without creating a new output file.
 If you omit the <emphasis role="italic">outputfile</emphasis>,
 the language processor performs a syntax
 check on the program without writing the executable version to a file.</para>
-<para>You can use the <emphasis role="italic">s</emphasis> option (<emphasis role="italic">/s</emphasis>
-on Windows and <emphasis role="italic">-s</emphasis> on unixes) to suppress the display of the
-information about the interpreter used.
-</para>
+
+<para>You can use the <emphasis role="italic">s</emphasis> option (<emphasis role="italic">-s</emphasis>
+or <emphasis role="italic">/s</emphasis>) to suppress the display of the information about the interpreter used.</para>
+
+<para>You can use the <emphasis role="italic">e</emphasis> option (<emphasis role="italic">-e</emphasis>
+or <emphasis role="italic">/e</emphasis>) to <emphasis role="italic">base64</emphasis> encode the resulting
+binary file which makes it possible to deploy it in environments where usually character transformations take place on
+scripts before Rexx gets them for execution.</para>
 
 <note>
-<para>You can use the in-storage capabilities of the RexxStart programming
-interface to process the file image of the output file.</para></note>
-<para>
-  Due to changes in the 4.0 interpreter it is not possible for Rexx programs, tokenized with any previous
-  version of ooRexx, to run under ooRexx 4.0.0.  The programs will need to be re-tokenized with the 4.0.0
-  interpreter. The changes are such that the old tokenized form can not be changed to the new form.
-  Therefore, no utility such as the old <computeroutput>RxMigrate</computeroutput> can be provided. Part
-  of the purpose of the changes is to make this sitaution less likely to occur in the future.
-</para>
+<para>Binary files produced by a version of <code>rexxc</code> can only be run on an interpreter of the
+same or higher language level and the same bitness as the interpreter that the compiling copy of <code>rexxc</code>
+was supplied with.</para>
+</note>
+
 </appendix>
