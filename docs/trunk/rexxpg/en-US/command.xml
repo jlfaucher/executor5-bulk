@@ -52,11 +52,12 @@ powerful substitute for the Windows Batch Facility or Unix shell scripts. You ca
 use variables, control structures,
 mathematics, and parsing, and the full object oriented features of Rexx.
 </para>
-<para>Applications that are designed to
+
 <indexterm><primary>scriptable applications</primary></indexterm>
 <indexterm><primary>environment for scriptable applications</primary></indexterm>
 <indexterm><primary>macros</primary>
 <secondary>definition</secondary></indexterm>
+<para>Applications that are designed to
 work with Rexx are often referred to as scriptable applications.
 To work with Rexx, a scriptable application registers a command environment with Rexx.
 An environment serves as a kind of workspace
@@ -70,7 +71,8 @@ to as macros.</para>
 <para>When an application runs a Rexx macro, Rexx directs commands to the application's
 environment. The application processes the command, and returns a status indicator as
 a return code.</para>
-<para>The Rexx
+<para>The Rexx <emphasis role="italic">ADDRESS</emphasis> instruction allows you select which named command environment commands get
+directed to.
 <indexterm><primary>ADDRESS instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>ADDRESS</secondary></indexterm>
@@ -78,8 +80,7 @@ a return code.</para>
 <secondary>ADDRESS instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>default environment</secondary></indexterm>
-ADDRESS instruction allows you select which named command environment commands get
-directed to.  There is always at least one active command environment, and all
+  There is always at least one active command environment, and all
 Rexx programs start with a default environment selected.  For programs launched from
 a command shell, an operating-system-specific command handler is the normal default.  Applications
 (such as an editor) can choose whether or not to make their own command environment the default.
@@ -94,12 +95,13 @@ automatically passes the resulting string to the default environment.</para></li
 <listitem><para>Enclose the entire clause in quotation marks. This makes it a literal
 string for Rexx to pass to the default environment.</para></listitem>
 <listitem><para>Send a command explicitly to a command environment using
-the ADDRESS instruction.</para></listitem>
+the <emphasis role="italic">ADDRESS</emphasis> instruction.</para></listitem>
 </itemizedlist>
 <para>Rexx processes your program one clause at a time. It examines each clause
 to determine if it is: </para>
 <itemizedlist>
-<listitem><para>A directive, such as ::CLASS or ::METHOD</para></listitem>
+<listitem><para>A directive, such as <emphasis role="italic">::CLASS</emphasis> or
+<emphasis role="italic">::METHOD</emphasis></para></listitem>
 <listitem><para>A message instruction, such as:
 <programlisting>
 <![CDATA[
@@ -132,7 +134,7 @@ an expression and passes the resulting string to the current command environment
 <para>If the string is a valid command for that environment, the command
 handler will process it as if you had entered it at the command prompt.
 </para>
-<para>The following example shows a Rexx clause that uses the Windows DIR
+<para>The following example shows a Rexx clause that uses the Windows <emphasis role="italic">DIR</emphasis>
 command to display a list of files in the current directory. </para>
 <programlisting>
 <![CDATA[
@@ -144,16 +146,16 @@ dir
 <para>The clause <computeroutput>dir</computeroutput> is not a Rexx
 instruction or a label, so Rexx evaluates it and passes the resulting
 string to Windows. Windows recognizes
-the string DIR as one of its commands and processes it.</para>
+the string <emphasis role="italic">DIR</emphasis> as one of its commands and processes it.</para>
 <para>Letting Rexx evaluate the command as an expression might cause
 problems, however. Try adding a path to the DIR command in the above program
-(such as, <computeroutput>dir c:\config.sys</computeroutput>). The Windows
+(such as, <computeroutput>dir&nbsp;c:\Windows</computeroutput>). The Windows
 command in this case is
 an incorrect Rexx expression. The program ends with an error.</para>
 <para>A safer way to issue commands is by enclosing the command in
 quotes, which makes the command a literal string. Rexx does not evaluate the
 contents of strings, so the string is passed to Windows as-is.
-Here is an example using the PATH command:</para>
+Here is an example using the <emphasis role="italic">PATH</emphasis> command:</para>
 <programlisting>
 <![CDATA[
 /* display current path      */
@@ -161,14 +163,15 @@ say "PATH command using Rexx"
 "path"
 ]]>
 </programlisting>
-<para>The following example, DP.CMD, shows a program using the DIR
-and PATH commands. The PAUSE command is added to wait for the user to press
+<para>The following example, <code>dp.rex</code>, shows a program using the <emphasis role="italic">DIR</emphasis>
+and <emphasis role="italic">PATH</emphasis> commands.
+The <emphasis role="italic">PAUSE</emphasis> command is added to wait for the user to press
 a key before issuing the next instruction or command. Borders are added too.</para>
 <example>
-<title>DIR and PATH commands</title>
+<title><emphasis role="italic">DIR</emphasis> and <emphasis role="italic">PATH</emphasis> commands</title>
 <programlisting>
 <![CDATA[
-/* DP.CMD -- Issue DIR and PATH commands to Windows */
+/* dp.rex -- Issue DIR and PATH commands to Windows */
 
 say "="~copies(40)    /* display line of equal   */
                       /* signs (=) for a border  */
@@ -318,7 +321,7 @@ prompt
 <title>Rexx program</title>
 <programlisting>
 <![CDATA[
-/* HELP.CMD -- Get help for a system message */
+/* help.rex -- Get help for a system message */
 arg action .
 select
   when action=""    then     "helpmsg"
@@ -336,18 +339,18 @@ exit
 </section>
 
 <section id="bldcom"><title>Using Variables to Build Commands</title>
-<para>You can use variables to build commands. The SHOFIL.CMD program
-is an example. SHOFIL types a file that the user specifies. It prompts the
-user to enter a file name and then builds a variable containing the TYPE command
+<para>You can use variables to build commands. The <code>showfile.rex</code> program
+is an example. <code>showfile</code> types a file that the user specifies. It prompts the
+user to enter a file name and then builds a variable containing the <emphasis role="italic">TYPE</emphasis> command
 and the input file name.</para>
 <para>To have Rexx issue the command to the operating system, put the variable
 containing the command string on a line by itself. Rexx evaluates the variable
 and passes the resultant string to Windows: </para>
 <example>
-<title>SHOFIL.CMD (Windows)</title>
+<title><code>showfile.rex</code> (Windows)</title>
 <programlisting>
 <![CDATA[
-/* SHOFIL.CMD - build command with variables  */
+/* showfile.rex - build command with variables  */
 
 /* prompt the user for a file name            */
 say "Type a file name:"
@@ -370,7 +373,7 @@ commandstr           /* ...Rexx passes the    */
 <para>Rexx displays the following on the screen when you run the program:</para>
 <programlisting>
 <![CDATA[
-[C:\]rexx shofil
+[C:\]rexx showfile
 Type a file name:
 demo.txt
 
@@ -387,14 +390,14 @@ programs.
 <section id="quotmks"><title>Using Quotation Marks</title>
 <para>The rules for forming a command from an expression are the same
 as those for forming expressions. Be careful with symbols that are used in
-Rexx and Windows programs. The DIRREX.CMD program
+Rexx and Windows programs. The <code>dir.rex</code> program
 below shows how Rexx evaluates a command when the command name and a variable
 name are the same: </para>
 <example>
-<title>DIRREX.CMD (Windows)</title>
+<title><code>dir.rex</code> (Windows)</title>
 <programlisting>
 <![CDATA[
-/* DIRREX.CMD - assign a value to the symbol DIR  */
+/* dir.rex - assign a value to the symbol DIR  */
 say "DIR command using Rexx"
 dir = "echo This is not a directory."
 
@@ -404,10 +407,10 @@ dir
 </programlisting>
 </example>
 <para>Because dir is a variable that contains a string, the string
-is passed to the system. The DIR command is not executed. Here are the results: </para>
+is passed to the system. The <emphasis role="italic">DIR</emphasis> command is not executed. Here are the results: </para>
 <programlisting>
 <![CDATA[
-[C:\]rexx dirrex
+[C:\]rexx dir.rex
 DIR command using Rexx:
 This is not a directory.
 [C:\]
@@ -438,10 +441,10 @@ outside the quotation marks. For example: </para>
 <programlisting>
 <![CDATA[
 extension = "BAK"
-"delete *."||extension
+"delete *." || extension
 
 option = "/w"
-"dir"||option
+"dir" option
 ]]>
 </programlisting>
 </section>
@@ -453,19 +456,19 @@ option = "/w"
 <indexterm><primary>addressing environments by name</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>ADDRESS instruction</secondary></indexterm>
-<para>To send a command to a specific environment, use this format of the ADDRESS
+<para>To send a command to a specific environment, use this format of the <emphasis role="italic">ADDRESS</emphasis>
 instruction: </para>
 <programlisting>
 ADDRESS <emphasis role="italic">environment expression</emphasis>
 </programlisting>
 <para>For <emphasis role="italic">environment</emphasis>
 specify the destination of the command.
-To address the Windows environment, use the symbol CMD. For
+To address the Windows environment, use the symbol <emphasis role="italic">CMD</emphasis>. For
 <emphasis role="italic">expression</emphasis>, specify an expression
 that results in a string that Rexx passes to
 the environment. Here are some examples: </para>
 <example>
-<title>ADDRESS instruction</title>
+<title><emphasis role="italic">ADDRESS</emphasis> instruction</title>
 <programlisting>
 <![CDATA[
 address CMD "dir"     /* pass the literal string      */
@@ -485,35 +488,35 @@ address edit "rain"   /* Rexx passes the "rain"       */
 ]]>
 </programlisting>
 </example>
-<para>Notice that the ADDRESS instruction lets a single Rexx program issue commands
+<para>Notice that the <emphasis role="italic">ADDRESS</emphasis> instruction lets a single Rexx program issue commands
 to two or more environments.</para>
 </section>
 
 <section id="rcodes"><title>Using Return Codes from Commands</title>
 <indexterm><primary>return code from Windows and Linux</primary></indexterm>
-<para>With each command it processes, Windows and Unix/Linux
-command shells produce a number called a return
-code. When a Rexx program is running, this return code is automatically
-assigned to a special built-in Rexx
 <indexterm><primary>RC special variable</primary></indexterm>
-variable named RC.</para>
+<para>With each command it processes, Windows and Unix/Linux
+command shells produce a number called a return code.
+When a Rexx program is running, this return code is automatically
+assigned to a special built-in Rexx
+variable named <emphasis role="italic">RC</emphasis>.</para>
 <para>If the command was processed without problems, the return code is almost
-always 0. If something goes wrong, the return code issued is a nonzero number.
+always <code>0</code>. If something goes wrong, the return code issued is a nonzero number.
 The number depends on the command itself and the error encountered.</para>
 <para>This example shows how to display a return code: </para>
 <example>
-<title>GETRC.CMD (Windows)</title>
+<title><code>getrc.rex</code> (Windows)</title>
 <programlisting>
 <![CDATA[
-/* GETRC.CMD report */
+/* getrc.rex report */
 "TYPE nosuch.fil"
 say "the return code is" RC
 ]]>
 </programlisting>
 </example>
-<para>The special variable RC can be used in expressions like any other
-variable. In the next example, an error message is displayed when the TYPE command
-returns a nonzero value in RC: </para>
+<para>The special variable <emphasis role="italic">RC</emphasis> can be used in expressions like any other
+variable. In the next example, an error message is displayed when the <emphasis role="italic">TYPE</emphasis> command
+returns a nonzero value in <emphasis role="italic">RC:</emphasis> </para>
 <example>
 <title>RC special variable</title>
 <programlisting>
@@ -536,10 +539,10 @@ Rexx continues running. You might have to press the Ctrl+Break key combination
 to stop processing. Rexx includes the following instructions for trapping
 and controlling system errors: </para>
 <itemizedlist>
-<listitem><para>CALL ON ERROR</para></listitem>
-<listitem><para>CALL ON FAILURE</para></listitem>
-<listitem><para>SIGNAL ON ERROR</para></listitem>
-<listitem><para>SIGNAL ON FAILURE</para></listitem></itemizedlist>
+<listitem><para><emphasis role="italic">CALL ON ERROR</emphasis></para></listitem>
+<listitem><para><emphasis role="italic">CALL ON FAILURE</emphasis></para></listitem>
+<listitem><para><emphasis role="italic">SIGNAL ON ERROR</emphasis></para></listitem>
+<listitem><para><emphasis role="italic">SIGNAL ON FAILURE</emphasis></para></listitem></itemizedlist>
 </section>
 
 <section id="sbcmdpr"><title>Subcommand Processing</title>
@@ -557,11 +560,12 @@ to the documentation for the application.</para>
 <indexterm><primary>trapping command errors</primary></indexterm>
 <para>The most efficient way to detect errors from
 commands is by creating condition traps, using the
-SIGNAL ON and CALL ON instructions, with either the ERROR or the FAILURE condition.
+<emphasis role="italic">SIGNAL ON</emphasis> and <emphasis role="italic">CALL ON</emphasis> instructions,
+with either the <emphasis role="italic">ERROR</emphasis> or the <emphasis role="italic">FAILURE</emphasis> condition.
 When used in a program, these instructions enable, or switch on, a detector
 in Rexx that tests the result of every command. Then, if a command signals
 an error, Rexx stops usual program processing, searches the program for the
-appropriate label (ERROR:, or FAILURE:, or a label that you created), and
+appropriate label (<emphasis role="italic">ERROR:</emphasis>, or <emphasis role="italic">FAILURE:</emphasis>, or a label that you created), and
 resumes processing there.</para>
 <indexterm><primary>CALL instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -573,48 +577,49 @@ resumes processing there.</para>
 <secondary>CALL instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SIGNAL instruction</secondary></indexterm>
-<para>SIGNAL ON and CALL ON also tell Rexx to store
+<para><emphasis role="italic">SIGNAL ON</emphasis> and <emphasis role="italic">CALL ON</emphasis> also tell Rexx to store
 the line number (in the Rexx program) of the command instruction that triggered
 the condition. Rexx assigns that line number to the special variable SIGL.
 <indexterm><primary>SIGL special variable</primary></indexterm>
 Your program can get more information about what caused the command error
 <indexterm><primary>CONDITION built-in function</primary></indexterm>
-through the built-in function CONDITION.</para>
-<para>Using the SIGNAL and CALL instructions to handle errors has several advantages;
+through the built-in function <emphasis role="italic">CONDITION.</emphasis></para>
+<para>Using the <emphasis role="italic">SIGNAL</emphasis> and <emphasis role="italic">CALL</emphasis>
+instructions to handle errors has several advantages;
 namely, that programs: </para>
 <itemizedlist>
 <listitem><para>Are easier to read because you can confine error-trapping to a single,
 common routine</para></listitem>
-<listitem><para>Are more flexible because they can respond to errors by clause (SIGL),
-by return code (RC), or by other information (CONDITION method or built-in
+<listitem><para>Are more flexible because they can respond to errors by clause (<emphasis role="italic">SIGL</emphasis>),
+by return code (<emphasis role="italic">RC</emphasis>), or by other information (<emphasis role="italic">CONDITION</emphasis> method or built-in
 function)</para></listitem>
 <listitem><para>Can catch problems and react to them before the environment issues an
 error message</para></listitem>
-<listitem><para>Are easier to correct because you can turn the traps on and off (SIGNAL
-OFF and CALL OFF)</para></listitem></itemizedlist>
-<para>For other conditions that can be detected using SIGNAL ON and CALL ON,
+<listitem><para>Are easier to correct because you can turn the traps on and off
+(<emphasis role="italic">SIGNAL OFF</emphasis> and <emphasis role="italic">CALL OFF</emphasis>)</para></listitem></itemizedlist>
+<para>For other conditions that can be detected using <emphasis role="italic">SIGNAL ON</emphasis> and <emphasis role="italic">CALL ON</emphasis>,
 see the <citetitle>Open Object Rexx: Reference.</citetitle></para>
 
 <section id="instrcond"><title>Instructions and Conditions</title>
-<para>The instructions to set a trap for errors are SIGNAL and CALL. Example
+<para>The instructions to set a trap for errors are <emphasis role="italic">SIGNAL</emphasis> and <emphasis role="italic">CALL</emphasis>. Example
 formats are: </para>
 <programlisting>
 SIGNAL ON <emphasis role="italic">condition</emphasis> NAME <emphasis role="italic">trapname</emphasis>
 CALL   ON <emphasis role="italic">condition</emphasis> NAME <emphasis role="italic">trapname</emphasis>
 </programlisting>
-<para>The SIGNAL ON instruction initiates an exit subroutine that ends the program.
-The CALL ON instruction initiates a subroutine that can return processing to
-the clause immediately following the CALL ON instruction. You use CALL ON
+<para>The <emphasis role="italic">SIGNAL ON</emphasis> instruction initiates an exit subroutine that ends the program.
+The <emphasis role="italic">CALL ON</emphasis> instruction initiates a subroutine that can return processing to
+the clause immediately following the <emphasis role="italic">CALL ON</emphasis> instruction. You use <emphasis role="italic">CALL ON</emphasis>
 to recover from a command error or failure.</para>
 <para>The command conditions that can be trapped are: </para>
 <variablelist>
-<varlistentry><term>ERROR
+<varlistentry><term><emphasis role="italic">ERROR</emphasis>
 <indexterm><primary>ERROR condition</primary></indexterm>
 </term>
 <listitem><para>Detects any nonzero error code the default environment
 issues as the result of a Rexx command.
 </para></listitem></varlistentry>
-<varlistentry><term>FAILURE
+<varlistentry><term><emphasis role="italic">FAILURE</emphasis>
 <indexterm><primary>FAILURE condition</primary></indexterm>
 </term>
 <listitem><para>Detects a severe error, preventing the system from
@@ -622,23 +627,24 @@ processing the command.
 </para></listitem></varlistentry>
 </variablelist>
 <para>A failure, in this sense, is a particular category of error. If you use
-SIGNAL ON or CALL ON to set a trap only for ERROR conditions, then it traps
-failures as well as other errors. If you also specify a FAILURE condition,
-then the ERROR trap ignores failures.</para>
-<para>With both the SIGNAL and the CALL instructions, you can specify the name
-of the trap routine. Add a NAME keyword followed by the name of the subroutine.
+<emphasis role="italic">SIGNAL ON</emphasis> or <emphasis role="italic">CALL ON</emphasis> to set a trap only for
+<emphasis role="italic">ERROR</emphasis> conditions, then it traps
+failures as well as other errors. If you also specify a <emphasis role="italic">FAILURE</emphasis> condition,
+then the <emphasis role="italic">ERROR</emphasis> trap ignores failures.</para>
+<para>With both the <emphasis role="italic">SIGNAL</emphasis> and the <emphasis role="italic">CALL</emphasis> instructions, you can specify the name
+of the trap routine. Add a <emphasis role="italic">NAME</emphasis> keyword followed by the name of the subroutine.
 If you do not specify the name of the trap routine, Rexx uses the value of
 <emphasis role="italic">condition</emphasis> as the name (Rexx looks for
-the label ERROR:, FAILURE:, and so on).</para>
+the label <emphasis role="italic">ERROR:</emphasis>, <emphasis role="italic">FAILURE:</emphasis>, and so on).</para>
 <para>For more information about other conditions that can be trapped, see
 the <citetitle pubwork="book">Open Object Rexx: Reference.</citetitle></para>
 </section>
 
 <section id="disabl"><title>Disabling Traps</title>
-<para>To turn off a trap for any part of a program, use the SIGNAL or CALL
-instructions with the OFF keyword, such as: </para>
+<para>To turn off a trap for any part of a program, use the <emphasis role="italic">SIGNAL</emphasis> or <emphasis role="italic">CALL</emphasis>
+instructions with the <emphasis role="italic">OFF</emphasis> keyword, such as: </para>
 <example>
-<title>SIGNAL</title>
+<title><emphasis role="italic">SIGNAL</emphasis></title>
 <programlisting>
 <![CDATA[
 SIGNAL OFF ERROR
@@ -650,11 +656,11 @@ CALL OFF FAILURE
 </example>
 </section>
 
-<section id="signal"><title>Using SIGNAL ON ERROR</title>
-<para>The following example shows how a program can use SIGNAL ON to
+<section id="signal"><title>Using <emphasis role="italic">SIGNAL ON ERROR</emphasis></title>
+<para>The following example shows how a program can use <emphasis role="italic">SIGNAL ON</emphasis> to
 trap a command error in a program that copies a file. In this example, an
 error occurs because the name of a nonexistent file is stored in the variable
-file1. Processing jumps to the clause following the label ERROR:</para>
+file1. Processing jumps to the clause following the label <emphasis role="italic">ERROR</emphasis>:</para>
 
 <mediaobject>
 <imageobject>
@@ -663,9 +669,9 @@ file1. Processing jumps to the clause following the label ERROR:</para>
 </mediaobject>
 </section>
 
-<section id="call"><title>Using CALL ON ERROR</title>
+<section id="call"><title>Using <emphasis role="italic">CALL ON ERROR</emphasis></title>
 <para>If there were a way to recover, such as by typing another file
-name, you could use CALL ON to recover and resume processing:</para>
+name, you could use <emphasis role="italic">CALL ON</emphasis> to recover and resume processing:</para>
 
 <mediaobject>
 <imageobject>
