@@ -124,9 +124,10 @@ rexx count myfile.txt
 rexx count r:\rexx\articles\devcon7.scr
 ]]>
 </programlisting>
+
+<indexterm><primary>counting words in a file</primary></indexterm>
 <para><code>count.rex</code> uses the String method <emphasis role="italic">WORDS</emphasis> to count the words, so
 <code>count.rex</code> actually counts whitespace-delimited tokens:</para>
-<indexterm><primary>counting words in a file</primary></indexterm>
 <example>
 <title><emphasis role="italic"><code>count.rex</code></emphasis> with automatic open</title>
 <programlisting>
@@ -388,9 +389,10 @@ characters in the stream. <code>chord.wav</code> has about 114,000 characters.</
 <secondary>reading</secondary></indexterm>
 <indexterm><primary>text files</primary>
 <secondary>reading a character at a time</secondary></indexterm>
+<indexterm><primary>line-end characters</primary></indexterm>
+
 <para>You can use the <emphasis role="italic">CHARIN</emphasis> and other character methods on text files. Because
 you read the file as characters, <emphasis role="italic">CHARIN</emphasis> returns the
-<indexterm><primary>line-end characters</primary></indexterm>
 line-end characters to your program.
 Line methods, on the contrary, do not return the line-end characters to your
 program. Rexx adds line-end characters to the end of every
@@ -729,6 +731,7 @@ qfile~close
 <section id="standardio"><title>Using Standard I/O</title>
 <indexterm><primary>I/O, standard (keyboard, displays, and error streams)</primary></indexterm>
 <indexterm><primary>standard I/O (keyboard, displays, and error streams)</primary></indexterm>
+
 <para>All of the preceding topics dealt with the reading and writing of files.
 You can use the same methods to read from standard input (usually the keyboard)
 and to write to standard output (usually the display). You can also use the
@@ -832,6 +835,7 @@ Pu
 
 <section id="usedevice"><title>Using Windows Devices</title>
 <indexterm><primary>devices, sending information to</primary></indexterm>
+
 <para>You can use Windows
 devices by substituting a device name (such as <emphasis role="italic">PRN</emphasis>, <emphasis role="italic">LPT1</emphasis>,
 <emphasis role="italic">LPT2</emphasis>, <emphasis role="italic">COM1</emphasis>, and

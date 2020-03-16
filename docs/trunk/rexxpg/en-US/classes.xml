@@ -60,8 +60,8 @@ method with the matching name performs the action. The message is
 the interface to the object, and with information hiding, only methods
 that belong to an object can access its variables.</para>
 <para>Objects are grouped hierarchically into classes. The
-class at the top of the hierarchy is the Object class. Everything below it
-in the hierarchy belongs to the Object class and is therefore an object. As
+class at the top of the hierarchy is the <emphasis role="italic">Object</emphasis> class. Everything below it
+in the hierarchy belongs to the <emphasis role="italic">Object</emphasis> class and is therefore an object. As
 a result, all classes are objects.</para>
 <para>In a class hierarchy, classes, superclasses, and subclasses are relative
 to one another. Unless designated otherwise, any class directly above a class
@@ -78,7 +78,7 @@ define which messages an object can respond to.
 <para>The methods available
 to the class itself are called class methods.
 Many of the methods
-are actually the instance methods of the Class class, but a class many have its
+are actually the instance methods of the <emphasis role="italic">Class</emphasis> class, but a class many have its
 own unique class methods.
 They define messages
 that only the class&mdash;and not its instances&mdash;can respond to.
@@ -132,16 +132,18 @@ Results:
 Hello
 ]]>
 </programlisting>
+
 <indexterm><primary>SAY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SAY instruction</secondary></indexterm>
+<indexterm><primary>STRING method</primary></indexterm>
 <para>The <emphasis role="italic">SAY</emphasis>
 instruction expects a string object as input, which is what <emphasis role="italic">AT</emphasis> returns.
-If you try to display a non-string object in the SAY instruction, <emphasis role="italic">SAY</emphasis> sends a <emphasis role="italic">STRING</emphasis> message
+If you try to display a non-string object in the <emphasis role="italic">SAY</emphasis> instruction,
+<emphasis role="italic">SAY</emphasis> sends a <emphasis role="italic">STRING</emphasis> message
 to the object.  The <emphasis role="italic">STRING</emphasis> method returns
 a human-readable string representation for the object.
-<indexterm><primary>STRING method</primary></indexterm>
-In this example, the <emphasis role="italic">STRING</emphasis> method for an Array object returns the string
+In this example, the <emphasis role="italic">STRING</emphasis> method for an <emphasis role="italic">Array</emphasis> object returns the string
 <computeroutput>an Array</computeroutput>: </para>
 <programlisting>
 <![CDATA[
@@ -212,11 +214,12 @@ automatically when appropriate, are <emphasis role="italic">INIT</emphasis>, <em
 When these instances require initialization, you'll want to define an
 <emphasis role="italic">INIT</emphasis> method to set a particular starting value or initiate some startup processing.
 Rexx looks for an <emphasis role="italic">INIT</emphasis> method whenever a new object is created and runs it.</para>
+
+<indexterm><primary>INIT method</primary></indexterm>
 <para>The purpose of initialization is to ensure that the
 instance variables are initialized correctly
 before being used in an operation. If an <emphasis role="italic">INIT</emphasis> method is defined, Rexx runs it
 after creating the instance.
-<indexterm><primary>INIT method</primary></indexterm>
 Any initialization arguments specified in the
 <emphasis role="italic">NEW</emphasis> message are passed to the
 <emphasis role="italic">INIT</emphasis> method, which can use them
@@ -238,7 +241,7 @@ is a useful way to access object data and return it in string form for use
 by your program. When a
 <emphasis role="italic">SAY</emphasis> instruction is processed in Rexx, Rexx automatically
 sends a <emphasis role="italic">STRING</emphasis> message to the object specified in the expression. Rexx uses
-the <emphasis role="italic">STRING</emphasis> method of the Object class and returns a human-readable string
+the <emphasis role="italic">STRING</emphasis> method of the <emphasis role="italic">Object</emphasis> class and returns a human-readable string
 representation for the object. For example, if you instruct Rexx
 to <computeroutput>say a</computeroutput>, and
 <computeroutput>a</computeroutput> is an array object, Rexx returns an array.
@@ -246,11 +249,12 @@ to <computeroutput>say a</computeroutput>, and
 You can take advantage of this automatic use of <emphasis role="italic">STRING</emphasis> by overriding Rexx's
 <emphasis role="italic">STRING</emphasis> method with your own, and extract the object data itself&mdash;in this
 case, the actual array data.</para>
-<para>The following programs
-demonstrate <emphasis role="italic">STRING</emphasis> and <emphasis role="italic">INIT</emphasis>.
+
 <indexterm><primary>directives</primary>
 <secondary>sample program</secondary></indexterm>
-In the first program, the Part class is created,
+<para>The following programs
+demonstrate <emphasis role="italic">STRING</emphasis> and <emphasis role="italic">INIT</emphasis>.
+In the first program, the <emphasis role="italic">Part</emphasis> class is created,
 and along with it, the two methods under discussion, <emphasis role="italic">STRING</emphasis> and <emphasis role="italic">INIT</emphasis>: </para>
 <example>
 <title><emphasis role="italic">STRING</emphasis> and <emphasis role="italic">INIT</emphasis> Methods</title>
@@ -290,22 +294,22 @@ variables, and are associated with a single instance of a class:</para>
 </mediaobject>
 </figure>
 
-<para>The INIT method expects to be passed three arguments.
 <indexterm><primary>Rexx</primary>
 <secondary>USE ARG instruction</secondary></indexterm>
 <indexterm><primary>USE ARG instruction</primary></indexterm>
+<para>The INIT method expects to be passed three arguments.
 The <emphasis role="italic">USE ARG</emphasis> instruction assigns these three arguments to the name, description,
 and number variables, respectively. Because those variables are exposed, the
 values are available to other methods.</para>
 
-<para>The <emphasis role="italic">STRING</emphasis> method returns the string
-<computeroutput>Part name:</computeroutput>, followed
-by the name of a part. The <emphasis role="italic">STRING</emphasis> method (of the Part class) does not expect any arguments.
 <indexterm><primary>EXPOSE instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>EXPOSE instruction</secondary></indexterm>
 <indexterm><primary>variables</primary>
 <secondary>exposing</secondary></indexterm>
+<para>The <emphasis role="italic">STRING</emphasis> method returns the string
+<computeroutput>Part name:</computeroutput>, followed
+by the name of a part. The <emphasis role="italic">STRING</emphasis> method (of the <emphasis role="italic">Part</emphasis> class) does not expect any arguments.
 It uses the <emphasis role="italic">EXPOSE</emphasis> instruction to identify which object variables it requires.
 The <emphasis role="italic">RETURN</emphasis> instruction returns the result string.</para>
 
@@ -326,28 +330,32 @@ exit
 </example>
 <para>The <filename>usepart.rex</filename> program creates two parts, which are instances of the Part
 class. It then displays the names of the two parts.</para>
-<para>Rexx processes all directives before running your program.
+
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES</secondary></indexterm>
+<para>Rexx processes all directives before running your program.
 The <emphasis role="italic">::REQUIRES</emphasis> directive indicates
 that the program needs access to public class definitions that are in another
 program. In this case, the <emphasis role="italic">::REQUIRES</emphasis> directive refers to the <filename>partdef.rex</filename> program,
 which contains the Part definition.</para>
 
 <para>The assignment instructions for
-<emphasis role="italic">mypartA</emphasis> and <emphasis role="italic">mypartB</emphasis> create two objects that are instances of the Part class.
-The objects are created by sending a <emphasis role="italic">NEW</emphasis> message to the Part class. The <emphasis role="italic">NEW</emphasis>
+<emphasis role="italic">mypartA</emphasis> and <emphasis role="italic">mypartB</emphasis> create
+two objects that are instances of the <emphasis role="italic">Part</emphasis> class.
+The objects are created by sending a <emphasis role="italic">NEW</emphasis> message to the
+<emphasis role="italic">Part</emphasis> class. The <emphasis role="italic">NEW</emphasis>
 message causes the <emphasis role="italic">INIT</emphasis> method to be invoked as part of object creation. The
 <emphasis role="italic">INIT</emphasis> method takes the three arguments you provide and makes them part of the
 object's own exclusive set of variables, called a variable pool. Each object
 has its own variable pool (name, description, and number).</para>
-<para>The <emphasis role="italic">SAY</emphasis>
-instruction sends a <emphasis role="italic">STRING</emphasis> message to the object. In the first <emphasis role="italic">SAY</emphasis> instruction,
-the <emphasis role="italic">STRING</emphasis> message is sent to <emphasis role="italic">MypartA</emphasis>.
+
 <indexterm><primary>SAY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SAY instruction</secondary></indexterm>
 <indexterm><primary>STRING method</primary></indexterm>
+<para>The <emphasis role="italic">SAY</emphasis>
+instruction sends a <emphasis role="italic">STRING</emphasis> message to the object. In the first <emphasis role="italic">SAY</emphasis> instruction,
+the <emphasis role="italic">STRING</emphasis> message is sent to <emphasis role="italic">MypartA</emphasis>.
 
 The <emphasis role="italic">STRING</emphasis> method accesses the Name
 object variable for <emphasis role="italic">MypartA</emphasis> and returns it as part of a string. In the second
@@ -463,8 +471,8 @@ for a superclass method lookup for the <emphasis role="italic">SELF</emphasis> o
 superclass of the class that defined the method currently running. </para>
 <para>The
 special variable <emphasis role="italic">SUPER</emphasis> lets you call a method in the superclass of an object.
-For example, the following Savings class has <emphasis role="italic">INIT</emphasis> methods that the Savings
-class, Account class, and Object class define. </para>
+For example, the following <emphasis role="italic">Savings</emphasis> class has <emphasis role="italic">INIT</emphasis> methods that the Savings
+class, <emphasis role="italic">Account</emphasis> class, and <emphasis role="italic">Object</emphasis> class define. </para>
 <example>
 <title><emphasis role="italic">SELF</emphasis> Variable</title>
 <programlisting>
@@ -529,9 +537,10 @@ class.</para>
 <secondary>local objects</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>built-in objects</secondary></indexterm>
+
 <para>In addition to the special variables, Rexx provides
 a unique set of objects, called environment objects. Environment
-objects are members of the Object class only. Rexx makes the following environment
+objects are members of the <emphasis role="italic">Object</emphasis> class only. Rexx makes the following environment
 objects available:</para>
 
 <section id="publicenvobj"><title>The Public Environment Object (<literal>.environment</literal>)</title>
@@ -566,7 +575,7 @@ earlier; for example in: </para>
 asav = <literal>.savings</literal>~new
 ]]>
 </programlisting><para> <literal>.Savings</literal> is
-an environment symbol, and refers to the Savings class. The classes
+an environment symbol, and refers to the <emphasis role="italic">Savings</emphasis> class. The classes
 you create can be referenced with an environment symbol. There is an environment
 symbol for each Rexx-defined class, as well as for each of the unique objects
 this section describes, such as the <emphasis role="italic">Nil</emphasis> object.</para>
@@ -631,7 +640,7 @@ trace output to.
 </term>
 <listitem><para>is the Input object (the default input stream),
 which is the source for the <emphasis role="italic">PARSE LINEIN</emphasis> instruction,
-the <emphasis role="italic">LINEIN</emphasis> method of the Stream class, and (if you do not specify a stream
+the <emphasis role="italic">LINEIN</emphasis> method of the <emphasis role="italic">Stream</emphasis> class, and (if you do not specify a stream
 name) the <emphasis role="italic">LINEIN</emphasis> built-in function. It is also the source of the <emphasis role="italic">PULL</emphasis> and
 <emphasis role="italic">PARSE PULL</emphasis> instructions if the external data queue is empty.
 </para></listitem></varlistentry>
@@ -789,8 +798,10 @@ can be added directly to the instance. These additional methods and variables
 form a separate scope, independent of the class scopes found throughout the
 rest of the hierarchy.</para>
 <para>Methods can be added directly to an instance's collection of object
-methods using <emphasis role="italic">SETMETHOD</emphasis>, a method of the Object class. All subclasses of the
-Object class inherit <emphasis role="italic">SETMETHOD</emphasis>. Alternately, the Class class provides an <emphasis role="italic">ENHANCED</emphasis>
+methods using <emphasis role="italic">SETMETHOD</emphasis>, a method of the
+<emphasis role="italic">Object</emphasis> class. All subclasses of the
+<emphasis role="italic">Object</emphasis> class inherit <emphasis role="italic">SETMETHOD</emphasis>. Alternately,
+the <emphasis role="italic">Class</emphasis> class provides an <emphasis role="italic">ENHANCED</emphasis>
 method that lets you create new instances of a class, whose object methods
 are the instance methods of its class, but enhanced with the additional collection
 methods.</para>
@@ -807,8 +818,8 @@ for a method whose name matches the message name.</para>
 is the same as an operator. The following example illustrates how to do this
 correctly. It creates a new class (<computeroutput>Cost</computeroutput>),
 defines a new method (<computeroutput>%</computeroutput>), creates an instance
-of the Cost class (Mycost), and sends
-a <computeroutput>%</computeroutput> message to Mycost:</para>
+of the <emphasis role="italic">Cost</emphasis> class (<literal>mycost</literal>), and sends
+a <computeroutput>%</computeroutput> message to <literal>mycost</literal>t:</para>
 <example>
 <title>Messages</title>
 <programlisting>
@@ -856,9 +867,10 @@ methods <emphasis role="italic">do not</emphasis> acquire them.</para></listitem
 class, only methods that existed in the superclass when the object was created
 are valid. Rexx searches the superclass method definitions in the order that
 <emphasis role="italic">INHERIT</emphasis> messages were sent to an object's class.</para></listitem></orderedlist>
+
+<indexterm><primary>UNKNOWN method</primary></indexterm>
 <para>If Rexx does not find a match
 for the message name, Rexx checks the object for a method named <emphasis role="italic">UNKNOWN</emphasis>.
-<indexterm><primary>UNKNOWN method</primary></indexterm>
 If it exists, Rexx calls the <emphasis role="italic">UNKNOWN</emphasis> method, and returns whatever the <emphasis role="italic">UNKNOWN</emphasis> method
 returns. For more information on the <emphasis role="italic">UNKNOWN</emphasis> method, see
 <xref linkend="unknown" />.
@@ -923,18 +935,18 @@ if you used <emphasis role="italic">SETMETHOD</emphasis> to add
 methods to the object.
 </para>
 
-<para>
 <indexterm><primary>variables</primary>
 <secondary>special</secondary></indexterm>
+<para>
 The scope variable is usually the special variable
 <emphasis role="italic">SUPER</emphasis>, but it can be any environment symbol
 or variable name whose value is a valid class.</para></listitem>
 </itemizedlist></para></listitem>
 </orderedlist>
 
+<indexterm><primary>SUBCLASS option</primary></indexterm>
 <para>In <xref linkend="sample" />, an <emphasis role="italic">Account</emphasis> subclass of the
 <emphasis role="italic">Object</emphasis> superclass is created.
-<indexterm><primary>SUBCLASS option</primary></indexterm>
  It defines a <emphasis role="italic">TYPE</emphasis> method
 for <emphasis role="italic">Account</emphasis>, and creates the <emphasis role="italic">Savings</emphasis> subclass
 of <emphasis role="italic">Account.</emphasis> The example defines
@@ -1048,7 +1060,7 @@ method of its class.  For example:</para>
 ]]>
 </programlisting>
 </example>
-<para>The instance <emphasis role="italic">INIT</emphasis> method of the Savings class is able to invoke the
+<para>The instance <emphasis role="italic">INIT</emphasis> method of the <emphasis role="italic">Savings</emphasis> class is able to invoke the
 <emphasis role="italic">allocateAccountNumber</emphasis> private
 method of the <literal>.Savings</literal> class object because it is owned by an
 instance of the <literal>.Savings</literal> class.</para>
@@ -1122,10 +1134,10 @@ sender asks for it. In addition, message objects can notify the sender about
 the completion of the method it sent, and even specify synchronous or asynchronous
 method activation.</para>
 
-<para>The chains of execution represented by the sender and receiver methods
-are called <emphasis role="italic">activities</emphasis>.
 <indexterm><primary>thread</primary></indexterm>
 <indexterm><primary>activities</primary></indexterm>
+<para>The chains of execution represented by the sender and receiver methods
+are called <emphasis role="italic">activities</emphasis>.
 An <emphasis role="italic">activity</emphasis> is a thread of execution that
 can run methods concurrently with methods on other activities. In other words,
 <emphasis role="italic">activities</emphasis> can run at the same time.</para>
@@ -1142,12 +1154,12 @@ It is removed (or popped) when execution completes.</para>
 
 <section id="objvarpools"><title>Object Instance Variables</title>
 <indexterm><primary>object instance variables</primary></indexterm>
+<indexterm><primary>variables</primary>
+<secondary>exposing</secondary></indexterm>
 <para>Every object has its own set of instance variables.
 These are variables associated solely with the
 object. When an object's method runs, it first identifies the object variables
 it intends to work with.
-<indexterm><primary>variables</primary>
-<secondary>exposing</secondary></indexterm>
 Technically, it &quot;exposes&quot; these variables, using
 the Rexx instruction <emphasis role="italic">EXPOSE</emphasis>. Exposing the object's variables distinguishes
 them from variables used by the method itself, which are not exposed. Every

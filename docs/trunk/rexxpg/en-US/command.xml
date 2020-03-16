@@ -607,10 +607,17 @@ formats are: </para>
 SIGNAL ON <emphasis role="italic">condition</emphasis> NAME <emphasis role="italic">trapname</emphasis>
 CALL   ON <emphasis role="italic">condition</emphasis> NAME <emphasis role="italic">trapname</emphasis>
 </programlisting>
-<para>The <emphasis role="italic">SIGNAL ON</emphasis> instruction initiates an exit subroutine that ends the program.
-The <emphasis role="italic">CALL ON</emphasis> instruction initiates a subroutine that can return processing to
-the clause immediately following the <emphasis role="italic">CALL ON</emphasis> instruction. You use <emphasis role="italic">CALL ON</emphasis>
-to recover from a command error or failure.</para>
+
+<para>
+The <emphasis role="italic">SIGNAL ON</emphasis> instruction initiates an exit subroutine that ends the program.
+You use <emphasis role="italic">CALL ON </emphasis>to recover from a command error or failure.
+Both <emphasis role="italic">SIGNAL ON</emphasis> and <emphasis role="italic">CALL ON</emphasis> will cause a branch to the specified (or default)
+trapname whenever the condition occurs. <emphasis role="italic">With CALL ON</emphasis> you can <emphasis role="italic">RETURN</emphasis> to the
+clause following the one that raised the condition. With <emphasis role="italic">SIGNAL ON</emphasis> processing
+continues with the instructions following the trapname (maybe some cleanup
+or diagnostic code usually but not necessarily followed by <emphasis role="italic">EXIT</emphasis>).
+</para>
+
 <para>The command conditions that can be trapped are: </para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">ERROR</emphasis>
