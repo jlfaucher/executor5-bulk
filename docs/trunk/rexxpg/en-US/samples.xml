@@ -330,7 +330,7 @@ After 10 seconds the <emphasis role="italic">IBM</emphasis> news page is display
 
 <varlistentry><term><filename>ole\apps\samp02.rex</filename></term>
 <listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Shell</emphasis> object:
-<itemizedlist>
+<itemizedlist spacing="compact">
 <listitem><para>Query environment string</para></listitem>
 <listitem><para>List special folders</para></listitem>
 <listitem><para>Create a shortcut on the desktop</para></listitem>
@@ -340,7 +340,7 @@ After 10 seconds the <emphasis role="italic">IBM</emphasis> news page is display
 <varlistentry><term><filename>ole\apps\samp03.rex</filename></term>
 <listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Network</emphasis>
 object:
-<itemizedlist>
+<itemizedlist spacing="compact">
 <listitem><para>Query computer name, user name</para></listitem>
 <listitem><para>List network connections for drives and printers</para></listitem>
 </itemizedlist>
@@ -474,35 +474,99 @@ operating system(s).
 WMI.
 </para></listitem></varlistentry>
 
+
+<!-- samples\oodialog\winsystem: -->
+
+<varlistentry><term><filename>oodialog\winsystem\deskicon.rex</filename></term>
+<listitem><para>A <emphasis role="italic">WindowsProgramManager</emphasis> class example.</para>
+<para>This sample uses the method
+<emphasis role="italic">addDesktopIcon</emphasis> of the <emphasis role="italic">WindowsProgramManager</emphasis>
+class to create a shortcut to
+a program or an application on the Windows desktop.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\desktop.rex</filename></term>
+<listitem><para>This program demonstrates how you could use the
+<emphasis role="italic">WindowsProgramManager</emphasis> class to manipulate program groups and program items.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\displayAnyMenu.rex</filename></term>
+<listitem><para>Displays the menu hierarchy for a window that the user picks. </para>
+<para>It uses the functionality of
+the <filename>windowsSystem.frm</filename> Rexx package which makes it easy to use the most
+important functionality of the <filename>winsystm.cls</filename> and
+<filename>ooDialog.cls</filename> Rexx  packages.
+In addition it demonstrates the usage of <filename>winSystemDlgs.h</filename> and <filename>winSystemDlgs.rc</filename> files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\displayWindowTree.rex</filename></term>
+<listitem><para>Displays the window hierarchy for a top level window that the user picks.</para>
+<para>It uses the functionality of
+the <filename>windowsSystem.frm</filename> Rexx package which makes it easy to use the most
+important functionality of the <filename>winsystm.cls</filename> and
+<filename>ooDialog.cls</filename> Rexx  packages.
+In addition it demonstrates the usage of <filename>winSystemDlgs.h</filename> and <filename>winSystemDlgs.rc</filename> files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\eventlog.rex</filename></term>
+<listitem><para>A sample use of the <emphasis role="italic">WindowsEventLog</emphasis> class.</para>
+<para>This sample demonstrates
+how to read from and write to the Windows event log using the methods of
+the <emphasis role="italic">WindowsEventLog</emphasis> class.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\getTheWindow.rex</filename></term>
+<listitem><para>This example shows how to find a window without using the exact window title.</para>
+<para>Displays the window containing part of the user supplied window title irrespective of case.
+It uses the functionality of the  <filename>winsystm.cls</filename> Rexx  package.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             8 118 menuCalc.rex          *** problem   (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\menuNotepad.rex</filename></term>
+<listitem><para>This example displays the hierarchy of the Notepad menu.</para>
+<para>It uses the functionality of
+the <filename>windowsSystem.frm</filename> Rexx package which makes it easy to use the most
+important functionality of the <filename>winsystm.cls</filename> and
+<filename>ooDialog.cls</filename> Rexx  packages.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             8 850 quickCalc.rex          *** problem   (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\quickShowAllMenus.rex</filename></term>
+<listitem><para>This program prints out a menu outline of every open window that has a menu.</para>
+<para>It uses the functionality of
+the <filename>windowsSystem.frm</filename> Rexx package which makes it easy to use the most
+important functionality of the <filename>winsystm.cls</filename> and
+<filename>ooDialog.cls</filename> Rexx  packages.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\registry.rex</filename></term>
+<listitem><para>This program demonstrates how you could use the <emphasis role="italic">WindowsRegistry</emphasis> class
+to work with the Windows registry.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16            17 027 usewmgr.rex           *** problem  (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\windowsSystem.frm</filename></term>
+<listitem><para>A Rexx package (a collection of public routines and classes) to help work with
+the <filename>winsystm.cls</filename> package.
+</para>
+<para>
+It demonstrates the usage of <filename>winSystemDlgs.h</filename> and <filename>winSystemDlgs.rc</filename> files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             9 242 writeWithNotepad.rex *** problem (Win10?) -->
+
+
 </variablelist>
 
 
 
 <!-- samples\oodialog\winsystem:
-
-<varlistentry><term>DESKICON.REX</term>
-<listitem><para>A WindowsProgramManager class example.</para>
-<para>This sample uses the method
-AddDesktopIcon of the WindowsProgramManager class to create a shortcut to
-a program or an application on the Windows desktop.</para>
-</listitem></varlistentry>
-
-<varlistentry><term>DESKTOP.REX</term>
-<listitem><para>This program demonstrates how you could use the
-WindowsProgramManager class to manipulate program groups and program items.
-</para></listitem></varlistentry>
-
-<varlistentry><term>EVENTLOG.REX</term>
-<listitem><para>A sample use of the WindowsEventLog class.</para>
-<para>This sample demonstrates
-how to read from and write to the Windows event log using the methods of
-the WindowsEventLog class.</para>
-</listitem></varlistentry>
-
-<varlistentry><term>REGISTRY.REX</term>
-<listitem><para>This program demonstrates how you could use the WindowsRegistry class
-to work with the Windows registry.
-</para></listitem></varlistentry>
 
 Directory of C:\Program Files (x86)\ooRexx\samples\oodialog\winsystem
 
