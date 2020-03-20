@@ -87,7 +87,7 @@ represent the Rexx programs running on the activity.  An invocation can be
 a main program invocation, an internal function or subroutine call, an external
 function or subroutine call, an INTERPRET instruction, or a message invocation.
 An invocation is activated when an executable unit is invoked and removed
-(popped) when execution completes. In 
+(popped) when execution completes. In
 <xref linkend="earlyr" />, the programs
 begins with a single activity.  The activity contains a single invocation,
 method A. When method A invokes method B, a second invocation is added to
@@ -743,10 +743,15 @@ return waits                                /* Return number of objects waiting 
 </programlisting>
 </example>
 <note><title>Note</title>
-<para>There are functions available that use system semaphores.
+<para>ooRexx 5.0 introduced two semaphore classes, see <xref linkend="clsEventSemaphore" />
+and  <xref linkend="clsMutexSemaphore" />.
+</para>
+<para>There are also functions available that use system semaphores.
 See <xref linkend="utlSyscreateeventsem" />, and
 <xref linkend="utlSyscreatemutexsem" />.
-</para></note>
+</para>
+</note>
+
 </section>
 
 <section id="monbuff"><title>Monitors (Bounded Buffer)</title>
