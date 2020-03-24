@@ -111,6 +111,7 @@ application.</para>
   interpreter). Here is a typical Rexx program named <computeroutput>greeting.rex</computeroutput>. It prompts the user to type in a name
   and then displays a personalized greeting:
 </para>
+
 <example>
 <title><code>greeting.rex</code></title>
 <programlisting>
@@ -128,9 +129,9 @@ exit 0                   /* Exit with a return code of 0 */
 <indexterm><primary>SAY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SAY instruction</secondary></indexterm>
-<emphasis role="italic">SAY</emphasis>
-  is a Rexx instruction that displays a message (like <emphasis role="italic">PRINT</emphasis> in Basic or <emphasis role="italic">printf</emphasis> in C).  The message to be
-  displayed follows the <emphasis role="italic">SAY</emphasis> keyword.  In this case, the message is the literal string "Please enter your
+<methodname>SAY</methodname>
+  is a Rexx instruction that displays a message (like <methodname>PRINT</methodname> in Basic or <methodname>printf</methodname> in C).  The message to be
+  displayed follows the <methodname>SAY</methodname> keyword.  In this case, the message is the literal string "Please enter your
   name.".  The data between the quotes is a constant and will appear exactly as typed.  You can use
   either single (') or double quote (") delimiters for literal strings.
 </para>
@@ -140,7 +141,7 @@ exit 0                   /* Exit with a return code of 0 */
   <secondary>PULL</secondary></indexterm>
   <indexterm><primary>Rexx</primary>
   <secondary>PULL instruction</secondary></indexterm>
-  The <emphasis role="italic">PULL</emphasis> instruction reads a line of text from the standard input (the keyboard), and returns the text in
+  The <methodname>PULL</methodname> instruction reads a line of text from the standard input (the keyboard), and returns the text in
   the variable specified with the instruction. In our example, the text is returned in the variable
   name.
 </para>
@@ -148,7 +149,7 @@ exit 0                   /* Exit with a return code of 0 */
 <para>
   <indexterm><primary>instructions</primary>
   <secondary>SAY</secondary></indexterm>
-  The next <emphasis role="italic">SAY</emphasis> instruction provides a
+  The next <methodname>SAY</methodname> instruction provides a
   glimpse of what can be done with Rexx strings. It displays the word
   <computeroutput>Hello</computeroutput> followed by the name of the user, which is stored in variable
   name.
@@ -164,9 +165,9 @@ exit 0                   /* Exit with a return code of 0 */
   <indexterm><primary>Rexx</primary>
   <secondary>EXIT instruction</secondary></indexterm>
   The final instruction,
-  <emphasis role="italic">EXIT</emphasis>, ends the Rexx program. Control returns to the operation system command prompt. <emphasis role="italic">EXIT</emphasis> can also
-  return a value. In our example, <emphasis role="italic">0</emphasis> is returned. The <emphasis role="italic">EXIT</emphasis> instruction is optional.  Running off the end
-  of the program is equivalent to coding "<emphasis role="italic">EXIT 0</emphasis>".
+  <methodname>EXIT</methodname>, ends the Rexx program. Control returns to the operation system command prompt. <methodname>EXIT</methodname> can also
+  return a value. In our example, <literal>0</literal> is returned. The <methodname>EXIT</methodname> instruction is optional.  Running off the end
+  of the program is equivalent to coding "<methodname>EXIT</methodname> <literal>0</literal>".
 </para>
 <para>
   You can terminate a running Rexx program by pressing the Ctrl+Break key combination. Rexx stops running
@@ -177,6 +178,7 @@ exit 0                   /* Exit with a return code of 0 */
   several other options. These options are discussed several paragraphs later. The ooRexx interpreter is
   invoked by the command, <computeroutput>rexx</computeroutput>. With no arguments, the command produces
   a simple syntax reminder:
+
 <programlisting>
 <![CDATA[
 C:\rexx
@@ -188,25 +190,32 @@ or        "rexx -v".
 C:\>
 ]]>
 </programlisting>
+
 </para>
 <para>
   To run the program <computeroutput>greeting.rex</computeroutput>, for example, use the command
+
 <programlisting>
 <![CDATA[
 rexx greeting.rex
 ]]>
 </programlisting>
+
   or
+
 <programlisting>
 <![CDATA[
 rexx greeting
 ]]>
 </programlisting>
-  If not provided, an extension of "<emphasis role="italic">.rex</emphasis>" is assumed.
+
+  If not provided, an extension of "<filename>.rex</filename>" is assumed.
 </para>
+
 <para>
   The <computeroutput>-v</computeroutput> option produces the version and copyright information.
 For example:
+
 <programlisting>
 <![CDATA[
 Open Object Rexx Version 5.0.0 r11996
@@ -219,11 +228,14 @@ of the Common Public License v1.0 which accompanies this distribution or at
 http://www.oorexx.org/license.html
 ]]>
 </programlisting>
+
 </para>
+
 <para>
   The <computeroutput>-e</computeroutput> accepts a complete Rexx program in the form of a single string
   and executes it immediately.  Enclose the string in double quotes and separate lines of the program
   with semi-colons. Arguments can follow the string:
+
 <programlisting>
 <![CDATA[
 C:\>rexx -e "use arg name; say 'Hello to you' name" Mark
@@ -243,6 +255,7 @@ C:\>rexx -e "parse arg a b; say a '*' b 'is' a*b" 126 456
 C:\>
 ]]>
 </programlisting>
+
 </para>
 <para>
   On <emphasis role="italic">Windows only</emphasis> there are these additional ways to run your Rexx
@@ -258,6 +271,7 @@ C:\>
     <computeroutput>greeting</computeroutput> to execute the
         <computeroutput>greeting.rex</computeroutput>
     program:
+
 <programlisting>
 <![CDATA[
 C:\>greeting
@@ -268,23 +282,25 @@ Hello MARK
 C:\>
 ]]>
 </programlisting>
+
   </para></listitem>
   <listitem><para>
     A Rexx program can be run in <emphasis role="italic">silent mode</emphasis> by using
     <computeroutput>rexxhide</computeroutput>. This executes the program without creating a console
     window.  This is most useful when creating a program shortcut. For the shortcut target, enter
-    <emphasis role="italic">rexxhide.exe</emphasis> followed by the program name and the program
+    <filename>rexxhide.exe</filename> followed by the program name and the program
     arguments. Double-clicking on the shortcut then runs the program without creating a console window.
     <emphasis role="bold">Note</emphasis> that <emphasis role="italic">silent</emphasis> means there is
     no output from the Rexx program. When your program is run by
     <computeroutput>rexxhide</computeroutput>, either by double clicking on its icon, or from within a
     console window, there is no output displayed. Therefore <computeroutput>rexxhide</computeroutput>
     would not normally be used for programs like
-    <computeroutput>greeting.rex</computeroutput>. This is
+    <filename>greeting.rex</filename>. This is
     what the
-    <computeroutput>greeting.rex</computeroutput>
+    <filename>greeting.rex</filename>
     program would look like when executed
-    through <computeroutput>rexxhide</computeroutput>:
+    through <filename>rexxhide</filename>:
+
 <programlisting>
 <![CDATA[
 C:\>rexxhide greeting.rex
@@ -292,14 +308,15 @@ C:\>rexxhide greeting.rex
 C:\>
 ]]>
 </programlisting>
+
   </para></listitem>
   <listitem><para>
     As a compliment to <computeroutput>rexxhide</computeroutput> is the
     <computeroutput>rexxpaws</computeroutput> program. When a Rexx program is executed through
     <computeroutput>rexxpaws</computeroutput>, at completion of the Rexx program, there will be a pause
-    waiting for the user to hit the enter key. For example, using the <emphasis
-    role="italic">greeting.rex</emphasis> program, <computeroutput>rexxpaws</computeroutput> would
-    produce the following:
+    waiting for the user to hit the enter key. For example, using the <filename>greeting.rex</filename> program,
+    <computeroutput>rexxpaws</computeroutput> would produce the following:
+
 <programlisting>
 <![CDATA[
 C:\>rexxpaws greeting.rex
@@ -312,10 +329,11 @@ Press ENTER key to exit...
 C:\>
 ]]>
 </programlisting>
+
   <computeroutput>rexxpaws</computeroutput> is useful for running a Rexx program from a shortcut, where
   the program <emphasis role="italic">does</emphasis> produce output. On Windows, when double-clicking on
   the program file icon, a console window opens, the program is run, and then the console window
-  immediately closes. <computeroutput>rexxpaws</computeroutput> prevents the console window from closing
+  immediately closes. <filename>rexxpaws</filename> prevents the console window from closing
   until the user hits the enter key. This allows the user to see what output the program produced.
   </para></listitem>
 </itemizedlist>
@@ -330,12 +348,12 @@ C:\>
 <secondary>and instructions</secondary></indexterm>
 Rexx programs are made up of clauses.
 Each clause is a complete Rexx instruction.</para>
-<para>Rexx instructions include the obligatory program control verbs (<emphasis role="italic">IF</emphasis>,
-<emphasis role="italic">SELECT</emphasis>,
-<emphasis role="italic">DO</emphasis>, <emphasis role="italic">CALL</emphasis>,
-<emphasis role="italic">RETURN</emphasis>) as well as verbs that are unique to Rexx (such as
-<emphasis role="italic">PARSE</emphasis>,
-<emphasis role="italic">GUARD</emphasis>, and <emphasis role="italic">EXPOSE</emphasis>).
+<para>Rexx instructions include the obligatory program control verbs (<methodname>IF</methodname>,
+<methodname>SELECT</methodname>,
+<methodname>DO</methodname>, <methodname>CALL</methodname>,
+<methodname>RETURN</methodname>) as well as verbs that are unique to Rexx (such as
+<methodname>PARSE</methodname>,
+<methodname>GUARD</methodname>, and <methodname>EXPOSE</methodname>).
 In all, there are about 30 instructions. Many Rexx programs
 use only a small subset of the instructions.</para>
 
@@ -346,14 +364,14 @@ use only a small subset of the instructions.</para>
 <secondary>built-in functions</secondary></indexterm>
 A wide variety of
 built-in functions complements the instruction set. Many functions
-manipulate strings (such as <emphasis role="italic">SUBSTR</emphasis>,
-<emphasis role="italic">WORDS</emphasis>, <emphasis role="italic">POS</emphasis>, and
-<emphasis role="italic">SUBWORD</emphasis>). Other functions
-perform stream I/Os (such as <emphasis role="italic">CHARIN</emphasis>,
-<emphasis role="italic">CHAROUT</emphasis>, <emphasis role="italic">LINEIN</emphasis>, and
-<emphasis role="italic">LINEOUT</emphasis>). Still
-other functions perform data conversion (such as <emphasis role="italic">X2B</emphasis>,
-<emphasis role="italic">X2C</emphasis>, <emphasis role="italic">D2X</emphasis>, and <emphasis role="italic">C2D</emphasis>).
+manipulate strings (such as <methodname>SUBSTR</methodname>,
+<methodname>WORDS</methodname>, <methodname>POS</methodname>, and
+<methodname>SUBWORD</methodname>). Other functions
+perform stream I/Os (such as <methodname>CHARIN</methodname>,
+<methodname>CHAROUT</methodname>, <methodname>LINEIN</methodname>, and
+<methodname>LINEOUT</methodname>). Still
+other functions perform data conversion (such as <methodname>X2B</methodname>,
+<methodname>X2C</methodname>, <methodname>D2X</methodname>, and <methodname>C2D</methodname>).
 A quick glance through the functions section of the
 <citetitle pubwork="book">Open Object Rexx: Reference</citetitle> gives you an
 idea of the scope of capabilities available to you.</para>
@@ -391,6 +409,7 @@ its basic language element: the clause.</para>
 Usually, there is one
 clause on each line of the program, but you can put
 several and separate each clause with a semicolon (;): </para>
+
 <programlisting>
 <![CDATA[
 say "Hello"; say "Goodbye"  /* Two clauses on one line */
@@ -407,13 +426,16 @@ say "Hello"; say "Goodbye"  /* Two clauses on one line */
 <indexterm><primary>splitting clauses</primary></indexterm>
 <indexterm><primary>continuing a clause</primary></indexterm>
 To continue a clause on a second line, put a comma (,) or hypen (-) at the end of the line: </para>
+
 <programlisting>
 <![CDATA[
 say -             /* Continuation */
 "It isn't so"
 ]]>
 </programlisting>
+
 <para>or</para>
+
 <programlisting>
 <![CDATA[
 say ,            /* Continuation */
@@ -424,6 +446,7 @@ say ,            /* Continuation */
 <indexterm><primary>strings</primary></indexterm>
 <para>If you need to continue a literal string,
 do it like this:  </para>
+
 <programlisting>
 <![CDATA[
 say -              /* Continuation of literal strings */
@@ -431,16 +454,20 @@ say -              /* Continuation of literal strings */
 "on another line."
 ]]>
 </programlisting>
+
 <para>Rexx automatically adds a blank after
+
 <computeroutput>continue</computeroutput>. If you need
 to split a string, but do not want to have a blank inserted when Rexx puts
-the string back together, use the Rexx concatenation operator (<emphasis role="italic">||</emphasis>): </para>
+the string back together, use the Rexx concatenation operator (<methodname>||</methodname>): </para>
+
 <programlisting>
 <![CDATA[
 say "I do not want Rexx to in" || -   /* Continuation with concatenation */
 "sert a blank!"
 ]]>
 </programlisting>
+
 </section>
 
 <section id="test"><title>Testing Your Program</title>
@@ -450,10 +477,10 @@ say "I do not want Rexx to in" || -   /* Continuation with concatenation */
 <indexterm><primary>starting REXXTRY</primary></indexterm>
 
 <para>When writing your program,
-you can test statements as you go along   using the <emphasis role="italic">rexxtry</emphasis> command from the Windows command
-prompt.  <emphasis role="italic">rexxtry</emphasis> is a kind of Rexx mini-interpreter that checks Rexx statements
-one at a time. If you run  <emphasis role="italic">rexxtry</emphasis> with no parameter, or with a question mark
-as a parameter,  <emphasis role="italic">rexxtry</emphasis> also briefly describes itself.</para>
+you can test statements as you go along   using the <filename>rexxtry</filename> command from the Windows command
+prompt.  <filename>rexxtry</filename> is a kind of Rexx mini-interpreter that checks Rexx statements
+one at a time. If you run  <filename>rexxtry</filename> with no parameter, or with a question mark
+as a parameter,  <filename>rexxtry</filename> also briefly describes itself.</para>
 <para>From your command prompt type:</para>
 
 <programlisting>
@@ -461,30 +488,35 @@ as a parameter,  <emphasis role="italic">rexxtry</emphasis> also briefly describ
 rexx rexxtry  /* on windows the case of the REXX is insignificant */
 ]]>
 </programlisting>
-<para> <emphasis role="italic">rexxtry</emphasis> describes itself and asks you for a Rexx statement
-to test. Enter your statement;  <emphasis role="italic">rexxtry</emphasis> then runs it and returns any information
-available, or displays an error message if a problem is encountered.  <emphasis role="italic">rexxtry</emphasis>
+
+<para> <filename>rexxtry</filename> describes itself and asks you for a Rexx statement
+to test. Enter your statement;  <filename>rexxtry</filename> then runs it and returns any information
+available, or displays an error message if a problem is encountered.  <filename>rexxtry</filename>
 remembers any previous statements you have entered during the session. To
-continue, just type the next line in your program and  <emphasis role="italic">rexxtry</emphasis> will check it
+continue, just type the next line in your program and  <filename>rexxtry</filename> will check it
 for you.</para>
 <para>Enter an equal sign (=) to repeat your previous statement.
 </para>
 <para>When you are done, type: </para>
+
 <programlisting>
 <![CDATA[
 exit
 ]]>
 </programlisting>
-<para>and press Enter to leave <emphasis role="italic">rexxtry</emphasis>.</para>
+
+<para>and press Enter to leave <filename>rexxtry</filename>.</para>
 <para>You can also enter a Rexx statement directly on the command line for
 immediate processing and exit: </para>
+
 <programlisting>
 <![CDATA[
 rexx rexxtry call show
 ]]>
 </programlisting>
+
 <para>In this case, entering CALL SHOW displays the user variables provided by
-<emphasis role="italic">rexxtry</emphasis>.</para>
+<filename>rexxtry</filename>.</para>
 </section>
 
 <section id="strings"><title>Variables, Constants, and Literal Strings</title>
@@ -528,25 +560,31 @@ variable name that has not yet been set, the name, in uppercase, is returned.
 <indexterm><primary>single quotation mark (&apos;)</primary></indexterm>
 <indexterm><primary>" (double quotation mark)</primary></indexterm>
 <indexterm><primary>double quotation mark (")</primary></indexterm>
-<para>Literal strings in Rexx are delimited by quotation marks (either <code>&apos;</code> or
-<code>"</code>). Examples of literal strings are: </para>
+<para>Literal strings in Rexx are delimited by quotation marks (either <literal>&apos;</literal> or
+<literal>"</literal>). Examples of literal strings are: </para>
+
 <programlisting>
 &apos;Hello&apos;
 "Final result:"
 </programlisting>
+
 <para>If you need to use quotation marks within a literal string, use quotation
 marks of the other type to delimit the string. For example: </para>
+
 <programlisting>
 "Don&apos;t panic"
 &apos;He said, "Bother"&apos;
 </programlisting>
+
 <para>There is another way to do this. Within a literal string, a pair of quotation
 marks of the same type that starts the string is interpreted as a single character of that
 type. For example: </para>
+
 <programlisting>
 &apos;Don&apos;&apos;t panic&apos;                 (same as "Don&apos;t panic"      )
 "He said, ""Bother"""          (same as &apos;He said, "Bother"&apos;)
 </programlisting>
+
 </section>
 
 <section id="assignm"><title>Assignments</title>
@@ -555,15 +593,18 @@ type. For example: </para>
 <secondary>assignments</secondary></indexterm>
 
 <para>Assignments in Rexx usually take this form: </para>
+
 <programlisting>
 <![CDATA[
 name = expression
 ]]>
 </programlisting>
+
 <para>For <emphasis role="italic">name</emphasis>, specify any valid variable
 name. For <emphasis role="italic">expression</emphasis>, specify the
 information to be stored, such as a number, a string, or
 a calculation to be performed. Here are some examples: </para>
+
 <example>
 <title>Arithmetic</title>
 <programlisting>
@@ -578,13 +619,14 @@ c="This is a string assignment. No memory allocation needed!"
 <para>
 <indexterm><primary>instructions</primary>
 <secondary>PULL</secondary></indexterm>
-The <emphasis role="italic">PARSE</emphasis> instruction
-and its variants <emphasis role="italic">PULL</emphasis> and <emphasis role="italic">ARG</emphasis> also assign values to variables.  <emphasis role="italic">PARSE</emphasis> assigns
+The <methodname>PARSE</methodname> instruction
+and its variants <methodname>PULL</methodname> and <methodname>ARG</methodname> also assign values to variables.  <methodname>PARSE</methodname> assigns
 data from various sources to one or more variables according to the rules
-of parsing. <emphasis role="italic">PARSE PULL</emphasis>, for example, is often used to read data from the
+of parsing. <methodname>PARSE PULL</methodname>, for example, is often used to read data from the
 keyboard: </para>
+
 <example>
-<title><emphasis role="italic">PARSE PULL</emphasis></title>
+<title><methodname>PARSE PULL</methodname></title>
 <programlisting>
 <![CDATA[
 /* Using PARSE PULL to read the keyboard                              */
@@ -594,16 +636,18 @@ say response              /* possibly displays "John Smith"           */
 ]]>
 </programlisting>
 </example>
-<para>Other operands of <emphasis role="italic">PARSE</emphasis> indicate the source of the data. <emphasis role="italic">PARSE ARG</emphasis>, for
-example, retrieves command line arguments. <emphasis role="italic">PARSE VERSION</emphasis> retrieves the information
+
+<para>Other operands of <methodname>PARSE</methodname> indicate the source of the data. <methodname>PARSE ARG</methodname>, for
+example, retrieves command line arguments. <methodname>PARSE VERSION</methodname> retrieves the information
 about the version of the Rexx interpreter being used.</para>
-<para>The most powerful feature of <emphasis role="italic">PARSE</emphasis>, however, is its ability to break up data
+<para>The most powerful feature of <methodname>PARSE</methodname>, however, is its ability to break up data
 using a template. The various pieces of data are assigned
 to variables that are part of the template. The following example prompts
 the user for a date, and assigns the month, day, and year to different variables.
 (In a real application, you would want to add instructions to verify the input.) </para>
+
 <example>
-<title><emphasis role="italic">PARSE PULL</emphasis></title>
+<title><methodname>PARSE PULL</methodname></title>
 <programlisting>
 <![CDATA[
 /* PARSE example using a template */
@@ -615,8 +659,9 @@ say year
 ]]>
 </programlisting>
 </example>
-<para>The template in this example contains two literal strings (<emphasis role="italic">"/"</emphasis>).
-The <emphasis role="italic">PARSE</emphasis>
+
+<para>The template in this example contains two literal strings (<literal>"/"</literal>).
+The <methodname>PARSE</methodname>
 instruction uses these literals to determine how to split the data.</para>
 
 <para>
@@ -633,8 +678,8 @@ instruction uses these literals to determine how to split the data.</para>
 <secondary>PULL instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>ARG instruction</secondary></indexterm>
-The <emphasis role="italic">PULL</emphasis> and <emphasis role="italic">ARG</emphasis> instructions
-are short forms of the <emphasis role="italic">PARSE</emphasis> instruction.
+The <methodname>PULL</methodname> and <methodname>ARG</methodname> instructions
+are short forms of the <methodname>PARSE</methodname> instruction.
 See the <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>
 for more information on Rexx parsing.</para>
 </section>
@@ -646,6 +691,7 @@ for more information on Rexx parsing.</para>
 <para>Rexx functions can
 be used in any expression. In the following example, the built-in function
 WORD is used to return the third blank-delimited word in a string: </para>
+
 <example>
 <title>Rexx function use</title>
 <programlisting>
@@ -657,8 +703,10 @@ say surname               /* display Public                    */
 ]]>
 </programlisting>
 </example>
+
 <para>Literal strings can be supplied as arguments to functions, so the previous
 program can be rewritten as follows: </para>
+
 <example>
 <title>Rexx function use</title>
 <programlisting>
@@ -669,8 +717,10 @@ say surname                      /* display Public                    */
 ]]>
 </programlisting>
 </example>
-<para>Because an expression can be used with the <emphasis role="italic">SAY</emphasis> instruction, you can further
+
+<para>Because an expression can be used with the <methodname>SAY</methodname> instruction, you can further
 reduce the program to: </para>
+
 <example>
 <title>Rexx expressions</title>
 <programlisting>
@@ -686,9 +736,10 @@ Functions can be nested.
 <indexterm><primary>functions</primary>
 <secondary>nesting</secondary></indexterm>
 Suppose you want to display only the first two letters of the third word,
-Public. The <emphasis role="italic">LEFT</emphasis> function can return the first two letters, but you need to
-give it the third word. <emphasis role="italic">LEFT</emphasis> expects the input string as its first argument
+Public. The <methodname>LEFT</methodname> function can return the first two letters, but you need to
+give it the third word. <methodname>LEFT</methodname> expects the input string as its first argument
 and the number of characters to return as its second argument: </para>
+
 <example>
 <title>Rexx function use</title>
 <programlisting>
@@ -704,6 +755,7 @@ say left(word("John Q. Public",3),2)
 ]]>
 </programlisting>
 </example>
+
 </section>
 
 <section id="progcon"><title>Program Control</title>
@@ -730,12 +782,13 @@ say left(word("John Q. Public",3),2)
 <indexterm><primary>instructions</primary>
 <secondary>for program control (DO, LOOP, IF, SELECT ...)</secondary></indexterm>
 
-<para>Rexx has instructions such as <emphasis role="italic">DO</emphasis>, <emphasis role="italic">LOOP</emphasis>,
-<emphasis role="italic">IF</emphasis>, and <emphasis role="italic">SELECT</emphasis> to control your program. Here is a
-typical Rexx <emphasis role="italic">IF</emphasis> instruction:
+<para>Rexx has instructions such as <methodname>DO</methodname>, <methodname>LOOP</methodname>,
+<methodname>IF</methodname>, and <methodname>SELECT</methodname> to control your program. Here is a
+typical Rexx <methodname>IF</methodname> instruction:
 </para>
+
 <example>
-<title><emphasis role="italic">IF</emphasis> instruction</title>
+<title><methodname>IF</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -745,6 +798,7 @@ exit 99
 end
 </programlisting>
 </example>
+
 <para>The Rexx relational operator &amp; for a logical AND is different from the operator
 in C, which is &amp;&amp;. Other relational operators differ as well, so you
 may want to review the appropriate section in the
@@ -799,12 +853,12 @@ is synonymous with the backslash
 can appear in the <code>\</code> (prefix not), <code>\=</code>, and <code>\==</code> operators.</para>
 </note>
 
-<para>A character string has the value <emphasis role="italic">false</emphasis> if it is <code>0</code>,
+<para>A character string has the value <emphasis role="italic">>false</emphasis> if it is <code>0</code>,
 and <emphasis role="italic">true</emphasis> if it is <code>1</code>.
 (These values are sometimes called <emphasis role="italic">logical</emphasis> or <emphasis role="italic">boolean</emphasis> values
 and can be optionally expressed in programs with the ooRexx environment symbols
-<emphasis role="italic"><code>.false</code></emphasis> which returns <code>0</code> and
-<emphasis role="italic"><code>.true</code></emphasis> which returns <code>1</code>. Environment symbols in ooRexx start with a dot.)
+<literal>.false</literal> which returns <code>0</code> and
+<literal>.true</literal> which returns <code>1</code>. Environment symbols in ooRexx start with a dot.)
 </para>
 
 <para>A logical operator can take at least two values and return <code>0</code> or <code>1</code> as appropriate:</para>
@@ -849,11 +903,12 @@ sure this character is ASCII character encoding <emphasis role="italic">124</emp
 
 <para>Using the wrong relational or comparison operator is a common mistake when
 switching between C and Rexx. The familiar C language braces { } are not used
-in Rexx for blocks of instructions. Instead, Rexx uses <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> pairs. The <emphasis role="italic">THEN</emphasis>
+in Rexx for blocks of instructions. Instead, Rexx uses <methodname>DO</methodname>/<methodname>END</methodname> pairs. The <methodname>THEN</methodname>
 keyword is always required.</para>
-<para>Here is an IF instruction with an <emphasis role="italic">ELSE</emphasis>: </para>
+<para>Here is an IF instruction with an <methodname>ELSE</methodname>: </para>
+
 <example>
-<title><emphasis role="italic">IF</emphasis> and <emphasis role="italic">ELSE</emphasis> instructions</title>
+<title><methodname>IF</methodname> and <methodname>ELSE</methodname> instructions</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -867,11 +922,13 @@ else do
 end  /* if */
 </programlisting>
 </example>
-<para>You can omit the <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> pairs if only one clause follows the
-<emphasis role="italic">THEN</emphasis> or <emphasis role="italic">ELSE</emphasis>
+
+<para>You can omit the <methodname>DO</methodname>/<methodname>END</methodname> pairs if only one clause follows the
+<methodname>THEN</methodname> or <methodname>ELSE</methodname>
 keyword: </para>
+
 <example>
-<title><emphasis role="italic">IF</emphasis> and <emphasis role="italic">ELSE</emphasis> instructions</title>
+<title><methodname>IF</methodname> and <methodname>ELSE</methodname> instructions</title>
 <programlisting>
 <![CDATA[
 if words(myvar) > 5 then
@@ -881,9 +938,11 @@ else
 ]]>
 </programlisting>
 </example>
-<para>Rexx also supports an <emphasis role="italic">ELSE IF</emphasis> construction: </para>
+
+<para>Rexx also supports an <methodname>ELSE IF</methodname> construction: </para>
+
 <example>
-<title><emphasis role="italic">ELSE IF</emphasis> instruction</title>
+<title><methodname>ELSE IF</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 count=words(myvar)
@@ -896,14 +955,16 @@ else
 ]]>
 </programlisting>
 </example>
-<para>The <emphasis role="italic">SELECT</emphasis> instruction in Rexx is similar to the <emphasis role="italic">SELECT CASE</emphasis> statement
-in Basic and the switch statement in C. <emphasis role="italic">SELECT</emphasis> executes
-a block of statements based on the value of an expression. Rexx's <emphasis role="italic">SELECT</emphasis>
-differs from the equivalent statements in Basic and C in that the <emphasis role="italic">SELECT</emphasis> keyword
-is not followed by an expression. Instead, expressions are placed in <emphasis role="italic">WHEN</emphasis>
+
+<para>The <methodname>SELECT</methodname> instruction in Rexx is similar to the <methodname>SELECT CASE</methodname> statement
+in Basic and the switch statement in C. <methodname>SELECT</methodname> executes
+a block of statements based on the value of an expression. Rexx's <methodname>SELECT</methodname>
+differs from the equivalent statements in Basic and C in that the <methodname>SELECT</methodname> keyword
+is not followed by an expression. Instead, expressions are placed in <methodname>WHEN</methodname>
 clauses:</para>
+
 <example>
-<title><emphasis role="italic">SELECT</emphasis> instruction</title>
+<title><methodname>SELECT</methodname> instruction</title>
 <programlisting>
 select
 when name="Bob" then
@@ -914,20 +975,22 @@ otherwise
 end /* select */
 </programlisting>
 </example>
-<para><emphasis role="italic">WHEN</emphasis> clauses are evaluated sequentially. When one of the expressions is
+
+<para><methodname>WHEN</methodname> clauses are evaluated sequentially. When one of the expressions is
 true, the statement, or block of statements, is executed. All the other blocks
-are skipped, even if their <emphasis role="italic">WHEN</emphasis> clauses would have evaluated to true. Notice
+are skipped, even if their <methodname>WHEN</methodname> clauses would have evaluated to true. Notice
 that statements like the break statement in C are
 not needed.</para>
-<para>The <emphasis role="italic">OTHERWISE</emphasis> keyword is used without an instruction following it. Rexx
-does not require an <emphasis role="italic">OTHERWISE</emphasis> clause. However, if none of the <emphasis role="italic">WHEN</emphasis> clauses
-evaluates to true and you omit <emphasis role="italic">OTHERWISE</emphasis>, an error occurs. Therefore, always
-include an <emphasis role="italic">OTHERWISE.</emphasis></para>
-<para>As with the IF instruction, you can use <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> pairs for several clauses
-within SELECT cases. You do not need a <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> pair if several clauses follow
-the <emphasis role="italic">OTHERWISE</emphasis> keyword: </para>
+<para>The <methodname>OTHERWISE</methodname> keyword is used without an instruction following it. Rexx
+does not require an <methodname>OTHERWISE</methodname> clause. However, if none of the <methodname>WHEN</methodname> clauses
+evaluates to true and you omit <methodname>OTHERWISE</methodname>, an error occurs. Therefore, always
+include an <methodname>OTHERWISE.</methodname></para>
+<para>As with the IF instruction, you can use <methodname>DO</methodname>/<methodname>END</methodname> pairs for several clauses
+within SELECT cases. You do not need a <methodname>DO</methodname>/<methodname>END</methodname> pair if several clauses follow
+the <methodname>OTHERWISE</methodname> keyword: </para>
+
 <example>
-<title><emphasis role="italic">SELECT</emphasis> and <emphasis role="italic">OTHERWISE</emphasis> instructions</title>
+<title><methodname>SELECT</methodname> and <methodname>OTHERWISE</methodname> instructions</title>
 <programlisting>
 select
 when name="Bob" then
@@ -942,12 +1005,14 @@ otherwise
 end /* select */
 </programlisting>
 </example>
+
 <para>Many Basic implementations have several different instructions for loops.
-Rexx has the <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> and <emphasis role="italic">LOOP</emphasis>/<emphasis role="italic">END</emphasis> pair. All of the traditional looping variations
-are incorporated into the <emphasis role="italic">DO</emphasis> and <emphasis role="italic">LOOP</emphasis> instructions, which
+Rexx has the <methodname>DO</methodname>/<methodname>END</methodname> and <methodname>LOOP</methodname>/<methodname>END</methodname> pair. All of the traditional looping variations
+are incorporated into the <methodname>DO</methodname> and <methodname>LOOP</methodname> instructions, which
 can be used interchangeably for looping: </para>
+
 <example>
-<title><emphasis role="italic">DO</emphasis> and <emphasis role="italic">LOOP</emphasis> instructions</title>
+<title><methodname>DO</methodname> and <methodname>LOOP</methodname> instructions</title>
 <programlisting>
 do i=1 to 10         /* Simple loop            */
    say i
@@ -969,7 +1034,9 @@ do until a>b         /* least once.  The expression is         */
    say "Until loop"  /* evaluated at the end of the loop.      */
 end
 </programlisting>
-<para>or, using <emphasis role="italic">LOOP</emphasis></para>
+
+<para>or, using <methodname>LOOP</methodname></para>
+
 <programlisting>
 loop i=1 to 10       /* Simple loop            */
    say i
@@ -991,12 +1058,15 @@ do until a&gt;b         /* least once.  The expression is         */
    say "Until loop"  /* evaluated at the end of the loop.      */
 end
 </programlisting>
+
 </example>
-<para>Rexx also has a <emphasis role="italic">FOREVER</emphasis> keyword.
-Use the <emphasis role="italic">LEAVE</emphasis>, <emphasis role="italic">RETURN</emphasis>, or <emphasis role="italic">EXIT</emphasis>
+
+<para>Rexx also has a <methodname>FOREVER</methodname> keyword.
+Use the <methodname>LEAVE</methodname>, <methodname>RETURN</methodname>, or <methodname>EXIT</methodname>
 instructions to break out of the loop:</para>
+
 <example>
-<title><emphasis role="italic">DO FOREVER</emphasis> instruction</title>
+<title><methodname>DO FOREVER</methodname> instruction</title>
 <programlisting>
                   /* Program to emulate your five-year-old child */
 num=random(1,10)  /* To emulate a three-year-old, move this inside the loop! */
@@ -1019,11 +1089,11 @@ end
 <indexterm><primary>Rexx</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 Rexx also includes an
-<emphasis role="italic">ITERATE</emphasis> instruction, which skips the rest of the instructions in that iteration of the loop:
+<methodname>ITERATE</methodname> instruction, which skips the rest of the instructions in that iteration of the loop:
 </para>
 
 <example>
-<title><emphasis role="italic">ITERATE</emphasis> instruction</title>
+<title><methodname>ITERATE</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 loop i=1 to 100
@@ -1036,9 +1106,11 @@ end
 ]]>
 </programlisting>
 </example>
-<para>You can use loops in <emphasis role="italic">IF</emphasis> or <emphasis role="italic">SELECT</emphasis> instructions: </para>
+
+<para>You can use loops in <methodname>IF</methodname> or <methodname>SELECT</methodname> instructions: </para>
+
 <example>
-<title><emphasis role="italic">ITERATE</emphasis> instruction</title>
+<title><methodname>ITERATE</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 /* Say hello ten times if I is equal to 1 */
@@ -1049,10 +1121,12 @@ if i=1 then
 ]]>
 </programlisting>
 </example>
-<para>There is an equivalent to the Basic <emphasis role="italic">GOTO</emphasis> statement: the Rexx <emphasis role="italic">SIGNAL</emphasis>
-instruction. <emphasis role="italic">SIGNAL</emphasis> causes control to branch to a label:</para>
+
+<para>There is an equivalent to the Basic <methodname>GOTO</methodname> statement: the Rexx <methodname>SIGNAL</methodname>
+instruction. <methodname>SIGNAL</methodname> causes control to branch to a label:</para>
+
 <example>
-<title><emphasis role="italic">SIGNAL</emphasis> instruction</title>
+<title><methodname>SIGNAL</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 Signal fred;  /* Transfer control to label FRED below */
@@ -1062,9 +1136,10 @@ Fred: say "Hi!"
 ]]>
 </programlisting>
 </example>
-<para>As with <emphasis role="italic">GOTO</emphasis>, you need to be careful about how you use <emphasis role="italic">SIGNAL</emphasis>.
-In particular, do not use <emphasis role="italic">SIGNAL</emphasis> to jump to the middle of a <emphasis role="italic">DO</emphasis>/<emphasis role="italic">END</emphasis> block or
-into a <emphasis role="italic">SELECT</emphasis> structure.</para>
+
+<para>As with <methodname>GOTO</methodname>, you need to be careful about how you use <methodname>SIGNAL</methodname>.
+In particular, do not use <methodname>SIGNAL</methodname> to jump to the middle of a <methodname>DO</methodname>/<methodname>END</methodname> block or
+into a <methodname>SELECT</methodname> structure.</para>
 </section>
 
 <section id="subpro"><title>Subroutines and Procedures</title>
@@ -1082,8 +1157,9 @@ routines that make all variables accessible to the called routine. You can
 also write routines that hide the caller's variables.</para>
 <para>The following shows an example of a routine in which all variables are
 accessible: </para>
+
 <example>
-<title><emphasis role="italic">ROUTINE</emphasis> instruction</title>
+<title><methodname>ROUTINE</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example                     */
@@ -1099,7 +1175,7 @@ return
 </programlisting>
 </example>
 
-<para>The <emphasis role="italic">CALL</emphasis> instruction calls routine
+<para>The <methodname>CALL</methodname> instruction calls routine
 <emphasis role="italic">MYROUTINE</emphasis>. A label (note the colon) marks the
 start of the routine.
 <indexterm><primary>instructions</primary>
@@ -1108,22 +1184,23 @@ start of the routine.
 <secondary>CALL instruction</secondary></indexterm>
 <indexterm><primary>CALL instruction</primary></indexterm>
 
- A <emphasis role="italic">RETURN</emphasis> instruction ends the routine.
+ A <methodname>RETURN</methodname> instruction ends the routine.
 <indexterm><primary>RETURN instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>RETURN</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>RETURN instruction</secondary></indexterm>
 Notice that an
-<emphasis role="italic">EXIT</emphasis> instruction is required in this case to end the main program. If <emphasis role="italic">EXIT</emphasis>
+<methodname>EXIT</methodname> instruction is required in this case to end the main program. If <methodname>EXIT</methodname>
 is omitted, Rexx assumes that the following instructions are part of your
-main program and will execute those instructions. The <emphasis role="italic">SAY</emphasis> instruction displays
+main program and will execute those instructions. The <methodname>SAY</methodname> instruction displays
 22 instead of 10 because the caller's variables are accessible to the
 routine.</para>
-<para>You can return a result to the caller by placing an expression in the <emphasis role="italic">RETURN</emphasis>
+<para>You can return a result to the caller by placing an expression in the <methodname>RETURN</methodname>
 instruction, like this: </para>
+
 <example>
-<title><emphasis role="italic">RETURN</emphasis> instruction</title>
+<title><methodname>RETURN</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine with result                 */
@@ -1144,6 +1221,7 @@ return i+12        /* Increment I      */
 The returned result is available to the  caller in the
 special variable <emphasis role="italic">RESULT</emphasis>, as previously shown.
 If your routine returns a result, you can call it as a function: </para>
+
 <example>
 <title><emphasis role="italic">RESULT</emphasis> special variable</title>
 <programlisting>
@@ -1158,6 +1236,7 @@ return i+12        /* Increment I          */
 ]]>
 </programlisting>
 </example>
+
 <para>You can pass arguments to this sort of routine, but all variables are
 available to the routine anyway.</para>
 <para>
@@ -1170,10 +1249,10 @@ You can also write routines that separate the caller's variables
 from the routine's variables. This eliminates the risk of accidentally
 writing over a variable used by the caller or by some other unprotected routine.
 To get protection, use the
-<emphasis role="italic">PROCEDURE</emphasis> instruction, as follows: </para>
+<methodname>PROCEDURE</methodname> instruction, as follows: </para>
 
 <example>
-<title><emphasis role="italic">PROCEDURE</emphasis> instruction</title>
+<title><methodname>PROCEDURE</methodname> instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction                             */
@@ -1196,10 +1275,11 @@ return "TAILS"
 ]]>
 </programlisting>
 </example>
+
 <para>In this example, the variable i is used in both the
-main program and the routine. When the <emphasis role="italic">PROCEDURE</emphasis> instruction is placed after
+main program and the routine. When the <methodname>PROCEDURE</methodname> instruction is placed after
 the routine label, the routine's variables become local variables. They
-are isolated from all other variables in the program. Without the <emphasis role="italic">PROCEDURE</emphasis>
+are isolated from all other variables in the program. Without the <methodname>PROCEDURE</methodname>
 instruction, the program would loop indefinitely. On each iteration the value
 of <computeroutput>i</computeroutput> would be reset to some value
 less than 100, which means the loop would never end. If a programming error
@@ -1212,11 +1292,12 @@ or close the command window to end the procedure.</para>
 <secondary>exposing</secondary></indexterm>
 <indexterm><primary>variables</primary>
 <secondary>making accessible</secondary></indexterm>
-To access variables outside the routine, add an <emphasis role="italic">EXPOSE</emphasis>
-operand to the <emphasis role="italic">PROCEDURE</emphasis> instruction. List the desired variables after the
-<emphasis role="italic">EXPOSE</emphasis> keyword: </para>
+To access variables outside the routine, add an <methodname>EXPOSE</methodname>
+operand to the <methodname>PROCEDURE</methodname> instruction. List the desired variables after the
+<methodname>EXPOSE</methodname> keyword: </para>
+
 <example>
-<title><emphasis role="italic">EXPOSE</emphasis> keyword</title>
+<title><methodname>EXPOSE</methodname> keyword</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction with EXPOSE operand         */
@@ -1242,6 +1323,7 @@ return "TAILS"
 </example>
 
 <para>To pass arguments to a routine, separate the arguments with commas:</para>
+
 <example>
 <title>Passing arguments</title>
 <programlisting>
@@ -1251,6 +1333,7 @@ myrc=myroutine(arg1, "literal arg", arg3)  /* Call as function   */
 ]]>
 </programlisting>
 </example>
+
 <para>
 <indexterm><primary>USE ARG instructions</primary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -1258,6 +1341,6 @@ myrc=myroutine(arg1, "literal arg", arg3)  /* Call as function   */
 <indexterm><primary>Rexx</primary>
 <secondary>USE ARG instruction</secondary></indexterm>
 In the routine, use the
-<emphasis role="italic">USE ARG</emphasis> instruction to retrieve the argument.</para>
+<methodname>USE ARG</methodname> instruction to retrieve the argument.</para>
 </section>
 </chapter>

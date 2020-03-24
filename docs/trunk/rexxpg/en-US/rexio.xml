@@ -56,39 +56,41 @@ Your program also writes data as a continuous stream of characters.</para>
 with special line-end characters marking the end of each line of text in the stream.</para>
 <para>We use the expression &quot;line-end characters&quot; because they are
 platform dependent, and may be a single character
-(UNIX / Linux and Mac OS X use a single line feed character (<emphasis role="italic">'0D'x</emphasis>, <emphasis role="italic">13</emphasis> decimal),
-classic Mac used a single carriage return character (<emphasis role="italic">'0A'x</emphasis>, <emphasis role="italic">10</emphasis> decimal)
+(UNIX / Linux and Mac OS X use a single line feed character (<literal>'0D'x</literal>, <literal>13</literal> decimal),
+classic Mac used a single carriage return character (<literal>'0A'x</literal>, <literal>10</literal> decimal)
 or a character combination
-(Windows / DOS uses a carriage-return and line-feed character pair (<emphasis role="italic">'0D 0A'x</emphasis>)).
+(Windows / DOS uses a carriage-return and line-feed character pair (<literal>'0D 0A'x</literal>)).
 Henceforth, when we use the expression &quot;line-end characters&quot;,
 we mean whatever character sequence constitutes the line termination sequence
 on whichever platform you are working with Rexx on.</para>
 <para>A binary file is a stream of characters without an inherent line structure.
 A Rexx stream object allows you read from a data stream using either the text-file
 line methods or using a continuous data stream method.</para>
-<para>The Rexx Stream class is the mechanism for accessing I/O streams.
+<para>The Rexx <classname>Stream</classname> class is the mechanism for accessing I/O streams.
 To input or output data, you first create an instance of the Stream
 class that represents the device or file you want to use. For example, the
 following clause creates a stream object for the file <code>out.dat</code>:</para>
+
 <programlisting>
 <![CDATA[
 /* Create a stream object for out.dat */
 file=.stream~new("out.dat")
 ]]>
 </programlisting>
+
 <para>Then you use the appropriate stream methods to read and/or write the data.
-<code>out.dat</code> is a text file, so you would normally use the <emphasis role="italic">LINES()</emphasis>, <emphasis role="italic">LINEIN</emphasis>, and
-<emphasis role="italic">LINEOUT()</emphasis> methods that read or write data as delimited lines.
+<code>out.dat</code> is a text file, so you would normally use the <methodname>LINES()</methodname>, <methodname>LINEIN</methodname>, and
+<methodname>LINEOUT()</methodname> methods that read or write data as delimited lines.
 If the stream represents a binary file (such as a <code>wav</code>,
 <code>gif</code>, <code>tif</code> or <code>exe</code>),
-you would use the <emphasis role="italic">CHARS</emphasis>, <emphasis role="italic">CHARIN</emphasis>, and <emphasis role="italic">CHAROUT</emphasis> methods that read and write
+you would use the <methodname>CHARS</methodname>, <methodname>CHARIN</methodname>, and <methodname>CHAROUT</methodname> methods that read and write
 data as characters.</para>
-<para>The Stream class includes additional methods for opening and closing streams,
+<para>The <classname>Stream</classname> class includes additional methods for opening and closing streams,
 flushing buffers, seeking to specific file locations, retrieving stream status,
 and other I/O operations.</para>
 
 <section id="streamobj"><title>More about Stream Objects</title>
-<para>To use streams in Rexx, you create new instances of the Stream class.
+<para>To use streams in Rexx, you create new instances of the <classname>Stream</classname> class.
 These stream objects represent the various data sources and destinations available
 to your program, such as hard disks, CD-ROMs, keyboards, displays, printers,
 serial interfaces or devices on a network.
@@ -104,10 +106,10 @@ Once you read from or write to the stream, the data cannot be re-accessed.</para
 is stored on disk, you can search forward and backward in the stream and reread
 data that you have previously read. Rexx maintains separate read and write
 pointers to a stream that you can move independently of each other using arguments
-on methods such as <emphasis role="italic">LINEIN</emphasis>, <emphasis role="italic">LINEOUT</emphasis>,
-<emphasis role="italic">CHARIN</emphasis>, and <emphasis role="italic">CHAROUT</emphasis>.
-The Stream class also provides
-<emphasis role="italic">SEEK</emphasis> and <emphasis role="italic">POSITION</emphasis> methods for setting the read and write positions.</para>
+on methods such as <methodname>LINEIN</methodname>, <methodname>LINEOUT</methodname>,
+<methodname>CHARIN</methodname>, and <methodname>CHAROUT</methodname>.
+The <classname>Stream</classname> class also provides
+<methodname>SEEK</methodname> and <methodname>POSITION</methodname> methods for setting the read and write positions.</para>
 </section>
 
 <section id="readtxtfile"><title>Reading a Text File</title>
@@ -118,6 +120,7 @@ The Stream class also provides
 <para>The following shows an example of reading a file.
 Program <code>count.rex</code> counts the words in a text file. To run it, enter<code> rexx count</code>
 followed by the name of the file to be processed:</para>
+
 <programlisting>
 <![CDATA[
 rexx count myfile.txt
@@ -126,10 +129,11 @@ rexx count r:\rexx\articles\devcon7.scr
 </programlisting>
 
 <indexterm><primary>counting words in a file</primary></indexterm>
-<para><code>count.rex</code> uses the String method <emphasis role="italic">WORDS</emphasis> to count the words, so
+<para><code>count.rex</code> uses the String method <methodname>WORDS</methodname> to count the words, so
 <code>count.rex</code> actually counts whitespace-delimited tokens:</para>
 <example>
-<title><emphasis role="italic"><code>count.rex</code></emphasis> with automatic open</title>
+<title><filename>count.rex</filename> with automatic open</title>
+
 <programlisting>
 <![CDATA[
 /* count.rex - counts the words in a file                          */
@@ -144,29 +148,31 @@ say count                   /* Display the count                   */
 ]]>
 </programlisting>
 </example>
+
 <para>To read a file, <code>count.rex</code> first creates a Stream object for the file by sending
-the <emphasis role="italic">NEW</emphasis> message to the Stream class. The file name (with or without a path)
-is specified as an argument on the <emphasis role="italic">NEW</emphasis> method.</para>
-<para>Within the <emphasis role="italic">DO</emphasis> loop,
-<code>count.rex</code> reads the lines of the file by sending <emphasis role="italic">LINEIN</emphasis> messages
-to the stream object (pointed to by the variable File). The first <emphasis role="italic">LINEIN</emphasis> message
+the <methodname>NEW</methodname> message to the <classname>Stream</classname> class. The file name (with or without a path)
+is specified as an argument on the <methodname>NEW</methodname> method.</para>
+<para>Within the <methodname>DO</methodname> loop,
+<code>count.rex</code> reads the lines of the file by sending <methodname>LINEIN</methodname> messages
+to the stream object (pointed to by the variable File). The first <methodname>LINEIN</methodname> message
 causes Rexx to automatically open the file if it was not already open
-(the <emphasis role="italic">NEW</emphasis> method does not open the file). <emphasis role="italic">LINEIN</emphasis>, by default, reads one line
+(the <methodname>NEW</methodname> method does not open the file). <methodname>LINEIN</methodname>, by default, reads one line
 from the file, starting at the current read position.</para>
 <para>Rexx returns only the text of the line to your program
 without any line-end characters.</para>
-<para>The <emphasis role="italic">DO</emphasis> loop is controlled by the expression &quot;file~lines&lt;>0&quot;.
-The <emphasis role="italic">LINES</emphasis> method returns the number of lines remaining to be read in
+<para>The <methodname>DO</methodname> loop is controlled by the expression &quot;file~lines&lt;>0&quot;.
+The <methodname>LINES</methodname> method returns the number of lines remaining to be read in
 the file, so Rexx processes the loop until no lines remain to be read.</para>
-<para>In the <code>count.rex</code> program, the <emphasis role="italic">LINEIN</emphasis> request forces Rexx to open the file, but you
-can also open the file yourself using the <emphasis role="italic">OPEN</emphasis> method of the Stream class.
-By using the <emphasis role="italic">OPEN</emphasis> method, you control the mode in which Rexx opens the file.
-When Rexx implicitly opens a file because of a <emphasis role="italic">LINEIN</emphasis> request, it tries to
+<para>In the <code>count.rex</code> program, the <methodname>LINEIN</methodname> request forces Rexx to open the file, but you
+can also open the file yourself using the <methodname>OPEN</methodname> method of the <classname>Stream</classname> class.
+By using the <methodname>OPEN</methodname> method, you control the mode in which Rexx opens the file.
+When Rexx implicitly opens a file because of a <methodname>LINEIN</methodname> request, it tries to
 open the file for both reading and writing. If that fails, it tries to open the file
 for reading. To ensure that the file is opened only for reading, you can modify
 <code>count.rex</code> as follows:</para>
 <example>
-<title><emphasis role="italic"><code>count.rex</code></emphasis> with explicit open</title>
+<title><filename>count.rex</filename> with explicit open</title>
+
 <programlisting>
 <![CDATA[
 /* count.rex - counts the words in a file                          */
@@ -187,9 +193,10 @@ say count                   /* Display the count                   */
 ]]>
 </programlisting>
 </example>
-<para>The <emphasis role="italic">CLOSE</emphasis> method, used near the end of the previous example, closes the
-file. A <emphasis role="italic">CLOSE</emphasis> is not required. Rexx closes the stream for you when the program
-ends. However, it is a good idea to <emphasis role="italic">CLOSE</emphasis> streams to make the resource available
+
+<para>The <methodname>CLOSE</methodname> method, used near the end of the previous example, closes the
+file. A <methodname>CLOSE</methodname> is not required. Rexx closes the stream for you when the program
+ends. However, it is a good idea to <methodname>CLOSE</methodname> streams to make the resource available
 for other uses.</para>
 </section>
 
@@ -201,24 +208,27 @@ for other uses.</para>
 <indexterm><primary>text files</primary>
 <secondary>reading into an array</secondary></indexterm>
 <para>Rexx
-provides a Stream method, named <emphasis role="italic">ARRAYIN</emphasis>, that reads the contents of a stream
-into an array object. <emphasis role="italic">ARRAYIN</emphasis> is convenient when you need to read an entire
+provides a Stream method, named <methodname>ARRAYIN</methodname>, that reads the contents of a stream
+into an array object. <methodname>ARRAYIN</methodname> is convenient when you need to read an entire
 file into memory for processing. You can read the entire file with a single
 Rexx clause&ndash;no looping is necessary.</para>
-<para>The following example (<code>cview.rex</code>) uses the <emphasis role="italic">ARRAYIN</emphasis> method
-to read the entire <code>log.txt</code> file into an array object. <code>cview.rex</code> displays selected
-lines from <code>log.txt</code>. A search argument can be specified when starting <code>cview.rex</code>:</para>
+<para>The following example (<filename>cview.rex</filename>) uses the <methodname>ARRAYIN</methodname> method
+to read the entire <filename>log.txt</filename> file into an array object. <filename>cview.rex</filename> displays selected
+lines from <filename>log.txt</filename>. A search argument can be specified when starting <filename>cview.rex</filename>:</para>
+
 <programlisting>
 <![CDATA[
 rexx cview libpath
 ]]>
 </programlisting>
-<para><code>cview.rex</code> prompts for a search argument if you do not specify one.</para>
-<para>If <code>cview.rex</code> finds the string, it displays the line(s) in which the string was
-found. <code>cview.rex</code> continues to prompt for a new search string until you enter
-<programlisting>Q</programlisting> in response to the prompt.</para>
+
+<para><filename>cview.rex</filename> prompts for a search argument if you do not specify one.</para>
+<para>If <filename>cview.rex</filename> finds the string, it displays the line(s) in which the string was
+found. <filename>cview.rex</filename> continues to prompt for a new search string until you enter
+<literal>Q</literal> in response to the prompt.</para>
 <example>
-<title><emphasis role="italic"><code>cview.rex</code></emphasis></title>
+<title><filename>cview.rex</filename></title>
+
 <programlisting>
 <![CDATA[
 /* cview.rex - display lines from file log.txt                               */
@@ -243,6 +253,7 @@ end
 ]]>
 </programlisting>
 </example>
+
 </section>
 
 <section id="textfilelines"><title>Reading Specific Lines of a Text File</title>
@@ -252,9 +263,10 @@ end
 <secondary>specific lines of text files</secondary></indexterm>
 <para>You can read
 a specific line of a text file by entering a line number as an argument on
-the <emphasis role="italic">LINEIN</emphasis> method. In this example, line 3 is read from <code>log.txt</code>:</para>
+the <methodname>LINEIN</methodname> method. In this example, line 3 is read from <code>log.txt</code>:</para>
+
 <example>
-<title><emphasis role="italic">LINEIN</emphasis></title>
+<title><methodname>LINEIN</methodname></title>
 <programlisting>
 <![CDATA[
 /* Read and display line 3 of file log.txt */
@@ -263,6 +275,7 @@ say infile~linein(3)
 ]]>
 </programlisting>
 </example>
+
 <para>You do not reduce file I/O by using specific line numbers. Because text
 files do not have a specific record length, Rexx must read through the file
 counting occurrences of line-end characters to find the line number you want.</para>
@@ -273,11 +286,12 @@ counting occurrences of line-end characters to find the line number you want.</p
 <secondary>writing</secondary></indexterm>
 <indexterm><primary>writing</primary>
 <secondary>text files</secondary></indexterm>
-<para>To write lines of text to a file, you use the <emphasis role="italic">LINEOUT</emphasis>
-method. By default, <emphasis role="italic">LINEOUT</emphasis> appends to an existing file. The following example
+<para>To write lines of text to a file, you use the <methodname>LINEOUT</methodname>
+method. By default, <methodname>LINEOUT</methodname> appends to an existing file. The following example
 adds an item to a to-do list that is maintained as a simple text file:</para>
+
 <example>
-<title><emphasis role="italic"><code>todo.rex</code></emphasis></title>
+<title><filename>todo.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* todo.rex - add to a todo list                              */
@@ -288,16 +302,19 @@ exit
 ]]>
 </programlisting>
 </example>
-<para>In <code>todo.rex</code>, a text string is provided as the only argument on <emphasis role="italic">LINEOUT</emphasis>. Rexx
+
+<para>In <code>todo.rex</code>, a text string is provided as the only argument on <methodname>LINEOUT</methodname>. Rexx
 writes the line of text to the file with line-end characters appended.
 You do not have to provide line-end characters in the string to be written.</para>
 <para>If you want to overwrite a file, specify a line number as a second argument
 to position the write pointer:</para>
+
 <programlisting>
 <![CDATA[
 file~lineout("13760-0006",35)  /* Replace line 35 */
 ]]>
 </programlisting>
+
 <para>Rexx does not prevent you from overwriting existing line-end characters
 in the file. Consequently, if you want to replace a line of the file without
 overlaying the following lines, the line you write must have the same length
@@ -307,13 +324,14 @@ line leaves part of the old line in the file.</para>
 Rexx starts writing over the existing data starting at line 1, but if you
 happen to write fewer bytes than previously existed in the file, your data
 is followed by the remainder of the old file.</para>
-<para>To replace a file, use the <emphasis role="italic">OPEN</emphasis> method
-with <emphasis role="italic">WRITE REPLACE</emphasis> or <emphasis role="italic">BOTH REPLACE</emphasis>
+<para>To replace a file, use the <methodname>OPEN</methodname> method
+with <methodname>WRITE REPLACE</methodname> or <methodname>BOTH REPLACE</methodname>
 as an argument. In the following example, a file named <code>temp.dat</code> is replaced
 with a random number of lines. <code>temp.dat</code> is then read and displayed. You can run the example
 repeatedly to verify that <code>temp.dat</code> is replaced on each run.</para>
+
 <example>
-<title><emphasis role="italic"><code>repfile.rex</code></emphasis></title>
+<title><filename>repfile.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* repfile.rex - demonstrates file replacement */
@@ -339,6 +357,7 @@ testfile~close
 ]]>
 </programlisting>
 </example>
+
 <para>The <code>repfile.rex</code> example also demonstrates that Rexx maintains separate read and
 write pointers to a stream. The read pointer is still at the beginning of
 the file while the write pointer is at the end of it.</para>
@@ -349,12 +368,13 @@ the file while the write pointer is at the end of it.</para>
 <secondary>binary files</secondary></indexterm>
 <para>A binary file is a file whose data is not organized
 into lines ending with line-end characters. In most cases, you use the character
-I/O methods (such as <emphasis role="italic">CHARS</emphasis>,
-<emphasis role="italic">CHARIN</emphasis>, <emphasis role="italic">CHAROUT</emphasis>) on these files.</para>
+I/O methods (such as <methodname>CHARS</methodname>,
+<methodname>CHARIN</methodname>, <methodname>CHAROUT</methodname>) on these files.</para>
 <para>Suppose, for example, that you want to read the data in the <code>chord.wav</code>
 file (supplied with Windows in <code>C:\Windows\Media</code>) into a variable:</para>
+
 <example>
-<title><emphasis role="italic"><code>getchord.rex</code></emphasis></title>
+<title><filename>getchord.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* getchord.wav - reads chord.wav into a variable           */
@@ -368,17 +388,18 @@ say "Number of characters read into variable" mychord~length
 ]]>
 </programlisting>
 </example>
-<para>The <emphasis role="italic">CHARIN</emphasis> method returns a string of characters from the stream,
-which in this case is <code>chord.wav</code>. <emphasis role="italic">CHARIN</emphasis> accepts two optional arguments. If no arguments
-are specified, <emphasis role="italic">CHARIN</emphasis> reads one character from the current read position and
+
+<para>The <methodname>CHARIN</methodname> method returns a string of characters from the stream,
+which in this case is <code>chord.wav</code>. <methodname>CHARIN</methodname> accepts two optional arguments. If no arguments
+are specified, <methodname>CHARIN</methodname> reads one character from the current read position and
 then advances the read pointer.</para>
 <para>The first argument is a start position for reading the file. In the example,
-1 is specified so that <emphasis role="italic">CHARIN</emphasis> begins reading with the first character of the
+1 is specified so that <methodname>CHARIN</methodname> begins reading with the first character of the
 file. Omitting the first argument achieves the same result.</para>
 <para>The second argument specifies how many characters are to be read. To read
 all the characters, <computeroutput>chordf~chars</computeroutput> was specified as the second
-argument. The <emphasis role="italic">CHARS</emphasis> method returns the number of characters remaining to be
-read in the input stream receiving the message. <emphasis role="italic">CHARIN</emphasis> then returns all the
+argument. The <methodname>CHARS</methodname> method returns the number of characters remaining to be
+read in the input stream receiving the message. <methodname>CHARIN</methodname> then returns all the
 characters in the stream. <code>chord.wav</code> has about 114,000 characters.</para>
 </section>
 
@@ -391,26 +412,27 @@ characters in the stream. <code>chord.wav</code> has about 114,000 characters.</
 <secondary>reading a character at a time</secondary></indexterm>
 <indexterm><primary>line-end characters</primary></indexterm>
 
-<para>You can use the <emphasis role="italic">CHARIN</emphasis> and other character methods on text files. Because
-you read the file as characters, <emphasis role="italic">CHARIN</emphasis> returns the
+<para>You can use the <methodname>CHARIN</methodname> and other character methods on text files. Because
+you read the file as characters, <methodname>CHARIN</methodname> returns the
 line-end characters to your program.
 Line methods, on the contrary, do not return the line-end characters to your
 program. Rexx adds line-end characters to the end of every
-line written using the <emphasis role="italic">LINEOUT</emphasis> method. Text-processing applications,
+line written using the <methodname>LINEOUT</methodname> method. Text-processing applications,
 such as the Windows Notepad, also add line-end characters.
-As a convenience, Rexx has an environment symbol name <code>.ENDOFLINE</code>
-that returns the line-end characters used by the Stream class
-on the current system. When reading a text file with <emphasis role="italic">CHARIN</emphasis>,
-interpret the character sequence in <code>.ENDOFLINE</code> as the end of a line.
+As a convenience, Rexx has an environment symbol name <literal>.ENDOFLINE</literal>
+that returns the line-end characters used by the <classname>Stream</classname> class
+on the current system. When reading a text file with <methodname>CHARIN</methodname>,
+interpret the character sequence in <literal>.ENDOFLINE</literal> as the end of a line.
 </para>
 <para>As an example, run the following program. It writes lines to a file using
-<emphasis role="italic">LINEOUT</emphasis> and then reads those lines using
-<emphasis role="italic">CHARIN</emphasis>. You can mix line methods
+<methodname>LINEOUT</methodname> and then reads those lines using
+<methodname>CHARIN</methodname>. You can mix line methods
 and character methods. Rexx maintains separate read and write pointers, so
 there is no need to close the file or search for another position before reading
 the lines just written.</para>
+
 <example>
-<title><emphasis role="italic"><code>linechar.rex</code></emphasis></title>
+<title><filename>linechar.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* linechar.rex - demonstrate line end characters                   */
@@ -434,6 +456,7 @@ file~close                       /* Close the file                  */
 ]]>
 </programlisting>
 </example>
+
 <para>It is not recommended to use line methods to read binary files. Your binary
 file might not contain any new-line characters. And, if it did, the characters
 probably are not meant to be interpreted as new-line characters.</para>
@@ -444,13 +467,14 @@ probably are not meant to be interpreted as new-line characters.</para>
 <secondary>binary files</secondary></indexterm>
 <indexterm><primary>binary files</primary>
 <secondary>writing</secondary></indexterm>
-<para>To write a binary file, you use <emphasis role="italic">CHAROUT.</emphasis>
-<emphasis role="italic">CHAROUT</emphasis> writes only the characters that you specify in an argument of the
-method. <emphasis role="italic">CHAROUT</emphasis> does not add line-end
+<para>To write a binary file, you use <methodname>CHAROUT.</methodname>
+<methodname>CHAROUT</methodname> writes only the characters that you specify in an argument of the
+method. <methodname>CHAROUT</methodname> does not add line-end
 characters to
 the end of the string. Here is an example:</para>
+
 <example>
-<title><emphasis role="italic"><code>jack.rex</code></emphasis></title>
+<title><filename>jack.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* jack.rex - demonstrate that CHAROUT does not add line-end characters */
@@ -464,16 +488,19 @@ filebin~close                  /* Close the file so we can display it   */
 ]]>
 </programlisting>
 </example>
+
 <para>Because line-end characters are not added, the text displayed
-by the <emphasis role="italic">TYPE</emphasis> command is concatenated into one contiguous line.</para>
-<para><emphasis role="italic">CHAROUT</emphasis> writes the string specified and advances the write pointer. If
+by the <methodname>TYPE</methodname> command is concatenated into one contiguous line.</para>
+<para><methodname>CHAROUT</methodname> writes the string specified and advances the write pointer. If
 you want to position the write pointer before writing the string, specify
 the starting position as a second argument:</para>
+
 <programlisting>
 <![CDATA[
 filebin~charout("Jack is losing it.",30) /* start writing at character 30 */
 ]]>
 </programlisting>
+
 <para>In the example, the file is explicitly opened and closed. If
 you do not open the file, Rexx attempts to open the file for both reading
 and writing. If you do not close the file, Rexx closes it when the procedure
@@ -505,24 +532,25 @@ files when you are finished with them.</para>
 of a file directly (that is, in random order). The following example,
 <code>direct.rex</code>, shows several cases that illustrate some of your options.</para>
 <para><code>direct.rex</code> opens a file for both reading and writing, which is indicated
-by the <emphasis role="italic">BOTH</emphasis> argument of the <emphasis role="italic">OPEN</emphasis> method.
-The <emphasis role="italic">REPLACE</emphasis> argument of the <emphasis role="italic">OPEN</emphasis>
+by the <methodname>BOTH</methodname> argument of the <methodname>OPEN</methodname> method.
+The <methodname>REPLACE</methodname> argument of the <methodname>OPEN</methodname>
 method causes any existing <code>direct.dat</code> file to be replaced.</para>
-<para>The <emphasis role="italic">OPEN</emphasis> method also has the arguments
-<emphasis role="italic">BINARY</emphasis> and <emphasis role="italic">RECLENGTH</emphasis>, which are
+<para>The <methodname>OPEN</methodname> method also has the arguments
+<methodname>BINARY</methodname> and <methodname>RECLENGTH</methodname>, which are
 useful for direct file access.</para>
-<para>The <emphasis role="italic">BINARY</emphasis> argument opens the stream in binary mode, which means that line-end
+<para>The <methodname>BINARY</methodname> argument opens the stream in binary mode, which means that line-end
 characters are ignored. Binary mode is useful if you want to process binary
 data using line methods. It is easier to use line methods for direct access.
 With line methods, you can search a position in a file using line numbers.
 With character methods, you must calculate the character displacement of
 the file.</para>
-<para>The <emphasis role="italic">RECLENGTH</emphasis> argument defines a record length of 50 for the file. It enables
+<para>The <methodname>RECLENGTH</methodname> argument defines a record length of 50 for the file. It enables
 you to use line methods in a binary-mode stream. Because Rexx now knows how
 long each record is, it can calculate the displacement of the file for a given
 record number and read the record directly.</para>
+
 <example>
-<title><emphasis role="italic"><code>direct.rex</code></emphasis></title>
+<title><filename>direct.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* DIRECT.CMD - demonstration of direct file access       */
@@ -591,68 +619,69 @@ db~close
 ]]>
 </programlisting>
 </example>
-<para>After opening the file, <code>direct.rex</code> writes three records using
-<emphasis role="italic">LINEOUT.</emphasis> The records are
+
+<para>After opening the file, <filename>direct.rex</filename> writes three records using
+<methodname>LINEOUT</methodname>. The records are
 not padded to 50 characters, Rexx itself handles that. Because the file is opened
 in binary mode, Rexx does not write line-end characters at the end of each
 line. It only writes the strings one after another to the stream.</para>
-<para>In Case 1, the <emphasis role="italic">LINEIN</emphasis> method is used to read the file. Because the file
-is open in binary mode, <emphasis role="italic">LINEIN</emphasis> does not look for line-end characters to mark
+<para>In Case 1, the <methodname>LINEIN</methodname> method is used to read the file. Because the file
+is open in binary mode, <methodname>LINEIN</methodname> does not look for line-end characters to mark
 the end of a line. Instead, it relies on the record length that you specify
 on open. In fact, if there were a carriage-return or line-feed sequence of
 the line, Rexx would return those characters to your program.</para>
 
 <para>Case 2 demonstrates how to read the file in random order. In this case,
-the <emphasis role="italic">RANDOM</emphasis> function is used to choose a record to be retrieved. Then the desired
-record number is specified as an argument on <emphasis role="italic">LINEIN.</emphasis> Note that records are
+the <methodname>RANDOM</methodname> function is used to choose a record to be retrieved. Then the desired
+record number is specified as an argument on <methodname>LINEIN</methodname>. Note that records are
 numbered starting from 1, not from 0. Because the file is opened in binary
-mode, Rexx does not look for line-end characters.  It uses the <emphasis role="italic">RECLENGTH</emphasis> value to
-determine where to begin reading. The <emphasis role="italic">LINEIN</emphasis> method can, therefore, retrieve a line
+mode, Rexx does not look for line-end characters.  It uses the <methodname>RECLENGTH</methodname> value to
+determine where to begin reading. The <methodname>LINEIN</methodname> method can, therefore, retrieve a line
 directly, without having to scan through the file counting line-end characters.</para>
 
-<para>Case 3 proves that no line-end characters exist in the file. The <emphasis role="italic">CHARIN</emphasis>
-method reads the entire file. <emphasis role="italic">SAY</emphasis> displays the returned string as one long
+<para>Case 3 proves that no line-end characters exist in the file. The <methodname>CHARIN</methodname>
+method reads the entire file. <methodname>SAY</methodname> displays the returned string as one long
 string. If Rexx inserted line-end characters, each record would be displayed
 on a separate line.</para>
 
-<para>Case 4 shows how to read the binary mode file sequentially using <emphasis role="italic">CHARIN.</emphasis>
+<para>Case 4 shows how to read the binary mode file sequentially using <methodname>CHARIN</methodname>.
 But before reading the file, the read pointer must be reset to the beginning
 of the file. (Case 3 leaves the read pointer at the end of the file.) The
-<emphasis role="italic">SEEK</emphasis> method resets the read pointer to character 1, which is the beginning
+<methodname>SEEK</methodname> method resets the read pointer to character 1, which is the beginning
 of the file. As with lines, Rexx numbers characters starting with 1, not 0.
 Position 1 is the first character of the file.</para>
-<para>By default, the number specified with <emphasis role="italic">SEEK</emphasis> refers to a character position.
-You can also search by line number or by offsets. <emphasis role="italic">SEEK</emphasis> allows offsets from
+<para>By default, the number specified with <methodname>SEEK</methodname> refers to a character position.
+You can also search by line number or by offsets. <methodname>SEEK</methodname> allows offsets from
 the current read or write position (a relative position), or from the beginning
 or ending of the file (an absolute position).
-If you prefer typing longer method names, you can use <emphasis role="italic">POSITION</emphasis> as a
-synonym for <emphasis role="italic">SEEK</emphasis>.</para>
-<para>In the loop of Case 4, the first argument on <emphasis role="italic">CHARIN</emphasis> is omitted. The first
+If you prefer typing longer method names, you can use <methodname>POSITION</methodname> as a
+synonym for <methodname>SEEK</methodname>.</para>
+<para>In the loop of Case 4, the first argument on <methodname>CHARIN</methodname> is omitted. The first
 argument tells where to position the read pointer. If it is omitted, Rexx
 automatically advances the read pointer based on the number of characters
 you are reading.</para>
 
-<para>Case 5 demonstrates how to read records in random order with <emphasis role="italic">CHARIN</emphasis>. In
+<para>Case 5 demonstrates how to read records in random order with <methodname>CHARIN</methodname>. In
 the loop, a random record number is selected and assigned to the variable
 <computeroutput>lineno</computeroutput>. This record number is
 then converted to a character number,
-which can be used to specify the read position on <emphasis role="italic">CHARIN</emphasis>. Compare Case 5 with
+which can be used to specify the read position on <methodname>CHARIN</methodname>. Compare Case 5 with
 Case 2. In Case 2, which uses line methods, it is not necessary to perform
 a calculation, you just request the record you want.</para>
 
-<para>Cases 6 and 7 write records in random order. Case 6 uses <emphasis role="italic">LINEOUT</emphasis>, while
-Case 7 uses <emphasis role="italic">CHAROUT</emphasis>. Because the file is opened in binary mode, <emphasis role="italic">LINEOUT</emphasis> does
+<para>Cases 6 and 7 write records in random order. Case 6 uses <methodname>LINEOUT</methodname>, while
+Case 7 uses <methodname>CHAROUT</methodname>. Because the file is opened in binary mode, <methodname>LINEOUT</methodname> does
 not write line-end characters. You can write over a line by specifying a line
-number. With <emphasis role="italic">CHAROUT</emphasis>, you need to calculate the character position of the
-line to be replaced. Unlike <emphasis role="italic">LINEOUT</emphasis>, you need to ensure that the string being
-written with <emphasis role="italic">CHAROUT</emphasis> is padded to the appropriate record length. Otherwise,
+number. With <methodname>CHAROUT</methodname>, you need to calculate the character position of the
+line to be replaced. Unlike <methodname>LINEOUT</methodname>, you need to ensure that the string being
+written with <methodname>CHAROUT</methodname> is padded to the appropriate record length. Otherwise,
 part of the record being replaced remains in the file.</para>
 <para>Consequently, for random reading of files with fixed length records, line
 methods are often the better choice. However, one limitation of the line methods
 is that you cannot use them to write sparse records. That is, if a file already
-has 200 records, you can use <emphasis role="italic">LINEOUT</emphasis> to write record <emphasis role="italic">201</emphasis>, but you cannot use
-<emphasis role="italic">LINEOUT</emphasis> to write record <emphasis role="italic">300</emphasis>.
-With <emphasis role="italic">CHAROUT</emphasis>, however, you can open a new file
+has 200 records, you can use <methodname>LINEOUT</methodname> to write record <emphasis role="italic">201</emphasis>, but you cannot use
+<methodname>LINEOUT</methodname> to write record <emphasis role="italic">300</emphasis>.
+With <methodname>CHAROUT</methodname>, however, you can open a new file
 and start writing at character position <emphasis role="italic">5000</emphasis> if you choose.</para>
 </section>
 
@@ -663,11 +692,12 @@ and start writing at character position <emphasis role="italic">5000</emphasis> 
 <indexterm><primary>text files</primary>
 <secondary>querying existence</secondary></indexterm>
 <para>To check for the existence of a file, you use the
-<emphasis role="italic">QUERY</emphasis> method of the Stream class. The following <code>isthere.rex</code> program
+<methodname>QUERY</methodname> method of the <classname>Stream</classname> class. The following <code>isthere.rex</code> program
 accepts a file name as a command line argument and checks for the existence
 of that file.</para>
+
 <example>
-<title><emphasis role="italic"><code>isthere.rex</code></emphasis></title>
+<title><filename>isthere.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* isthere.rex - test for the existence of a file        */
@@ -680,13 +710,14 @@ else
 ]]>
 </programlisting>
 </example>
+
 <para>In the example, a stream object is created for the file even though it
 might not exist. This is acceptable because the file is not opened when the
 stream object is created.</para>
-<para>The <emphasis role="italic">QUERY</emphasis> method accepts one argument. To check for the existence of a
+<para>The <methodname>QUERY</methodname> method accepts one argument. To check for the existence of a
 file, you specify the string <computeroutput>"exists"</computeroutput> as
-previously shown. If the file exists, <emphasis role="italic">QUERY</emphasis> returns the full-path specification
-of the stream object. Otherwise, <emphasis role="italic">QUERY</emphasis> returns a null string.</para>
+previously shown. If the file exists, <methodname>QUERY</methodname> returns the full-path specification
+of the stream object. Otherwise, <methodname>QUERY</methodname> returns a null string.</para>
 </section>
 
 <section id="getotherfileinfo"><title>Getting Other Information about a File</title>
@@ -695,11 +726,12 @@ of the stream object. Otherwise, <emphasis role="italic">QUERY</emphasis> return
 <secondary>querying other information</secondary></indexterm>
 <indexterm><primary>text files</primary>
 <secondary>querying other information</secondary></indexterm>
-<para>The <emphasis role="italic">QUERY</emphasis> method can also return date and time stamps,
+<para>The <methodname>QUERY</methodname> method can also return date and time stamps,
 read position, write position, the size of the file, and so on. The following
-example shows most of the <emphasis role="italic">QUERY</emphasis> arguments.</para>
+example shows most of the <methodname>QUERY</methodname> arguments.</para>
+
 <example>
-<title><emphasis role="italic"><code>infoon.rex</code></emphasis></title>
+<title><filename>infoon.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* infoon.rex - display information about a file */
@@ -726,6 +758,7 @@ qfile~close
 ]]>
 </programlisting>
 </example>
+
 </section>
 
 <section id="standardio"><title>Using Standard I/O</title>
@@ -736,27 +769,28 @@ qfile~close
 You can use the same methods to read from standard input (usually the keyboard)
 and to write to standard output (usually the display). You can also use the
 methods to write to the standard error stream. In Rexx, these default
-streams are represented by public objects of the Monitor class: <code>.input</code>,
-<code>.output</code>, and <code>.error</code>.</para>
+streams are represented by public objects of the <classname>Monitor</classname> class: <literal>.input</literal>,
+<literal>.output</literal>, and <literal>.error</literal>.</para>
 <para>The streams <emphasis role="italic">STDIN</emphasis>,
 <emphasis role="italic">STDOUT</emphasis>, and <emphasis role="italic">STDERR</emphasis> are transient streams. For transient
 streams, you cannot use any method or method argument for positioning the
-read and write pointers. You cannot, for example, use the <emphasis role="italic">SEEK</emphasis> method on
+read and write pointers. You cannot, for example, use the <methodname>SEEK</methodname> method on
 <emphasis role="italic">STDOUT</emphasis>.</para>
 
 <para>Writing to <emphasis role="italic">STDOUT</emphasis> has the same effect as using
-the <emphasis role="italic">SAY</emphasis> instruction. However,
-the <emphasis role="italic">SAY</emphasis> instruction always writes line-end characters at the end of the string.
-By using the <emphasis role="italic">CHAROUT</emphasis> method to write to <emphasis role="italic">STDOUT</emphasis>, you can control when line-end
+the <methodname>SAY</methodname> instruction. However,
+the <methodname>SAY</methodname> instruction always writes line-end characters at the end of the string.
+By using the <methodname>CHAROUT</methodname> method to write to <emphasis role="italic">STDOUT</emphasis>, you can control when line-end
 characters are written.</para>
 <para>The following example shows a modified <code>count.rex</code> program previously shown in
 <xref linkend="readtxtfile" />. <code>count.rex</code> has been modified
 to display a progress indicator. For every line processed, <code>count.rex</code> now uses
-<emphasis role="italic">CHAROUT</emphasis> to display a single period. <code>count.rex</code> does not write any line-end
+<methodname>CHAROUT</methodname> to display a single period. <code>count.rex</code> does not write any line-end
 characters, so the periods wrap to the next line when they reach the end of
 the line in the Windows window.</para>
+
 <example>
-<title>Modified <emphasis role="italic"><code>count.rex</code></emphasis></title>
+<title>Modified <filename>count.rex</filename></title>
 <programlisting>
 <![CDATA[
                             /* count counts the words in a file */
@@ -773,11 +807,13 @@ say count
 ]]>
 </programlisting>
 </example>
-<para>Reading from <emphasis role="italic">STDIN</emphasis> using <emphasis role="italic">LINEIN</emphasis>
-is similar to reading with the <emphasis role="italic">PARSE PULL</emphasis>
+
+<para>Reading from <emphasis role="italic">STDIN</emphasis> using <methodname>LINEIN</methodname>
+is similar to reading with the <methodname>PARSE PULL</methodname>
 instruction:</para>
+
 <example>
-<title><emphasis role="italic"><code>inexam.rex</code></emphasis></title>
+<title><filename>inexam.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* inexam.rex - example of reading STDIN with LINEIN  */
@@ -795,14 +831,16 @@ response=.input~linein
 ]]>
 </programlisting>
 </example>
+
 <para>Using character methods with <emphasis role="italic">STDIN</emphasis> and <emphasis role="italic">STDOUT</emphasis> gives you more control over
 the reading and writing of line-end characters. In the following example,
 the prompting string is written to <emphasis role="italic">STDOUT</emphasis> using
-<emphasis role="italic">CHAROUT</emphasis>. Because <emphasis role="italic">CHAROUT</emphasis> does
+<methodname>CHAROUT</methodname>. Because <methodname>CHAROUT</methodname> does
 not add any line-end characters to the stream, the display cursor is positioned
 after the prompt string on the same line.</para>
+
 <example>
-<title><emphasis role="italic"><code>inchar.rex</code></emphasis></title>
+<title><filename>inchar.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* inchar.rex - example of reading STDIN with CHARIN  */
@@ -812,14 +850,16 @@ response=.input~charin(,10)
 ]]>
 </programlisting>
 </example>
-<para><emphasis role="italic">CHARIN</emphasis> is used to read the user's response. The user's keystrokes
+
+<para><methodname>CHARIN</methodname> is used to read the user's response. The user's keystrokes
 are not returned to your program until the user presses the Enter key. In
 the example, a length of 10 is specified. If fewer characters than the specified
-length are available, <emphasis role="italic">CHARIN</emphasis> waits until they become available. Otherwise,
-the characters are returned to your program. <emphasis role="italic">CHARIN</emphasis> does not strip any carriage-return
+length are available, <methodname>CHARIN</methodname> waits until they become available. Otherwise,
+the characters are returned to your program. <methodname>CHARIN</methodname> does not strip any carriage-return
 or line-feed characters before returning the string to your program. You can
 observe this with <code>inchar.rex</code> by typing several strings that have less than ten
 characters and pressing Enter after each string:</para>
+
 <programlisting>
 <![CDATA[
 [C:\>inchar.rex
@@ -831,6 +871,7 @@ Q.
 Pu
 ]]>
 </programlisting>
+
 </section>
 
 <section id="usedevice"><title>Using Windows Devices</title>
@@ -846,10 +887,11 @@ In addition to sending text data, the example also sends a control character
 for starting a new page. You can send other control characters or escape sequences
 in a similar manner. (Generally, these are listed in the manual for the device.)</para>
 <para>Usually the control characters are characters that you cannot type at the
-keyboard. To use them in your program, send a <emphasis role="italic">D2C</emphasis> message to the character's
+keyboard. To use them in your program, send a <methodname>D2C</methodname> message to the character's
 ASCII value as shown in the example.</para>
+
 <example>
-<title><emphasis role="italic"><code>printit.rex</code></emphasis></title>
+<title><filename>printit.rex</filename></title>
 <programlisting>
 <![CDATA[
 /* printit.rex - Prints a text file                                    */
@@ -881,5 +923,6 @@ exit                              /* end the program normally        */
 ]]>
 </programlisting>
 </example>
+
 </section>
 </chapter>

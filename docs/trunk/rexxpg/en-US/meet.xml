@@ -70,9 +70,9 @@ compatible with earlier versions of Rexx that were not object-oriented.</para>
 
 <section id="english"><title>An English-Like Language</title>
 <para>To make Rexx easier to learn and use, many of its instructions are meaningful
-English words. Rexx instructions are common words such as <emphasis role="italic">SAY</emphasis>,
-<emphasis role="italic">PULL</emphasis>, <emphasis role="italic">IF...THEN...ELSE</emphasis>,
-<emphasis role="italic">DO...END</emphasis>, and <emphasis role="italic">EXIT</emphasis>.</para>
+English words. Rexx instructions are common words such as <methodname>SAY</methodname>,
+<methodname>PULL</methodname>, <methodname>IF...THEN...ELSE</methodname>,
+<methodname>DO...END</methodname>, and <methodname>EXIT</methodname>.</para>
 </section>
 
 <section id="crossplat"><title>Cross-Platform Versatility</title>
@@ -121,7 +121,7 @@ a valid number, including those in exponential formats.</para>
 
 <section id="clear"><title>Clear Error Messages and Powerful Debugging</title>
 <para>Rexx displays messages with meaningful explanations when a Rexx program
-encounters an error. In addition, the <emphasis role="italic">TRACE</emphasis> instruction provides a powerful
+encounters an error. In addition, the <methodname>TRACE</methodname> instruction provides a powerful
 debugging tool.</para>
 </section>
 
@@ -171,10 +171,10 @@ main program consists of instructions that send messages to objects.</para>
 
 <indexterm><primary>instances</primary></indexterm>
 <para>A billing application, for example,
-might have an <emphasis role="italic">Invoice</emphasis> class and a
-<emphasis role="italic">Receipt</emphasis> class. These two classes might be
-members of a <emphasis role="italic">Forms</emphasis> class. Individual invoices are
-<emphasis role="italic">instances</emphasis> of the <emphasis role="italic">Invoice</emphasis> class.</para>
+might have an <classname>Invoice</classname> class and a
+<classname>Receipt</classname> class. These two classes might be
+members of a <classname>Forms</classname> class. Individual invoices are
+<emphasis role="italic">instances</emphasis> of the <classname>Invoice</classname> class.</para>
 
 <figure><title>Objects in a Billing Application</title>
 <mediaobject>
@@ -190,9 +190,9 @@ members of a <emphasis role="italic">Forms</emphasis> class. Individual invoices
 name or descriptions and prices of items purchased). To get at the data, you
 write instructions that send messages to the objects.
 These messages activate coded actions called methods.
-For an invoice object, you might need <emphasis role="italic">CREATE</emphasis>, <emphasis role="italic">DISPLAY</emphasis>,
-<emphasis role="italic">PRINT</emphasis>, <emphasis role="italic">UPDATE</emphasis>, and
-<emphasis role="italic">ERASE</emphasis> methods.</para>
+For an invoice object, you might need <methodname>CREATE</methodname>, <methodname>DISPLAY</methodname>,
+<methodname>PRINT</methodname>, <methodname>UPDATE</methodname>, and
+<methodname>ERASE</methodname> methods.</para>
 
 <section id="torexx"><title>From Traditional Rexx to Open Object Rexx</title>
 <indexterm><primary>Rexx</primary>
@@ -206,26 +206,28 @@ The strings represented character data as well as numeric data.
 From an object-oriented perspective, traditional Rexx had just one kind of object:
 the string. In object-oriented terminology, each string variable is an
 <emphasis role="italic">object</emphasis> that is a
-reference to an instance of the <emphasis role="italic">String</emphasis> class.</para>
+reference to an instance of the <classname>String</classname> class.</para>
 
 <indexterm><primary>messages</primary></indexterm>
 <para>With
 ooRexx, variables can now reference objects other than strings. In addition
-to the <emphasis role="italic">String</emphasis> class, Rexx includes classes for creating arrays, queues,
+to the <classname>String</classname> class, Rexx includes classes for creating arrays, queues,
 streams, and many other useful objects. Additionally, you can create your own
 classes that can interoperate seamlessly with the language built-in classes.
 Objects in these Rexx classes
 are manipulated by methods instead of traditional
 functions. To activate a method, you just send a message to the object.</para>
-<para>For example, instead of using the <emphasis role="italic">SUBSTR</emphasis> function on a string
-variable Name, you send a <emphasis role="italic">SUBSTR</emphasis>
+<para>For example, instead of using the <methodname>SUBSTR</methodname> function on a string
+variable Name, you send a <methodname>SUBSTR</methodname>
 message to the string object. In classic
 Rexx, you would do the following: </para>
+
 <programlisting>
 <![CDATA[
 s=substr(name,2,3)
 ]]>
 </programlisting>
+
 <para>In Open Object Rexx, the equivalent would be: </para>
 <programlisting>
 <![CDATA[
@@ -241,40 +243,42 @@ s=name~substr(2,3)
 (<literal>~</literal>) character is the Rexx message send operator,
 called <emphasis role="italic">twiddle</emphasis>.  The object receiving the message
 is to the left of the twiddle. The message sent is to the right. In this example,
-the Name object is sent the <emphasis role="italic">SUBSTR</emphasis> message. The numbers in parentheses <emphasis role="italic">(2,3)</emphasis>
-are arguments sent as part of the message. The <emphasis role="italic">SUBSTR</emphasis> method is run for the
+the Name object is sent the <methodname>SUBSTR</methodname> message. The numbers in parentheses <emphasis role="italic">(2,3)</emphasis>
+are arguments sent as part of the message. The <methodname>SUBSTR</methodname> method is run for the
 Name object, and the result is assigned to the
 <emphasis role="italic">s</emphasis> string object.
-Conceptually, you are "asking" the <emphasis role="italic">String</emphasis> object referred to by variable <emphasis role="italic">NAME</emphasis> to
+Conceptually, you are "asking" the <classname>String</classname> object referred to by variable <methodname>NAME</methodname> to
 give you its substring starting at character 2 for 3 characters.  Many String
 operations are available as both class methods and built-in functions, but the
-<emphasis role="italic">String</emphasis> class also provides many method enhancements for which there are no corresponding
+<classname>String</classname> class also provides many method enhancements for which there are no corresponding
 built-in functions.
 </para>
 
 <indexterm><primary>string</primary></indexterm>
 <indexterm><primary>stem</primary></indexterm>
 <para>For
-classes other than <emphasis role="italic">String</emphasis> (such as <emphasis role="italic">Array</emphasis> or
-<emphasis role="italic">Queue</emphasis>), methods are provided, but not equivalent
-built-in functions. For example, suppose you want to use a Rexx <emphasis role="italic">Array</emphasis> object instead
+classes other than <classname>String</classname> (such as <classname>Array</classname> or
+<classname>Queue</classname>), methods are provided, but not equivalent
+built-in functions. For example, suppose you want to use a Rexx <classname>Array</classname> object instead
 of the traditional string-based
 stem variables (such as <emphasis role="italic">text.1</emphasis> or <emphasis role="italic">text.2</emphasis>).
-To create an array object of five elements, you would send a <emphasis role="italic">NEW</emphasis> message to
-the <emphasis role="italic">Array</emphasis> class as follows: </para>
+To create an array object of five elements, you would send a <methodname>NEW</methodname> message to
+the <classname>Array</classname> class as follows: </para>
+
 <programlisting>
 <![CDATA[
 myarray=.array~new(5)
-
 ]]>
 </programlisting>
-<para>A new instance of the <emphasis role="italic">Array</emphasis> class is created and reference
+
+<para>A new instance of the <classname>Array</classname> class is created and reference
 to it is stored in the variable <literal>myarray</literal>.
 A period and the class name identify the class, <literal>.Array</literal>.  The period tells the
-interpreter to look in the Rexx environment for a class named "<emphasis role="italic">ARRAY</emphasis>".
-The <literal>myarray</literal> <emphasis role="italic">Array</emphasis> object has five
+interpreter to look in the Rexx environment for a class named "<classname>ARRAY</classname>".
+The <literal>myarray</literal> <classname>Array</classname> object has five
 elements, but the array itself is currently empty.  Items can be added using methods
-defined by the <emphasis role="italic">Array</emphasis> class.</para>
+defined by the <classname>Array</classname> class.</para>
+
 <programlisting>
 <![CDATA[
 myarray[1] = "Rick"
@@ -284,7 +288,8 @@ myarray[3] = "Mark"
 say myarray[1] myarray[2] myarray[3]
 ]]>
 </programlisting>
-<para>The <emphasis role="italic">Array</emphasis> class implements many more methods.  See the ooRexx reference for
+
+<para>The <classname>Array</classname> class implements many more methods.  See the ooRexx reference for
 details on what additional methods are provided.</para>
 <para>By adding object technology
 to its repertoire of traditional programming techniques, Rexx has evolved

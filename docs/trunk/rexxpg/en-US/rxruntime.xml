@@ -48,29 +48,29 @@
 <indexterm><primary>programs without source</primary></indexterm>
 <indexterm><primary>rexxc utility</primary></indexterm>
 <para>Open Object Rexx comes with
-a utility called <code>rexxc</code>. You can use this utility to produce versions of your
+a utility called <filename>rexxc</filename>. You can use this utility to produce versions of your
 programs that do not include the original program source. You can use these
 programs to replace any Rexx program file that includes the source, with the
 following restrictions: </para>
 
 <orderedlist>
-<listitem><para>The SOURCELINE built-in function returns
+<listitem><para>The <methodname>SOURCELINE</methodname> built-in function returns
 <computeroutput>0</computeroutput> for the number of
 lines in the program and raises an error for all attempts to retrieve a line.
 </para></listitem>
-<listitem><para>A sourceless program may not be traced. The TRACE instruction runs without
+<listitem><para>A sourceless program may not be traced. The <methodname>TRACE</methodname> instruction runs without
 error, but no tracing of instruction lines, expression results, or intermediate
 expression values occurs.</para></listitem>
 </orderedlist>
 
-<para>The syntax of the <code>rexxc</code> utility on Unix systems is:</para>
+<para>The syntax of the <filename>rexxc</filename> utility on Unix systems is:</para>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/rexxc_unix.svg" align="center" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>The syntax of the <code>rexxc</code> utility on Windows systems is:</para>
+<para>The syntax of the <filename>rexxc</filename> utility on Windows systems is:</para>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/rexxc_windows.svg" align="center" scale="50" />
@@ -105,8 +105,8 @@ scripts before Rexx gets them for execution.</para>
 same or higher language level and the same bitness as the interpreter that the compiling copy of <code>rexxc</code>
 was supplied with.</para>
 -->
-<para>Binary files produced by <code>rexxc</code>  can be run only on an interpreter of the same bitness and the same
-(or higher) language level as that of the <code>rexxc</code>  that created them.</para>
+<para>Binary files produced by <filename>rexxc</filename>   can be run only on an interpreter of the same bitness and the same
+(or higher) language level as that of the <filename>rexxc</filename>   that created them.</para>
 </note>
 
 </appendix>
