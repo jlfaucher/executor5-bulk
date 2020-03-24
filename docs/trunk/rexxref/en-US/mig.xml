@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -44,78 +44,36 @@
     #########################################################################
 -->
 <appendix id="mig"><title>Migration</title>
-<para>This appendix lists some differences between Open Object Rexx and
-earlier versions of Rexx, and between Object Rexx for OS/2 and Open Object
-Rexx for Windows NT and *nix environments.</para>
+<para>This appendix lists some differences between Open Object Rexx 5.0.0
+and earlier versions of Open Object Rexx.</para>
 
-<section id="ecrc"><title>Error Codes and Return Codes</title>
-<para>Some error codes have changed and some have been added. Also, for most
-errors you now receive two error messages. The first should be similar or
-identical to the message you would have seen previously. The second provides
-additional and more detailed information. So, for example, where you formerly
-received &quot;Invalid Call to Routine&quot;, you now get further information
-on what is wrong with the call.</para>
-<para>Also, the return codes of host commands might be different.</para>
-</section>
-
-<section id="errordetect"><title>Error Detection and Reporting</title>
-<para>Some errors are now detected earlier. Formerly, Rexx would wait until it
-encountered an error during execution to report it to you. Now, some errors
-are reported before the first instruction in your Rexx script is executed.
-In particular, syntax errors are reported after you have invoked the program,
-but before it starts execution.</para>
-</section>
-
-<section id="envvar"><title>Environment Variables</title>
-<para>Environment variables set within an ooRexx program by the VALUE
-function or "SET"  are not kept after the program termination.</para>
-</section>
-
-<section id="stemsvcoll"><title>Stems versus Collections</title>
-<para>Stems are a general data structure that are powerful but abstract.
-In earlier
-releases of Rexx, you could use stems to create data structures of all types,
-such as arrays, stacks, and queues. These data structures were semantically
-neutral. Because stems were the basis for all of them, the code itself gave
-no hint of which structure was implemented and for what purpose.</para>
-<para>The best data structure job is not always the most powerful and abstract
-but the most specific and restrictive. ooRexx provides a variety of data
-structures in the collection classes. This helps reduce errors because you
-can select the data structure that best meets your requirements. It also helps
-eliminate the misuse of data structures and adds a semantic context that makes
-programs easier to maintain.</para>
-</section>
-
-<section id="ioufm"><title>Input and Output Using Functions and Methods</title>
-<para>Do not use a mixture of methods and functions for input and output because
-it can cause unpredictable results. For example, using the LINEOUT method
-and the LINEOUT function on the same persistent stream object can cause overlays.
+<section id="deprecated"><title>Deprecated Rexx Utilities Semaphore functions</title>
+<para>The following Rexx Utilities functions related to
+semaphore-processing have been deprecated.
+<simplelist columns="2">
+ <member>SysCloseEventSem</member>
+ <member>SysCloseMutexSem</member>
+ <member>SysCreateEventSem</member>
+ <member>SysCreateMutexSem</member>
+ <member>SysOpenEventSem</member>
+ <member>SysOpenMutexSem</member>
+ <member>SysPostEventSem</member>
+ <member>SysPulseEventSem</member>
+ <member>SysReleaseMutexSem</member>
+ <member>SysRequestMutexSem</member>
+ <member>SysResetEventSem</member>
+ <member>SysWaitEventSem</member>
+</simplelist>
 </para>
-<para>When a Rexx I/O function creates a stream object, the language processor
-stores the reference to the stream object in an internal table.
-When an I/O method creates a stream object, it
-is returned to the program to be maintained. Therefore, these two stream objects
-are separate stream objects with different read and write pointers. The program
-needs to synchronize the read and write pointers of both stream objects.
-Otherwise, overlays would occur.</para>
-</section>
-
-<section id="envdir"><title>.Environment</title>
-<para>The .Environment directory is local per process and not system-global
-as in OS/2.
+<para>The use any of these functions is strongly discouraged, no
+documentation is provided and no bug reports against any of these
+functions will be accepted.
+They are expected to be removed in a future release of the interpreter.
+</para>
+<para>They have been superseded by the new
+<xref linkend="ooRexxEventSemaphoreClass" xrefstyle="select:title"/> and
+<xref linkend="ooRexxMutexSemaphoreClass" xrefstyle="select:title"/>.
 </para>
 </section>
 
-<section id="delenvvar"><title>Deleting Environment Variables</title>
-<para>Value(envvar,&quot;&quot;,&quot;ENVIRONMENT&quot;) does not delete an
-environment variable but sets the environment variable's value to &quot;&quot;.
-Use Value(envvar,.nil,&quot;ENVIRONMENT&quot;)
-to delete an environment variable.</para>
-</section>
-
-<section id="traceinmacrospace"><title>Trace in Macrospace</title>
-<para>Functions in macrospace cannot be traced using the TRACE keyword. These
-functions are stored in an optimized format without source code. If you want
-to trace functions, do not load them into macrospace.</para>
-</section>
 </appendix>

@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2019-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,22 +39,78 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
-
-  group = .TestGroup~new(fileSpec)
-  group~add(.MutexSemaphore.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.MutexSemaphore.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 
 ::class "MutexSemaphore.testGroup" subclass ooTestCase public
+
+::method test_new_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .MutexSemaphore~new(.nil)
+
+::method test_acquire_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .MutexSemaphore~new~acquire(.nil, .nil)
+
+::method test_acquire_number
+  self~expectSyntax((88.902, "timeout", "")) -- The timeout argument must be a number; found ""
+  .MutexSemaphore~new~acquire("")
+
+::method test_release_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .MutexSemaphore~new~release(.nil)
+
+::method test_acquire_acquire_simple
+  sem = .MutexSemaphore~new
+  self~assertTrue(sem~acquire)
+  self~assertTrue(sem~acquire, 0)
+  self~assertTrue(sem~acquire, 0.01)
+  self~assertTrue(sem~acquire, .TimeSpan~fromSeconds(0.05))
+  self~assertTrue(sem~acquire, -3)
+
+::method test_acquire_release_simple
+  -- mutexes are created in the released state
+  sem = .MutexSemaphore~new
+  self~assertFalse(sem~release)
+
+  -- an acquire with zero timeout returns immediately
+  self~assertTrue(sem~acquire(0))
+  self~assertTrue(sem~release)
+  self~assertFalse(sem~release)
+
+  -- wait with 1 ms timeout
+  self~assertTrue(sem~acquire(0.001))
+  self~assertTrue(sem~release)
+  self~assertFalse(sem~release)
+
+::method test_acquire_release_nested
+  -- mutexes are created in the released state
+  sem = .MutexSemaphore~new
+  self~assertFalse(sem~release)
+
+  -- acquire twice, release twice
+  self~assertTrue(sem~acquire)
+  self~assertTrue(sem~acquire(0.001))
+  self~assertTrue(sem~release)
+  self~assertTrue(sem~release)
+  self~assertFalse(sem~release)
+
+  -- acquire three times, and release
+  self~assertTrue(sem~acquire(0.001))
+  self~assertTrue(sem~acquire(-1))
+  self~assertTrue(sem~acquire(.TimeSpan~fromSeconds(2)))
+  self~assertTrue(sem~release)
+  self~assertTrue(sem~release)
+  self~assertTrue(sem~release)
+  self~assertFalse(sem~release)
 
 ::method test_exclusion
   expose step
@@ -69,11 +125,11 @@ return testResult
   -- request with zero timeout
   self~assertFalse(sem~acquire(0))
   -- request with a non-zero time out
-  self~assertFalse(sem~acquire(50))
+  self~assertFalse(sem~acquire(0.05))
   -- wake the other thread up
   step = 3
   -- a long time out value that should wake up before the timeout
-  self~assertTrue(sem~acquire(1000))
+  self~assertTrue(sem~acquire(1))
 
   -- wake the other thread up again
   step = 4
@@ -82,11 +138,7 @@ return testResult
   self~assertTrue(sem~release)
   guard off when step == 6
   -- we should be able to acquire this once the secondary thread terminates
-  self~assertTrue(sem~acquire(1000))
-
-  sem~close
-  self~assertFalse(sem~release)
-  self~assertFalse(sem~acquire)
+  self~assertTrue(sem~acquire(1))
 
 ::method run_test_exclusion unguarded
   expose step
@@ -108,7 +160,7 @@ return testResult
 
   -- infinite wait request
   self~assertFalse(sem~acquire(0))
-  self~assertFalse(sem~acquire(50))
+  self~assertFalse(sem~acquire(0.05))
   step = 5
   self~assertTrue(sem~acquire(-1))
   self~assertTrue(sem~release)

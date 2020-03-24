@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2019-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,20 +39,130 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
-
-  group = .TestGroup~new(fileSpec)
-  group~add(.EventSemaphore.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.EventSemaphore.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 
 ::class "EventSemaphore.testGroup" subclass ooTestCase public
 
+::method test_new_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .EventSemaphore~new(.nil)
+
+::method test_isposted_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .EventSemaphore~new~isPosted(.nil)
+
+::method test_post_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .EventSemaphore~new~post(.nil)
+
+::method test_reset_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .EventSemaphore~new~reset(.nil)
+
+::method test_post_reset
+  e = .EventSemaphore~new
+  self~assertFalse(e~isPosted, "semaphores should be created in the non-posted state")
+
+  -- post and reset
+  e~post
+  self~assertTrue(e~isPosted)
+  e~reset
+  self~assertFalse(e~isPosted)
+
+  -- post/reset multiple times
+  do 2
+    e~post
+    self~assertTrue(e~isPosted)
+  end
+  do 2
+    e~reset
+    self~assertFalse(e~isPosted)
+  end
+
+::method test_wait_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .EventSemaphore~new~wait(0, 0)
+
+::method test_wait_number
+  self~expectSyntax((88.902, "timeout", "")) -- The timeout argument must be a number; found ""
+  .EventSemaphore~new~wait("")
+
+::method test_wait_simple
+  -- semaphores are created in the non-posted state
+  sem = .EventSemaphore~new
+
+  -- a wait with zero timeout returns immediately
+  self~assertFalse(sem~wait(0))
+  self~assertFalse(sem~isPosted)
+
+  -- wait with 1 ms timeout
+  self~assertFalse(sem~wait(0.001))
+  self~assertFalse(sem~isPosted)
+
+  -- wait with TimeSpan timeout
+  self~assertFalse(sem~wait(.TimeSpan~fromMicroseconds(5000)))
+  self~assertFalse(sem~isPosted)
+
+  -- now, post the semaphore
+  sem~post
+
+  -- wait without timeout
+  self~assertTrue(sem~wait)
+  self~assertTrue(sem~isPosted)
+
+  -- wait with indefinite timeout
+  self~assertTrue(sem~wait(-10))
+  self~assertTrue(sem~isPosted)
+
+  -- a wait with zero timeout returns immediately
+  self~assertTrue(sem~wait(0))
+  self~assertTrue(sem~isPosted)
+
+  -- wait with 1 ms timeout
+  self~assertTrue(sem~wait(0.001))
+  self~assertTrue(sem~isPosted)
+
+  sem~reset
+  self~assertFalse(sem~isPosted)
+
+::method test_wait_concurrent unguarded
+  expose sem step
+
+  sem = .EventSemaphore~new
+
+  -- post should trigger our worker
+  step = ""
+  msg = self~start("concurrent_worker")
+  guard off when step = "wait" -- wait until the worker is waiting
+  sem~post
+  self~assertSame(1, msg~result, "our worker should not time-out")
+
+  -- post/reset in a single clause should still trigger our worker
+  step = ""
+  msg = self~start("concurrent_worker")
+  guard off when step = "wait" -- wait until the worker is waiting
+  -- there is a non-zero chance that our worker isn't yet running the
+  -- sem~wait clause, so we wait a little more to make almost sure
+  call SysSleep 0.1
+  sem~~post~reset
+  self~assertSame(1, msg~result, "our worker should not time-out")
+
+::method concurrent_worker unguarded
+  expose sem step
+
+  step = "wait"
+  -- we never expect to time-out, but we still set 500 ms
+  c = sem~wait(500)
+  sem~reset
+  return c
+
+::options novalue syntax

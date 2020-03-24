@@ -1003,7 +1003,7 @@ The program is searched for using the
 </para>
 <para>If any Rexx code precedes the first directive in
 <emphasis role="italic">programname</emphasis> then that code is executed at the
-time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
+time the ::REQUIRES is processed by the
 interpreter. This will be executed prior to executing the main Rexx program in
 the file that specifies the ::REQUIRES statement.
 </para>
@@ -1023,12 +1023,13 @@ code of the Rexx packages.
 taken as a constant; a literal string is not allowed.
 </para>
 <para>
-The <option>NAMESPACE</option> option will attach the name <emphasis role="italic">namespace</emphasis>
-to the file loaded by the ::REQUIRES directive.
-This will make it possible to use e. g.
-<emphasis role="italic">namespace</emphasis>:<emphasis role="italic">class</emphasis>
-to differentiate between classes (or routines) of the same name in
-different ::REQUIRES files or the main program.
+The <option>NAMESPACE</option> option attaches the qualifier
+<emphasis role="italic">namespace</emphasis> to the package loaded by the
+::REQUIRES directive.
+To distinguish public classes or public routines of the same name in
+different ::REQUIRES files, use a namespace-qualified symbol of the form
+<emphasis role="italic">namespace</emphasis><literal>:</literal><emphasis role="italic">class</emphasis> or
+<emphasis role="italic">namespace</emphasis><literal>:</literal><emphasis role="italic">routine</emphasis>.
 For details see <xref linkend="namespacesym" />.
 </para>
 
@@ -1058,6 +1059,7 @@ Local class definitions within a program override classes of the same name
 in other programs accessed through ::REQUIRES directives.</para>
 <para>Another directive, or the end of the program, must follow a ::REQUIRES
 directive. Only null clauses can appear between them.</para>
+
 </section>
 
 <section id="resourced" revisionflag="added"><title>&added50;::RESOURCE</title>

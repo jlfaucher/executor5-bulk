@@ -136,23 +136,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><xref linkend="utlSyscloseeventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysclosemutexsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
 <entry><xref linkend="utlSyscls" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSyscreateeventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSyscreatemutexsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
 <entry></entry>
 </row>
 <row>
@@ -312,22 +296,6 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><xref linkend="utlSysopeneventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysopenmutexsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysposteventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSyspulseeventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>No</entry>
-<entry></entry>
-</row>
-<row>
 <entry><xref linkend="utlSysqueryprocess" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
 <entry>Works differently</entry>
 </row>
@@ -336,19 +304,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><xref linkend="utlSysreleasemutexsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
 <entry><xref linkend="utlSysreorderrexxmacro" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysrequestmutexsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysreseteventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
 <entry></entry>
 </row>
 <row>
@@ -433,10 +389,6 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><xref linkend="utlSyswait" xrefstyle="select:title"/></entry><entry>No</entry><entry>Yes</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSyswaiteventsem" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
 <entry></entry>
 </row>
 <row>
@@ -750,79 +702,6 @@ RexxAddMacro return code.</para>
 RexxClearMacroSpace return code.</para>
 </section>
 
-<section id="utlSyscloseeventsem"><title>SysCloseEventSem</title>
-<indexterm><primary>SysCloseEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysCloseEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/syscloseeventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Closes an event semaphore.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateEventSem or
-SysOpenEventSem call.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>102</term>
-<listitem><para>Error semaphore busy.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSysclosemutexsem"><title>SysCloseMutexSem</title>
-<indexterm><primary>SysCloseMutexSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysCloseMutexSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysclosemutexsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Closes a mutex semaphore.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateMutexSem call.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>102</term>
-<listitem><para>Error semaphore busy.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="utlSyscls"><title>SysCls</title>
 <indexterm><primary>SysCls</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -842,68 +721,6 @@ is returned.  This may be one of the following, but could be others.
 call SysCls
 </programlisting>
 </example>
-</section>
-
-<section id="utlSyscreateeventsem"><title>SysCreateEventSem</title>
-<indexterm><primary>SysCreateEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysCreateEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/syscreateeventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Creates an event semaphore. It returns an event semaphore
-handle that can be used with SysCloseEventSem, SysOpenEventSem,
-SysResetEventSem, SysPostEventSem, and SysWaitEventSem. SysCreateEventSem
-returns a null string (&quot;&quot;) if the semaphore cannot be created or
-already exists.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The optional event semaphore name. If you omit
-<emphasis role="italic">name</emphasis>,
-SysCreateEventSem creates an unnamed, shared event semaphore.
-A semaphore name can be MAX_PATH long, and
-can contain any character except the backslash (\) path-separator character.
-Semaphore names are case-sensitive.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">manual_reset</emphasis></term>
-<listitem><para>A flag to indicate that the event semaphore must be reset
-manually by SysResetEventSem. If this parameter is omitted, the event
-semaphore is reset automatically by SysWaitEventSem.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSyscreatemutexsem"><title>SysCreateMutexSem</title>
-<indexterm><primary>SysCreateMutexSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysCreateMutexSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/syscreatemutexsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Creates a mutex semaphore. Returns a mutex semaphore handle that
-can be used with SysCloseMutexSem, SysRequestMutexSem, and SysReleaseMutexSem.
-SysCreateMutexSem returns a null string (&quot;&quot;) if the semaphore cannot
-be created or already exists.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The optional mutex semaphore name. If you omit
-<emphasis role="italic">name</emphasis>, SysCreateMutexSem
-creates an unnamed, shared mutex semaphore. If you specify
-<emphasis role="italic">name</emphasis>,
-The semaphore names cannot be longer than 63 characters. Semaphore names are
-case-sensitive.
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="utlSyscreatepipe"><title>SysCreatePipe (Unix only)</title>
@@ -2903,11 +2720,13 @@ else say "File is not Temporary."
 <title>RexxUtil &mdash; SysLinVer</title>
 <programlisting>
 -- CentOS 7
-say SysLinVer()  -- "Linux 3.10.0-693.21.1.el7.x86_64"
+say SysVersion() -- Linux 3.10.0-957.10.1.el7.x86_64
 -- Ubuntu 16.04
-say SysLinVer()  -- "Linux 4.4.0-127-generic"
+say SysVersion() -- Linux 4.4.0-154-generic
 -- Raspbian
-say SysLinVer()  -- "Linux 4.14.70-v7+"
+say SysVersion() -- Linux 4.14.70-v7+
+-- SLES/390
+say SysVersion() -- Linux 3.12.74-60.64.40-default
 </programlisting>
 </example>
 </para>
@@ -3045,114 +2864,6 @@ call SysMkDir "rexx"
 </example>
 </section>
 
-<section id="utlSysopeneventsem"><title>SysOpenEventSem</title>
-<indexterm><primary>SysOpenEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysOpenEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysopeneventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Opens an event semaphore. SysOpenEventSem
-returns a handle to the semaphore, or zero if an error occurred.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The name of the event semaphore created by SysCreateEventSem.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSysopenmutexsem"><title>SysOpenMutexSem</title>
-<indexterm><primary>SysOpenMutexSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysOpenMutexSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysopenmutexsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Opens a mutex semaphore. SysOpenMutexSem
-returns a handle to the semaphore, or zero if an error occurred.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The name of the mutex semaphore created by SysCreateMutexSem.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSysposteventsem"><title>SysPostEventSem</title>
-<indexterm><primary>SysPostEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysPostEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysposteventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Posts an event semaphore.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateEventSem call.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSyspulseeventsem"><title>SysPulseEventSem (Windows only)</title>
-<indexterm><primary>SysPulseEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysPulseEventSem</secondary></indexterm>
-<indexterm><primary>thread</primary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/syspulseeventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Posts and immediately resets an event
-semaphore. It sets the state of the event to signaled (available), releases
-any waiting threads, and resets it to nonsignaled (unavailable) automatically.
-If the event is manual, all waiting threads are released, the event is set
-to nonsignaled, and PulseEvent returns. If the event is automatic, a single
-thread is released, the event is set to nonsignaled, and PulseEvent returns.
-If no threads are waiting, or no threads can be released immediately, PulseEvent
-sets the state of the event to nonsignaled and returns.</para>
-<para>SysPulseEventSem returns 0 on success and a
- <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/> is returned on
-error.
-.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>The handle of an event semaphore previously created
-by SysCreateEventSem.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="utlSysqueryprocess"><title>SysQueryProcess</title>
 <indexterm><primary>SysQueryProcess</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -3254,45 +2965,6 @@ if the function does not exist in the macrospace.</para>
 </variablelist>
 </section>
 
-<section id="utlSysreleasemutexsem"><title>SysReleaseMutexSem</title>
-<indexterm><primary>SysReleaseMutexSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysReleaseMutexSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysreleasemutexsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Releases a mutex semaphore.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateMutexSem call.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>105</term>
-<listitem><para>Owner died.
-</para></listitem></varlistentry>
-<varlistentry><term>288</term>
-<listitem><para>Not owner.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="utlSysreorderrexxmacro"><title>SysReorderRexxMacro</title>
 <indexterm><primary>SysReorderRexxmacro</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -3314,83 +2986,6 @@ returns the RexxReorderMacro return code.</para>
 <varlistentry><term><emphasis role="italic">order</emphasis></term>
 <listitem><para>The new macro search order. The order can be "B" (Before) or "A"
 (After).
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSysrequestmutexsem"><title>SysRequestMutexSem</title>
-<indexterm><primary>SysRequestMutexSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysRequestMutexSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysrequestmutexsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Requests a mutex semaphore. SysRequestMutexSem
-returns the WaitForSingleObject return code.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateMutexSem call.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">timeout</emphasis></term>
-<listitem><para>The time, in milliseconds, to wait on the semaphore.
-The default <emphasis role="italic">timeout</emphasis> is an infinite wait.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>103</term>
-<listitem><para>Too many requests.
-</para></listitem></varlistentry>
-<varlistentry><term>121</term>
-<listitem><para>Error timeout.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="utlSysreseteventsem"><title>SysResetEventSem</title>
-<indexterm><primary>SysResetEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysResetEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysreseteventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Resets an event semaphore..</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateEventSem call.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -4581,15 +4176,17 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 <title>RexxUtil &mdash; SysVersion</title>
 <programlisting>
 -- CentOS 7
-say SysVersion() -- "Linux #1 SMP Wed Mar 7 19:03:37 UTC 2018.3.10.0-693.21.1.el7.x86_64"
+say SysVersion() -- Linux 3.10.0-957.10.1.el7.x86_64
 -- Ubuntu 16.04
-say SysVersion() -- "Linux #153-Ubuntu SMP Sat May 19 10:58:46 UTC 2018.4.4.0-127-generic"
+say SysVersion() -- Linux 4.4.0-154-generic
 -- macOS 10.13
-say SysVersion() -- "Darwin Darwin Kernel Version 17.7.0: Fri Nov  2 20:43:16 PDT 2018; root:xnu-4570.71.17~1/RELEASE_X86_64.17.7.0"
+say SysVersion() -- Darwin 18.7.0
 -- Raspbian
-say SysVersion() -- "Linux #1144 SMP Tue Sep 18 17:34:46 BST 2018.4.14.70-v7+"
+say SysVersion() -- Linux 4.14.70-v7+
+-- SLES/390
+say SysVersion() -- Linux 3.12.74-60.64.40-default
 -- Windows 10
-say SysVersion() -- "Windows 10.00.17134.1"
+say SysVersion() -- Windows 10.0.18363
 </programlisting>
 </example>
 </para>
@@ -4656,47 +4253,6 @@ is omitted, the current drive is used.
 <para>
   <xref linkend="utlSysfork" xrefstyle="select:title"/> has an example that uses
   <computeroutput>wait()</computeroutput>.</para>
-</section>
-
-<section id="utlSyswaiteventsem"><title>SysWaitEventSem</title>
-<indexterm><primary>SysWaitEventSem</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysWaitEventSem</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/syswaiteventsem.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Waits on an event semaphore. SysWaitEventSem
-returns the WaitForSingleObject return code.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>A handle returned from a previous SysCreateEventSem call.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">timeout</emphasis></term>
-<listitem><para>The time, in milliseconds, to wait on the semaphore. The
-default <emphasis role="italic">timeout</emphasis> is an infinite wait.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No errors.
-</para></listitem></varlistentry>
-<varlistentry><term>Other</term>
-<listitem><para>An error occurred.  On Windows, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but could be others.
-</para></listitem></varlistentry>
-<varlistentry><term>6</term>
-<listitem><para>Invalid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>258</term>
-<listitem><para>Timeout.
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="utlSyswaitnamedpipe"><title>SysWaitNamedPipe (Windows only)</title>
@@ -4999,8 +4555,10 @@ Rexx code should not rely on the exact format returned.
 <example id="ex.syswinver">
 <title>RexxUtil &mdash; SysWinVer</title>
 <programlisting>
-say SysWinVer()  -- "Windows 6.01.7601.24260" (Windows 7)
-say SysWinVer()  -- "Windows 10.00.17134.1"   (Windows 10)
+-- Windows 7
+say SysWinVer()  -- Windows 6.01.7601
+-- Windows 10
+say SysWinVer()  -- Windows 10.0.18363
 </programlisting>
 </example>
 </para>

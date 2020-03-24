@@ -8,15 +8,11 @@ sysbootdrive ::= 'SysBootDrive()'
 
 sysclearrexxmacrospace ::= 'SysClearRexxMacroSpace()'
 
-syscloseeventsem ::= 'SysCloseEventSem(' handle ')'
 
-sysclosemutexsem ::= 'SysCloseMutexSem(' handle ')'
 
 syscls ::= 'SysCls()'
 
-syscreateeventsem ::= 'SysCreateEventSem(' ( name )? ( ',' manual_reset )? ')'
 
-syscreatemutexsem ::= 'SysCreateMutexSem(' ( name )? ')'
 
 syscreatepipe ::= 'SysCreatePipe()'
 
@@ -109,13 +105,9 @@ sysloadrexxmacrospace ::= 'SysLoadRexxMacroSpace(' file ')'
 sysmkdir ::= 'SysMkDir(' dirspec ')'
 sysmkdir_unix ::= 'SysMkDir(' dirspec (',' mode)? ')'
 
-sysopeneventsem ::= 'SysOpenEventSem(' name ')'
 
-sysopenmutexsem ::= 'SysOpenMutexSem(' name ')'
 
-sysposteventsem ::= 'SysPostEventSem(' handle ')'
 
-syspulseeventsem ::= 'SysPulseEventSem(' handle ')'
 
 sysqueryprocess1 ::= 'SysQueryProcess(' ( '"PID"' | '"TID"' | '"PPRIO"' | '"TPRIO"' |
                                          '"PTIME"' | '"TTIME"' )? ')'
@@ -125,13 +117,10 @@ sysqueryprocess2 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"PTI
 
 sysqueryrexxmacro ::= 'SysQueryRexxMacro(' name ')'
 
-sysreleasemutexsem ::= 'SysReleaseMutexSem(' handle ')'
 
 sysreorderrexxmacro ::= 'SysReorderRexxMacro(' name ',' order ')'
 
-sysrequestmutexsem ::= 'SysRequestMutexSem(' handle ( ',' timeout )? ')'
 
-sysreseteventsem ::= 'SysResetEventSem(' handle ')'
 
 sysrmdir ::= 'SysRmDir(' dirspec ')'
 
@@ -180,7 +169,6 @@ sysvolumelabel ::= 'SysVolumeLabel(' ( driveletter )? ')'
 
 syswait ::= 'SysWait()'
 
-syswaiteventsem ::= 'SysWaitEventSem(' handle ( ',' timeout )? ')'
 
 syswaitnamedpipe ::= 'SysWaitNamedPipe(' name ( ',' timeout )? ')'
 

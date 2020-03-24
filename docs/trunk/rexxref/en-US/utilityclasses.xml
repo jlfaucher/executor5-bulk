@@ -325,11 +325,12 @@ Returns &false; if the alarm has been cancelled or hasn't yet triggered.
 
 <para>The <classname>AlarmNotification</classname> class implements the
 notification interface for the
-<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> class.
+<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> and the
+<xref linkend="clsTicker" xrefstyle="template:Ticker"/> class.
 </para>
-<para>For any <classname>Alarm</classname>, notifications of alarm triggering
-and alarm cancellation will be sent to the notification target specified when
-creating the <classname>Alarm</classname> instance.
+<para>For any Alarm or Ticker object, notifications of alarm triggering
+and alarm cancellation are sent to the notification target specified when
+creating the Alarm or Ticker instance.
 The notification target must implement this alarm notification interface.
 Upon alarm triggering a <methodname>triggered</methodname>
 message is sent to the notification target, and
@@ -375,9 +376,11 @@ message is sent to the notification target.
 <imagedata fileref="images/classes/alarmnotification_cancel.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Whenever an <classname>Alarm</classname> is cancelled, this method of the
-alarm notification target will be called.
-The <classname>Alarm</classname> object that was cancelled will be provided as
+<para>Whenever an
+<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> or
+<xref linkend="clsTicker" xrefstyle="template:Ticker"/> is cancelled,
+this method of the alarm notification target will be called.
+The Alarm or Ticker object that was cancelled will be provided as
 argument <emphasis role="italic">source</emphasis>.
 </para>
 <para>It is defined as a no-op and doesn't necessarily have to be implemented
@@ -396,9 +399,11 @@ by an inheriting class.
 <imagedata fileref="images/classes/alarmnotification_triggered.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Whenever an <classname>Alarm</classname> triggers, this method of the
-alarm notification target will be called.
-The <classname>Alarm</classname> object which triggered will be provided as
+<para>Whenever an
+<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> or
+<xref linkend="clsTicker" xrefstyle="template:Ticker"/> triggers,
+this method of the alarm notification target will be called.
+The Alarm or Ticker object which triggered will be provided as
 argument <emphasis role="italic">source</emphasis>.
 </para>
 <para>It is an abstract method and must be implemented by an inheriting class.
@@ -3111,40 +3116,27 @@ will also return this value.
 
 </section>
 
-<!-- ===========  EventSemaphore Class  =========== BEGIN ===========  -->
 
-
+<!-- =============================================================== -->
+<!-- Class EventSemaphore ========================================== -->
 <section id="clsEventSemaphore" revisionflag="added"><title>&added50;EventSemaphore Class</title>
 <indexterm><primary>EventSemaphore class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>EventSemaphore class</secondary></indexterm>
 
-<para>Semaphores get used in multithreaded scenarios.
+<para>An event semaphore is a synchronization mechanism that can be used
+to indicate to activities when a particular
+condition&mdash;the event&mdash;has become true.
+</para>
+<para>An event can be set by posting the event semaphore, or cleared by
+resetting it.
+An activity, a <xref linkend="xconcur" xrefstyle="template:concurrent"/>
+chain of execution, can choose to get suspended while waiting for the
+event to become true, at which point the activity is released and
+continues to execute.
 </para>
 
-<para>
-An <classname>EventSemaphore</classname> object
-allows one thread "A" to synchronize multiple threads
-(like "B", "C", ...) with whom the
-<classname>EventSemaphore</classname> object
-gets shared.
-Thread "A" creates the
-<classname>EventSemaphore</classname> object
-and sends it the <emphasis role="italic">"reset"</emphasis> message.
-Then thread "A" supplies the
-<classname>EventSemaphore</classname> object
-to the threads "B", "C", ..., each of which sends the received
-<classname>EventSemaphore</classname> object
-a <emphasis role="italic">"wait"</emphasis> message.
-This will block the threads "B", "C", ..., until thread "A" sends the <emphasis role="italic">"post"</emphasis> message to the
-<classname>EventSemaphore</classname> object .
-At this time all threads waiting on the
-<classname>EventSemaphore</classname> object
-get released and can run in parallel on their threads.
-</para>
-
-<!-- rgf: not sure whether the following comment is important, so just left it -->
-<!-- $GENERATED-xxxxxxxx-START rexxrefClassTable(EventSemaphore) -->
+<!-- $GENERATED-20200310-START rexxrefClassTable(EventSemaphore) -->
 <table id="ooRexxEventSemaphoreClass" frame="all" pgwide="1">
 <title>EventSemaphore Class</title>
 <tgroup cols="1">
@@ -3160,8 +3152,10 @@ get released and can run in parallel on their threads.
  <row><entry align="center"><emphasis role="bold">EventSemaphore</emphasis></entry>
  </row>
  <row><entry>
+  <simplelist>
+   <member><xref linkend="mthEventSemaphoreNew" xrefstyle="select:title"/></member>
+  </simplelist>
   <simplelist columns="3">
-   <member><xref linkend="mthEventSemaphoreClose" xrefstyle="select:title"/></member>
    <member><xref linkend="mthEventSemaphoreIsPosted" xrefstyle="select:title"/></member>
    <member><xref linkend="mthEventSemaphorePost" xrefstyle="select:title"/></member>
    <member><xref linkend="mthEventSemaphoreReset" xrefstyle="select:title"/></member>
@@ -3172,112 +3166,114 @@ get released and can run in parallel on their threads.
 </tbody>
 </tgroup>
 </table>
-<!-- rgf: not sure whether the following comment is important, so just left it -->
-<!-- $GENERATED-xxxxxxxx-END rexxrefClassTable(EventSemaphore) -->
+<!-- $GENERATED-20200310-END rexxrefClassTable(EventSemaphore) -->
 
-<!-- Class EventSemaphore - method close =============================== -->
-<section id="mthEventSemaphoreClose" revisionflag="added"><title>&added50;close</title>
+
+<!-- Class EventSemaphore - method new ============================= -->
+<section id="mthEventSemaphoreNew" revisionflag="added"><title>&added50;new (Class Method)</title>
+<indexterm><primary>new method</primary><secondary>of EventSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <para>
-<indexterm><primary>close method</primary><secondary>of EventSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary><secondary>close method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== close -====><
-close ::= 'close'
--->
-<imagedata fileref="images/classes/eventsemaphore_close.svg" scale="55"/>
+<imagedata fileref="images/classes/eventsemaphore_new.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>
-Closes the event semaphore.
+<para>Returns a new <classname>EventSemaphore</classname> instance.
+Initially the semaphore is in the cleared state.
 </para>
 </section>
 
-<!-- Class EventSemaphore - method isPosted =============================== -->
+
+<!-- Class EventSemaphore - method isPosted ======================== -->
 <section id="mthEventSemaphoreIsPosted" revisionflag="added"><title>&added50;isPosted</title>
-<indexterm><primary>isPosted method</primary>
-<secondary>of EventSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>isPosted method</secondary>
-<tertiary>of EventSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>===  isPosted === ><
-isPosted ::= 'isPosted'
--->
-<imagedata fileref="images/classes/eventsemaphore_isPosted.svg" scale="55" />
-</imageobject></mediaobject>
+<indexterm><primary>isPosted method</primary><secondary>of EventSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isPosted method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <para>
-Returns &true; if the event semaphore is in the "posted" state, such that
-sending the <emphasis role="italic">"wait"</emphasis> message to this event semaphore would return
-immediately.  A return value of &false; indicates that the event semaphore
-is not in the "posted" state, such that a
-<emphasis role="italic">"wait"</emphasis> message will block.
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/eventsemaphore_isposted.svg" scale="55"/>
+</imageobject></mediaobject>
 </para>
+<para>Returns &true; if the event semaphore is in the posted state,
+&false; if it is currently cleared.
+</para>
+<para>See also methods
+<xref linkend="mthEventSemaphorePost" xrefstyle="select:title"/> and
+<xref linkend="mthEventSemaphoreReset" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.eventsemaphore-isposted">
+<title>EventSemaphore class &mdash; isPosted method
+<indexterm><primary>examples</primary><secondary>isPosted method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+sem = .EventSemaphore~new
+say sem~isPosted    -- 0
+sem~post
+say sem~isPosted    -- 1
+]]></programlisting></example></para>
 </section>
 
-<!-- Class EventSemaphore - method post=============================== -->
+
+<!-- Class EventSemaphore - method post ============================ -->
 <section id="mthEventSemaphorePost" revisionflag="added"><title>&added50;post</title>
-<indexterm><primary>Post method</primary>
-<secondary>of EventSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>Post method</secondary>
-<tertiary>of EventSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== post ===><
-post ::= 'post'
--->
-<imagedata fileref="images/classes/eventsemaphore_post.svg" scale="55" />
-</imageobject></mediaobject>
+<indexterm><primary>post method</primary><secondary>of EventSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>post method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <para>
-Sets the event semaphore to the "posted" state, signalling that the event
-that other threads are waiting on has occurred, such that all threads
-waiting on this event semaphore will be released and start to run again.
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/eventsemaphore_post.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Sets the event semaphore to the posted state.
+All suspended activities
+<xref linkend="mthEventSemaphoreWait" xrefstyle="template:waiting"/>
+for this event are released.
+Activities calling the <methodname>wait</methodname> method while
+the event semapahore is already in the posted state will continue
+executing without getting suspended.
+</para>
+<para>See also method <xref linkend="mthEventSemaphoreReset" xrefstyle="select:title"/>.
 </para>
 </section>
 
-<!-- Class EventSemaphore - method reset =============================== -->
+
+<!-- Class EventSemaphore - method reset =========================== -->
 <section id="mthEventSemaphoreReset" revisionflag="added"><title>&added50;reset</title>
-<indexterm><primary>Reset method</primary>
-<secondary>of EventSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>Reset method</secondary>
-<tertiary>of EventSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== reset ===><
-reset ::= 'reset'
--->
-<imagedata fileref="images/classes/eventsemaphore_reset.svg" scale="55" />
-</imageobject></mediaobject>
+<indexterm><primary>reset method</primary><secondary>of EventSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>reset method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <para>
-Resets (clears) the event semaphore to the non-"posted" state, such that "wait"
-messages to this event semaphore will block.
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/eventsemaphore_reset.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Clears the event semaphore.
+During the time the semaphore is cleared, any activities starting a
+blocking <xref linkend="mthEventSemaphoreWait" xrefstyle="select:title"/>
+get suspended.
+</para>
+<para>See also method <xref linkend="mthEventSemaphorePost" xrefstyle="select:title"/>.
 </para>
 </section>
 
-<!-- Class EventSemaphore - method uninit =============================== -->
+
+<!-- Class EventSemaphore - method uninit ========================== -->
 <section id="mthEventSemaphoreUninit" revisionflag="added"><title>&added50;uninit</title>
-<indexterm><primary>Uninit method</primary>
-<secondary>of EventSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>Uninit method</secondary>
-<tertiary>of EventSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== uninit ===><
-uninit ::= 'uninit'
--->
-<imagedata fileref="images/classes/eventsemaphore_uninit.svg" scale="55" />
-</imageobject></mediaobject>
+<indexterm><primary>uninit method</primary><secondary>of EventSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>uninit method</secondary><tertiary>of EventSemaphore class</tertiary></indexterm>
 <para>
-Resets (clears) the event semaphore to the non-"posted" state, such that <emphasis role="italic">"wait"</emphasis>
-messages to this event semaphore will block.
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/eventsemaphore_uninit.svg" scale="55"/>
+</imageobject></mediaobject>
 </para>
+<para>This method cleans up the event semaphore when it is garbage collected.
+</para>
+<note><para>
+<methodname>uninit</methodname> should not be invoked directly except via
+an uninit method of a subclass of the EventSemaphore class.
+Any such subclassed uninit method must forward to the superclass uninit method.
+</para></note>
 </section>
 
-<!-- Class EventSemaphore - method wait =============================== -->
+
+<!-- Class EventSemaphore - method wait ============================ -->
 <section id="mthEventSemaphoreWait" revisionflag="added"><title>&added50;wait</title>
 <indexterm><primary>Wait method</primary>
 <secondary>of EventSemaphore class</secondary></indexterm>
@@ -3285,131 +3281,83 @@ messages to this event semaphore will block.
 <secondary>Wait method</secondary>
 <tertiary>of EventSemaphore class</tertiary></indexterm>
 <mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>== wait(==+=============+==)==><
-            |             |
-            +== timeout ==+
-
-wait ::= 'wait(' ( timeout )? ')'
--->
 <imagedata fileref="images/classes/eventsemaphore_wait.svg" scale="55" />
 </imageobject></mediaobject>
 <para>
-Waits (blocks) on the event semaphore until it gets "posted".  If the
-optional argument <emphasis role="italic">"timeout"</emphasis> was supplied it must be a whole number that
-represents the milliseconds to wait on the event semaphore before
-returning.
+Returns &true; if waiting for the event semaphore to get posted has been
+successful or the semaphore is already in the posted state,
+and &false; if a timeout occurred while waiting.
 </para>
-<para>
-If no <emphasis role="italic">"timeout"</emphasis> value was supplied or its value is negative, the wait will
-be forever, ie. until the event semaphore gets "posted".
+<para>If <emphasis role="italic">timeout</emphasis> is specified it must
+be a <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/> instance
+or a valid Rexx number.
+If the value is negative or if <emphasis role="italic">timeout</emphasis>
+is omitted, <methodname>wait</methodname> suspends the current activity
+until the semaphore gets posted.
 </para>
-<para>
-If the <emphasis role="italic">"timeout"</emphasis> value is zero the method returns immediately with the
-same value that the method <emphasis role="italic">"isPosted"</emphasis> would return if sent to the event
-semaphore instead.
+<para>If <emphasis role="italic">timeout</emphasis> is zero,
+<methodname>wait</methodname> immediately returns with a return value as
+if <xref linkend="mthEventSemaphoreIsPosted" xrefstyle="select:title"/>
+had been called.
 </para>
-<para>
-The method returns &true; if the event semaphore got "posted", &false; if
-the method returns prematurely because the given <emphasis role="italic">timeout</emphasis> has occurred.
+<para>If the <emphasis role="italic">timeout</emphasis> period is
+positive, <methodname>wait</methodname> suspends the current activity for
+<emphasis role="italic">timeout</emphasis> seconds or until the semaphore
+gets posted, whatever comes first.
 </para>
-<para>
-Resets (clears) the event semaphore to the non-"posted" state, such that "wait"
-messages to this event semaphore will block.
+<para>Any number of activities can wait for an event semaphore.
+When the semaphore is posted, all waiting activities are released.
+The exact order in which released activities resume execution is
+unspecified and should not be relied upon.
 </para>
-</section>
+<para><example id="ex.eventsemaphore-wait">
+<title>EventSemaphore class &mdash; wait method
+<indexterm><primary>examples</primary><secondary>wait method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+event = .EventSemaphore~new
 
-<!-- Class EventSemaphore - example section ================================ -->
-<section><title>EventSemaphore Example</title>
-<indexterm><primary>examples</primary>
-<secondary>of EventSemaphore class</secondary></indexterm>
-<example  id="ex.eventsemaphore">
-<title>EventSemaphore class</title>
-<para>
-The following example will fetch the routine object <emphasis role="italic">"WORKER"</emphasis> and in a loop
-will send the routine object the message <emphasis role="italic">"start"</emphasis> (defined in the ooRexx
-root class <classname>Object</classname>) supplying the message name (<emphasis role="italic">"call"</emphasis>) to be sent on a
-new (asynchroneous) thread, and as arguments the event semaphore to wait
-on and the number of the loop for the respective asynchroneous message.
-</para>
-<para>
-The main program creates an event semaphore and sends the message <emphasis role="italic">"reset"</emphasis>
-to it.  Then it sends the <emphasis role="italic">"start"</emphasis> message three times to the routine
-object in the loop, causing the <classname>routine</classname> <emphasis role="italic">"worker"</emphasis> to run on three different
-threads, where in each thread the executed routine then waits on the event
-semaphore (<emphasis role="italic">"wait"</emphasis> message to the event semaphore).  The main program then
-sleeps for five seconds, before sending the <emphasis role="italic">"post"</emphasis> message to the event
-semaphore, which will awake the routines on the three threads, ie.  they
-return from the wait message and execute on their threads in parallel,
-causing each to sleep for two seconds before returning from the routine
-invocation.
-</para>
-<programlisting><![CDATA[eventSem=.eventSemaphore~new -- create an event semaphore, will be in posted state
-dt=.dateTime~new     -- a .DateTime object to allow measuring elapsed time
-say "/main\     " pp(dt~elapsed) "currently 'eventSem~isPosted':" pp(eventSem~isPosted)
-eventSem~reset       -- reset event semaphore, such that "wait" will block
-say "/main\     " pp(dt~elapsed) "after 'eventSem~reset', 'eventSem~isPosted':" -
-                  pp(eventSem~isPosted)
-w=.routines~waiter   -- get routine 'WAITER' as a routine object
-do i=1 to 3
-   say "/main\     " pp(dt~elapsed) "running routine 'WAITER' #" pp(i) "asynchroneously"
-   w~start("call", eventSem, i) -- call (run) the routine object on a separate thread
+say "main starts tasks"
+do nr = 1 to 5
+  .task~new~waitFor(event, "task" nr)
 end
-say
-sleepTime=5
-say "/main\     " pp(dt~elapsed) "sleeping" pp(sleepTime) "seconds ..."
-call sysSleep sleepTime -- sleep
-say "/main\     " pp(dt~elapsed) "awoke, about doing an 'eventSem~post' ..."
-say
-eventSem~post        -- wake up all threads waiting on this event semaphore
-say "\main/     " pp(dt~elapsed) "--> leaving main, other threads may still be active!"
+call SysSleep 0.1
 
-::routine waiter     -- this routine will be called on a separate thread
-   use arg eventSem, nr
-   s=.dateTime~new   -- .DateTime object to measure elapsed time on this thread
-   say .context~name" #" nr":" pp(s~elapsed) "arrived, 'eventSem~isPosted'=" || -
-                               pp(eventSem~isPosted)", about: 'eventSem~wait'"
-   eventSem~wait     -- wait until main program posts this event semaphore
-   say .context~name" #" nr":" pp(s~elapsed) "wait over, 'eventSem~isPosted':" -
-                               pp(eventSem~isPosted)
-   sleepTime=2
-   say .context~name" #" nr":" pp(s~elapsed) "now sleeping" pp(sleepTime) "second(s)"
-   call syssleep sleeptime -- sleep
-   say .context~name" #" nr":" pp(s~elapsed) "sleep over"
+say "main posts"
+event~post
+say "main ends"
 
-::routine pp         -- "pretty print" ;) (encloses argument in square brackets)
-   return "["arg(1)"]"]]></programlisting>
+::class Task
 
-Running this program may yield the following output:
-
-<programlisting><![CDATA[/main\      [00:00:00.000000] currently 'eventSem~isPosted': [1]
-/main\      [00:00:00.000000] after 'eventSem~reset', 'eventSem~isPosted': [0]
-/main\      [00:00:00.015000] running routine 'WAITER' # [1] asynchroneously
-/main\      [00:00:00.015000] running routine 'WAITER' # [2] asynchroneously
-WAITER # 1: [00:00:00.000000] arrived, 'eventSem~isPosted'=[0], about: 'eventSem~wait'
-/main\      [00:00:00.015000] running routine 'WAITER' # [3] asynchroneously
-WAITER # 2: [00:00:00.000000] arrived, 'eventSem~isPosted'=[0], about: 'eventSem~wait'
-
-WAITER # 3: [00:00:00.000000] arrived, 'eventSem~isPosted'=[0], about: 'eventSem~wait'
-/main\      [00:00:00.031000] sleeping [5] seconds ...
-/main\      [00:00:05.056000] awoke, about doing an 'eventSem~post' ...
-
-\main/      [00:00:05.056000] --> leaving main, other threads may still be active!
-WAITER # 2: [00:00:05.041000] wait over, 'eventSem~isPosted': [1]
-WAITER # 1: [00:00:05.041000] wait over, 'eventSem~isPosted': [1]
-WAITER # 3: [00:00:05.025000] wait over, 'eventSem~isPosted': [1]
-WAITER # 2: [00:00:05.057000] now sleeping [2] second(s)
-WAITER # 1: [00:00:05.057000] now sleeping [2] second(s)
-WAITER # 3: [00:00:05.041000] now sleeping [2] second(s)
-WAITER # 3: [00:00:07.069000] sleep over
-WAITER # 2: [00:00:07.085000] sleep over
-WAITER # 1: [00:00:07.085000] sleep over]]></programlisting>
-</example>
+::method waitFor
+  reply
+  use strict arg event, name
+  say name "waits"
+  event~wait
+  say name "runs"
+]]></programlisting></example>
+may output
+<programlisting>
+main starts tasks
+task 2 waits
+task 5 waits
+task 1 waits
+task 3 waits
+task 4 waits
+main posts
+main ends
+task 4 runs
+task 3 runs
+task 1 runs
+task 2 runs
+task 5 runs
+</programlisting>
+</para>
 </section>
 
-</section> <!-- end of  "clsEventSemaphore" section -->
+</section>
 
-<!-- ===========  EventSemaphore Class  =========== END ===========  -->
+
 
 <section id="clsFile"><title>File Class</title>
 <indexterm><primary>File class</primary></indexterm>
@@ -6337,46 +6285,30 @@ which the search is to be started.</para>
 </section>
 </section>
 
-<!-- ===========  MutexSemaphore Class  =========== BEGIN ===========  -->
-
+<!-- =============================================================== -->
+<!-- Class MutexSemaphore ========================================== -->
 <section id="clsMutexSemaphore" revisionflag="added"><title>&added50;MutexSemaphore Class</title>
 <indexterm><primary>MutexSemaphore class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>MutexSemaphore class</secondary></indexterm>
 
-<para>Semaphores get used in multithreaded scenarios.
+<para>A mutex, or mutual exclusion semaphore is a synchronization
+mechanism which concurrent activities can use to control access to a
+common resource.
+</para>
+<para>Mutual exclusion is the requirement that one activity, a
+<xref linkend="xconcur" xrefstyle="template:concurrent"/> chain of
+execution, never enters its critical section at the same time that
+another concurrent activity enters its own critical section.
+</para>
+<para>An activity acquires the mutex semaphore before entering its
+critical section, and releases it after the critical section.
+</para>
+<para>See also keyword instructions
+<xref linkend="keyGuard" xrefstyle="template:GUARD ON and GUARD OFF"/>.
 </para>
 
-<para>
-A <classname>MutexSemaphore</classname> object allows a thread "A" to
-<emphasis role="italic">"acquire"</emphasis>  it exclusively,
-causing any other thread that sends the message <emphasis role="italic">"acquire"</emphasis> to the same
-<classname>MutexSemaphore</classname> object  to be blocked as long as thread "A" does not
-<emphasis role="italic">"release"</emphasis>  the
-<classname>MutexSemaphore</classname> object .
-</para>
-
-<para>
-The first thread "A" that <emphasis role="italic">acquired</emphasis>
-the <classname>MutexSemaphore</classname> object  is the one that
-holds it exclusively and is able to execute, all other threads "B", "C",
-..., that tried to <emphasis role="italic">"acquire"</emphasis>
-the same mutex semaphore exclusively
-afterwards get blocked.  Once thread "A" releases the mutex semaphore one
-of the other blocked threads "B", "C", ...  becomes able to execute, while
-the other threads remain blocked.  Then, when the executing thread
-releases the mutex semaphore the next blocked thread gets released and
-will be able to continue running, etc.
-</para>
-<para>
-Note: there is no predefined sequence that determines which of the blocked
-threads will get scheduled to run next once the mutex semaphore received
-the <emphasis role="italic">"release"</emphasis> message as this
-scheduling is done by the operating system.
-</para>
-
-
-<!-- $GENERATED-xxxxxxxx-START rexxrefClassTable(MutexSemaphore) -->
+<!-- $GENERATED-20200310-START rexxrefClassTable(MutexSemaphore) -->
 <table id="ooRexxMutexSemaphoreClass" frame="all" pgwide="1">
 <title>MutexSemaphore Class</title>
 <tgroup cols="1">
@@ -6392,9 +6324,11 @@ scheduling is done by the operating system.
  <row><entry align="center"><emphasis role="bold">MutexSemaphore</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="3">
+  <simplelist>
+   <member><xref linkend="mthMutexSemaphoreNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist>
    <member><xref linkend="mthMutexSemaphoreAcquire" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthMutexSemaphoreClose" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutexSemaphoreRelease" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutexSemaphoreUninit" xrefstyle="select:title"/></member>
   </simplelist>
@@ -6402,225 +6336,153 @@ scheduling is done by the operating system.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-xxxxxxxxxEND rexxrefClassTable(MutexSemaphore) -->
+<!-- $GENERATED-20200310-END rexxrefClassTable(MutexSemaphore) -->
+
+<!-- Class MutexSemaphore - method new ============================= -->
+<section id="mthMutexSemaphoreNew" revisionflag="added"><title>&added50;new (Class Method)</title>
+<indexterm><primary>new method</primary><secondary>of MutexSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of MutexSemaphore class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutexsemaphore_new.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a new <classname>MutexSemaphore</classname> instance.
+Initially the mutex semaphore is in the released state.
+</para>
+</section>
 
 
-<!-- Class MutexSemaphore - method acquire =============================== -->
+<!-- Class MutexSemaphore - method acquire ========================= -->
 <section id="mthMutexSemaphoreAcquire" revisionflag="added"><title>&added50;acquire</title>
-<indexterm><primary>Acquire method</primary>
-<secondary>of MutexSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>Acquire method</secondary>
-<tertiary>of MutexSemaphore class</tertiary></indexterm>
+<indexterm><primary>acquire method</primary><secondary>of MutexSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>acquire method</secondary><tertiary>of MutexSemaphore class</tertiary></indexterm>
+<para>
 <mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>== acquire(==+=============+==)==><
-               |             |
-               +== timeout ==+
-
-acquire ::= 'acquire(' ( timeout )? ')'
--->
-<imagedata fileref="images/classes/mutexsemaphore_acquire.svg" scale="55" />
+<imagedata fileref="images/classes/mutexsemaphore_acquire.svg" scale="55"/>
 </imageobject></mediaobject>
-<para>
-Acquires the mutex semaphore exclusively and blocks any other threads that
-also attempt to <emphasis role="italic">"acquire"</emphasis> the mutex semaphore until the mutex semaphore
-gets the message<emphasis role="italic"> "release"</emphasis> sent.
 </para>
-<para>
-If the optional argument <emphasis role="italic">"timeout"</emphasis> was supplied it must be a whole number
-that represents the milliseconds to wait on the mutex semaphore before
-returning.
+<para>Returns &true; if the current activity has already owned or has
+just acquired the mutex semaphore.
+Returns &false; if the mutex is owned by a different activity, or a
+timeout has occurred.
 </para>
-<para>
-If no <emphasis role="italic">"timeout"</emphasis> value was supplied or its value is negative, the blocking
-will be forever, ie.  until the mutex semaphore becomes available as the
-result of another thread releasing it.
+<para>Nested acquires, from an activity already owning the mutex
+semaphore, are allowed, with each <methodname>acquire</methodname>
+increasing the mutex nesting level by one.
+An equivalent number of calls to
+<xref linkend="mthMutexSemaphoreRelease" xrefstyle="select:title"/>
+are needed to make the mutex available again to another activity.
 </para>
-<para>
-If the <emphasis role="italic">"timeout"</emphasis> value is zero the method returns immediately.  The method
-returns &true;  if the mutex semaphore got acquired exclusively, &false;  else
-(some other thread holds the mutex semaphore).  This can be used to try to
-acquire a mutex semaphore without being blocked, if currently it is
-already exclusively acquired by another thread.
+<para>If <emphasis role="italic">timeout</emphasis> is specified it must
+be a <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/> instance
+or a valid Rexx number.
+If the value is negative or if <emphasis role="italic">timeout</emphasis>
+is omitted, <methodname>acquire</methodname> suspends the current activity
+until it can get ownership of the mutex.
 </para>
-<para>
-The method returns &true;  if the mutex semaphore got acquired, &false; if
-the method returns prematurely because the given timeout has occurred.
+<para>If <emphasis role="italic">timeout</emphasis> is zero,
+<methodname>acquire</methodname> immediately returns &true; if the mutex
+was acquired, or &false; otherwise.
 </para>
-<para>
-<emphasis role="bold">Note 1:</emphasis> a thread that has successfully acquired a mutex semaphore may send
-additional <emphasis role="italic">"acquire"</emphasis> messages without blocking.  It requires an equivalent
-number of <emphasis role="italic">"release"</emphasis> messages to free up the mutex semaphore.
+<para>If the <emphasis role="italic">timeout</emphasis> period is
+positive, <methodname>acquire</methodname> suspends the current activity
+for <emphasis role="italic">timeout</emphasis> seconds or until the
+current activity can acquire the mutex, whatever comes first.
 </para>
-<para>
-<emphasis role="bold">Note 2:</emphasis> if the thread that has successfully acquired the mutex semaphore
-ends without releasing it, the semaphore will be released automatically.
+<para>If an activity still owns mutex semaphores when it ends, these
+semaphores will be automatically released by the interpreter.
+</para>
+<para>See also method <xref linkend="mthMutexSemaphoreRelease" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.mutexsemaphore-acquire">
+<title>MutexSemaphore class &mdash; acquire method
+<indexterm><primary>examples</primary><secondary>acquire method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+mutex = .MutexSemaphore~new
+.Task~new~startWork(mutex, "work 1")
+.Task~new~startWork(mutex, "work 2")
+say "work tasks started"
+
+::class Task
+
+::method startWork unguarded
+  expose mutex name
+  use strict arg mutex, name
+  reply
+  self~doWork(1)
+
+::method doWork unguarded
+  expose mutex name
+  use strict arg level
+  -- five levels of nested acquires
+  if level > 5 then
+    return
+  mutex~acquire
+  say name level
+  self~doWork(level + 1)
+]]></programlisting></example>
+may output
+<programlisting>
+work tasks started
+work 2 1
+work 2 2
+work 2 3
+work 2 4
+work 2 5
+work 1 1
+work 1 2
+work 1 3
+work 1 4
+work 1 5
+</programlisting>
 </para>
 </section>
 
 
-<!-- Class MutexSemaphore - method close =============================== -->
-<section id="mthMutexSemaphoreClose" revisionflag="added"><title>&added50;close</title>
-<para>
-<indexterm><primary>close method</primary><secondary>of MutexSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary><secondary>close method</secondary><tertiary>of MutexSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== close -====><
-close ::= 'close'
--->
-<imagedata fileref="images/classes/mutexsemaphore_close.svg" scale="55"/>
-</imageobject></mediaobject>
-</para>
-<para>
-Closes the mutex semaphore.
-</para>
-</section>
-
-<!-- Class MutexSemaphore - method release =============================== -->
+<!-- Class MutexSemaphore - method release ========================= -->
 <section id="mthMutexSemaphoreRelease" revisionflag="added"><title>&added50;release</title>
-<indexterm><primary>release method</primary>
-<secondary>of MutexSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>release method</secondary>
-<tertiary>of MutexSemaphore class</tertiary></indexterm>
-<mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>===  release === ><
-release ::= 'release'
--->
-<imagedata fileref="images/classes/mutexsemaphore_release.svg" scale="55" />
-</imageobject></mediaobject>
+<indexterm><primary>release method</primary><secondary>of MutexSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>release method</secondary><tertiary>of MutexSemaphore class</tertiary></indexterm>
 <para>
-Releases (clears) the mutex semaphore, such that one of the blocked threads
-becomes able to <emphasis role="italic">"acquire"</emphasis> it successfully.
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutexsemaphore_release.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns &true; if the mutex semaphore had been owned by the
+current activity, returns &false; otherwise.
+</para>
+<para>A successful release decreases the mutex nesting level.
+If the nesting level has reached zero, one of the activities, if any,
+waiting to acquire the mutex gets released and becomes the new owner of
+the mutex.
+</para>
+<para>See also method <xref linkend="mthMutexSemaphoreAcquire" xrefstyle="select:title"/>.
 </para>
 </section>
 
-<!-- Class MutexSemaphore - method uninit =============================== -->
+
+<!-- Class MutexSemaphore - method uninit ========================== -->
 <section id="mthMutexSemaphoreUninit" revisionflag="added"><title>&added50;uninit</title>
-<indexterm><primary>Uninit method</primary>
-<secondary>of MutexSemaphore class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>Uninit method</secondary>
-<tertiary>of MutexSemaphore class</tertiary></indexterm>
+<indexterm><primary>uninit method</primary><secondary>of MutexSemaphore class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>uninit method</secondary><tertiary>of MutexSemaphore class</tertiary></indexterm>
+<para>
 <mediaobject><imageobject>
-<!--  ASCII rail diagram (using equal signs instead of dashes in order to not close mistakingly this comment)  and  W3C's EBNF :
->>=== uninit ===><
-uninit ::= 'uninit'
--->
-<imagedata fileref="images/classes/mutexsemaphore_uninit.svg" scale="55" />
+<imagedata fileref="images/classes/mutexsemaphore_uninit.svg" scale="55"/>
 </imageobject></mediaobject>
-<para>
-Resets (clears) the event semaphore to the non-"posted" state, such that "wait"
-messages to this event semaphore will block.
 </para>
+<para>This method cleans up the mutex semaphore when it is garbage collected.
+</para>
+<note><para>
+<methodname>uninit</methodname> should not be invoked directly except via
+an uninit method of a subclass of the MutexSemaphore class.
+Any such subclassed uninit method must forward to the superclass uninit method.
+</para></note>
 </section>
 
-<!-- Class MutexSemaphore - example section ================================ -->
-<section><title>MutexSemaphore Example</title>
-<indexterm><primary>examples</primary>
-<secondary>of MutexSemaphore class</secondary></indexterm>
-<example  id="ex.mutexsemaphore">
-<title>MutexSemaphore class</title>
-<para>
-In the following example the main program will create a mutex semaphore
-and acquire it for itself, such that any other thread that tries to
-acquire the same mutex semaphore gets blocked.  The main program then
-fetches the <classname>routine</classname> object
-<emphasis role="italic">"WORKER"</emphasis> and in a loop will send the routine
-object the message <emphasis role="italic">"start"</emphasis> (defined in the ooRexx root class
-<classname>Object</classname>)
-supplying the message name (<emphasis role="italic">"call"</emphasis>) to be sent on a new (asynchroneous)
-thread, and as arguments the mutex semaphore that they need to acquire and
-the number of the loop for the respective asynchroneous message.
-</para>
-<para>
-The main program then sleeps for three seconds before releasing the mutex
-semaphore, which allows one of the blocked threads to acquire it
-successfully.  The routine on that thread will sleep for two seconds and
-then return which causes its thread of execution to end (this will
-automatically release the acquired mutex semaphore).  This in turn allows
-another blocked thread to acquire the mutex semaphore and do the same
-(sleep for two seconds and then return from the invocation ending its
-thread of execution), which in turn allows the last blocked thread to
-acquire the mutex semaphore and do the same.
-</para>
-<para>
-The output will demonstrate that the three routine threads are blocked
-until the main program releases the mutex semaphore.  Please note that the
-sequence in which the blocked threads get scheduled to be run next is
-dependent on the scheduling algorithms of the operating system.
-</para>
-<programlisting><![CDATA[mutexSem=.mutexSemaphore~new -- create a mutex semaphore, will be in released state
-dt=.dateTime~new     -- a .DateTime object to allow measuring elapsed time
-mutexSem~acquire     -- we block everyone else
-say "/main\     " pp(dt~elapsed) "'mutexSem' created and acquired"
-w=.routines~waiter   -- get routine 'WAITER' as a routine object
-do i=1 to 3
-   say "/main\     " pp(dt~elapsed) "running routine 'WAITER' #" pp(i) "asynchroneously"
-   w~start("call", mutexSem, i) -- call (run) the routine object on a separate thread
-end
-say
-sleepTime=3
-say "/main\     " pp(dt~elapsed) "sleeping" pp(sleepTime) "seconds" "--> "~copies(5)
-call sysSleep sleepTime -- sleep
-say "/main\      " pp(dt~elapsed) "awoke, about doing a 'mutexSem~release' <--"
-mutexSem~release     -- allow one of the 'worker' threads waiting on the mutexSem to run
-
-sleepTime=7
-say "/main\     " pp(dt~elapsed) "sleeping" pp(sleepTime) "seconds" "--> "~copies(5)
-call sysSleep sleepTime -- sleep
-say "\main/     " pp(dt~elapsed) "awoke, leaving main" "<-- "~copies(5)
-
-::routine waiter     -- this routine will be called on a separate 'worker' thread
-   use arg mutexSem, nr
-   s=.dateTime~new   -- a .DateTime object to measure elapsed time on this thread
-   say .context~name" #" nr":" pp(s~elapsed) "arrived, about doing 'mutexSem~acquire' ..."
-   mutexSem~acquire  -- wait until semaphore becomes (exclusively) available to us
-   say .context~name" #" nr":" pp(s~elapsed) "after 'mutexSem~acquire'"
-   sleepTime=2
-   say .context~name" #" nr":" pp(s~elapsed) "now sleeping" pp(sleepTime) "second(s)"
-   call syssleep sleeptime -- sleep
-   say .context~name" #" nr":" pp(s~elapsed) "sleep over"
-   say
-
-::routine pp         -- "pretty print" ;) (encloses argument i square brackets)
-   return "["arg(1)"]"]]></programlisting>
-
-Running this program may yield the following output:
-
-<programlisting><![CDATA[/main\      [00:00:00.000000] 'mutexSem' created and acquired
-/main\      [00:00:00.000000] running routine 'WAITER' # [1] asynchroneously
-/main\      [00:00:00.000000] running routine 'WAITER' # [2] asynchroneously
-WAITER # 1: [00:00:00.000000] arrived, about doing 'mutexSem~acquire' ...
-/main\      [00:00:00.000000] running routine 'WAITER' # [3] asynchroneously
-WAITER # 2: [00:00:00.000000] arrived, about doing 'mutexSem~acquire' ...
-
-WAITER # 3: [00:00:00.000000] arrived, about doing 'mutexSem~acquire' ...
-/main\      [00:00:00.000000] sleeping [3] seconds --> --> --> --> -->
-/main\      [00:00:03.011000] awoke, about doing a 'mutexSem~release' <--
-/main\      [00:00:03.011000] sleeping [7] seconds --> --> --> --> -->
-WAITER # 1: [00:00:03.011000] after 'mutexSem~acquire'
-WAITER # 1: [00:00:03.011000] now sleeping [2] second(s)
-WAITER # 1: [00:00:05.023000] sleep over
-
-WAITER # 2: [00:00:05.023000] after 'mutexSem~acquire'
-WAITER # 2: [00:00:05.023000] now sleeping [2] second(s)
-WAITER # 2: [00:00:07.036000] sleep over
-
-WAITER # 3: [00:00:07.036000] after 'mutexSem~acquire'
-WAITER # 3: [00:00:07.036000] now sleeping [2] second(s)
-WAITER # 3: [00:00:09.048000] sleep over
-
-\main/      [00:00:10.017000] awoke, leaving main <-- <-- <-- <-- <--]]></programlisting>
-</example>
 </section>
 
-</section> <!-- end of  "clsMutexSemaphore" section -->
-
-<!-- ===========  MutexSemaphore Class  =========== END ===========  -->
 
 
 <section id="clsOrderable"><title>Orderable Class</title>
@@ -6636,8 +6498,6 @@ WAITER # 3: [00:00:09.048000] sleep over
 </para>
 <para>The <classname>Orderable</classname> class is defined as a MIXIN class.
 </para>
-
-
 
 <!-- $GENERATED-20190429-START rexxrefClassTable(Orderable) -->
 <table id="ooRexxOrderableClass" frame="all" pgwide="1">
@@ -11245,7 +11105,7 @@ if the validation fails, else returns with no result.
 to another object.
 It can only be created using a
 <xref linkend="varrefterm" xrefstyle="select:title" />.
-Calling the <methodname>new</methodname> method to create VariableReference
+Calling the <methodname>new</methodname> method to create a VariableReference
 instance is not allowed.
 </para>
 
@@ -11372,13 +11232,14 @@ referenced variable.
 <indexterm><primary>examples</primary><secondary>value method</secondary></indexterm>
 </title>
 <programlisting><![CDATA[
-variable = 123
-call double >variable
-say variable      -- 246
+array = 1, 2, 3
 
-::routine double
-  use strict arg >n
-  n *= 2
+say >array~class~id                  -- VariableReference
+say >array~value~class~id            -- Array
+
+say >array~value~toString(, ", ")    -- 1, 2, 3
+-- this also works because we have an UNKNOWN method
+say >array~toString(, ", ")          -- 1, 2, 3
 ]]></programlisting></example></para>
 </section>
 
@@ -11395,7 +11256,8 @@ object.  A non-pinning reference does not prevent an object from getting garbage
 collected or having its uninit method run when there are no longer normal
 references maintained to the object.  Once the referenced object is eligible for
 garbage collection, the reference inside the WeakReference instance will be
-cleared and the VALUE method will return &nil; on all subsequent calls.
+cleared and the <xref linkend="mthWeakReferenceValue" xrefstyle="select:title"/>
+method will return &nil; on all subsequent calls.
 WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
 
@@ -11457,8 +11319,8 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns the referenced object.  If the object has been garbage
-collected, then &nil; is returned.
+<para>Returns the referenced object.
+If the object has been garbage collected, &nil; is returned.
 </para>
 </section>
 </section>

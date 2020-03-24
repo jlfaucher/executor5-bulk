@@ -57,7 +57,7 @@ datetime_fromutcisodate ::= 'fromUtcIsoDate(' date ')'
 datetime_fromordinaldate ::= 'fromOrdinalDate(' date (',' offset)? ')'
 datetime_fromweeknumberdate ::= 'fromWeekNumberDate(' date (',' offset)? ')'
 
-/* keep four separate diagrams, so that the fourth can get split into two lines */
+/* keep as four separate diagrams to allow the fourth to be split across lines */
 datetime_init1 ::= 'init'
 datetime_init2 ::= 'init(' fulldate ( ',' offset )? ')'
 datetime_init3 ::= 'init(' year ',' month ',' day ( ',' offset )? ')'
@@ -484,4 +484,16 @@ variablereference_request   ::= 'request(' classid ')'
 variablereference_unknown   ::= 'unknown'
 variablereference_value     ::= 'value'
 variablereference_value     ::= 'value' '=' object
+
+eventsemaphore_new          ::= 'new'
+eventsemaphore_isposted     ::= 'isPosted'
+eventsemaphore_post         ::= 'post'
+eventsemaphore_reset        ::= 'reset'
+eventsemaphore_uninit       ::= 'uninit'
+eventsemaphore_wait         ::= 'wait(' timeout? ')'
+
+mutexsemaphore_new          ::= 'new'
+mutexsemaphore_acquire      ::= 'acquire(' timeout? ')'
+mutexsemaphore_release      ::= 'release'
+mutexsemaphore_uninit       ::= 'uninit'
 
