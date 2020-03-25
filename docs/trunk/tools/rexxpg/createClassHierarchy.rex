@@ -63,9 +63,7 @@ pkgLocal~bShowChanged50 = .true
 pkgLocal~added50="&added50;"        -- from rexxpg.ent
 pkgLocal~changed50="&changed50;"    -- from rexxpg.ent
 
-pkgLocal~ignoreClasses=.set~of(                                      -
-        "BagMixin", "ManyItemMixin", "SetMixin", "SupplierMixin",    -  -- private classes for rexx.img-creation
-        "ArgUtil", "LocalServer", "OLEObject", "OLEVariant" )
+pkgLocal~ignoreClasses=.set~of("ArgUtil", "OLEObject", "OLEVariant" )
 
 pkgLocal~classesAdded50=.set~of("StringTable", "AlarmNotification",  -
         "EventSemaphore", "MessageNotification", "MutexSemaphore",   -
@@ -91,7 +89,10 @@ say .mb~string                      -- show as string
   use arg clz, level
 
   clzId=clz~id                      -- get class name
-  if clz~package = .context~package then return    -- ignore any classes that are part of this utility
+
+  if clz~package \= .object~package then return    -- ignore any classes that are not part of the the Rexx package
+  if .object~package~findPublicClass(clzId) == .nil then return -- ignore any of the non-public Rexx package classes
+  -- and finally, there are a few specific classes we ignore because they are package specific or deprecated.
   if .ignoreClasses~hasIndex(clzId) then return    -- ignore this class
 
   indent=.blanks~copies(level)
