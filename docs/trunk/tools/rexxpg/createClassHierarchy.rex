@@ -80,7 +80,7 @@ say .mb~string                      -- show as string
      do
         .mb~append(.crlf, indent, .blanks, "<listitem><para>")
      end
-     .mb~append(clzId)
+     .mb~append("<classname>", clzId, "</classname>")
      if .bShowAdded50,   .classesAdded50~hasIndex(clzId) then .mb~append(" ", .added50)
      if .bShowChanged50, .classesChanged50~hasIndex(clzId) then .mb~append(" ", .changed50)
   end
@@ -88,7 +88,7 @@ say .mb~string                      -- show as string
   do
      if .bShowAdded50,   .classesAdded50~hasIndex(clzId) then .mb~append(.added50)
      if .bShowChanged50, .classesChanged50~hasIndex(clzId) then .mb~append(.changeed50)
-     .mb~append(clzId)
+     .mb~append("<classname>", clzId, "</classname>")
   end
 
   mixinClass?=clz~queryMixinClass
@@ -109,16 +109,18 @@ say .mb~string                      -- show as string
         if superClasses~items>1 then
         do
            if .bCreateXML then
-              .mb~append('<emphasis role="italic"> (inherit')
+              .mb~append('<emphasis role="italic"> (inherit<classname>')
            else
               .mb~append(" (inherit")
            do counter i sc over superClasses
               if i=1 then iterate   -- do not show immediate superclass as inherited class!
               .mb~append(" ", sc~id)
            end
-           .mb~append(")")
+
            if .bCreateXML then
-             .mb~append('</emphasis>')
+             .mb~append('</classname>)</emphasis>')
+           else
+              .mb~append(")")
         end
      end
   end

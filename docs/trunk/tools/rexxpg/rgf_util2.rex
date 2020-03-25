@@ -108,7 +108,6 @@
                   2018-09-30  - ppCondition2(): test whether the class .BSF (from BSF4ooRexx) is present before
                                 using it in the isA(.bsf) test
 
-
       purpose:    set of 3.2 utilities to ease programming of 3.2.0, e.g. offer sort2()- and
                   stableSort2()-BIFs that handle all kind of standard sorting needs, thereby
                   removing the need for "low level" coding in ooRexx itself
@@ -122,23 +121,6 @@
                   - create routines "leftWord([-]n)", "rightWord([-]n)"
 
                   - in ooRexx 5.0 a package has a ".local" directory that can be used to add the classes instead!
-
-      license:    ASF 2.0, <http://www.apache.org/licenses/LICENSE-2.0>:
-                  --------------- cut here ----------------
-                     Copyright 2008-2017 Rony G. Flatscher
-
-                     Licensed under the Apache License, Version 2.0 (the "License");
-                     you may not use this file except in compliance with the License.
-                     You may obtain a copy of the License at
-
-                         http://www.apache.org/licenses/LICENSE-2.0
-
-                     Unless required by applicable law or agreed to in writing, software
-                     distributed under the License is distributed on an "AS IS" BASIS,
-                     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                     See the License for the specific language governing permissions and
-                     limitations under the License.
-                  --------------- cut here ----------------
 
       version:    110.20171221
 */
