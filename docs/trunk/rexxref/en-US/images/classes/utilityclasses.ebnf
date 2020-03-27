@@ -285,39 +285,24 @@ regexp_pos ::= 'pos(' haystack ')'
 
 regexp_position ::= 'position'
 
-rexxqueue_create ::= 'create(' name ')'
-
+rexxqueue_new          ::= 'new(' name? ')'
+rexxqueue_create       ::= 'create(' name? ')'
 rexxqueue_delete_class ::= 'delete(' name ')'
-
-rexxqueue_exists ::= 'exists(' name ')'
-
-rexxqueue_open ::= 'open(' name ')'
-
-rexxqueue_delete ::= 'delete'
-
-rexxqueue_empty ::= 'empty'
-
-rexxqueue_get ::= 'get'
-
-rexxqueue_init ::= 'init(' ( name )? ')'
-
-rexxqueue_linein ::= 'lineIn'
-
-rexxqueue_lineout ::= 'lineOut(' ( line )? ')'
-
-rexxqueue_makearray ::= 'makeArray'
-
-rexxqueue_pull ::= 'pull'
-
-rexxqueue_push ::= 'push(' ( line )? ')'
-
-rexxqueue_queue ::= 'queue(' ( line )? ')'
-
-rexxqueue_queued ::= 'queued'
-
-rexxqueue_say ::= 'say(' ( line )? ')'
-
-rexxqueue_set ::= 'set(' name ')'
+rexxqueue_exists       ::= 'exists(' name ')'
+rexxqueue_open         ::= 'open(' name ')'
+rexxqueue_delete       ::= 'delete'
+rexxqueue_empty        ::= 'empty'
+rexxqueue_get          ::= 'get'
+rexxqueue_init         ::= 'init(' name? ')'
+rexxqueue_linein       ::= 'lineIn'
+rexxqueue_lineout      ::= 'lineOut(' line? ')'
+rexxqueue_makearray    ::= 'makeArray'
+rexxqueue_pull         ::= 'pull'
+rexxqueue_push         ::= 'push(' line? ')'
+rexxqueue_queue        ::= 'queue(' line? ')'
+rexxqueue_queued       ::= 'queued'
+rexxqueue_say          ::= 'say(' line? ')'
+rexxqueue_set          ::= 'set(' name ')'
 
 supplier_new ::= 'new(' items ',' indexes ')'
 

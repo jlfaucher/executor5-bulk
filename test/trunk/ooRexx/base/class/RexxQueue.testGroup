@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -40,47 +40,29 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  -- Create a TestGroup using information specific to this file.
-  parse source . . fileSpec
-  group = .TestGroup~new(fileSpec)
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.REXXQUEUE.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  group~add(.REXXQUEUE.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 ::requires 'FileUtils.cls'
 
-/* class: RexxQueue.testGroup  - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A test case class to regression test the .RexxQueue class.
-    The .RexxQueue class is one of the classes supplied by Open Object REXX.
-
-    All test case methods in this class begin with 'test_'.
-
-    The design specification used for these test cases of the .queue class is
-    the current documentation for the class from:
-
-      Open Object Rexx
-      Reference
-      Version 3.0.0 Revision 3 Edition
-      November 11, 2005
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "RexxQueue.testGroup" public subclass ooTestCase
+
+::constant arrayOf100numbers (.Array~new(100)~fill(0)~allIndexes)
+::constant STORAGE  1 -- RXQUEUE_STORAGE
+::constant BADQNAME 5 -- RXQUEUE_BADQNAME
+::constant NOTREG   9 -- RXQUEUE_NOTREG
+::constant ACCESS  10 -- RXQUEUE_ACCESS
 
   /* test_new( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .RexxQueue class method: new.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_new
+::method  nonotest_new
 
     -- Prefix to my messages.
     be   = "New object should be"
@@ -129,7 +111,7 @@ return testResult
                 +-line-+
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_queue
+::method  notest_queue
 
       q = .RexxQueue~new('testQueue')
       s = 'test string'
@@ -149,7 +131,7 @@ return testResult
                +-line-+
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_push
+::method  notest_push
 
       q = .RexxQueue~new
       s = 'test string'
@@ -169,7 +151,7 @@ return testResult
      Lines piped to the RxQueue device should end up on the queue
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_queue_external
+::method  notest_queue_external
 
       defEnv = address()
 
@@ -220,7 +202,7 @@ return testResult
      Lines piped to the RxQueue device should end up on the queue
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_push_external
+::method  notest_push_external
 
       defEnv = address()
 
@@ -265,7 +247,7 @@ return testResult
 
   -- End test_push( )
 
-::method test_exists
+::method notest_exists
 
   q = .RexxQueue~new("xxTempName")
   self~assertTrue(q~isA(.RexxQueue))
@@ -274,7 +256,7 @@ return testResult
   q~delete
   self~assertFalse(.RexxQueue~exists("xxTempName"))
 
-::method test_exists2
+::method notest_exists2
 
   q = .RexxQueue~new("xxTempName")
   self~assertTrue(q~isA(.RexxQueue))
@@ -283,11 +265,11 @@ return testResult
   q~delete
   self~assertFalse(.RexxQueue~exists("xxTempName"))
 
-::method test_exists3
+::method notest_exists3
 
   self~assertFalse(.RexxQueue~exists("slskekjerbv"))
 
-::method test_exists4
+::method notest_exists4
 
   qName = 'xzywqUtempUQ'
 
@@ -319,17 +301,17 @@ return testResult
 
   self~assertFalse(.RexxQueue~exists(qName))
 
-::method test_exists_syntax
+::method notest_exists_syntax
 
   self~expectSyntax(88.922)
   self~assertFalse(.RexxQueue~exists("slskekjerbv", 4))
 
-::method test_exists_syntax2
+::method notest_exists_syntax2
 
   self~expectSyntax(88.901)
   self~assertFalse(.RexxQueue~exists())
 
-::method test_open1
+::method notest_open1
 
   -- Test that open creates a new queue when the named queue does not exist
   qName = 'uiwddewsl'
@@ -343,7 +325,7 @@ return testResult
 
   .RexxQueue~delete(qName)
 
-::method test_open_syntax
+::method notest_open_syntax
 
   qName = 'uSddeTEiwddewsl'
   .RexxQueue~delete(qName)
@@ -361,12 +343,12 @@ return testResult
   syntax:
   self~assertFalse(.RexxQueue~exists(qName))
 
-::method test_open_syntax2
+::method notest_open_syntax2
 
   self~expectSyntax(88.901)
   ret = .RexxQueue~open()
 
-::method test_open_syntax3
+::method notest_open_syntax3
 
   qName = 'uSddZZdseddewsl'
   .RexxQueue~delete(qName)
@@ -383,7 +365,7 @@ return testResult
 
       Returns the name of the Rexx external queue associated with this instance.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_get
+::method  notest_get
 
       q = .rexxQueue~new
       self~assertEquals("SESSION", q~get,  "subtest 27: default queue named session")
@@ -404,7 +386,7 @@ return testResult
       Reads a single line from the Rexx external queue. If the queue is empty,
       lineIn will wait until a line is added to the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_lineIn
+::method  notest_lineIn
 
     q = .rexxQueue~new('test')
     q~push('Item1')
@@ -427,7 +409,7 @@ return testResult
       Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.
       If line is not specified, a null string ("") is added.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_lineOut
+::method  notest_lineOut
 
     q = .rexxQueue~new('test')
     q~lineOut('Item1')
@@ -445,7 +427,7 @@ return testResult
 
       Returns the count of lines currently in the Rexx external queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_Queued
+::method  notest_Queued
 
     q = .rexxQueue~new('testQueued')
     q~empty
@@ -467,7 +449,7 @@ return testResult
       The new queue must have been previously created.
       The method return value is the name of current queue being used by the instance.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_set
+::method  notest_set
 
     q1 = .rexxQueue~new('Q1')
     q2 = .rexxQueue~new('Q2')
@@ -490,7 +472,7 @@ return testResult
       queue items appear in the array is the same as their queuing order, with
       the head of the queue as index 1.  The queue is emptied
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_makearray
+::method  notest_makearray
 
       q = .RexxQueue~new('test')
       q~Queue('First')
@@ -513,7 +495,7 @@ return testResult
 
       Removes all items from the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  test_empty
+::method  notest_empty
 
     q = .rexxQueue~new('testempty')
     do n over self~class~arrayOf100numbers
@@ -527,29 +509,83 @@ return testResult
   -- End test_empty( )
 
 
-  /* ==========================================================================*/
+::method test_create_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~create("", "")
 
+::method test_create_invalid
+  -- bad queue name
+  self~assertSame("", .RexxQueue~create(""))
+  self~assertSame("", .RexxQueue~create("SESSION"))
+  self~assertSame("", .RexxQueue~create("a~copies(300)"))
 
+::method test_create
+  name = "test_create" || random(1000, 9999)
+  -- if name doesn't exist, returns name
+  self~assertSame(name, .RexxQueue~create(name))
 
-  -- Attribute: arrayOf100numbers
-  --   Holds the numbers 1 through 100.  This array is
-  --   not changed by any test cases and only needs to be initialized once.
-::method  arrayOf100numbers attribute class
+  -- if name already exists, returns generated name of the form SxxxxQxxxx
+  new = .RexxQueue~create(name)
+  self~assertTrue(new~startsWith("S"), "system-generated queue name expected to start with 'S'; found '" || new || "'")
+  self~assertTrue(new~length >= 8, "system-generated queue name expected to be at least 8 chars; found '" || new || "'")
 
-  /* setUp( ) - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-      Some initialization to be performed prior to each test running.
-  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  setUp
+  -- create without name argument
+  unique = .RexxQueue~create
+  self~assertTrue(unique~startsWith("S"), "system-generated queue name expected to start with 'S'; found '" || new || "'")
+  self~assertTrue(unique~length >= 8, "system-generated queue name expected to be at least 8 chars; found '" || new || "'")
 
-    -- Array only needs to be created and filled one time.  No test changes the
-    -- array in any way.
-    if self~class~arrayOf100numbers~class <> .array then do
-      arr = .array~new
-      do i = 1 to 100
-        arr[ i ] = i
-      end
-      self~class~arrayOf100numbers = arr
-    end
+  self~assertSame(0, .RexxQueue~delete(name))
+  self~assertSame(0, .RexxQueue~delete(new))
+  self~assertSame(0, .RexxQueue~delete(unique))
+
+::method test_delete_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~delete
+
+::method test_delete_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~delete("", "")
+
+::method test_delete
+  name = "test_delete" || random(1000, 9999)
+  self~assertSame(self~NOTREG, .RexxQueue~delete(name))
+  self~assertSame(self~BADQNAME, .RexxQueue~delete("SESSION"))
+  self~assertSame(self~BADQNAME, .RexxQueue~delete(""))
+  self~assertSame(self~BADQNAME, .RexxQueue~delete("a"~copies(300)))
+
+::method test_exists_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~exists
+
+::method test_exists_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~exists("", "")
+
+::method test_exists
+  name = "test_exists" || random(1000, 9999)
+  self~assertFalse(.RexxQueue~exists(name))
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertTrue(.RexxQueue~exists(name))
+
+  self~assertTrue(.RexxQueue~exists("SESSION"))
+  self~assertFalse(.RexxQueue~exists(""))
+  self~assertFalse(.RexxQueue~exists("a"~copies(300)))
+
+::method test_open_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~open
+
+::method test_open_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~open("", "")
+
+::method test_open
+  name = "test_open" || random(1000, 9999)
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertSame(0, .RexxQueue~open("SESSION"))
+  -- strangely open() always returns 1 instead of an RXQUEUE_* error
+  self~assertSame(1, .RexxQueue~open(""))
+  self~assertSame(1, .RexxQueue~open("a"~copies(300)))
 
 
 -- https://sourceforge.net/p/oorexx/bugs/1379/

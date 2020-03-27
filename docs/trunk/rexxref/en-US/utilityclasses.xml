@@ -1240,7 +1240,7 @@ December 31, 2016 at 23:59:60 UTC.
 
 <!-- modified: change class methods list to 2-column format for better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!--   <member><xref linkend="mthDateTimeInit" xrefstyle="template:new (Inherited Class Method)"/></member> -->
+<!--<xref linkend="mthDateTimeInit" xrefstyle="template:new (Inherited Class Method)"/></member> -->
 <!-- $GENERATED-20200207-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
@@ -8546,11 +8546,11 @@ the <xref linkend="mthRexxInfoModification" xrefstyle="select:title"/>.
 <indexterm><primary>class</primary>
 <secondary>RexxQueue class</secondary></indexterm>
 
-<para>The <classname>RexxQueue</classname> class provides object-style access to
-Rexx external data queues.
+<para>The <classname>RexxQueue</classname> class provides object-style
+access to Rexx <xref linkend="xtlque" xrefstyle="template:external data queues"/>.
 </para>
 
-<!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
+<!-- modified: added "new (Inherited Class Method)" -->
 <!-- $GENERATED-20190429-START rexxrefClassTable(RexxQueue) -->
 <table id="ooRexxRexxQueueClass" frame="all" pgwide="1">
 <title>RexxQueue Class</title>
@@ -8568,7 +8568,7 @@ Rexx external data queues.
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthRexxQueueInit" xrefstyle="template:new (Inherited Class Method)"/></member>
+   <member><xref linkend="mthRexxQueueNew" xrefstyle="template:new (Inherited Class Method)"/></member>
    <member><xref linkend="mthRexxQueueCreate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxQueueDeleteClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxQueueExists" xrefstyle="select:title"/></member>
@@ -8595,6 +8595,43 @@ Rexx external data queues.
 </table>
 <!-- $GENERATED-20190429-END rexxrefClassTable(RexxQueue) -->
 
+<section id="mthRexxQueueNew"><title>new</title>
+<indexterm><primary>new method</primary>
+<secondary>of RexxQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of RexxQueue class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rexxqueue_new.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a new RexxQueue instance associated with the Rexx
+external data queue named <emphasis role="italic">name</emphasis>.
+</para>
+<para>If <emphasis role="italic">name</emphasis> is omitted, the
+<literal>SESSION</literal> queue is used.
+If <emphasis role="italic">name</emphasis> is specified and an external
+data queue named <emphasis role="italic">name</emphasis> exists, it is
+opened.
+If such a data queue does not exist, it is created.
+</para>
+<para><example id="ex.rexxqueue-new">
+<title>RexxQueue class &mdash; new method
+<indexterm><primary>examples</primary><secondary>new method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+q = .RexxQueue~new
+q~queue("line")
+q~push("header")
+say q~queued q~pull    -- 2 header
+q~delete
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthRexxQueueCreate"><title>create (Class Method)</title>
 <indexterm><primary>create method</primary>
 <secondary>of RexxQueue class</secondary></indexterm>
@@ -8608,11 +8645,25 @@ Rexx external data queues.
 </imageobject>
 </mediaobject>
 
-<para>Attempts to create an external Rexx named queue using <emphasis role="italic">name</emphasis>.  If
-a <emphasis role="italic">name</emphasis> queue already exists, a new queue with a Rexx-generated name will be
-created.  This method returns the name of the created queue, which will be either
-<emphasis role="italic">name</emphasis>, or a generated name if there is a conflict.
+<para>Returns the name of a newly created Rexx external data queue, which
+will be either <emphasis role="italic">name</emphasis> if no external
+data queue named <emphasis role="italic">name</emphasis> already exists,
+or, a system-generated name if <emphasis role="italic">name</emphasis> is
+omitted or the external data queue <emphasis role="italic">name</emphasis>
+already exists.
 </para>
+<para>See also method <xref linkend="mthRexxQueueOpen" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.rexxqueue-create">
+<title>RexxQueue class &mdash; create method
+<indexterm><primary>examples</primary><secondary>create method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+-- no MYQUEUE queue exists
+say .RexxQueue~create("myqueue")    -- MYQUEUE
+-- MYQUEUE queue already exists
+say .RexxQueue~create("myqueue")    -- S0000000000004B48Q000001E1BEE66F20 (e. g.)
+]]></programlisting></example></para>
 </section>
 
 <section id="mthRexxQueueDeleteClsMth"><title>delete (Class Method)</title>
@@ -8628,9 +8679,9 @@ created.  This method returns the name of the created queue, which will be eithe
 </imageobject>
 </mediaobject>
 
-
-<para>Attempts to delete an external Rexx named queue named <emphasis role="italic">name</emphasis>.  This method
-returns "0" if the queue was successfully deleted.  Non-zero results are the error codes from the RexxDeleteQueue()
+<para>Returns <literal>0</literal> if the the external data queue named
+<emphasis role="italic">name</emphasis> was successfully deleted.
+Non-zero results are the error codes from the RexxDeleteQueue()
 programming interface.
 </para>
 </section>
@@ -8648,10 +8699,19 @@ programming interface.
 </imageobject>
 </mediaobject>
 
-<para>Tests if an external Rexx queue <emphasis role="italic">name</emphasis> currently exists, returning
-&true; if it does and &false; otherwise.
+<para>Returns &true; if the external data queue
+<emphasis role="italic">name</emphasis> currently exists, otherwise
+returns &false;.
 </para>
+<para><example id="ex.rexxqueue-exists">
+<title>RexxQueue class &mdash; exists method
+<indexterm><primary>examples</primary><secondary>exists method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .RexxQueue~exists("SESSION")    -- 1
+]]></programlisting></example></para>
 </section>
+
 
 <section id="mthRexxQueueOpen"><title>open (Class Method)</title>
 <indexterm><primary>open method</primary>
@@ -8684,8 +8744,15 @@ creates the queue if it does not.
 </imageobject>
 </mediaobject>
 
-
 <para>Deletes the Rexx external queue associated with this RexxQueue instance.
+</para>
+<para>Calling the
+<xref linkend="mthRexxQueueLineOut" xrefstyle="select:title"/>,
+<xref linkend="mthRexxQueuePull" xrefstyle="select:title"/>,
+<xref linkend="mthRexxQueuePush" xrefstyle="select:title"/>, or
+<xref linkend="mthRexxQueueQueue" xrefstyle="select:title"/>
+method of a RexxQueue instance with a deleted external data queue will
+result in an error.
 </para>
 </section>
 
@@ -8736,12 +8803,6 @@ creates the queue if it does not.
 <imagedata fileref="images/classes/rexxqueue_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
-
-<para>Initializes a new RexxQueue instance associated with the named Rexx external queue.  If
-<emphasis role="italic">name</emphasis> is not specified, the SESSION queue is used.  If the named
-queue does not exist, one will be created.
-</para>
 
 <important><para><classname>RexxQueue</classname> defines its own
 <methodname>init</methodname> method.
