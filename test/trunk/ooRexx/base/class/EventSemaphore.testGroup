@@ -152,18 +152,16 @@ else
   guard off when step = "wait" -- wait until the worker is waiting
   -- there is a non-zero chance that our worker isn't yet running the
   -- sem~wait clause, so we wait a little more to make almost sure
---call SysSleep 0.1
+  call SysSleep 0.1
   sem~~post~reset
   self~assertSame(1, msg~result, "our worker should not time-out")
 
 ::method concurrent_worker unguarded
   expose sem step
 
---step = "wait"
-  step = 0.5
---call value "STEP", "wait"
+  step = "wait"
   -- we never expect to time-out, but we still set 500 ms
-  c = sem~wait(value("STEP", "wait"))
+  c = sem~wait(0.5)
   sem~reset
   return c
 

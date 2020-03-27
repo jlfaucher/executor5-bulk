@@ -62,7 +62,7 @@ else
   /* test_new( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .RexxQueue class method: new.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  nonotest_new
+::method test_new
 
     -- Prefix to my messages.
     be   = "New object should be"
@@ -111,7 +111,7 @@ else
                 +-line-+
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_queue
+::method test_queue
 
       q = .RexxQueue~new('testQueue')
       s = 'test string'
@@ -131,7 +131,7 @@ else
                +-line-+
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_push
+::method test_push
 
       q = .RexxQueue~new
       s = 'test string'
@@ -151,7 +151,7 @@ else
      Lines piped to the RxQueue device should end up on the queue
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_queue_external
+::method test_queue_external
 
       defEnv = address()
 
@@ -202,7 +202,7 @@ else
      Lines piped to the RxQueue device should end up on the queue
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_push_external
+::method test_push_external
 
       defEnv = address()
 
@@ -247,7 +247,7 @@ else
 
   -- End test_push( )
 
-::method notest_exists
+::method test_exists
 
   q = .RexxQueue~new("xxTempName")
   self~assertTrue(q~isA(.RexxQueue))
@@ -256,7 +256,7 @@ else
   q~delete
   self~assertFalse(.RexxQueue~exists("xxTempName"))
 
-::method notest_exists2
+::method test_exists2
 
   q = .RexxQueue~new("xxTempName")
   self~assertTrue(q~isA(.RexxQueue))
@@ -265,11 +265,11 @@ else
   q~delete
   self~assertFalse(.RexxQueue~exists("xxTempName"))
 
-::method notest_exists3
+::method test_exists3
 
   self~assertFalse(.RexxQueue~exists("slskekjerbv"))
 
-::method notest_exists4
+::method test_exists4
 
   qName = 'xzywqUtempUQ'
 
@@ -301,17 +301,17 @@ else
 
   self~assertFalse(.RexxQueue~exists(qName))
 
-::method notest_exists_syntax
+::method test_exists_syntax
 
   self~expectSyntax(88.922)
   self~assertFalse(.RexxQueue~exists("slskekjerbv", 4))
 
-::method notest_exists_syntax2
+::method test_exists_syntax2
 
   self~expectSyntax(88.901)
   self~assertFalse(.RexxQueue~exists())
 
-::method notest_open1
+::method test_open1
 
   -- Test that open creates a new queue when the named queue does not exist
   qName = 'uiwddewsl'
@@ -325,7 +325,7 @@ else
 
   .RexxQueue~delete(qName)
 
-::method notest_open_syntax
+::method test_open_syntax
 
   qName = 'uSddeTEiwddewsl'
   .RexxQueue~delete(qName)
@@ -343,12 +343,12 @@ else
   syntax:
   self~assertFalse(.RexxQueue~exists(qName))
 
-::method notest_open_syntax2
+::method test_open_syntax2
 
   self~expectSyntax(88.901)
   ret = .RexxQueue~open()
 
-::method notest_open_syntax3
+::method test_open_syntax3
 
   qName = 'uSddZZdseddewsl'
   .RexxQueue~delete(qName)
@@ -365,7 +365,7 @@ else
 
       Returns the name of the Rexx external queue associated with this instance.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_get
+::method test_get
 
       q = .rexxQueue~new
       self~assertEquals("SESSION", q~get,  "subtest 27: default queue named session")
@@ -386,7 +386,7 @@ else
       Reads a single line from the Rexx external queue. If the queue is empty,
       lineIn will wait until a line is added to the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_lineIn
+::method test_lineIn
 
     q = .rexxQueue~new('test')
     q~push('Item1')
@@ -409,7 +409,7 @@ else
       Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.
       If line is not specified, a null string ("") is added.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_lineOut
+::method test_lineOut
 
     q = .rexxQueue~new('test')
     q~lineOut('Item1')
@@ -427,7 +427,7 @@ else
 
       Returns the count of lines currently in the Rexx external queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_Queued
+::method test_Queued
 
     q = .rexxQueue~new('testQueued')
     q~empty
@@ -449,7 +449,7 @@ else
       The new queue must have been previously created.
       The method return value is the name of current queue being used by the instance.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_set
+::method test_set
 
     q1 = .rexxQueue~new('Q1')
     q2 = .rexxQueue~new('Q2')
@@ -472,7 +472,7 @@ else
       queue items appear in the array is the same as their queuing order, with
       the head of the queue as index 1.  The queue is emptied
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_makearray
+::method test_makearray
 
       q = .RexxQueue~new('test')
       q~Queue('First')
@@ -495,7 +495,7 @@ else
 
       Removes all items from the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  notest_empty
+::method test_empty
 
     q = .rexxQueue~new('testempty')
     do n over self~class~arrayOf100numbers
@@ -561,7 +561,7 @@ else
   self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
   .RexxQueue~exists("", "")
 
-::method test_exists
+::method test_exists_simple
   name = "test_exists" || random(1000, 9999)
   self~assertFalse(.RexxQueue~exists(name))
   self~assertSame(0, .RexxQueue~open(name))
