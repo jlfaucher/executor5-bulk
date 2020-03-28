@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -886,6 +886,26 @@ getBags: procedure         -- return indices in an index bag, and method items i
    subclasses = .fahrzeug~subclasses
    self~assertEquals(2, subclasses~items)
    self~assertTrue(subclasses~equivalent(.array~of(.StrassenFahrzeug, .WasserFahrzeug)))
+
+-- [bugs:#1692] Interpreter crashes
+::method test_subclasses_bug
+  done = .Set~of(.Object)
+  call sub .Object
+  -- check that we have collected at least all Rexx classes
+  delta = .RexxInfo~package~classes~allItems~difference(done)
+  self~assertSame(0, delta~items, "we should have collected all Rexx classes, but are missing" delta~toString(, ", "))
+  return
+
+  sub: procedure expose done
+    use strict arg class
+
+    do c over class~subclasses
+      if \done~hasItem(c) then do
+        call sub c
+        done~put(c)
+      end
+    end
+    return
 
 ::method "test_SUPERCLASSES"
 
