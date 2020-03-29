@@ -77,7 +77,7 @@ over all elements in an array.
 use reply to run two methods at the same time.</para>
 </listitem></varlistentry>
 
-<varlistentry><term><filename>complex.cls</filename></term>
+<varlistentry id="complex" xreflabel="complex.cls"><term><filename>complex.cls</filename></term>
 <listitem><para>A complex number class.</para>
 <para>This program demonstrates how to create a
 complex number class using the <methodname>::CLASS</methodname> and
@@ -119,6 +119,16 @@ about drives using the utility functions <methodname>SysDriveMap</methodname>, <
 <listitem>
 <para>This program demonstrates how methods can be dynamically added to an
 object instance.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>factorial.rex</filename></term>
+<listitem><para>A sample that demonstrates a factorial method routine. </para>
+<para>This sample defines a floating method (one that is not assigned to a class) that
+implements a factorial algorithm. Using the <literal>.methods</literal> environment symbol
+this method gets fetched and added under the name <methodname>factorial</methodname>
+to the class named <classname>factorial_class</classname>,
+created as a subclass of the <classname>String</classname> class.
 </para>
 </listitem></varlistentry>
 
@@ -179,7 +189,7 @@ and output file, the temporary files are removed from the system.
 <para>Sample for concurrency with command line output.
 </para></listitem></varlistentry>
 
-<varlistentry><term><filename>pipe.cls</filename></term>
+<varlistentry id="pipe" xreflabel="pipe.cls"><term><filename>pipe.cls</filename></term>
 <listitem><para>A pipeline implementation.</para>
 <para>This program demonstrates the use of the
 <methodname>::CLASS</methodname> and <methodname>::METHOD</methodname> directives to create a simple implementation of a CMS-like
@@ -247,6 +257,14 @@ chimes.
 </para>
 </listitem></varlistentry>
 
+<varlistentry id="singleton" xreflabel="singleton.cls"><term><filename>singleton.cls</filename></term>
+<listitem>
+<para>A metaclass  (a subclass of <classname>Class</classname>) named
+<classname>Singleton</classname> that makes
+sure that only one (a single) instance gets created for a class that employs this metaclass.
+</para>
+</listitem></varlistentry>
+
 <varlistentry><term><filename>sortComposite.rex</filename></term>
 <listitem>
 <para>Demonstrates on how to sort non-string objects using the built in sort methods.
@@ -288,13 +306,20 @@ example of the use of a stack.</para>
 <listitem><para>A simple demonstration of the <classname>complex</classname> number class. </para>
 <para>This program
 demonstrates the use of the <methodname>::REQUIRES</methodname> directive, using the <classname>complex</classname> number
-class implemented in the package <filename>complex.cls</filename>.</para>
+class implemented in the package <filename><xref linkend="complex" /></filename>.</para>
 </listitem></varlistentry>
 
 <varlistentry><term><filename>usepipe.rex</filename></term>
-<listitem><para>Sample uses of the pipe implementation in package <filename>pipe.cls</filename>. </para>
+<listitem><para>Sample uses of the pipe implementation in package <filename><xref linkend="pipe" /></filename>. </para>
 <para>This program demonstrates how you could use the pipes implemented
 in the package <filename>pipe.cls</filename>.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>usesingleton.rex</filename></term>
+<listitem><para>Sample use of the metaclass named <classname>Singleton</classname>
+defined in package <filename><xref linkend="singleton" /></filename>, which makes sure that
+only one (a single) instance of the <classname>singletonExample</classname> class can be
+created. </para>
 </listitem></varlistentry>
 
 <varlistentry><term><filename>usetree.rex</filename></term>
