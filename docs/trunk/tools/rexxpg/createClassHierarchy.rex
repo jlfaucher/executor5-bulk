@@ -59,7 +59,8 @@ pkgLocal~bShowAdditionalInfos=.true -- .false   -- true: show mixin and inherits
 pkgLocal~bIgnoreMixinInherits=.true -- .false   -- true: show only mixin subclasses that directly specialize the mixin
 pkgLocal~bShowAdded50 = .true
 pkgLocal~bShowChanged50 = .true
-pkgLocal~bUseLinkAsClzId = .true    -- true: use xref instead of class name
+pkgLocal~bUseLinkAsClzId = .true    -- .true: use xref instead of class name
+pkgLocal~bMarkupClassName = .false -- .true      -- .true: markup class names
 
 pkgLocal~added50="&added50;"        -- from rexxpg.ent
 pkgLocal~changed50="&changed50;"    -- from rexxpg.ent
@@ -108,7 +109,7 @@ say .mb~string                      -- show as string
      do
         .mb~append(.crlf, indent, .blanks, "<listitem><para>")
      end
-     .mb~append("<classname>", ppClzId(clzId), "</classname>")
+     .mb~append(ppClzId(clzId))
      if .bShowAdded50,   .classesAdded50~hasIndex(clzId) then .mb~append(" ", .added50)
      if .bShowChanged50, .classesChanged50~hasIndex(clzId) then .mb~append(" ", .changed50)
   end
@@ -116,7 +117,7 @@ say .mb~string                      -- show as string
   do
      if .bShowAdded50,   .classesAdded50~hasIndex(clzId) then .mb~append(.added50)
      if .bShowChanged50, .classesChanged50~hasIndex(clzId) then .mb~append(.changeed50)
-     .mb~append("<classname>", ppClzId(clzId), "</classname>")
+     .mb~append(ppClzId(clzId))
   end
 
   mixinClass?=clz~queryMixinClass
@@ -137,7 +138,7 @@ say .mb~string                      -- show as string
         if superClasses~items>1 then
         do
            if .bCreateXML then
-              .mb~append('<emphasis role="italic"> (inherit<classname>')
+              .mb~append('<emphasis role="italic"> (inherit')
            else
               .mb~append(" (inherit")
            do counter i sc over superClasses
@@ -146,7 +147,7 @@ say .mb~string                      -- show as string
            end
 
            if .bCreateXML then
-             .mb~append('</classname>)</emphasis>')
+             .mb~append('</emphasis>)')
            else
               .mb~append(")")
         end
@@ -193,5 +194,16 @@ return left~id~caselessCompareTo(right~id)
 ::routine ppClzId
   use arg clzId
   if .bUseLinkAsClzId then
-     return '<xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" />'
-  return clzId
+  do
+     if .bMarkupClassName then
+        return '<classname><xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" /></classname>'
+     else
+        return '<xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" />'
+  end
+  if .bMarkupClassName then
+    return "<classname>"clzId"</classname>"
+  else
+    return clzId
+
+
+
