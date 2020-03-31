@@ -236,6 +236,96 @@ return testResult
     self~assertFalse(SysFileExists('movesourcexxxx'));
     self~assertFalse(SysFileExists('movetargetxxxx'));
 
+::method test_tempfile_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysTempFileName
+
+::method test_tempfile_three_args
+  self~expectSyntax((88.922, 2)) -- Too many arguments in invocation; 2 expected
+  call SysTempFileName "", "", ""
+
+::method test_tempfile_filler_null
+  self~expectSyntax(40.23) -- SysTempFileName argument filler must be a single character
+  call SysTempFileName "foo?", ""
+
+::method test_tempfile_filler_long
+  self~expectSyntax(40.23) -- SysTempFileName argument filler must be a single character
+  call SysTempFileName "--", "--"
+
+::method test_tempfile_template_filler_mismatch
+  self~assertSame("", SysTempFileName(""))
+  self~assertSame("", SysTempFileName("", "?"))
+  self~assertSame("", SysTempFileName("file"))
+  self~assertSame("", SysTempFileName("?", "*"))
+  self~assertSame("", SysTempFileName("***", "."))
+  self~assertSame("", SysTempFileName("file", "?"))
+  self~assertSame("", SysTempFileName("file??", "-"))
+  self~assertSame("", SysTempFileName("?????file?????"))
+
+::method test_tempfile_simple
+  s = .File~separator
+  self~assertSame("?", template("?"))
+  self~assertSame("??", template("??"))
+  self~assertSame("???", template("???"))
+  self~assertSame("????", template("????"))
+  self~assertSame("?????", template("?????"))
+  self~assertSame("??????", template("??????"))
+  self~assertSame("???????", template("???????"))
+  self~assertSame("????????", template("????????"))
+  self~assertSame("?????????", template("?????????"))
+
+  self~assertSame("*", template("*", "*"))
+  self~assertSame("?x", template("?x"))
+  self~assertSame("-?-", template("-?-"))
+  self~assertSame("file???", template("file???"))
+  self~assertSame("test.dat", template("test.dat", "."))
+
+  self~assertSame("dir"s"file?", template("dir"s"file?"))
+  self~assertSame("dir?"s"file?", template("dir?"s"file?"))
+  self~assertSame(".dir."s".file.", template(".dir."s".file.", "."))
+  self~assertSame("*********", template("*********", "*"))
+  return
+
+  template: procedure
+  use arg template, filler
+  if arg(2, "omitted") then
+    return SysTempFileName(template)~translate(, "0123456789", "?")~right(template~length)
+  else
+    return SysTempFileName(template, filler)~translate(, "0123456789", filler)~right(template~length)
+
+::method test_tempfile_path
+  s = .File~separator
+  -- always an absolute path
+  self~assertSame(.File~new("?")~absolutePath, template("?"))
+  self~assertSame(.File~new("/??temp")~absolutePath, template("/??temp"))
+  return
+
+  template: procedure
+  use arg template
+  return SysTempFileName(template)~translate(, "0123456789", "?")
+
+::method test_tempfile_exhaust
+  dir = .File~new(self~class~package~name)~parentFile
+  template = .File~new("test_tempfile_exhaust", dir)~absolutePath
+  files = .Array~new
+  file = .true
+  loop
+    name = SysTempFileName(template, "_")
+    if name = "" then
+      leave
+    files~append(.File~new(name))
+    -- create a file/directory until all possibilities are exhausted
+    if file then
+      .Stream~new(name)~~open("write replace")~close
+    else
+      .File~new(name)~makeDir
+    file = \file
+  end
+  self~assertSame(100, files~items)
+  do file over files
+    file~delete
+  end
+
 ::method test_temp_file_name
     parse source . . me
 
@@ -263,21 +353,6 @@ return testResult
     self~assertEquals(0, n~pos('*'))
     self~assertFalse(SysFileExists(n))
 
-
-    -- next two tests should return a null string because of too-many or too-few filler spaces
-
-    self~assertEquals("", SysTempFileName("foo"))
-    self~assertEquals("", SysTempFileName("foo??????????"))
-
-
-::method test_null_filler
-  self~expectSyntax(40.23)
-  rv = SysTempFileName("foo?", "")
-
-
-::method test_long_filler
-  self~expectSyntax(40.23)
-  rv = SysTempFileName("foo?", "??")
 
 
 ::method verifySeq
