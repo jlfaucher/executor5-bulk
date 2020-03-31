@@ -179,7 +179,7 @@
   understand the methods and method arguments of the <computeroutput>WindowsEventLog</computeroutput> class:
 </para>
 <variablelist>
-  <varlistentry id="eventLogKey"><term><emphasis role="bold">Eventlog key</emphasis></term>
+  <varlistentry id="eventLogKey"><term>Eventlog key</term>
   <listitem>
     <para>
       The Eventlog key is the key in the registry where all information for the Event Log service is
@@ -201,7 +201,7 @@ HKEY_LOCAL_MACHINE
 </programlisting>
     </para>
   </listitem></varlistentry>
-  <varlistentry id="server"><term><emphasis role="bold">Server</emphasis></term>
+  <varlistentry id="server"><term>Server</term>
   <listitem>
     <para>
       Many of <computeroutput>WindowsEventLog</computeroutput> instance methods have a <emphasis
@@ -218,7 +218,7 @@ HKEY_LOCAL_MACHINE
       , the <emphasis role="italic">server</emphasis> argument is ignored.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="eventSource"><term><emphasis role="bold">Event Source</emphasis></term>
+  <varlistentry id="eventSource"><term>Event Source</term>
   <listitem>
     <para>
       The <emphasis role="italic">event source</emphasis> is the name of the software or driver that logs
@@ -285,7 +285,7 @@ eventLog~open( , "LoadPerf")
       source as WinApp1 in the first record and LoadPerf for the source in the second record.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="eventLogRecord"><term><emphasis role="bold">Event Log Record</emphasis></term>
+  <varlistentry id="eventLogRecord"><term>Event Log Record</term>
   <listitem>
     <para>
       Each event is stored in an event log as a single record. The information in the record includes
@@ -379,7 +379,7 @@ eventLog~open( , "LoadPerf")
 parse var rec type date time "'" source "'" id userID computer "'" description "'" "'" data "'"
 </programlisting>
   </listitem></varlistentry>
-  <varlistentry id="eventType"><term><emphasis role="bold">Event Type</emphasis></term>
+  <varlistentry id="eventType"><term>Event Type</term>
   <listitem>
     <para>
       Each event recorded in an event log is a single type. There are five types of events that can be
@@ -469,14 +469,14 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
 </tbody></tgroup>
 </table>
   </listitem></varlistentry>
-  <varlistentry id="eventIdentifier"><term><emphasis role="bold">Event ID</emphasis></term>
+  <varlistentry id="eventIdentifier"><term>Event ID</term>
   <listitem>
     <para>
       The event identifier value is specific to the event source for the event. It is used with source
       name to locate a description string in the message file for the event source.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="openedEventLog"><term><emphasis role="bold">Opened event log</emphasis></term>
+  <varlistentry id="openedEventLog"><term>Opened event log</term>
   <listitem>
     <para>
       When an event log has been opened using the open() (<xref linkend="mthOpenWindowsEventLog" />)
@@ -496,7 +496,7 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
       returning.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="eventCategory"><term><emphasis role="bold">Event Category</emphasis></term>
+  <varlistentry id="eventCategory"><term>Event Category</term>
   <listitem>
     <para>
       Categories are used to organize events so that an event viewer can filter them. Each event source (<xref
@@ -785,9 +785,9 @@ The System log has 1983 records
 
 <para>
   Opens the specified event log. Once an event log is opened, other methods of the
-  <computeroutput>WindowsEventLog</computeroutput> instance will use that opened log (<xref
-  linkend="openedEventLog" /> until it has been closed (<xref
-  linkend="mthCloseWindowsEventLog" />).
+  <computeroutput>WindowsEventLog</computeroutput> instance will use that opened log
+  (<xref linkend="openedEventLog" /> until it has been
+  closed (<xref linkend="mthCloseWindowsEventLog" />).
 </para>
 <para>
   If an event log is already open, then it is first closed before the specified log is opened.
