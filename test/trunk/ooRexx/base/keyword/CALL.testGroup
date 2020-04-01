@@ -740,10 +740,10 @@ return testResult
 -- test that an external call correctly searches the requested file
 -- according to the documented external search order
 -- for a file without extension, the expected search order is
--- 1) parent extension, 2) .rex, 3) without extension
+-- 1) parent extension, 2) .REX/.rex, 3) without extension
 -- NOTE: although ::REQUIRES Will search .cls first, CALL should not
 ::method test_search_order
-  external = self~createFiles("search_order", ("cls", "testGroup", "rex", "other", ""))
+  external = self~createFiles("search_order", ("cls", "testGroup", "REX", "rex", "other", ""))
 
   -- external calls with extension should work as-is
   call search_order.other
@@ -761,13 +761,22 @@ return testResult
   self~assertSame("testGroup", search_order())
   external["testGroup"]~delete
 
-  -- now the same external call should resolve to .rex
+  -- next, but only on case-sensitive file systems, the same external
+  -- call should resolve to .REX
+  if external["REX"]~isCaseSensitive then do
+    call search_order
+    self~assertSame("REX", result)
+    self~assertSame("REX", search_order())
+    external["REX"]~delete
+  end
+
+  -- now the external call should resolve to .rex
   call search_order
   self~assertSame("rex", result)
   self~assertSame("rex", search_order())
   external["rex"]~delete
 
-  -- now the same external call should resolve to no extension
+  -- and finally the external call should resolve to no extension
   call search_order
   self~assertSame("(none)", result)
   self~assertSame("(none)", search_order())
