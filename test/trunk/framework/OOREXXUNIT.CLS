@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1241,7 +1241,9 @@ return str
   use strict arg code, parentPackage = (self~class~package)
 
   -- this will create a routine object and return the result.
-  r = .routine~new("test", code, parentPackage)
+  -- use the parent package name as the routine name to allow external
+  -- files to resolve with correct extension
+  r = .routine~new(parentPackage~name, code, parentPackage)
   return r[]
 
 

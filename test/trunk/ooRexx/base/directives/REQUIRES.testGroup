@@ -85,10 +85,10 @@ return testResult
   ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' library"))
   self~assertSame(2, ret)
 
-::method  test_requires_library_syntax1
+::method test_requires_library_syntax1
   self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' library EXTENSIVE"))
 
-::method  test_requires_library_syntax2
+::method test_requires_library_syntax2
   self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' libraryE"))
 
 ::method test_missing_library_requires
@@ -355,10 +355,6 @@ return testResult
   self~createRequires("search_order_testgroup", ("testGroup", "rex", "other", ""))
 
   -- this requires file without extension should resolve to .testGroup
-  -- OK, there seems to be a quirk here: when run from within the same
-  -- directory as the test group, this test fails because it resolves to
-  -- .rex instead of .testGroup (tested on Windows only)
-  -- TO DO: verify what's going on here
   self~assertSame("testGroup", self~runDynamicSource(("return .c~extension", "::requires search_order_testgroup")), "this ::REQUIRES search order tests fails when run from within the same directory, but works as expected otherwise")
 
 ::method test_search_order_rex
