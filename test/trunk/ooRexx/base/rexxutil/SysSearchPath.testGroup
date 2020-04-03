@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,73 +39,105 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-    parse source . . fileSpec;
-
-    group = .TestGroup~new(fileSpec)
-    group~add(.SysSearchPath.testGroup)
-    group~restrictOS("UNIX")
-
-    if group~isAutomatedTest then return group
-
-    testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.SysSearchPath.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
-::class 'SysSearchPath.testgroup' subclass ooTestCase public
+::class SysSearchPath.testgroup subclass ooTestCase public
 
-------------------------------------
--- Wrong parameters are detected
-------------------------------------
-::method 'testSearchPath_Invalid_Parameters_1'
-    self~expectSyntax(88.901)
-    rv = SysSearchPath()
 
-::method 'testSearchPath_Invalid_Parameters_2'
-    self~expectSyntax(88.901)
-    rv = SysSearchPath("varname")
+::method test_searchpath_args_none
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  call SysSearchPath
 
-::method 'testSearchPath_Invalid_Parameters_3'
-    self~expectSyntax(40.920)
-    rv = SysSearchPath("varname", "filename", "bad option")
+::method test_searchpath_args_one
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
+  call SysSearchPath ""
 
-------------------------------------
--- Valid parameters are accepted
-------------------------------------
+::method test_searchpath_args_four
+  self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
+  call SysSearchPath "", "", "", ""
 
-::method 'testSearchPath_Valid_Parameters_1'
-    self~assertEquals("", SysSearchPath("*non existent varname*", "*non existent filename*"))
+::method test_searchpath_option_null
+  self~expectSyntax(40.920) -- SysSearchPath argument option must be one of "'C' or 'N'"
+  call SysSearchPath "", "", ""
 
-::method 'testSearchPath_Valid_Parameters_2'
-    self~assertEquals("", SysSearchPath("*non existent varname*", "*non existent filename*", "C"))
-    self~assertEquals("", SysSearchPath("*non existent varname*", "*non existent filename*", "c"))
+::method test_searchpath_option_invalid
+  self~expectSyntax(40.920) -- SysSearchPath argument option must be one of "'C' or 'N'"
+  call SysSearchPath "", "", "x"
 
-::method 'testSearchPath_Valid_Parameters_3'
-    self~assertEquals("", SysSearchPath("*non existent varname*", "*non existent filename*", "N"))
-    self~assertEquals("", SysSearchPath("*non existent varname*", "*non existent filename*", "n"))
 
-------------------------------------
--- If installed correctly, rexx should be in the path
-------------------------------------
+::method test_searchpath_empty
+  self~assertSame("", SysSearchPath("", ""))
+  self~assertSame("", SysSearchPath("", "no-file"))
+  self~assertSame("", SysSearchPath("no-variable", ""))
+  self~assertSame("", SysSearchPath("no-variable", "no-file"))
+  self~assertSame("", SysSearchPath("PATH", ""))
+  self~assertSame("", SysSearchPath("PATH", "no-file"))
 
-::method 'testSearchPath_Rexx_is_found_1'
-    self~assertNotEquals("", SysSearchPath("PATH", "rexx"))
+  self~assertSame("", SysSearchPath("", "", "n"))
+  self~assertSame("", SysSearchPath("", "", "C"))
+  self~assertSame("", SysSearchPath("", "", "No"))
+  self~assertSame("", SysSearchPath("", "", "cur"))
 
-::method 'testSearchPath_Rexx_is_found_2'
-    self~assertNotEquals("", SysSearchPath("PATH", "rexx", "C"))
-    self~assertNotEquals("", SysSearchPath("PATH", "rexx", "c"))
+/* gwirks
+"." findet alles?
+test curr dir!!
+*/
 
-::method 'testSearchPath_Rexx_is_found_3'
-    self~assertNotEquals("", SysSearchPath("PATH", "rexx", "N"))
-    self~assertNotEquals("", SysSearchPath("PATH", "rexx", "n"))
+::method test_searchpath_relative
+  parse source . . file
+  do relative over filespec("name", file), "."
+    -- option C searches current directory
+    self~assertSame(.File~new(relative)~absolutePath, SysSearchPath("", relative, "current"))
+    -- option N won't search current directory
+    self~assertSame("", SysSearchPath("", relative, "nocurrent"))
+  end
 
-------------------------------------
--- This script is necessarily in its own directory
-------------------------------------
+-- file names with an absolute path are always found
+::method test_searchpath_absolute
+  parse source . . file
+  do absolute over .File~new("/")~absolutePath, file, filespec("location", file)
+    self~assertSame(absolute, SysSearchPath("", absolute))
+    self~assertSame(absolute, SysSearchPath("no-variable", absolute))
+    self~assertSame(absolute, SysSearchPath("PATH", absolute))
+  end
 
-::method 'testSearchPath_Current_Script'
+::method test_searchpath_rexx
+  rexxPath = .Rexxinfo~executable
+  rexx = filespec("name", rexxPath)
+
+  self~assertSame(rexxPath, SysSearchPath("PATH", rexx))
+  self~assertSame(rexxPath, SysSearchPath("PATH", rexx, "c"))
+  self~assertSame(rexxPath, SysSearchPath("PATH", rexx, "n"))
+
+  -- Environment variables on Unix-like systems are
+  -- case-sensititve even if the file system isn't, like on Darwin
+  if .RexxInfo~platform~caselessStartsWith("windows") then
+    return
+  self~assertSame("", SysSearchPath("path", rexx))
+
+::method test_searchpath_variable
+  parse source . . file
+  name = filespec("name", file)
+  path = filespec("location", file)
+  self~assertSame(file, self~searchPath(.Array~of(""), name))
+  self~assertSame(file, self~searchPath(("", ""), name, "c"))
+  self~assertSame(file, self~searchPath(.Array~of(path), name, "n"))
+  self~assertSame(file, self~searchPath(("abc", path, "xyz"), name, "n"))
+  self~assertSame(file, self~searchPath(("abc"~copies(500), path), name, "n"))
+
+::method searchPath
+  use strict arg list, file, option = "c"
+  call value "test_searchpath", list~toString(, .File~pathSeparator), "environment"
+  return SysSearchPath("test_searchpath", file)
+
+::method 'notestSearchPath_Current_Script'
     parse source . . me
     lastSlash = me~lastPos("/")
     directory = me~left(lastSlash - 1)
