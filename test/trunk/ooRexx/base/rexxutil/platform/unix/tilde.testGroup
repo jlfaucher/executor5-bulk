@@ -1,0 +1,105 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11928 $
+  Change Date:  $Date: 2019-10-08 16:27:36 +0200 (Di., 08 Okt 2019) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.tilde.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class tilde.testgroup subclass ooTestCase public
+
+
+-- all Rexxutil functions should convert ~ to the user's home directory
+-- and ~uuuuu to user uuuuu's home directory
+::method test_tilde
+  -- create a small file in the user's home directory
+  homePath = .File~new("~")~absolutePath
+  homeFile = SysTempFilename("~/test_tilde?????")
+  self~assertTrue(homeFile~startsWith(homePath))
+  homeFileAlternate = homeFile~changeStr(homePath, "~" || userid(), 1)
+  homeFile = homeFile~changeStr(homePath, "~", 1)
+  .Stream~new(homeFile)~~open("write replace")~~lineOut(homeFile)~close
+
+  -- and another file in the same directory to test
+  secondHomeFile = SysTempFilename("~/test_tilde?????")~changeStr(homePath, "~", 1)
+
+  -- make sure our temp files get deleted even if the test case fails
+  temporaries = .Array~of(.TemporaryFile~new(homeFile), .TemporaryFile~new(secondHomeFile))
+
+  self~AssertSame(0, SysFileCopy(homeFile, secondHomeFile), "SysFileCopy("homeFile"," secondHomeFile")")
+  self~AssertSame(0, SysFileDelete(homeFile), "SysFileDelete("homeFile")")
+  self~AssertTrue(   SysFileExists(secondHomeFile), "SysFileExists("secondHomeFile")")
+  self~AssertSame(0, SysFileMove(secondHomeFile, homeFile), "SysFileCopy("secondHomeFile"," homeFile")")
+
+  self~AssertTrue(   SysIsFile(homeFile), "SysIsFile("homeFile")")
+  self~AssertTrue(   SysIsFile(homeFileAlternate), "SysIsFile("homeFileAlternate")")
+  self~AssertTrue(   SysIsFileDirectory("~"), "SysIsFileDirectory(~)")
+  self~AssertTrue(   SysIsFileDirectory("~" || userid()), "SysIsFileDirectory(~)")
+  self~AssertFalse(  SysIsFileLink(homeFile), "SysIsFileLink("homeFile")")
+
+  self~AssertSame(0, SysMkDir(secondHomeFile), "SysMkDir("secondHomeFile")")
+  self~AssertSame(0, SysRmDir(secondHomeFile), "SysRmDir("secondHomeFile")")
+
+  homeFileName = filespec("name", homeFile)
+  do home over "~", "~" || userid()
+    call value "test_tilde", home, "environment"
+    self~AssertSame(.File~new(homeFile)~absolutePath, SysSearchPath("test_tilde", homeFileName, "n"), "SysSearchPath(test_tilde," homeFileName", n)")
+  end
+
+  self~AssertSame(0, SysSetFileDateTime(homeFile, "2020-03-04", "05:06:07"), "SysSetFileDateTime("homeFile", 2020-03-04, 05:06:07)")
+  self~AssertSame("2020-03-04 05:06:07", SysGetFileDateTime(homeFileAlternate, "write"), "SysGetFileDateTime("homeFileAlternate", write)")
+
+  call SysFileDelete homeFile
+  call SysFileDelete secondHomeFile
+
+
+::class TemporaryFile subclass File
+::method uninit
+say self~name "uninit delete"
+  if self~isFile then
+    self~delete
+
+
+::options novalue syntax
