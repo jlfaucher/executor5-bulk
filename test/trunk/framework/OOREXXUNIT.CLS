@@ -322,7 +322,7 @@ return .false
   return "[" || arg(1)~string || "]"
 
 /** ppp()
- * Enclose a string value in square brackets, escaping non-printable chars as
+ * Enclose a string value in square brackets if escaping non-printable chars as
  * Rexx concatenated Rexx hex strings.
 */
 ::routine ppp public
@@ -331,7 +331,7 @@ return .false
   if verify(string, .chars.NonPrintable, "Match")>0 then
      return "[" || escapeString(string) || "]" -- escape non-printable characters
 
-  return "[" || string || "]"
+  return (string~length = 0)~?("[]", string)
 
 /** addN
  * If name starts with a vowel, then "n" is returned, "" else
@@ -389,7 +389,7 @@ return .false
  * throughout the test framework.
  */
 ::routine timeStamp public
-  return pp(date("S") time("L"))
+  return date("S") time("L")
 
 /** isConditionObj()
  * Tests if an object is likely to be a condition object returned from the
@@ -733,7 +733,7 @@ return .Rexxinfo~architecture
 ::method failureToString private
   use arg data
 
-  str = data~when":" pp("failure") data~testString "---> @assertFailure" -
+  str = data~when":" "failure" data~testString "---> @assertFailure" -
         data~type": expected="data~expected", actual="data~actual"."
 
   if data~msg <> "" then str = str ||"09"x || data~msg
@@ -743,7 +743,7 @@ return str
 ::method errorToString private
   use arg data
 
-  str = data~when':' pp('error') data~testString '---> condition' -
+  str = data~when':' "error" data~testString '---> condition' -
         pp(data~type) 'raised unexpectedly.'
 
   if data~conditionObject~message <> .nil then str = str || '09'x || data~conditionObject~message
@@ -811,7 +811,7 @@ return str
 ::method printFailureInfo private
   use arg data
 
-  say "[failure]" data~when
+  say "failure" data~when
   say "  Test:  " data~testname
   say "  Class: " data~className
   say "  File:  " pathCompact(data~where, 70)
@@ -831,7 +831,7 @@ return str
   -- file.  Most often the files are the same.
   different = (data~where~compareTo(data~conditionObject~program) <> 0)
 
-  say "[error]" data~when
+  say "error" data~when
   say "  Test: " data~testName
   say "  Class:" data~className
   say "  File: " pathCompact(data~where, 70)
@@ -1058,7 +1058,7 @@ return str
   use strict arg actual, msg = ""
 
   if \ (.nil = actual) then do
-    self~fail(self~makeFailure("[.nil]", actual, msg, "assertNull"))
+    self~fail(self~makeFailure(".nil", actual, msg, "assertNull"))
   end
 
   -- Assertion holds.
@@ -1069,7 +1069,7 @@ return str
   use strict arg actual, msg = ""
 
   if (.nil = actual) then do
-    self~fail(self~makeFailure("[Not .nil]", "[.nil]", msg, "assertNotNull"))
+    self~fail(self~makeFailure("not .nil", ".nil", msg, "assertNotNull"))
   end
 
   -- Assertion holds.
@@ -1189,7 +1189,7 @@ return str
   use strict arg actual, msg = ""
 
   if \ (actual = .true) then do
-    self~fail(self~makeFailure("[1]", actual, msg, "assertTrue"))
+    self~fail(self~makeFailure("1", actual, msg, "assertTrue"))
   end
 
   -- Assertion holds.
@@ -1200,7 +1200,7 @@ return str
   use strict arg actual, msg = ""
 
   if \ (actual = .false) then do
-    self~fail(self~makeFailure("[0]", actual, msg, "assertFalse"))
+    self~fail(self~makeFailure("0", actual, msg, "assertFalse"))
   end
 
   -- Assertion holds.
@@ -1433,7 +1433,7 @@ return str
 ::method formatObjectInfo private
   use arg o, hint = ""
 
-  return pp(hint || ppp(o~string)", identityHash=".TestUtil~enQuote(o~identityHash))
+  return hint || ppp(o~string) -- ", identityHash=" || o~identityHash
 
 
 ::method exclusiveOr private
@@ -2081,7 +2081,7 @@ syntax:
 
 pp: procedure
    use arg a
-   if .nil=a then return "[.nil]"
+   if .nil=a then return ".nil"
    return "[" || a~string || "]"
 
 
