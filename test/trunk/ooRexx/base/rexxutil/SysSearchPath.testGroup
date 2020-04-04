@@ -85,24 +85,31 @@ else
   self~assertSame("", SysSearchPath("", "", "No"))
   self~assertSame("", SysSearchPath("", "", "cur"))
 
-/* gwirks
-"." findet alles?
-test curr dir!!
-*/
+  -- SysSearchPath searches for files only, no directories
+  self~assertSame("", SysSearchPath("", "/", "nocurrent"))
+  self~assertSame("", SysSearchPath("", "/", "CURRENT"))
+  self~assertSame("", SysSearchPath("", "/"))
+  self~assertSame("", SysSearchPath("", ".", "C"))
+  self~assertSame("", SysSearchPath("", "./."))
+  self~assertSame("", SysSearchPath("", directory()))
 
 ::method test_searchpath_relative
-  parse source . . file
-  do relative over filespec("name", file), "."
-    -- option C searches current directory
-    self~assertSame(.File~new(relative)~absolutePath, SysSearchPath("", relative, "current"))
-    -- option N won't search current directory
-    self~assertSame("", SysSearchPath("", relative, "nocurrent"))
+  -- test all files in the current directory
+  do file over .File~new('.')~listFiles
+    if file~isFile then do
+      msg = file~name "in directory" directory()
+      -- option C searches current directory
+      self~assertSame(file~absolutePath, SysSearchPath("", file~name, "current"), msg)
+      self~assertSame(file~absolutePath, SysSearchPath("", "./"file~name, "current"), "./" || msg)
+      -- option N won't search current directory
+      self~assertSame("", SysSearchPath("", file~name, "nocurrent"), msg)
+    end
   end
 
--- file names with an absolute path are always found
+-- files with an absolute path are always found
 ::method test_searchpath_absolute
   parse source . . file
-  do absolute over .File~new("/")~absolutePath, file, filespec("location", file)
+  do absolute over file, .RexxInfo~executable
     self~assertSame(absolute, SysSearchPath("", absolute))
     self~assertSame(absolute, SysSearchPath("no-variable", absolute))
     self~assertSame(absolute, SysSearchPath("PATH", absolute))
@@ -125,11 +132,14 @@ test curr dir!!
 ::method test_searchpath_variable
   parse source . . file
   name = filespec("name", file)
-  path = filespec("location", file)
-  self~assertSame(file, self~searchPath(.Array~of(""), name))
-  self~assertSame(file, self~searchPath(("", ""), name, "c"))
+  path = filespec("location", file) -- this keeps a trailing delimiter
+  pathStripped = path~strip("t", "/")
+  -- to avoid surprises we dont't search the current directory
+  self~assertSame("",   self~searchPath(.Array~of(""), name, "N"))
+  self~assertSame("",   self~searchPath(("", ""), name, "n"))
   self~assertSame(file, self~searchPath(.Array~of(path), name, "n"))
-  self~assertSame(file, self~searchPath(("abc", path, "xyz"), name, "n"))
+  self~assertSame(file, self~searchPath(.Array~of(pathStripped), name, "n"))
+  self~assertSame(file, self~searchPath(("abc", path, pathStripped, "xyz"), name, "n"))
   self~assertSame(file, self~searchPath(("abc"~copies(500), path), name, "n"))
 
 ::method searchPath
@@ -159,4 +169,4 @@ test curr dir!!
     call directory curdir -- restore
 
 
-::options novalue error
+::options novalue syntax
