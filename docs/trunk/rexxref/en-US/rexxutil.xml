@@ -1043,6 +1043,8 @@ specifications are not allowed.</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">source</emphasis></term>
 <listitem><para>The path/name of the file to be copied.
+The <emphasis role="italic">source</emphasis> and the
+<emphasis role="italic">target</emphasis> path &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">target</emphasis></term>
 <listitem><para>The path/name of the target location where the file is to be
@@ -1084,12 +1086,13 @@ call SysFileCopy "c:\temp\myfile.txt", "d:\myfolder\myCopy.txt"
 </imageobject>
 </mediaobject>
 
-<para>Deletes a file. SysFileDelete does not support wildcard file
-specifications.</para>
+<para>Deletes a file.
+</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">file</emphasis></term>
 <listitem><para>The name of the file to be deleted.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
@@ -1154,14 +1157,15 @@ call SysFileDelete OutputFile   /* unconditionally erase output file */
 </imageobject>
 </mediaobject>
 
-<para>Checks for the existence of a file. This function does not support
-wildcard specifications.  Returns <literal>1</literal> if any file system entity with the
+<para>Checks for the existence of a file.
+Returns <literal>1</literal> if any file system entity with the
 given name exists.  In particular, this will return <literal>1</literal> for both regular
 files and directories.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
 <listitem><para>The name of the file to check for the existence of.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1199,6 +1203,7 @@ specifications are not allowed.</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">source</emphasis></term>
 <listitem><para>The path/name of the file to be moved.
+The filename &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">target</emphasis></term>
 <listitem><para>The path of the target location where the file is to be
@@ -1918,29 +1923,56 @@ say SysGetErrorText(SysMkDir("/usr"))
 </imageobject>
 </mediaobject>
 
-<para>Returns the selected data and time attribute of the file
-<emphasis role="italic">filename</emphasis> provided
-that this is supported by the operating and file system. FAT, for example,
-does not support Create/Access. The selector for the time to be returned can
-be abbreviated to the first character.</para>
-<para>The <emphasis role="italic">filename</emphasis> can
-also be a directory name.</para>
-<para>The file that you want to query must not be opened by another process or
-must at least allow shared writes to query the time stamp.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
+<para>Returns a file timestamp.
+</para>
+<para><emphasis role="bold">Parameters</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>The name of the file to be queried.
+<listitem><para>The name of a file or directory for which a timestamp
+should be returned.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">timesel</emphasis></term>
-<listitem><para>The file time to be queried, namely <literal>CREATE</literal>
-(on Windows only), <literal>ACCESS</literal>, or <literal>WRITE</literal>.
-</para></listitem></varlistentry>
+<listitem><para>An optional selector specifiying the type of timestamp
+to be returned.
+Depending on the operating system and the file system, one of the
+following timestamps may be selected (only the first letter is required):
+<variablelist>
+  <varlistentry>
+    <term><literal>ACCESS</literal></term>
+    <listitem><para>The date and time when the file was last accessed.
+    Not available on FAT file systems.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>CREATE</literal></term>
+    <listitem><para>The creation date and time.
+    Not available on Unix-like systems or on FAT file systems.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>WRITE</literal></term>
+    <listitem><para>The date and time the file was last modified.
+    This is the default if <emphasis role="italic">timesel</emphasis>
+    is omitted.
+    </para></listitem>
+  </varlistentry>
 </variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<para>The date and time in the format YYYY-MM-DD HH:MM:SS, or -1 to indicate
-that the file date and time query failed</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+<para><emphasis role="bold">Returns</emphasis>
+</para>
+<para>The file timestamp in the format <literal>yyyy-mm-dd hh:mm:ss</literal>,
+or <literal>-1</literal> to indicate that the timestamp is unavailable
+or could not be retrieved.
+</para>
+<para>See also <classname>File</classname> methods
+<xref linkend="mthFileLastAccessed" xrefstyle="select:title"/> and
+<xref linkend="mthFileLastModified" xrefstyle="select:title"/>, and
+Rexxutil <xref linkend="utlSyssetfiledatetime" xrefstyle="select:title"/>.
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetFileDateTime</secondary>
 <tertiary>example</tertiary></indexterm>
@@ -1948,15 +1980,12 @@ that the file date and time query failed</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SysGetFileDateTime</secondary></indexterm>
+</para>
 <example id="ex.sysgetfiledatetime">
 <title>RexxUtil &mdash; SysGetfiledatetime</title>
 <programlisting>
-Say "File creation time:" SysGetFileDateTime("MyFile.Log", "C")
-Say "File last access time:" SysGetFileDateTime("MyFile.Log", "A")
-Say "File last update time:" SysGetFileDateTime("MyFile.Log", "W")
-
-Say "Directory creation time:" SysGetFileDateTime("C:\MyDir", "C")
-                                          /* in Windows NT */
+say SysGetFileDateTime(".")           -- (e. g.) 2020-04-01 17:45:20
+say SysGetFileDateTime("main.c", "w") -- (e. g.) 2020-02-11 05:00:00
 </programlisting>
 </example>
 </section>
@@ -2373,14 +2402,15 @@ exit
 </imageobject>
 </mediaobject>
 
-<para>Checks for the existence of a file. This function does not support
-wildcard specifications.</para>
+<para>Checks for the existence of a file.
+</para>
 <para>On Linux/Unix block devices are also considered to be regular files
 by this function.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
 <listitem><para>The name of the file to check for the existence of.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2449,12 +2479,13 @@ else say "File is not compressed or does not exist."
 </imageobject>
 </mediaobject>
 
-<para>Checks for the existence of a subdirectory. This function does not support
-wildcard specifications.</para>
+<para>Checks for the existence of a subdirectory.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">dirname</emphasis></term>
 <listitem><para>The name of the subdirectory to check for the existence of.
+The directory name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2523,12 +2554,13 @@ else say "File is not encrypted or does not exist."
 </imageobject>
 </mediaobject>
 
-<para>Checks for the existence of a link. This function does not support
-wildcard specifications.</para>
+<para>Checks for the existence of a link.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">linkname</emphasis></term>
 <listitem><para>The name of the link to check for the existence of.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2803,6 +2835,7 @@ all intermediate directories must already exist.
 <variablelist>
 <varlistentry><term><emphasis role="italic">dirspec</emphasis></term>
 <listitem><para>The directory to be created.
+The directory name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">mode</emphasis> (Unix only)</term>
 <listitem><para>The file permission bits of the new directory as a decimal
@@ -3006,6 +3039,7 @@ returns the RexxReorderMacro return code.</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">dirspec</emphasis></term>
 <listitem><para>The directory that should be deleted.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
@@ -3114,6 +3148,7 @@ contain a list of file directories. Examples are "PATH" or "DPATH".
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
 <listitem><para>The file for which the path is to be searched.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">option</emphasis></term>
 <listitem><para>Specifies where the search starts.
@@ -3159,39 +3194,48 @@ CMD.EXE is located at C:\WIN\CMD.EXE
 </imageobject>
 </mediaobject>
 
-<para>Modifies the &quot;Last Modified&quot; date and time of file
-<emphasis role="italic">filename</emphasis>. If no new date or time is
-specified the file date or time is set to the current time (TOUCH).
-If only the date is omitted, the &quot;Last Modified&quot;
-date remains unchanged. If only the time is omitted, the &quot;Last
-Modified&quot; time remains unchanged.</para>
-<para>The <emphasis role="italic">filename</emphasis> can
-also be a directory name.</para>
-<para>The file that you want to change must not be opened by another process
-or must at least allow shared writes to update the time stamp.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
+<para>Sets the last-modified timestamp of a file.
+</para>
+<para>If both <emphasis role="italic">newdate</emphasis> and
+<emphasis role="italic">newtime</emphasis> are omitted, the
+last-modified timestamp is set to the current date and time, similar
+to what the Unix command <literal>touch</literal> does.
+</para>
+<para>If only one of the <emphasis role="italic">newdate</emphasis> and
+<emphasis role="italic">newtime</emphasis> arguments is supplied, the
+respective other last-modified date/time portion stays unchanged.
+</para>
+<para><emphasis role="bold">Parameters</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>The name of the file to be updated.
+<listitem><para>The name of a file or directory for which the
+last-modified timstamp should be updated.
+The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">newdate</emphasis></term>
-<listitem><para>The new date for the file, to be specified in the format
-YYYY-MM-DD, where YYYY > 1800.
+<listitem><para>An optional new date in the format
+<literal>yyyy-mm-dd</literal>.
+On Windows <literal>yyyy</literal> must be greater than or equal to
+<literal>1800</literal>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">newtime</emphasis></term>
-<listitem><para>The new time for the file, to be specified in the format
-HH:MM:SS (24-hour format).
+<listitem><para>An optional new time in the format
+<literal>hh:mm:ss</literal> (24-hour format).
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
+<para><emphasis role="bold">Return codes</emphasis></para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>The file date and time were updated correctly.
+<listitem><para>The file date and/or time were updated successfully.
 </para></listitem></varlistentry>
 <varlistentry><term>-1</term>
-<listitem><para>The update of the file date or time failed.
+<listitem><para>The timestamp update failed.
 </para></listitem></varlistentry>
 </variablelist>
+<para>See also <classname>File</classname> methods
+<xref linkend="mthFileLastModified" xrefstyle="select:title"/> and
+<xref linkend="mthFileLastModified" xrefstyle="select:title"/>, and
+Rexxutil <xref linkend="utlSysgetfiledatetime" xrefstyle="select:title"/>.
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysSetFileDateTime</secondary>
 <tertiary>example</tertiary></indexterm>
@@ -3199,15 +3243,12 @@ HH:MM:SS (24-hour format).
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SysSetFileDateTime</secondary></indexterm>
+</para>
 <example id="ex.syssetfiledatetime">
 <title>RexxUtil &mdash; SysSetfiledatetime</title>
 <programlisting>
-Call SysSetFileDateTime "MyFile.Log"  /* touch file */
- Call SysSetFileDateTime "MyFile.Log", "1998-12-17"
- Call SysSetFileDateTime "MyFile.Log", , "16:37:21"
- Call SysSetFileDateTime "MyFile.Log", "1998-12-17", "16:37:21"
-
- Call SysSetFileDateTime "C:\MyDir"    /* touch dir on Windows NT */
+call SysSetFileDateTime "."                       -- touch current directory
+call SysSetFileDateTime "main.c", , "05:00:00"    -- change file time only
 </programlisting>
 </example>
 </section>

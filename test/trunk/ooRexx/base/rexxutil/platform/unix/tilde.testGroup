@@ -42,6 +42,8 @@
 parse source . . fileSpec
 group = .TestGroup~new(fileSpec)
 group~add(.tilde.testgroup)
+group~restrictOS("UNIX")
+.context~package~loadLibrary("rxunixsys") -- we require SysSymlink()
 if group~isAutomatedTest then
   return group
 else
@@ -76,8 +78,13 @@ else
   self~AssertTrue(   SysIsFile(homeFile), "SysIsFile("homeFile")")
   self~AssertTrue(   SysIsFile(homeFileAlternate), "SysIsFile("homeFileAlternate")")
   self~AssertTrue(   SysIsFileDirectory("~"), "SysIsFileDirectory(~)")
-  self~AssertTrue(   SysIsFileDirectory("~" || userid()), "SysIsFileDirectory(~)")
-  self~AssertFalse(  SysIsFileLink(homeFile), "SysIsFileLink("homeFile")")
+  self~AssertTrue(   SysIsFileDirectory("~" || userid()), "SysIsFileDirectory(~"userid()")")
+
+  -- create a symlink using SysSymlink() from rxunixsys
+  -- unfortunately it doesn't support tilde notation, so we use full paths
+  self~AssertSame(0, SysSymlink(homeFile~changeStr("~", homePath), secondHomeFile~changeStr("~", homePath)), "SysSymlink("homeFile"," secondHomeFile")")
+  self~AssertTrue(   SysIsFileLink(secondHomeFile), "SysIsFileLink("secondHomeFile")")
+  self~AssertSame(0, SysFileDelete(secondHomeFile), "SysFileDelete("secondHomeFile")")
 
   self~AssertSame(0, SysMkDir(secondHomeFile), "SysMkDir("secondHomeFile")")
   self~AssertSame(0, SysRmDir(secondHomeFile), "SysRmDir("secondHomeFile")")
@@ -97,8 +104,7 @@ else
 
 ::class TemporaryFile subclass File
 ::method uninit
-say self~name "uninit delete"
-  if self~isFile then
+  if self~exists then
     self~delete
 
 
