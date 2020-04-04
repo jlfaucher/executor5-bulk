@@ -41,14 +41,14 @@
 /*----------------------------------------------------------------------------*/
 parse source . . fileSpec
 group = .TestGroup~new(fileSpec)
-group~add(.FileDateTime.testgroup)
+group~add(.SysFileDateTime.testgroup)
 if group~isAutomatedTest then
   return group
 else
   return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
-::class FileDateTime.testgroup subclass ooTestCase public
+::class SysFileDateTime.testgroup subclass ooTestCase public
 
 -- get function SysGetFileDateTime
 
@@ -102,12 +102,12 @@ else
 -- combined set/get tests
 
 ::method test_set_get_datetime
-  test = "test_set_datetime"
-  testFile = .TemporaryTestFile~new(self, test)~create
+  testFile = .TemporaryTestFile~new(self, "test_set_datetime")~create
   parse value testFile~lastModified~isoDate with date "T" time "."
+  test = testFile~absolutePath
 
   -- set either date or time
-  self~assertSame(0, SysSetFileDateTime(test, "2020-04-01"))
+  self~assertSame(0, SysSetFileDateTime(test, "2020-04-01"), "SysSetFileDateTime("test", 2020-04-01)")
   -- time must still be unchanged
   self~assertSame("2020-04-01" time, SysGetFileDateTime(test))
   self~assertSame(0, SysSetFileDateTime(test, , "04:05:59"))
