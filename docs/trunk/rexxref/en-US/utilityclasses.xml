@@ -3379,7 +3379,7 @@ and will not change if you change the default directory.
 
 <!-- Modified: class columns="2" -->
 <!-- Modified: lastAccessed= and lastModified= combined into attribute -->
-<!-- $GENERATED-20191124-START rexxrefClassTable(File) -->
+<!-- $GENERATED-20200405-START rexxrefClassRow(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -3423,6 +3423,7 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileCompareTo" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileDelete" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileExists" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileExtension" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileHashCode" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileInit" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileIsCaseSensitive" xrefstyle="select:title"/></member>
@@ -3457,7 +3458,7 @@ and will not change if you change the default directory.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20191124-END rexxrefClassTable(File) -->
+<!-- $GENERATED-20200405-END rexxrefClassRow(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -3816,6 +3817,32 @@ Only empty directories can be deleted.
 Otherwise returns &false;.
 </para>
 </section>
+
+
+<!-- Class File - method extension ================================= -->
+<section id="mthFileExtension" revisionflag="added"><title>&added50;extension</title>
+<indexterm><primary>extension method</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>extension method</secondary><tertiary>of File class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_extension.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the file's extension, the portion of the file name after
+the last dot.
+</para>
+<para>See also method <xref linkend="mthFileName" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.file-extension">
+<title>File class &mdash; extension method
+<indexterm><primary>examples</primary><secondary>extension method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .File~new("/usr/local/lib/rexx.img")~extension    -- img
+say .File~new("/")~name                               -- ""
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthFileHashCode"><title>hashCode</title>
 <indexterm><primary>hashCode method</primary>
@@ -4257,8 +4284,10 @@ If the directory already exists then the result is &false;.
 </mediaobject>
 
 <para>Returns the name portion of the receiver object's absolute path.
-This is everything after the last path separator. On Windows, the file's
-extension is part of the name.
+This is everything after the last path separator.
+The file's extension is part of the name.
+</para>
+<para>See also method <xref linkend="mthFileExtension" xrefstyle="select:title"/>.
 </para>
 <example>
 <title>File class &mdash; name method</title>

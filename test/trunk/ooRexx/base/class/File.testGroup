@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -821,6 +821,20 @@ return testResult
   self~assertSame("\\.\", .File~new("\\.\NUL")~parent)
   self~assertNull(.File~new("\\.\")~parent)
   self~assertNull(.File~new("con")~parent)
+
+
+::method test_extension_one_arg_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new("")~extension("")
+
+::method test_extension_none
+  do name over "", ".", "..", "a.", "a..", "a", "/a", "\\.\a"
+      self~assertSame("", .File~new(name)~extension, "extension of" name)
+  end
+
+  do name over ".a", "..a", "a.b", "temp.txt", "a b.c", "file.d e"
+      self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name)~extension, "extension of" name)
+  end
 
 
 ::options novalue syntax
