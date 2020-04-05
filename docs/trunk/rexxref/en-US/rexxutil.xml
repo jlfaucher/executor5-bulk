@@ -3125,6 +3125,7 @@ return code.</para>
 </variablelist>
 </section>
 
+
 <section id="utlSyssearchpath"><title>SysSearchPath</title>
 <indexterm><primary>SysSearchPath</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -3136,33 +3137,42 @@ return code.</para>
 </imageobject>
 </mediaobject>
 
-<para>Searches the specified file path for the specified file. If the file is
-found, the search returns the full file specification of the first file found
-within the path, and then stops searching. If the file is not found, the search
-returns a null string.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
+<para>Returns the absolue path of
+<emphasis role="italic">filename</emphasis> if it can be found along any
+of the paths specified in environment variable
+<emphasis role="italic">path</emphasis>.
+Returns the null string otherwise.
+</para>
+<para><emphasis role="bold">Parameters</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">path</emphasis></term>
-<listitem><para>An environment variable name. The environment variable must
-contain a list of file directories. Examples are "PATH" or "DPATH".
+<listitem><para>An environment variable name. The environment variable
+must contain a list of paths, like in <literal>PATH</literal>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>The file for which the path is to be searched.
+<listitem><para>The name of the file to be searched.
+The name can optionally include a relative or an absolute path, but the
+name part must be a file, not a directory.
+If the name specified with an absolute path, it is returned without
+searching along the environment variable's paths.
 The name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">option</emphasis></term>
 <listitem><para>Specifies where the search starts.
 <variablelist>
-<varlistentry><term>"C"</term>
+<varlistentry><term><literal>C</literal></term>
 <listitem><para>Starts the search at the current directory and then along the
-specified path. This is the default.
+specified <emphasis role="italic">path</emphasis>.
+This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>"N"</term>
-<listitem><para>Starts the search at the path, not at the current directory.
+<varlistentry><term><literal>N</literal></term>
+<listitem><para>Only searches along <emphasis role="italic">path</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para>See also <classname>File</classname> method
+<xref linkend="mthFileSearchPath" xrefstyle="select:title"/>.
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysSearchPath</secondary>
 <tertiary>example</tertiary></indexterm>
@@ -3170,18 +3180,16 @@ specified path. This is the default.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SysSearchPath</secondary></indexterm>
+</para>
 <example id="ex.syssearchpath">
-<title>RexxUtil &mdash; SysSearchpath</title>
+<title>RexxUtil &mdash; SysSearchPath</title>
 <programlisting>
-/* Code */
-fspec = SysSearchPath("PATH", "CMD.EXE")
-say "CMD.EXE is located at" fspec
-
-/* Output */
-CMD.EXE is located at C:\WIN\CMD.EXE
+say SysSearchPath("PATH", "rexx")      -- (Unix e.g.) /usr/local/bin/rexx
+say SysSearchPath("PATH", "rexx.exe")  -- (Windows e.g.) C:\Program Files\ooRexx\rexx.exe
 </programlisting>
 </example>
 </section>
+
 
 <section id="utlSyssetfiledatetime"><title>SysSetFileDateTime</title>
 <indexterm><primary>SysSetFileDateTime</primary></indexterm>
