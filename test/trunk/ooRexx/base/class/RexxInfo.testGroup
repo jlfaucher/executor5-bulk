@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -176,10 +176,8 @@ return testResult
   -- in the wild .RexxInfo~executable may be .nil or may not point to rexx(.exe)
   -- but for a typical test scenario this should not happen, so we really want
   -- to know if this happens
-  -- currently our CMake-based build will build the rexx resp. rxqueue
-  -- executables as rexx-oorexx resp. rxqueue-oorexx to make it easier to
-  -- have concurrent installations of ooRexx versions or other Rexx interpreters
-  -- (update-alternatives is then used to link a selected Rexx interpreter)
+  -- on Unix-based systems the exectuable's name may be rexx-oorexx
+  -- instead of rexx if a build for update-alternatives was done
   if .RexxInfo~platform~caselessStartsWith("Windows") then
     self~assertTrue(.RexxInfo~executable~endsWith("\rexx.exe"), ".RexxInfo~executable '" || .RexxInfo~executable || "' should end in '\rexx.exe'")
   else
@@ -196,4 +194,4 @@ return testResult
   self~assertTrue(.File~new(.RexxInfo~libraryPath)~isDirectory, ".RexxInfo~libraryPath '" || .RexxInfo~executable || "' should be an existing directory")
 
 
-::options novalue error
+::options novalue syntax
