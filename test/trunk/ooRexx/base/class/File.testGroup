@@ -827,13 +827,15 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~new("")~extension("")
 
-::method test_extension_none
-  do name over "", ".", "..", "a.", "a..", "a", "/a", "\\.\a"
+::method test_extension
+  do name over "", ".", "..", "a.", "a..", "a"
       self~assertSame("", .File~new(name)~extension, "extension of" name)
+      self~assertSame("", .File~new(name, "/")~extension, "extension of" name)
   end
 
   do name over ".a", "..a", "a.b", "temp.txt", "a b.c", "file.d e"
       self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name)~extension, "extension of" name)
+      self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name, "/")~extension, "extension of" name)
   end
 
 
