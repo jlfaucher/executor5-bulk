@@ -55,12 +55,11 @@ pkgLocal=.context~package~local
 pkgLocal~bCreateXML   = .true       -- .true->XML/Docbook, .false->string
 
 --
-pkgLocal~bShowAdditionalInfos=.true -- .false   -- true: show mixin and inherits
-pkgLocal~bIgnoreMixinInherits=.true -- .false   -- true: show only mixin subclasses that directly specialize the mixin
+pkgLocal~bShowAdditionalInfos=.true -- true: show mixin and inherits
+pkgLocal~bIgnoreMixinInherits=.true -- true: show only mixin subclasses that directly specialize the mixin
 pkgLocal~bShowAdded50 = .true
 pkgLocal~bShowChanged50 = .true
 pkgLocal~bUseLinkAsClzId = .true    -- .true: use xref instead of class name
-pkgLocal~bMarkupClassName = .false -- .true      -- .true: markup class names
 
 pkgLocal~added50="&added50;"        -- from rexxpg.ent
 pkgLocal~changed50="&changed50;"    -- from rexxpg.ent
@@ -80,6 +79,16 @@ pkgLocal~itemizedListBegin = '<itemizedlist mark="none" spacing="compact">'
 pkgLocal~itemizedListEnd   = '</itemizedlist>'
 pkgLocal~blanks            = '    '    --
 
+pkgLocal~clzNameComparator = .ClassNameComparator~new
+
+   -- "exploded class hierarchy?"
+pkgLocal~bShowMixinWithInheritances = .false -- .true
+pkgLocal~bShowInheritanceClassesWithInfo = .true   -- show whether mixin and inherit list?
+pkgLocal~mixinWithInheritances = .table~new
+
+if .bShowMixinWithInheritances then
+   call treeGetInheritances .object
+
 if .bCreateXML then .mb~append(.crlf, dt, .crlf, "<para>", .crlf)
 
 call tree .object, 0                -- create the class tree, start out with level=0
@@ -87,15 +96,45 @@ if .bCreateXML then .mb~append(.crlf, "</para>", .crlf, dt, .crlf)
 say .mb~string                      -- show as string
 
 
+::routine treeGetInheritances    --
+  use arg clz
+
+  clzId=clz~id                      -- get class name
+
+  if clzId<>"RexxInfo" then   -- this class is documented in rexxref hence show it in the class hierarchy
+  do
+     if clz~package \= .object~package then return    -- ignore any classes that are not part of the the Rexx package
+     if .object~package~findPublicClass(clzId) == .nil then return -- ignore any of the non-public Rexx package classes
+     -- and finally, there are a few specific classes we ignore because they are package specific or deprecated.
+     if .ignoreClasses~hasIndex(clzId) then return    -- ignore this class
+  end
+
+  sc=clz~superclasses         -- get superclasses
+  do i=2 to sc~items          -- iterate over inherited classes
+     inhClz=sc[i]
+     if \.mixinWithInheritances~hasIndex(inhClz) then -- make sure we can store inheritances
+        .mixinWithInheritances[inhClz]=.set~new
+     .mixinWithInheritances[inhClz]~put(clz)          -- append this class
+  end
+
+  do subClz over clz~subclasses
+     call treeGetInheritances subClz -- process subclass
+  end
+
+
+
 ::routine tree
   use arg clz, level
 
   clzId=clz~id                      -- get class name
 
-  if clz~package \= .object~package then return    -- ignore any classes that are not part of the the Rexx package
-  if .object~package~findPublicClass(clzId) == .nil then return -- ignore any of the non-public Rexx package classes
-  -- and finally, there are a few specific classes we ignore because they are package specific or deprecated.
-  if .ignoreClasses~hasIndex(clzId) then return    -- ignore this class
+  if clzId<>"RexxInfo" then   -- this class is documented in rexxref hence show it in the class hierarchy
+  do
+     if clz~package \= .object~package then return    -- ignore any classes that are not part of the the Rexx package
+     if .object~package~findPublicClass(clzId) == .nil then return -- ignore any of the non-public Rexx package classes
+     -- and finally, there are a few specific classes we ignore because they are package specific or deprecated.
+     if .ignoreClasses~hasIndex(clzId) then return    -- ignore this class
+  end
 
   indent=.blanks~copies(level)
   .mb~append(indent)
@@ -129,9 +168,40 @@ say .mb~string                      -- show as string
         if mixinClass? then
         do
            if .bCreateXML then
-              .mb~append('<emphasis role="italic"> (mixin)</emphasis>')
+              .mb~append(' (<xref linkend="xmixin" xrefstyle="template:mixin" />)')
            else
               .mb~append(" (mixin)")
+
+              -- show classes that inherit from this mixinclass ?
+           if .mixinWithInheritances~hasIndex(clz) then
+           do
+              inhClzArray=.mixinWithInheritances[clz]~allIndexes
+              if .bShowMixinWithInheritances, inhClzArray~items>0 then
+              do
+                 tmpIndent=.blanks~copies(level+1)
+                 inhClzArray~sortWith(.clzNameComparator)
+
+                 if .bCreateXML then
+                 do
+                    .mb~append("</para></listitem>", .crlf)
+                    bParaListitemClosed=.true
+
+                    .mb~append(.crlf, tmpIndent, '<listitem><itemizedlist mark="none" spacing="compact">')
+                    do inhClz over inhClzArray
+                       .mb~append(.crlf,  .blanks, tmpIndent, "<listitem><para>")
+                       .mb~append(ppClz(inhClz))
+                       .mb~append("</para></listitem>")
+                    end
+                    .mb~append(.crlf, tmpIndent, '</itemizedlist></listitem>')
+                 end
+                 else
+                 do
+                    do inhClz over inhClzArray
+                       .mb~append(.crlf, tmpIndent, inhClz~id)
+                    end
+                 end
+              end
+           end
         end
 
         superClasses=clz~superClasses
@@ -141,27 +211,28 @@ say .mb~string                      -- show as string
               .mb~append('<emphasis role="italic"> (inherit')
            else
               .mb~append(" (inherit")
+
            do counter i sc over superClasses
               if i=1 then iterate   -- do not show immediate superclass as inherited class!
               .mb~append(" ", ppClzId(sc~id))
            end
 
            if .bCreateXML then
-             .mb~append('</emphasis>)')
+             .mb~append(')</emphasis>')
            else
               .mb~append(")")
         end
      end
   end
 
-  if .bCreateXML then
+  if .bCreateXML, bParaListitemClosed<>.true then
      .mb~append("</para></listitem>",.crlf)  -- add cr-lf
   else
      .mb~append(.crlf)              -- add cr-lf
 
   bItemizedListCreated=.false       -- if subclasses listed, set to .true
-  comparator=.ClassNameComparator~new -- use id value, sort case-independently
-  do subClz over clz~subClasses~sortWith(comparator)
+  subClzArr=clz~subClasses~sortWith(.clzNameComparator)
+  do subClz over subClzArr
      -- if a mixin class only show the subclass if clz is the direct superclass
      if mixinClass?, .bIgnoreMixinInherits, subClz~superclasses[1]<>clz then return
 
@@ -194,16 +265,32 @@ return left~id~caselessCompareTo(right~id)
 ::routine ppClzId
   use arg clzId
   if .bUseLinkAsClzId then
+     return '<xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" />'
+
+  return clzId
+
+
+::routine ppClz      -- xml markup only
+  use arg clz
+
+  clzId=clz~id
+  info=.mutableBuffer~new
+
+  if .bShowInheritanceClassesWithInfo then   -- show mixin and inherit list info?
   do
-     if .bMarkupClassName then
-        return '<classname><xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" /></classname>'
-     else
-        return '<xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" />'
+     if clz~queryMixinclass then
+        info~append(' (<xref linkend="xmixin" xrefstyle="template:mixin" />)')
+
+     superClasses=clz~superClasses
+     if superClasses~items>1 then
+     do
+        info~append(' <emphasis role="italic">(inherit')
+        do counter i sc over superClasses
+           if i=1 then iterate   -- do not show immediate superclass as an inherited class
+           info~append(' <xref linkend="cls' || sc~id || '" xrefstyle="template:' || sc~id || '" />')
+        end
+        info~append(")</emphasis>")
+     end
   end
-  if .bMarkupClassName then
-    return "<classname>"clzId"</classname>"
-  else
-    return clzId
 
-
-
+  return '<xref linkend="cls' || clzId || '" xrefstyle="template:' || clzId || '" />' || info~string
