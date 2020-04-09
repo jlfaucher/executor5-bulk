@@ -113,7 +113,7 @@ application.</para>
 </para>
 
 <example>
-<title><code>greeting.rex</code></title>
+<title>greeting.rex</title>
 <programlisting>
 <![CDATA[
 /* greeting.rex - a Rexx program to display a greeting.  */
@@ -626,7 +626,7 @@ of parsing. <methodname>PARSE PULL</methodname>, for example, is often used to r
 keyboard: </para>
 
 <example>
-<title><methodname>PARSE PULL</methodname></title>
+<title>PARSE PULL</title>
 <programlisting>
 <![CDATA[
 /* Using PARSE PULL to read the keyboard                              */
@@ -647,7 +647,7 @@ the user for a date, and assigns the month, day, and year to different variables
 (In a real application, you would want to add instructions to verify the input.) </para>
 
 <example>
-<title><methodname>PARSE PULL</methodname></title>
+<title>PARSE PULL</title>
 <programlisting>
 <![CDATA[
 /* PARSE example using a template */
@@ -788,7 +788,7 @@ typical Rexx <methodname>IF</methodname> instruction:
 </para>
 
 <example>
-<title><methodname>IF</methodname> instruction</title>
+<title>IF instruction</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -908,7 +908,7 @@ keyword is always required.</para>
 <para>Here is an IF instruction with an <methodname>ELSE</methodname>: </para>
 
 <example>
-<title><methodname>IF</methodname> and <methodname>ELSE</methodname> instructions</title>
+<title>IF and ELSE instructions</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -928,7 +928,7 @@ end  /* if */
 keyword: </para>
 
 <example>
-<title><methodname>IF</methodname> and <methodname>ELSE</methodname> instructions</title>
+<title>IF and ELSE instructions</title>
 <programlisting>
 <![CDATA[
 if words(myvar) > 5 then
@@ -942,7 +942,7 @@ else
 <para>Rexx also supports an <methodname>ELSE IF</methodname> construction: </para>
 
 <example>
-<title><methodname>ELSE IF</methodname> instruction</title>
+<title>ELSE IF instruction</title>
 <programlisting>
 <![CDATA[
 count=words(myvar)
@@ -964,7 +964,7 @@ is not followed by an expression. Instead, expressions are placed in <methodname
 clauses:</para>
 
 <example>
-<title><methodname>SELECT</methodname> instruction</title>
+<title>SELECT instruction</title>
 <programlisting>
 select
 when name="Bob" then
@@ -990,7 +990,7 @@ within SELECT cases. You do not need a <methodname>DO</methodname>/<methodname>E
 the <methodname>OTHERWISE</methodname> keyword: </para>
 
 <example>
-<title><methodname>SELECT</methodname> and <methodname>OTHERWISE</methodname> instructions</title>
+<title>SELECT and OTHERWISE instructions</title>
 <programlisting>
 select
 when name="Bob" then
@@ -1012,7 +1012,7 @@ are incorporated into the <methodname>DO</methodname> and <methodname>LOOP</meth
 can be used interchangeably for looping: </para>
 
 <example>
-<title><methodname>DO</methodname> and <methodname>LOOP</methodname> instructions</title>
+<title>DO and LOOP instructions</title>
 <programlisting>
 do i=1 to 10         /* Simple loop            */
    say i
@@ -1066,7 +1066,7 @@ Use the <methodname>LEAVE</methodname>, <methodname>RETURN</methodname>, or <met
 instructions to break out of the loop:</para>
 
 <example>
-<title><methodname>DO FOREVER</methodname> instruction</title>
+<title>DO FOREVER instruction</title>
 <programlisting>
                   /* Program to emulate your five-year-old child */
 num=random(1,10)  /* To emulate a three-year-old, move this inside the loop! */
@@ -1093,7 +1093,7 @@ Rexx also includes an
 </para>
 
 <example>
-<title><methodname>ITERATE</methodname> instruction</title>
+<title>ITERATE instruction</title>
 <programlisting>
 <![CDATA[
 loop i=1 to 100
@@ -1110,7 +1110,7 @@ end
 <para>You can use loops in <methodname>IF</methodname> or <methodname>SELECT</methodname> instructions: </para>
 
 <example>
-<title><methodname>ITERATE</methodname> instruction</title>
+<title>ITERATE instruction</title>
 <programlisting>
 <![CDATA[
 /* Say hello ten times if I is equal to 1 */
@@ -1126,7 +1126,7 @@ if i=1 then
 instruction. <methodname>SIGNAL</methodname> causes control to branch to a label:</para>
 
 <example>
-<title><methodname>SIGNAL</methodname> instruction</title>
+<title>SIGNAL instruction</title>
 <programlisting>
 <![CDATA[
 Signal fred;  /* Transfer control to label FRED below */
@@ -1159,7 +1159,7 @@ also write routines that hide the caller's variables.</para>
 accessible: </para>
 
 <example>
-<title><methodname>ROUTINE</methodname> instruction</title>
+<title>ROUTINE instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example                     */
@@ -1200,7 +1200,7 @@ routine.</para>
 instruction, like this: </para>
 
 <example>
-<title><methodname>RETURN</methodname> instruction</title>
+<title>RETURN instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine with result                 */
@@ -1223,7 +1223,7 @@ special variable <emphasis role="italic">RESULT</emphasis>, as previously shown.
 If your routine returns a result, you can call it as a function: </para>
 
 <example>
-<title><emphasis role="italic">RESULT</emphasis> special variable</title>
+<title>RESULT special variable</title>
 <programlisting>
 <![CDATA[
 /* Routine with result called as function  */
@@ -1252,7 +1252,7 @@ To get protection, use the
 <methodname>PROCEDURE</methodname> instruction, as follows: </para>
 
 <example>
-<title><methodname>PROCEDURE</methodname> instruction</title>
+<title>PROCEDURE instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction                             */
@@ -1297,7 +1297,7 @@ operand to the <methodname>PROCEDURE</methodname> instruction. List the desired 
 <methodname>EXPOSE</methodname> keyword: </para>
 
 <example>
-<title><methodname>EXPOSE</methodname> keyword</title>
+<title>EXPOSE keyword</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction with EXPOSE operand         */
