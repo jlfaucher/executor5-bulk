@@ -150,8 +150,8 @@ instruction expects a <classname>string</classname> object as input, which is wh
 If you try to display a non-string object in the <methodname>SAY</methodname> instruction,
 <methodname>SAY</methodname> requests a <classname>string</classname> object, which will cause the <methodname>MAKESTRING</methodname>
 message to be sent to the object if present, and if not the <methodname>STRING</methodname> message instead (the exact procedure is
-documented in the Open Object Reference Documentation, section "4.2.11 Required String Values" and applies to any instruction or built-in function that requires a
-string value).
+documented in the <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>, section <emphasis role="italic">4.2.11 Required String Values</emphasis>
+and applies to any instruction or built-in function that requires a string value).
 
 In this example, the <methodname>MAKESTRING</methodname> method for an <classname>Array</classname> object returns the items currently
 stored in the array, in this case the string <literal>Hello</literal>.
@@ -259,14 +259,18 @@ contains characters not allowed in a Rexx symbol.</para>
 automatically when appropriate, are <methodname>INIT</methodname>,  <xref linkend="destroy" xrefstyle="template:UNINIT" />,
 <methodname>MAKESTRING</methodname> and  <methodname>STRING</methodname>.</para>
 
-<section id="init"><title>Initializing Instances Using INIT</title>
-<para>Object classes can create instances.
+<section id="init"><title>Initializing Instances Using <methodname>INIT</methodname></title>
+<para>
+<indexterm><primary>INIT method</primary>
+<secondary>constructor method</secondary></indexterm>
+<indexterm><primary>constructor</primary>
+<secondary>INIT method</secondary></indexterm>
+Object classes can create instances.
 When these instances require initialization, you'll want to define an
 <methodname>INIT</methodname> method to set a particular starting value or initiate some startup processing.
 Rexx looks for an <methodname>INIT</methodname> method whenever a new object is created and runs it.</para>
 
 <para>
-<indexterm><primary>INIT method</primary></indexterm>
 The purpose of initialization is to ensure that the instance variables can be initialized, if needed,
 before being used in an operation.
 After the <methodname>NEW</methodname> method has created the new instance,
@@ -285,7 +289,7 @@ An example in the next section demonstrates the use of
 the Rexx constructor method <methodname>INIT</methodname>.</para>
 </section>
 
-<section id="retstr"><title>The MAKESTRING and STRING Methods</title>
+<section id="retstr"><title>The <methodname>MAKESTRING</methodname> and <methodname>STRING</methodname> Methods</title>
 <para>
 <indexterm><primary>Rexx</primary>
 <secondary>MAKESTRING method</secondary></indexterm>
@@ -302,8 +306,9 @@ method is available it will be run and the resulting string will be used instead
 Rexx root class <classname>Object</classname>. The returned string value in this case will usually consist of the indefinite article for the
 class name and gets concatenated with a blank and with the class name itself.</para>
 
-<para>The exact procedure for getting at a required string value is documented in the Open Object Reference Documentation,
-section &quot;4.2.11 Required String Values&quot;.</para>
+<para>The exact procedure for getting at a required string value is documented in the
+<citetitle pubwork="book">Open Object Rexx: Reference</citetitle>, section <emphasis role="italic">4.2.11 Required String Values</emphasis>
+</para>
 
 <para>
 You can take advantage of this automatic use of <methodname>MAKESTRING</methodname> and
@@ -318,7 +323,7 @@ demonstrate <methodname>STRING</methodname> and <methodname>INIT</methodname>.
 In the first program, the <classname>Part</classname> class is created,
 and along with it, the two methods under discussion, <methodname>STRING</methodname> and <methodname>INIT</methodname>: </para>
 <example>
-<title>STRING and INIT Methods</title>
+<title><methodname>STRING</methodname> and <methodname>INIT</methodname> Methods</title>
 
 <programlisting>
 <![CDATA[
@@ -350,7 +355,7 @@ allow the method direct access to the object variables (attributes)
 <varname>name</varname>, <varname>description</varname>, and
 <varname>number</varname>: </para>
 
-<figure><title>Instances in the Part Class</title>
+<figure><title>Instances in the <classname>Part</classname> Class</title>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/PartClass.svg" align="center" scale="75" />
@@ -384,7 +389,7 @@ The <methodname>RETURN</methodname> instruction returns the result string.</para
 
 <para>The following example shows how to use the <classname>Part</classname> class: </para>
 <example>
-<title>How to use the Part class</title>
+<title>How to use the <classname>Part</classname> class</title>
 
 <programlisting>
 <![CDATA[
@@ -443,11 +448,14 @@ able to directly access the <varname>name</varname> object variable (attribute) 
 </para>
 </section>
 
-<section id="destroy"><title>Uninitializing and Deleting Instances Using UNINIT</title>
+<section id="destroy"><title>Uninitializing and Deleting Instances Using <methodname>UNINIT</methodname></title>
 <para>
-<indexterm><primary>UNINIT method</primary></indexterm>
+<indexterm><primary>UNINIT method</primary>
+<secondary>destructor method</secondary></indexterm>
 <indexterm><primary>instances</primary>
 <secondary>uninitializing and deleting</secondary></indexterm>
+<indexterm><primary>destructor</primary>
+<secondary>UNINIT method</secondary></indexterm>
 Normally, object
 classes can create instances but have no direct control over their deletion.
 Once an object is no longer referenced in the program, it turns to garbage and
@@ -475,7 +483,7 @@ it, which in turn runs <methodname>UNINIT</methodname> method.  The method direc
 object variable (attribute) and displays its value with the <methodname>SAY</methodname> instruction:
 </para>
 <example>
-<title>UNINIT Method</title>
+<title><methodname>UNINIT</methodname> Method</title>
 <programlisting>
 /* uninit.rex - example of UNINIT processing */
 
@@ -568,7 +576,7 @@ special variable <emphasis role="italic">SUPER</emphasis> lets you call a method
 For example, the following <classname>Savings</classname> class has <methodname>INIT</methodname> methods that the Savings
 class, <classname>Account</classname> class, and <classname>Object</classname> class define. </para>
 <example>
-<title>SELF Variable</title>
+<title><emphasis role="italic">SELF</emphasis> Variable</title>
 
 <programlisting>
 <![CDATA[
@@ -642,7 +650,7 @@ Rexx makes the following environment objects available:</para>
 
 <!-- =========================================================================== -->
 
-<section id="publicenvobj"><title>The Environment Directory (.environment)</title>
+<section id="publicenvobj"><title>The Global Environment Object (<methodname>.environment</methodname>)</title>
 <para>
 <indexterm><primary>Environment objects</primary></indexterm>
 <indexterm><primary>symbols</primary>
@@ -694,7 +702,7 @@ you create can be referenced with an environment symbol. There is an environment
 symbol for each public Rexx-defined class, as well as for each of the unique environment objects
 this section describes, such as <emphasis role="italic">The Nil Object</emphasis>.</para>
 
-<section id="nilobject"><title>The NIL Object (.nil)</title>
+<section id="nilobject"><title>The NIL Object (<methodname>.nil</methodname>)</title>
 <para>
 <indexterm><primary>symbols</primary>
 <secondary>.nil symbol</secondary></indexterm>
@@ -747,7 +755,7 @@ Rexx-defined entries.</para>
 
 <!-- =========================================================================== -->
 
-<section id="localenvobj"><title>The Local Environment Directory (.local)</title>
+<section id="localenvobj"><title>The Local Environment Object (<methodname>.local</methodname>)</title>
 <para>
 <indexterm><primary>Environment objects</primary></indexterm>
 <indexterm><primary>symbols</primary>
@@ -1241,7 +1249,7 @@ of <classname>Account.</classname>. The example defines
 a <methodname>TYPE</methodname> method for the <classname>Savings</classname> subclass, as follows: </para>
 
 <example>
-<title>SUBCLASS Option</title>
+<title><methodname>SUBCLASS</methodname> Option</title>
 
 <programlisting>
 <![CDATA[
@@ -1312,7 +1320,7 @@ be accessed from other instances of the same class (or subclass instances).
 </para></listitem>
 <listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
 <example>
-<title>PUBLIC and PRIVATE options</title>
+<title><methodname>PUBLIC</methodname> and <methodname>PRIVATE</methodname> options</title>
 
 <programlisting>
 <![CDATA[
@@ -1335,7 +1343,7 @@ the scope of the <methodname>makeChecking</methodname> method is <literal>.Savin
 <listitem><para>From within an instance (or subclass instance) of a class to a private class
 method of its class.  For example:</para>
 <example>
-<title>PUBLIC and PRIVATE Options</title>
+<title><methodname>PUBLIC</methodname> and <methodname>PRIVATE</methodname> Options</title>
 
 <programlisting>
 <![CDATA[
@@ -1369,7 +1377,7 @@ objects to share information with each other and their defining classes.
 </para>
 </section>
 
-<section id="unknown"><title>Defining an UNKNOWN Method</title>
+<section id="unknown"><title>Defining an <methodname>UNKNOWN</methodname> Method</title>
 <para>
 <indexterm><primary>UNKNOWN method</primary></indexterm>
 When an object receives
@@ -1514,7 +1522,7 @@ prevents them from simultaneously accessing one object variable (attribute), and
 corrupting the data.</para>
 </section>
 
-<section id="sendmsgwact"><title>Sending Messages within an Activity</title>
+<section id="sendmsgwact"><title>Sending Messages within an <emphasis role="italic">Activity</emphasis></title>
 <para>
 <indexterm><primary>sending messages within an activity</primary></indexterm>
 Rexx makes one

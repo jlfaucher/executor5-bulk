@@ -179,7 +179,7 @@ and <emphasis role="italic">PATH</emphasis> commands.
 The <emphasis role="italic">PAUSE</emphasis> command is added to wait for the user to press
 a key before issuing the next instruction or command. Borders are added too.</para>
 <example>
-<title>DIR and PATH commands</title>
+<title><emphasis role="italic">DIR</emphasis> and <emphasis role="italic">PATH</emphasis> commands</title>
 
 <programlisting>
 <![CDATA[
@@ -368,7 +368,7 @@ and the input file name.</para>
 containing the command string on a line by itself. Rexx evaluates the variable
 and passes the resultant string to Windows: </para>
 <example>
-<title>showfile.rex (Windows)</title>
+<title><code>showfile.rex</code> (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -419,7 +419,7 @@ Rexx and Windows programs. The <code>dir.rex</code> program
 below shows how Rexx evaluates a command when the command name and a variable
 name are the same: </para>
 <example>
-<title>dir.rex (Windows)</title>
+<title><code>dir.rex</code> (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -503,7 +503,7 @@ To address the Windows environment, use the symbol <methodname>CMD</methodname>.
 that results in a string that Rexx passes to
 the environment. Here are some examples: </para>
 <example>
-<title>ADDRESS instruction</title>
+<title><methodname>ADDRESS</methodname> instruction</title>
 
 <programlisting>
 <![CDATA[
@@ -527,6 +527,73 @@ address edit "rain"   /* Rexx passes the "rain"       */
 
 <para>Notice that the <methodname>ADDRESS</methodname> instruction lets a single Rexx program issue commands
 to two or more environments.</para>
+
+<para>The <methodname>ADDRESS</methodname> instruction allows to redirect the command's standard input
+(<methodname>stdin</methodname>), standard output (<methodname>stdout</methodname>) and standard
+error (<methodname>stderr</methodname>) files directly to Rexx. The following example will define a command to list all
+environment variables of the current process, sort it on Unix operating systems and redirect the standard output line by line to
+a Rexx array which then gets listed by the Rexx program in a <methodname>DO</methodname> loop.
+</para>
+<example>
+<title>Redirecting the standard output to a Rexx array:</title>
+
+<programlisting>
+<![CDATA[
+parse source os .                /* get operating system name                 */
+
+   /* define external command to list all environment variables               */
+if os~startsWith("Win") then command='set'   /* Windows (sorted by default)   */
+                        else command='env | sort -f'  /* Unix (needs sorting) */
+
+vars=.array~new   /* array to store command's output (environment variables)  */
+
+   /* let the operating system shell execute the command, redirect            */
+   /* command's output (stdout) line by line to our Rexx vars array           */
+address system command with output using (vars)
+
+len=vars~items~length            /* get number of digits/characters           */
+if rc=0 then      /* return code 0: indicates command executed successfully   */
+do counter i var over vars       /* list environment variables one by one     */
+   say "#" i~right(len)":" var   /* show value of counter i right adjusted    */
+end
+
+say "operating system:" os', command was: "'command'", # vars:' vars~items
+]]>
+</programlisting>
+<para>Running the above Rexx program on Darwin (Apple) may yield an output like:</para>
+<screen>#  1: Apple_PubSub_Socket_Render=/private/tmp/com.apple.launchd.BNhGgJRBpz/Render
+#  2: HOME=/Users/some_username
+#  3: LC_CTYPE=UTF-8
+... cut ...
+# 20: XPC_FLAGS=0x0
+# 21: XPC_SERVICE_NAME=0
+# 22: _=/usr/bin/env
+operating system: DARWIN, command was: "env | sort -f", # vars: 22
+</screen>
+
+<para>Running the above Rexx program on Linux may yield an output like:</para>
+<screen>#  1: CLUTTER_BACKEND=x11
+#  2: CLUTTER_IM_MODULE=xim
+#  3: COLORTERM=truecolor
+... cut ...
+# 77: XDG_SESSION_TYPE=x11
+# 78: XDG_VTNR=7
+# 79: XMODIFIERS=@im=ibus
+operating system: LINUX, command was: "env | sort -f", # vars: 79
+</screen>
+
+<para>Running the above Rexx program on Windows may yield an output like:</para>
+<screen>#  1: ALLUSERSPROFILE=C:\ProgramData
+#  2: APPDATA=C:\Users\Administrator\AppData\Roaming
+#  3: asl.log=Destination=file
+... cut ...
+# 50: windir=C:\WINDOWS
+# 51: windows_tracing_flags=3
+# 52: windows_tracing_logfile=C:\BVTBin\Tests\installpackage\csilogfile.log
+operating system: WindowsNT, command was: "set", # vars: 52
+</screen>
+
+</example>
 </section>
 
 <section id="rcodes"><title>Using Return Codes from Commands</title>
@@ -542,7 +609,7 @@ always <code>0</code>. If something goes wrong, the return code issued is a nonz
 The number depends on the command itself and the error encountered.</para>
 <para>This example shows how to display a return code: </para>
 <example>
-<title>getrc.rex (Windows)</title>
+<title><code>getrc.rex</code> (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -693,7 +760,7 @@ the <citetitle pubwork="book">Open Object Rexx: Reference.</citetitle></para>
 <para>To turn off a trap for any part of a program, use the <methodname>SIGNAL</methodname> or <methodname>CALL</methodname>
 instructions with the <methodname>OFF</methodname> keyword, such as: </para>
 <example>
-<title>SIGNAL</title>
+<title><methodname>SIGNAL</methodname></title>
 
 <programlisting>
 <![CDATA[
@@ -707,7 +774,7 @@ CALL OFF FAILURE
 
 </section>
 
-<section id="signal"><title>Using SIGNAL ON ERROR</title>
+<section id="signal"><title>Using <methodname>SIGNAL ON ERROR</methodname></title>
 <para>The following example shows how a program can use <methodname>SIGNAL ON</methodname> to
 trap a command error in a program that copies a file. In this example, an
 error occurs because the name of a nonexistent file is stored in the variable
@@ -720,7 +787,7 @@ file1. Processing jumps to the clause following the label <methodname>ERROR</met
 </mediaobject>
 </section>
 
-<section id="call"><title>Using CALL ON ERROR</title>
+<section id="call"><title>Using <methodname>CALL ON ERROR</methodname></title>
 <para>If there were a way to recover, such as by typing another file
 name, you could use <methodname>CALL ON</methodname> to recover and resume processing:</para>
 
