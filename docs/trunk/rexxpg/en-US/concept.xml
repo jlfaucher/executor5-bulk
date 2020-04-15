@@ -77,8 +77,8 @@ also send or erase the report.</para>
 <para> In conventional, structured programming, actions like print
 are often isolated from the data by placing them in subroutines or modules.
 A module typically contains an operation for implementing one simple action.
-You might have a <methodname>PRINT</methodname> module, a
-<methodname>SEND</methodname> module, an <methodname>ERASE</methodname> module. These actions
+You might have a PRINT module, a
+SEND module, an ERASE module. These actions
 are independent of the data they operate on.</para>
 
 <mediaobject>
@@ -100,8 +100,8 @@ related to its data.</para>
 </figure>
 
 <para>In the case of report, the report object would contain its own built-in
-<methodname>PRINT</methodname>, <methodname>SEND</methodname>,
-<methodname>ERASE</methodname>, and <methodname>FILE</methodname> operations.</para>
+PRINT, SEND,
+ERASE, and FILE operations.</para>
 <para>Object-oriented programming lets you model real-world objects&mdash;even
 very complex ones&mdash;precisely and elegantly. As a result, object manipulation
 becomes easier and computer instructions become simpler and can be modified
@@ -209,7 +209,7 @@ object~action(parameters)
 
 <para>Assume that the object is the string
 <computeroutput>!iH.</computeroutput> Sending it a message
-to use its <methodname>REVERSE</methodname> action: </para>
+to use its REVERSE action: </para>
 
 <programlisting>
 <![CDATA[
@@ -228,15 +228,15 @@ to use its <methodname>REVERSE</methodname> action: </para>
 an object results in performing some action; that is, it results in running
 some underlying code. The action-generating code is called a method. When you
 send a message to an object, you specify its method
-name in the message. Method names are character strings like <methodname>REVERSE</methodname>. In the
-preceding example, sending the <methodname>reverse</methodname>
+name in the message. Method names are character strings like REVERSE. In the
+preceding example, sending the reverse
 message to the <computeroutput>!iH</computeroutput> object causes
-it to run the <methodname>REVERSE</methodname> method. Most objects are capable
+it to run the REVERSE method. Most objects are capable
 of more than one action, and so have a number of available methods.</para>
 <para>The classes Rexx provides include their own predefined methods. The Message
-class, for example, has the <methodname>COMPLETED</methodname>, <methodname>INIT</methodname>,
-<methodname>NOTIFY</methodname>, <methodname>RESULT</methodname>,
-<methodname>SEND</methodname>, and <methodname>START</methodname>
+class, for example, has the COMPLETED, INIT,
+NOTIFY, RESULT,
+SEND, and START
 methods. When you create your own classes, you can write new methods for them
 in Rexx code. Much of the object programming in Rexx is writing the code for
 the methods you create.</para>
@@ -254,20 +254,20 @@ ball~reverse    /* Reverses the direction of a moving ball      */
 ]]>
 </programlisting>
 
-<para>As long as each object has its own <methodname>REVERSE</methodname> method, <methodname>REVERSE</methodname> runs
+<para>As long as each object has its own REVERSE method, REVERSE runs
 even if the programming implementation is different for each object. This
 ability to hide different functions behind a common interface is
 called polymorphism.  As a result of information
 hiding, each object in the previous example knows only its own version of
-<methodname>REVERSE</methodname>. And even though the objects are different, each reverses itself as
+REVERSE. And even though the objects are different, each reverses itself as
 dictated by its own code.</para>
 <para>Although the <computeroutput>!iH</computeroutput> object's
-<methodname>REVERSE</methodname> code is different from
+REVERSE code is different from
 the plotter pen's, the method name can be the same because Rexx keeps
 track of the methods each object owns. The ability to reuse the same method
 name so that one message can initiate more than one function is another feature
-of polymorphism. You do not need to have several message names like <methodname>REVERSE_STRING</methodname>,
-<methodname>REVERSE_PEN</methodname>, <methodname>REVERSE_BALL</methodname>. This keeps method-naming schemes simple and makes
+of polymorphism. You do not need to have several message names like REVERSE_STRING,
+REVERSE_PEN, REVERSE_BALL. This keeps method-naming schemes simple and makes
 complex programs easy to follow and modify.</para>
 <para>The ability to hide the various implementations of a method while leaving
 the interface the same illustrates polymorphism at its lowest level. On a
@@ -276,7 +276,7 @@ higher level, polymorphism permits extensive code reuse.</para>
 One object will send a message to another object expecting a particular result.
 Different types of objects can implement different versions of this message as
 long as it fulfills the expectations of the invoking object.  For example,
-the <methodname>LOOP</methodname> instruction has a form called <methodname>OVER</methodname>.  Loop <methodname>OVER</methodname> will iterate over a number of
+the LOOP instruction has a form called OVER.  Loop OVER will iterate over a number of
 elements provided by an object.  For example,</para>
 <example>
 
@@ -290,14 +290,14 @@ end
 </example>
 
 <para>Will display the strings <literal>"Rick"</literal>, <literal>"David"</literal>, and <literal>"Mark"</literal>, in that sequence.  The
-<methodname>LOOP OVER</methodname> instruction will work with <classname>Array</classname>,
+LOOP OVER instruction will work with <classname>Array</classname>,
 <classname>List</classname>, <classname>Stem</classname>, <classname>Streams</classname> variables, etc.
 
-The <methodname>LOOP</methodname> instruction itself does not know anything about <classname>Array</classname>s or <classname>List</classname>s or <classname>Stem</classname>s or <classname>Stream</classname>s.
-The <methodname>LOOP</methodname> instruction specifies a contract.  <methodname>LOOP</methodname> will send the target object the message
-<methodname>MAKEARRAY</methodname> and expects the target object to return an <classname>Array</classname> object that is used for
-the <methodname>LOOP</methodname> iteration.  Any object can participate in <methodname>LOOP</methodname> iteration by implementing this contract.
-Objects that do implement the <methodname>MAKEARRAY</methodname> contract are polymorphic with the <methodname>LOOP</methodname> instruction.
+The LOOP instruction itself does not know anything about <classname>Array</classname>s or <classname>List</classname>s or <classname>Stem</classname>s or <classname>Stream</classname>s.
+The LOOP instruction specifies a contract.  LOOP will send the target object the message
+MAKEARRAY and expects the target object to return an <classname>Array</classname> object that is used for
+the LOOP iteration.  Any object can participate in LOOP iteration by implementing this contract.
+Objects that do implement the MAKEARRAY contract are polymorphic with the LOOP instruction.
 </para>
 </section>
 
@@ -321,7 +321,7 @@ defined by the class:</para>
 </mediaobject>
 </figure>
 
-<para>All the icon objects will use common methods like <methodname>DRAW</methodname> or <methodname>ERASE</methodname>. They
+<para>All the icon objects will use common methods like DRAW or ERASE. They
 will have common variables like position, color, or size. What makes each
 icon object different from one another is the data assigned to its variables.
 For the Windows System icon, it might be

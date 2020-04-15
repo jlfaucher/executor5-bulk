@@ -359,7 +359,7 @@ assortment of baked goods is supplied by the Pie-by-Night Bakery).</para>
 <para>Rexx includes classes, for example, for arrays, lists, queues, tables,
 and directories. Each item stored in a Rexx <emphasis role="italic">collection</emphasis> has an associated index
 that you can use to retrieve the item from the <emphasis role="italic">collection</emphasis>
-with the <methodname>AT</methodname> or <methodname>[]</methodname>
+with the AT or []
 (left and right bracket) methods, and each collection defines its own acceptable
 index types: </para>
 <para>The class <classname>Collection</classname>
@@ -384,10 +384,10 @@ on specific substrings of <classname>String</classname> objects.
 <indexterm><primary>classes</primary>
 <secondary>Comparable class</secondary></indexterm>
 <para>Any object that inherits the <classname>Comparable</classname> mixin class and
-implements a <methodname>compareTo() </methodname>
+implements a compareTo() 
 method can be sorted. The <classname>DateTime</classname> Class and
 <classname>TimeSpan</classname> Class are examples of built-in
-Rexx classes that can be sorted. Any user created class may also implement a <methodname>compareTo()</methodname>
+Rexx classes that can be sorted. Any user created class may also implement a compareTo()
 method to enable sorting.
 </para>
 <para>The class <classname>Comparable</classname>
@@ -407,8 +407,8 @@ method to enable sorting.
 <indexterm><primary>classes</primary>
 <secondary>Comparator class</secondary></indexterm>
 <para>The <classname>Comparator</classname> class is the base class for implementing Comparator objects that can
-be used with the <classname>Array</classname> <methodname>sortWith()</methodname>
-or <methodname>stableSortWith()</methodname> method. The <methodname>compare()</methodname> method implements
+be used with the <classname>Array</classname> sortWith()
+or stableSortWith() method. The compare() method implements
 some form of comparison that determines the relative ordering of two objects. Many <classname>Comparator</classname>
 implementations are specific to particular object types.
 </para>
@@ -454,7 +454,7 @@ This is the inverse of a <classname>Comparator</classname> sort order.
 <indexterm><primary>classes</primary>
 <secondary>Directory class</secondary></indexterm>
 <para>A collection of character string indexes. Indexes are compared using
-the string <methodname>==</methodname> comparison method to test for strict equality.
+the string == comparison method to test for strict equality.
 </para>
 <para>The class <classname>Directory</classname>
         subclasses (specializes) <xref linkend="clsObject" xrefstyle="template:Object" />
@@ -705,7 +705,7 @@ determine sort order.
 <secondary>Orderable class</secondary></indexterm>
 <para>The <classname>Orderable</classname> class can be inherited by classes which wish to provide each of the comparison operator
 methods without needing to implement each of the individual methods. The inheriting class need only
-implement the <classname>Comparable</classname> <methodname>compareTo()</methodname> method.
+implement the <classname>Comparable</classname> compareTo() method.
 This class is defined as a mixin class.
 </para>
 <para>The class <classname>Orderable</classname>
@@ -761,8 +761,8 @@ throw a syntax error when invoked.
 <secondary>Package class</secondary></indexterm>
 <para>The <classname>Package</classname> class contains the source code for a package of Rexx code. A package instance holds all of
 the routines, classes, and methods created from a source code unit and also manages external
-dependencies referenced by <methodname>::REQUIRES</methodname> directives.
-The files loaded by <methodname>::REQUIRES</methodname> are also
+dependencies referenced by ::REQUIRES directives.
+The files loaded by ::REQUIRES are also
 contained in Package class instances.
 </para>
 <para>The class <classname>Package</classname>
@@ -1045,7 +1045,7 @@ gives access to each <emphasis role="italic">index/value</emphasis> pair stored 
 <para>A collection of indexes that can be any object. For example, <classname>String</classname>
 objects, <classname>Array</classname> objects, <classname>Alarm</classname> objects, or any user-created object can be a
 table index.  The <classname>Table</classname> class determines an index match
-by using <methodname>the ==</methodname> comparison
+by using the == comparison
 method to test for strict equality. A Table contains no duplicate indexes.
 </para>
 <para>The class <classname>Table</classname>
@@ -1115,7 +1115,7 @@ or within a numeric range.
 does not prevent an object from getting garbage collected or having its uninit method run when there are
 no longer normal references maintained to the object. Once the referenced object is eligible for garbage
 collection, the reference inside the <classname>WeakReference</classname> instance
-will be cleared and the <methodname>VALUE</methodname> method will
+will be cleared and the VALUE method will
 return <literal>.nil</literal> on all subsequent calls. <classname>WeakReferences</classname>
 are useful for maintaining caches of objects without
 preventing the objects from being reclaimed by the garbage collector when needed.
@@ -1182,8 +1182,8 @@ created to manipulate pizzas would be instance methods.</para>
 
 <para>As a programmer, you typically create classes by using directives, rather
 than the methods of the <classname>Class</classname> class. In particular,
-you'll use the <methodname>::CLASS</methodname> directive, described later in this section. The
-<methodname>::CLASS</methodname> directive is a kind of Rexx clause that declares class definitions in a
+you'll use the ::CLASS directive, described later in this section. The
+::CLASS directive is a kind of Rexx clause that declares class definitions in a
 simple, static form in your programs.
 </para>
 </section>
@@ -1214,8 +1214,8 @@ Rexx processes all directives first to set up any classes, methods, or routines
 needed by the program. Then it runs any code that exists before the first
 directive. The first directive in a program marks the end of the executable
 part of the program. A directive is a kind of clause that begins with a double-colon
-(<methodname>::</methodname>) and is non-executable (a directive cannot appear in the expression of
-an <methodname>INTERPRET</methodname> instruction, for example).</para>
+(::) and is non-executable (a directive cannot appear in the expression of
+an INTERPRET instruction, for example).</para>
 </section>
 
 <section id="rexdir"><title>The Directives Rexx Provides</title>
@@ -1228,24 +1228,24 @@ for more details on, or examples of, any of these Rexx directives.</para>
 <section id="clasdir"><title>The ::CLASS Directive</title>
 <indexterm><primary>directives</primary>
 <secondary>::CLASS</secondary></indexterm>
-<para>You use the <methodname>::CLASS</methodname> directive to create a class. Programs can then use
+<para>You use the ::CLASS directive to create a class. Programs can then use
 the new class by specifying it as a Rexx environment symbol (the class name
 preceded by a period) in the program. For example, in
 <xref linkend="sample" />,
 the <classname>Savings</classname> class is created using the
-<methodname>::CLASS</methodname> directive. A program can then
+::CLASS directive. A program can then
 use the new class by specifying it as an environment symbol, &quot;<literal>.savings</literal>&quot;.</para>
 
 <para>The new class that you create acquires any methods defined by subsequent
-<methodname>::METHOD</methodname> directives within the program, until either another <methodname>::CLASS</methodname> directive
+::METHOD directives within the program, until either another ::CLASS directive
 or the end of the program is reached.</para>
-<para>You can use the <methodname>::CLASS</methodname> directive's <methodname>SUBCLASS</methodname> option to make the new
+<para>You can use the ::CLASS directive's SUBCLASS option to make the new
 class the subclass of another. In
 <xref linkend="sample" />, the <classname>Savings</classname> class
 is made a subclass of the <classname>Account</classname> class. A subclass inherits instance and
 class methods from its specified superclass; in the sample, <classname>Savings</classname> inherits
 from <classname>Account</classname>.</para>
-<para>Additional <methodname>::CLASS</methodname> directive options are available for: </para>
+<para>Additional ::CLASS directive options are available for: </para>
 
 <itemizedlist>
 <listitem><para>Inheriting instance methods from a specified metaclass
@@ -1254,44 +1254,44 @@ For more information on metaclasses, see
 <xref linkend="meta" />.</para></listitem>
 
 <listitem><para>Making the new class available to programs outside its containing Rexx
-program (the <methodname>PUBLIC</methodname> option). The outside program must refer to the new class
-by using a <methodname>::REQUIRES</methodname> directive.</para></listitem>
+program (the PUBLIC option). The outside program must refer to the new class
+by using a ::REQUIRES directive.</para></listitem>
 <listitem><para>Subclassing the new class to a mixin class in order to inherit its instance
-and class methods (the <methodname>MIXINCLASS</methodname> option).</para></listitem>
+and class methods (the MIXINCLASS option).</para></listitem>
 
 <listitem><para>Adding the instance and class methods of a mixin class to the new class,
-without subclassing it (the <methodname>INHERIT</methodname> option).</para></listitem></itemizedlist>
+without subclassing it (the INHERIT option).</para></listitem></itemizedlist>
 <para>When you create a new class, it is always a subclass of an existing class.
-If you do not specify the <methodname>SUBCLASS</methodname> or
-<methodname>MIXINCLASS</methodname> option on the
-<methodname>::CLASS</methodname> directive,
+If you do not specify the SUBCLASS or
+MIXINCLASS option on the
+::CLASS directive,
 the superclass for the new class is the Object class.</para>
 <para>Your class definition can be in a file of its own, with no executable code
 preceding it. For example, when you define classes and methods to be shared
 by several programs, you put the executable code in another file and refer
-to the class file using a <methodname>::REQUIRES</methodname> directive.</para>
-<para>Rexx processes <methodname>::CLASS</methodname> directives in the order in which they appear, unless
+to the class file using a ::REQUIRES directive.</para>
+<para>Rexx processes ::CLASS directives in the order in which they appear, unless
 there is a dependency on some later directive's processing. You cannot
 create two classes that have the same class name in one program. If several
-programs contain classes with the same name, the last <methodname>::CLASS</methodname> directive processed
+programs contain classes with the same name, the last ::CLASS directive processed
 is used.</para>
 </section>
 
 <section id="methdir"><title>The ::METHOD Directive</title>
 <indexterm><primary>directives</primary>
 <secondary>::METHOD</secondary></indexterm>
-<para>The <methodname>::CLASS</methodname> directive is usually followed by a <methodname>::METHOD</methodname> directive, which
+<para>The ::CLASS directive is usually followed by a ::METHOD directive, which
 is used to create a method for that class and define the method's attributes.
 The next directive in the program, or the end of the program, ends the method.</para>
-<para>Some classes you define have an <methodname>INIT</methodname> method.
-<methodname>INIT</methodname> is called whenever a
-<methodname>NEW</methodname> message is sent to a class. The <methodname>INIT</methodname> method must contain whatever code
+<para>Some classes you define have an INIT method.
+INIT is called whenever a
+NEW message is sent to a class. The INIT method must contain whatever code
 is needed to initialize the object.</para>
-<para>The <methodname>::METHOD</methodname> directive can be used for: </para>
+<para>The ::METHOD directive can be used for: </para>
 
 <itemizedlist>
-<listitem><para>Creating a class method for the most-recent <methodname>::CLASS</methodname>
-directive (the <methodname>CLASS</methodname> option).</para></listitem>
+<listitem><para>Creating a class method for the most-recent ::CLASS
+directive (the CLASS option).</para></listitem>
 
 <listitem><para>Creating a private method; that is, a method that
 works like a subroutine and can only be activated by the objects of the same type it belongs
@@ -1300,7 +1300,7 @@ it.</para></listitem>
 
 <listitem><para>Creating a method that can be called while other methods are active on
 the same object, as described in
-<xref linkend="activat" /> (the <methodname>UNGUARDED</methodname> option).
+<xref linkend="activat" /> (the UNGUARDED option).
 </para></listitem>
 </itemizedlist>
 </section>
@@ -1308,7 +1308,7 @@ the same object, as described in
 <section id="attrdir"><title>The ::ATTRIBUTE Directive</title>
 <indexterm><primary>directives</primary>
 <secondary>::ATTRIBUTE</secondary></indexterm>
-<para>A <methodname>::CLASS</methodname> directive can also be followed by <methodname>::ATTRIBUTE</methodname> directives, which
+<para>A ::CLASS directive can also be followed by ::ATTRIBUTE directives, which
 are used to create methods that directly access internal attributes of an object.
 For example, the Account class could define</para>
 
@@ -1329,22 +1329,22 @@ For example, the Account class could define</para>
 <section id="routdir"><title>The ::ROUTINE Directive</title>
 <indexterm><primary>directives</primary>
 <secondary>::ROUTINE</secondary></indexterm>
-<para>You use the <methodname>::ROUTINE</methodname> directive to create a named routine within a program.
-The <methodname>::ROUTINE</methodname> directive starts the named routine and another directive (or
+<para>You use the ::ROUTINE directive to create a named routine within a program.
+The ::ROUTINE directive starts the named routine and another directive (or
 the end of the program) ends the routine.</para>
-<para>The <methodname>::ROUTINE</methodname> directive is useful organizing functions that are not specific to
+<para>The ::ROUTINE directive is useful organizing functions that are not specific to
 a particular class type.
 </para>
-<para>The <methodname>::ROUTINE</methodname> directive includes a <methodname>PUBLIC</methodname> option for making the routine
+<para>The ::ROUTINE directive includes a PUBLIC option for making the routine
 available to programs outside its containing Rexx program. The outside program
-must reference the routine by using a <methodname>::REQUIRES</methodname> directive
+must reference the routine by using a ::REQUIRES directive
 for the program that contains the routine.</para>
 </section>
 
 <section id="requdir"><title>The ::REQUIRES Directive</title>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES</secondary></indexterm>
-<para>You use the <methodname>::REQUIRES</methodname> directive when a program needs access to the classes
+<para>You use the ::REQUIRES directive when a program needs access to the classes
 and objects of another program. This directive has the following form: </para>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES example</secondary></indexterm>
@@ -1355,11 +1355,11 @@ and objects of another program. This directive has the following form: </para>
 ]]>
 </programlisting>
 
-<para><methodname>::REQUIRES</methodname> directives are processed before other directives and the order
-of the <methodname>::REQUIRES</methodname> directives determines the search order for the classes and
+<para>::REQUIRES directives are processed before other directives and the order
+of the ::REQUIRES directives determines the search order for the classes and
 routines defined in the named programs.</para>
 <para>Local routine or class definitions within a program override routines or
-classes imported through <methodname>::REQUIRES</methodname>
+classes imported through ::REQUIRES
 directives.
 </para>
 </section>
@@ -1377,7 +1377,7 @@ and routines.</para></listitem>
 any classes, methods, and routines set up by the directives. </para>
 <para>Once Rexx
 has processed the code preceding the directive, any public classes and objects
-the program defines are available to programs having the appropriate <methodname>::REQUIRES</methodname>
+the program defines are available to programs having the appropriate ::REQUIRES
 directive.</para></listitem></orderedlist>
 </section>
 
@@ -1411,22 +1411,22 @@ asav~name= "John Smith"          /* executable code ends   */
 
 <indexterm><primary>SUBCLASS option</primary></indexterm>
 <para>The preceding program uses the
-<methodname>::CLASS</methodname> directive to create two classes, the Account class and its Savings
+::CLASS directive to create two classes, the Account class and its Savings
 subclass. In the <computeroutput>::class Account</computeroutput>
-expression, the <methodname>::CLASS</methodname> directive
+expression, the ::CLASS directive
 precedes the name of the new class, Account.</para>
-<para>The example program also uses the <methodname>::METHOD</methodname>
-directive to create a <methodname>TYPE</methodname> method and
-<methodname>::ATTRIBUTE</methodname> to create <methodname>NAME</methodname> and
-<methodname>NAME=</methodname> methods for Account. In the
+<para>The example program also uses the ::METHOD
+directive to create a TYPE method and
+::ATTRIBUTE to create NAME and
+NAME= methods for Account. In the
 <computeroutput>::method type</computeroutput> instruction, the
-<methodname>::METHOD</methodname> directive precedes the method name, and is immediately followed by
-the code for the method. Methods for any new class follow its <methodname>::CLASS</methodname> directive
-in the program, and precede the next <methodname>::CLASS</methodname> directive.</para>
+::METHOD directive precedes the method name, and is immediately followed by
+the code for the method. Methods for any new class follow its ::CLASS directive
+in the program, and precede the next ::CLASS directive.</para>
 <para>In the <computeroutput>::attribute name</computeroutput>
-directive, we're creating a pair of methods.  The <methodname>NAME</methodname> (&quot;getter&quot;) method returns the
+directive, we're creating a pair of methods.  The NAME (&quot;getter&quot;) method returns the
 current value of the <emphasis role="italic">NAME</emphasis> object variable.
-The <methodname>NAME=</methodname> (&quot;setter&quot;) method can assign
+The NAME= (&quot;setter&quot;) method can assign
 a new value to the <emphasis role="italic">NAME</emphasis> object variable.
 </para>
 
@@ -1436,8 +1436,8 @@ account <literal>asav</literal>, which points to the Name object, Rexx knows wha
 value to use. If you assign another value to <literal>asav</literal> (such as &quot;Mary Smith&quot;),
 Rexx recovers the object that was associated with <literal>asav</literal> (&quot;John Smith&quot;)
 as part of its normal garbage-collection operations.</para>
-<para>In the Savings subclass, a second <methodname>TYPE</methodname> method is created that supersedes
-the <methodname>TYPE</methodname> method <classname>Savings</classname> would otherwise
+<para>In the Savings subclass, a second TYPE method is created that supersedes
+the TYPE method <classname>Savings</classname> would otherwise
 have inherited from <classname>Account</classname>. Note
 that the directives appear after the program code.</para>
 </section>
@@ -1446,21 +1446,21 @@ that the directives appear after the program code.</para>
 <indexterm><primary>directives</primary>
 <secondary>sample program</secondary></indexterm>
 <indexterm><primary>INIT method</primary></indexterm>
-<para>A directive is nonexecutable code that begins with a double colon (<methodname>::</methodname>)
-and follows the program code. The <methodname>::CLASS</methodname> directive creates a class; in this
+<para>A directive is nonexecutable code that begins with a double colon (::)
+and follows the program code. The ::CLASS directive creates a class; in this
 example, the Dinosaur class. The sample provides two methods for the Dinosaur
-class, <methodname>INIT</methodname> and <methodname>DIET</methodname>.
-These are added to the Dinosaur class using the <methodname>::METHOD</methodname>
-directives. After the line containing the <methodname>::METHOD</methodname> directive, the code for
+class, INIT and DIET.
+These are added to the Dinosaur class using the ::METHOD
+directives. After the line containing the ::METHOD directive, the code for
 the method is specified. Methods are ended either by the start of the next
 directive or by the end of the program.</para>
 <para>Because directives must follow the executable code in your program, you
 put that code first. In this case, the executable code creates a new dinosaur,
-Dino, that is an instance of the Dinosaur class. Rexx then runs the <methodname>INIT</methodname> method.
-Rexx runs any <methodname>INIT</methodname> method automatically whenever the <methodname>NEW</methodname> message is received.
-Here the <methodname>INIT</methodname> method is used to identify the type of dinosaur. Then the program
-runs the <methodname>DIET</methodname> method to determine whether the dinosaur eats meat or vegetables.
-Rexx saves the information returned by <methodname>INIT</methodname> and <methodname>DIET</methodname> as variables in the Dino
+Dino, that is an instance of the Dinosaur class. Rexx then runs the INIT method.
+Rexx runs any INIT method automatically whenever the NEW message is received.
+Here the INIT method is used to identify the type of dinosaur. Then the program
+runs the DIET method to determine whether the dinosaur eats meat or vegetables.
+Rexx saves the information returned by INIT and DIET as variables in the Dino
 object.</para>
 <para>In the example, the Dinosaur class and its two methods are defined following
 the executable program code: </para>
@@ -1510,10 +1510,10 @@ exit
 </section>
 
 <section id="definei"><title>Defining an Instance</title>
-<para>You use the <methodname>NEW</methodname> method to define an instance of the new class,
+<para>You use the NEW method to define an instance of the new class,
 and then call methods that the instance inherited from its superclass. To
 define an instance of the Savings class named &quot;John Smith,&quot; and send
-John Smith the <methodname>TYPE</methodname> and <methodname>NAME=</methodname>
+John Smith the TYPE and NAME=
 messages to call the related methods, you enter: </para>
 
 <programlisting>
@@ -1548,7 +1548,7 @@ of the class to which it belongs at the time of its creation. If a class gains
 additional methods, objects created before the definition of these methods
 do not acquire the new or changed methods.</para>
 <para>The instance variables within an object are created on demand whenever a method
-<methodname>EXPOSE</methodname>s an object variable.  The class creates the object instance, defines the methods
+EXPOSEs an object variable.  The class creates the object instance, defines the methods
 the object has, and the object instance completes the job of constructing the object.
 </para>
 <para>
@@ -1568,8 +1568,8 @@ which they were created. This is called
 to add a set of instance and class
 methods to other classes are called <emphasis>mixin classes</emphasis>,
 or simply mixins.</para>
-<para>You can add mixin methods to an existing class by sending an <methodname>INHERIT</methodname>
-message or using the <methodname>INHERIT</methodname> option on the <methodname>::CLASS</methodname> directive.
+<para>You can add mixin methods to an existing class by sending an INHERIT
+message or using the INHERIT option on the ::CLASS directive.
 In either case, the class to be inherited must be a mixin. During both class
 creation and multiple inheritance, subclasses inherit both class and instance
 methods from their superclasses.</para>
@@ -1581,8 +1581,8 @@ inherit a mixin; other classes cannot.  For example, a mixin class created
 as a subclass of the Array class can only be inherited by other Array subclasses.
 Mixins that use the Object class as a base class can be inherited by any class.
 </para>
-<para>To create a new mixin class, you send a <methodname>MIXINCLASS</methodname> message to an existing
-class or use the <methodname>::CLASS</methodname> directive with the <methodname>MIXINCLASS</methodname> option. A mixin class
+<para>To create a new mixin class, you send a MIXINCLASS message to an existing
+class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
 is also an object class and can create instances of the class.</para>
 </section>
 
@@ -1596,7 +1596,7 @@ methods and class methods
 but are not intended to create instances. Abstract classes often define the
 message interfaces that subclasses should implement.</para>
 <para>You create an abstract class like object or mixin classes. No extra
-messages or keywords on the <methodname>::CLASS</methodname> directive are necessary. Rexx does not
+messages or keywords on the ::CLASS directive are necessary. Rexx does not
 prevent users from creating instances of abstract classes.
 It is possible to create abstract methods on a class.  An abstract method is a
 placeholder that subclasses are expected to override.  Failing to provide a real
@@ -1665,24 +1665,24 @@ method for computing a total of all the numeric elements of an array.</para>
 <emphasis>instance method</emphasis>.</para>
 <para>However, if you want to change the behavior of the factory producing the
 arrays, you need a new class method. One way to do
-this is to use the <methodname>::METHOD</methodname> directive with the
-<methodname>CLASS</methodname> option. Another way to
-add a <methodname>class</methodname> method is to create a new metaclass that
+this is to use the ::METHOD directive with the
+CLASS option. Another way to
+add a class method is to create a new metaclass that
 changes the behavior
 of the <classname>statArray</classname> class. A new metaclass is a subclass of .class.</para>
-<para>You can use a metaclass by specifying it in a <methodname>SUBCLASS</methodname> or
-<methodname>MIXINCLASS</methodname>
-message or on a <methodname>::CLASS</methodname> directive with the
-<methodname>METACLASS</methodname> option.</para>
+<para>You can use a metaclass by specifying it in a SUBCLASS or
+MIXINCLASS
+message or on a ::CLASS directive with the
+METACLASS option.</para>
 <para>If you are adding a highly specialized class method useful only for a
-particular class, use the <methodname>::METHOD</methodname> directive
-with the <methodname>CLASS</methodname> option. However,
+particular class, use the ::METHOD directive
+with the CLASS option. However,
 if you are adding a class method that would be useful for many classes, such
 as an instance counter that counts how many instances a class creates,
 you use a metaclass.</para>
 <para>The following examples add a class method that keeps a running total of
-instances created. The first version uses the <methodname>::METHOD</methodname> directive with the
-<methodname>CLASS</methodname> option. The second version uses a metaclass.</para>
+instances created. The first version uses the ::METHOD directive with the
+CLASS option. The second version uses a metaclass.</para>
 <para><emphasis role="bold">Version 1</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>metaclass</secondary></indexterm>

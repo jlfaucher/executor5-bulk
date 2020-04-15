@@ -71,7 +71,7 @@ to as macros.</para>
 <para>When an application runs a Rexx macro, Rexx directs commands to the application's
 environment. The application processes the command, and returns a status indicator as
 a return code.</para>
-<para>The Rexx <methodname>ADDRESS</methodname> instruction allows you select which named command environment commands get
+<para>The Rexx ADDRESS instruction allows you select which named command environment commands get
 directed to.
 <indexterm><primary>ADDRESS instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -95,13 +95,13 @@ automatically passes the resulting string to the default environment.</para></li
 <listitem><para>Enclose the entire clause in quotation marks. This makes it a literal
 string for Rexx to pass to the default environment.</para></listitem>
 <listitem><para>Send a command explicitly to a command environment using
-the <methodname>ADDRESS</methodname> instruction.</para></listitem>
+the ADDRESS instruction.</para></listitem>
 </itemizedlist>
 <para>Rexx processes your program one clause at a time. It examines each clause
 to determine if it is: </para>
 <itemizedlist>
-<listitem><para>A directive, such as <methodname>::CLASS</methodname> or
-<methodname>::METHOD</methodname></para></listitem>
+<listitem><para>A directive, such as ::CLASS or
+::METHOD</para></listitem>
 <listitem><para>A message instruction, such as:
 
 <programlisting>
@@ -489,7 +489,7 @@ option = "/w"
 <indexterm><primary>addressing environments by name</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>ADDRESS instruction</secondary></indexterm>
-<para>To send a command to a specific environment, use this format of the <methodname>ADDRESS</methodname>
+<para>To send a command to a specific environment, use this format of the ADDRESS
 instruction: </para>
 
 <programlisting>
@@ -498,7 +498,7 @@ ADDRESS environment expression
 
 <para>For <emphasis role="italic">environment</emphasis>
 specify the destination of the command.
-To address the Windows environment, use the symbol <methodname>CMD</methodname>. For
+To address the Windows environment, use the symbol CMD. For
 <emphasis role="italic">expression</emphasis>, specify an expression
 that results in a string that Rexx passes to
 the environment. Here are some examples: </para>
@@ -525,14 +525,14 @@ address edit "rain"   /* Rexx passes the "rain"       */
 </programlisting>
 </example>
 
-<para>Notice that the <methodname>ADDRESS</methodname> instruction lets a single Rexx program issue commands
+<para>Notice that the ADDRESS instruction lets a single Rexx program issue commands
 to two or more environments.</para>
 
-<para>The <methodname>ADDRESS</methodname> instruction allows to redirect the command's standard input
-(<methodname>stdin</methodname>), standard output (<methodname>stdout</methodname>) and standard
-error (<methodname>stderr</methodname>) files directly to Rexx. The following example will define a command to list all
+<para>The ADDRESS instruction allows to redirect the command's standard input
+(stdin), standard output (stdout) and standard
+error (stderr) files directly to Rexx. The following example will define a command to list all
 environment variables of the current process, sort it on Unix operating systems and redirect the standard output line by line to
-a Rexx array which then gets listed by the Rexx program in a <methodname>DO</methodname> loop.
+a Rexx array which then gets listed by the Rexx program in a DO loop.
 </para>
 <example>
 <title>Redirecting the standard output to a Rexx array:</title>
@@ -647,10 +647,10 @@ Rexx continues running. You might have to press the Ctrl+Break key combination
 to stop processing. Rexx includes the following instructions for trapping
 and controlling system errors: </para>
 <itemizedlist>
-<listitem><para><methodname>CALL ON ERROR</methodname></para></listitem>
-<listitem><para><methodname>CALL ON FAILURE</methodname></para></listitem>
-<listitem><para><methodname>SIGNAL ON ERROR</methodname></para></listitem>
-<listitem><para><methodname>SIGNAL ON FAILURE</methodname></para></listitem></itemizedlist>
+<listitem><para>CALL ON ERROR</para></listitem>
+<listitem><para>CALL ON FAILURE</para></listitem>
+<listitem><para>SIGNAL ON ERROR</para></listitem>
+<listitem><para>SIGNAL ON FAILURE</para></listitem></itemizedlist>
 </section>
 
 <section id="sbcmdpr"><title>Subcommand Processing</title>
@@ -668,12 +668,12 @@ to the documentation for the application.</para>
 <indexterm><primary>trapping command errors</primary></indexterm>
 <para>The most efficient way to detect errors from
 commands is by creating condition traps, using the
-<methodname>SIGNAL ON</methodname> and <methodname>CALL ON</methodname> instructions,
-with either the <methodname>ERROR</methodname> or the <methodname>FAILURE</methodname> condition.
+SIGNAL ON and CALL ON instructions,
+with either the ERROR or the FAILURE condition.
 When used in a program, these instructions enable, or switch on, a detector
 in Rexx that tests the result of every command. Then, if a command signals
 an error, Rexx stops usual program processing, searches the program for the
-appropriate label (<methodname>ERROR:</methodname>, or <methodname>FAILURE:</methodname>, or a label that you created), and
+appropriate label (ERROR:, or FAILURE:, or a label that you created), and
 resumes processing there.</para>
 <indexterm><primary>CALL instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -685,31 +685,31 @@ resumes processing there.</para>
 <secondary>CALL instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SIGNAL instruction</secondary></indexterm>
-<para><methodname>SIGNAL ON</methodname> and <methodname>CALL ON</methodname> also tell Rexx to store
+<para>SIGNAL ON and CALL ON also tell Rexx to store
 the line number (in the Rexx program) of the command instruction that triggered
 the condition. Rexx assigns that line number to the special variable SIGL.
 <indexterm><primary>SIGL special variable</primary></indexterm>
 Your program can get more information about what caused the command error
 <indexterm><primary>CONDITION built-in function</primary></indexterm>
-through the built-in function <methodname>CONDITION</methodname>.</para>
-<para>Using the <methodname>SIGNAL</methodname> and <methodname>CALL</methodname>
+through the built-in function CONDITION.</para>
+<para>Using the SIGNAL and CALL
 instructions to handle errors has several advantages;
 namely, that programs: </para>
 <itemizedlist>
 <listitem><para>Are easier to read because you can confine error-trapping to a single,
 common routine</para></listitem>
 <listitem><para>Are more flexible because they can respond to errors by clause (<emphasis role="italic">SIGL</emphasis>),
-by return code (<emphasis role="italic">RC</emphasis>), or by other information (<methodname>CONDITION</methodname> method or built-in
+by return code (<emphasis role="italic">RC</emphasis>), or by other information (CONDITION method or built-in
 function)</para></listitem>
 <listitem><para>Can catch problems and react to them before the environment issues an
 error message</para></listitem>
 <listitem><para>Are easier to correct because you can turn the traps on and off
-(<methodname>SIGNAL OFF</methodname> and <methodname>CALL OFF</methodname>)</para></listitem></itemizedlist>
-<para>For other conditions that can be detected using <methodname>SIGNAL ON</methodname> and <methodname>CALL ON</methodname>,
+(SIGNAL OFF and CALL OFF)</para></listitem></itemizedlist>
+<para>For other conditions that can be detected using SIGNAL ON and CALL ON,
 see the <citetitle>Open Object Rexx: Reference.</citetitle></para>
 
 <section id="instrcond"><title>Instructions and Conditions</title>
-<para>The instructions to set a trap for errors are <methodname>SIGNAL</methodname> and <methodname>CALL</methodname>. Example
+<para>The instructions to set a trap for errors are SIGNAL and CALL. Example
 formats are: </para>
 
 <programlisting>
@@ -718,24 +718,24 @@ CALL   ON condition NAME trapname
 </programlisting>
 
 <para>
-The <methodname>SIGNAL ON</methodname> instruction initiates an exit subroutine that ends the program.
-You use <methodname>CALL ON </methodname>to recover from a command error or failure.
-Both <methodname>SIGNAL ON</methodname> and <methodname>CALL ON</methodname> will cause a branch to the specified (or default)
-trapname whenever the condition occurs. With <methodname>CALL ON</methodname> you can <methodname>RETURN</methodname> to the
-clause following the one that raised the condition. With <methodname>SIGNAL ON</methodname> processing
+The SIGNAL ON instruction initiates an exit subroutine that ends the program.
+You use CALL ON to recover from a command error or failure.
+Both SIGNAL ON and CALL ON will cause a branch to the specified (or default)
+trapname whenever the condition occurs. With CALL ON you can RETURN to the
+clause following the one that raised the condition. With SIGNAL ON processing
 continues with the instructions following the trapname (maybe some cleanup
-or diagnostic code usually but not necessarily followed by <methodname>EXIT</methodname>).
+or diagnostic code usually but not necessarily followed by EXIT).
 </para>
 
 <para>The command conditions that can be trapped are: </para>
 <variablelist>
-<varlistentry><term><methodname>ERROR</methodname>
+<varlistentry><term>ERROR
 <indexterm><primary>ERROR condition</primary></indexterm>
 </term>
 <listitem><para>Detects any nonzero error code the default environment
 issues as the result of a Rexx command.
 </para></listitem></varlistentry>
-<varlistentry><term><methodname>FAILURE</methodname>
+<varlistentry><term>FAILURE
 <indexterm><primary>FAILURE condition</primary></indexterm>
 </term>
 <listitem><para>Detects a severe error, preventing the system from
@@ -743,22 +743,22 @@ processing the command.
 </para></listitem></varlistentry>
 </variablelist>
 <para>A failure, in this sense, is a particular category of error. If you use
-<methodname>SIGNAL ON</methodname> or <methodname>CALL ON</methodname> to set a trap only for
-<methodname>ERROR</methodname> conditions, then it traps
-failures as well as other errors. If you also specify a <methodname>FAILURE</methodname> condition,
-then the <methodname>ERROR</methodname> trap ignores failures.</para>
-<para>With both the <methodname>SIGNAL</methodname> and the <methodname>CALL</methodname> instructions, you can specify the name
-of the trap routine. Add a <methodname>NAME</methodname> keyword followed by the name of the subroutine.
+SIGNAL ON or CALL ON to set a trap only for
+ERROR conditions, then it traps
+failures as well as other errors. If you also specify a FAILURE condition,
+then the ERROR trap ignores failures.</para>
+<para>With both the SIGNAL and the CALL instructions, you can specify the name
+of the trap routine. Add a NAME keyword followed by the name of the subroutine.
 If you do not specify the name of the trap routine, Rexx uses the value of
 <emphasis role="italic">condition</emphasis> as the name (Rexx looks for
-the label <methodname>ERROR:</methodname>, <methodname>FAILURE:</methodname>, and so on).</para>
+the label ERROR:, FAILURE:, and so on).</para>
 <para>For more information about other conditions that can be trapped, see
 the <citetitle pubwork="book">Open Object Rexx: Reference.</citetitle></para>
 </section>
 
 <section id="disabl"><title>Disabling Traps</title>
-<para>To turn off a trap for any part of a program, use the <methodname>SIGNAL</methodname> or <methodname>CALL</methodname>
-instructions with the <methodname>OFF</methodname> keyword, such as: </para>
+<para>To turn off a trap for any part of a program, use the SIGNAL or CALL
+instructions with the OFF keyword, such as: </para>
 <example>
 <title>SIGNAL</title>
 
@@ -775,10 +775,10 @@ CALL OFF FAILURE
 </section>
 
 <section id="signal"><title>Using SIGNAL ON ERROR</title>
-<para>The following example shows how a program can use <methodname>SIGNAL ON</methodname> to
+<para>The following example shows how a program can use SIGNAL ON to
 trap a command error in a program that copies a file. In this example, an
 error occurs because the name of a nonexistent file is stored in the variable
-file1. Processing jumps to the clause following the label <methodname>ERROR</methodname>:</para>
+file1. Processing jumps to the clause following the label ERROR:</para>
 
 <mediaobject>
 <imageobject>
@@ -789,7 +789,7 @@ file1. Processing jumps to the clause following the label <methodname>ERROR</met
 
 <section id="call"><title>Using CALL ON ERROR</title>
 <para>If there were a way to recover, such as by typing another file
-name, you could use <methodname>CALL ON</methodname> to recover and resume processing:</para>
+name, you could use CALL ON to recover and resume processing:</para>
 
 <mediaobject>
 <imageobject>

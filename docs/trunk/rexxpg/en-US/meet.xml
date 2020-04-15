@@ -70,9 +70,9 @@ compatible with earlier versions of Rexx that were not object-oriented.</para>
 
 <section id="english"><title>An English-Like Language</title>
 <para>To make Rexx easier to learn and use, many of its instructions are meaningful
-English words. Rexx instructions are common words such as <methodname>SAY</methodname>,
-<methodname>PULL</methodname>, <methodname>IF...THEN...ELSE</methodname>,
-<methodname>DO...END</methodname>, and <methodname>EXIT</methodname>.</para>
+English words. Rexx instructions are common words such as SAY,
+PULL, IF...THEN...ELSE,
+DO...END, and EXIT.</para>
 </section>
 
 <section id="crossplat"><title>Cross-Platform Versatility</title>
@@ -121,7 +121,7 @@ a valid number, including those in exponential formats.</para>
 
 <section id="clear"><title>Clear Error Messages and Powerful Debugging</title>
 <para>Rexx displays messages with meaningful explanations when a Rexx program
-encounters an error. In addition, the <methodname>TRACE</methodname> instruction provides a powerful
+encounters an error. In addition, the TRACE instruction provides a powerful
 debugging tool.</para>
 </section>
 
@@ -190,9 +190,9 @@ members of a <classname>Forms</classname> class. Individual invoices are
 name or descriptions and prices of items purchased). To get at the data, you
 write instructions that send messages to the objects.
 These messages activate coded actions called methods.
-For an invoice object, you might need <methodname>CREATE</methodname>, <methodname>DISPLAY</methodname>,
-<methodname>PRINT</methodname>, <methodname>UPDATE</methodname>, and
-<methodname>ERASE</methodname> methods.</para>
+For an invoice object, you might need CREATE, DISPLAY,
+PRINT, UPDATE, and
+ERASE methods.</para>
 
 <section id="torexx"><title>From Traditional Rexx to Open Object Rexx</title>
 <indexterm><primary>Rexx</primary>
@@ -217,8 +217,8 @@ classes that can interoperate seamlessly with the language built-in classes.
 Objects in these Rexx classes
 are manipulated by methods instead of traditional
 functions. To activate a method, you just send a message to the object.</para>
-<para>For example, instead of using the <methodname>SUBSTR</methodname> function on a string
-variable Name, you send a <methodname>SUBSTR</methodname>
+<para>For example, instead of using the SUBSTR function on a string
+variable Name, you send a SUBSTR
 message to the string object. In classic
 Rexx, you would do the following: </para>
 
@@ -243,11 +243,11 @@ s=name~substr(2,3)
 (<literal>~</literal>) character is the Rexx message send operator,
 called <emphasis role="italic">twiddle</emphasis>.  The object receiving the message
 is to the left of the twiddle. The message sent is to the right. In this example,
-the Name object is sent the <methodname>SUBSTR</methodname> message. The numbers in parentheses <emphasis role="italic">(2,3)</emphasis>
-are arguments sent as part of the message. The <methodname>SUBSTR</methodname> method is run for the
+the Name object is sent the SUBSTR message. The numbers in parentheses <emphasis role="italic">(2,3)</emphasis>
+are arguments sent as part of the message. The SUBSTR method is run for the
 Name object, and the result is assigned to the
 <emphasis role="italic">s</emphasis> string object.
-Conceptually, you are "asking" the <classname>String</classname> object referred to by variable <methodname>NAME</methodname> to
+Conceptually, you are "asking" the <classname>String</classname> object referred to by variable NAME to
 give you its substring starting at character 2 for 3 characters.  Many String
 operations are available as both class methods and built-in functions, but the
 <classname>String</classname> class also provides many method enhancements for which there are no corresponding
@@ -262,7 +262,7 @@ classes other than <classname>String</classname> (such as <classname>Array</clas
 built-in functions. For example, suppose you want to use a Rexx <classname>Array</classname> object instead
 of the traditional string-based
 stem variables (such as <emphasis role="italic">text.1</emphasis> or <emphasis role="italic">text.2</emphasis>).
-To create an array object of five elements, you would send a <methodname>NEW</methodname> message to
+To create an array object of five elements, you would send a NEW message to
 the <classname>Array</classname> class as follows: </para>
 
 <programlisting>

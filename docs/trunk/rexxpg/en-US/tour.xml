@@ -129,9 +129,9 @@ exit 0                   /* Exit with a return code of 0 */
 <indexterm><primary>SAY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SAY instruction</secondary></indexterm>
-<methodname>SAY</methodname>
-  is a Rexx instruction that displays a message (like <methodname>PRINT</methodname> in Basic or <methodname>printf</methodname> in C).  The message to be
-  displayed follows the <methodname>SAY</methodname> keyword.  In this case, the message is the literal string "Please enter your
+SAY
+  is a Rexx instruction that displays a message (like PRINT in Basic or printf in C).  The message to be
+  displayed follows the SAY keyword.  In this case, the message is the literal string "Please enter your
   name.".  The data between the quotes is a constant and will appear exactly as typed.  You can use
   either single (') or double quote (") delimiters for literal strings.
 </para>
@@ -141,7 +141,7 @@ exit 0                   /* Exit with a return code of 0 */
   <secondary>PULL</secondary></indexterm>
   <indexterm><primary>Rexx</primary>
   <secondary>PULL instruction</secondary></indexterm>
-  The <methodname>PULL</methodname> instruction reads a line of text from the standard input (the keyboard), and returns the text in
+  The PULL instruction reads a line of text from the standard input (the keyboard), and returns the text in
   the variable specified with the instruction. In our example, the text is returned in the variable
   name.
 </para>
@@ -149,7 +149,7 @@ exit 0                   /* Exit with a return code of 0 */
 <para>
   <indexterm><primary>instructions</primary>
   <secondary>SAY</secondary></indexterm>
-  The next <methodname>SAY</methodname> instruction provides a
+  The next SAY instruction provides a
   glimpse of what can be done with Rexx strings. It displays the word
   <computeroutput>Hello</computeroutput> followed by the name of the user, which is stored in variable
   name.
@@ -165,9 +165,9 @@ exit 0                   /* Exit with a return code of 0 */
   <indexterm><primary>Rexx</primary>
   <secondary>EXIT instruction</secondary></indexterm>
   The final instruction,
-  <methodname>EXIT</methodname>, ends the Rexx program. Control returns to the operation system command prompt. <methodname>EXIT</methodname> can also
-  return a value. In our example, <literal>0</literal> is returned. The <methodname>EXIT</methodname> instruction is optional.  Running off the end
-  of the program is equivalent to coding "<methodname>EXIT</methodname> <literal>0</literal>".
+  EXIT, ends the Rexx program. Control returns to the operation system command prompt. EXIT can also
+  return a value. In our example, <literal>0</literal> is returned. The EXIT instruction is optional.  Running off the end
+  of the program is equivalent to coding "EXIT <literal>0</literal>".
 </para>
 <para>
   You can terminate a running Rexx program by pressing the Ctrl+Break key combination. Rexx stops running
@@ -348,12 +348,12 @@ C:\>
 <secondary>and instructions</secondary></indexterm>
 Rexx programs are made up of clauses.
 Each clause is a complete Rexx instruction.</para>
-<para>Rexx instructions include the obligatory program control verbs (<methodname>IF</methodname>,
-<methodname>SELECT</methodname>,
-<methodname>DO</methodname>, <methodname>CALL</methodname>,
-<methodname>RETURN</methodname>) as well as verbs that are unique to Rexx (such as
-<methodname>PARSE</methodname>,
-<methodname>GUARD</methodname>, and <methodname>EXPOSE</methodname>).
+<para>Rexx instructions include the obligatory program control verbs (IF,
+SELECT,
+DO, CALL,
+RETURN) as well as verbs that are unique to Rexx (such as
+PARSE,
+GUARD, and EXPOSE).
 In all, there are about 30 instructions. Many Rexx programs
 use only a small subset of the instructions.</para>
 
@@ -364,14 +364,14 @@ use only a small subset of the instructions.</para>
 <secondary>built-in functions</secondary></indexterm>
 A wide variety of
 built-in functions complements the instruction set. Many functions
-manipulate strings (such as <methodname>SUBSTR</methodname>,
-<methodname>WORDS</methodname>, <methodname>POS</methodname>, and
-<methodname>SUBWORD</methodname>). Other functions
-perform stream I/Os (such as <methodname>CHARIN</methodname>,
-<methodname>CHAROUT</methodname>, <methodname>LINEIN</methodname>, and
-<methodname>LINEOUT</methodname>). Still
-other functions perform data conversion (such as <methodname>X2B</methodname>,
-<methodname>X2C</methodname>, <methodname>D2X</methodname>, and <methodname>C2D</methodname>).
+manipulate strings (such as SUBSTR,
+WORDS, POS, and
+SUBWORD). Other functions
+perform stream I/Os (such as CHARIN,
+CHAROUT, LINEIN, and
+LINEOUT). Still
+other functions perform data conversion (such as X2B,
+X2C, D2X, and C2D).
 A quick glance through the functions section of the
 <citetitle pubwork="book">Open Object Rexx: Reference</citetitle> gives you an
 idea of the scope of capabilities available to you.</para>
@@ -459,7 +459,7 @@ say -              /* Continuation of literal strings */
 
 <computeroutput>continue</computeroutput>. If you need
 to split a string, but do not want to have a blank inserted when Rexx puts
-the string back together, use the Rexx concatenation operator (<methodname>||</methodname>): </para>
+the string back together, use the Rexx concatenation operator (||): </para>
 
 <programlisting>
 <![CDATA[
@@ -619,10 +619,10 @@ c="This is a string assignment. No memory allocation needed!"
 <para>
 <indexterm><primary>instructions</primary>
 <secondary>PULL</secondary></indexterm>
-The <methodname>PARSE</methodname> instruction
-and its variants <methodname>PULL</methodname> and <methodname>ARG</methodname> also assign values to variables.  <methodname>PARSE</methodname> assigns
+The PARSE instruction
+and its variants PULL and ARG also assign values to variables.  PARSE assigns
 data from various sources to one or more variables according to the rules
-of parsing. <methodname>PARSE PULL</methodname>, for example, is often used to read data from the
+of parsing. PARSE PULL, for example, is often used to read data from the
 keyboard: </para>
 
 <example>
@@ -637,10 +637,10 @@ say response              /* possibly displays "John Smith"           */
 </programlisting>
 </example>
 
-<para>Other operands of <methodname>PARSE</methodname> indicate the source of the data. <methodname>PARSE ARG</methodname>, for
-example, retrieves command line arguments. <methodname>PARSE VERSION</methodname> retrieves the information
+<para>Other operands of PARSE indicate the source of the data. PARSE ARG, for
+example, retrieves command line arguments. PARSE VERSION retrieves the information
 about the version of the Rexx interpreter being used.</para>
-<para>The most powerful feature of <methodname>PARSE</methodname>, however, is its ability to break up data
+<para>The most powerful feature of PARSE, however, is its ability to break up data
 using a template. The various pieces of data are assigned
 to variables that are part of the template. The following example prompts
 the user for a date, and assigns the month, day, and year to different variables.
@@ -661,7 +661,7 @@ say year
 </example>
 
 <para>The template in this example contains two literal strings (<literal>"/"</literal>).
-The <methodname>PARSE</methodname>
+The PARSE
 instruction uses these literals to determine how to split the data.</para>
 
 <para>
@@ -678,8 +678,8 @@ instruction uses these literals to determine how to split the data.</para>
 <secondary>PULL instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>ARG instruction</secondary></indexterm>
-The <methodname>PULL</methodname> and <methodname>ARG</methodname> instructions
-are short forms of the <methodname>PARSE</methodname> instruction.
+The PULL and ARG instructions
+are short forms of the PARSE instruction.
 See the <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>
 for more information on Rexx parsing.</para>
 </section>
@@ -718,7 +718,7 @@ say surname                      /* display Public                    */
 </programlisting>
 </example>
 
-<para>Because an expression can be used with the <methodname>SAY</methodname> instruction, you can further
+<para>Because an expression can be used with the SAY instruction, you can further
 reduce the program to: </para>
 
 <example>
@@ -736,8 +736,8 @@ Functions can be nested.
 <indexterm><primary>functions</primary>
 <secondary>nesting</secondary></indexterm>
 Suppose you want to display only the first two letters of the third word,
-Public. The <methodname>LEFT</methodname> function can return the first two letters, but you need to
-give it the third word. <methodname>LEFT</methodname> expects the input string as its first argument
+Public. The LEFT function can return the first two letters, but you need to
+give it the third word. LEFT expects the input string as its first argument
 and the number of characters to return as its second argument: </para>
 
 <example>
@@ -782,9 +782,9 @@ say left(word("John Q. Public",3),2)
 <indexterm><primary>instructions</primary>
 <secondary>for program control (DO, LOOP, IF, SELECT ...)</secondary></indexterm>
 
-<para>Rexx has instructions such as <methodname>DO</methodname>, <methodname>LOOP</methodname>,
-<methodname>IF</methodname>, and <methodname>SELECT</methodname> to control your program. Here is a
-typical Rexx <methodname>IF</methodname> instruction:
+<para>Rexx has instructions such as DO, LOOP,
+IF, and SELECT to control your program. Here is a
+typical Rexx IF instruction:
 </para>
 
 <example>
@@ -903,9 +903,9 @@ sure this character is ASCII character encoding <emphasis role="italic">124</emp
 
 <para>Using the wrong relational or comparison operator is a common mistake when
 switching between C and Rexx. The familiar C language braces { } are not used
-in Rexx for blocks of instructions. Instead, Rexx uses <methodname>DO</methodname>/<methodname>END</methodname> pairs. The <methodname>THEN</methodname>
+in Rexx for blocks of instructions. Instead, Rexx uses DO/END pairs. The THEN
 keyword is always required.</para>
-<para>Here is an IF instruction with an <methodname>ELSE</methodname>: </para>
+<para>Here is an IF instruction with an ELSE: </para>
 
 <example>
 <title>IF and ELSE instructions</title>
@@ -923,8 +923,8 @@ end  /* if */
 </programlisting>
 </example>
 
-<para>You can omit the <methodname>DO</methodname>/<methodname>END</methodname> pairs if only one clause follows the
-<methodname>THEN</methodname> or <methodname>ELSE</methodname>
+<para>You can omit the DO/END pairs if only one clause follows the
+THEN or ELSE
 keyword: </para>
 
 <example>
@@ -939,7 +939,7 @@ else
 </programlisting>
 </example>
 
-<para>Rexx also supports an <methodname>ELSE IF</methodname> construction: </para>
+<para>Rexx also supports an ELSE IF construction: </para>
 
 <example>
 <title>ELSE IF instruction</title>
@@ -956,11 +956,11 @@ else
 </programlisting>
 </example>
 
-<para>The <methodname>SELECT</methodname> instruction in Rexx is similar to the <methodname>SELECT CASE</methodname> statement
-in Basic and the switch statement in C. <methodname>SELECT</methodname> executes
-a block of statements based on the value of an expression. Rexx's <methodname>SELECT</methodname>
-differs from the equivalent statements in Basic and C in that the <methodname>SELECT</methodname> keyword
-is not followed by an expression. Instead, expressions are placed in <methodname>WHEN</methodname>
+<para>The SELECT instruction in Rexx is similar to the SELECT CASE statement
+in Basic and the switch statement in C. SELECT executes
+a block of statements based on the value of an expression. Rexx's SELECT
+differs from the equivalent statements in Basic and C in that the SELECT keyword
+is not followed by an expression. Instead, expressions are placed in WHEN
 clauses:</para>
 
 <example>
@@ -976,18 +976,18 @@ end /* select */
 </programlisting>
 </example>
 
-<para><methodname>WHEN</methodname> clauses are evaluated sequentially. When one of the expressions is
+<para>WHEN clauses are evaluated sequentially. When one of the expressions is
 true, the statement, or block of statements, is executed. All the other blocks
-are skipped, even if their <methodname>WHEN</methodname> clauses would have evaluated to true. Notice
+are skipped, even if their WHEN clauses would have evaluated to true. Notice
 that statements like the break statement in C are
 not needed.</para>
-<para>The <methodname>OTHERWISE</methodname> keyword is used without an instruction following it. Rexx
-does not require an <methodname>OTHERWISE</methodname> clause. However, if none of the <methodname>WHEN</methodname> clauses
-evaluates to true and you omit <methodname>OTHERWISE</methodname>, an error occurs. Therefore, always
-include an <methodname>OTHERWISE.</methodname></para>
-<para>As with the IF instruction, you can use <methodname>DO</methodname>/<methodname>END</methodname> pairs for several clauses
-within SELECT cases. You do not need a <methodname>DO</methodname>/<methodname>END</methodname> pair if several clauses follow
-the <methodname>OTHERWISE</methodname> keyword: </para>
+<para>The OTHERWISE keyword is used without an instruction following it. Rexx
+does not require an OTHERWISE clause. However, if none of the WHEN clauses
+evaluates to true and you omit OTHERWISE, an error occurs. Therefore, always
+include an OTHERWISE.</para>
+<para>As with the IF instruction, you can use DO/END pairs for several clauses
+within SELECT cases. You do not need a DO/END pair if several clauses follow
+the OTHERWISE keyword: </para>
 
 <example>
 <title>SELECT and OTHERWISE instructions</title>
@@ -1007,8 +1007,8 @@ end /* select */
 </example>
 
 <para>Many Basic implementations have several different instructions for loops.
-Rexx has the <methodname>DO</methodname>/<methodname>END</methodname> and <methodname>LOOP</methodname>/<methodname>END</methodname> pair. All of the traditional looping variations
-are incorporated into the <methodname>DO</methodname> and <methodname>LOOP</methodname> instructions, which
+Rexx has the DO/END and LOOP/END pair. All of the traditional looping variations
+are incorporated into the DO and LOOP instructions, which
 can be used interchangeably for looping: </para>
 
 <example>
@@ -1035,7 +1035,7 @@ do until a>b         /* least once.  The expression is         */
 end
 </programlisting>
 
-<para>or, using <methodname>LOOP</methodname></para>
+<para>or, using LOOP</para>
 
 <programlisting>
 loop i=1 to 10       /* Simple loop            */
@@ -1061,8 +1061,8 @@ end
 
 </example>
 
-<para>Rexx also has a <methodname>FOREVER</methodname> keyword.
-Use the <methodname>LEAVE</methodname>, <methodname>RETURN</methodname>, or <methodname>EXIT</methodname>
+<para>Rexx also has a FOREVER keyword.
+Use the LEAVE, RETURN, or EXIT
 instructions to break out of the loop:</para>
 
 <example>
@@ -1089,7 +1089,7 @@ end
 <indexterm><primary>Rexx</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 Rexx also includes an
-<methodname>ITERATE</methodname> instruction, which skips the rest of the instructions in that iteration of the loop:
+ITERATE instruction, which skips the rest of the instructions in that iteration of the loop:
 </para>
 
 <example>
@@ -1107,7 +1107,7 @@ end
 </programlisting>
 </example>
 
-<para>You can use loops in <methodname>IF</methodname> or <methodname>SELECT</methodname> instructions: </para>
+<para>You can use loops in IF or SELECT instructions: </para>
 
 <example>
 <title>ITERATE instruction</title>
@@ -1122,8 +1122,8 @@ if i=1 then
 </programlisting>
 </example>
 
-<para>There is an equivalent to the Basic <methodname>GOTO</methodname> statement: the Rexx <methodname>SIGNAL</methodname>
-instruction. <methodname>SIGNAL</methodname> causes control to branch to a label:</para>
+<para>There is an equivalent to the Basic GOTO statement: the Rexx SIGNAL
+instruction. SIGNAL causes control to branch to a label:</para>
 
 <example>
 <title>SIGNAL instruction</title>
@@ -1137,9 +1137,9 @@ Fred: say "Hi!"
 </programlisting>
 </example>
 
-<para>As with <methodname>GOTO</methodname>, you need to be careful about how you use <methodname>SIGNAL</methodname>.
-In particular, do not use <methodname>SIGNAL</methodname> to jump to the middle of a <methodname>DO</methodname>/<methodname>END</methodname> block or
-into a <methodname>SELECT</methodname> structure.</para>
+<para>As with GOTO, you need to be careful about how you use SIGNAL.
+In particular, do not use SIGNAL to jump to the middle of a DO/END block or
+into a SELECT structure.</para>
 </section>
 
 <section id="subpro"><title>Subroutines and Procedures</title>
@@ -1175,7 +1175,7 @@ return
 </programlisting>
 </example>
 
-<para>The <methodname>CALL</methodname> instruction calls routine
+<para>The CALL instruction calls routine
 <emphasis role="italic">MYROUTINE</emphasis>. A label (note the colon) marks the
 start of the routine.
 <indexterm><primary>instructions</primary>
@@ -1184,19 +1184,19 @@ start of the routine.
 <secondary>CALL instruction</secondary></indexterm>
 <indexterm><primary>CALL instruction</primary></indexterm>
 
- A <methodname>RETURN</methodname> instruction ends the routine.
+ A RETURN instruction ends the routine.
 <indexterm><primary>RETURN instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>RETURN</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>RETURN instruction</secondary></indexterm>
 Notice that an
-<methodname>EXIT</methodname> instruction is required in this case to end the main program. If <methodname>EXIT</methodname>
+EXIT instruction is required in this case to end the main program. If EXIT
 is omitted, Rexx assumes that the following instructions are part of your
-main program and will execute those instructions. The <methodname>SAY</methodname> instruction displays
+main program and will execute those instructions. The SAY instruction displays
 22 instead of 10 because the caller's variables are accessible to the
 routine.</para>
-<para>You can return a result to the caller by placing an expression in the <methodname>RETURN</methodname>
+<para>You can return a result to the caller by placing an expression in the RETURN
 instruction, like this: </para>
 
 <example>
@@ -1249,7 +1249,7 @@ You can also write routines that separate the caller's variables
 from the routine's variables. This eliminates the risk of accidentally
 writing over a variable used by the caller or by some other unprotected routine.
 To get protection, use the
-<methodname>PROCEDURE</methodname> instruction, as follows: </para>
+PROCEDURE instruction, as follows: </para>
 
 <example>
 <title>PROCEDURE instruction</title>
@@ -1277,9 +1277,9 @@ return "TAILS"
 </example>
 
 <para>In this example, the variable i is used in both the
-main program and the routine. When the <methodname>PROCEDURE</methodname> instruction is placed after
+main program and the routine. When the PROCEDURE instruction is placed after
 the routine label, the routine's variables become local variables. They
-are isolated from all other variables in the program. Without the <methodname>PROCEDURE</methodname>
+are isolated from all other variables in the program. Without the PROCEDURE
 instruction, the program would loop indefinitely. On each iteration the value
 of <computeroutput>i</computeroutput> would be reset to some value
 less than 100, which means the loop would never end. If a programming error
@@ -1292,9 +1292,9 @@ or close the command window to end the procedure.</para>
 <secondary>exposing</secondary></indexterm>
 <indexterm><primary>variables</primary>
 <secondary>making accessible</secondary></indexterm>
-To access variables outside the routine, add an <methodname>EXPOSE</methodname>
-operand to the <methodname>PROCEDURE</methodname> instruction. List the desired variables after the
-<methodname>EXPOSE</methodname> keyword: </para>
+To access variables outside the routine, add an EXPOSE
+operand to the PROCEDURE instruction. List the desired variables after the
+EXPOSE keyword: </para>
 
 <example>
 <title>EXPOSE keyword</title>
@@ -1341,6 +1341,6 @@ myrc=myroutine(arg1, "literal arg", arg3)  /* Call as function   */
 <indexterm><primary>Rexx</primary>
 <secondary>USE ARG instruction</secondary></indexterm>
 In the routine, use the
-<methodname>USE ARG</methodname> instruction to retrieve the argument.</para>
+USE ARG instruction to retrieve the argument.</para>
 </section>
 </chapter>
