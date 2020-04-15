@@ -171,10 +171,10 @@ main program consists of instructions that send messages to objects.</para>
 
 <indexterm><primary>instances</primary></indexterm>
 <para>A billing application, for example,
-might have an <classname>Invoice</classname> class and a
-<classname>Receipt</classname> class. These two classes might be
-members of a <classname>Forms</classname> class. Individual invoices are
-<emphasis role="italic">instances</emphasis> of the <classname>Invoice</classname> class.</para>
+might have an Invoice class and a
+Receipt class. These two classes might be
+members of a Forms class. Individual invoices are
+<emphasis role="italic">instances</emphasis> of the Invoice class.</para>
 
 <figure><title>Objects in a Billing Application</title>
 <mediaobject>
@@ -206,12 +206,12 @@ The strings represented character data as well as numeric data.
 From an object-oriented perspective, traditional Rexx had just one kind of object:
 the string. In object-oriented terminology, each string variable is an
 <emphasis role="italic">object</emphasis> that is a
-reference to an instance of the <classname>String</classname> class.</para>
+reference to an instance of the String class.</para>
 
 <indexterm><primary>messages</primary></indexterm>
 <para>With
 ooRexx, variables can now reference objects other than strings. In addition
-to the <classname>String</classname> class, Rexx includes classes for creating arrays, queues,
+to the String class, Rexx includes classes for creating arrays, queues,
 streams, and many other useful objects. Additionally, you can create your own
 classes that can interoperate seamlessly with the language built-in classes.
 Objects in these Rexx classes
@@ -247,23 +247,23 @@ the Name object is sent the SUBSTR message. The numbers in parentheses <emphasis
 are arguments sent as part of the message. The SUBSTR method is run for the
 Name object, and the result is assigned to the
 <emphasis role="italic">s</emphasis> string object.
-Conceptually, you are "asking" the <classname>String</classname> object referred to by variable NAME to
+Conceptually, you are "asking" the String object referred to by variable NAME to
 give you its substring starting at character 2 for 3 characters.  Many String
 operations are available as both class methods and built-in functions, but the
-<classname>String</classname> class also provides many method enhancements for which there are no corresponding
+String class also provides many method enhancements for which there are no corresponding
 built-in functions.
 </para>
 
 <indexterm><primary>string</primary></indexterm>
 <indexterm><primary>stem</primary></indexterm>
 <para>For
-classes other than <classname>String</classname> (such as <classname>Array</classname> or
-<classname>Queue</classname>), methods are provided, but not equivalent
-built-in functions. For example, suppose you want to use a Rexx <classname>Array</classname> object instead
+classes other than String (such as Array or
+Queue), methods are provided, but not equivalent
+built-in functions. For example, suppose you want to use a Rexx Array object instead
 of the traditional string-based
 stem variables (such as <emphasis role="italic">text.1</emphasis> or <emphasis role="italic">text.2</emphasis>).
 To create an array object of five elements, you would send a NEW message to
-the <classname>Array</classname> class as follows: </para>
+the Array class as follows: </para>
 
 <programlisting>
 <![CDATA[
@@ -271,13 +271,13 @@ myarray=.array~new(5)
 ]]>
 </programlisting>
 
-<para>A new instance of the <classname>Array</classname> class is created and reference
+<para>A new instance of the Array class is created and reference
 to it is stored in the variable <literal>myarray</literal>.
 A period and the class name identify the class, <literal>.Array</literal>.  The period tells the
-interpreter to look in the Rexx environment for a class named "<classname>ARRAY</classname>".
-The <literal>myarray</literal> <classname>Array</classname> object has five
+interpreter to look in the Rexx environment for a class named "ARRAY".
+The <literal>myarray</literal> Array object has five
 elements, but the array itself is currently empty.  Items can be added using methods
-defined by the <classname>Array</classname> class.</para>
+defined by the Array class.</para>
 
 <programlisting>
 <![CDATA[
@@ -289,7 +289,7 @@ say myarray[1] myarray[2] myarray[3]
 ]]>
 </programlisting>
 
-<para>The <classname>Array</classname> class implements many more methods.  See the ooRexx reference for
+<para>The Array class implements many more methods.  See the ooRexx reference for
 details on what additional methods are provided.</para>
 <para>By adding object technology
 to its repertoire of traditional programming techniques, Rexx has evolved

@@ -66,7 +66,7 @@ on whichever platform you are working with Rexx on.</para>
 <para>A binary file is a stream of characters without an inherent line structure.
 A Rexx stream object allows you read from a data stream using either the text-file
 line methods or using a continuous data stream method.</para>
-<para>The Rexx <classname>Stream</classname> class is the mechanism for accessing I/O streams.
+<para>The Rexx Stream class is the mechanism for accessing I/O streams.
 To input or output data, you first create an instance of the Stream
 class that represents the device or file you want to use. For example, the
 following clause creates a stream object for the file <code>out.dat</code>:</para>
@@ -85,12 +85,12 @@ If the stream represents a binary file (such as a <code>wav</code>,
 <code>gif</code>, <code>tif</code> or <code>exe</code>),
 you would use the CHARS, CHARIN, and CHAROUT methods that read and write
 data as characters.</para>
-<para>The <classname>Stream</classname> class includes additional methods for opening and closing streams,
+<para>The Stream class includes additional methods for opening and closing streams,
 flushing buffers, seeking to specific file locations, retrieving stream status,
 and other I/O operations.</para>
 
 <section id="streamobj"><title>More about Stream Objects</title>
-<para>To use streams in Rexx, you create new instances of the <classname>Stream</classname> class.
+<para>To use streams in Rexx, you create new instances of the Stream class.
 These stream objects represent the various data sources and destinations available
 to your program, such as hard disks, CD-ROMs, keyboards, displays, printers,
 serial interfaces or devices on a network.
@@ -108,7 +108,7 @@ data that you have previously read. Rexx maintains separate read and write
 pointers to a stream that you can move independently of each other using arguments
 on methods such as LINEIN, LINEOUT,
 CHARIN, and CHAROUT.
-The <classname>Stream</classname> class also provides
+The Stream class also provides
 SEEK and POSITION methods for setting the read and write positions.</para>
 </section>
 
@@ -150,7 +150,7 @@ say count                   /* Display the count                   */
 </example>
 
 <para>To read a file, <code>count.rex</code> first creates a Stream object for the file by sending
-the NEW message to the <classname>Stream</classname> class. The file name (with or without a path)
+the NEW message to the Stream class. The file name (with or without a path)
 is specified as an argument on the NEW method.</para>
 <para>Within the DO loop,
 <code>count.rex</code> reads the lines of the file by sending LINEIN messages
@@ -164,7 +164,7 @@ without any line-end characters.</para>
 The LINES method returns the number of lines remaining to be read in
 the file, so Rexx processes the loop until no lines remain to be read.</para>
 <para>In the <code>count.rex</code> program, the LINEIN request forces Rexx to open the file, but you
-can also open the file yourself using the OPEN method of the <classname>Stream</classname> class.
+can also open the file yourself using the OPEN method of the Stream class.
 By using the OPEN method, you control the mode in which Rexx opens the file.
 When Rexx implicitly opens a file because of a LINEIN request, it tries to
 open the file for both reading and writing. If that fails, it tries to open the file
@@ -420,7 +420,7 @@ program. Rexx adds line-end characters to the end of every
 line written using the LINEOUT method. Text-processing applications,
 such as the Windows Notepad, also add line-end characters.
 As a convenience, Rexx has an environment symbol name <literal>.ENDOFLINE</literal>
-that returns the line-end characters used by the <classname>Stream</classname> class
+that returns the line-end characters used by the Stream class
 on the current system. When reading a text file with CHARIN,
 interpret the character sequence in <literal>.ENDOFLINE</literal> as the end of a line.
 </para>
@@ -692,7 +692,7 @@ and start writing at character position <emphasis role="italic">5000</emphasis> 
 <indexterm><primary>text files</primary>
 <secondary>querying existence</secondary></indexterm>
 <para>To check for the existence of a file, you use the
-QUERY method of the <classname>Stream</classname> class. The following <code>isthere.rex</code> program
+QUERY method of the Stream class. The following <code>isthere.rex</code> program
 accepts a file name as a command line argument and checks for the existence
 of that file.</para>
 
@@ -769,7 +769,7 @@ qfile~close
 You can use the same methods to read from standard input (usually the keyboard)
 and to write to standard output (usually the display). You can also use the
 methods to write to the standard error stream. In Rexx, these default
-streams are represented by public objects of the <classname>Monitor</classname> class: <literal>.input</literal>,
+streams are represented by public objects of the Monitor class: <literal>.input</literal>,
 <literal>.output</literal>, and <literal>.error</literal>.</para>
 <para>The streams <emphasis role="italic">STDIN</emphasis>,
 <emphasis role="italic">STDOUT</emphasis>, and <emphasis role="italic">STDERR</emphasis> are transient streams. For transient

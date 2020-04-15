@@ -61,8 +61,8 @@ method with the matching name performs the action. The message is
 the interface to the object, and with information hiding, only methods
 that belong to an object can access its variables.</para>
 <para>Objects are grouped hierarchically into classes. The
-class at the top of the hierarchy is the <classname>Object</classname> class. Everything below it
-in the hierarchy belongs to the <classname>Object</classname> class and is therefore an object. As
+class at the top of the hierarchy is the Object class. Everything below it
+in the hierarchy belongs to the Object class and is therefore an object. As
 a result, all classes are objects.</para>
 <para>In a class hierarchy, classes, superclasses, and subclasses are relative
 to one another. Unless designated otherwise, any class directly above a class
@@ -79,7 +79,7 @@ define which messages an object can respond to.
 <para>The methods available
 to the class itself are called class methods.
 Many of the methods
-are actually the instance methods of the <classname>Class</classname> class, but a class many have its
+are actually the instance methods of the Class class, but a class many have its
 own unique class methods.
 They define messages
 that only the class&mdash;and not its instances&mdash;can respond to.
@@ -112,7 +112,7 @@ myarray=.array~new(5)   /* array with initial capacity of 5 items          */
 class, and assigns to the variable <emphasis role="italic">myarray</emphasis>. The period precedes a class name
 in an expression, to distinguish
 the class environment symbol from other variables.
-The <emphasis role="italic">myarray</emphasis> <classname>array</classname> object has an initial capacity for five items.</para>
+The <emphasis role="italic">myarray</emphasis> array object has an initial capacity for five items.</para>
 <para>After the array is created, you can assign values (items) to it. One way is with
 the PUT method. The PUT has two arguments, which must be enclosed in parentheses.
 The first argument is the value (item) added to the array, the second is
@@ -126,7 +126,7 @@ myarray~put("Hello",3)  /* storing "Hello" at position 3                   */
 ]]>
 </programlisting>
 
-<para>One way to retrieve values from an <classname>array</classname> object is by sending it an AT message.
+<para>One way to retrieve values from an array object is by sending it an AT message.
 In the next example, the SAY instruction displays the value (item) stored at position (index) <code>3</code> of <emphasis role="italic">myarray</emphasis>: </para>
 
 <programlisting>
@@ -146,14 +146,14 @@ Hello
 <indexterm><primary>MAKESTRING method</primary></indexterm>
 <indexterm><primary>STRING method</primary></indexterm>
 The SAY
-instruction expects a <classname>string</classname> object as input, which is what AT returns in this case.
+instruction expects a string object as input, which is what AT returns in this case.
 If you try to display a non-string object in the SAY instruction,
-SAY requests a <classname>string</classname> object, which will cause the MAKESTRING
+SAY requests a string object, which will cause the MAKESTRING
 message to be sent to the object if present, and if not the STRING message instead (the exact procedure is
 documented in the <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>, section <emphasis role="italic">4.2.11 Required String Values</emphasis>
 and applies to any instruction or built-in function that requires a string value).
 
-In this example, the MAKESTRING method for an <classname>Array</classname> object returns the items currently
+In this example, the MAKESTRING method for an Array object returns the items currently
 stored in the array, in this case the string <literal>Hello</literal>.
 </para>
 
@@ -167,7 +167,7 @@ Hello
 ]]>
 </programlisting>
 
-<para>By contrast the STRING method of the <classname>Array</classname> class returns the string
+<para>By contrast the STRING method of the Array class returns the string
 &quot;<computeroutput>an Array</computeroutput>&quot;:</para>
 
 <programlisting>
@@ -295,7 +295,7 @@ the Rexx constructor method INIT.</para>
 <secondary>MAKESTRING method</secondary></indexterm>
 <indexterm><primary>MAKESTRING method</primary></indexterm>
 The MAKESTRING method is optional and if present in a class allows
-for rendering each of its instances as <classname>string</classname> objects. Each such rendering will usually encode
+for rendering each of its instances as string objects. Each such rendering will usually encode
 its attributes (object variables) as strings in one form or another.</para>
 
 <para>Whenever an object is supplied as an argument to an instruction or built-in function that works on strings only,
@@ -303,7 +303,7 @@ a <emphasis role="italic">required string value</emphasis> gets requested. If a 
 method is available it will be run and the resulting string will be used instead.</para>
 <para>In the case that there is no MAKESTRING method, then the
 STRING gets employed instead, which is guaranteed to exist as it gets defined in the
-Rexx root class <classname>Object</classname>. The returned string value in this case will usually consist of the indefinite article for the
+Rexx root class Object. The returned string value in this case will usually consist of the indefinite article for the
 class name and gets concatenated with a blank and with the class name itself.</para>
 
 <para>The exact procedure for getting at a required string value is documented in the
@@ -320,7 +320,7 @@ STRING by overriding (implementing) either or both methods in your own Rexx clas
 <secondary>sample program</secondary></indexterm>
 The following programs
 demonstrate STRING and INIT.
-In the first program, the <classname>Part</classname> class is created,
+In the first program, the Part class is created,
 and along with it, the two methods under discussion, STRING and INIT: </para>
 <example>
 <title>STRING and INIT Methods</title>
@@ -381,13 +381,13 @@ exposed object variables (attributes)
 <secondary>exposing</secondary></indexterm>
 The STRING method returns the string
 <computeroutput>Part name:</computeroutput>, followed
-by the name of a part. The STRING method (of the <classname>Part</classname> class)
+by the name of a part. The STRING method (of the Part class)
 does not expect any arguments.
 It uses the EXPOSE instruction to be able to directly access the object variable (attribute)
 <varname>name</varname>.
 The RETURN instruction returns the result string.</para>
 
-<para>The following example shows how to use the <classname>Part</classname> class: </para>
+<para>The following example shows how to use the Part class: </para>
 <example>
 <title>How to use the Part class</title>
 
@@ -419,14 +419,14 @@ Rexx processes all directives before running your program.
 The ::REQUIRES directive indicates
 that the program needs access to public class and public routine definitions that are in another
 program. In this case, the ::REQUIRES directive refers to the <filename>partdef.rex</filename> program,
-which contains the <classname>Part</classname> definition.</para>
+which contains the Part definition.</para>
 
 <para>The assignment instructions for
 <emphasis role="italic">mypartA</emphasis> and <emphasis role="italic">mypartB</emphasis> create
-two objects that are instances of the <classname>Part</classname> class.
+two objects that are instances of the Part class.
 The objects are created by sending a NEW message to the
-<classname>Part</classname> class. The NEW
-message causes the NEW method of the <classname>Part</classname> class
+Part class. The NEW
+message causes the NEW method of the Part class
 to be invoked, which sends the INIT message together with the three received arguments
 to the newly created instance, which in turn runs the INIT method
 as part of the object creation.
@@ -440,7 +440,7 @@ object's variables (attributes): <varname>name</varname>, <varname>description</
 <indexterm><primary>STRING method</primary></indexterm>
 The SAY
 instruction causes Rexx to create the required string value: as there is no
-MAKESTRING method in the <classname>Part</classname> class
+MAKESTRING method in the Part class
 the STRING method gets invoked to return a string value.
 The STRING method uses EXPOSE to become
 able to directly access the <varname>name</varname> object variable (attribute) and returns it as part of the string
@@ -473,12 +473,12 @@ Because this method runs at destruction time only it is called the Rexx <emphasi
 </para>
 <para>In the following example the NEW message gets an argument supplied that
 is meant to be used for setting the value of the object variable (attribute) <emphasis role="italic">text</emphasis> in the
-<classname>scratchpad</classname> class. As mentioned above the NEW method, after
+scratchpad class. As mentioned above the NEW method, after
 creating the instance, but before returning it gets the INIT message sent with the argument it
 received and will save that value in its <emphasis role="italic">text</emphasis> object variable (attribute) and displays that value using.
 the SAY instruction.</para>
 <para>Once the program is finished and the objects get destroyed by the garbage collector, each
-<classname>scratchpad</classname> object will get the UNINIT message sent to
+scratchpad object will get the UNINIT message sent to
 it, which in turn runs UNINIT method.  The method directly accesses teh <emphasis role="italic">text</emphasis>
 object variable (attribute) and displays its value with the SAY instruction:
 </para>
@@ -573,8 +573,8 @@ for a superclass method lookup for the <emphasis role="italic">SELF</emphasis> o
 superclass of the class that defined the method currently running. </para>
 <para>The
 special variable <emphasis role="italic">SUPER</emphasis> lets you call a method in the superclass of an object.
-For example, the following <classname>Savings</classname> class has INIT methods that the Savings
-class, <classname>Account</classname> class, and <classname>Object</classname> class define. </para>
+For example, the following Savings class has INIT methods that the Savings
+class, Account class, and Object class define. </para>
 <example>
 <title>SELF Variable</title>
 
@@ -605,8 +605,8 @@ class, <classname>Account</classname> class, and <classname>Object</classname> c
 </programlisting>
 
 </example>
-<para>When the INIT method of the <classname>Savings</classname>
-class is called, the variable <emphasis role="italic">SUPER</emphasis> is set to the <classname>Account</classname> class object. For
+<para>When the INIT method of the Savings
+class is called, the variable <emphasis role="italic">SUPER</emphasis> is set to the Account class object. For
 example: </para>
 
 <programlisting>
@@ -615,18 +615,18 @@ self~init:super(balance)
 ]]>
 </programlisting>
 <para>This instruction sends
-the INIT message to the <classname>Account</classname>
+the INIT message to the Account
 class rather than recursively invoking the INIT
-method of the <classname>Savings</classname> class. When the INIT method
-of the <classname>Account</classname> class is
-called, the variable <emphasis role="italic">SUPER</emphasis> is assigned to the <classname>Object</classname> class
-as this is the <classname>Account</classname> class' direct super class: </para>
+method of the Savings class. When the INIT method
+of the Account class is
+called, the variable <emphasis role="italic">SUPER</emphasis> is assigned to the Object class
+as this is the Account class' direct super class: </para>
 
 <programlisting>
 <![CDATA[
 self~init:super
 ]]>
-</programlisting><para>calls the INIT method of the <classname>Object</classname>
+</programlisting><para>calls the INIT method of the Object
 class.</para>
 </listitem></varlistentry>
 </variablelist>
@@ -656,7 +656,7 @@ Rexx makes the following environment objects available:</para>
 <indexterm><primary>symbols</primary>
 <secondary>.environment symbol</secondary></indexterm>
 <indexterm><primary>Global environment object</primary></indexterm>
-The environment object <literal>.environment</literal> is a directory (an instance of the Rexx <classname>Directory</classname> class)
+The environment object <literal>.environment</literal> is a directory (an instance of the Rexx Directory class)
 of public objects that are always accessible throughout the whole process. Each entry in this directory can itself be referred to by an environment symbol
 that starts with a dot, immediately followed by its index name. All the public Rexx built-in classes are stored in the environment directory
 <literal>.environment</literal>, therefore the public Rexx array class can be fetched by its environment symbol <code>.ARRAY</code> or
@@ -697,7 +697,7 @@ asav = .savings~new
 </programlisting>
 
 <para> <literal>.savings</literal> is
-an environment symbol, and refers to the <classname>Savings</classname> class. The classes
+an environment symbol, and refers to the Savings class. The classes
 you create can be referenced with an environment symbol. There is an environment
 symbol for each public Rexx-defined class, as well as for each of the unique environment objects
 this section describes, such as <emphasis role="italic">The Nil Object</emphasis>.</para>
@@ -710,7 +710,7 @@ this section describes, such as <emphasis role="italic">The Nil Object</emphasis
 <emphasis role="italic">The NIL object</emphasis> <literal>.nil</literal> is
 a special environment object that does not contain any data. It represents
 the absence of an object, the way a null string represents a string with no
-characters. Its only methods are those of the <classname>Object</classname> class. You can use
+characters. Its only methods are those of the Object class. You can use
 <emphasis role="italic">The NIL object</emphasis> (rather than the null string) to test for the absence
 of data in an array entry: </para>
 
@@ -761,7 +761,7 @@ Rexx-defined entries.</para>
 <indexterm><primary>symbols</primary>
 <secondary>.local symbol</secondary></indexterm>
 <indexterm><primary>Local environment object</primary></indexterm>
-The local environment object <literal>.local</literal> is a directory (an instance of the Rexx <classname>Directory</classname> class)
+The local environment object <literal>.local</literal> is a directory (an instance of the Rexx Directory class)
 of interpreter instance-specific objects that are always accessible. To place something in the Local environment directory,
 you use the form: </para>
 
@@ -793,10 +793,10 @@ directory. Rexx provides the following objects in the local environment: </para>
 <indexterm><primary>symbols</primary>
 <secondary>.input symbol</secondary></indexterm>
 </term>
-<listitem><para>is the input monitor (an instance of the Rexx class <classname>Monitor</classname>)
+<listitem><para>is the input monitor (an instance of the Rexx class Monitor)
 object which is the source for the PARSE LINEIN instruction,
 the LINEIN method and CHARIN method
-of the <classname>Stream</classname> class, and (if you do not specify a stream
+of the Stream class, and (if you do not specify a stream
 name) the LINEIN, respectively CHARIN built-in functions.
 It is also the source of the PULL and
 PARSE PULL instructions if the external data queue is empty.
@@ -807,10 +807,10 @@ By default <literal>.input</literal> forwards the received messages to the <lite
 <indexterm><primary>symbols</primary>
 <secondary>.output symbol</secondary></indexterm>
 </term>
-<listitem><para>is the output monitor  (an instance of the Rexx class <classname>Monitor</classname>)
+<listitem><para>is the output monitor  (an instance of the Rexx class Monitor)
 object, which is the destination of output from the SAY instruction,
 the LINEOUT (SAY) and
-CHAROUT methods of the <classname>Stream</classname> class, and
+CHAROUT methods of the Stream class, and
 (if you do not specify a stream name) the LINEOUT built-in function. You can replace
 this object's destination to redirect such output elsewhere, for example to a transcript window.
 By default <literal>.output</literal> forwards the received messages to the <literal>.stdout</literal> stream object.
@@ -820,7 +820,7 @@ By default <literal>.output</literal> forwards the received messages to the <lit
 <indexterm><primary>symbols</primary>
 <secondary>.error symbol</secondary></indexterm>
 </term>
-<listitem><para>is the error monitor  (an instance of the Rexx class <classname>Monitor</classname>)
+<listitem><para>is the error monitor  (an instance of the Rexx class Monitor)
 object to which Rexx writes error messages to. By default <literal>.error</literal> forwards the received
 messages to the <literal>.stderr</literal> stream object.
 </para></listitem></varlistentry>
@@ -829,7 +829,7 @@ messages to the <literal>.stderr</literal> stream object.
 <indexterm><primary>symbols</primary>
 <secondary>.debuginput symbol</secondary></indexterm>
 </term>
-<listitem><para>is the debug input monitor (an instance of the Rexx class <classname>Monitor</classname>)
+<listitem><para>is the debug input monitor (an instance of the Rexx class Monitor)
 object from which the Rexx TRACE  instruction reads debug input while in interactive mode.
 By default <literal>.debuginput</literal> forwards the received messages to the <literal>.input</literal> monitor object.
 </para></listitem></varlistentry>
@@ -838,7 +838,7 @@ By default <literal>.debuginput</literal> forwards the received messages to the 
 <indexterm><primary>symbols</primary>
 <secondary>.traceoutput symbol</secondary></indexterm>
 </term>
-<listitem><para>is the trace output monitor (an instance of the Rexx class <classname>Monitor</classname>)
+<listitem><para>is the trace output monitor (an instance of the Rexx class Monitor)
 object to which Rexx writes trace output to. By default <literal>.traceoutput</literal> forwards the
 received messages to the <literal>.error</literal> monitor object.
 </para></listitem></varlistentry>
@@ -847,7 +847,7 @@ received messages to the <literal>.error</literal> monitor object.
 <indexterm><primary>symbols</primary>
 <secondary>.stdin symbol</secondary></indexterm>
 </term>
-<listitem><para>is the operating system's standard input stream (an instance of the Rexx class <classname>Stream</classname>),
+<listitem><para>is the operating system's standard input stream (an instance of the Rexx class Stream),
 by default the keyboard input device. The standard input stream can be redirected via the operating system and has always the
 file descriptor value <literal>0</literal>.
 </para></listitem></varlistentry>
@@ -856,7 +856,7 @@ file descriptor value <literal>0</literal>.
 <indexterm><primary>symbols</primary>
 <secondary>.stdout symbol</secondary></indexterm>
 </term>
-<listitem><para>is the operating system's standard output stream (an instance of the Rexx class <classname>Stream</classname>),
+<listitem><para>is the operating system's standard output stream (an instance of the Rexx class Stream),
 by default the console (terminal) device.  The standard output stream can be redirected via the operating system and has always the
 optional file descriptor value <literal>1</literal>.
 </para></listitem></varlistentry>
@@ -865,7 +865,7 @@ optional file descriptor value <literal>1</literal>.
 <indexterm><primary>symbols</primary>
 <secondary>.stderr symbol</secondary></indexterm>
 </term>
-<listitem><para>is the operating system's standard error stream (an instance of the Rexx class <classname>Stream</classname>),
+<listitem><para>is the operating system's standard error stream (an instance of the Rexx class Stream),
 by default the console (terminal) device. The standard output stream can be redirected via the operating system and has always the
 file descriptor value <literal>2</literal>.
 </para></listitem></varlistentry>
@@ -1073,9 +1073,9 @@ form a separate scope, independent of the class scopes found throughout the
 rest of the hierarchy.</para>
 <para>Methods can be added directly to an instance's collection of object
 methods using SETMETHOD, a method of the
-<classname>Object</classname> class. All subclasses of the
-<classname>Object</classname> class inherit SETMETHOD. Alternately,
-the <classname>Class</classname> class provides an ENHANCED
+Object class. All subclasses of the
+Object class inherit SETMETHOD. Alternately,
+the Class class provides an ENHANCED
 method that lets you create new instances of a class, whose object methods
 are the instance methods of its class, but enhanced with the additional methods from a supplied collection of
 methods.</para>
@@ -1090,9 +1090,9 @@ for a method whose name matches the message name independent of its case.</para>
 
 <para>You must surround a method name with quotation marks when it
 is the same as an operator. The following example illustrates how to do this
-correctly. It creates a new class (<classname>Cost</classname>),
+correctly. It creates a new class (Cost),
 defines a new method (%), creates an instance
-of the <classname>Cost</classname> class (<emphasis role="italic">mycost</emphasis>), and sends
+of the Cost class (<emphasis role="italic">mycost</emphasis>), and sends
 a % message to <emphasis role="italic">mycost</emphasis>:</para>
 <example>
 <title>Messages</title>
@@ -1184,9 +1184,9 @@ existing in classes at higher levels can be found. This search realizes the <emp
 </figure>
 
 <para>For example, suppose you wrote a program that allows users to look up other
-users' phone numbers. Your program includes a class called <classname>Phone_Directory</classname>,
+users' phone numbers. Your program includes a class called Phone_Directory,
 and all its instances are users' names with phone numbers. You have included
-a method in <classname>Phone_Directory</classname> called NOTIFY that reports some data to a file
+a method in Phone_Directory called NOTIFY that reports some data to a file
 whenever someone looks up a number. All instances of Phone_Directory use the
 NOTIFY method.</para>
 <para>Now you decide you want NOTIFY, in addition to its normal handling, to
@@ -1241,12 +1241,12 @@ or variable name whose value is a valid superclass.</para></listitem>
 
 <para>
 <indexterm><primary>SUBCLASS option</primary></indexterm>
-In <xref linkend="sample" />, an <classname>Account</classname> subclass of the
-<classname>Object</classname> superclass is created.
+In <xref linkend="sample" />, an Account subclass of the
+Object superclass is created.
  It defines a TYPE method
-for <classname>Account</classname>, and creates the <classname>Savings</classname> subclass
-of <classname>Account.</classname>. The example defines
-a TYPE method for the <classname>Savings</classname> subclass, as follows: </para>
+for Account, and creates the Savings subclass
+of Account.. The example defines
+a TYPE method for the Savings subclass, as follows: </para>
 
 <example>
 <title>SUBCLASS Option</title>
@@ -1261,8 +1261,8 @@ a TYPE method for the <classname>Savings</classname> subclass, as follows: </par
 </programlisting>
 </example>
 <para>To change
-the search order so Rexx searches for TYPE in the <classname>Account</classname>
-rather than <classname>Savings</classname>
+the search order so Rexx searches for TYPE in the Account
+rather than Savings
 subclass, enter this instead: </para>
 
 <example>
@@ -1276,7 +1276,7 @@ subclass, enter this instead: </para>
 </programlisting>
 </example>
 <para>When you create an <computeroutput>asav</computeroutput> instance of
-the <classname>Savings</classname> subclass and send a TYPE message to
+the Savings subclass and send a TYPE message to
 <computeroutput>asav</computeroutput>: </para>
 <programlisting>
 <![CDATA[
@@ -1296,7 +1296,7 @@ an account
 a savings account
 ]]>
 </programlisting>
-<para> because Rexx searches for TYPE in the <classname>Account</classname> class first.</para>
+<para> because Rexx searches for TYPE in the Account class first.</para>
 </section>
 
 <section id="public"><title>Public versus Private Methods</title>
@@ -1363,7 +1363,7 @@ method of its class.  For example:</para>
 ]]>
 </programlisting>
 </example>
-<para>The instance INIT method of the <classname>Savings</classname> class is able to invoke the
+<para>The instance INIT method of the Savings class is able to invoke the
 allocateAccountNumber private
 method of the <literal>.Savings</literal> class object because it is owned by an
 instance of the <literal>.Savings</literal> class.</para>

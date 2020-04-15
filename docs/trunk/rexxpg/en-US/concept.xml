@@ -290,12 +290,12 @@ end
 </example>
 
 <para>Will display the strings <literal>"Rick"</literal>, <literal>"David"</literal>, and <literal>"Mark"</literal>, in that sequence.  The
-LOOP OVER instruction will work with <classname>Array</classname>,
-<classname>List</classname>, <classname>Stem</classname>, <classname>Streams</classname> variables, etc.
+LOOP OVER instruction will work with Array,
+List, Stem, Streams variables, etc.
 
-The LOOP instruction itself does not know anything about <classname>Array</classname>s or <classname>List</classname>s or <classname>Stem</classname>s or <classname>Stream</classname>s.
+The LOOP instruction itself does not know anything about Arrays or Lists or Stems or Streams.
 The LOOP instruction specifies a contract.  LOOP will send the target object the message
-MAKEARRAY and expects the target object to return an <classname>Array</classname> object that is used for
+MAKEARRAY and expects the target object to return an Array object that is used for
 the LOOP iteration.  Any object can participate in LOOP iteration by implementing this contract.
 Objects that do implement the MAKEARRAY contract are polymorphic with the LOOP instruction.
 </para>
@@ -310,7 +310,7 @@ organized into classes. Classes are like templates;
 they define the methods and variables that a group of similar objects have
 in common and store them in one place.</para>
 <para>If you write a program to manipulate some screen icons, for example, you
-might create an <classname>Icon</classname> class. All Icon objects will share the actions and characteristics
+might create an Icon class. All Icon objects will share the actions and characteristics
 defined by the class:</para>
 
 <figure><title>A Simple Class</title>
@@ -347,7 +347,7 @@ For the Windows System icon, it might be
 <indexterm><primary>variables</primary>
 <secondary>in objects</secondary></indexterm>
 Objects that belong to a class are called
-instances of that class.  As instances of the <classname>Icon</classname> class,
+instances of that class.  As instances of the Icon class,
 the Windows System icon, Shredder icon, and
 Information icon acquire the methods and variables
 of the class. Instances behave as if they each had their own methods and
@@ -367,7 +367,7 @@ Everything else can be stored at the class level.</para>
 only have to change it at one place, at the class level. This single update
 is then acquired by every new instance that uses the method.</para>
 <para>A class that can create instances
-of an object is called an object class. The <classname>Icon</classname> class
+of an object is called an object class. The Icon class
 is an object class you can use to create other objects with similar properties,
 such as an application icon or a drives icon.</para>
 <indexterm><primary>object classes</primary></indexterm>
@@ -420,7 +420,7 @@ new methods and data, and can override methods from the superclass.</para>
 </figure>
 
 <para>You can add a class to an existing superclass. For example, you might add
-the <classname>Icon</classname> class to the Screen-Object superclass:</para>
+the Icon class to the Screen-Object superclass:</para>
 
 <figure><title>The Screen-Object Superclass</title>
 <mediaobject>
