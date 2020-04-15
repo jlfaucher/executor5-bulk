@@ -259,7 +259,7 @@ contains characters not allowed in a Rexx symbol.</para>
 automatically when appropriate, are <methodname>INIT</methodname>,  <xref linkend="destroy" xrefstyle="template:UNINIT" />,
 <methodname>MAKESTRING</methodname> and  <methodname>STRING</methodname>.</para>
 
-<section id="init"><title>Initializing Instances Using <methodname>INIT</methodname></title>
+<section id="init"><title>Initializing Instances Using INIT</title>
 <para>
 <indexterm><primary>INIT method</primary>
 <secondary>constructor method</secondary></indexterm>
@@ -289,7 +289,7 @@ An example in the next section demonstrates the use of
 the Rexx constructor method <methodname>INIT</methodname>.</para>
 </section>
 
-<section id="retstr"><title>The <methodname>MAKESTRING</methodname> and <methodname>STRING</methodname> Methods</title>
+<section id="retstr"><title>The MAKESTRING and STRING Methods</title>
 <para>
 <indexterm><primary>Rexx</primary>
 <secondary>MAKESTRING method</secondary></indexterm>
@@ -323,7 +323,7 @@ demonstrate <methodname>STRING</methodname> and <methodname>INIT</methodname>.
 In the first program, the <classname>Part</classname> class is created,
 and along with it, the two methods under discussion, <methodname>STRING</methodname> and <methodname>INIT</methodname>: </para>
 <example>
-<title><methodname>STRING</methodname> and <methodname>INIT</methodname> Methods</title>
+<title>STRING and INIT Methods</title>
 
 <programlisting>
 <![CDATA[
@@ -355,7 +355,7 @@ allow the method direct access to the object variables (attributes)
 <varname>name</varname>, <varname>description</varname>, and
 <varname>number</varname>: </para>
 
-<figure><title>Instances in the <classname>Part</classname> Class</title>
+<figure><title>Instances in the Part Class</title>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/PartClass.svg" align="center" scale="75" />
@@ -389,7 +389,7 @@ The <methodname>RETURN</methodname> instruction returns the result string.</para
 
 <para>The following example shows how to use the <classname>Part</classname> class: </para>
 <example>
-<title>How to use the <classname>Part</classname> class</title>
+<title>How to use the Part class</title>
 
 <programlisting>
 <![CDATA[
@@ -448,7 +448,7 @@ able to directly access the <varname>name</varname> object variable (attribute) 
 </para>
 </section>
 
-<section id="destroy"><title>Uninitializing and Deleting Instances Using <methodname>UNINIT</methodname></title>
+<section id="destroy"><title>Uninitializing and Deleting Instances Using UNINIT</title>
 <para>
 <indexterm><primary>UNINIT method</primary>
 <secondary>destructor method</secondary></indexterm>
@@ -483,7 +483,7 @@ it, which in turn runs <methodname>UNINIT</methodname> method.  The method direc
 object variable (attribute) and displays its value with the <methodname>SAY</methodname> instruction:
 </para>
 <example>
-<title><methodname>UNINIT</methodname> Method</title>
+<title>UNINIT Method</title>
 <programlisting>
 /* uninit.rex - example of UNINIT processing */
 
@@ -576,7 +576,7 @@ special variable <emphasis role="italic">SUPER</emphasis> lets you call a method
 For example, the following <classname>Savings</classname> class has <methodname>INIT</methodname> methods that the Savings
 class, <classname>Account</classname> class, and <classname>Object</classname> class define. </para>
 <example>
-<title><emphasis role="italic">SELF</emphasis> Variable</title>
+<title>SELF Variable</title>
 
 <programlisting>
 <![CDATA[
@@ -650,7 +650,7 @@ Rexx makes the following environment objects available:</para>
 
 <!-- =========================================================================== -->
 
-<section id="publicenvobj"><title>The Global Environment Object (<methodname>.environment</methodname>)</title>
+<section id="publicenvobj"><title>The Global Environment Object (.environment)</title>
 <para>
 <indexterm><primary>Environment objects</primary></indexterm>
 <indexterm><primary>symbols</primary>
@@ -702,7 +702,7 @@ you create can be referenced with an environment symbol. There is an environment
 symbol for each public Rexx-defined class, as well as for each of the unique environment objects
 this section describes, such as <emphasis role="italic">The Nil Object</emphasis>.</para>
 
-<section id="nilobject"><title>The NIL Object (<methodname>.nil</methodname>)</title>
+<section id="nilobject"><title>The NIL Object (.nil)</title>
 <para>
 <indexterm><primary>symbols</primary>
 <secondary>.nil symbol</secondary></indexterm>
@@ -755,7 +755,7 @@ Rexx-defined entries.</para>
 
 <!-- =========================================================================== -->
 
-<section id="localenvobj"><title>The Local Environment Object (<methodname>.local</methodname>)</title>
+<section id="localenvobj"><title>The Local Environment Object (.local)</title>
 <para>
 <indexterm><primary>Environment objects</primary></indexterm>
 <indexterm><primary>symbols</primary>
@@ -1249,7 +1249,7 @@ of <classname>Account.</classname>. The example defines
 a <methodname>TYPE</methodname> method for the <classname>Savings</classname> subclass, as follows: </para>
 
 <example>
-<title><methodname>SUBCLASS</methodname> Option</title>
+<title>SUBCLASS Option</title>
 
 <programlisting>
 <![CDATA[
@@ -1320,7 +1320,7 @@ be accessed from other instances of the same class (or subclass instances).
 </para></listitem>
 <listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
 <example>
-<title><methodname>PUBLIC</methodname> and <methodname>PRIVATE</methodname> options</title>
+<title>PUBLIC and PRIVATE options</title>
 
 <programlisting>
 <![CDATA[
@@ -1343,7 +1343,7 @@ the scope of the <methodname>makeChecking</methodname> method is <literal>.Savin
 <listitem><para>From within an instance (or subclass instance) of a class to a private class
 method of its class.  For example:</para>
 <example>
-<title><methodname>PUBLIC</methodname> and <methodname>PRIVATE</methodname> Options</title>
+<title>PUBLIC and PRIVATE Options</title>
 
 <programlisting>
 <![CDATA[
@@ -1377,7 +1377,7 @@ objects to share information with each other and their defining classes.
 </para>
 </section>
 
-<section id="unknown"><title>Defining an <methodname>UNKNOWN</methodname> Method</title>
+<section id="unknown"><title>Defining an UNKNOWN Method</title>
 <para>
 <indexterm><primary>UNKNOWN method</primary></indexterm>
 When an object receives
@@ -1522,7 +1522,7 @@ prevents them from simultaneously accessing one object variable (attribute), and
 corrupting the data.</para>
 </section>
 
-<section id="sendmsgwact"><title>Sending Messages within an <emphasis role="italic">Activity</emphasis></title>
+<section id="sendmsgwact"><title>Sending Messages within an Activity</title>
 <para>
 <indexterm><primary>sending messages within an activity</primary></indexterm>
 Rexx makes one

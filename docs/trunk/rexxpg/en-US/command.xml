@@ -179,7 +179,7 @@ and <emphasis role="italic">PATH</emphasis> commands.
 The <emphasis role="italic">PAUSE</emphasis> command is added to wait for the user to press
 a key before issuing the next instruction or command. Borders are added too.</para>
 <example>
-<title><emphasis role="italic">DIR</emphasis> and <emphasis role="italic">PATH</emphasis> commands</title>
+<title>DIR and PATH commands</title>
 
 <programlisting>
 <![CDATA[
@@ -368,7 +368,7 @@ and the input file name.</para>
 containing the command string on a line by itself. Rexx evaluates the variable
 and passes the resultant string to Windows: </para>
 <example>
-<title><code>showfile.rex</code> (Windows)</title>
+<title>showfile.rex (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -419,7 +419,7 @@ Rexx and Windows programs. The <code>dir.rex</code> program
 below shows how Rexx evaluates a command when the command name and a variable
 name are the same: </para>
 <example>
-<title><code>dir.rex</code> (Windows)</title>
+<title>dir.rex (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -503,7 +503,7 @@ To address the Windows environment, use the symbol <methodname>CMD</methodname>.
 that results in a string that Rexx passes to
 the environment. Here are some examples: </para>
 <example>
-<title><methodname>ADDRESS</methodname> instruction</title>
+<title>ADDRESS instruction</title>
 
 <programlisting>
 <![CDATA[
@@ -609,7 +609,7 @@ always <code>0</code>. If something goes wrong, the return code issued is a nonz
 The number depends on the command itself and the error encountered.</para>
 <para>This example shows how to display a return code: </para>
 <example>
-<title><code>getrc.rex</code> (Windows)</title>
+<title>getrc.rex (Windows)</title>
 
 <programlisting>
 <![CDATA[
@@ -760,7 +760,7 @@ the <citetitle pubwork="book">Open Object Rexx: Reference.</citetitle></para>
 <para>To turn off a trap for any part of a program, use the <methodname>SIGNAL</methodname> or <methodname>CALL</methodname>
 instructions with the <methodname>OFF</methodname> keyword, such as: </para>
 <example>
-<title><methodname>SIGNAL</methodname></title>
+<title>SIGNAL</title>
 
 <programlisting>
 <![CDATA[
@@ -774,7 +774,7 @@ CALL OFF FAILURE
 
 </section>
 
-<section id="signal"><title>Using <methodname>SIGNAL ON ERROR</methodname></title>
+<section id="signal"><title>Using SIGNAL ON ERROR</title>
 <para>The following example shows how a program can use <methodname>SIGNAL ON</methodname> to
 trap a command error in a program that copies a file. In this example, an
 error occurs because the name of a nonexistent file is stored in the variable
@@ -787,7 +787,7 @@ file1. Processing jumps to the clause following the label <methodname>ERROR</met
 </mediaobject>
 </section>
 
-<section id="call"><title>Using <methodname>CALL ON ERROR</methodname></title>
+<section id="call"><title>Using CALL ON ERROR</title>
 <para>If there were a way to recover, such as by typing another file
 name, you could use <methodname>CALL ON</methodname> to recover and resume processing:</para>
 
