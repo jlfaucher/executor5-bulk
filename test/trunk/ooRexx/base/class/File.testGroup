@@ -447,6 +447,8 @@ return testResult
       self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
     end
 
+    self~assertSame("/", .File~new("//"))
+
   end
   else do
 
@@ -460,6 +462,15 @@ return testResult
       self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
     end
 
+    -- same as above
+    do path over "\\l", "\\localhost\", "\\localhost\share\", "\\?\C:\Windows\", , "\\?\C:\nul\"
+      self~assertSame(path~changeStr("/", "\")~strip("t", "\"), .File~new(path)~absolutePath)
+    end
+    drive = filespec("drive", directory()) || "\"
+    do path over "//", "\\", drive || "\", drive || "\."
+      self~assertSame(drive, .File~new(path)~absolutePath)
+    end
+
     -- normalization should NOT change a naked drive specification D:
     drive = filespec("drive", directory())
     current = .File~new(drive)~absolutePath
@@ -470,6 +481,11 @@ return testResult
     do path over expected, expected || "/", expected || "//", expected || "\", expected || "\\"
       actual = .File~new(path)~absolutePath
       self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    -- these Win32 namespaces must keep their trailing backslash
+    do path over "\\?\", "\\?\C:\", "\\.\", "\\.\C:\"
+      self~assertSame(path, .File~new(path)~absolutePath)
     end
 
   end
@@ -801,21 +817,10 @@ return testResult
     return
 
   -- Win32 file namespace
-  dir = "\\?\C:\Windows\System32"
-  file = .File~new(dir)
-  separator = .File~separator
-  do 2 -- after two parent operations we've reached \\?\ root
-    dir = dir~left(dir~lastPos(separator) - 1)
-    self~assertSame(dir, file~parent)
-    self~assertSame(dir, file~parentFile)
-    file = file~parentFile
-  end
-  root = dir~left(4)
-  self~assertSame(root, file~parent)
-  self~assertSame(root, file~parentFile)
-  file = file~parentFile
-  self~assertNull(file~parent)
-  self~assertNull(file~parentFile)
+  file = .File~new("\\?\C:\Windows\System32")
+  self~assertSame("\\?\C:\Windows", file~parent)
+  self~assertSame("\\?\C:\", file~parentFile~parent)
+  self~assertNull(file~parentFile~parentFile~parent)
 
   -- Win32 device namespace
   self~assertSame("\\.\", .File~new("\\.\NUL")~parent)
