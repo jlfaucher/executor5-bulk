@@ -1,4 +1,4 @@
-docs\trunk\tools (as of: 2020-02-10)
+docs\trunk\tools (as of: 2020-04-18)
 ------------------------------------
 
 This directory is supposed to collect all utilities that can be used to
@@ -17,6 +17,10 @@ create/change documentation parts.
         - if SVG images get created by exporting an ODG image using OpenOffice, then
           remove the string " embedded" in the font-family name that AOO adds
 
+- bldoc_win:
 
+        - contains the tools to build the ooRexx documentation on Windows; copy
+          the contents of this folder to a folder to be used for building the
+          documents and run setup.rex to complete the installation.
 
 

@@ -1,0 +1,145 @@
+Introduction
+------------
+
+This package is designed to make the building of ooRexx document PDFs and/or
+HTML files from their DocBook source files accessible to anyone running Windows.
+While this package has been developed and tested on Windows 10, it should also
+run on other Windows versions.
+
+Installation
+------------
+
+This package consists of two parts - the files located in the docs/trunk/tools
+folder on SVN and the external packages which they require.  These packages need
+to be installed by running the Setup program which will down-load them, expand
+the zip files and, where necessary, copy files to their proper locations.  Once
+this has been done, this package is designed to be self-contained; i.e. no other
+down-loads or installations are required in order to use it.
+
+The tools are all invoked from the command-line so this package should be placed
+into a folder that will be dedicated to building the documents.  It is
+recommended that the folder not be a system folder or sub-folder since the
+output files will be written to sub-folders of the tools folder.  For the same
+reason, executing the tools from the SVN working copy folder where the documents
+and tools files are located may not be desirable.
+
+Once the folder has been created and the files and sub-folders in this package
+have been copied into it, run the Setup program.  Then, opening a command prompt
+to that folder will allow access to all of the tools without requiring any
+changes to the path.
+
+The tools can make use of some special fonts which are not a standard part of
+Windows 10.  Not having those fonts will not prevent the documents from being
+built but their appearance will not be exactly the same as those that are part
+of an ooRexx release.  The special fonts are included in the package should you
+want to install them.  They will be located in the Liberation Fonts sub-folder
+after running the Setup program and directions for installing fonts can be found
+at https://www.digitaltrends.com/computing/how-to-install-fonts-in-windows-10/
+
+Setting the path to the document folder
+---------------------------------------
+
+In addition to the tools in this package, the source for the documents is
+required.  This can be obtained by doing an SVN checkout from SourceForge.  Note
+that you must checkout the entire documents folder and not just an individual
+book since there are common parts that are shared by all of the documents which
+are located in their own folder.  The tools need to know the location of the
+folder where the document source files are stored and that information is saved
+in an environment variable named docpath.  A command file named docpath.cmd is
+provided that takes one argument, the path to the folder where all of the
+document source files are located, which will set the environment variable for
+use by the other tools.  This needs to be run only once prior to running any of
+the other tools.  Alternatively, if the location of the svn working copy is
+always going to be the same, you can add the docpath environment variable to
+your system or create a shortcut that opens a command prompt to your tools
+folder and runs the docpath command automatically.
+
+Specifying which document to build
+----------------------------------
+
+Once the path to the document source files has been set, the name of the
+particular document you wish to build needs to be specified.  This is normally
+done by executing the docprep command file which takes one argument, the name of
+the document you wish to build.  E.g. in order to build the ooRexx Reference you
+would run docprep rexxref.  In addition to saving the name of the document in an
+environment variable named whichdoc, this command file takes care of making the
+common files available in a Common_Content sub-folder for the following steps.
+This is a workaround for the fact that the source files were structured to be
+built by the Publican system which is no longer being supported.
+
+Transforming the DocBook XML to XSL-FO
+--------------------------------------
+
+Building a PDF document from source is a two step process - transforming the
+DocBook XML into an XSL-FO file using some customized DocBook stylesheets and
+then creating the PDF from the XSL-FO file.  The doc2fo command file will run
+the first of these steps and produce the .fo file in a sub-folder of the tools
+folder named fo_files.  The command does not take any arguments as both the path
+to the source files and the name of the document are saved in environment
+variables.  Any errors found during the transform are displayed on the console.
+
+Creating the PDF from the XSL-FO
+--------------------------------
+
+Once the transform step has been successfully completed, the fo2pdf command will
+create the .pdf file in a sub-folder named PDF_files.  The command does not take
+any arguments as the location of the .fo file and any graphic files to be
+included can be determined from the saved environment variables.  This step also
+produces a .log file in the log_files sub-folder containing the many messages
+that would normally be displayed on the console by this step.  Unless there are
+problems with the output file, this .log file may safely be ignored.
+
+A shortcut that combines steps
+------------------------------
+
+One more command file has been provided - doc2pdf.cmd - which takes one optional
+argument.  If the name of a document is provided, this command will run the
+three commands docprep <doc. name>, doc2fo, and fo2pdf consecutively.  If the
+argument is not specified, only the doc2fo and fo2pdf commands are run.  You can
+use this shortcut if you are revising the source for a document and wish to
+repeatedly rebuild it after each change.
+
+Transforming the DocBook XML to HTML files
+------------------------------------------
+
+In addition to producing PDF files, the package can produce HTML files as well.
+This only requires a single step and is accomplished by running the doc2html
+command which takes one optional argument.  If the name of a document is
+provided, this command will run the the docprep command described above before
+transforming the DocBook XML into HTML files.  If the argument is not specified,
+you must have run docpath and docprep prior to running doc2html in order to save
+both the path to the source files and the name of the document in environment
+variables.  There are many HTML files produced for each document and they are
+created in a sub-folder named HTML_folders\<doc. name>\.  Pointing a browser at
+the index.html file in that folder will display the initial page of the document
+from which it is then possible to navigate to all parts of the document.
+
+
+Summary
+-------
+
+Run docpath <path to document source folders>
+Then run docprep <name of document to build>
+
+To build a PDF:
+run doc2fo
+And finally fo2pdf
+
+To build a set of HTML files:
+run doc2html
+
+Optional Parameters
+-------------------
+
+It may be desirable at times to specify additional parameters for the transform
+step and/or the step that creates the PDF/HTML files.  This can be done without
+modifying the command files by setting the appropriate environment variables.
+For example issuing the command "set xslt_opts=--param toc.max.depth 4" before
+running the doc2fo command file would result in the Table Of Contents having
+four levels rather than the default of three and "set xslt_opts=--timing" would
+cause timing messages for each of the steps in the transform process to be
+displayed.  The PDF creation step uses a Java program named FOP and parameters
+for Java can be specified using the fop_opts environment variable.  An example
+might be to increase the Java heap space to 2GB by issuing the command
+"set fop_opts=-Xmx2048M".  You might need to do this if you are building the
+largest of the ooRexx documents.

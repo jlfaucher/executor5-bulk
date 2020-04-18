@@ -1,0 +1,85 @@
+Sources for the tools in this package
+-------------------------------------
+
+This package contains multiple tools and files which were collected from various
+locations.  In most cases they are being used unmodified but in others, changes
+have been made.  This file provides information on where the tools were found in
+case the user needs further documentation about them.
+
+Fonts
+-----
+
+The stylesheets supplied by Publican call for the use of two sets of fonts that
+were developed by RedHat - Liberation Sans and Liberation Mono.  These font
+packages are available here:
+https://www.fontsquirrel.com/fonts/liberation-sans
+https://www.fontsquirrel.com/fonts/liberation-mono
+The unzipped contents of both are provided in the Liberation Fonts sub-folder.
+
+XSLTPROC
+--------
+
+This is the transform tool whose home page is here:
+http://xmlsoft.org/XSLT/xsltproc2.html
+A link on that page takes you to the page where the Windows binaries can be
+downloaded: https://www.zlatkovic.com/projects/libxml/
+There are actually four packages that are required: libxlt, libxml, iconv and
+zlib.  As a convenience, the unzipped versions of those packages are included as
+sub-folders of this package.  Each of them has a bin\ directory containing the
+executables that must be accessible.  Rather than adding them to the path, the
+contents have been copied to the main package directory.  No changes were made.
+
+FOP
+---
+
+This is the Apache tool used to create the PDF whose home page is here:
+https://xmlgraphics.apache.org/fop/2.4/
+The unzipped version of this package is included as a sub-folder.  As the
+program is run by executing a .bat file, nothing needed to be copied in order to
+make it accessible.  No changes were made.
+
+Stylesheets
+-----------
+
+The majority of the stylesheets are loaded from DocBook on the Web but four are
+copied from the Publican tools located in our SVN repository on Source Forge:
+https://sourceforge.net/projects/oorexx/files/windows-build-tools/
+The file PublicanWindows.zip contains a directory Publican\xsl\ and from it the
+files defaults.xsl, pdf.xsl, html.xsl, and xhtml-common.xsl have been copied.
+In addition, pdf.xsl has been modified to remove a Publican-supplied fix for a
+problem with footnotes since it is now fixed by DocBook itself, to turn off
+using extensions for tablecolumns as we are not using Perl, to add templates for
+the removal of leading and trailing blank lines from our examples, and to add a
+parameter to set the depth for the Table Of Contents to 3 in order to match the
+historical look of our documents.  The html.xsl file has been modified to import
+the chunkfast.xsl file rather than chunk.xsl in order to improve performance on
+the larger documents and to add a parameter to suppress the messages produced as
+each individual HTML file is produced.  Finally, the xhtml-common.xsl file has
+been modified to supply the title for the web pages which had been passed as a
+parameter by Publican, to turn off using extensions for tablecolumns as we are
+not using Perl, to turn off scaling of images as they are now SVG format, and to
+remove a section referring to Publican that was inserted into the Web pages.
+
+Configuration File for FOP
+--------------------------
+
+In order for FOP to find the graphics files that it is to include in the PDF, it
+needs information that is supplied in a configuration file, fop.cfg.  This file
+also tells it to determine the fonts that are available for use on the system so
+it will use the Liberation fonts if they have been installed.  This file was
+created based on the sample fop.xconf provided in the fop package.
+
+Command Files
+-------------
+
+In order to simply the execution of the tools and hide the specific syntax they
+require, several command files were written.  Their use is described in the file
+read1st.txt.
+
+ooRexx Programs
+---------------
+
+Three small programs were written to automate the installation of the packages
+for the Fonts, XSLTPROC and FOP, and to check that the creation of either the
+PDF or the HTML files was successful.  The command files run the last two so
+that accurate messages are produced when the command files terminate.
