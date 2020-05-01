@@ -880,9 +880,11 @@ the range 0 to 60000 milliseconds.</para>
 is returned.</para>
 
 <note><title>Notes</title>
-<para>On Unix-like systems both parameters,
-<emphasis role="italic">frequency</emphasis> and
-<emphasis role="italic">duration</emphasis>, are ignored.
+<para>On Unix-like systems, to sound the speaker at a specified
+frequency, a console with ioctl KDMKTONE support must be available,
+which typically requires root access.
+If there is no console with KDMKTONE support (e. g. on BSD or Darwin),
+a bell character is sent to the console instead.
 </para>
 <para>On Windows beeps may have been deactivated.
 To check the status of the Windows beep service, use the
@@ -901,19 +903,18 @@ Administrator rights, and then reboot your system.
 <example id="ex.bif-beep">
 <title>Builtin function BEEP</title>
 <programlisting>
-/* C scale */
-note.1 = 262    /* middle C */
-note.2 = 294    /*    D     */
-note.3 = 330    /*    E     */
-note.4 = 349    /*    F     */
-note.5 = 392    /*    G     */
-note.6 = 440    /*    A     */
-note.7 = 494    /*    B     */
-note.8 = 523    /*    C     */
+-- C scale
+note.1 = 262    -- Do,  middle C
+note.2 = 294    -- Re,  D
+note.3 = 330    -- Mi,  E
+note.4 = 349    -- Fa,  F
+note.5 = 392    -- Sol, G
+note.6 = 440    -- La,  A
+note.7 = 494    -- Si,  B, H
+note.8 = 523    -- Do,  C
 
-do i=1 to 8
-call beep note.i,250    /* hold each note for */
-/* one-quarter second */
+do i = 1 to 8
+  call beep note.i, 250 -- hold each note for 1/4 second
 end
 </programlisting>
 </example>

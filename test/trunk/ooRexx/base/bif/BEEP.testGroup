@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,16 +39,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
-  group = .TestGroup~new(fileSpec)
-
-  group~add(.BEEP.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.BEEP.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
@@ -58,17 +55,14 @@ return testResult
    retc = beep(262 /* middle C */, 1)  /* 1/1000 second or standard beep */
    self~assertSame('', retc)
 
--- Duration and frequency are ignored on *nix
 ::method "test_2"
     self~expectSyntax(88.901)
     retc = beep()
 
--- Duration and frequency are ignored on *nix
 ::method "test_3"
     self~expectSyntax(88.901)
     retc = beep( , 1)
 
--- Duration and frequency are ignored on *nix
 ::method "test_4"
     self~expectSyntax(88.901)
     retc = beep(38, )
@@ -77,7 +71,6 @@ return testResult
   retc = beep(37, 1)
   self~assertSame("", retc)
 
--- Duration and frequency are ignored on *nix
 ::method "test_6"
     self~expectSyntax(88.907);
     retc = beep(36, 1)
@@ -86,9 +79,22 @@ return testResult
   retc = beep(32767, 1)
   self~assertSame("", retc)
 
--- Duration and frequency are ignored on *nix
 ::method "test_8"
     self~expectSyntax(88.907)
     retc = beep(32768, 1)
 
-::options novalue error
+::method test_beep_duration
+  -- Except for Windows and Linux there is generally no frequency and
+  -- duration support available.  And even on Linux this will typically
+  -- require sudo.  So if we are on BSD or Darwin, or we have no sudo
+  -- on Linux, BEEP will fall back to printing a BEL character which
+  -- returns almost immediately, not honoring the given duration.
+  call time "r"
+  call beep 37, 10
+  duration = time("e") * 1000;
+  -- we expect BEEP take either less than 1 ms (fall-back case) or
+  -- between 10 and 11 ms (fully supported beep) to complete this request.
+  self~assertEitherOr(duration < 1, duration >= 10 & duration <= 11)
+
+
+::options novalue syntax
