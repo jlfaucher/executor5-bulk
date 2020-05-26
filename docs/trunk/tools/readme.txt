@@ -1,4 +1,4 @@
-docs\trunk\tools (as of: 2020-04-18)
+docs\trunk\tools (as of: 2020-05-26)
 ------------------------------------
 
 This directory is supposed to collect all utilities that can be used to
@@ -23,4 +23,21 @@ create/change documentation parts.
           the contents of this folder to a folder to be used for building the
           documents and run setup.rex to complete the installation.
 
+- oorexxdocs-macOS.zip 
 
+        - contains the tools to build the ooRexx documentation on macOS; unzip and
+          copy the contents of this folder to a folder to be used for building the
+          documents and follow the instructions in WhatIsHere.txt. For a better
+          understanding of the build process reference is made to the read1st.txt
+          in the Windows build tools
+- oorexxdocs-Ubuntu.zip
+
+        - contains the tools to build the ooRexx documentation on macOS; unzip and
+          copy the contents of this folder to a folder to be used for building the
+          documents and follow the instructions in WhatIsHere.txt. For a better
+          understanding of the build process reference is made to the read1st.txt
+          in the Windows build tools
+
+          Note: the tools for Linux are relying on an internet connection and are
+          considerably slower than on macOS or Windows. Proposals for amendments
+          are welcome.
