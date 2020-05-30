@@ -52,30 +52,40 @@ if not defined whichdoc (
     echo Please run the DOCPREP command first.
     goto :eof
 )
+call make_tmps %docpath%
 setlocal
+set dtd_cat=.\DocBook_Files\catalog.xml
+set xsl_cat=.\DocBook_Files\docbook-xsl-nons-1.79.2\catalog.xml
+set xml_catalog_files=%dtd_cat% %xsl_cat%
 set inpath=%docpath%\%whichdoc%\en-US
 set indoc=%inpath%\%whichdoc%.xml
-set base_dir=HTML_folders\%whichdoc%\
+if not defined HTML_folders set HTML_folders=HTML_folders
+if not exist %HTML_folders% (
+    echo Unable to find %HTML_folders%.
+    goto :eof
+)
+set base_dir=%HTML_folders%\%whichdoc%
 if not exist %base_dir% md %base_dir%
-set x_opt1=--stringparam base.dir %base_dir%
+set x_opt1=--stringparam base.dir %base_dir%\
 set x_opt2=--stringparam package ooRexx_Documentation-Open_Object_Rexx-5.0-en-US-0-0
 set x_opt3=--stringparam prod.url https://www.oorexx.org/
 set x_opt4=--stringparam xsltproc.version 1.1.26
 set x_opts=--xinclude %x_opt1% %x_opt2% %x_opt3% %x_opt4% %xslt_opts%
-echo %time:~0,-3% - Transforming %indoc% into %base_dir%
-echo This may take up to 10+ minutes for the largest documents!
-date /T > %docpath%\..\datepub.tmp
-where svnversion /q
-if %errorlevel% EQU 0 (
-    svnversion %docpath% > %docpath%\..\svnrev.tmp
-) else echo ?> %docpath%\..\svnrev.tmp
+echo %time:~0,-3% - Transforming %indoc% into %base_dir%\
+echo This may take up to several minutes for the largest documents!
 xsltproc %x_opts% html.xsl %indoc%
 set xcpyf=%inpath%\Common_Content
 set xcpyt=%base_dir%\Common_Content
-xcopy %xcpyf%\css %xcpyt%\css /d /s /i /q >NUL
-xcopy %xcpyf%\images %xcpyt%\images /d /s /i /q >NUL
-if exist %inpath%\images xcopy %inpath%\images\* %base_dir%\images /d /s /i /q >NUL
+echo Updating the files from the CSS folder if required.
+xcopy %xcpyf%\css %xcpyt%\css /d /s /i /q /y
+echo Updating the files from the common images folder if required.
+xcopy %xcpyf%\images %xcpyt%\images /d /s /i /q /y
+if exist %inpath%\images (
+    echo Updating the files from the %whichdoc% images folder if required.
+    xcopy %inpath%\images\* %base_dir%\images /d /s /i /q /y
+)
 where rexx /q
 if %errorlevel% EQU 0 (
-    rexx chk4HTML.rex %base_dir%
+    rem Check that HTML files were created and optionally create a .zip file
+    rexx chk4HTML.rex %base_dir%\
 ) else echo %time:~0,-3% - Transformation ended

@@ -32,8 +32,14 @@
                 exclude-result-prefixes="exsl perl ptbl xtbl stbl">
 <!--        exclude-result-prefixes="#default"> -->
 
+<!-- last release on sourceforge is 1.79.1
 <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/fo/docbook.xsl"/>
 <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/fo/graphics.xsl"/>
+-->
+<!-- release 1.79.2 is on GitHub but causes error messages if you don't use the no namespace version -->
+<xsl:import href="http://cdn.docbook.org/release/xsl-nons/current/fo/docbook.xsl"/>
+<xsl:import href="http://cdn.docbook.org/release/xsl-nons/current/fo/graphics.xsl"/>
+
 <!-- This is required to get footnotes to format correctly due to overriding para BZ #565903 -->
 <!-- This has to use include to get the override working, do not change to import
 <xsl:include href="file:///C:/Program%20Files%20(x86)/Publican/docbook-xsl-1.76.1/fo/footnote.xsl"/> no longer required -->
@@ -69,7 +75,7 @@
 </xsl:param>
 <!--xsl:param name="default.image.width" select="'440'"/-->
 <xsl:param name="hyphenate.verbatim" select="0"/>
-<xsl:param name="hyphenate">true</xsl:param>
+<xsl:param name="hyphenate">false</xsl:param> <!-- changed to false -->
 <!--xsl:param name="ulink.hyphenate" select="''"/-->
 <xsl:param name="ulink.footnotes" select="1"/>
 <xsl:param name="ulink.show" select="1"/>
@@ -138,7 +144,7 @@
   <xsl:attribute name="space-after.minimum">0.8em</xsl:attribute>
   <xsl:attribute name="space-after.optimum">1em</xsl:attribute>
   <xsl:attribute name="space-after.maximum">1.2em</xsl:attribute>
-  <xsl:attribute name="hyphenate">true</xsl:attribute>
+  <xsl:attribute name="hyphenate">false</xsl:attribute> <!-- changed to false -->
   <xsl:attribute name="wrap-option">wrap</xsl:attribute>
   <xsl:attribute name="white-space-collapse">false</xsl:attribute>
   <xsl:attribute name="white-space-treatment">preserve</xsl:attribute>
@@ -166,7 +172,7 @@
     <xsl:attribute name="font-size">13pt</xsl:attribute>
     <xsl:attribute name="color">#eeeeec</xsl:attribute>
     <xsl:attribute name="font-weight">bold</xsl:attribute>
-    <xsl:attribute name="hyphenate">true</xsl:attribute>
+    <xsl:attribute name="hyphenate">false</xsl:attribute> <!-- changed to false -->
     <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
     <xsl:attribute name="background-color">
       <xsl:choose>

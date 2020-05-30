@@ -57,7 +57,8 @@ if not exist %subdir% (
     echo Unable to find %subdir%; please check the spelling.
     goto :eof
 )
-xcopy %docpath%\oorexx\en-US\* %com_cont% /d /s /i /q
+echo Updating the files in the Common_Content folder if required.
+xcopy %docpath%\oorexx\en-US\* %com_cont% /d /s /i /q /y
 if not exist %com_cont%\fop.cfg copy fop.cfg %com_cont%\
 endlocal
 set whichdoc=%1

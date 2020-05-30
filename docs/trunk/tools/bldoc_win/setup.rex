@@ -38,19 +38,20 @@
 /* Type: Object REXX Script                                                   */
 /*                                                                            */
 /* This program is designed to be run once and will retrieve the other parts
-   needed for the BLDOC package and install them in the correct locations. If it
-   is run again, it will verify that all the parts are installed correctly and,
-   if not, retrieve them if required and then install them.  It does not install
-   the fonts as they are optional but does make them available.
+   needed for the BLDOC package and install them in the correct locations. If
+   it is run again, it will verify that all the parts are installed correctly
+   and, if not, retrieve them if required and then install them.  It does not
+   install the fonts as they are optional but does make them available.
 
    Each package is retrieved from the Internet using a PowerShell command and
    placed in a local subfolder.  Then a PowerShell command is used to extract
-   the files from the compressed folder into the proper folder. Finally, for the
-   four packages needed for xsltproc, the executable files are copied into the
-   main folder using another PowerShell command so that the path does not need
-   to be modified in order to be able to use them.
+   the files from the compressed folder into the proper folder. Finally, for
+   the four packages needed for xsltproc, the executable files are copied
+   into the main folder using another PowerShell command so that the path
+   does not need to be modified in order to be able to use them.
 */
     -- Initialization
+    _ = '09'x   -- Tab char.
     zips_dir = ".\packages"
     zips = .file~new(zips_dir)  -- folder to hold the downloaded files
     if \zips~isDirectory then
@@ -64,17 +65,24 @@
     /* Each font family has 4 font files plus a license file; assume that if we
         have 8 or more files, then we are OK */
     if fonts~list~items < 8 then do -- missing fonts
+        say "Making the Liberation Fonts available for installation. (1/5)"
         do aFont over "sans", "mono"
             font = "liberation-"aFont
             font_zip_name = zips_dir"\"font".zip"
             font_zip = .file~new(font_zip_name)
-            if \font_zip~exists then
+            if \font_zip~exists then do
+                say _"Downloading the" font "fonts."
                 call retrieve src_url||font, font_zip_name
-            if font_zip~exists then
+                if result \= 0 then
+                    say _"Error retrieving" font".zip; RC was" result"."
+            end
+            if font_zip~exists then do
+                say _"Unzipping the" font "fonts."
                 -- need single quotes since folder name has a blank
                 call unzip font_zip_name, "'"fonts~string"'"
-            else
-                say "Unable to retrieve font" font"."
+                if result \= 0 then
+                    say _"Error unzipping" font_zip_name"; RC was" result"."
+            end
         end
     end
 
@@ -89,57 +97,144 @@
     call SysFileTree ".\*.exe", exes., FO
     call SysFileTree ".\*.dll", dlls., FO
     if (exes.0 \= 5) | (dlls.0 \= 5) then do    -- missing executables
+        say "Making XSLTPROC executables available. (2/5)"
         do aPkg over pkgs
-            pkg_zip_name = zips~string"\"aPkg".zip"
+            pkg_zip_name = zips_dir"\"aPkg".zip"
             pkg_zip = .file~new(pkg_zip_name)
-            if \pkg_zip~exists then
+            if \pkg_zip~exists then do
+                say _"Downloading" aPkg".zip."
                 call retrieve src_url||aPkg".zip", pkg_zip_name
+                if result \= 0 then
+                    say _"Error retrieving" aPkg".zip; RC was" result"."
+            end
             if pkg_zip~exists then do
-                if \.file~new(aPkg)~exists then
+                say _"Unzipping the" aPkg "package."
+                if \.file~new(aPkg)~exists then do
                     call unzip pkg_zip_name, .
+                    if result \= 0 then
+                        say _"Error unzipping" pkg_zip_name"; RC was" result"."
+                end
                 if aPkg~left(4) = "zlib" then
                     -- this one doesn't follow naming conventions, folder name
                     --  is missing .win32
                     parse var aPkg aPkg ".win32"
-                if .file~new(aPkg"\bin")~exists then
-                    "powershell copy-item" aPkg"\bin\* -Include *.exe, *.dll"
-                else
-                    say "Unable to locate" aPkg"\bin."
+                if .file~new(aPkg"\bin")~exists then do
+                    say _"Copying the *.exe and *.dll files."
+                    address path -
+                    "powershell Copy-Item" aPkg"\bin\* -Include *.exe, *.dll"
+                    if RC \= 0 then
+                        say _"RC" RC "copying the *.exe/*.dll files from" aPkg"."
+                end
             end
-            else
-                say "Unable to retrieve" aPkg"."
+        end
+    end
+
+    -- Create a folder for the DocBook files
+    DBfolderName = ".\DocBook_Files"
+    dtd_xsl = .file~new(DBfolderName)
+    if \dtd_xsl~isDirectory then
+        dtd_xsl~makeDir
+
+    -- Get the DTD files to improve performance
+    --  http://www.oasis-open.org/docbook/xml/4.5/docbook-xml-4.5.zip
+    src_url = "http://www.oasis-open.org/docbook/xml/4.5/"
+    main_dtd = "docbookx.dtd"
+    if \.file~new(DBfolderName"\"main_dtd)~exists then do
+        say "Making DocBook DTD files available. (3/5)"
+        dtds_zip_name = "docbook-xml-4.5.zip"
+        full_zip_name = zips_dir"\"dtds_zip_name
+        dtds_zip = .file~new(full_zip_name)
+        if \dtds_zip~exists then do
+            say _"Downloading" dtds_zip_name"."
+            call retrieve src_url||dtds_zip_name, full_zip_name
+            if result \= 0 then
+                say _"Error retrieving" dtds_zip_name"; RC was" result"."
+        end
+        if dtds_zip~exists then do
+            say _"Unzipping" dtds_zip_name"."
+            call unzip full_zip_name, DBfolderName
+            if result \= 0 then
+                say _"Error unzipping" dtds_zip_name"; RC was" result"."
+        end
+    end
+
+    -- Get the XSL files to improve performance
+    --  https://github.com/docbook/xslt10-stylesheets/releases/
+    --  download/release/1.79.2/docbook-xsl-nons-1.79.2.zip
+    src_url = "https://github.com/docbook/xslt10-stylesheets/releases/" || -
+            "download/release/1.79.2/"
+    xsl_pkg = "docbook-xsl-nons-1.79.2"
+    if \.file~new(DBfolderName"\"xsl_pkg)~exists then do
+        say "Making DocBook style sheets available. (4/5)"
+        xsl_zip_name = zips_dir"\"xsl_pkg".zip"
+        xsl_zip = .file~new(xsl_zip_name)
+        -- Due to an issue with using BITS with GitHub to retrieve files, (see
+        -- https://powershell.org/forums/topic/bits-transfer-with-github/), we
+        -- use Invoke-WebRequest instead
+        if \xsl_zip~exists then do
+            say _"Downloading" xsl_pkg".zip."
+            call retrieve src_url||xsl_pkg".zip", xsl_zip_name, "use_IWR"
+            if result \= 0 then
+                say _"Error retrieving" xsl_pkg".zip; RC was" result"."
+        end
+        if xsl_zip~exists then do
+            say _"Unzipping" xsl_pkg".zip."
+            call unzip xsl_zip_name, DBfolderName
+            if result \= 0 then
+                say _"Error unzipping" xsl_pkg".zip; RC was" result"."
         end
     end
 
     -- Finally the Apache FOP package
+    -- https://xmlgraphics.apache.org/fop/download.html
+    -- Use the above site to find an alternate mirror site if needed.
     src_url = "http://us.mirrors.quenda.co/apache/xmlgraphics/fop/binaries/"
     fop_pkg = "fop-2.4"
     if \.file~new(".\"fop_pkg)~isDirectory then do
-        fop_zip_name = zips~string"\"fop_pkg"-bin.zip"
+        say "Making Apache FOP package available. (5/5)"
+        fop_zip_name = zips_dir"\"fop_pkg"-bin.zip"
         fop_zip = .file~new(fop_zip_name)
-        if \fop_zip~exists then
+        if \fop_zip~exists then do
+            say _"Downloading" fop_pkg"-bin.zip"
             call retrieve src_url||fop_pkg"-bin.zip", fop_zip_name
-        if fop_zip~exists then
+            if result \= 0 then
+                say _"Error retrieving" fop_pkg"-bin.zip; RC was" result"."
+        end
+        if fop_zip~exists then do
+            say _"Unzipping" fop_pkg"-bin.zip"
             call unzip fop_zip_name, .
+            if result \= 0 then
+                say _"Error unzipping" fop_pkg"-bin.zip; RC was" result"."
+        end
     end
 
 /* check that all the packages have been installed and inform the user */
+    if fonts~list~items >= 8 then
+        say "Liberation Fonts are available for installation. (1/5)"
     call SysFileTree ".\*.exe", exes., FO
     call SysFileTree ".\*.dll", dlls., FO
     if exes.0 = 5 & dlls.0 = 5 then
-        say "XSLTPROC executables are now available."
+        say "XSLTPROC executables are now available. (2/5)"
+    if .file~new(DBfolderName"\"main_dtd)~exists then
+        say "DocBook DTD files are now available. (3/5)"
+    if .file~new(DBfolderName"\"xsl_pkg)~isDirectory then
+        say "DocBook style sheets are now available. (4/5)"
     if .file~new(".\"fop_pkg)~isDirectory then
-        say "Apache FOP package is now available."
-    if fonts~list~items >= 8 then
-        say "Liberation Fonts are available for installation."
+        say "Apache FOP package is now available. (5/5)"
     exit
 
 retrieve: procedure -- get the package from the Internet
     parse arg url, zipfile
-    "powershell start-bitstransfer """url""" -Destination" zipfile
-    return
+    if arg(3, O) then   -- use the newer BITS method
+        address path -
+            "powershell Start-BitsTransfer """url""" -Destination" zipfile
+    else                -- use older API
+        address path -
+            "powershell Invoke-WebRequest" url "-OutFile" zipfile
+    return RC
 
 unzip: procedure    -- extract the package files to the appropriate location
     parse arg zipfile, outdir
-    "powershell expand-archive -Path" zipfile "-DestinationPath" outdir "-Force"
-    return
+    address path -
+    "powershell Expand-Archive -Path" zipfile "-DestinationPath" outdir "-Force"
+    return RC

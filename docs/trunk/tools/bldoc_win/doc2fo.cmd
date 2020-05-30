@@ -51,15 +51,19 @@ if not defined whichdoc (
     echo Please run the DOCPREP command first.
     goto :eof
 )
+if not defined fo_files set fo_files=fo_files
+if not exist %fo_files% (
+    echo Unable to find %fo_files%.
+    goto :eof
+)
+call make_tmps %docpath%
 setlocal
+set dtd_cat=.\DocBook_Files\catalog.xml
+set xsl_cat=.\DocBook_Files\docbook-xsl-nons-1.79.2\catalog.xml
+set xml_catalog_files=%dtd_cat% %xsl_cat%
 set indoc=%docpath%\%whichdoc%\en-US\%whichdoc%.xml
 set x_opts=--xinclude %xslt_opts%
-echo %time:~0,-3% - Transforming %indoc% to fo_files\%whichdoc%.fo
-echo This may take up to 10+ minutes for the largest documents!
-date /T > %docpath%\..\datepub.tmp
-where svnversion /q
-if %errorlevel% EQU 0 (
-    svnversion %docpath% > %docpath%\..\svnrev.tmp
-) else echo ?> %docpath%\..\svnrev.tmp
-xsltproc %x_opts% -o fo_files\%whichdoc%.fo pdf.xsl %indoc%
+echo %time:~0,-3% - Transforming %indoc% to %fo_files%\%whichdoc%.fo
+echo This may take up to several minutes for the largest documents!
+xsltproc %x_opts% -o %fo_files%\%whichdoc%.fo pdf.xsl %indoc%
 echo %time:~0,-3% - Transformation complete

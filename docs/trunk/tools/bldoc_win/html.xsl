@@ -5,8 +5,13 @@
                 version="1.0"
                 exclude-result-prefixes="exsl">
 
+<!-- last release on sourceforge is 1.79.1
 <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/xhtml/docbook.xsl"/>
-<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/xhtml/chunkfast.xsl"/> <!-- was chunk.xsl -->
+<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/xhtml/chunkfast.xsl"/> --> <!-- was chunk.xsl -->
+
+<!-- release 1.79.2 is on GitHub but causes error messages if you don't use the no namespace version -->
+<xsl:import href="http://cdn.docbook.org/release/xsl-nons/current/xhtml/docbook.xsl"/>
+<xsl:import href="http://cdn.docbook.org/release/xsl-nons/current/xhtml/chunkfast.xsl"/>
 
 <xsl:include href="defaults.xsl"/>
 <xsl:include href="xhtml-common.xsl"/>

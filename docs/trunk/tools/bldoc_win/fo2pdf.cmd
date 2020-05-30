@@ -50,20 +50,36 @@ if not defined whichdoc (
     echo Please run the DOCPREP command first.
     goto :eof
 )
+Rem fop_opts cannot be local as it is referenced in fop.bat
 if not defined fop_opts (
     set fop_opts=-Xmx1280M
     set nofopts=1
 )
 setlocal
-set in_file=fo_files\%whichdoc%.fo
-set out_file=PDF_files\%whichdoc%.pdf
-set log_file=log_files\%whichdoc%.log
-set fopcfg=%docpath%\%whichdoc%\en-US\Common_Content\fop.cfg
+if not defined %fo_files% (
+    echo Unable to find fo_files\%whichdoc%.fo.
+    echo Make sure the DOC2FO command has run successfully.
+    goto :eof
+)
+set in_file=%fo_files%\%whichdoc%.fo
 if not exist %in_file% (
     echo Unable to find %in_file%.
     echo Make sure the DOC2FO command has run successfully.
     goto :eof
 )
+if not defined log_files set log_files=log_files
+if not exist %log_files% (
+    echo Unable to find %log_files%.
+    goto :eof
+)
+set log_file=%log_files%\%whichdoc%.log
+if not defined PDF_files set PDF_files=PDF_files
+if not exist %PDF_files% (
+    echo Unable to find %PDF_files%.
+    goto :eof
+)
+set out_file=%PDF_files%\%whichdoc%.pdf
+set fopcfg=%docpath%\%whichdoc%\en-US\Common_Content\fop.cfg
 echo %time:~0,-3% - Creating %out_file% from %in_file% using Apache FOP
 call fop-2.4\fop\fop.bat -c %fopcfg% %in_file% %out_file% 2>%log_file%
 where rexx /q
@@ -71,6 +87,7 @@ if %errorlevel% EQU 0 (
     rexx chk4pdf.rex %out_file%
 ) else echo %time:~0,-3% - FOP processing ended
 endlocal
+Rem Clear temporary variables
 if defined nofopts (
     set nofopts=
     set fop_opts=

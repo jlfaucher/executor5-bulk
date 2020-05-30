@@ -34,29 +34,28 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* Name: CHK4HTML.REX                                                         */
+/* Name: HTML2ZIP.REX                                                         */
 /* Type: Object REXX Script                                                   */
 /*                                                                            */
--- check that the (new) HTML files have been created
-    parse arg base_dir
-    theFiles = .File~new(base_dir)~listFiles
-    fileCount = 0
-    docpath = value('docpath', , 'ENVIRONMENT')
-    -- the datepub.tmp file is written just before the files are produced
-    d_pub = .file~new(docpath'\..\datepub.tmp')
-    start_time = d_pub~lastmodified -- a DateTime object
-    do aFile over theFiles
-        if aFile~isDirectory then
-            iterate
-        created_time = aFile~lastmodified -- a DateTime object
-        if start_time~compareTo(created_time) = -1 then -- aFile is newer
-            fileCount += 1
-    end
-    if fileCount = 0 then
-        fileCount = 'No'
+-- Zip all the HTML, CSS and graphics files for the book
+    if arg() = 2 then   -- called from CHK4HTML
+        parse arg base_dir, whichdoc
     else do
-        zip? = value('zip_HTML', , 'ENVIRONMENT')
-        if zip? <> '' then  -- need to create a compressed folder/zip file
-            call HTML2zip base_dir, value('whichdoc', , 'ENVIRONMENT')
+        -- get the value of the env. var. whichdoc
+        whichdoc = value('whichdoc', , 'ENVIRONMENT')
+        if whichdoc = '' then do
+            say 'Unable to determine the document to zip.'
+            say 'Be sure DOCPREP and/or DOC2HTML has been run.'
+            exit
+        end
+--  need the base dir which depends on %HTML_folders%; it might not be defined
+        dir_name = value('HTML_folders', , 'ENVIRONMENT')
+        if dir_name = '' then
+            dir_name = 'HTML_folders'
+        base_dir = dir_name'\'whichdoc'\'
     end
-    'echo %time:~0,-3% -' fileCount 'HTML files were created'
+    zip_name = whichdoc'.zip'
+    say 'Creating' zip_name
+    -- You may modify the following command to use a different zip program
+    address path 'powershell' -
+        'Compress-Archive' base_dir'*' base_dir||zip_name '-Force'
