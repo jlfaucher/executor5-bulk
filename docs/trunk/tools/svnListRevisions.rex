@@ -181,10 +181,10 @@ if path<>"" then call test path
 ::class nameComparator        -- the sequence svn returns information
 ::method compare
   use strict arg left, right
-  return left~name~compareTo(right~name)
+  return left~name~caselessCompareTo(right~name)
 
 /* ========================================================================== */
 ::class authorComparator      -- author's name
 ::method compare
   use strict arg left, right
-  return left~author~compareTo(right~author)
+  return left~author~caselessCompareTo(right~author)
