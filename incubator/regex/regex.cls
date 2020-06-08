@@ -172,6 +172,7 @@
 -- is a mutable buffer, it will be updated with the replacement result
 -- at the end.  If the text is a string, then we'll return a new string
 ::method replace
+  expose matchResult
   use strict arg text, replacement, count = 999999999
 
   indexPosition = 1   -- split always starts at the beginning
@@ -208,8 +209,12 @@
       return text
   end
   else do
+      -- update the text with the new string
+      text = buffer~string
+      -- clear the match result
+      matchResult = .nil
       -- return as a string
-      return buffer~string
+      return text
   end
 
 -- return a set of match metrics for this pattern instance
@@ -5964,7 +5969,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 
 -- Replace the current match position with a new string
 ::method replace
-  expose string matchStart matchEnd segmentStart segmentEnd
+  expose string matchResult matchText matchStart matchEnd sectionStart sectionEnd
   use strict arg replacement
 
   -- this can be either a replacement string or a formatter
@@ -5993,14 +5998,20 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 
   -- now we need to adjust everything for the change in size
   matchEnd += delta
-  segmentStart += delta
-  segmentEnd += delta
+  sectionStart += delta
+  sectionEnd += delta
+  -- update the match text
+  matchText~regionText = string
+  matchText~regionStart = sectionStart
+  matchText~regionEnd = sectionEnd
+  -- null out the match result so we create a new one on the next request
+  matchResult = .nil
 
 
 -- Insert a string before the current match position, with possible
 -- construction from the match data
 ::method insertBefore
-  expose string matchStart matchEnd segmentStart segmentEnd
+  expose matchResult string matchStart matchEnd sectionStart sectionEnd matchText
   use strict arg insertion
 
   -- this can be either a replacement string or a formatter
@@ -6026,24 +6037,26 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 
   -- if the segment is before the match position, then the
   -- inserted string becomes part of the segment
-  if segmentStart < matchStart then do
-     segmentEnd += delta
+  if sectionStart < matchStart then do
+     sectionEnd += delta
   end
   -- segment is at or after the current match position, so it just gets shifted
   else do
-     segmentStart += delta
-     segmentEnd += delta
+     sectionStart += delta
+     sectionEnd += delta
   end
 
   -- We have inserted this before the match, so shift that always
   matchStart += delta
   matchEnd += delta
+  -- clear the match result so that we create a new one
+  matchResult = .nil
 
 
 -- Insert a string after the current match position, with possible
 -- construction from the match data
 ::method insertAfter
-  expose string matchStart matchEnd segmentStart segmentEnd
+  expose string matchStart matchEnd sectionStart sectionEnd
   use strict arg insertion
 
   -- this can be either a replacement string or a formatter
@@ -6070,13 +6083,16 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   -- if the segment is effected if it follows the match end. In that
   -- case, we need to shift the start and add the inserted string to the
   -- segment.
-  if segmentStart >= matchEnd then do
+  if sectionStart >= matchEnd then do
      -- we're just adding the data to the segment. The start position
      -- is the same, but the length is increased by the inserted amount
-     segmentEnd += delta
+     sectionEnd += delta
   end
 
   -- since this goes after the end, the match positions remain unchanged
+
+  -- clear the match result so that we create a new one
+  matchResult = .nil
 
 
 -- Validate and adjust the positional values after a non-search
@@ -6226,7 +6242,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
       -- a back reference test.  This is of the form (?(name)...
       -- we're looking at the first character, so back up and
       -- extract the name using the '(' and ')' delimiters
-      otherwise  do
+      else  do
           -- potentially a compound back reference name?  This requires
           -- more complicated parsing
           if ch == '<' then do
@@ -6235,11 +6251,11 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
               path = self~parseGroupName(path)
               -- we can validate the first, the rest are very dynamic
               if \self~haveGroup(path[1]) then do
-            end
-
-            pathname = template~substring(hit + 1, pathend - (hit +1))
-            build~append(self~transform(pathname, matchResult[pathname]))
-            index = pathend + 1
+                 pathname = template~substring(hit + 1, pathend - (hit +1))
+                 build~append(self~transform(pathname, matchResult[pathname]))
+                 index = pathend + 1
+              end
+           end
         end
      end
   end
