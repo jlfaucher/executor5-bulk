@@ -5230,7 +5230,7 @@
   end
 
   -- return the match text (which will be null if not matched)
-  text = group~matchText
+  text = group~text
   if text == .nil then do
       return ""
   end
