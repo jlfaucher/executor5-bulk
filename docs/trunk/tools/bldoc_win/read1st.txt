@@ -29,9 +29,13 @@ more help.
 The tools are all invoked from the command-line so this package should be placed
 into a folder that will be dedicated to building the documents.  It is
 recommended that the folder not be a system folder or sub-folder since the
-output files will be written to sub-folders of the tools folder.  For the same
-reason, executing the tools from the SVN working copy folder where the documents
-and tools files are located may not be desirable.
+output files will be written to sub-folders of the tools folder.  Because some
+of the documents require temporary files containing the SVN revision information
+and the date the document is being built, and the fact that these files are
+expected to be in the folder directly above the highest level of the SVN working
+copy, you may wish to locate the SVN working copy directly below the tools
+folder.  For the same reasons, executing the tools from the SVN working copy
+folder where the documents and tools files are located may not be desirable.
 
 Once the folder has been created and the files and sub-folders in this package
 have been copied into it, run the Setup program.  Then, opening a command prompt
@@ -127,9 +131,9 @@ from which it is then possible to navigate to all parts of the document.
 If you wish to package all the HTML files for a document along with the CSS and
 image files into a zip file, you can execute the ooRexx program html2zip.rex
 following their creation by doc2html.  The file <doc. name>.zip will be placed
-in the same sub-folder as the the HTML files.  This step can be automated so
-that it is done as part of doc2html by setting the environment variable zip_html
-to any value.  See the section on Optional Parameters below.
+in a sub-folder named HTML_zipfiles.  This step can be automated so that it is
+done as part of doc2html by setting the environment variable zip_html to any
+value.  See the section on Optional Parameters below.
 
 
 Summary
@@ -172,14 +176,15 @@ Customization
 -------------
 
 The package is set up to place the various output files that are produced into
-the sub-folders fo_files, log_files, PDF_files and HTML_folders.  If you wish to
-have them placed elsewhere, you do not have modify the various tools.  Simply
-set the appropiate environment variable to the path to the folder you wish to
-use instead.  For example to have the PDF placed in path.to.my.folder, issue the
-command "set PDF_files=path.to.my.folder" before running fo2pdf or doc2pdf.
-Likewise, the folders for the .log files, .fo files or the HTML folders can be
-set in a similar way: "set log_files=path.to.my.folder",
-"set fo_files=path.to.my.folder", or "set HTML_folders=path.to.my.folder".
+the sub-folders fo_files, log_files, PDF_files, HTML_folders and HTML_zipfiles.
+If you wish to have them placed elsewhere, you do not have modify the various
+tools.  Simply set the appropiate environment variable to the path to the folder
+you wish to use instead.  For example to have the PDF placed in
+path\to\my\folder, issue the command "set PDF_files=path\to\my\folder" before
+running fo2pdf or doc2pdf.  Likewise, the folders for the .log files, .fo files,
+the HTML folders or the HTML zip files can be set in a similar way:
+"set log_files=path\to\my\folder", "set fo_files=path\to\my\folder",
+"set HTML_folders=path\to\my\folder" or "set HTML_zipfiles=path\to\my\folder".
 
 Support
 -------

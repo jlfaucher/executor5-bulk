@@ -38,7 +38,7 @@
 /* Type: Object REXX Script                                                   */
 /*                                                                            */
 -- Zip all the HTML, CSS and graphics files for the book
-    if arg() = 2 then   -- called from CHK4HTML
+    if arg() = 2 then   -- called from CHK4HTML; base_dir has trailing \
         parse arg base_dir, whichdoc
     else do
         -- get the value of the env. var. whichdoc
@@ -51,11 +51,16 @@
 --  need the base dir which depends on %HTML_folders%; it might not be defined
         dir_name = value('HTML_folders', , 'ENVIRONMENT')
         if dir_name = '' then
-            dir_name = 'HTML_folders'
+            dir_name = 'HTML_folders'   -- use the default
         base_dir = dir_name'\'whichdoc'\'
     end
+-- allow the destination folder to be specified via the env. var. HTML_zipfiles
+    zip_dir = value('HTML_zipfiles', , 'ENVIRONMENT')
+    if zip_dir = '' then
+        zip_dir = 'HTML_zipfiles'       -- use the default
     zip_name = whichdoc'.zip'
-    say 'Creating' zip_name
+    say 'Creating' zip_name 'in' zip_dir
+    zip_fullName = zip_dir'\'zip_name
+    .file~new(zip_fullName)~delete  -- delete the old copy if it exists
     -- You may modify the following command to use a different zip program
-    address path 'powershell' -
-        'Compress-Archive' base_dir'*' base_dir||zip_name '-Force'
+    address path 'powershell Compress-Archive' base_dir'*' zip_fullName
