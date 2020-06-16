@@ -51,67 +51,17 @@ else
 ::requires 'json.cls'
 ::class "JSON.testGroup" public subclass ooTestCase
 
-::method init
-  expose thisDir     -- the location of this testGroup, including the trailing slash
-  parse source . . s
-  thisDir=filespec("Location",s) -- save this testGroup's directory (with trailing slash)
-  forward class (super)
-
-::method test_01_valid_json_files
-  expose thisDir
-
-  parser=.json~new    -- get a JSON parser instance
-  search=thisDir'valid\*.json'
-  call sysFileTree search, 'file', 'fo'
-  do i = 1 to file.0
-      self~assertTrue(self~check_valid_json_file(parser, file.i))
-  end
-
-::method check_valid_json_file      -- the received files are valid JSON files
-   use strict arg parser, fileName
-
--- signal on syntax
-   data=readFile(fileName)
-   parser~fromJson(data)
-   return .true
-syntax:
-   return .false
-
-------------------------------------------------------------------------------
-
-::method test_02_invalid_json_files
-  expose thisDir
-
-  parser=.json~new    -- get a JSON parser instance
-  search=thisDir'invalid\*.json'
-  call sysFileTree search, 'file', 'fo'
-  do i = 1 to file.0
-      self~assertTrue(self~check_invalid_json_file(parser, file.i))
-  end
-
-
-::method check_invalid_json_file    -- the received files are invalid JSON files
-   use strict arg parser, fileName
-
-   signal on syntax
-   data=readFile(fileName)
-   parser~fromJson(data)      -- a syntax error must be raised (3.900)
-   return .false              -- assertion does not hold!
-syntax:
-   return .true               -- assertion holds (syntax error occurred)
-
-------------------------------------------------------------------------------
 
 ::method test_invalid_empty
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("")
 
 ::method test_invalid_empty_whitespace
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson('09'x)
 
 ::method test_invalid_literal
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("nullstring")
 
 
@@ -127,6 +77,7 @@ syntax:
   self~assertSame(0, j~fromJson("false"))
   self~assertSame(0, j~fromJson("false" '09'x))
   self~assertSame(.nil, j~fromJson("null"))
+  self~assertSame(.nil, j~fromJson('0d 0a'x "null"))
   self~assertSame(.true, j~toJson(.true))
   self~assertSame(.false, j~toJson(.false))
   self~assertSame("null", j~toJson(.nil))
@@ -135,15 +86,15 @@ syntax:
 -- number
 
 ::method test_number_invalid_nan
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("NaN")
 
 ::method test_number_invalid_double_minus
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("--1")
 
 ::method test_number_invalid_exponential
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("1e")
 
 ::method test_number
@@ -179,16 +130,20 @@ syntax:
 -- string
 
 ::method test_string_invalid_missing_quote
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Expected end of a quoted string
   .Json~new~fromJson('"')
 
 ::method test_string_invalid_superfluous_quote
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Expected end of input
   .Json~new~fromJson('"""')
 
+::method test_string_invalid_unicode_escape
+  self~expectSyntax(93.900) -- Invalid escape sequence
+  .Json~new~fromJson('"\u00"')
+
 ::method test_string_invalid_escape
-  self~expectSyntax(3.900) -- Invalid JSON value
-  .Json~new~fromJson('"\x"')
+  self~expectSyntax(93.900) -- Invalid escape sequence
+  .Json~new~fromJson('"\x12"')
 
 ::method test_string
   j = .Json~new
@@ -208,11 +163,11 @@ syntax:
   j = .Json~new
 
   -- All code points may be placed within the quotation marks except for
-  -- quote, backslash, and the control characters '00'x through '1f'x
+  -- quote, backslash, and the control characters '00'x through '1f'x,
   -- which must be escaped.  There are eight two-character escape
   -- sequence representations \" \\ \/ \b \f \n \r \t.
 
-  -- for control character without two-character escapes \u00XX is used
+  -- for control characters without two-character escapes \u00XX is used
   do c over xrange('00'x, '07'x, '0b'x, '0b'x, '0e'x, '1f'x)~makeArray("")
     self~assertSame(c, j~fromJson('"\u00' || c~c2x ||'"'))
     self~assertSame('"\u00' || c~c2x ||'"', j~toJson(c))
@@ -236,15 +191,24 @@ syntax:
   self~assertSame('"\r"', j~toJson('0d'x))
   self~assertSame('"\t"', j~toJson('09'x))
 
+  -- generally speaking, \uXXXX escape sequences are unsupported as
+  -- ooRexx doesn't provide Unicode support
+  -- but instead of failing the parse, we just just keep any \uXXXX
+  -- as-is for both the fromJson and the toJson methods
+  -- fromJson doesn't un-escape, and toJson doesn't escape any \uXXXX
+  escape = "abc\u123456"
+  self~assertSame(escape, j~fromJson('"' || escape || '"'))
+  self~assertSame('"' || escape || '"', j~toJson(escape))
+
 
 -- array
 
 ::method test_array_invalid_missing_bracket
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("[")
 
 ::method test_array_invalid_missing_value
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("[1,]")
 
 ::method test_array
@@ -276,11 +240,15 @@ syntax:
 -- object
 
 ::method test_object_invalid_missing_brace
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Name must be a quoted string
   .Json~new~fromJson("{")
 
+::method test_object_invalid_missing_colon
+  self~expectSyntax(93.900) -- Expected colon separating object name and value
+  .Json~new~fromJson('{"name"}')
+
 ::method test_object_invalid_missing_value
-  self~expectSyntax(3.900) -- Invalid JSON value
+  self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson('{"name": }')
 
 ::method test_object
@@ -298,16 +266,39 @@ syntax:
   self~assertSame(1, dir~items)
   self~assertSame("value", dir["name"])
 
+  json = '{"first": 123, "second": "xyz"}'
+  dir = j~fromJson(json)
+  self~assertIsA(dir, .Directory)
+  self~assertSame(2, dir~items)
+  self~assertSame(123, dir["first"])
+  self~assertSame("xyz", dir["second"])
 
 
-::routine readFile            -- reads all bytes from the file and returns them
-  use strict arg fileName
+-- we have a bunch of samples in ./valid and ./invalid
+::method test_samples
+  here = .File~new(self~class~package~name)~parentFile
+  -- valid samples should parse successfully
+  do file over .File~new("valid", here)~listFiles
+    self~assertSame("", self~parseSample(file), file~name)
+  end
+  -- parsing invalid samples should fail
+  do file over .File~new("invalid", here)~listFiles
+    self~assertNotSame("", self~parseSample(file), file~name)
+  end
 
-  file  =.file~new(fileName)  -- get file object
-  stream=.stream~new(file)    -- get stream to read from it
-  data = stream~charIn(1,file~length)  -- get data
-  stream~close
-  return data                 -- return read data
+::method parseSample
+  use strict arg file
+
+  s = .Stream~new(file)~~open("read shared")
+  text = s~charIn(, file~length)
+  s~close
+  signal on syntax
+  .Json~new~fromJson(text)
+  return ""
+
+  syntax:
+  return condition("object")["MESSAGE"]
+
 
 
 ::options novalue error
