@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,17 +39,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
-  group~add(.ADDRESS.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
-
-
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.ADDRESS.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
@@ -57,7 +53,7 @@ return testResult
 
 ::constant temporaryFilename "address-with.tmp"
 
--- make sure out temporary file gets removed
+-- make sure our temporary file gets removed
 ::method activate class
    expose temporaryFile
    temporaryFile = .TemporaryTestFile~new(self, self~temporaryFilename)
@@ -69,7 +65,6 @@ return testResult
    self~assertSame(address(), '')
    Address                           /* toggle back                    */
    self~assertSame(address(), defenv)
-
 
 -- "exit" should return 0 for both Unix and Windows shells
 ::constant command_exists "exit"
@@ -196,7 +191,6 @@ return testResult
    defaultEnvironment = address()
    signal on error
    signal on failure
-   trace off                           -- we don't want to see FAILURE trace output
    address "" self~command_not_exists
    self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
 
@@ -214,7 +208,6 @@ return testResult
 ::method test_path_command_not_exists
    signal on error
    signal on failure
-   trace off                           -- we don't want to see FAILURE trace output
    address "path"
    (self~command_not_exists)
    self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
@@ -228,11 +221,28 @@ return testResult
    error:
    self~assertFail("an invalid command should raise FAILURE, not ERROR")
 
--- invalid (non-existent) commands should raise FAILURE (not ERROR)
--- test no-shell environment "path"
+-- the "path" environment should only search PATH, and neither any
+-- system directory nor the directory of the current executable
 ::method test_path_command
--- @@
+   -- to test whether this works, we clear the PATH environment variable
+   -- this is a pretty dangerous thing, as it will break a lot of things
+   -- if not reversed immediately
+   path = value("PATH", .nil, "environment") -- clear PATH
+   -- with no PATH set, we should be unable to locate sh or cmd.exe
+   address "path" (self~command_noshell)
+   call value "PATH", path, "environment" -- restore PATH
+   -- @@BUG: this neither works on Windows nor Linux
+   self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH")
+   self~assertSame(-1, .rs)
 
+/* @@BUG: as above, neither works on Windows nor Linux
+   path = value("PATH", .nil, "environment") -- clear PATH
+   -- we should also be unable to locate rexx[.exe]
+   call value "PATH", path, "environment" -- restore PATH
+   address "path" (filespec("name", .RexxInfo~executable))
+   self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH"
+   self~assertSame(-1, .rs)
+*/
 
 -- an invalid environment should raise FAILURE
 -- rexxref says: "An attempt to enter a command in an unknown command environment
@@ -1062,7 +1072,7 @@ self~assertSame(0, b.0)
 
 drop a. b.
 -- test that settings are saved on internal call return
-
+call subroutine
 self~assertSame('A.0', a.0)
 self~assertSame('B.0', b.0)
 
@@ -1095,6 +1105,7 @@ cr = '0d'x
 
 
 ::method test_stem_input
+
 -- now using a stem, but with the USING keyword
 drop a.
 a. = ""
@@ -1228,12 +1239,172 @@ address "" self~inputToOutput with input using (instream) output using(outstream
     self~assertSame(env~upper, output[1], "address" env":" output[1])
   end
 
-::method test_rexxref_example
+::method test_pprexxref_example
   address "" with input using (a) output using (a)
   a = 4, 2, 3, 1
   "sort"
   self~assertSame("1,2,3,4", a~toString(, ","), "sort result 1,2,3,4 expected")
 
+
+-- command handler tests
+
+::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
+
+::method set
+  use strict arg command, variable = (command~translate(" ", "=")~word(2))
+  (command)
+  return value(variable, , "environment")
+
+-- the command handler should handle Windows "SET" and Unix "export"
+-- commands in the same process
+::method test_command_set
+  if self~isWindows then do
+    -- the environment variable should still be there after the command
+    self~assertSame("set", self~set("set test_command_set=set"))
+
+    -- both the command and the environment variable are caseless on Windows
+    self~assertSame("caseless", self~set("SET TEST_command_set=caseless"))
+
+    -- SET should support simple environment variable expansion
+    -- NOTE: the same-process SET handling uses ExpandEnvironmentStrings()
+    -- which does not support
+    -- * dynamic (hidden) environment variables like CD, DATE, TIME, RANDOM, or ERRORLEVEL
+    -- * the special expansion syntax %name:str1=str2% or %name:~offset,length%
+    -- * SET switches /A or /P
+    self~assertSame("caseless expanded", self~set("Set test_command_set=%test_command_set% expanded"))
+
+    -- remove environment variable
+    self~assertSame("", self~set("SET TEST_COMMAND_SET="))
+  end
+  -- Unix/Linux
+  else do
+    -- the environment variable should still be there after the command
+    self~assertSame("set", self~set("export test_command_set=set"))
+
+    -- on Unix-based systems the environment variables names are case-sensitive
+    self~set("export test_command_SET=SET")
+    self~assertSame("set", value("test_command_set", , "environment"))
+    self~assertSame("SET", value("test_command_SET", , "environment"))
+
+    -- export should support simple environment variable expansion
+    /*@@BUG: doesn't work
+    self~assertSame("set expanded", self~set('export test_command_set="$test_command_set expanded"'))
+    */
+  end
+
+-- a Windows "d:" command should be handled in the same process
+::method test_command_drive_windows_only
+  if \self~isWindows then
+    return
+  -- this assumes we have a C: drive, but as we can't be sure there's
+  -- also a second drive available, we use a UNC path instead
+  currentDrive = filespec("drive", directory())
+  call directory "\\localhost\C$\"
+  self~assertSame("", filespec("drive", directory()))
+  (currentDrive) -- this d: command should run same-process
+  self~assertSame(currentDrive, filespec("drive", directory()))
+
+-- cd/chdir commands should be handled in the same process
+::method test_command_cd
+  dirNoBlanks = "test_command_cd"
+  dirWithBlanks = "test_command cd"
+  pathNoBlanks = .TemporaryTestDirectory~new(self, dirNoBlanks)~create
+  pathWithBlanks = .TemporaryTestDirectory~new(self, dirWithBlanks)~create
+  original = directory()
+  -- to also test relative cd commands we change to this test case's
+  -- directory, where we find above temp directories
+  current = directory(filespec("location", self~class~package~name))
+
+  -- @@BUGS:
+  --   on Unix leading/trailing blanks don't work: " cd .", 'cd "dir" '
+  --   on Windows chdir doesn't work
+  -- other issues:
+  --   on Windows cd /d isn't supported
+  --   on Windows "cd .. " should also work with a trailing blank, but doesn't
+  --   returns zero, but does nothing, which is strange,
+  --   similar "cmd /c cd .. ." also returns 0 and does nothing
+
+  -- for Windows we test cd, Cd, ChDir, on Unix just cd
+  do cd over self~isWindows~?(("cd", "Cd" /*@@BUG: "ChDir"*/), "cd")
+    -- cd with a relative path, no blanks, unquoted
+    call directory current
+    cd dirNoBlanks -- should be handled within same process
+    self~assertSame(0, rc, cd dirNoBlanks "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd no blanks, quoted
+    call directory current
+    cd '"' || dirNoBlanks || '"'
+    self~assertSame(0, rc, " " cd '"' || dirNoBlanks || '"' "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd with blanks, quoted
+    call directory current
+    cd '"' || dirWithBlanks || '"'
+    self~assertSame(0, rc, cd '"' || dirWithBlanks || '"  ' "returns" SysgetErrorText(rc))
+    self~assertSame(pathWithBlanks~absolutePath, directory())
+
+    -- cd with a full path
+    call directory current
+    cd pathNoBlanks~absolutePath
+    self~assertSame(0, rc, cd pathNoBlanks~absolutePath "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd with a full quoted path with blanks
+    call directory current
+    cd '"' || pathWithBlanks~absolutePath || '"'
+    self~assertSame(0, rc, cd '"' || pathWithBlanks~absolutePath || '"' "returns" SysgetErrorText(rc))
+    self~assertSame(pathWithBlanks~absolutePath, directory())
+
+    -- parent directory
+    cd ".."
+    self~assertSame(0, rc, cd ".." "returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+
+    -- same directory
+    cd "."
+    self~assertSame(0, rc, cd "." "returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+
+    -- cd with invalid path
+    "cd non-existing"
+    self~assertSame(2, rc, "cd non-existing should return 2 (The system cannot find the file specified) but returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+  end
+
+  -- specials
+
+  -- leading/in-between/trailing blanks
+--@@BUG: doesn't work on Linux
+if self~isWindows then do
+  call directory current
+  " " cd ' "' || dirNoBlanks || '" '
+  self~assertSame(0, rc, " " cd ' "' || dirNoBlanks || '" ' "returns" SysgetErrorText(rc))
+  self~assertSame(pathNoBlanks~absolutePath, directory())
+end
+
+  -- Windows-only: leading "quiet "@"
+  if self~isWindows then do
+    "@CD .."
+    self~assertSame(0, rc, "@CD .. returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+  end
+
+  -- Unix-only: tilde
+  if \self~isWindows then do
+    "cd ~"
+    self~assertSame(0, rc, "cd ~ returns" SysgetErrorText(rc))
+    self~assertSame(value("HOME", , "environment"), directory())
+
+    call directory current
+    "cd ~" || userid()
+    self~assertSame(0, rc, "cd ~" || userid() "returns" SysgetErrorText(rc))
+    self~assertSame(value("HOME", , "environment"), directory())
+
+
+  end
+
+  call directory original
 
 ::class ArrayInputStream public inherit InputStream
 ::method init
@@ -1351,4 +1522,6 @@ address "" self~inputToOutput with input using (instream) output using(outstream
 ::method lineout
   return 1/0
 
---::options novalue error
+
+::options novalue syntax
+::options trace off -- we never want to see FAILURE trace output
