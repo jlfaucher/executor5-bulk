@@ -90,11 +90,12 @@ else
   -- on Linux, BEEP will fall back to printing a BEL character which
   -- returns almost immediately, not honoring the given duration.
   call time "r"
-  call beep 37, 10
-  duration = time("e") * 1000;
-  -- we expect BEEP take either less than 1 ms (fall-back case) or
-  -- between 10 and 11 ms (fully supported beep) to complete this request.
-  self~assertEitherOr(duration < 1, duration >= 10 & duration <= 11)
+  call beep 37, 10 -- 37 Hz should intentionally be inaudible
+  duration = time("e") * 1000 / 1
+  -- we expect BEEP to take either less than 1 ms (fall-back case) or
+  -- around 10 ms (fully supported beep) to complete this request.
+  -- we allow up to 35 ms as Windows seems to be rather inaccurate.
+  self~assertTrue(duration < 1 | duration >= 10 & duration <= 35, "10 ms BEEP took" duration "ms")
 
 
 ::options novalue syntax
