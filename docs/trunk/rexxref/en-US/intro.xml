@@ -81,14 +81,16 @@ the types of data that variables can contain.</para>
 <secondary>processor execution</secondary></indexterm>
 <para>
   A language processor (interpreter) runs Rexx programs. That is, the program runs line by line and word
-  by word, without first being translated to machine language (compiled.) One of the advantages of this
+  by word, without first being translated (compiled) to machine language. One of the advantages of this
   is that you can fix the error and rerun the program faster than when using a compiler.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> Open Object Rexx also supplies the
-  <xref linkend="xnosorc" xrefstyle="template:REXXC"/> program that can be used to
-  <emphasis role="italic">tokenize</emphasis> Rexx programs.
-  Tokenizing a program is not the same as compiling a program to machine language.
+  <xref linkend="xnosorc" xrefstyle="template:rexxc"/> program that can be used to
+  translate Rexx programs into a sourceless executable file.
+  Translating a program is not the same as compiling a program to machine language.
+  A translated Rexx program will still be interpreted line by line, though
+  it will typically start faster as the initial parsing has already been done.
 </para>
 
 <section id="object"><title>What Is Object-Oriented Programming?</title>
@@ -270,52 +272,58 @@ an object results in performing some action; that is, it executes
 some underlying code. The action-generating code is called a
 <emphasis>method</emphasis>. When you send a message to an object,
 the message is the name of the target method.
-Method names are character strings like REVERSE. In the
-preceding example, sending the <computeroutput>reverse</computeroutput> message
-to the <computeroutput>!iH</computeroutput> object causes it to run the
-REVERSE method. Most objects are capable
+Method names are character strings like <literal>reverse</literal>.
+In the preceding example, sending the <literal>reverse</literal>
+message to the <literal>!iH</literal> object causes it to run the
+<methodname>reverse</methodname> method. Most objects are capable
 of more than one action, and so have a number of available methods.</para>
-<para>The classes Rexx provides include their own predefined methods. The Message
-class, for example, has the COMPLETED, INIT, NOTIFY, RESULT, SEND, and START
-methods. When you create your own classes, you can write new methods for them
+<para>The classes Rexx provides include their own predefined methods.
+The Message class, for example, has <methodname>completed</methodname>,
+<methodname>init</methodname>, <methodname>notify</methodname>,
+<methodname>result</methodname>, <methodname>send</methodname>, and
+<methodname>start</methodname> methods.
+When you create your own classes, you can write new methods for them
 in Rexx code. Much of the object programming in Rexx is writing the code for
-the methods you create.</para>
-</section>
-
-<section id="xpolym"><title>Polymorphism</title>
-<indexterm><primary>variables</primary>
-<secondary>aquiring</secondary></indexterm>
-<indexterm><primary>polymorphism</primary></indexterm>
+the methods you create.
+</para>
 <para>Rexx lets you send the same message to objects that are different:
 <example>
-<title>Polymorphism</title>
+<title>Methods</title>
 <programlisting>
-"!iH"~reverse   /* Reverses the characters "!iH" to form "Hi!"  */
-pen~reverse     /* Reverses the direction of a plotter pen      */
-ball~reverse    /* Reverses the direction of a moving ball      */
+"!iH"~reverse   -- Reverses the characters "!iH" to form "Hi!"
+pen~reverse     -- Reverses the direction of a plotter pen
+ball~reverse    -- Reverses the direction of a moving ball
 </programlisting>
 </example>
 </para>
-
-<para>As long as each object has its own REVERSE method, REVERSE runs
-even if the programming implementation is different for each object. This
-ability to hide different functions behind a common interface is called
-<emphasis>polymorphism</emphasis>.  As a result of information
-hiding, each object in the previous example knows only its own version of
-REVERSE. And even though the objects are different, each reverses itself as
+<para>As long as each object has its own <methodname>reverse</methodname>
+method, <methodname>reverse</methodname> runs
+even if the programming implementation is different for each object.
+Each object knows only its own version of <methodname>reverse</methodname>.
+And even though the objects are different, each reverses itself as
 dictated by its own code.</para>
-<para>Although the <computeroutput>!iH</computeroutput> object's
-REVERSE code is different from
+<para>Although the <literal>!iH</literal> object's
+<methodname>reverse</methodname> code is different from
 the plotter pen's, the method name can be the same because Rexx keeps
-track of the methods each object owns. The ability to reuse the same method
-name so that one message can initiate more than one function is another feature
-of polymorphism. You do not need to have several message names like
-REVERSE_STRING,
-REVERSE_PEN, REVERSE_BALL. This keeps method-naming schemes simple and makes
-complex programs easy to follow and modify.</para>
-<para>The ability to hide the various implementations of a method while leaving
-the interface the same illustrates polymorphism at its lowest level. On a
-higher level, polymorphism permits extensive code reuse.</para>
+track of the methods each object owns.
+You do not need to have several message names like
+<literal>reverse_string</literal>, <literal>reverse_pen</literal>,
+<literal>reverse_ball</literal>.
+This keeps method-naming schemes simple and makes
+complex programs easy to follow and modify.
+</para>
+</section>
+
+<section id="abstrac"><title>Data Abstraction</title>
+<indexterm><primary>data</primary>
+<secondary>abstraction</secondary></indexterm>
+<para>The ability to create
+new, high-level data types and organize them into a meaningful class structure
+is called <emphasis>data abstraction</emphasis>. Data abstraction is at
+the core of object-oriented programming. Once you model objects with real-world
+properties from the basic data types, you can continue creating, assembling,
+and combining them into increasingly complex objects. Then you can use these
+objects as if they were part of the original programming language.</para>
 </section>
 
 <section id="xclass"><title>Classes and Instances</title>
@@ -384,16 +392,29 @@ such as an application icon or a drives icon.</para>
 </para>
 </section>
 
-<section id="abstrac"><title>Data Abstraction</title>
-<indexterm><primary>data</primary>
-<secondary>abstraction</secondary></indexterm>
-<para>The ability to create
-new, high-level data types and organize them into a meaningful class structure
-is called <emphasis>data abstraction</emphasis>. Data abstraction is at
-the core of object-oriented programming. Once you model objects with real-world
-properties from the basic data types, you can continue creating, assembling,
-and combining them into increasingly complex objects. Then you can use these
-objects as if they were part of the original programming language.</para>
+<section id="xpolym"><title>Polymorphism</title>
+<indexterm><primary>variables</primary>
+<secondary>aquiring</secondary></indexterm>
+<indexterm><primary>polymorphism</primary></indexterm>
+<para>Polymorphism gives you a single interface to objects of different types.
+This example shows instances of classes inheriting from the Collection
+class, all sharing a common method named <methodname>put</methodname>,
+but with a different implementation each.
+<example>
+<title>Polymorphism</title>
+<programlisting>
+stem~put("value", "tail")         -- sets a Stem tail to "value"
+stringTable~put("value", "index") -- sets a StringTable "index" to "value"
+array~put("value", 1)             -- sets Array index 1 to "value"
+set~put("value")                  -- makes "value" a member of the Set
+</programlisting>
+</example>
+</para>
+
+<para>The ability to hide the various implementations of a method while
+leaving the interface the same illustrates polymorphism.
+On a higher level, polymorphism permits extensive code reuse.
+</para>
 </section>
 
 <section id="sub"><title>Subclasses, Superclasses, and Inheritance</title>
@@ -1174,8 +1195,9 @@ a line or to end an instruction whose last character is a comma.</para>
 <para>A line end usually marks the end of a clause and, thus, Rexx implies a
 semicolon at most end of lines. However, there are the following exceptions:
 <itemizedlist>
-<listitem><para>The line ends in the middle of a comment. The clause continues
-on to the next line.</para></listitem>
+<listitem><para>The line ends in the middle of a multi-line
+(<literal>/*</literal> ... <literal>*/</literal>) comment.
+The clause continues on to the next line.</para></listitem>
 <listitem><para>The last token was the continuation character (a comma
 or a minus sign) and the
 line does not end in the middle of a comment.
@@ -1188,9 +1210,9 @@ special cases reduce typographical errors significantly. </para>
 
 <note><title>Note</title>
 <para>The two characters forming the comment delimiters,
-<computeroutput>/*</computeroutput> and
-<computeroutput>*/</computeroutput>, must not be split by a line end (that is,
-<computeroutput>/</computeroutput> and <computeroutput>*</computeroutput>
+<literal>/*</literal> and
+<literal>*/</literal>, must not be split by a line end (that is,
+<literal>/</literal> and <literal>*</literal>
 should not appear on different lines) because they could not then
 be recognized correctly; an implied semicolon would be added.
 </para></note>
@@ -1254,8 +1276,8 @@ more information.</para>
 <indexterm><primary>data</primary>
 <secondary>terms</secondary></indexterm>
 <para><emphasis>Terms</emphasis> are literal strings, symbols, message
-terms, function calls, or subexpressions interspersed with zero or
-more operators
+terms and sequences, Array terms, Variable Reference terms, function
+calls, or subexpressions interspersed with zero or more operators
 that denote operations to be carried out on terms.</para>
 <para><emphasis role="italic">Literal strings</emphasis>,
 which are delimited by quotation marks, are constants.</para>
@@ -1269,7 +1291,16 @@ provides; in this case, that object is used. Otherwise a symbol is treated
 as a constant string. A symbol can also be
 <emphasis role="italic">compound</emphasis>.</para>
 <para><emphasis role="italic">Message terms</emphasis>
-are described in <xref linkend="mssg" />.</para>
+are described in <xref linkend="mssg" />,
+<emphasis role="italic">Message sequences</emphasis>
+are described in <xref linkend="mseq" />.
+</para>
+<para><emphasis role="italic">Array terms</emphasis>
+are described in <xref linkend="arrayterm" />.
+</para>
+<para><emphasis role="italic">Variable Reference terms</emphasis>
+are described in <xref linkend="varrefterm" />.
+</para>
 <para><emphasis role="italic">Function calls</emphasis>
 (see <xref linkend="funct" />), which
 are of the following form:
@@ -2272,11 +2303,11 @@ other clauses.
 Labels are treated as null clauses and can be
 traced selectively to aid debugging.
 </para>
-<para>
-Duplicate labels are permitted, but control is only passed
-to the first of any duplicates in a program. The duplicate labels occurring
-later can be traced but cannot be used as a target of a CALL, SIGNAL, or
-function invocation.</para>
+<para>Duplicate labels are permitted, but control is only passed to the
+first of any duplicates in the main program (prolog), a method, or a routine.
+The duplicate labels occurring later can be traced but cannot be used as
+a target of a CALL, SIGNAL, or function invocation.
+</para>
 </section>
 
 <section id="instructions"><title>Instructions</title>
@@ -2387,8 +2418,7 @@ variable is a single object. Note that an object can be
 composed of other objects, such as an array or directory object.</para>
 <para>You can assign
 a new value to a variable with the ARG, PARSE, PULL, or USE instructions,
-the VALUE built-in function, or the
-but the most
+or the VALUE built-in function, but the most
 common way of changing the value of a variable is the assignment instruction
 itself. Any clause in the form</para>
 <para><emphasis role="italic">symbol</emphasis>=<emphasis role="italic">
@@ -2442,7 +2472,37 @@ be assigned new values. You can use simple symbols for variables where the
 name corresponds to a single value. You can use compound symbols and stems
 for more complex collections of variables although the collection classes
 might be preferable in many cases. See
-<xref linkend="clsCollection" />.</para>
+<xref linkend="clsCollection" />.
+</para>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>When the ARG, PARSE, PULL, or USE instruction, the VALUE
+built-in function, or the variable pool interface changes a variable, the
+effect is identical to an assignment.
+</para></listitem>
+<listitem><para>Any clause that starts with a symbol and whose second token is
+(or starts with) an equal sign (<computeroutput>=</computeroutput>)
+is an assignment, rather than an expression
+(or a keyword instruction). This is not a restriction, because you can ensure
+that the clause is processed as a command, such as by putting a null string
+before the first name, or by enclosing the expression in
+parentheses. </para>
+<para>If you unintentionally use a Rexx keyword as the variable
+name in an assignment, this should not cause confusion.  For example, the
+following clause is an assignment, not an ADDRESS instruction:</para>
+<programlisting>
+Address="10 Downing Street";
+</programlisting>
+</listitem>
+<listitem><para>You can use the <xref linkend="bifVar" xrefstyle="select:title"/>
+function to test whether a symbol has been assigned a value.
+In addition, you can set
+<xref linkend="uninit" xrefstyle="template:SIGNAL ON NOVALUE"/>
+to trap the use of any uninitialized variables (except when they are tails
+in compound variables or stem variables, which are always initialized with a Stem object
+when first used.)
+</para></listitem>
+</orderedlist>
 
 <section id="extassign"><title>Extended Assignments</title>
 <indexterm><primary>extended assignments</primary></indexterm>
@@ -2685,36 +2745,6 @@ variables with that stem.</para>
 instruction can also iterate over all of the values
 assigned to a stem variable.
 </para>
-
-<para><emphasis role="bold">Notes:</emphasis></para>
-<orderedlist>
-<listitem><para>When the ARG, PARSE, PULL, or USE instruction, the VALUE
-built-in function, or the variable pool interface changes a variable, the
-effect is identical to an assignment.
-</para></listitem>
-<listitem><para>Any clause that starts with a symbol and whose second token is
-(or starts with) an equal sign (<computeroutput>=</computeroutput>)
-is an assignment, rather than an expression
-(or a keyword instruction). This is not a restriction, because you can ensure
-that the clause is processed as a command, such as by putting a null string
-before the first name, or by enclosing the expression in
-parentheses. </para>
-<para>If you unintentionally use a Rexx keyword as the variable
-name in an assignment, this should not cause confusion.  For example, the
-following clause is an assignment, not an ADDRESS instruction:</para>
-<programlisting>
-Address="10 Downing Street";
-</programlisting>
-</listitem>
-<listitem><para>You can use the <xref linkend="bifVar" xrefstyle="select:title"/>
-function to test whether a symbol has been assigned a value.
-In addition, you can set
-<xref linkend="uninit" xrefstyle="template:SIGNAL ON NOVALUE"/>
-to trap the use of any uninitialized variables (except when they are tails
-in compound variables or stem variables, which are always initialized with a Stem object
-when first used.)
-</para></listitem>
-</orderedlist>
 </section>
 
 <section id="compsym"><title>Compound Symbols</title>
@@ -2883,6 +2913,8 @@ its value is the mapped object.</para>
 series of searches to see if the environment symbol has an assigned value. The
 search locations and their ordering are:
 <orderedlist>
+<listitem><para>Constants &true;, &false; and &nil;.
+</para></listitem>
 <listitem><para>The StringTable of classes declared on
 <xref linkend="clasdi" xrefstyle="template:::CLASS directives"/>
 within the current program package or added to the current package using
@@ -2891,6 +2923,13 @@ the <xref linkend="mthPackageAddClass" xrefstyle="template:addClass() method"/>.
 of other files included with a <xref linkend="requ" xrefstyle="template:::REQUIRES directive"/> or added to the current
 Package instance using the <xref linkend="mthPackageAddPackage" xrefstyle="template:addPackage() method "/>.
 </para></listitem>
+<listitem>
+<para>The package local environment directory specific to the current package.
+You can access the package local environment directory through the
+<classname>Package</classname>
+<xref linkend="mthPackageLocal" xrefstyle="select:title"/> method.
+</para>
+</listitem>
 <listitem><para>The local environment directory specific to the current
 interpreter instance. The local
 environment includes instance-specific
@@ -2900,8 +2939,8 @@ local environment directory by using the <xref linkend="locenv" xrefstyle="templ
 </listitem>
 <listitem><para>The global environment directory.  The global environment
 includes all
-permanent Rexx objects such as the Rexx supplied classes (.Array and so on)
-and constants such as &true; and &false;. You can directly access the global
+permanent Rexx objects such as the Rexx supplied classes (.Array and so on).
+You can directly access the global
 environment by using the <xref linkend="envo" xrefstyle="template:.ENVIRONMENT environment symbol"/>.
 Entries in the global environment directory can also be accessed via the
 <xref linkend="bifValue" xrefstyle="template:VALUE built-in function"/>

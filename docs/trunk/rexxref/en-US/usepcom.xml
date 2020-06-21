@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -409,21 +409,22 @@ Call rxqueue "DELETE", queue_name
 <section id="xnosorc"><title>Distributing Programs without Source</title>
 <indexterm><primary>programs without source</primary></indexterm>
 <indexterm><primary>sourceless programs</primary></indexterm>
-<para>Open Object Rexx comes with a utility called <literal>REXXC</literal>.
+<para>Open Object Rexx comes with a utility called <literal>rexxc</literal>.
 You can use this utility to produce versions of
 your programs that do not include the original program source. You can use
 these programs to replace any Rexx program file that includes the source,
 with the following restrictions: </para>
 <orderedlist>
-<listitem><para>The SOURCELINE built-in function returns
-<computeroutput>0</computeroutput> for the number of
+<listitem><para>The <xref linkend="bifSourceline" xrefstyle="select:title"/>
+built-in function returns <literal>0</literal> for the number of
 lines in the program and raises an error for all attempts to retrieve a line.
 </para></listitem>
-<listitem><para>A sourceless program may not be traced. The TRACE instruction
+<listitem><para>A sourceless program may not be traced.
+The <xref linkend="keyTrace" xrefstyle="select:title"/> instruction
 runs without error, but no tracing of instruction lines, expression results,
 or intermediate expression values occurs.</para></listitem>
 </orderedlist>
-<para>The syntax of the <literal>REXXC</literal> utility is:</para>
+<para>The syntax of the <literal>rexxc</literal> utility is:</para>
 
 <mediaobject>
 <imageobject>
@@ -444,10 +445,14 @@ it reports the error and stops processing without creating a new output file.
 If you omit the <emphasis role="italic">outputfile</emphasis>, the language
 processor performs a syntax
 check on the program without writing the executable version to a file.</para>
-<para>You can use the <emphasis role="italic">-s</emphasis> option to suppress
-the display of the information about the interpreter used.
-On Windows, this option may also be specified as
-<emphasis role="italic">/s</emphasis>.
+<para>You can use the <literal>-s</literal> option to suppress
+the display of the information about the interpreter used,
+and the <literal>-e</literal> option to create the
+<emphasis role="italic">outputfile</emphasis> in base64-encoded format,
+suitable when a 7-bit encoding is required.
+</para>
+<para>On Windows, the <literal>-s</literal> and <literal>-e</literal> options can
+alternatively be specified as <literal>/s</literal> and <literal>/e</literal>.
 </para>
 
 <note><title>Note</title>
