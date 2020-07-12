@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Release Notes XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -49,19 +49,19 @@
 <section><title>Hardware Requirements</title>
 <itemizedlist>
 <listitem><para>
-  Approximately 50 MB free disk space is needed for a complete installation.
+  Approximately 52 MB free disk space is needed for a complete installation.
 </para></listitem>
 <listitem><para>
-  8 MB free disk space for the core interpreter.
+  12 MB free disk space for the core interpreter.
 </para></listitem>
 <listitem><para>
-  29 MB free disk space for online documentation.
+  25 MB free disk space for online documentation.
 </para></listitem>
 <listitem><para>
-  14 MB free disk space for all samples.
+  15 MB free disk space for all samples.
 </para></listitem>
 <listitem><para>
-  25 MB free disk space for the API headers and libraries.
+  0.5 MB free disk space for the API headers and libraries.
 </para></listitem>
 <listitem><para>
   Any hardware capable of running the supported Windows operating systems is sufficient.
@@ -73,7 +73,7 @@
 <para>
   On Windows, the ooRexx development team is committed to supporting all active versions of Windows. That is, versions of
   Windows that Microsoft has not declared end of life. For ooRexx version 5.0.0, the officially supported version of Window
-  are Windows XP through Windows 10. The team will not <emphasis role="italic">purposively</emphasis> make changes to
+  are Windows Vista through Windows 10. The team will not <emphasis role="italic">purposively</emphasis> make changes to
   prevent ooRexx from running on versions of Windows that have reached end of life. However, the team is more interested in
   supporting newer versions of Windows than they are in supporting out of date operating systems. Versions of Windows that
   are no longer supported by Microsoft, are officially not supported by ooRexx.
@@ -82,15 +82,7 @@
   The following lists the versions of Windows that ooRexx 5.0.0 has been consistently tested on by the development team:
 </para>
 <itemizedlist>
-<listitem><para>Windows 7</para></listitem>
-</itemizedlist>
-<para>
-  The following lists the version of Windows where the development team has good anecdotal evidence that ooRexx 5.0.0 still
-  works well on:
-</para>
-<itemizedlist>
-<listitem><para>Windows XP</para></listitem>
-<listitem><para>Windows Vista</para></listitem>
+<listitem><para>Windows 10</para></listitem>
 </itemizedlist>
 <para>
   The following lists the version of Windows that the development team is committed to supporting. However, ooRexx 5.0.0 has
@@ -98,15 +90,16 @@
   ooRexx.
 </para>
 <itemizedlist>
+<listitem><para>Windows Vista</para></listitem>
+<listitem><para>Windows 7</para></listitem>
 <listitem><para>Windows 8</para></listitem>
 <listitem><para>Windows 8.1</para></listitem>
-<listitem><para>Windows 10</para></listitem>
 </itemizedlist>
 </section>
 
 <section><title>Installation and Configuration Information</title>
 
-<section id="sectPreInstallation"><title>Pre-Installation Notes</title>
+<section id="sectPreInstallation"><title>Windows Pre-Installation Notes</title>
 <para>
   Open Object Rexx cannot coexist with IBM Object REXX. If IBM Object REXX is installed on the system
   you must first uninstall it.
@@ -134,14 +127,8 @@
 </warning>
 
 <para>
-  <computeroutput>rxapi</computeroutput> is an important part of ooRexx that runs as a daemon process.
-  The installation program offers the option of installing <computeroutput>rxapi</computeroutput> as a
-  Windows Service. Unless you are a knowledgeable user, with a good reason not to, you should elect to
-  install <computeroutput>rxapi</computeroutput> as a Windows Service.
-</para>
-<para>
-  ooRexx should be installed by a user with administrator rights. On Vista and later this is a requirement. It is
-  also a requirement in order to install rxapi as a service. In addition, there are several installation
+  ooRexx should be installed by a user with administrator rights. On Vista and later this is a requirement.
+  There are several installation
   steps that can only be performed with administrator rights. They are:
 </para>
 <orderedlist>
@@ -160,11 +147,6 @@
   The file extension <computeroutput>.rex</computeroutput> is added to the System PATHEXT environment
   variable.
 </para></listitem>
-<listitem><para>
-  On Windows XP, and later, if the installation program is run without administrator
-  rights, ooRexx can not be installed to its default location in <computeroutput>\Program
-  Files\</computeroutput>.
-</para></listitem>
 </orderedlist>
 <note><para>
   On Vista when a user starts the installation program, the user is prompted for an administrator
@@ -179,7 +161,7 @@
 <para>
   ooRexx is compiled both as 32-bit application and as a native 64-bit application. The native 64-bit
   application can not be installed on a 32-bit version of Windows. Either the 32-bit or the 64-bit ooRexx
-  can be installed on a 64-bit version of Windows . However, to take full advantage of both the operating
+  can be installed on a 64-bit version of Windows. However, to take full advantage of both the operating
   system and ooRexx, the user should install the 64-bit version of ooRexx on a 64-bit version of Windows.
   The installation programs for the two types of ooRexx are clearly labelled:
   <computeroutput>ooRexx-5.0.0.windows.x86_32.exe</computeroutput> and
@@ -201,7 +183,7 @@
   command prompt.
 </para>
 <note><para>
-  If a previous version of ooRexx is installed and the rxapi daemon process is running, the user will be
+  If a previous version of ooRexx is installed and the rxapi process is running, the user will be
   prompted to halt the process. The process <emphasis role="italic">must</emphasis> be halted to properly
   install the new version. If necessary, (because a Rexx program is running in the background and you are
   worried about possible data loss,) cancel the installation and take the appropriate steps to halt
@@ -242,8 +224,7 @@ ooRexx-5.0.0.windows.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
 
 <section id="sectWindowsUninstall"><title>Windows Uninstall Information</title>
 <para>
-  In XP, from the Control Panel select "Add Remove Programs", then select "Open Object Rexx for Windows" and select "Remove".
-  In later versions of Windows, select "Programs and Features" from the Control Panel and follow the same steps.
+  Select "Programs and Features" from the Control Panel, then select "Open Object Rexx" and select "Remove".
 </para>
 <para>
   Alternatively, the ooRexx installation places a menu item in the program folder that can be used to
