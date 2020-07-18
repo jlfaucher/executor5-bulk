@@ -2133,7 +2133,7 @@ routine search scope from the caller of the <methodname>newFile</methodname> met
 <para>Resolves a native method in an external library package and returns a
 <classname>Method</classname> object instance that can be used to call the external method.
 The <emphasis role="italic">descriptor</emphasis> is a string containing
-blank-delimited tokens that identify the location of the native method.
+whitespace-delimited tokens that identify the location of the native method.
 The first token identifies the type of native function and must be
 <literal>LIBRARY</literal> in uppercase.
 The second token must identify the name of the external library.
@@ -4655,10 +4655,11 @@ routine search scope from the caller of the <methodname>newFile</methodname> met
 <para>Resolves a native routine in an external library package and returns a
 Routine object instance that can be used to call the external routine.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
-blank-delimited tokens that identify the location of the native routine.
+whitespace-delimited tokens that identify the location of the native routine.
 The first token identifies the type of native routine and must be
-"LIBRARY".   The second token must identify
-the name of the external library.  The external library is located using
+<literal>LIBRARY</literal> in uppercase.
+The second token must identify the name of the external library.
+The external library is located using
 platform-specific mechanisms for loading libraries.  For Unix-based systems, the
 library name is case-sensitive.  The third token is optional and specifies the
 name of the routine within the library package.  If not specified,
@@ -4669,7 +4670,8 @@ resolved, &nil; is returned.
 <example id="ex.routine-loadexternalroutine">
 <title>Routine class &mdash; loadExternalRoutine method</title>
 <programlisting>
-routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
+pi = .Routine~loadExternalRoutine("pi", "LIBRARY rxmath rxcalcpi")
+say pi~call(16) -- 3.141592653589793
 </programlisting>
 </example>
 </section>
@@ -7704,7 +7706,7 @@ string, the method returns the receiving string unchanged.</para>
 
 <para>Returns a copy of the receiving string after deleting the substring that
 starts at the <emphasis role="italic">n</emphasis>th word and is of
-<emphasis role="italic">length</emphasis> blank-delimited
+<emphasis role="italic">length</emphasis> whitespace-delimited
 words. If you omit <emphasis role="italic">length</emphasis>, or if
 <emphasis role="italic">length</emphasis> is greater than
 the number of words from <emphasis role="italic">n</emphasis> to the end of the
@@ -8890,19 +8892,17 @@ only pad characters are returned.</para>
 <para>If you omit <emphasis role="italic">length</emphasis>, the rest of the
 string is returned. The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
-<para>See also
-<itemizedlist spacing="compact">
-<listitem><para>method <xref linkend="mthStringAtGet" xrefstyle="select:title"/>,</para></listitem>
-<listitem><para>method <xref linkend="mthStringSubChar" xrefstyle="select:title"/>,</para></listitem>
-<listitem><para>method <xref linkend="mthStringLeft" xrefstyle="select:title"/>,</para></listitem>
-<listitem><para>method <xref linkend="mthStringRight" xrefstyle="select:title"/>.</para></listitem>
-<listitem><para>
-In some situations the positional (numeric) patterns of
+<para>See also methods
+<xref linkend="mthStringAtGet" xrefstyle="select:title"/>,
+<xref linkend="mthStringSubChar" xrefstyle="select:title"/>,
+<xref linkend="mthStringLeft" xrefstyle="select:title"/>, and
+<xref linkend="mthStringRight" xrefstyle="select:title"/>.
+</para>
+<para>In some situations the positional (numeric) patterns of
 <xref linkend="parsingch" xrefstyle="select:title"/> templates are more
 convenient for selecting substrings, in particular if you need to
 extract more than one substring from a string.
-</para></listitem>
-</itemizedlist></para>
+</para>
 <indexterm><primary>examples</primary>
 <secondary>subStr method</secondary></indexterm>
 <example id="ex.string-substr">
@@ -8933,7 +8933,7 @@ extract more than one substring from a string.
 
 <para>Returns the substring of the receiving string that starts at the
 <emphasis role="italic">n</emphasis>th word and is up to
-<emphasis role="italic">length</emphasis> blank-delimited words. The
+<emphasis role="italic">length</emphasis> whitespace-delimited words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.
 If you omit <emphasis role="italic">length</emphasis>, it defaults
 to the number of remaining words in the receiving string. The returned string
@@ -8971,7 +8971,7 @@ between the selected words.
 <para>Returns an array containing all words within the substring
 of the receiving string that starts at the
 <emphasis role="italic">n</emphasis>th word and is up to
-<emphasis role="italic">length</emphasis> blank-delimited words. The
+<emphasis role="italic">length</emphasis> whitespace-delimited words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.  If you omit
 <emphasis role="italic">n</emphasis>, it defaults to 1.
 If you omit <emphasis role="italic">length</emphasis>, it defaults

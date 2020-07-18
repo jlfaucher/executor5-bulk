@@ -319,8 +319,8 @@ forward to(delegateName)
 identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
-of whitespace delimited tokens defining the external method.  The first token
-must be the word LIBRARY, which indicates the method resides in a native library
+of whitespace-delimited tokens defining the external method.  The first token
+must be <literal>LIBRARY</literal> in uppercase, which indicates the method resides in a native library
 of the type allowed on a ::REQUIRES directive.  The second token must identify
 the name of the external library. The external library is located using
 platform-specific mechanisms for loading libraries. For Unix-based systems, the
@@ -742,7 +742,7 @@ identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
 of whitespace delimited tokens defining the external method.  The first token
-must be the word LIBRARY, which indicates the method resides in a native library
+must be <literal>LIBRARY</literal> in uppercase, which indicates the method resides in a native library
 of the type allowed on a ::REQUIRES directive.  The second token must identify
 the name of the external library. The external library is located using
 platform-specific mechanisms for loading libraries. For Unix-based systems, the
@@ -1215,7 +1215,7 @@ a literal string containing a series of whitespace delimited tokens defining the
 external function.  The first token identifies the type of native routine to
 locate:</para>
 <variablelist>
-<varlistentry><term>LIBRARY</term>
+<varlistentry><term><literal>LIBRARY</literal> (in uppercase)</term>
 <listitem><para>Identifies a routine in an external native library of the type
 supported by the ::REQUIRES directive.  The second token must identify the name
 of the external library.  The external library is located using
@@ -1224,14 +1224,14 @@ the library name is case-sensitive.  The third token is optional and specifies
 the name of the routine within the library package.  If not specified, the
 ::ROUTINE name is used.  The routine name is not case sensitive.
 </para></listitem></varlistentry>
-<varlistentry><term>REGISTERED</term>
+<varlistentry><term><literal>REGISTERED</literal> (in uppercase)</term>
 <listitem><para>Identifies a routine in an older-style Rexx function package.
 The second token must identify the name of the external library. The external
 library is located using platform-specific mechanisms for loading libraries.
 For Unix-based systems, the library name is case-sensitive. The third token is
 optional and specifies the name of the function within the library package.  If
 not specified, the ::ROUTINE name is used.  Loading of the function will be
-attempted using the name as given and as all uppercase.  Using REGISTERED is the
+attempted using the name as given and as all uppercase.  Using <literal>REGISTERED</literal> is the
 equivalent of loading an external function using the
 <xref linkend="bifRxfuncadd" xrefstyle="select:title"/> built-in function.
 </para></listitem></varlistentry>
@@ -1244,9 +1244,9 @@ equivalent of loading an external function using the
 <programlisting>
 
 -- load a function from rxmath library
-::routine RxCalcPi EXTERNAL "LIBRARY rxmath"
+::routine RxCalcPi external "LIBRARY rxmath"
 -- same function, but a different internal name
-::routine Pi EXTERNAL "LIBRARY rxmath RxCalcPi"
+::routine Pi external "LIBRARY rxmath RxCalcPi"
 -- same as call rxfuncadd "SQLLoadFuncs", "rexxsql", "SQLLoadFuncs"
 ::routine SQLLoadFuncs EXTERNAL "REGISTERED rexxsql SQLLoadFuncs"
 
