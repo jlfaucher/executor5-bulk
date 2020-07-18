@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,16 +66,16 @@ return testResult
     .local~v14 = '14'
 
 ::method 'tearDown'
-    .local~remove(vblank)
-    .local~remove(zeros1)
-    .local~remove(v26)
-    .local~remove(v125)
-    .local~remove(v8)
-    .local~remove(v10000)
-    .local~remove(vwbw)
-    .local~remove(vwbwwbw)
-    .local~remove(v19)
-    .local~remove(v14)
+    .local~remove("VBLANK")
+    .local~remove("ZEROS1")
+    .local~remove("V26")
+    .local~remove("V125")
+    .local~remove("V8")
+    .local~remove("V10000")
+    .local~remove("VWBW")
+    .local~remove("VWBWWBW")
+    .local~remove("V19")
+    .local~remove("V14")
 
 
 ::class "String_subWordsMethod.testGroup" subclass ooTestCase public
@@ -179,50 +179,6 @@ return testResult
 
 ::method 'test026'
     self~assertSameArray('ZXCV', '61736466207a786376000000000041534446205a584356'x~subWords((3*3*3)/9))
-
-::method 'test027'
-    self~assertSameArray('NV', nv~subWords(1))
-
-::method 'test028'
-    self~assertSameArray('NV.', nv.~subWords(1))
-
-::method 'test029'
-    self~assertSameArray('NV.10', nv.10~subWords(1))
-
-::method 'test030'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv)
-
-::method 'test031'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.)
-
-::method 'test032'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.10)
-
-::method 'test033'
-    self~expectSyntax(93.924)
-    xre = novala~subWords(novalb)
-
-::method 'test034'
-    self~assertSameArray('NV.', nv.~subWords(1))
-
-::method 'test035'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv)
-
-::method 'test036'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.10)
-
-::method 'test037'
-    self~expectSyntax(93.924)
-    xre = novala~subWords(novalb,)
-
-::method 'test038'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.)
 
 ::method 'test039'
     self~assertSameArray('J K', .v10000~subWords(9999))
@@ -425,71 +381,6 @@ return testResult
 ::method 'test099'
     self~assertSameArray('ZXCV', '61736466207a786376000000000041534446205a584356'x~subWords((3*3*3)/9,2))
 
-::method 'test100'
-    self~assertSameArray('NV', nv~subWords(1,1))
-
-::method 'test101'
-    self~assertSameArray('NV.', nv.~subWords(1,1))
-
-::method 'test102'
-    self~assertSameArray('NV.10', nv.10~subWords(1,1))
-
-::method 'test103'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv,1)
-
-::method 'test104'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.,1)
-
-::method 'test105'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.10,1)
-
-::method 'test106'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv)
-
-::method 'test107'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv.)
-
-::method 'test108'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv.10)
-
-::method 'test109'
-    self~expectSyntax(93.924)
-    xre = novala~subWords(novalb,novalc)
-
-::method 'test110'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv,1)
-
-::method 'test111'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.,1)
-
-::method 'test112'
-    self~expectSyntax(93.924)
-    xre = .v125~subWords(nv.10,1)
-
-::method 'test113'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv)
-
-::method 'test114'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv.)
-
-::method 'test115'
-    self~expectSyntax(93.923)
-    xre = .v125~subWords(1,nv.10)
-
-::method 'test116'
-    self~expectSyntax(93.924)
-    xre = novala~subWords(novalb,novalc)
-
 ::method 'test117'
     self~assertSameArray('J K', .v10000~subWords(9999,2))
 
@@ -631,3 +522,81 @@ return testResult
       self~assertEquals(expected[i], received[i])
   end
 
+
+::method test_invalid_one_nil
+  self~expectSyntax(93.924) -- Invalid position argument specified
+  ""~subWords(.nil)
+
+::method test_invalid_one_float
+  self~expectSyntax(93.924) -- Invalid position argument specified
+  ""~subWords(1.2)
+
+::method test_invalid_one_not_positive
+  self~expectSyntax(93.924) -- Invalid position argument specified
+  ""~subWords(0)
+
+::method test_invalid_two_nil
+  self~expectSyntax(93.923) -- Invalid length argument specified
+  ""~subWords(, .nil)
+
+::method test_invalid_two_float
+  self~expectSyntax(93.923) -- Invalid length argument specified
+  ""~subWords(, 1.2)
+
+::method test_invalid_two_negative
+  self~expectSyntax(93.923) -- Invalid length argument specified
+  ""~subWords(, -1)
+
+::method test_invalid_too_many
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  ""~subWords(1, 1, 1)
+
+::method test_empty
+  empty = .Array~new
+  do whitespace over "", " ", .String~tab, .String~tab || " "
+    self~assertEquals(empty, whitespace~subWords)
+    self~assertEquals(empty, whitespace~subWords(1))
+    self~assertEquals(empty, whitespace~subWords(, 0))
+    self~assertEquals(empty, whitespace~subWords(, 1))
+    self~assertEquals(empty, whitespace~subWords(1, 0))
+    self~assertEquals(empty, whitespace~subWords(1, 1))
+  end
+  self~assertEquals(empty, "_"~subWords(2))
+  self~assertEquals(empty, "_"~subWords(, 0))
+  self~assertEquals(empty, "_"~subWords(2, 0))
+  self~assertEquals(empty, 123~subWords(2, 1))
+  self~assertEquals(empty, "one two"~subWords(3))
+  self~assertEquals(empty, " 1  2 "~subWords(3))
+  self~assertEquals(empty, ("one" .String~tab "two")~subWords(3))
+  self~assertEquals(empty, (.String~tab "one" .String~tab "two" .String~tab)~subWords(3))
+
+::method test_single
+  single = .Array~of(123)
+  self~assertEquals(single, 123~subWords)
+  self~assertEquals(single, 123~subWords(1))
+  self~assertEquals(single, 123~subWords(, 1))
+  self~assertEquals(single, 123~subWords(, 2))
+  self~assertEquals(single, "123 two"~subWords(, 1))
+  self~assertEquals(single, "123 two"~subWords(1, 1))
+  self~assertEquals(single, " one 123"~subWords(2))
+  self~assertEquals(single, (" one" || .String~tab || "123")~subWords(2, 1))
+  self~assertEquals(single, " one  123  three "~subWords(2, 1))
+
+  -- whitespace is just blank and tab, nothing else
+  noWhiteSpace = xrange('00'x, '08'x, '0a'x, '1f'x) || (" "~c2d + 128)~d2c
+  self~assertEquals(.Array~of(noWhitespace), noWhitespace~subWords)
+
+::method test_many
+  all = "one two three four"~makeArray(" ")
+  self~assertEquals(all, "one two three four"~subWords)
+  self~assertEquals(all, "one two three four"~subWords(1))
+  self~assertEquals(all, "one two three four"~subWords(, 5))
+  self~assertEquals(all, (" one  two" || .String~tab || "three" .String~blank "four")~subWords(1, 10))
+  self~assertEquals(("one", "two", "three"), "one two three four"~subWords(1, 3))
+  self~assertEquals(("one", "two", "three"), "one two three four"~subWords(, 3))
+  self~assertEquals(("two", "three", "four"), "one two three four"~subWords(2, 3))
+  self~assertEquals(("two", "three", "four"), "one two three four"~subWords(2, 4))
+
+
+
+::options novalue syntax
