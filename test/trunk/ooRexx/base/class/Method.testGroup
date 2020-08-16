@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -69,7 +69,20 @@ return testResult
   -- but in general, we will not be running with this as the current directory
   -- so we need to figure out the absolute path to 'newFileTest'
   parse source . . path
-  newFileTest = filespec('path', path) || self~newFileTestName
+  location=filespec('location', path)  -- honor also drive letter on Windows
+  newFileTest = location || self~newFileTestName
+   -- 20200816: the following file names are used for creating and compiling code
+   --           to test 'new' and 'newFile'; do not change the order
+  files="tmpTest_ExternalCode_Source.rex",             -
+        "tmpTest_ExternalCode_CompiledAndEncoded.rex", -
+        "tmpTest_ExternalCode_Compiled.rex"
+   do counter i fn over files
+      files[i]=location || fn  -- fully qualify the filenames
+      say i": fn=["fn"] -> ["files[i]"]"
+   end
+  .context~package~local~tmpCodeFiles=files  -- save array in package local
+  .context~package~local~recreateTmpCodeFiles?=.true  -- indicate we need to recreate the files
+
   forward class (super)
 
 
@@ -209,6 +222,35 @@ return testResult
   m = .Method~new("", .resources~tstDefined, .routines["TSTROUTINE"])
   self~assertEquals("ClassPublic RoutinePublic Class Routine", .RunTester~new~~setMethod("m", m)~m)
 
+-- create method from a file, a compiled and encoded file, and a compiled file (this should fail with syntax error 13.1)
+::method test_new_array_from_file
+   -- delete tmpCodeFiles, then create them on this platform (compiled code is dependent on platform and bitness)
+  files=.tmpCodeFiles   -- get the file names (already fully qualified)
+
+  if .recreateTmpCodeFiles?=.true then -- indicate we need to recreate the files
+  do
+     call sysFileDelete files[1]
+     .stream~new(files[1])~~open("write replace")~~lineout(.resources~testCode4newFile)~~close
+     -- make sure we create the compiled version for this operating system
+     call sysFileDelete files[2]
+     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "/s /e"   -- compile silently and encode
+     call sysFileDelete files[3]
+     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "/s"      -- compile silently (binary version)
+     .context~package~local~recreateTmpCodeFiles?=.false
+  end
+
+  do counter i fn over files     -- test source and encoded compiled
+      -- read content of file into an array
+     s=.stream~new(fn)~~open("read")
+     arr=s~arrayin
+     s~close
+     if i=3 then self~expectSyntax(13.1) -- Error 13.1:  Incorrect character in program "@" ('40'X).
+     m=.method~new("m", arr)     -- create method from array
+     o=.object~enhanced(.directory~of(("m",m)))
+     self~assertEquals(43,o~m)
+     self~assertEquals(47,o~m(1,'a',3,4))
+  end
+
 
 -- newFile()
 
@@ -303,6 +345,29 @@ return testResult
   m = .Method~newFile(self~newFileTest, .routines["TSTROUTINE"])
   self~assertEquals("ClassPublic RoutinePublic Class Routine", .RunTester~new~~setMethod("m", m)~m)
 
+-- create method from a file, a compiled and encoded file, and a compiled file
+::method test_new_file_compiled
+   -- delete tmpCodeFiles, then create them on this platform (compiled code is dependent on platform and bitness)
+  files=.tmpCodeFiles   -- get the file names (already fully qualified)
+
+  if .recreateTmpCodeFiles?=.true then -- indicate we need to recreate the files
+  do
+     call sysFileDelete files[1]
+     .stream~new(files[1])~~open("write replace")~~lineout(.resources~testCode4newFile)~~close
+     -- make sure we create the compiled version for this operating system
+     call sysFileDelete files[2]
+     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "/s /e"   -- compile silently and encode
+     call sysFileDelete files[3]
+     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "/s"      -- compile silently (binary version)
+     .context~package~local~recreateTmpCodeFiles?=.false
+  end
+
+  do counter i fn over files     -- test source and encoded compiled
+     m=.method~newFile(fn)       -- create method from array
+     o=.object~enhanced(.directory~of(("m",m)))
+     self~assertEquals(43,o~m)
+     self~assertEquals(47,o~m(1,'a',3,4))
+  end
 
 
 ::method "test_New_And_Source"
@@ -514,6 +579,11 @@ NOP
 
 ::routine TstRoutine
   return "Routine"
+
+   -- test program for testing the creation and usage of compiled programs for methods and routines
+::resource testCode4newFile   -- test code for testing .method's "new" and "newFile" from file
+   return 34~reverse+arg()    -- return "43" plus number of supplied arguments
+::END
 
 
 ::options novalue error
