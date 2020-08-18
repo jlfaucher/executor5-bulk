@@ -78,7 +78,6 @@ return testResult
         "tmpTest_ExternalCode_Compiled.rex"
    do counter i fn over files
       files[i]=location || fn  -- fully qualify the filenames
-      say i": fn=["fn"] -> ["files[i]"]"
    end
   .context~package~local~tmpCodeFiles=files  -- save array in package local
   .context~package~local~recreateTmpCodeFiles?=.true  -- indicate we need to recreate the files
@@ -239,9 +238,9 @@ return testResult
      .stream~new(files[1])~~open("write replace")~~lineout(.resources~testCode4newFile)~~close
      -- make sure we create the compiled version for this operating system
      call sysFileDelete files[2]
-     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "/s /e"   -- compile silently and encode
+     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "-s -e"   -- compile silently and encode
      call sysFileDelete files[3]
-     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "/s"      -- compile silently (binary version)
+     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "-s"      -- compile silently (binary version)
      .context~package~local~recreateTmpCodeFiles?=.false
   end
 
@@ -368,9 +367,9 @@ return testResult
      .stream~new(files[1])~~open("write replace")~~lineout(.resources~testCode4newFile)~~close
      -- make sure we create the compiled version for this operating system
      call sysFileDelete files[2]
-     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "/s /e"   -- compile silently and encode
+     address system "rexxc" '"'files[1]'"' '"'files[2]'"' "-s -e"   -- compile silently and encode
      call sysFileDelete files[3]
-     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "/s"      -- compile silently (binary version)
+     address system "rexxc" '"'files[1]'"' '"'files[3]'"' "-s"      -- compile silently (binary version)
      .context~package~local~recreateTmpCodeFiles?=.false
   end
 
