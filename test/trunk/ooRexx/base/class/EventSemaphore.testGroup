@@ -153,7 +153,9 @@ else
   -- there is a non-zero chance that our worker isn't yet running the
   -- sem~wait clause, so we wait a little more to make almost sure
   call SysSleep 0.1
-  sem~~post~reset
+  sem~~post
+  call sysSleep 0.01
+  sem~reset
   self~assertSame(1, msg~result, "our worker should not time-out")
 
 ::method concurrent_worker unguarded
