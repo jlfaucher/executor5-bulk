@@ -1416,7 +1416,7 @@ to continue with the next instruction, rather than exiting the Savings class
 INIT method.</para>
 </section>
 
-<section id="keyGuard"><title>GUARD</title>
+<section id="keyGuard" revisionflag="changed"><title>&changed50;GUARD</title>
 <indexterm><primary>GUARD instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>concurrency</primary>
@@ -1460,6 +1460,16 @@ the WHEN <emphasis role="italic">expression</emphasis>. If the
 the method resumes running. If the
 <emphasis role="italic">expression</emphasis> evaluates to &false;,
 GUARD resumes waiting.
+</para>
+<para>The condition <emphasis role="italic">expression</emphasis> after a WHEN
+can also be a list of <emphasis role="italic">expression</emphasis>s which is
+evaluated left-to-right.
+Each <emphasis role="italic">expression</emphasis> must evaluate to either
+&false; or &true;.
+Evaluation will stop with the first &false; result and &false; will be
+returned as the condition result.
+If all of the <emphasis role="italic">expression</emphasis>s evaluate
+to &true;, then the condition result is also &true;.
 <indexterm><primary>GUARD instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>

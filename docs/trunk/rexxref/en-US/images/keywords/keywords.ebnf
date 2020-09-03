@@ -37,7 +37,7 @@ expose ::= 'EXPOSE' ( name | '(' name ')' )+
 forward ::= 'FORWARD' 'CONTINUE'? ( 'ARGUMENTS' expra | 'ARRAY' '(' (expri ( ',' expri )* )? ')' )?
             ( 'MESSAGE' exprm )? ( 'CLASS' exprs )? ( 'TO' exprt )?
 
-guard ::= 'GUARD' ( 'ON' | 'OFF') ( 'WHEN' expression )?
+guard ::= 'GUARD' ( 'ON' | 'OFF') ( 'WHEN' expression (',' expression)* )?
 
 if ::= 'IF' expression (',' expression)* ';'? 'THEN' ';'? instruction ( 'ELSE' ';'? instruction )?
 
