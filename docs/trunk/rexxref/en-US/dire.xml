@@ -194,18 +194,18 @@ self~address = address
 <indexterm><primary>directives</primary><secondary>::ATTRIBUTE</secondary></indexterm>
 <indexterm><primary>attribute</primary><secondary>creation</secondary></indexterm>
 <indexterm><primary>GET subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
-<indexterm><primary>ABSTRACT subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>SET subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>CLASS subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PACKAGE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
-<indexterm><primary>PUBLIC subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
-<indexterm><primary>PROTECTED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNPROTECTED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
-<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>ABSTRACT subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>DELEGATE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 
 <para>The ::ATTRIBUTE directive creates attribute methods and defines the
 method properties.</para>
@@ -320,7 +320,7 @@ identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
 of whitespace-delimited tokens defining the external method.  The first token
-must be <literal>LIBRARY</literal> in uppercase, which indicates the method resides in a native library
+must be <literal>LIBRARY</literal>, which indicates the method resides in a native library
 of the type allowed on a ::REQUIRES directive.  The second token must identify
 the name of the external library. The external library is located using
 platform-specific mechanisms for loading libraries. For Unix-based systems, the
@@ -341,6 +341,7 @@ name will be used unchanged.
 <indexterm><primary>examples</primary>
 <secondary>::ATTRIBUTE directive</secondary>
 <tertiary>EXTERNAL option</tertiary></indexterm>
+
 <example id="ex.directives-attribute-getsetrename">
 <title>ATTRIBUTE directive &mdash; naming the get and set methods</title>
 <programlisting>
@@ -618,16 +619,18 @@ An expression enclosed in parentheses is not allowed.
 <indexterm><primary>::METHOD directive</primary></indexterm>
 <indexterm><primary>directives</primary><secondary>::METHOD</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>creation</secondary></indexterm>
-<indexterm><primary>CLASS subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>ATTRIBUTE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
-<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
-<indexterm><primary>PACKAGE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
-<indexterm><primary>PROTECTED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>UNPROTECTED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>ABSTRACT subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>DELEGATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 
 <para>The ::METHOD directive creates a method object and defines the method
 attributes.</para>
@@ -742,7 +745,7 @@ identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
 of whitespace delimited tokens defining the external method.  The first token
-must be <literal>LIBRARY</literal> in uppercase, which indicates the method resides in a native library
+must be <literal>LIBRARY</literal>, which indicates the method resides in a native library
 of the type allowed on a ::REQUIRES directive.  The second token must identify
 the name of the external library. The external library is located using
 platform-specific mechanisms for loading libraries. For Unix-based systems, the
@@ -1153,20 +1156,12 @@ ANONYMOUS TYPESETTER
 
 <section id="routd"><title>::ROUTINE</title>
 <indexterm><primary>::ROUTINE directive</primary></indexterm>
-<indexterm><primary>directives</primary>
-<secondary>::ROUTINE</secondary></indexterm>
-<indexterm><primary>PUBLIC subkeyword</primary>
-<secondary>in a ROUTINE directive</secondary></indexterm>
-<indexterm><primary>PRIVATE subkeyword</primary>
-<secondary>in a ROUTINE directive</secondary></indexterm>
-<indexterm><primary>EXTERNAL subkeyword</primary>
-<secondary>in a ROUTINE directive</secondary></indexterm>
-<indexterm><primary>EXTERNAL subkeyword</primary>
-<secondary>in a ROUTINE directive</secondary>
-<tertiary>LIBRARY routine</tertiary></indexterm>
-<indexterm><primary>EXTERNAL subkeyword</primary>
-<secondary>in a ROUTINE directive</secondary>
-<tertiary>REGISTERED routine</tertiary></indexterm>
+<indexterm><primary>directives</primary><secondary>::ROUTINE</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary><tertiary>LIBRARY routine</tertiary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary><tertiary>REGISTERED routine</tertiary></indexterm>
 
 <para>The ::ROUTINE directive creates named routines within a program.</para>
 
@@ -1215,7 +1210,7 @@ a literal string containing a series of whitespace delimited tokens defining the
 external function.  The first token identifies the type of native routine to
 locate:</para>
 <variablelist>
-<varlistentry><term><literal>LIBRARY</literal> (in uppercase)</term>
+<varlistentry><term><literal>LIBRARY</literal></term>
 <listitem><para>Identifies a routine in an external native library of the type
 supported by the ::REQUIRES directive.  The second token must identify the name
 of the external library.  The external library is located using
@@ -1224,7 +1219,7 @@ the library name is case-sensitive.  The third token is optional and specifies
 the name of the routine within the library package.  If not specified, the
 ::ROUTINE name is used.  The routine name is not case sensitive.
 </para></listitem></varlistentry>
-<varlistentry><term><literal>REGISTERED</literal> (in uppercase)</term>
+<varlistentry><term><literal>REGISTERED</literal></term>
 <listitem><para>Identifies a routine in an older-style Rexx function package.
 The second token must identify the name of the external library. The external
 library is located using platform-specific mechanisms for loading libraries.

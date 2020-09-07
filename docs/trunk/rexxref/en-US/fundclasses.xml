@@ -2135,7 +2135,7 @@ routine search scope from the caller of the <methodname>newFile</methodname> met
 The <emphasis role="italic">descriptor</emphasis> is a string containing
 whitespace-delimited tokens that identify the location of the native method.
 The first token identifies the type of native function and must be
-<literal>LIBRARY</literal> in uppercase.
+<literal>LIBRARY</literal>.
 The second token must identify the name of the external library.
 The external library is located using platform-specific mechanisms for loading libraries.
 For Unix-based systems, the library name is case-sensitive.
@@ -2147,7 +2147,7 @@ If the target method cannot be resolved, &nil; is returned.
 <example id="ex.method-loadexternalmethod">
 <title>Method class &mdash; loadExternalMethod method</title>
 <programlisting>
-method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddress')
+method = .Method~loadExternalMethod("homeAddress=", "LIBRARY mylib setHomeAddress")
 </programlisting>
 </example>
 </section>
@@ -4657,7 +4657,7 @@ Routine object instance that can be used to call the external routine.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
 whitespace-delimited tokens that identify the location of the native routine.
 The first token identifies the type of native routine and must be
-<literal>LIBRARY</literal> in uppercase.
+<literal>LIBRARY</literal>.
 The second token must identify the name of the external library.
 The external library is located using
 platform-specific mechanisms for loading libraries.  For Unix-based systems, the
@@ -4670,7 +4670,7 @@ resolved, &nil; is returned.
 <example id="ex.routine-loadexternalroutine">
 <title>Routine class &mdash; loadExternalRoutine method</title>
 <programlisting>
-pi = .Routine~loadExternalRoutine("pi", "LIBRARY rxmath rxcalcpi")
+pi = .Routine~loadExternalRoutine("pi", "library rxmath rxcalcpi")
 say pi~call(16) -- 3.141592653589793
 </programlisting>
 </example>
