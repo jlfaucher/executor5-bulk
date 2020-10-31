@@ -39,74 +39,29 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
+parse source . . s
 
-  group = .TestGroup~new(s)
-  group~add(.File.testGroup)
+group = .TestGroup~new(s)
+-- adding a suite will allow for one-time setup and tearDown
+group~add(.File.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
-::requires 'FileUtils.cls'
 
-/* class: File.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "File.testGroup" public subclass ooTestCase
 
-::method setup
-  expose tempFiles
-  tempFiles = .array~new
-
-::method tearDown
-  expose tempFiles
-
-  do file over tempFiles
-      file~delete
-  end
-
-::method cleanup
-  use strict arg file
-
-  if \file~exists then return
-
-  if file~isFile then do
-      file~delete
-      return
-  end
-
-  if \file~delete then do
-      do child over file~listFiles
-          self~cleanup(child)
-      end
-  end
-
-  file~delete
-
-::method addTempFile
-  expose tempFiles
-  use arg file
-
-  tempFiles~append(file)
-
 ::method test_relative
-  f = .file~new("XXXXXXXX")   -- this should not exist
+  fName = "test_relative"
+  f = .file~new(fName)~~delete -- make sure this doesn't exist
 
-  self~addTempfile(f)            -- this will delete at the end
-  self~cleanup(f)                -- but also delete this now
-
-  self~assertEquals("XXXXXXXX", f~path)
+  self~assertEquals(fName, f~path)
   self~assertEquals(f~string, f~path)
-  self~assertEquals("XXXXXXXX", f~name)
-  self~assertEquals(directory()||.File~separator||"XXXXXXXX", f~absolutePath)
+  self~assertEquals(fName, f~name)
+  self~assertEquals(directory()||.File~separator||fName, f~absolutePath)
   self~assertEquals(directory(), f~parent)
   self~assertEquals(.File~new(directory()), f~parentFile)
   self~assertEquals(0, f~length)
@@ -210,24 +165,18 @@ return testResult
   self~assertFalse(subdir~exists)
   self~assertFalse(subdir~parentFile~exists)
 
-  f2 = .file~new("XXXXXXXX", directory())   -- this should be the same file
+  f2 = .file~new(fName, directory())   -- this should be the same file
   self~assertEquals(f, f2)
-  f3 = .file~new("XXXXXXXX", .File~new(directory()))   -- this should be the same file
+  f3 = .file~new(fName, .File~new(directory()))   -- this should be the same file
   self~assertEquals(f, f3)
-  f4 = .file~new("XXXXXXXX", f~parentFile)   -- this should be the same file
+  f4 = .file~new(fName, f~parentFile)   -- this should be the same file
   self~assertEquals(f, f4)
 
 
 -- additional timestamp tests
 ::method test_file_lastmodified
-  f = .file~new("test_file_lastmodified")
-  self~addTempfile(f)                  -- schedule for automatic deletion
-
-  -- create the test file
+  f = .TemporaryTestFile~new(self, "test_file_lastmodified")~~create("File.testGroup: test_file_lastmodified")
   s = .Stream~new(f)
-  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
-  s~lineOut("File.testGroup: test_file_lastmodified")
-  s~close
 
   -- ooRexx provides various interfaces to retrieve file time stamps:
   --   File~lastModified,
@@ -240,8 +189,8 @@ return testResult
     -- file time from File~lastModified
     tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
     self~assertTrue(tLastModified~isA(.DateTime))
-    -- When comparing with the current time, we need to ignore anything smaller than milliseconds
-    -- because Windows returns the current time with only a milllisecond resolution
+    -- When comparing with the current time, we ignore anything smaller than milliseconds
+    -- because Windows returns the current time with only a millisecond resolution
     -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
     now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
     tLastModified = tLastModified~string~left(23) -- keep milliseconds, ignore microseconds
@@ -334,14 +283,8 @@ return testResult
   .File~new(".")~lastAccessed = ""
 
 ::method test_file_lastaccessed
-  f = .file~new("test_file_accessed")
-  self~addTempfile(f)                  -- schedule for automatic deletion
-
-  -- create the test file
+  f = .TemporaryTestFile~new(self, "test_file_lastaccessed")~~create("File.testGroup: test_file_lastaccessed")
   s = .Stream~new(f)
-  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
-  s~lineOut("File.testGroup: test_file_accessed")
-  s~close
 
   -- ooRexx provides two interfaces to retrieve last access time stamps:
   --   File~lastAccessed and
@@ -352,8 +295,8 @@ return testResult
     -- file time from File~lastAccessed
     tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
     self~assertTrue(tLastAccessed~isA(.DateTime))
-    -- When comparing with the current time, we need ignore to anything smaller than milliseconds
-    -- because Windows returns the current time with only a milllisecond resolution
+    -- When comparing with the current time, we ignore anything smaller than milliseconds
+    -- because Windows returns the current time with only a millisecond resolution
     -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
     now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
     tLastAccessed = tLastAccessed~string~left(23) -- keep milliseconds, ignore microseconds
@@ -395,13 +338,13 @@ return testResult
   self~assertSame(now, file~lastAccessed)
 
 
--- listRoot: too many arguments
+-- listRoots tests
+
+-- too many arguments
 ::method test_listroots_one_arg
   self~expectSyntax(88.922) -- Too many arguments in invocation
   .File~listRoots(.nil)
 
-
--- listRoot: too many arguments
 ::method test_listroots
   roots = .File~listRoots
   self~assertIsA(roots, .Array, ".File~listRoots should return an Array; found" roots~class~id)
@@ -421,13 +364,15 @@ return testResult
   end
 
 
--- absolutePath: too many arguments
+-- absolutePath tests
+
+-- too many arguments
 ::method test_absolutepath_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~new(".")~absolutePath(.nil)
 
 
--- absolutePath: normalization
+-- normalization
 ::method test_absolutepath
   -- normalization should remove trailing slashes
   current = .File~new(".")~absolutePath
@@ -655,6 +600,8 @@ return testResult
   call value "TMPDIR", (tmpDir == "")~?(.nil, tmpDir), "environment"
 
 
+-- searchPath tests
+
 ::method test_searchPath_no_arg
   self~expectSyntax(93.901) -- Not enough arguments for method
   .File~searchPath
@@ -828,6 +775,8 @@ return testResult
   self~assertNull(.File~new("con")~parent)
 
 
+-- extension tests
+
 ::method test_extension_one_arg_too_many
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~new("")~extension("")
@@ -842,6 +791,86 @@ return testResult
       self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name)~extension, "extension of" name)
       self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name, "/")~extension, "extension of" name)
   end
+
+
+-- isCaseSensitive, class and instance method tests
+
+::method test_iscasesensitive_class_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation
+  .File~isCaseSensitive(.nil)
+
+::method test_iscasesensitive_no_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new('')~isCaseSensitive(.nil)
+
+::method test_iscasesensitive_directory
+  -- the class method always returns the same value as the instance
+  -- method returns for the first root, e. g. "/" or "C:\"
+  self~assertSame(.File~isCaseSensitive, .File~new(.File~listRoots[1])~isCaseSensitive)
+
+  -- a Windows and a Mac file system typically isn't case-sensitive
+  -- (probably not true under all circumstances, but a good guess)
+  -- we test root directory, and first directory in PATH
+  firstPath = .File~new(value("PATH", , "environment")~makeArray(.File~pathSeparator)[1])
+  if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then do
+    self~assertFalse(.File~isCaseSensitive, "Windows and Mac file system is expected to be case-insensitive")
+    self~assertFalse(firstPath~isCaseSensitive, firstPath "expected to be case-insensitive")
+  end
+  else do
+    self~assertTrue(.File~isCaseSensitive, "typical Unix file systems is expected to be case-sensitive")
+    self~assertTrue(firstPath~isCaseSensitive, firstPath "expected to be case-sensitive")
+  end
+
+::method test_iscasesensitive_file
+  -- test files in home directory, either $HOME, or %USERPROFILE%
+  homeDirectory = value((.RexxInfo~platform == "WindowsNT")~?("USERPROFILE", "HOME"), , "environment")
+  homeFiles = .File~new(homeDirectory)~listFiles
+  if homeFiles == .nil then
+    return
+  do file over homeFiles
+    if file~isFile then do
+      if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then
+        self~assertFalse(file~isCaseSensitive, file "expected to be case-insensitive")
+      else
+        self~assertTrue(file~isCaseSensitive, file "expected to be case-sensitive")
+      end
+  end
+
+::method test_iscasesensitive_fsutil_windows_only
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  -- On a recent Windows 10 with enabled Windows Subsystem for Linux, NTFS
+  -- allows case-sensitive folders (fsutil file setCaseSensitiveInfo).
+  -- fsutil may be unavailable, or may fail if Windows Subsystem for Linux has
+  -- not been enabled, or the user doesn't have enough privilege.  For the
+  -- privilege issue, the TEMP path is a good place to run the test.
+  sensitiveDir = .TemporaryTestDirectory~new(.File~temporaryPath, "test_iscasesensitive_fsutil")~create
+  trace off
+  address "" with output stem ignore. error stem ignore.
+  "fsutil file setCaseSensitiveInfo" sensitiveDir~absolutePath "enable"
+  if rc \= 0 then do
+    sensitiveDir~delete
+    return -- can't test, fsutil doesn't work
+  end
+
+  -- at this point fsutil should have made this directory case-sensitive
+  self~assertTrue(sensitiveDir~isCaseSensitive, sensitiveDir~name "is expected to be case-sensitive")
+
+  -- now create a file and a folder with names differing just in their casing
+  -- this should (only) work in a case-sensitive directory
+  sensitiveFile = .TemporaryTestFile~new(sensitiveDir, "name")~create("test_iscasesensitive_fsutil")
+  sensitiveSubdir = .TemporaryTestDirectory~new(sensitiveDir, "Name")~create
+
+  self~assertTrue(sensitiveFile~isFile, sensitiveFile~name "file should exist")
+  self~assertTrue(sensitiveFile~isCaseSensitive, sensitiveFile~name "file should be case-sensitive")
+
+  self~assertTrue(sensitiveSubdir~isDirectory, sensitiveSubdir~name "directory should exist")
+  self~assertTrue(sensitiveSubdir~isCaseSensitive, sensitiveSubdir~name "directory should be case-sensitive")
+
+  sensitiveFile~delete
+  sensitiveSubdir~delete
+  sensitiveDir~delete
 
 
 ::options novalue syntax
