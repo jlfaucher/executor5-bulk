@@ -2115,12 +2115,18 @@ return 0
   use strict arg host, name
 
   -- get the package the class is defined in
-  if host~isA(.Class) then
-    package = host~package -- we've been called from a class method
-  else
-    package = host~class~package
+  if host~isA(.File) then do
+    package = .nil
+    dir = host
+  end
+  else do
+    if host~isA(.Class) then
+      package = host~package -- we've been called from a class method
+    else
+      package = host~class~package
+    dir = .File~new(package~name)~parentFile
+  end
 
-  dir = .File~new(package~name)~parentFile
   self~init:super(name, dir)
 
 -- get the full resolved name of this file
@@ -2201,16 +2207,16 @@ return 0
 -- a class for creating/deleting temporary test directories.
 ::class TemporaryTestDirectory subclass File public
 ::method init
-  expose package
   use strict arg host, name
 
   -- get the package the class is defined in
-  if host~isA(.Class) then
-    package = host~package -- we've been called from a class method
+  if host~isA(.File) then
+    dir = host
+  else if host~isA(.Class) then
+    dir = .File~new(host~package~name)~parentFile -- we're called from a class method
   else
-    package = host~class~package
+    dir = .File~new(host~class~package~name)~parentFile
 
-  dir = .File~new(package~name)~parentFile
   self~init:super(name, dir)
 
 -- get the full resolved name of this directory
