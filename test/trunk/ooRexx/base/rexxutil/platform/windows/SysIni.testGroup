@@ -45,6 +45,7 @@ parse source . . s
 group = .TestGroup~new(s)
 -- adding a suite will allow for one-time setup and tearDown
 group~addWithSuite(.SysIni.testGroup, .SysIni.testSuite)
+group~restrictOS("WINDOWS")
 if group~isAutomatedTest then
   return group
 else
