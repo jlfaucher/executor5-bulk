@@ -128,7 +128,12 @@ else
   -- other file timstamps, created and accessed, should be unchanged
   -- Create time is available on Windows only
   if .RexxInfo~platform~caselessStartsWith("Windows") then
-    self~assertSame(date time, SysGetFileDateTime(test, "c"), "This fails for unknown reasons if the test case is run multiple times with only a few seconds in between")
+    -- If this test is run again after only a few seconds in between,
+    -- the following assert may fail on Windows due to the Windows "File
+    -- System Tunneling cache" which keeps the creation date of a file
+    -- as-is even if it is deleted and later re-created with the same
+    -- name. See https://stackoverflow.com/questions/33227149/after-deleting-file-and-re-creating-file-not-change-creation-date-in-windows/33227233
+    self~assertSame(date time, SysGetFileDateTime(test, "c"), "Fails on Windows if the test is repeated with only a few seconds in between due to the file system tunneling cache")
   self~assertSame(date time, SysGetFileDateTime(test, "a"))
 
   -- set without a date or a time arg, sets the current time
