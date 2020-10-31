@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2013-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -101,14 +101,10 @@ return testResult
     -- No files named '1' should be found
     self~assertEquals(0, cat.0)
 
-::method 'testBasicSyntax5'
-    cat = .array~new(5)
-    self~expectSyntax(40.919)
-    rv = SysFileTree(.true, cat)
-
 ::method 'testIllegalChars'
     patterns = .array~of('*.?>*', '*.?<*', '*.?|*', '*?:.', 'Sys*?".', '"Sys  Cur"*.*')
 
+    signal off novalue
     -- System error code: 123 -> ERROR_INVALID_NAME
     do i = 1 to patterns~items
         rv = SysFileTree(patterns[i], cat, 'F')
@@ -119,7 +115,7 @@ return testResult
 ::method 'testSpaces'
     pattern = 'C:\Program Files\*.exe'
 
-    rv = SysFileTree(pattern, f, 'FS')
+    rv = SysFileTree(pattern, f., 'FS')
     self~assertEquals(0, rv)
     self~assertTrue(f.0 > 10)
 
@@ -127,7 +123,7 @@ return testResult
     -- Quotes are not needed and in fact are illegal.
     pattern = '"C:\Program Files\*.exe"'
 
-    rv = SysFileTree(pattern, f, 'FS')
+    rv = SysFileTree(pattern, f., 'FS')
     self~assertEquals(123, rv)
     self~assertTrue(f.0 == 0)
 
@@ -135,7 +131,7 @@ return testResult
     patterns = .array~of('Sys*.*', 'Sys?*.*', 'sys??*.*', 'Sys*?.*')
 
     do i = 1 to patterns~items
-        rv = SysFileTree(patterns[i], cat, 'F')
+        rv = SysFileTree(patterns[i], cat., 'F')
         self~assertEquals(0, rv)
         self~assertTrue(cat.0 > 0, 'pattern is:' patterns[i] 'file count is:' cat.0 'dir is:' directory())
     end
@@ -172,6 +168,7 @@ return testResult
 
   call directory olddir
 
+
 -- UNC filename test
 ::method test_name_UNC
   parse source . . this
@@ -182,3 +179,20 @@ return testResult
   self~assertTrue(files.0 > 0, "SysFileTree should have found at least one file in" thisDir~absolutePath)
   self~assertTrue(files.~hasItem(thisFile~absolutePath), "SysFileTree should find" thisFile~absolutePath)
 
+-- leading blanks in file name may be stripped off
+::method test_name_leading_blanks
+  parse source . . this
+  path = filespec("path", this) || filespec("name", this)
+
+  -- although blanks in a file path are significant, SysFileTree on Windows
+  -- (probably to maintain some legacy backward compatibility) will strip
+  -- leading spaces (__) in these cases:
+  -- __\xxxx, __.\xxxx, __..\xxxx,  __d:\xxxx
+  do lead over ("", ".", "..", filespec("drive", this))
+    blank = " " || lead || path
+    self~assertSame(0, SysFileTree(blank, files., "fo"), "SysFileTree("blank") should give rc=0")
+    self~assertSame(this, files.1, "SysFileTree("blank") should find" this)
+  end
+
+
+::options novalue syntax

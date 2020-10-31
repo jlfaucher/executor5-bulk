@@ -69,7 +69,7 @@ return testResult
   call SysFileSearch "", ""
 
 ::method test_no_stem
-  self~expectSyntax(40.919) -- Argument 3 must have a stem object or stem name value
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
   call SysFileSearch "", "", ""
 
 ::method test_invalid_option
@@ -110,38 +110,45 @@ return testResult
 
   temp~delete
 
-::method test_stem_object
+::method test_stem_array_object
   temp = .TemporaryTestFile~new(self, self~tempFileName)
   temp~create(("", "line2", "Line3", ""))
 
-  stem = .Stem~new
+  -- SysFileSearch can return data as a Stem or an Array object
+  data = .Stem~new
+  do 2
+    self~assertEquals(0, SysFileSearch("l", temp~fullName, data))
+    self~assertSame("line2, Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem))
-  self~assertSame("line2, Line3", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("L", temp~fullname, data, 'I'))
+    self~assertSame("line2, Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem, 'I'))
-  self~assertSame("line2, Line3", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("L", temp~fullname, data, 'C'))
+    self~assertSame("Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem, 'C'))
-  self~assertSame("Line3", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("l", temp~fullname, data, 'C'))
+    self~assertSame("line2", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("l", temp~fullname, stem, 'C'))
-  self~assertSame("line2", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("l", temp~fullName, data, 'N'))
+    self~assertSame("2 line2, 3 Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem, 'N'))
-  self~assertSame("2 line2, 3 Line3", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("L", temp~fullName, data, 'Ni'))
+    self~assertSame("2 line2, 3 Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem, 'Ni'))
-  self~assertSame("2 line2, 3 Line3", self~toString(stem))
+    self~assertEquals(0, SysFileSearch("L", temp~fullName, data, 'Cn'))
+    self~assertSame("3 Line3", self~toString(data))
 
-  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem, 'Cn'))
-  self~assertSame("3 Line3", self~toString(stem))
+    -- no again with an Array object
+    data = .Array~new
+  end
 
   temp~delete
 
-::method test_stem_zero
+::method test_stem_array_zero
   temp = .TemporaryTestFile~new(self, self~tempFileName)
   temp~create((1, 2, 3))
+
+  -- first with a stem object
 
   -- stem.0 should be zero if needle is a nullstring
   stem.0 = 1
@@ -152,6 +159,18 @@ return testResult
   stem.0 = 1
   self~assertEquals(3, SysFileSearch("L", "", stem.))
   self~assertSame(0, stem.0)
+
+  -- now with an array object
+
+  -- array should be empty if needle is a nullstring
+  array = .Array~of(1, 2, 3)
+  self~assertEquals(0, SysFileSearch("", temp~fullName, array))
+  self~assertSame(0, array~items)
+
+  -- array should be empty upon error
+  array = .Array~of(1, 2, 3)
+  self~assertEquals(3, SysFileSearch("L", "", array))
+  self~assertSame(0, array~items)
 
   temp~delete
 
@@ -203,16 +222,20 @@ return testResult
 
 
 ::method toString
-  use strict arg stem
+  use strict arg data
 
-  s = ""
-  do i = 1 to stem[0]
-    if i = 1 then
-      s = stem[1]
-    else
-      s ||= "," stem[i]
+  if data~isA(.Array) then
+    return data~toString(, ", ")
+  else do
+    s = ""
+    do i = 1 to data[0]
+      if i = 1 then
+        s = data[1]
+      else
+        s ||= "," data[i]
+    end
+    return s
   end
-  return s
 
 
-::options novalue error
+::options novalue syntax

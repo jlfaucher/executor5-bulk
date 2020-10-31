@@ -184,6 +184,7 @@ F H  21 .d/.h
   do char over '":<>|'~makeArray("")
     -- The filename, directory name, or volume label syntax is incorrect
     self~assertSame(123, SysFileTree(char, f.))
+    self~assertSame(0, f.0)
   end
 
 -- wildcards are allowed in the last part of the path only
@@ -193,12 +194,12 @@ F H  21 .d/.h
   -- call SysFileTree('\win*\*', f.)
 
 ::method test_arg_two_null
-  self~expectSyntax(40.919) -- Argument 2 must have a stem object or stem name value
+  self~expectSyntax(40.925) -- Argument 2 must be an array object, a stem object, or a stem name value
   call SysFileTree "%", ""
 
 ::method test_arg_two_invalid
-  self~expectSyntax(40.919) -- Argument 2 must have a stem object or stem name value
-  call SysFileTree "%", self~noFiles
+  self~expectSyntax(40.925) -- Argument 2 must be an array object, a stem object, or a stem name value
+  call SysFileTree "%", "s.1"
 
 ::method test_arg_three_null
   self~expectSyntax((40.21, "SysFileTree", 3)) -- SysFileTree argument 1 must not be a null string
@@ -252,13 +253,32 @@ F H  21 .d/.h
   end
 
 ::method test_arg_two
-  signal off novalue
   self~assertSame(0, SysFileTree("%", stem.))
+  self~assertSame(0, stem.0)
+
+  stem.0 = "none"
+  self~assertSame(0, SysFileTree("%", stem.))
+  self~assertSame(0, stem.0)
+
   self~assertSame(0, SysFileTree("%", "stem."))
+  self~assertSame(0, stem.0)
+
+  name = "st"
   self~assertSame(0, SysFileTree("%", name))
+  self~assertSame(0, st.0)
+
   self~assertSame(0, SysFileTree("%", "name"))
+  self~assertSame(0, name.0)
+
   s = .Stem~new
   self~assertSame(0, SysFileTree("%", s))
+  self~assertSame(0, s[0])
+
+  -- instead of a Stem, SysFileTree can also return an Array
+  array = .Array~of(1, 2, 3)
+  self~assertSame(0, SysFileTree("%", array))
+  self~assertSame(0, array~items)
+
 
 ::method test_arg_three
   -- we test each option character and a bunch of combos
@@ -296,11 +316,6 @@ F H  21 .d/.h
   else
     hugeFiles = .Array~of("/dev/core")
 
-  -- On Windows it seems that CreateFile() will not return a handle for
-  -- hiberfil.sys, pagefile.sys, or swapfile.sys, but FindNextFile() will.
-  -- So, except for SysFileTree, none of our current ooRexx methods can
-  -- retrieve their file size or confirm they exist.  So we need to keep
-  -- this test very simple.
   do name over hugeFiles
     message = "SysFileTree("name")"
     self~assertSame(0, SysFileTree(name, f., "tf"), message "option F")
@@ -309,13 +324,11 @@ F H  21 .d/.h
       -- in a type T output, size is the second blank-delimited word
       parse var f.1 . sizeF .
       parse var fh.1 . sizeH .
-      -- either the F and the FH file sizes must be identical, or
-      -- the F file size must be 9,999.999,999
-      numeric digits 20
-      if sizeF < sizeH then
-        self~assertSame(9999999999, sizeF, message "option F size")
-      else
-        self~assertSame(sizeH, sizeF, message "option FH size, F size")
+      size = .File~new(name)~length
+      -- the FH file size must be the same as the real file size
+      self~assertSame(size, sizeH, message "option FH size")
+      -- the F file size must be either the real file size or 9,999.999,999
+      self~assertOneOrAnother(size, 9999999999, sizeF, message "option F size")
     end
   end
 
@@ -575,13 +588,13 @@ bh: 12/07/19  10:07p                     4  -rw-rw-r--  /home/USER/sysfiletree/f
 lh: 2019-12-07 22:07:41                     4  -rw-rw-r--  /home/USER/sysfiletree/f
 
 Windows.+....1....+....2....+....3....+....4....+....5
-o:  C:\Users\USER/sysfiletree/f
-t:  19/12/08/17/23           4  A----  C:\Users\USER/sysfiletree/f
-b:  12/08/19   5:23p           4  A----  C:\Users\USER/sysfiletree/f
-l:  2019-12-08 17:23:31           4  A----  C:\Users\USER/sysfiletree/f
-th: 19/12/08/17/23                     4  A----  C:\Users\USER/sysfiletree/f
-bh: 12/08/19   5:23p                     4  A----  C:\Users\USER/sysfiletree/f
-lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER/sysfiletree/f
+o:  C:\Users\USER\sysfiletree\f
+t:  19/12/08/17/23           4  A----  C:\Users\USER\sysfiletree\f
+b:  12/08/19   5:23p           4  A----  C:\Users\USER\sysfiletree\f
+l:  2019-12-08 17:23:31           4  A----  C:\Users\USER\sysfiletree\f
+th: 19/12/08/17/23                     4  A----  C:\Users\USER\sysfiletree\f
+bh: 12/08/19   5:23p                     4  A----  C:\Users\USER\sysfiletree\f
+lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER\sysfiletree\f
 */
 -- assert that a returned line is valid
 ::method assertLine

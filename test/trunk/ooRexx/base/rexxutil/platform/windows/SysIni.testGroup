@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -40,119 +40,179 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-    parse source . . fileSpec;
+parse source . . s
 
-    group = .TestGroup~new(fileSpec)
-    group~add(.SysIni.testGroup)
-    group~restrictOS("WINDOWS")
-
-    if group~isAutomatedTest then return group
-
-    testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+group = .TestGroup~new(s)
+-- adding a suite will allow for one-time setup and tearDown
+group~addWithSuite(.SysIni.testGroup, .SysIni.testSuite)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
-::class 'SysIni.testgroup' subclass ooTestCase public
 
-::method test_app_functions
+-- by defining a test suite we can have a setup method run just once
+-- before all tests and a tearDown method once after all tests
+::class SysIni.testSuite subclass ooTestSuite public
+::method setup
+  .SysIni.testGroup~create
 
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
+::method tearDown
+  .SysIni.testgroup~remove
 
-  self~of(e., "app1", "app2", "app3")
 
-  self~assertEquals("", SysIni(temp~fullName, 'all:', a.))
-  self~verifySeq(e., a.)
+::class SysIni.testgroup subclass ooTestCase public
 
-  self~assertEquals("", SysIni(temp~fullName, 'all:', 'a.'))
-  self~verifySeq(e., a.)
-  self~assertEquals("", SysIni(temp~fullName, 'all:', 'a'))
-  self~verifySeq(e., a.)
+-- will run exactly once before all our tests run
+::method create class
+  expose ini
+  ini = .TemporaryTestFile~new(self, "TestGet.ini")
+  ini~createFromResource("iniFile")
 
-  self~of(e., "key1", "key2", "key3")
+-- will run exactly once after all tests have finished
+::method remove class
+  expose ini
+  ini~delete
 
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
-  self~verifySeq(e., a.)
+::attribute ini class get
+::attribute ini get
+  return self~class~ini~absolutePath
 
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', 'a'))
-  self~verifySeq(e., a.)
 
-  self~assertEquals("ERROR:", SysIni(temp~fullName, 'app3', 'All:', 'a.'))
+::method test_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysIni
 
-  self~assertEquals("", SysIni(temp~fullName, 'app1', 'DEleTE:'))
+::method test_one_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysIni self~ini
 
-  self~assertEquals("val1.2", SysIni(temp~fullName, 'app2', 'key1'))
+::method test_two_args
+  self~expectSyntax(88.901) -- Missing argument; argument 3 is required
+  call SysIni self~ini, "app1"
 
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'key1', "delete:"))
+::method test_apps_no_stem
+  self~expectSyntax(88.901) -- Missing argument; argument 3 is required
+  call SysIni self~ini, "ALL:"
 
-  self~assertEquals("ERROR:", SysIni(temp~fullName, 'app2', 'key1'))
-
-  self~of(e., "key2", "key3")
-
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
-  self~verifySeq(e., a.)
-
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'key1', "new value"))
-  self~assertEquals("new value", SysIni(temp~fullName, 'app2', 'key1'))
-
-  self~of(e., "key2", "key3", "key1")
-
-  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
-  self~verifySeq(e., a.)
-
-::method test_all_apps_no_stem
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
-
+::method disabledtest_keys_no_stem
   self~expectSyntax(40.919)
-  rv = SysIni(temp~fullName, 'all:')
+  call SysIni self~ini, "app2", "all:"
 
-::method test_all_apps_bad_stem
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
+::method test_stem_null
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", ""
 
-  self~expectSyntax(40.919)
-  rv = SysIni(temp~fullName, 'all:', 'a.1')
+::method test_stem_bad
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", "a.1"
 
-::method test_all_apps_extra_arg
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
+::method test_delete_extra
+  self~expectSyntax(40.4) -- Too many arguments in invocation
+  call SysIni self~ini, "", "DELETE:", ""
 
-  self~expectSyntax(40.4)
-  rv = SysIni(temp~fullName, 'all:', 'a.', "foo")
+::method test_app_stem_extra
+  self~expectSyntax(40.4) -- Too many arguments in invocation
+  call SysIni self~ini, "all:", stem., ""
 
-::method test_all_keys_no_stem
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
+::method test_key_stem_extra
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 4 expected
+  call SysIni self~ini, "app1", "all:", stem., ""
 
-  self~expectSyntax(40.919)
-  rv = SysIni(temp~fullName, 'app2', 'all:')
+::method test_stem_no_array_no_stem
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", .Bag~new
 
-::method test_all_keys_bad_stem
-  temp = .TemporaryTestFile~new(self, "TestFile.ini")
-  temp~createFromResource('iniFile')
+-- query a single key value
+::method test_query_single_key
+  self~assertSame("val1.1", SysIni(self~ini, "app1", "key1"))
+  self~assertSame("val3.2", SysIni(self~ini, "app2", "key3"))
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", ""))
+  self~assertSame("ERROR:", SysIni(self~ini, "app4", ""))
+  self~assertSame("ERROR:", SysIni(self~ini, "", ""))
 
-  self~expectSyntax(40.919)
-  rv = SysIni(temp~fullName, 'app2', 'all:', 'a.1')
+-- query all apps
+::method test_query_all_apps
+  allApps = "app1", "app2", "app3"
+  self~assertStem(allApps, SysIni(self~ini, "all:", list.), list.)
+  self~assertStem(allApps, SysIni(self~ini, "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allApps, SysIni(self~ini, "all:", list), list)
+  list = .Array~new
+  self~assertArray(allApps, SysIni(self~ini, "all:", list), list)
+
+-- query all keys
+::method test_query_all_keys
+  allKeys = .Array~of("key1")
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", list.), list.)
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", list), list)
+  list = .Array~new
+  self~assertArray(allKeys, SysIni(self~ini, "app1", "all:", list), list)
+
+  allKeys = "key1", "key2", "key3"
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", list.), list.)
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", list), list)
+  list = .Array~new
+  self~assertArray(allKeys, SysIni(self~ini, "app2", "all:", list), list)
+
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list.))
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", "list"))
+  list = .Stem~new
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list))
+  list = .Array~new
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list))
+
+::method test_delete
+  -- this is a "delete" test, so we give it its own ini file
+  ini = .TemporaryTestFile~new(self, "TestDelete.ini")
+  ini~createFromResource("iniFile")
+  iniName = ini~absolutePath
+
+  self~assertEquals("",       SysIni(iniName, "app1", "DELETE:"))
+  self~assertEquals("ERROR:", SysIni(iniName, "app1", "ALL:", stem.))
+
+  self~assertEquals("",       SysIni(iniName, "app2", "key2", "delete:"))
+  self~assertEquals("ERROR:", SysIni(iniName, "app2", "key2"))
+
+  self~assertStem(("app2", "app3"), SysIni(iniName, "all:", s.), s.)
+  self~assertStem(("key1", "key3"), SysIni(iniName, "app2", "all:", s.), s.)
+
+  ini~delete
+
+::method test_set
+  -- this is a "set" test, so we give it its own ini file
+  ini = .TemporaryTestFile~new(self, "TestFileReadWrite.ini")
+  ini~createFromResource("iniFile")
+  iniName = ini~absolutePath
+
+  self~assertEquals("", SysIni(iniName, "app2", "key1", "new value"))
+  self~assertEquals("new value", SysIni(iniName, "app2", "key1"))
+
+  a = .Array~new
+  self~assertArray(("key1", "key2", "key3"), SysIni(iniName, "APP2", "ALL:", a), a)
+
+  ini~delete
 
 
-::method verifySeq
-  use arg source., result.
-
-  do i=0 to result.0
-     self~assertEquals(source.i, result.i)
+::method assertStem
+  use strict arg expected, rc, actual
+  self~assertSame("", rc)
+  self~assertIsA(actual, .Stem)
+  self~assertSame(expected~items, actual[0])
+  do i = 1 to actual[0]
+    self~assertSame(expected[i], actual[i])
   end
 
-::method of
-  use arg target.
-  values = arg(2, 'a')
-
-  target.0 = values~items
-  do i = 1 to target.0
-      target.i = values[i]
-  end
+::method assertArray
+  use strict arg expected, rc, actual
+  self~assertSame("", rc)
+  self~assertIsA(actual, .Array)
+  self~assertSameList(expected, actual)
 
 
 ::resource iniFile
@@ -164,3 +224,6 @@ key2=val2.2
 key3=val3.2
 [app3]
 ::END
+
+
+::options novalue syntax
