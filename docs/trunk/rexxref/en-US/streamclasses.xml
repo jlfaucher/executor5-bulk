@@ -735,9 +735,10 @@ OPEN: </para>
 default.) The stream maintains separate read and write pointers.
 </para></listitem></varlistentry>
 <varlistentry><term>APPEND</term>
-<listitem><para>Positions the write pointer at the end of the stream. The write
-pointer cannot be moved anywhere within the extent of the file as it existed
-when the file was opened.
+<listitem><para>Positions the write pointer at the end of the stream.
+(This is the default.)
+The write pointer cannot be moved anywhere within the extent of the file as
+it existed when the file was opened.
 </para></listitem></varlistentry>
 <varlistentry><term>REPLACE</term>
 <listitem><para>Sets the write pointer to the beginning of the stream and
@@ -1284,14 +1285,13 @@ The write pointer cannot be moved anywhere within the extent of the file as
 it existed when the file was opened.
 </para></listitem></varlistentry>
 <varlistentry><term>REPLACE</term>
-<listitem><para>Sets the write pointer to the beginning of the stream
-and truncates
+<listitem><para>Sets the write pointer to the beginning of the stream and truncates
 the file. In other words, this option deletes all data that was in the stream
 when opened.
 </para></listitem></varlistentry>
 <varlistentry><term>SHARED</term>
-<listitem><para>Enables another process to work with the stream in a shared mode. (This
-is the default.) This mode must be compatible with the shared mode (SHARED,
+<listitem><para>Enables another process to work with the stream in a shared mode.
+This mode must be compatible with the shared mode (SHARED,
 SHAREREAD, or SHAREWRITE) used by the process that opened the stream.
 </para></listitem></varlistentry>
 <varlistentry><term>SHAREREAD</term>

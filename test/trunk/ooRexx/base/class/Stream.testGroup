@@ -2169,7 +2169,6 @@ notready:
 
 ::method test_relative_exists5
 
-  sl = .ooRexxUnit.directory.separator
   src = .array~of(" ", " ", " ")
 
   fileName = '.hidden'
@@ -2185,6 +2184,8 @@ notready:
   j = deleteFile(f)
   self~assertSame("", fsObj~query("exists"))
 
+
+::class Stream2.testGroup public subclass ooTestCase
 
 -- Stream should be able to detect and open hidden/system files on Windows
 ::method test_hidden_windows
@@ -2205,6 +2206,162 @@ notready:
   end
   hidden~delete
 
+::method test_open_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  f = .TemporaryTestFile~new(self, "test_open_command_parser")
+  s = .Stream~new(f)
+  do rw over "", "both", "read", "write"
+    -- for READ neither APPEND nor REPLACE can be specified
+    do ar over (rw == "read")~?(.Array~of(""), ("", "append", "replace"))
+      do share over "", "shared", "shareread", "sharewrite"
+        do nob over "", "nobuffer"
+          -- REPLACE requires RECLENGTH to be specified together with BINARY
+          do bin over (ar == "replace")~?(("", "binary reclength 24"), ("", "binary", "binary reclength 24"))
+            self~assertSame("READY:", s~open(rw ar share nob bin), "open("rw ar share nob bin")")
+            -- some open commands require the file to exist
+            s~charout("test_open_command_parser")
+            s~close
+          end
+        end
+      end
+    end
+  end
+  -- some permutations that should work too; fully abbreviated
+  self~assertSame("READY:", s~open("shared ap bo"))
+  self~assertSame("READY:", s~open("nob rea"))
+  self~assertSame("READY:", s~open("bi sharer"))
+  self~assertSame("READY:", s~open("bi rec 1 read"))
+  self~assertSame("READY:", s~open("ap w"))
+
+  -- too short abbreviations should fail
+  do short over "re", "b", "a", "share", "no"
+    self~assertFalse(self~command(s, "open", short))
+  end
+
+  -- test RECLENGTH values
+  self~assertFalse(self~command(s, "open", "read binary reclength -1"))
+  self~assertFalse(self~command(s, "open", "read binary reclength 0"))
+  self~assertTrue(self~command(s, "open", "read binary reclength 1"))
+  numeric digits 20
+  max = 2 ** .RexxInfo~architecture - 1
+  self~assertTrue(self~command(s, "open", "read binary reclength" max))
+  self~assertFalse(self~command(s, "open", "read binary reclength" max + 1))
+
+  -- forbidden combinations that always fail
+  self~assertFalse(self~command(s, "open", "read append"))
+  self~assertFalse(self~command(s, "open", "read replace"))
+  self~assertFalse(self~command(s, "open", "reclength 1"))
+  self~assertFalse(self~command(s, "open", "write replace binary"))
+
+  -- if the stream doesn't exist, WRITE BINARY requires RECLENGTH
+  s~close
+  f~delete -- make sure WRITE BINARY fails
+  self~assertFalse(self~command(s, "open", "write binary"))
+
+  -- duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "open", "read read"))
+  self~assertFalse(self~command(s, "open", "write write"))
+  self~assertFalse(self~command(s, "open", "both both"))
+  self~assertFalse(self~command(s, "open", "read write"))
+  self~assertFalse(self~command(s, "open", "both read"))
+  self~assertFalse(self~command(s, "open", "write both"))
+  self~assertFalse(self~command(s, "open", "read char"))
+  self~assertFalse(self~command(s, "open", "append append"))
+  self~assertFalse(self~command(s, "open", "replace replace"))
+  self~assertFalse(self~command(s, "open", "replace append"))
+  self~assertFalse(self~command(s, "open", "shareread shareread"))
+  self~assertFalse(self~command(s, "open", "sharewrite sharewrite"))
+  self~assertFalse(self~command(s, "open", "shared shared"))
+  self~assertFalse(self~command(s, "open", "shareread sharewrite"))
+  self~assertFalse(self~command(s, "open", "shared shareread"))
+  self~assertFalse(self~command(s, "open", "sharewrite shared"))
+  self~assertFalse(self~command(s, "open", "nobuffer nobuffer"))
+  self~assertFalse(self~command(s, "open", "binary binary"))
+  s~close
+  f~delete
+
+::method test_seek_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  s = .Stream~new("test_parser_not_a_file")
+  offset = 123
+  do prefix over "", "=", "<", "+", "-"
+    do rw over "", "read", "write"
+      do cl over "", "char", "line"
+        self~assertSame(0, s~seek(prefix offset rw cl), "seek("prefix offset rw cl")")
+      end
+    end
+  end
+  -- even with default NUMERIC DIGITS 9 64-bit offsets should work
+  self~assertSame(0, s~seek(9223372036854775807)) -- 2^63 - 1
+
+  -- missing/huge offset, and duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "seek", ""))
+  self~assertFalse(self~command(s, "seek", "read char"))
+  self~assertFalse(self~command(s, "seek", 9223372036854775808)) -- 2^63
+  self~assertFalse(self~command(s, "seek", offset offset))
+  self~assertFalse(self~command(s, "seek", "=+1"))
+  self~assertFalse(self~command(s, "seek", "=+1"))
+  self~assertFalse(self~command(s, "seek", "1 read write"))
+  self~assertFalse(self~command(s, "seek", "1 read read"))
+  self~assertFalse(self~command(s, "seek", "1 char line"))
+  self~assertFalse(self~command(s, "seek", "1 char char"))
+  s~close
+
+::method test_query_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  s = .Stream~new("test_parser_not_a_file")
+  do rw over "", "read", "write"
+    do cl over "", "char", "line"
+      self~assertSame("", s~query("position" rw cl), "query(position" rw cl")")
+      self~assertSame("", s~query("seek" rw cl), "query(seek" rw cl")")
+    end
+  end
+  self~assertSame("", s~query("position sys"), "query(position sys)")
+  self~assertSame("", s~query("seek sys"), "query(seek sys)")
+
+  -- fully abbreviated
+  self~assertSame("", s~query("s c r"))
+  self~assertSame("", s~query("p l w"))
+  self~assertSame("", s~query("s s"))
+
+  -- duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "query", "position sys sys"))
+  self~assertFalse(self~command(s, "query", "seek sys read"))
+  self~assertFalse(self~command(s, "query", "position read write"))
+  self~assertFalse(self~command(s, "query", "seek read read"))
+  self~assertFalse(self~command(s, "query", "position char line"))
+  self~assertFalse(self~command(s, "query", "seek char char"))
+
+  do arg over "datetime", "exists", "handle", "size", "streamtype", "timestamp"
+    self~assertTrue(self~command(s, "query", arg))
+    -- fully abbreviated
+    self~assertTrue(self~command(s, "query", arg~left(1)))
+    -- invalid trailing arguments
+    self~assertFalse(self~command(s, "query", arg "0"))
+  end
+
+  s~close
+
+::method test_command_parser
+  -- command calls open, seek, and query, which we already tested
+  -- test close and flush
+  s = .Stream~new("test_parser_not_a_file")
+  self~assertSame("READY:", s~command("flush"))
+  self~assertSame("", s~command("close"))
+  self~assertFalse(self~command(s, "command", "close 0"))
+  self~assertFalse(self~command(s, "command", "flush flush"))
+  s~close
+
+::method command
+  use strict arg stream, method, command
+  signal on syntax
+  stream~send(method, command)
+  return .true
+  syntax:
+  return .false
 
 
 ::options novalue syntax
