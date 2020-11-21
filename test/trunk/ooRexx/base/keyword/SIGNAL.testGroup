@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -250,4 +250,15 @@ return testResult
   call no_target             -- raises SYNTAX
   return
   any: raise propagate
+
+-- [bugs:#1664] OPTIONS NOVALUE becomes disabled unexpectedly
+::method test_bug_1664
+  -- none of these should raise NOVALUE
+  self~runDynamicSource(("signal off novalue; return a; ::options novalue syntax"))
+  self~runDynamicSource(("signal off novalue; return a; ::options any syntax"))
+
+  -- but these two should raise Error 98.986:  Reference to unassigned variable
+  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options novalue syntax"))
+  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options any syntax"))
+
 
