@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -135,6 +135,7 @@ there is a SIGNAL ON ANY trap, the ANY trap is called for the NOVALUE condition.
 For example, a CALL ON ANY trap is ignored if NOVALUE is raised because CALL
 ON NOVALUE is not allowed.
 </para></listitem></varlistentry>
+
 <varlistentry><term>ERROR
 <indexterm><primary>ERROR subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -162,8 +163,15 @@ if the ERROR condition trap is already in the delayed state.
 <secondary>description</secondary></indexterm>
 The delayed state is the state of a condition trap when the condition has
 been raised but the trap has not yet been reset to the enabled (ON) or disabled
-(OFF) state.</para>
+(OFF) state.
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> ERROR SYNTAX directive and
+ERROR is not trapped with CALL/SIGNAL ON/OFF ERROR/ANY, a SYNTAX condition is
+raised instead.
+</para>
 </listitem></varlistentry>
+
 <varlistentry><term>FAILURE
 <indexterm><primary>FAILURE subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -177,8 +185,15 @@ is raised at the end of the clause that called the command but is ignored
 if the FAILURE condition trap is already in the delayed state. </para>
 <para>An attempt
 to enter a command to an unknown subcommand environment also raises a FAILURE
-condition.</para>
+condition.
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> FAILURE SYNTAX directive and
+FAILURE is not trapped with CALL/SIGNAL ON/OFF FAILURE/ANY, a SYNTAX condition is
+raised instead.
+</para>
 </listitem></varlistentry>
+
 <varlistentry><term>HALT
 <indexterm><primary>HALT subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -195,7 +210,6 @@ is running in a full-screen or command prompt session, the Ctrl+Break key
 combination raises the halt condition. However, if Ctrl+Break is pressed while
 a command or non-Rexx external function is processing,
 the command or function ends. </para>
-
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>Application programs that use the Rexx language processor might use the
@@ -207,6 +221,7 @@ for details about exits.)</para></listitem>
 in <xref linkend="errnum" />.</para></listitem>
 </orderedlist>
 </listitem></varlistentry>
+
 <varlistentry><term>LOSTDIGITS
 <indexterm><primary>LOSTDIGITS subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -216,7 +231,14 @@ in <xref linkend="errnum" />.</para></listitem>
 <listitem><para>raised if a number used in an arithmetic operation has more digits than
 the current setting of NUMERIC DIGITS. Leading zeros are not counted in this
 comparison. You can specify the LOSTDIGITS condition only for SIGNAL ON.
-</para></listitem></varlistentry>
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> LOSTDIGITS SYNTAX directive and
+LOSTDIGITS is not trapped with SIGNAL ON/OFF LOSTDIGITS/ANY, a SYNTAX condition is
+raised instead.
+</para>
+</listitem></varlistentry>
+
 <varlistentry><term>NOMETHOD
 <indexterm><primary>NOMETHOD subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -227,6 +249,7 @@ comparison. You can specify the LOSTDIGITS condition only for SIGNAL ON.
 and the object does not have an UNKNOWN method. You can specify the NOMETHOD
 condition only for SIGNAL ON.
 </para></listitem></varlistentry>
+
 <varlistentry><term>NOSTRING
 <indexterm><primary>NOSTRING subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -237,7 +260,14 @@ condition only for SIGNAL ON.
 and the object does not directly provide a string value. See
 <xref linkend="reqstr" /> for
 more information. You can specify the NOSTRING condition only for SIGNAL ON.
-</para></listitem></varlistentry>
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> NOSTRING SYNTAX directive and
+NOSTRING is not trapped with SIGNAL ON/OFF NOSTRING/ANY, a SYNTAX condition is
+raised instead.
+</para>
+</listitem></varlistentry>
+
 <varlistentry><term>NOTREADY
 <indexterm><primary>NOTREADY subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -248,7 +278,14 @@ more information. You can specify the NOSTRING condition only for SIGNAL ON.
 See <xref linkend="stmerr" />. This
 condition is ignored if the NOTREADY condition trap is already in the
 delayed state.
-</para></listitem></varlistentry>
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> NOTREADY SYNTAX directive and
+NOTREADY is not trapped with CALL/SIGNAL ON/OFF NOTREADY/ANY, a SYNTAX condition is
+raised instead.
+</para>
+</listitem></varlistentry>
+
 <varlistentry><term id="uninit">NOVALUE
 <indexterm><primary>NOVALUE subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
@@ -266,11 +303,12 @@ instruction, a PROCEDURE instruction, or a DROP instruction</para></listitem>
 </para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <para>NOVALUE is not raised
-for any uninitialized variables in tails in compound variables, or
-if the package contains an
-<xref linkend="optionsd" xrefstyle="select:title"/> NOVALUE ERROR directive and no
-<xref linkend="keySignal" xrefstyle="select:title"/> ON/OFF NOVALUE/ANY is set.
-In the latter case a SYNTAX condition is raised instead.
+for any uninitialized variables in tails in compound variables.
+</para>
+<para>If the package contains an
+<xref linkend="optionsd" xrefstyle="select:title"/> NOVALUE SYNTAX directive and
+NOVALUE is not trapped with SIGNAL ON/OFF NOVALUE/ANY, a SYNTAX condition is
+raised instead.
 </para>
 <para>
 <example id="ex.signal-novalue">

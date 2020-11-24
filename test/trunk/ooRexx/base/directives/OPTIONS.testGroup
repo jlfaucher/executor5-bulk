@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -167,6 +167,9 @@ return testResult
   -- has been overridden in one way or another
   self~assertSame(1, self~runDynamicSource(("'exit 1'", "return rc", "::options error syntax error condition")))
   self~assertSame(2, self~runDynamicSource(("signal off error", "'exit 2'", "return rc", "::options error syntax")))
+  self~assertSame(2, self~runDynamicSource(("call off error", "'exit 2'", "return rc", "::options error syntax")))
+  self~assertSame(2, self~runDynamicSource(("signal off any", "'exit 2'", "return rc", "::options error syntax")))
+  self~assertSame(2, self~runDynamicSource(("call off any", "'exit 2'", "return rc", "::options error syntax")))
   self~assertSame("ERROR 3", self~runDynamicSource(("signal on error", "'exit 3'", "return rc", "error:", "return 'ERROR' rc", "::options error syntax")))
 
 ::method test_error_syntax_simple
@@ -223,6 +226,9 @@ return testResult
   -- non-existing environment, return code is always 30 (RXSUBCOM_NOTREG)
   self~assertSame(30, self~runDynamicSource(("address 'invalid' 'command'", "return rc", "::options trace off failure syntax failure condition")))
   self~assertSame(30, self~runDynamicSource(("signal off failure", "address 'invalid' '/'", "return rc", "::options trace off failure syntax")))
+  self~assertSame(30, self~runDynamicSource(("call off failure", "address 'invalid' '/'", "return rc", "::options trace off failure syntax")))
+  self~assertSame(30, self~runDynamicSource(("signal off any", "address 'invalid' '/'", "return rc", "::options trace off failure syntax")))
+  self~assertSame(30, self~runDynamicSource(("call off any", "address 'invalid' '/'", "return rc", "::options trace off failure syntax")))
   self~assertSame("FAILURE 30", self~runDynamicSource(("signal on failure", "address 'invalid' ''", "return rc", "failure:", "return 'FAILURE' rc", "::options failure syntax trace off")))
 
 ::method test_failure_syntax_simple
@@ -259,6 +265,7 @@ return testResult
 ::method test_lostdigits_syntax_override
   self~assertSame(1.23456789E+9, self~runDynamicSource(("return 1234567890 + 0", "::options lostdigits syntax lostdigits condition")))
   self~assertSame(-1.23456789E+9, self~runDynamicSource(("signal off lostdigits", "return 0 - 1234567890", "::options lostdigits syntax")))
+  self~assertSame(-1.23456789E+9, self~runDynamicSource(("signal off any", "return 0 - 1234567890", "::options lostdigits syntax")))
   self~assertSame("LOSTDIGITS", self~runDynamicSource(("signal on lostdigits", "return 1234567890 / 1", "lostdigits:", "return 'LOSTDIGITS'", "::options lostdigits syntax")))
 
 ::method test_lostdigits_syntax_add
@@ -311,6 +318,7 @@ return testResult
 ::method test_nostring_syntax_override
   self~assertSame("CHAR", self~runDynamicSource(("return datatype(.Array)", "::options nostring syntax nostring condition")))
   self~assertSame("CHAR", self~runDynamicSource(("signal off nostring", "return datatype(.nil)", "::options nostring syntax")))
+  self~assertSame("CHAR", self~runDynamicSource(("signal off any", "return datatype(.nil)", "::options nostring syntax")))
   self~assertSame("NOSTRING", self~runDynamicSource(("signal on nostring", "return datatype(.nil)", "nostring:", "return 'NOSTRING'", "::options nostring syntax")))
 
 ::method test_nostring_syntax_class
@@ -344,6 +352,9 @@ return testResult
 ::method test_notready_syntax_override
   self~assertSame("", self~runDynamicSource(("return charin('/')", "::options notready syntax notready condition")))
   self~assertSame("", self~runDynamicSource(("signal off notready", "return .Stream~new('/')~charIn", "::options notready syntax")))
+  self~assertSame("", self~runDynamicSource(("call off notready", "return .Stream~new('/')~charIn", "::options notready syntax")))
+  self~assertSame("", self~runDynamicSource(("signal off any", "return .Stream~new('/')~charIn", "::options notready syntax")))
+  self~assertSame("", self~runDynamicSource(("call off any", "return .Stream~new('/')~charIn", "::options notready syntax")))
   self~assertSame("NOTREADY", self~runDynamicSource(("signal on notready", "return chars('/')", "notready:", "return 'NOTREADY'", "::options notready syntax")))
 
 ::method test_notready_syntax_bif
@@ -355,33 +366,33 @@ return testResult
   self~assertSyntaxError((98.974, "/"), ("return .Stream~new('/')~charIn", "::options notready syntax"))
 
 
--- OPTIONS ANY tests
+-- OPTIONS ALL tests
 
-::method test_any_syntax_missing
-  -- 19.922:  String or symbol expected after ANY keyword.
-  self~assertSyntaxError(19.922, "::options any")
+::method test_all_syntax_missing
+  -- 19.922:  String or symbol expected after ALL keyword.
+  self~assertSyntaxError((19.922, "ALL"), "::options all")
 
-::method test_any_syntax_invalid
-  -- 25.927:  Unknown keyword following "ANY"; found "INVALID".
-  self~assertSyntaxError(25.927, "::options any invalid")
+::method test_all_syntax_invalid
+  -- 25.927:  Unknown keyword following "ALL"; found "INVALID".
+  self~assertSyntaxError((25.927, "ALL", "INVALID"), "::options all invalid")
 
--- none of these tests should raise SYNTAX, as ::OPTIONS ANY SYNTAX
+-- none of these tests should raise SYNTAX, as ::OPTIONS ALL SYNTAX
 -- has been overridden in one way or another
-::method test_any_syntax_override
-  -- full ANY overrides
-  self~assertSame("3 30 1 CHAR 0 NOVALUE", self~runDynamicSource(.resources~anySimple~~append("::options any condition")))
-  self~assertSame("3 30 1 CHAR 0 NOVALUE", self~runDynamicSource(.Array~of("signal off any")~appendAll(.resources~anySimple)))
-  self~assertSame("ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE", self~runDynamicSource(.resources~anySignal))
+::method test_all_syntax_override
+  -- full ALL overrides
+  self~assertSame("3 30 1 CHAR 0 NOVALUE", self~runDynamicSource(.resources~allSimple~~append("::options all condition")))
+  self~assertSame("3 30 1 CHAR 0 NOVALUE", self~runDynamicSource(.Array~of("signal off any")~appendAll(.resources~allSimple)))
+  self~assertSame("ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE", self~runDynamicSource(.resources~allSignal))
 
   -- specific overrides
-  self~assertSame(3, self~runDynamicSource(("'exit 3'", "return rc", "::options any syntax error condition")))
-  self~assertSame(30, self~runDynamicSource(("address 'non-existing' 'command'", "return rc", "::options trace off any syntax failure condition error condition")))
-  self~assertSame(1, self~runDynamicSource(("return 1234567890 / 1234567890", "::options any syntax lostdigits condition")))
-  self~assertSame("CHAR", self~runDynamicSource(("return datatype(.nil)", "::options any syntax nostring condition")))
-  self~assertSame(0, self~runDynamicSource(("return chars('/')", "::options any syntax notready condition")))
-  self~assertSame("NOVALUE", self~runDynamicSource(("return novalue", "::options any syntax novalue condition")))
+  self~assertSame(3, self~runDynamicSource(("'exit 3'", "return rc", "::options all syntax error condition")))
+  self~assertSame(30, self~runDynamicSource(("address 'non-existing' 'command'", "return rc", "::options trace off all syntax failure condition error condition")))
+  self~assertSame(1, self~runDynamicSource(("return 1234567890 / 1234567890", "::options all syntax lostdigits condition")))
+  self~assertSame("CHAR", self~runDynamicSource(("return datatype(.nil)", "::options all syntax nostring condition")))
+  self~assertSame(0, self~runDynamicSource(("return chars('/')", "::options all syntax notready condition")))
+  self~assertSame("NOVALUE", self~runDynamicSource(("return novalue", "::options all syntax novalue condition")))
 
-::resource anySimple
+::resource allSimple
   "exit 3"; error = rc
   address "non-existing" "command"; failure = rc
   lostdigits = 1234567890 / 1234567890
@@ -389,10 +400,10 @@ return testResult
   notready = chars('/')
   novalue = novalue
   return error failure lostdigits nostring notready novalue
-  ::options any syntax trace off
+  ::options all syntax trace off
 ::END
 
-::resource anySignal
+::resource allSignal
   r = ""
   n = 1
 
@@ -413,39 +424,41 @@ return testResult
   n += 1
   signal loop
 
-  ::options any syntax trace off
+  ::options all syntax trace off
 ::END
 
-::method test_any_syntax_error
+::method test_all_syntax_error
   -- 98.970:  External command "..." ended with return code ...
   -- also test syntax error message inserts
-  self~assertSyntaxError((98.970, "exit 3", 3), ("'exit 3'", "::options any syntax"))
+  self~assertSyntaxError((98.970, "exit 3", 3), ("'exit 3'", "::options all syntax"))
 
-::method test_any_syntax_failure
+::method test_all_syntax_failure
   -- 98.971:  External command "..." failed with return code ...
-  self~assertSyntaxError((98.971, "command", 30), ("address 'non-existing' 'command'", "::options any syntax trace off"))
+  self~assertSyntaxError((98.971, "command", 30), ("address 'non-existing' 'command'", "::options all syntax trace off"))
 
-::method test_any_syntax_lostdigits
+::method test_all_syntax_lostdigits
   -- 98.972:  Number ... has more digits than the current precision
-  self~assertSyntaxError((98.972, "1234567890"), ("return 1234567890 / 1234567890", "::options any syntax"))
+  self~assertSyntaxError((98.972, "1234567890"), ("return 1234567890 / 1234567890", "::options all syntax"))
 
-::method test_any_syntax_nostring
+::method test_all_syntax_nostring
   -- 98.973:  Object "..." does not have a string representation
-  self~assertSyntaxError((98.973, .Array), ("return '' || .Array", "::options any syntax"))
+  self~assertSyntaxError((98.973, .Array), ("return '' || .Array", "::options all syntax"))
 
-::method test_any_syntax_notready
+::method test_all_syntax_notready
   -- 98.974:  Stream "..." is not ready
-  self~assertSyntaxError((98.974, "/"), ("return chars('/')", "::options any syntax"))
+  self~assertSyntaxError((98.974, "/"), ("return chars('/')", "::options all syntax"))
 
-::method test_any_syntax_novalue
+::method test_all_syntax_novalue
   -- 98.986:  Reference to unassigned variable "...".
-  self~assertSyntaxError((98.986, "NOVALUE"), ("return novalue", "::options any syntax"))
+  self~assertSyntaxError((98.986, "NOVALUE"), ("return novalue", "::options all syntax"))
 
 
 -- OPTIONS NOVALUE tests
 
 ::method test_novalue_syntax_simple
   self~assertSyntaxError(98.986, ("return abc", "::options novalue syntax"))
+  -- NOVALUE ERROR is deprecated, but still supported
+  self~assertSyntaxError(98.986, ("return abc", "::options novalue error"))
 
 ::method test_novalue_syntax_compound
   self~assertSyntaxError(98.986, ("return abc.1.2", "::options novalue syntax"))
@@ -495,6 +508,9 @@ return testResult
 
 ::method test_novalue_missing_value
   self~assertSyntaxError(19.922, ("return abc.1.2", "::options novalue"))
+
+
+-- OPTIONS (NO)PROLOG tests
 
 ::method test_prolog_simple
   -- we cannot test ::OPTIONS PROLOG with runDynamicSource()
@@ -576,4 +592,4 @@ return testResult
   output~append(arg(1))
 
 
-::options any syntax
+::options all syntax

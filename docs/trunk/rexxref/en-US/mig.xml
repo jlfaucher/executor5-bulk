@@ -47,7 +47,21 @@
 <para>This appendix lists some differences between Open Object Rexx 5.0.0
 and earlier versions of Open Object Rexx.</para>
 
-<section id="deprecated"><title>Deprecated Rexx Utilities Semaphore functions</title>
+<section id="deprecated"><title>Deprecated Rexx features</title>
+<para>In exceptional circumstances, ooRexx may deprecate functions or features,
+which means the use of these functions is discouraged, documentation is no
+longer provided, and bug reports against deprecated functions will not be
+accepted.
+Reasons for deprecating include broken functionality or features that were
+never officially documented.
+</para>
+<para>Although existing code using deprecated functions is expected to continue
+to work as-is, you are strongly encouraged to migrate to the replacement
+functionality, as these functions are expected to be removed from future
+releases of the interpreter.
+</para>
+
+<section id="deprecated.semaphore"><title>Rexx Utilities Semaphore functions</title>
 <para>The following Rexx Utilities functions related to
 semaphore-processing have been deprecated.
 <simplelist columns="2">
@@ -65,15 +79,25 @@ semaphore-processing have been deprecated.
  <member>SysWaitEventSem</member>
 </simplelist>
 </para>
-<para>The use any of these functions is strongly discouraged, no
-documentation is provided and no bug reports against any of these
-functions will be accepted.
-They are expected to be removed in a future release of the interpreter.
-</para>
 <para>They have been superseded by the new
 <xref linkend="ooRexxEventSemaphoreClass" xrefstyle="select:title"/> and
 <xref linkend="ooRexxMutexSemaphoreClass" xrefstyle="select:title"/>.
 </para>
+</section>
+
+<section id="deprecated.options"><title>::OPTIONS NOVALUE directive</title>
+<para>The ::OPTIONS NOVALUE ERROR directive has been deprecated.
+It has been renamed to <xref linkend="optionsd" xrefstyle="select:title"/>
+NOVALUE SYNTAX.
+</para>
+</section>
+
+<section id="deprecated.argutil"><title>Class ArgUtil</title>
+<para>The ArgUtil class and all of it methods have been deprecated.
+It has been superseded by <xref linkend="clsValidate" xrefstyle="select:title"/>.
+</para>
+</section>
+
 </section>
 
 </appendix>

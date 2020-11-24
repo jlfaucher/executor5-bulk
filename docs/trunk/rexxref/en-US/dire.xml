@@ -914,27 +914,57 @@ minus FUZZ digits during the comparison and are then compared with 0.
 </para>
 </entry></row>
 
-<row revisionflag="added"><entry>&added50;<option>NOVALUE</option>
-<indexterm><primary>::OPTIONS directive</primary>
-<secondary>NOVALUE option</secondary></indexterm>
+<row revisionflag="added"><entry>&added50;<option>ALL</option>
+<indexterm><primary>::OPTIONS directive</primary><secondary>ALL option</secondary></indexterm>
 </entry>
 <entry>
-<para>
-controls whether using an uninitialized variable will raise a NOVALUE condition
-or a SYNTAX condition.
+<para>is a shortcut for all six ::OPTIONS <emphasis role="italic">condition</emphasis>
+directives <option>ERROR</option>, <option>FAILURE</option>, <option>LOSTDIGITS</option>,
+<option>NOSTRING</option>, <option>NOTREADY</option>, and <option>NOVALUE</option>.
 </para>
-<para>
-If ::OPTIONS NOVALUE CONDITION is in effect, which is the default,
-a NOVALUE condition will be raised as usual.
-If ::OPTIONS NOVALUE ERROR is in effect, a SYNTAX condition is raised instead,
-which can help debugging issues due to uninitialized variables.
-To override a package default of ::OPTIONS NOVALUE ERROR, you can use
-SIGNAL ON NOVALUE, SIGNAL OFF NOVALUE, SIGNAL ON ANY, or SIGNAL OFF ANY,
-in which case uninitialized variables will raise the usual NOVALUE condition.
+<para>::OPTIONS ALL SYNTAX sets all six <emphasis role="italic">condition</emphasis>s
+to raise SYNTAX, while ::OPTIONS ALL CONDITION sets all of them to their default state.
 </para>
 </entry></row>
 
-<row revisionflag="added"><entry>&added50;<option>PROLOG</option> / <option>NOPROLOG</option>
+<row revisionflag="added"><entry>&added50;<option>ERROR</option> <option>FAILURE</option> <option>LOSTDIGITS</option> <option>NOSTRING</option> <option>NOTREADY</option> <option>NOVALUE</option>
+<indexterm><primary>::OPTIONS directive</primary><secondary>ERROR option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>FAILURE option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>LOSTDIGITS option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOSTRING option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOTREADY option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOVALUE option</secondary></indexterm>
+</entry>
+<entry>
+<para>
+controls whether an ERROR, FAILURE, LOSTDIGITS, NOSTRING, NOTREADY, or NOVALUE
+condition event raises its associated condition, or raises a SYNTAX condition.
+</para>
+<para>
+If ::OPTIONS <emphasis role="italic">condition</emphasis> CONDITION is in effect,
+which is the default, the <emphasis role="italic">condition</emphasis> event
+raises its associated condition as usual.
+If ::OPTIONS <emphasis role="italic">condition</emphasis> SYNTAX is in effect,
+a SYNTAX condition is raised instead.
+</para>
+<para>To override an ::OPTIONS
+<emphasis role="italic">condition</emphasis> SYNTAX package default, you can use
+<xref linkend="keySignal" xrefstyle="select:title"/> ON
+<emphasis role="italic">condition</emphasis>,
+SIGNAL OFF <emphasis role="italic">condition</emphasis>,
+SIGNAL ON ANY, or SIGNAL OFF ANY, to raise the associated condition,
+or raise no condition at all.
+For <emphasis role="italic">condition</emphasis>s <option>ERROR</option>,
+<option>FAILURE</option>, and <option>NOTREADY</option> you can also use
+<xref linkend="keyCall" xrefstyle="select:title"/> ON
+<emphasis role="italic">condition</emphasis>,
+CALL OFF <emphasis role="italic">condition</emphasis>,
+CALL ON ANY, or CALL OFF ANY, to raise the associated condition,
+or raise no condition at all.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry>&added50;<option>PROLOG</option> <option>NOPROLOG</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>PROLOG option</secondary></indexterm>
 <indexterm><primary>::OPTIONS directive</primary>

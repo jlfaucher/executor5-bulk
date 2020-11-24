@@ -32,7 +32,7 @@ method ::= '::METHOD' methodname 'ATTRIBUTE'? 'CLASS'?
 options ::= '::OPTIONS' ( 'DIGITS' digits |
                           'FORM' ('ENGINEERING' | 'SCIENTIFIC') |
                           'FUZZ' fuzz |
-                          'NOVALUE' ('CONDITION' | 'ERROR') |
+                          ('ALL' | 'ERROR' | 'FAILURE' | 'LOSTDIGITS' | 'NOSTRING' | 'NOTREADY' | 'NOVALUE') ('CONDITION' | 'SYNTAX') |
                           ( 'PROLOG' | 'NOPROLOG' ) |
                           'TRACE' trace
                         )*
