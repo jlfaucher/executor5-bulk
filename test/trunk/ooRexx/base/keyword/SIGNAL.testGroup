@@ -255,10 +255,10 @@ return testResult
 ::method test_bug_1664
   -- none of these should raise NOVALUE
   self~runDynamicSource(("signal off novalue; return a; ::options novalue syntax"))
-  self~runDynamicSource(("signal off novalue; return a; ::options any syntax"))
+  self~runDynamicSource(("signal off novalue; return a; ::options all syntax"))
 
   -- but these two should raise Error 98.986:  Reference to unassigned variable
   self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options novalue syntax"))
-  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options any syntax"))
+  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options all syntax"))
 
 
