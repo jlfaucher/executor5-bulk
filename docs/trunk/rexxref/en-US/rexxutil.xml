@@ -56,46 +56,23 @@ platforms; the package contains external Rexx functions. These functions:</para>
 <listitem><para>Perform text screen input and output</para></listitem>
 </itemizedlist>
 <para>All of the RexxUtil functions are registered by the Rexx interpreter on
-startup so there is no need to register the functions either individually or
-via the SysLoadFuncs function.</para>
+startup so there is no need to manually register the functions.
+</para>
 
 <section id="systemerrorcodes"><title>A Note on Error Codes</title>
-<indexterm><primary>Windows OS Error Codes</primary></indexterm>
-<para>On Windows, some of the REXXUTIL functions return operating system error
+<indexterm><primary>Windows System Error Codes</primary></indexterm>
+<para>On Windows, some of the RexxUtil functions return operating system error
 codes on failure.  The <xref linkend="utlSysgeterrortext" xrefstyle="select:title"/>
 function can be used retrieve a description of system error code. In addition,
 the meaning of these error return codes can be looked up in the Windows
-Operating System documentation provided by Microsoft.
-</para>
-<para>The documentation is called the MSDN Library.  The library is provided
-online for anyone to access. Plus, since May 2006, Microsoft has also provided
-the ISO images for the library free of charge.  Anyone can download the ISOs,
-burn them to a CD, and install the library locally on their system.
-</para>
-<para>The information below is provided to help the Rexx programmer locate the
-MSDN Library.  All things on the Internet change. The
-URLs listed here are accurate at the time of this writing.
-</para>
-<para>The online MSDN Library is currently located at:</para>
-<para>http://msdn2.microsoft.com/en-us/library/default.aspx.</para>
-<para>A direct link to the section on the System Error codes is:</para>
-<para>http://msdn.microsoft.com/en-us/library/ms681381.aspx</para>
-<para>A Google search of <computeroutput>MSDN Library</computeroutput> will turn
-up the link to the online MSDN Library. A Google search of <computeroutput>MSDN
-"System Error Codes"</computeroutput> will turn up the section on the error
-codes.
-</para>
-<para>Directions to the downloadable ISO images of the MSDN Library have been
-posted on this blog entry:</para>
-<para>http://blogs.msdn.com/robcaron/archive/2006/07/26/678897.aspx</para>
-<para>A Google search using: <computeroutput>"Rob Caron" General Downloads MSDN
-Library</computeroutput> should also turn up the blog entry.
+System Error Codes documentation provided by Microsoft, currently at
+https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes.
 </para>
 </section>
 
 <section id="utilfuncttable"><title>List of Rexx Utility Functions</title>
 <indexterm><primary>rexxutil functions</primary></indexterm>
-<para>The following table lists all of the REXXUTIL functions and the
+<para>The following table lists all of the RexxUtil functions and the
 platforms on which they are available.</para>
 <table id="functtable" frame="all" pgwide="1"><title>Rexx Utility Library Functions</title>
 <tgroup cols ="4">
@@ -157,10 +134,6 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><xref linkend="utlSysdrivemap" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>No</entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="utlSysdropfuncs" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
 <entry></entry>
 </row>
 <row>
@@ -282,10 +255,6 @@ platforms on which they are available.</para>
 <row>
 <entry><xref linkend="utlSyslinver" xrefstyle="select:title"/></entry><entry>No</entry><entry>No*</entry>
 <entry>Linux only*</entry>
-</row>
-<row>
-<entry><xref linkend="utlSysloadfuncs" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
-<entry></entry>
 </row>
 <row>
 <entry><xref linkend="utlSysloadrexxmacrospace" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
@@ -828,27 +797,24 @@ Cursor position is 0, 0
 </imageobject>
 </mediaobject>
 
-<para>Returns drive information in the form:
-<computeroutput>drive:  free total label</computeroutput>.</para>
-<variablelist>
-<varlistentry><term>drive:</term>
-<listitem><para>is the drive letter identifier.
-</para></listitem></varlistentry>
-<varlistentry><term>free</term>
-<listitem><para>is the drive unused space.
-</para></listitem></varlistentry>
-<varlistentry><term>total</term>
-<listitem><para>is the total size of the drive.
-</para></listitem></varlistentry>
-<varlistentry><term>label</term>
-<listitem><para>is the drive label.
-</para></listitem></varlistentry>
-</variablelist>
-<para>If the drive is not accessible, then SysDriveInfo returns "".</para>
+<para>Returns drive information in the form
+<literal>drive free total label</literal>, where
+<literal>drive</literal> is the drive identifier,
+<literal>free</literal> is the total number of unused bytes,
+<literal>total</literal> is the total size in bytes, and
+<literal>label</literal> is the volume label of the specified
+<emphasis role="italic">drive</emphasis>.
+Returns the null string if the drive is not accessible.
+</para>
+<para>If <emphasis role="italic">drive</emphasis> is omitted, the
+current drive is used.
+</para>
+
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">drive</emphasis></term>
-<listitem><para>The drive of interest,  "C:".
+<listitem><para>A drive specification like <literal>d:\</literal> or
+<literal>\\share\path</literal>.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -861,10 +827,7 @@ Cursor position is 0, 0
 <example id="ex.sysdriveinfo">
 <title>RexxUtil &mdash; SysDriveinfo</title>
 <programlisting>
-/* Code */
-say "Disk="SysDriveInfo("C:")
-/* Output */
-Disk=C: 33392640 83687424 TRIGGER_C
+say SysDriveInfo() -- e. g. C: 23989809152 254721126400 Windows
 </programlisting>
 </example>
 </section>
@@ -935,23 +898,6 @@ C: D: E: F: W:
 </programlisting>
 </example>
 </section>
-
-<section id="utlSysdropfuncs"><title>SysDropFuncs</title>
-<indexterm><primary>SysDropFuncs</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysDropFuncs</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysdropfuncs.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>
-From ooRexx 4.0.0 and on this function does nothing.
-</para>
-</section>
-
 
 <section id="utlSysdroprexxmacro"><title>SysDropRexxMacro</title>
 <indexterm><primary>SysDropRexxMacro</primary></indexterm>
@@ -1247,8 +1193,8 @@ call SysFileMove "c:\temp\myfile.txt", "d:\myfolder"
 </imageobject>
 </mediaobject>
 
-<para>Finds all file lines containing the target string and returns the file
-lines in a Rexx stem variable collection.</para>
+<para>Returns a list of all file lines containing the target string.
+</para>
 
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -1258,10 +1204,11 @@ lines in a Rexx stem variable collection.</para>
 <varlistentry><term><emphasis role="italic">file</emphasis></term>
 <listitem><para>The searched file.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">stem</emphasis></term>
-<listitem><para>The result stem variable name. SysFileSearch sets Rexx variable
-<emphasis role="italic">stem</emphasis><literal>.0</literal> to the number of lines returned and
-stores the individual lines in variables
+<varlistentry><term><emphasis role="italic">stemarray</emphasis></term>
+<listitem><para>A Rexx stem or array variable for the returned lines.
+If a stem variable, <emphasis role="italic">stem</emphasis><literal>.0</literal>
+is set to <emphasis role="italic">n</emphasis>, the number of lines returned,
+and the lines are returned in
 <emphasis role="italic">stem</emphasis><literal>.1</literal> to
 <emphasis role="italic">stem.n</emphasis>.
 </para></listitem></varlistentry>
@@ -1363,8 +1310,9 @@ Returns the null string if the drive is not accessible.
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">drive</emphasis></term>
-<listitem><para>The drive root of interest, for example <literal>C:\</literal>.
-If this argument is omitted, the current drive is used.
+<listitem><para>A drive specification like <literal>d:\</literal> or
+<literal>\\share\path</literal>.
+If omitted, the current drive is used.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -1393,12 +1341,12 @@ say SysFileSystemType("C:\")    -- NTFS
 </imageobject>
 </mediaobject>
 
-<para>Finds all files that match a file specification. SysFileTree returns the
-file descriptions (date, time, size, attributes, and file specification) space delimited in
-a Rexx stem variable collection. The default format for date and time is platform specific.</para>
+<para>Returns a list of all files that match a file specification. SysFileTree can return
+file information like date, time, size, attributes, and file name.
+The default format for date and time is platform specific.</para>
 <para>
   <emphasis role="italic">SysFileTree</emphasis> uses operating system APIs to find the files. The found files are
-  placed in the returned stem in the order they are found by the operating system.
+  placed in the returned list in the order they are found by the operating system.
   No specific order can be assumed.
 </para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
@@ -1419,16 +1367,16 @@ a Rexx stem variable collection. The default format for date and time is platfor
   <literal>!</literal> for negation.
 </para>
 </listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">stem [required]</emphasis></term>
-<listitem><para>The name of a stem variable to be used for storing results.
-SysFileTree sets Rexx variable <emphasis role="italic">stem.0</emphasis>
-to the number of files and directories found and stores individual
-file descriptions into variables <emphasis role="italic">stem.1</emphasis> to
+
+<varlistentry><term><emphasis role="italic">stemarray [required]</emphasis></term>
+<listitem><para>A Rexx stem or array variable for the returned matches.
+If a stem variable, <emphasis role="italic">stem</emphasis><literal>.0</literal>
+is set to <emphasis role="italic">n</emphasis>, the number of matches returned,
+and the matching files or directories are returned in
+<emphasis role="italic">stem</emphasis><literal>.1</literal> to
 <emphasis role="italic">stem.n</emphasis>.
-Note: <emphasis role="italic">stem</emphasis> can be specified as
-<emphasis role="italic">stem</emphasis> or <emphasis role="italic">stem.</emphasis>
-(with or without the trailing period)
 </para></listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">options [optional]</emphasis></term>
 <listitem><para>A string with any combination of the following.
 If this argument is omitted, it defaults to <literal>B</literal>.
@@ -2241,12 +2189,6 @@ say SysGetShortPathName("\windows\explorer.exe")  -- \windows\explorer.exe
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysIni</secondary></indexterm>
 
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysini1.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
 <para>Allows limited access to INI file variables. Variables are stored in the
 INI file under Application Names and their associated key names or keywords.
 You can use SysIni to share variables between applications or as a way of
@@ -2293,21 +2235,21 @@ you want to store keywords (some sort of data).
 application. This can be <computeroutput>"DELETE:"</computeroutput> or
 <computeroutput>"ALL:"</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">stem</emphasis></term>
-<listitem><para>The name of a Rexx stem variable collection in which to store
-the resultant information. SysIni sets Rexx variable
-<emphasis role="italic">stem.0</emphasis> to the number of elements
-returned and stores these elements in
-<emphasis role="italic">stem.1</emphasis> to
+<varlistentry><term><emphasis role="italic">stemarray</emphasis></term>
+<listitem><para>A Rexx stem or array variable for the returned names.
+If a stem variable, <emphasis role="italic">stem</emphasis><literal>.0</literal>
+is set to <emphasis role="italic">n</emphasis>, the number of names returned,
+and the names are returned in
+<emphasis role="italic">stem</emphasis><literal>.1</literal> to
 <emphasis role="italic">stem.n</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Sysini has six modes. The modes and the syntax variations are as follows:
+<para>SysIni has six modes. The modes and the syntax variations are as follows:
 </para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini2.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini1.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2315,7 +2257,7 @@ returned and stores these elements in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini3.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini2.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2323,7 +2265,7 @@ returned and stores these elements in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini4.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini3.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2331,7 +2273,7 @@ returned and stores these elements in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini5.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini4.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2339,7 +2281,7 @@ returned and stores these elements in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini6.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini5.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2347,7 +2289,7 @@ returned and stores these elements in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/rexxutil/sysini7.svg" scale="55" />
+<imagedata fileref="images/rexxutil/sysini6.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2768,22 +2710,6 @@ say SysVersion() -- Linux 3.12.74-60.64.40-default
 </para>
 </section>
 
-
-<section id="utlSysloadfuncs"><title>SysLoadFuncs</title>
-<indexterm><primary>SysLoadFuncs</primary></indexterm>
-<indexterm><primary>rexxutil functions</primary>
-<secondary>SysLoadFuncs</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/rexxutil/sysloadfuncs.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>
-From ooRexx 4.0.0 and on this function does nothing.
-</para>
-</section>
 
 <section id="utlSysloadrexxmacrospace"><title>SysLoadRexxMacroSpace</title>
 <indexterm><primary>SysLoadRexxMacroSpace</primary></indexterm>
@@ -4147,7 +4073,7 @@ page.</para></listitem></varlistentry>
 <para>Returns a version number that identifies the current level of the Rexx
 Utilities package. It can be used to verify the availability of certain
 functions.</para>
-<para>Return code: The REXXUTIL version number in the format
+<para>Return code: The RexxUtil version number in the format
 <computeroutput>n.m.l</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <para>Because this function was not part of the original packaging, a sample
@@ -4160,14 +4086,14 @@ If RxFuncQuery("SysUtilVersion") = 1 |,
      Say "Your RexxUTIL.DLL is not at the current level"
 </programlisting>
 </example>
-<para>If a specific function should be used that was added at a later REXXUTIL
+<para>If a specific function should be used that was added at a later RexxUtil
 level a similar check can be performed by querying this function as follows:
 </para>
 <example id="ex.rxfuncquery-1">
 <title>RexxUtil &mdash; RxFuncquery</title>
 <programlisting>
 If RxFuncQuery("SysSetFileDateTime") = 1 Then
-  Say "Your REXXUTIL.DLL is not at the current level"
+  Say "Your RexxUtil.DLL is not at the current level"
 </programlisting>
 </example>
 </section>
@@ -4228,27 +4154,10 @@ say SysVersion() -- Windows 10.0.18363
 <para>Returns the volume label for the specified drive.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">driveLetter</emphasis></term>
-<listitem><para>A drive letter in the form &apos;X:&apos;.  If the drive letter
-is omitted, the current drive is used.
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Encryption was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>File not found.
-</para></listitem></varlistentry>
-<varlistentry><term>4</term>
-<listitem><para>Cannot open file.
-</para></listitem></varlistentry>
-<varlistentry><term>5</term>
-<listitem><para>Access denied.
-</para></listitem></varlistentry>
-<varlistentry><term>82</term>
-<listitem><para>Cannot encrypt.
+<varlistentry><term><emphasis role="italic">drive</emphasis></term>
+<listitem><para>A drive specification like <literal>d:\</literal> or
+<literal>\\share\path</literal>.
+If omitted, the current drive is used.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -4418,16 +4327,19 @@ only)</title>
 </imageobject>
 </mediaobject>
 
-<para>Fills a stem with the available printer descriptions.</para>
+<para>Returns a list of available printer descriptions.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">stem.0</emphasis></term>
-<listitem><para>The number of entries
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">stem.i</emphasis></term>
-<listitem><para>Entry
+<varlistentry><term><emphasis role="italic">stemarray</emphasis></term>
+<listitem><para>A Rexx stem or array variable for the returned printers.
+If a stem variable, <emphasis role="italic">stem</emphasis><literal>.0</literal>
+is set to <emphasis role="italic">n</emphasis>, the number of printers returned,
+and the printers are returned in
+<emphasis role="italic">stem</emphasis><literal>.1</literal> to
+<emphasis role="italic">stem.n</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
+
 <para>Each entry is of the form "Printername,Drivername,Portname".</para>
 <para><emphasis role="bold">Return codes:</emphasis></para>
 <variablelist>

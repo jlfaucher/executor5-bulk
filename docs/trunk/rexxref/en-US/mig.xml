@@ -52,17 +52,17 @@ and earlier versions of Open Object Rexx.</para>
 which means the use of these functions is discouraged, documentation is no
 longer provided, and bug reports against deprecated functions will not be
 accepted.
-Reasons for deprecating include broken functionality or features that were
-never officially documented.
+Reasons for deprecation include broken functionality, features that were
+never officially documented, or functions no longer required.
 </para>
 <para>Although existing code using deprecated functions is expected to continue
 to work as-is, you are strongly encouraged to migrate to the replacement
-functionality, as these functions are expected to be removed from future
-releases of the interpreter.
+functionality, as these functions may be removed from future releases of the
+interpreter.
 </para>
 
-<section id="deprecated.semaphore"><title>Rexx Utilities Semaphore functions</title>
-<para>The following Rexx Utilities functions related to
+<section id="deprecated.semaphore"><title>RexxUtil Semaphore functions</title>
+<para>The following RexxUtil functions related to
 semaphore-processing have been deprecated.
 <simplelist columns="2">
  <member>SysCloseEventSem</member>
@@ -85,9 +85,15 @@ semaphore-processing have been deprecated.
 </para>
 </section>
 
-<section id="deprecated.options"><title>::OPTIONS NOVALUE directive</title>
+<section id="deprecated.loaddrop"><title>RexxUtil SysLoadFuncs/SysDropFuncs </title>
+<para>The RexxUtil functions SysLoadFuncs and SysDropFuncs have been deprecated.
+Since ooRexx 4.0.0 these functions do nothing.
+</para>
+</section>
+
+<section id="deprecated.options"><title>::OPTIONS NOVALUE ERROR directive</title>
 <para>The ::OPTIONS NOVALUE ERROR directive has been deprecated.
-It has been renamed to <xref linkend="optionsd" xrefstyle="select:title"/>
+It was renamed to <xref linkend="optionsd" xrefstyle="select:title"/>
 NOVALUE SYNTAX.
 </para>
 </section>

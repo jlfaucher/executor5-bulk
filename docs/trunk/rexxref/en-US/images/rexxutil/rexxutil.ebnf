@@ -8,11 +8,7 @@ sysbootdrive ::= 'SysBootDrive()'
 
 sysclearrexxmacrospace ::= 'SysClearRexxMacroSpace()'
 
-
-
 syscls ::= 'SysCls()'
-
-
 
 syscreatepipe ::= 'SysCreatePipe()'
 
@@ -20,11 +16,9 @@ syscurpos ::= 'SysCurPos(' ( row ',' column )? ')'
 
 syscurstate ::= 'SysCurState(' state ')'
 
-sysdriveinfo ::= 'SysDriveInfo(' drive ')'
+sysdriveinfo ::= 'SysDriveInfo(' drive? ')'
 
-sysdrivemap ::= 'SysDriveInfo(' ( drive )? ( ',' opt )? ')'
-
-sysdropfuncs ::= 'SysDropFuncs()'
+sysdrivemap ::= 'SysDriveInfo(' drive? ( ',' opt )? ')'
 
 sysdroprexxmacro ::= 'SysDropRexxMacro(' name ')'
 
@@ -38,11 +32,11 @@ sysfileexists ::= 'SysFileExists(' filename ')'
 
 sysfilemove ::= 'SysFileMove(' source ',' target ')'
 
-sysfilesearch ::= 'SysFileSearch(' target ',' file ',' stem ( ',' options )? ')'
+sysfilesearch ::= 'SysFileSearch(' target ',' file ',' stemarray ( ',' options )? ')'
 
 sysfilesystemtype ::= 'SysFileSystemType(' drive? ')'
 
-sysfiletree ::= 'SysFileTree(' filespec ',' stem ',' options? ',' tattrib? ',' nattrib? ')'
+sysfiletree ::= 'SysFileTree(' filespec ',' stemarray ',' options? ',' tattrib? ',' nattrib? ')'
 
 sysfork ::= 'SysFork()'
 
@@ -64,19 +58,12 @@ sysgetmessagex ::= 'SysGetMessage(' set ',' num ',' filename? ( ',' str )*
 
 sysgetshortpathname ::= 'SysGetShortPathName(' path ')'
 
-sysini1 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' val ',' stem ')'
-
-sysini2 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' val ')'
-
-sysini3 ::= 'SysIni(' ( inifile )? ',' app ',' key ')'
-
-sysini4 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' '"DELETE:"' ')'
-
-sysini5 ::= 'SysIni(' ( inifile )? ',' app ',' '"DELETE:"' ')'
-
-sysini6 ::= 'SysIni(' ( inifile )? ',' app ',' '"ALL:"' ',' '"stem"' ')'
-
-sysini7 ::= 'SysIni(' ( inifile )? ',' '"ALL:"' ',' '"stem"' ')'
+sysini1 ::= 'SysIni(' inifile? ',' app ',' key ',' val ')'
+sysini2 ::= 'SysIni(' inifile? ',' app ',' key ')'
+sysini3 ::= 'SysIni(' inifile? ',' app ',' key ',' '"DELETE:"' ')'
+sysini4 ::= 'SysIni(' inifile? ',' app ',' '"DELETE:"' ')'
+sysini5 ::= 'SysIni(' inifile? ',' app ',' '"ALL:"' ',' stemarray ')'
+sysini6 ::= 'SysIni(' inifile? ',' '"ALL:"' ',' stemarray ')'
 
 sysisfile ::= 'SysIsFile(' filename ')'
 
@@ -98,29 +85,19 @@ sysisfiletemporary ::= 'SysIsFileTemporary(' filename ')'
 
 syslinver ::= 'SysLinVer()'
 
-sysloadfuncs ::= 'SysLoadFuncs()'
-
 sysloadrexxmacrospace ::= 'SysLoadRexxMacroSpace(' file ')'
 
 sysmkdir ::= 'SysMkDir(' dirspec ')'
 sysmkdir_unix ::= 'SysMkDir(' dirspec (',' mode)? ')'
 
-
-
-
-
 sysqueryprocess1 ::= 'SysQueryProcess(' ( '"PID"' | '"TID"' | '"PPRIO"' | '"TPRIO"' |
                                          '"PTIME"' | '"TTIME"' )? ')'
-
 sysqueryprocess2 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"PTIME"' |
                                          '"PMEM"' | '"PSWAPS"' | '"PRCVDSIG"' )? ')'
 
 sysqueryrexxmacro ::= 'SysQueryRexxMacro(' name ')'
 
-
 sysreorderrexxmacro ::= 'SysReorderRexxMacro(' name ',' order ')'
-
-
 
 sysrmdir ::= 'SysRmDir(' dirspec ')'
 
@@ -165,10 +142,9 @@ sysutilversion ::= 'SysUtilVersion()'
 
 sysversion ::= 'SysVersion()'
 
-sysvolumelabel ::= 'SysVolumeLabel(' ( driveletter )? ')'
+sysvolumelabel ::= 'SysVolumeLabel(' drive? ')'
 
 syswait ::= 'SysWait()'
-
 
 syswaitnamedpipe ::= 'SysWaitNamedPipe(' name ( ',' timeout )? ')'
 
@@ -178,7 +154,7 @@ syswinencryptfile ::= 'SysWinEncryptFile(' filename ')'
 
 syswingetdefaultprinter ::= 'SysWinGetDefaultPrinter()'
 
-syswingetprinters ::= 'SysWinGetPrinters(' stem ')'
+syswingetprinters ::= 'SysWinGetPrinters(' stemarray ')'
 
 syswinsetdefaultprinter ::= 'SysWinSetDefaultPrinter(' description ')'
 
