@@ -1,0 +1,155 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysDrive.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysDrive.testgroup subclass ooTestCase public
+
+-- test SysDriveInfo, SysVolumeLabel, SysFileSystemType
+
+::constant wmic_available (.Routine~new("wmic", "trace off; address 'path' 'wmic /?' with output stem ignore. error stem ignore.; return rc = 0")[])
+::constant mountvol_available (.Routine~new("mountvol", "trace off; address 'path' 'mountvol /?' with output stem ignore. error stem ignore.; return rc = 0")[])
+
+::method test_driveinfo_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysDriveInfo "c:", ""
+
+::method test_volumelabel_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysVolumeLabel "c:", ""
+
+::method test_filesystemtype_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysFileSystemType "c:", ""
+
+-- null string should be returned for invalid or unused drive
+::method test_no_args
+  cd = directory()
+  do d over "C:", "\\localhost\c$"
+    call directory d
+    self~assertSame(SysDriveInfo(d), SysDriveInfo())
+    self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
+    self~assertSame(SysFileSystemType(d), SysFileSystemType())
+  end
+  call directory cd
+
+-- null string should be returned for invalid or unused drive
+::method test_no_drive
+  do d over "", SysDriveMap(, "free")~word(1)
+    self~assertSame("", SysDriveInfo(d), "SysDriveInfo" d)
+    self~assertSame("", SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame("", SysFileSystemType(d), "SysFileSystemType" d)
+  end
+
+-- there are a bunch of ways to specify a drive (i. e. volume)
+::method test_volume_specifications
+  -- mountvol command is required
+  self~assertTrue(self~mountvol_available, "mountvol command is unavailable")
+  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", self~guid, -
+    "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
+    "\\.\UNC\localhost\c$"
+    info = SysDriveInfo(volume) -- drive free total label
+    -- might have no label, or a label with embedded blanks
+    self~assertTrue(info~words >= 3, "SysDriveInfo" volume "=" info"; at least 3 words")
+    self~assertTrue(info~word(2) >= 0, "SysDriveInfo" volume "=" info"; free bytes")
+    self~assertTrue(info~word(3) >= 0, "SysDriveInfo" volume "=" info"; total bytes")
+    self~assertNotSame("", SysVolumeLabel(volume), "SysVolumeLabel" volume)
+    self~assertNotSame("", SysFileSystemType(volume), "SysFileSystemType" volume)
+  end
+
+-- test returned values for all drives in use
+::method test_drives
+  -- wmic command is required
+  self~assertTrue(self~wmic_available, "wmic command is unavailable")
+  do d over SysDriveMap("c:")~subWords
+    info = SysDriveInfo(d)
+    parse var info drive free size label
+    -- use WMI to retrieve volume information details
+    wmi = self~wmi(d, "DeviceID, FreeSpace, Size, VolumeName, FileSystem")
+    -- for inaccessible drives SysDriveInfo returns null string, no device id
+    self~assertOneOrAnother("", wmi["DeviceID"], drive, "SysDriveInfo" d info)
+    self~assertSame(wmi["FreeSpace"], free, "SysDriveInfo" d info)
+    self~assertSame(wmi["Size"], size, "SysDriveInfo" d info)
+    self~assertSame(wmi["VolumeName"], label, "SysDriveInfo" d info)
+
+    self~assertSame(wmi["VolumeName"], SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame(wmi["FileSystem"], SysFileSystemType(d), "SysFileSystemType" d)
+  end
+
+
+-- retrieve volume information
+::method wmi
+  use strict arg drive, data
+  -- NOTE: wmic is deprecated and should be replaced by Powershell cmdlet
+  --   Get-CimInstance -ClassName Win32_logicaldisk
+  -- we ask wmic to return volume information details in the name=value format
+  address "path" "wmic logicaldisk" drive "get" data "/value" with output stem line.
+  wmi = .Stringtable~new(data~words)
+  do i = 1 to line.0
+    -- wmic is notorious for its superfluous trailing carriage-return
+    parse value line.i~strip("t", "0d"x) with name "=" wmi[name]
+  end
+  return wmi
+
+-- retrieve the GUID for the given volume
+::method guid
+  -- there seems to be no nice way to retrieve a volume GUID
+  -- we use mountvol /? which lists current volume names with their GUIDs
+  -- we just pick the first GUID we find (typically for C:\)
+  mountvol = .Array~new
+  address "path" "mountvol /?" with output using (mountvol)
+  do line over mountvol
+    if line~strip~startsWith("\\?\Volume{") then
+      return line~strip
+  end
+  return "C"
+
+
+::options digits 18 all syntax
