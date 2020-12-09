@@ -3473,11 +3473,9 @@ and will not change if you change the default directory.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
-</para>
-<para>On Unix-like systems where both case-sensitive and case-insensitive
-file systems may be mounted, this method returns &true; if the file system
-root "<literal>/</literal>" is case-sensitive, and otherwise &false;.
+<para>Returns the case-sensitivity, &true; or &false;, of root
+( <literal>/</literal> ) on Unix-like systems.
+On Windows, returns the case-sensitivity of the Windows system directory.
 </para>
 <para>See also instance method <xref linkend="mthFileIsCaseSensitive" xrefstyle="select:title"/>.
 </para>
@@ -3498,7 +3496,7 @@ root "<literal>/</literal>" is case-sensitive, and otherwise &false;.
 
 <para>Returns the file system root elements, as an array of strings.
 On Windows, each of the drives is a root element in the format
-<literal>C:\</literal>.
+<literal>d:\</literal>.
 On Unix, there is just one root ( <literal>/</literal> ).
 </para>
 <example>
@@ -3525,9 +3523,10 @@ say .File~listRoots~toString(, " ")   -- / (Unix)
 </imageobject>
 </mediaobject>
 
-<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+<para>Returns the separator used for file search paths,
+"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix.
 </para>
-<para>This query method is available as both an instance and class method.
+<para>See also instance method <xref linkend="mthFilePathSeparator" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -3922,8 +3921,10 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the target File object is case-sensitive,
-otherwise returns &false;.
+<para>Returns the case-sensitivity, &true; or &false;, of the file or directory
+represented by the absolute path of the target File object.
+If the referenced file or directory does not exist, the case-sensitivity of
+the final existing folder along the referenced absolute path is returned.
 </para>
 <para>See also class method <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="select:title"/>.
 </para>
@@ -4391,9 +4392,10 @@ the final separator (if any).
 </imageobject>
 </mediaobject>
 
-<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+<para>Returns the separator used for file search paths,
+"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix.
 </para>
-<para>This query method is available as both an instance and class method.
+<para>See also class method <xref linkend="mthFilePathSeparatorClsMth" xrefstyle="select:title"/>.
 </para>
 </section>
 
