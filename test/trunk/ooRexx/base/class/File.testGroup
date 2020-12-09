@@ -42,7 +42,6 @@
 parse source . . s
 
 group = .TestGroup~new(s)
--- adding a suite will allow for one-time setup and tearDown
 group~add(.File.testGroup)
 if group~isAutomatedTest then
   return group
@@ -804,9 +803,13 @@ else
   .File~new('')~isCaseSensitive(.nil)
 
 ::method test_iscasesensitive_directory
-  -- the class method always returns the same value as the instance
-  -- method returns for the first root, e. g. "/" or "C:\"
-  self~assertSame(.File~isCaseSensitive, .File~new(.File~listRoots[1])~isCaseSensitive)
+  -- the class method returns the case sensititvity for "/" or the Windows
+  -- system directory
+  if .RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    root = SysSystemDirectory()
+  else
+    root = "/"
+  self~assertSame(.File~isCaseSensitive, .File~new(root)~isCaseSensitive)
 
   -- a Windows and a Mac file system typically isn't case-sensitive
   -- (probably not true under all circumstances, but a good guess)
@@ -871,6 +874,32 @@ else
   sensitiveFile~delete
   sensitiveSubdir~delete
   sensitiveDir~delete
+
+-- [bugs:#1724] File attributes for Windows system files cannot be read
+::method test_system_files_windows_only
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  do system over "hiberfil.sys", "swapfile.sys", "pagefile.sys"
+    -- does the file exist?
+    call SysFileTree SysBootDrive() || "\" || system, f., "fo"
+    if f.0 = 0 then
+      iterate
+    name = f.1
+    file = .File~new(name)
+    self~assertTrue(file~exists, name "exists")
+    self~assertTrue(file~isFile, name "isFile")
+    self~assertFalse(file~isDirectory, name "isDirectory")
+    self~assertTrue(file~isHidden, name "isHidden")
+    self~assertTrue(file~length > 0, name "length")
+
+    self~assertSame(file~lastModified~isoDate~left(19)~changeStr("T", " "), SysGetFileDateTime(name, "write"), "lastModified" name)
+    self~assertSame(file~lastAccessed~isoDate~left(19)~changeStr("T", " "), SysGetFileDateTime(name, "access"), "lastAccessed" name)
+
+    self~assertTrue(SysFileExists(name), "SysFileExists" name)
+    self~assertTrue(SysIsFile(name), "SysIsFile" name)
+    self~assertFalse(SysIsFileDirectory(name), "SysIsFileDirectory" name)
+  end
 
 
 ::options novalue syntax
