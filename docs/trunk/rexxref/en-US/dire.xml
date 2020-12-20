@@ -372,7 +372,6 @@ that any sender can activate.
 </para></listitem>
 
 <listitem><para>If you
-<indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
 specify the <option>UNGUARDED</option> option, the methods can be called while other methods are
 active on the same object. If you do not specify <option>UNGUARDED</option>, the method requires
 exclusive use of the object variable pool; it can run only if no other method
@@ -668,7 +667,8 @@ For abstract methods there is no method code body following the directive,
 so another directive (or the end of the program) must follow the
 ::METHOD directive.
 </para>
-<para>If <option>ABSTRACT</option>, <option>ATTRIBUTE</option>, or <option>EXTERNAL</option> is not specified, the ::METHOD
+<para>If <option>ABSTRACT</option>, <option>ATTRIBUTE</option>,
+<option>DELEGATE</option>, or <option>EXTERNAL</option> is not specified, the ::METHOD
 directive starts a section of method code which is ended by another directive or
 the end of the program. The ::METHOD is not included in the source of the
 created METHOD object.
@@ -734,8 +734,8 @@ is equivalent to the following code sequence:
 <title>DELEGATE subkeyword equivalent code</title>
 <programlisting>
 ::method name
-expose delegateName
-forward to(delegateName)
+  expose delegateName
+  forward to(delegateName)
 </programlisting>
 </example>
 </para>
@@ -799,18 +799,27 @@ or specify <option>PUBLIC</option>, the method is a public method
 that any sender can activate.
 </para></listitem>
 
-<listitem><para>If you
-<indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm> specify
-the <option>UNGUARDED</option> option, the method can be called while other methods are active on
-the same object. If you do not specify <option>UNGUARDED</option>, the method requires exclusive
-use of the object variable pool; it can run only if no other method that
-requires exclusive use of the object variable pool is active on the same
-object.</para></listitem>
+<listitem><para revisionflag="changed">&changed50;If you specify the
+<option>GUARDED</option> option, the method acquires exclusive
+access to its object variable pool; it can run only if no other method that
+requires exclusive access to the object variable pool is active on the same
+object.
+If you specify <option>UNGUARDED</option>, the method can be called while other
+methods are active on the same object.
+If you neither specify <option>GUARDED</option> nor <option>UNGUARDED</option>,
+the default is to run unguarded for a method that doesn't use
+<option>ATTRIBUTE</option>, <option>ABSTRACT</option>, <option>DELEGATE</option>,
+or <option>EXTERNAL</option>, and doesn't need access to its object variables
+(that is, it doesn't use EXPOSE or USE LOCAL).
+For all other methods, the default is to run guarded.
+</para></listitem>
+
 <listitem><para>If you specify the <option>PROTECTED</option> option, the method is a protected
 method. (See <xref linkend="secman" /> for more information.)
 If you omit the <option>PROTECTED</option> option or specify <option>UNPROTECTED</option>, the method is
 not protected.</para></listitem>
-<listitem><para>If you specify <option>ATTRIBUTE</option>, <option>ABSTRACT</option>, or <option>EXTERNAL</option>, another
+<listitem><para>If you specify <option>ATTRIBUTE</option>, <option>ABSTRACT</option>,
+<option>DELEGATE</option>, or <option>EXTERNAL</option>, another
 directive (or the end of the program) must follow the ::METHOD directive.
 </para></listitem>
 <listitem><para>It is an error to specify ::METHOD more than once within the same
