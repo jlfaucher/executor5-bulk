@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -951,11 +951,11 @@ case, which is equivalent to DO FOREVER ... END.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The LABEL and COUNTER phrases, if used, must precede any
-<emphasis role="italic">repetitor</emphasis> or <emphasis role="italic">conditional</emphasis>.
+<listitem><para>The LABEL and COUNTER phrases can be in any order, if used.
+They must precede any repetitor or conditional fragment.
 </para></listitem>
-<listitem><para>The COUNTER phrase is only valid with a repetitive DO,
-it cannot be used on a simple DO group.
+<listitem><para>The COUNTER phrase is only valid with a repetitive or
+conditional DO, it cannot be used on a simple DO group.
 </para></listitem>
 <listitem><para>
 <emphasis role="italic">control1</emphasis>,
@@ -998,7 +998,8 @@ are evaluated in the order in which they are written.
 <indexterm><primary>TO phrase of DO instruction</primary></indexterm>
 <indexterm><primary>FOR phrase of DO instruction</primary></indexterm>
 </para></listitem>
-<listitem><para>The INDEX, and ITEM phrases can be in any order, if used.
+<listitem><para>The INDEX and ITEM phrases can be in any order, if used.
+They cannot be used more than once.
 <indexterm><primary>INDEX phrase of DO instruction</primary></indexterm>
 <indexterm><primary>ITEM phrase of DO instruction</primary></indexterm>
 </para></listitem>

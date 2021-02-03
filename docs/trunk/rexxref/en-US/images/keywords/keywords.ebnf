@@ -16,13 +16,13 @@ call_on  ::= 'CALL'  'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 
 
 funct_call ::= 'result' '=' name '(' expression? (',' expression?)* ')'
 
-do_start       ::= ('DO' | 'LOOP') ( 'COUNTER' ctr | 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )?
+do_start       ::= ('DO' | 'LOOP') ('LABEL' name)? ('COUNTER' ctr)? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )?
 do_instruction ::= ( instruction )*
 do_end         ::= 'END' ( name )?
 
 do_repetitor   ::= (control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' exprf )? |
-/* chg in 5.0 */    control2 'OVER' collection ( 'FOR' exprf )? |
-/* new in 5.0 */   'WITH' ('INDEX' index)? ('ITEM' item)? 'OVER' supplier ( 'FOR' exprf )? |
+                    control2 'OVER' collection ( 'FOR' exprf )? |
+                   'WITH' ('INDEX' index | 'ITEM' item)+ 'OVER' supplier ( 'FOR' exprf )? |
                    'FOREVER' |
                     exprr )
 

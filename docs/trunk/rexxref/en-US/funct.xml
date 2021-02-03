@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -5454,9 +5454,15 @@ NOVALUE condition is trapped. See
 be the string &quot;ENVIRONMENT&quot; or an expression that evaluates to
 &quot;ENVIRONMENT&quot;. In this case, the variable
 <emphasis role="italic">name</emphasis> need not be a valid Rexx symbol.
-Environment variables set by VALUE are not kept after program termination.
+Environment variable names are case-sensitive on Unix-like systems.
 </para>
-<note><title>Restriction:</title>
+<para>VALUE returns the null string for undefined environment variables.
+You cannot determine whether an environment variable is undefined or has been
+set to the null string.
+</para>
+<para>Environment variables set by VALUE are not kept after program termination.
+</para>
+<note><title>Restriction</title>
 <para>The values assigned to the variables
 must not contain any character that is a hexadecimal zero ("00"X).
 For example:</para>
@@ -5476,8 +5482,7 @@ say VALUE("fred",7,share)      /* says "4" and assigns           */
 
 say VALUE("fred", ,share)      /* says "7"                       */
 
-/* Accessing and changing Windows environment entries given that */
-                               /* PATH=C:\EDIT\DOCS;             */
+/* Accessing and changing Windows environment entries            */
 env = "ENVIRONMENT"
 new = "C:\EDIT\DOCS;"
 say value("PATH",new,env)   /* says "C:\WINDOWS" (perhaps)       */
