@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1179,7 +1179,7 @@ The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
 REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
 <example>
-<title>API &mdash; REXX_TYPED_ROUTINE_PROTYPE</title>
+<title>API &mdash; REXX_TYPED_ROUTINE_PROTOTYPE</title>
 <programlisting language="C++">
 // create function declarations for the linker
 REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcPi);
@@ -1493,7 +1493,7 @@ void is not a valid return type for a method.  There must be a real return
 type specified on the method declaration.  If you wish to have a method without
 a return value, declare the method with a return type of RexxObjectPtr and
 return the value NULLOBJECT.  Methods that do not return a real value may not
-be invoked within expressions, but may be used as standalone message instructions.
+be invoked within expressions, but may be used as stand-alone message instructions.
 </para></note>
 </section>
 
@@ -1753,7 +1753,7 @@ RexxMethod0(RexxObjectPtr, myclass_dosomething)
 </example>
 <para>Since Buffer object instances are reclaimed automatically when the object
 is garbage collected, no additional steps are required to cleanup that memory.
-However, if there are additional dymanically allocated resources associated with
+However, if there are additional dynamically allocated resources associated with
 the Buffer, such as pointers to system allocated resources or dynamically allocated
 memory, it may be necessary to add an UNINIT method to your class to ensure the
 resources are not leaked.</para>
@@ -3057,7 +3057,7 @@ to retrieve the Rexx variable values.</para></listitem>
 
 <section id="commandapi"><title>Command Handler Interface</title>
 <para>Applications can create custom command handlers that function like operating system command shell environments.
-These named evironments can be invoked with the Rexx ADDRESS instruction and applications can create
+These named environments can be invoked with the Rexx ADDRESS instruction and applications can create
 Rexx instances that direct commands to custom application command handlers by default.
 </para>
 <para>There are two types of command handlers: in addition to standard
@@ -3989,7 +3989,7 @@ ret = context->CallProgram(name, arr);
 <para>Any result object returned by the program.  NULLOBJECT is returned if the
 program does not return a value.
 Any errors involved with calling the program
-will will return a NULLOBJECT result.  The
+will return a NULLOBJECT result.  The
 <xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if any errors occurred during the call.
 </para>
@@ -4031,7 +4031,7 @@ ret = context->CallRoutine(obj, arr);
 <para>Any result object returned by the Routine.  NULLOBJECT is returned if the
 program does not return a value.
 Any errors involved with calling the program
-will will return a NULLOBJECT result.  The
+will return a NULLOBJECT result.  The
 <xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if any errors occurred during the call.
 </para>
@@ -4650,7 +4650,10 @@ CSTRING name;
 class = context->FindClass(name);
 ]]>
 </programlisting>
-<para>Locates a Class object in the current thread context.
+<para>Locates a Class object in either the current Thread or Exit context,
+or in the current Method or Routine Package context.
+The latter case is equivalent to calling
+<xref linkend="mthFindContextClass" xrefstyle="select:title"/>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -4930,7 +4933,7 @@ ptr = context->GetApplicationData();
 ]]>
 </programlisting>
 <para>Returns the application data pointer that was set via the APPLICATION_DATA
-option when the intepreter instance was created.
+option when the interpreter instance was created.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -6603,7 +6606,7 @@ using the WITH subkeyword of an ADDRESS instruction.
 <indexterm><primary>Method context methods</primary>
 <secondary>IsPointer</secondary></indexterm>
 <indexterm><primary>Call context methods</primary>
-<secondary>IsRPointer</secondary></indexterm>
+<secondary>IsPointer</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>IsPointer</secondary></indexterm>
 <!-- IsPointer --><para>&contexts_thread_method_call_exit;.</para>
@@ -7300,7 +7303,7 @@ transform this into a completed String object.
 <indexterm><primary>Call context methods</primary>
 <secondary>NewDirectory</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
-<secondary>NewBDirectory</secondary></indexterm>
+<secondary>NewDirectory</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>NewDirectory</secondary></indexterm>
 <!-- NewDirectory --><para>&contexts_thread_method_call_exit;.</para>
@@ -7590,7 +7593,7 @@ obj = context->NewStringFromAsciiz(str);
 <indexterm><primary>Call context methods</primary>
 <secondary>NewStringTable</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
-<secondary>NewBStringTable</secondary></indexterm>
+<secondary>NewStringTable</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>NewStringTable</secondary></indexterm>
 <!-- NewStringTable --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
@@ -8266,7 +8269,7 @@ flag = context->ObjectToWholeNumber(obj, &n);
 </section>
 
 <section id="mthPointerValue"><title>PointerValue</title>
-<indexterm><primary>NPointerValue</primary></indexterm>
+<indexterm><primary>PointerValue</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>PointerValue</secondary></indexterm>
 <indexterm><primary>Call context methods</primary>
@@ -9312,7 +9315,7 @@ logical_t flag;
 context->SetTrace(flag);
 ]]>
 </programlisting>
-<para>Sets the interactvive trace state for the interpreter instance.  This will enable tracing in
+<para>Sets the interactive trace state for the interpreter instance.  This will enable tracing in
 all active threads for the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -10091,7 +10094,7 @@ exited immediately.
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
     <entry><para>The first substitution value for the error message.</para></entry>
     </row>
-    <row><entry><emphasis role="italic">ob21</emphasis></entry>
+    <row><entry><emphasis role="italic">obj2</emphasis></entry>
     <entry><para>The second substitution value for the error message.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
