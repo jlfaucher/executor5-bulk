@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -55,11 +55,9 @@ Your program also writes data as a continuous stream of characters.</para>
 <para>In the stream model, a text file is represented as a stream of characters
 with special line-end characters marking the end of each line of text in the stream.</para>
 <para>We use the expression &quot;line-end characters&quot; because they are
-platform dependent, and may be a single character
-(UNIX / Linux and Mac OS X use a single line feed character (<literal>'0D'x</literal>, <literal>13</literal> decimal),
-classic Mac used a single carriage return character (<literal>'0A'x</literal>, <literal>10</literal> decimal)
-or a character combination
-(Windows / DOS uses a carriage-return and line-feed character pair (<literal>'0D 0A'x</literal>)).
+platform dependent, and may be a single character or a character pair.
+UNIX, Linux and Darwin use a single line feed character <literal>'0a'x</literal>,
+Windows uses a carriage-return and line-feed character pair <literal>'0d 0a'x</literal>.
 Henceforth, when we use the expression &quot;line-end characters&quot;,
 we mean whatever character sequence constitutes the line termination sequence
 on whichever platform you are working with Rexx on.</para>
@@ -69,20 +67,20 @@ line methods or using a continuous data stream method.</para>
 <para>The Rexx Stream class is the mechanism for accessing I/O streams.
 To input or output data, you first create an instance of the Stream
 class that represents the device or file you want to use. For example, the
-following clause creates a stream object for the file <code>out.dat</code>:</para>
+following clause creates a stream object for the file <filename>out.dat</filename>:</para>
 
 <programlisting>
 <![CDATA[
 /* Create a stream object for out.dat */
-file=.stream~new("out.dat")
+file = .Stream~new("out.dat")
 ]]>
 </programlisting>
 
 <para>Then you use the appropriate stream methods to read and/or write the data.
-<code>out.dat</code> is a text file, so you would normally use the LINES(), LINEIN, and
-LINEOUT() methods that read or write data as delimited lines.
+<filename>out.dat</filename> is a text file, so you would normally use the LINES, LINEIN, and
+LINEOUT methods that read or write data as delimited lines.
 If the stream represents a binary file (such as a <code>wav</code>,
-<code>gif</code>, <code>tif</code> or <code>exe</code>),
+<code>gif</code>, or <code>tif</code>),
 you would use the CHARS, CHARIN, and CHAROUT methods that read and write
 data as characters.</para>
 <para>The Stream class includes additional methods for opening and closing streams,
@@ -118,78 +116,78 @@ SEEK and POSITION methods for setting the read and write positions.</para>
 <indexterm><primary>text files</primary>
 <secondary>reading</secondary></indexterm>
 <para>The following shows an example of reading a file.
-Program <code>count.rex</code> counts the words in a text file. To run it, enter<code> rexx count</code>
+Program count.rex counts the words in a text file. To run it, enter <code>rexx count</code>
 followed by the name of the file to be processed:</para>
 
 <programlisting>
 <![CDATA[
 rexx count myfile.txt
-rexx count r:\rexx\articles\devcon7.scr
+rexx count /rexx/articles/devcon7.scr
 ]]>
 </programlisting>
 
 <indexterm><primary>counting words in a file</primary></indexterm>
-<para><code>count.rex</code> uses the String method WORDS to count the words, so
-<code>count.rex</code> actually counts whitespace-delimited tokens:</para>
+<para>count.rex uses the String method WORDS to count the words, so
+count.rex actually counts whitespace-delimited tokens:</para>
 <example>
 <title>count.rex with automatic open</title>
 
 <programlisting>
 <![CDATA[
-/* count.rex - counts the words in a file                          */
-parse arg filename          /* Get file name from command line     */
-count=0                     /* Initialize a counter                */
-file=.stream~new(filename)  /* Create a stream object for the file */
-do while file~lines<>0      /* Loop as long as there are lines     */
-  text=file~linein          /* Read a line from the file           */
-  count=count+(text~words)  /* Count words and add to counter      */
+/* count.rex - counts the words in a file */
+parse arg filename            -- get file name from command line
+count = 0                     -- initialize a counter
+file = .Stream~new(filename)  -- create a stream object for the file
+do file~lines                 -- loop for the number of lines
+  text = file~lineIn          -- read a line from the file
+  count += text~words         -- count words and add to counter
 end
-say count                   /* Display the count                   */
+say count                     -- display the count
 ]]>
 </programlisting>
 </example>
 
-<para>To read a file, <code>count.rex</code> first creates a Stream object for the file by sending
+<para>To read a file, count.rex first creates a Stream object for the file by sending
 the NEW message to the Stream class. The file name (with or without a path)
 is specified as an argument on the NEW method.</para>
 <para>Within the DO loop,
-<code>count.rex</code> reads the lines of the file by sending LINEIN messages
+count.rex reads the lines of the file by sending LINEIN messages
 to the stream object (pointed to by the variable File). The first LINEIN message
 causes Rexx to automatically open the file if it was not already open
 (the NEW method does not open the file). LINEIN, by default, reads one line
 from the file, starting at the current read position.</para>
 <para>Rexx returns only the text of the line to your program
 without any line-end characters.</para>
-<para>The DO loop is controlled by the expression &quot;file~lines&lt;>0&quot;.
-The LINES method returns the number of lines remaining to be read in
+<para>The DO loop is run <code>file~lines</code> times.
+The LINES method returns the number of lines in
 the file, so Rexx processes the loop until no lines remain to be read.</para>
-<para>In the <code>count.rex</code> program, the LINEIN request forces Rexx to open the file, but you
+<para>In the count.rex program, the LINEIN request forces Rexx to open the file, but you
 can also open the file yourself using the OPEN method of the Stream class.
 By using the OPEN method, you control the mode in which Rexx opens the file.
 When Rexx implicitly opens a file because of a LINEIN request, it tries to
 open the file for both reading and writing. If that fails, it tries to open the file
 for reading. To ensure that the file is opened only for reading, you can modify
-<code>count.rex</code> as follows:</para>
+count.rex as follows:</para>
 <example>
 <title>count.rex with explicit open</title>
 
 <programlisting>
 <![CDATA[
-/* count.rex - counts the words in a file                          */
-parse arg filename          /* Get file name from command line     */
-count=0                     /* Initialize a counter                */
-file=.stream~new(filename)  /* Create a stream object for the file */
-openrc=file~open("read")    /* Open the file for reading           */
-if openrc<>"READY:" then do /* Check the return code               */
-  say "Could not open" path||"~ RC="||openrc
-  exit openrc               /* Bail out                            */
+/* count.rex - counts the words in a file */
+parse arg filename            -- get file name from command line
+count = 0                     -- initialize a counter
+file = .Stream~new(filename)  -- create a stream object for the file
+status = file~open("read")    -- open the file for reading
+if status <> "READY:" then do -- check the open status
+  say "Could not open" filename":" file~description
+  exit
 end
-do while file~lines<>0      /* Loop as long as there are lines     */
-  text=file~linein          /* Read a line from the file           */
-  count=count+(text~words)  /* Count words and add to counter      */
+do file~lines                 -- loop for the number of lines
+  text = file~lineIn          -- read a line from the file
+  count += text~words         -- count words and add to counter
 end
-file~close                  /* Close the file                      */
-say count                   /* Display the count                   */
+file~close                    -- close the file
+say count                     -- display the count
 ]]>
 </programlisting>
 </example>
@@ -231,24 +229,21 @@ found. cview.rex continues to prompt for a new search string until you enter
 
 <programlisting>
 <![CDATA[
-/* cview.rex - display lines from file log.txt                               */
-parse upper arg search_string      /* Get any command line argument  */
-file=.stream~new("log.txt")  /* Create stream object */
-lines=file~arrayin                 /* Read file into an array object */
-                                   /* LINES points to the array obj. */
-loop forever
-   if search_string="" then do     /* Prompt for user input          */
-      say "Enter a search string or Q to quit:"
-      parse upper pull search_string
-      if search_string="Q" then exit
-   end
-   loop i over lines                /* Scan the array                */
-      if pos(search_string,translate(i))>0 then do
-         say i                      /* Display any line that matches */
-         say "="~copies(20)
-      end
-   end
-   search_string=""                 /* Reset for next search         */
+/* cview.rex - display lines from file log.txt */
+parse arg search               -- get search string from command line
+file = .Stream~new("log.txt")  -- create stream object
+lines = file~arrayIn           -- read file into LINES array object
+loop
+  if search = "" then do       -- prompt for user input
+    say "Enter a search string or Q to quit:"
+    parse pull search
+    if search = "Q" then exit
+  end
+  loop line over lines         -- scan the array
+    if line~caselessContains(search) then
+      say line                 -- display any line that matches
+  end
+  search = ""                  -- reset for next search
 end
 ]]>
 </programlisting>
@@ -263,15 +258,15 @@ end
 <secondary>specific lines of text files</secondary></indexterm>
 <para>You can read
 a specific line of a text file by entering a line number as an argument on
-the LINEIN method. In this example, line 3 is read from <code>log.txt</code>:</para>
+the LINEIN method. In this example, line 3 is read from <filename>log.txt</filename>:</para>
 
 <example>
 <title>LINEIN</title>
 <programlisting>
 <![CDATA[
 /* Read and display line 3 of file log.txt */
-infile=.stream~new("log.txt")
-say infile~linein(3)
+infile = .Stream~new("log.txt")
+say infile~lineIn(3)
 ]]>
 </programlisting>
 </example>
@@ -294,24 +289,24 @@ adds an item to a to-do list that is maintained as a simple text file:</para>
 <title>todo.rex</title>
 <programlisting>
 <![CDATA[
-/* todo.rex - add to a todo list                              */
+/* todo.rex - add to a todo list */
 parse arg text
-file=.stream~new("todo.dat")      /* Create a stream object    */
-file~lineout(date() time() text)  /* Append a line to the file */
+file = .Stream~new("todo.dat")    -- create a Stream object
+file~lineOut(date() time() text)  -- append a line to the file
 exit
 ]]>
 </programlisting>
 </example>
 
-<para>In <code>todo.rex</code>, a text string is provided as the only argument on LINEOUT. Rexx
+<para>In todo.rex, a text string is provided as the only argument on LINEOUT. Rexx
 writes the line of text to the file with line-end characters appended.
 You do not have to provide line-end characters in the string to be written.</para>
-<para>If you want to overwrite a file, specify a line number as a second argument
+<para>If you want to overwrite a line, specify a line number as a second argument
 to position the write pointer:</para>
 
 <programlisting>
 <![CDATA[
-file~lineout("13760-0006",35)  /* Replace line 35 */
+file~lineOut("13760-0006", 35)    -- Replace line 35
 ]]>
 </programlisting>
 
@@ -326,21 +321,21 @@ happen to write fewer bytes than previously existed in the file, your data
 is followed by the remainder of the old file.</para>
 <para>To replace a file, use the OPEN method
 with WRITE REPLACE or BOTH REPLACE
-as an argument. In the following example, a file named <code>temp.dat</code> is replaced
-with a random number of lines. <code>temp.dat</code> is then read and displayed. You can run the example
-repeatedly to verify that <code>temp.dat</code> is replaced on each run.</para>
+as an argument. In the following example, a file named <filename>temp.dat</filename> is replaced
+with a random number of lines. <filename>temp.dat</filename> is then read and displayed. You can run the example
+repeatedly to verify that <filename>temp.dat</filename> is replaced on each run.</para>
 
 <example>
 <title>repfile.rex</title>
 <programlisting>
 <![CDATA[
 /* repfile.rex - demonstrates file replacement */
-testfile=.stream~new("temp.dat") /* Create a new stream object        */
-testfile~open("both replace")    /* Open for read, write, and replace */
-numlines=random(1,100)           /* Pick a number from 1 to 100       */
-runid=random(1,9999)             /* Pick a run identifier             */
-do i=1 to numlines               /* Write the lines                   */
-   testfile~lineout("Run ID:"||runid "Line number" i)
+testfile = .Stream~new("temp.dat") -- create a new stream object
+testfile~open("both replace")      -- open for read, write, and replace
+numlines = random(1, 100)          -- pick a number from 1 to 100
+runid = random(1, 9999)            -- pick a run identifier
+do i = 1 to numlines               -- write the lines
+  testfile~lineOut("Run ID" runid "Line number" i)
 end
 
 /*
@@ -349,16 +344,15 @@ end
    the end of the file and returns an array object containing the
    lines.
 */
-filedata=testfile~makearray("line")
-do i over filedata
-   say i
+do line over testfile~makeArray
+   say line
 end
 testfile~close
 ]]>
 </programlisting>
 </example>
 
-<para>The <code>repfile.rex</code> example also demonstrates that Rexx maintains separate read and
+<para>The repfile.rex example also demonstrates that Rexx maintains separate read and
 write pointers to a stream. The read pointer is still at the beginning of
 the file while the write pointer is at the end of it.</para>
 </section>
@@ -370,27 +364,27 @@ the file while the write pointer is at the end of it.</para>
 into lines ending with line-end characters. In most cases, you use the character
 I/O methods (such as CHARS,
 CHARIN, CHAROUT) on these files.</para>
-<para>Suppose, for example, that you want to read the data in the <code>chord.wav</code>
-file (supplied with Windows in <code>C:\Windows\Media</code>) into a variable:</para>
+<para>Suppose, for example, that you want to read the data in the <filename>chord.wav</filename>
+file into a variable:</para>
 
 <example>
 <title>getchord.rex</title>
 <programlisting>
 <![CDATA[
-/* getchord.wav - reads chord.wav into a variable           */
-chordf=.stream~new("C:\Windows\Media\chord.wav")
-say "Number of characters in the file=" chordf~chars
+/* getchord.wav - reads chord.wav into a variable */
+chordf = .Stream~new("chord.wav")
+say "Number of characters in the file" chordf~chars
 
-/* Read the whole WAV file into a single Rexx variable. */
-/* Rexx variables are limited by available memory.      */
-mychord=chordf~charin(1,chordf~chars)
+-- Read the whole WAV file into a single Rexx variable.
+-- Rexx variables are only limited by available memory.
+mychord = chordf~charin(1, chordf~chars)
 say "Number of characters read into variable" mychord~length
 ]]>
 </programlisting>
 </example>
 
 <para>The CHARIN method returns a string of characters from the stream,
-which in this case is <code>chord.wav</code>. CHARIN accepts two optional arguments. If no arguments
+which in this case is <filename>chord.wav</filename>. CHARIN accepts two optional arguments. If no arguments
 are specified, CHARIN reads one character from the current read position and
 then advances the read pointer.</para>
 <para>The first argument is a start position for reading the file. In the example,
@@ -400,7 +394,7 @@ file. Omitting the first argument achieves the same result.</para>
 all the characters, <computeroutput>chordf~chars</computeroutput> was specified as the second
 argument. The CHARS method returns the number of characters remaining to be
 read in the input stream receiving the message. CHARIN then returns all the
-characters in the stream. <code>chord.wav</code> has about 114,000 characters.</para>
+characters in the stream.</para>
 </section>
 
 <section id="readtextfileatime"><title>Reading Text Files a Character at a Time</title>
@@ -417,8 +411,8 @@ you read the file as characters, CHARIN returns the
 line-end characters to your program.
 Line methods, on the contrary, do not return the line-end characters to your
 program. Rexx adds line-end characters to the end of every
-line written using the LINEOUT method. Text-processing applications,
-such as the Windows Notepad, also add line-end characters.
+line written using the LINEOUT method.
+Text editors typically also add line-end characters.
 As a convenience, Rexx has an environment symbol name <literal>.ENDOFLINE</literal>
 that returns the line-end characters used by the Stream class
 on the current system. When reading a text file with CHARIN,
@@ -435,24 +429,23 @@ the lines just written.</para>
 <title>linechar.rex</title>
 <programlisting>
 <![CDATA[
-/* linechar.rex - demonstrate line end characters                   */
-file=.stream~new("test.dat")  /* Create a new stream object         */
+/* linechar.rex - demonstrate line end characters */
+file = .Stream~new("test.dat") -- create a new stream object
+file~open("both replace")      -- open the file for reading and writing
+do i = 1 to 3                  -- write three lines to the file
+  file~lineOut("Line" i)
+end
 
-file~open("both replace")  /* Open the file for reading and writing */
-do i=1 to 3                /* Write three lines to the file         */
-   file~lineout("Line" i)
-end /* do */
-
-do while file~chars<>0     /* Read the file a character at a time   */
-   byte=file~charin        /* Read a character                      */
-   ascii_value=byte~c2d    /* Convert character to a decimal value  */
-   if ascii_value=13 then        /* Carriage return?                */
-      say "Carriage return"
-   else if ascii_value=10 then   /* Line feed?                      */
-      say "Line feed"
-   else say byte ascii_value     /* Ordinary character              */
-end /* do */
-file~close                       /* Close the file                  */
+do file~chars                  -- read the file a character at a time
+  byte = file~charin           -- read a character
+  decimal = byte~c2d           -- convert character to a decimal value
+  if decimal = 13 then         -- carriage return?
+     say "Carriage return"
+  else if decimal = 10 then    -- line feed?
+     say "Line feed"
+  else say byte decimal        -- other character
+end
+file~close                     -- close the file
 ]]>
 </programlisting>
 </example>
@@ -478,26 +471,27 @@ the end of the string. Here is an example:</para>
 <programlisting>
 <![CDATA[
 /* jack.rex - demonstrate that CHAROUT does not add line-end characters */
-filebin=.stream~new("binary.dat")   /* Create a new stream object       */
-filebin~open("replace")             /* Open the file for replacement    */
-do i=1 to 50                        /* Write fifty strings              */
-  filebin~charout("All work and no play makes Jack a dull boy. ")
+filebin = .Stream~new("binary.dat") -- create a new stream object
+filebin~open("replace")             -- open the file for replacement
+do i = 1 to 10                      -- write ten strings
+  filebin~charOut("All work and no play makes Jack a dull boy. ")
 end
-filebin~close                  /* Close the file so we can display it   */
-"type binary.dat"              /* Use the TYPE command to display file  */
+                                    -- display the file just created
+say filebin~charIn(1, filebin~query("size"))
+filebin~close                       -- close the file
 ]]>
 </programlisting>
 </example>
 
 <para>Because line-end characters are not added, the text displayed
-by the TYPE command is concatenated into one contiguous line.</para>
+by the SAY instruction is concatenated into one contiguous line.</para>
 <para>CHAROUT writes the string specified and advances the write pointer. If
 you want to position the write pointer before writing the string, specify
 the starting position as a second argument:</para>
 
 <programlisting>
 <![CDATA[
-filebin~charout("Jack is losing it.",30) /* start writing at character 30 */
+filebin~charOut("Jack is losing it.", 30) -- start writing at character 30
 ]]>
 </programlisting>
 
@@ -530,11 +524,11 @@ files when you are finished with them.</para>
 <secondary>direct access</secondary></indexterm>
 <para>Rexx provides several ways for you to read records
 of a file directly (that is, in random order). The following example,
-<code>direct.rex</code>, shows several cases that illustrate some of your options.</para>
-<para><code>direct.rex</code> opens a file for both reading and writing, which is indicated
+direct.rex, shows several cases that illustrate some of your options.</para>
+<para>direct.rex opens a file for both reading and writing, which is indicated
 by the BOTH argument of the OPEN method.
 The REPLACE argument of the OPEN
-method causes any existing <code>direct.dat</code> file to be replaced.</para>
+method causes any existing <filename>direct.dat</filename> file to be replaced.</para>
 <para>The OPEN method also has the arguments
 BINARY and RECLENGTH, which are
 useful for direct file access.</para>
@@ -544,7 +538,7 @@ data using line methods. It is easier to use line methods for direct access.
 With line methods, you can search a position in a file using line numbers.
 With character methods, you must calculate the character displacement of
 the file.</para>
-<para>The RECLENGTH argument defines a record length of 50 for the file. It enables
+<para>The RECLENGTH argument defines a record length of 60 for the file. It enables
 you to use line methods in a binary-mode stream. Because Rexx now knows how
 long each record is, it can calculate the displacement of the file for a given
 record number and read the record directly.</para>
@@ -553,66 +547,66 @@ record number and read the record directly.</para>
 <title>direct.rex</title>
 <programlisting>
 <![CDATA[
-/* DIRECT.CMD - demonstration of direct file access       */
-db=.stream~new("direct.dat")
-db~open("both replace binary reclength 50")
+/* direct.rex - demonstration of direct file access */
+db = .Stream~new("direct.dat")
+db~open("both replace binary reclength 60")
 
-/* Write three records of 50 bytes each using LINEOUT     */
-db~lineout("Cole, Gary:  Blue")
-db~lineout("McGuire, Rick: Red")
-db~lineout("Pritko, Steve: Red. Oops.. I mean blue!")
+-- Write three records of 60 bytes each using LINEOUT
+db~lineOut("Athos, Count de la Fere")
+db~lineOut("Porthos, Baron du Vallon de Bracieux de Pierrefonds")
+db~lineOut("Rene d'Herblay, alias Aramis")
 
-/* Case 1: Read the records in order using LINEIN.        */
+-- Case 1: Read the records in order using LINEIN.
 say "Case 1: Sequential reads with LINEIN..."
-do i=1 to 3
-   say db~linein
+do i = 1 to 3
+   say db~lineIn
 end
 say "Press Enter to continue"; parse pull resp
 
-/* Case 2: Read records in random order using LINEIN      */
+-- Case 2: Read records in random order using LINEIN
 say "Case 2: Random reads with LINEIN..."
-do i=1 to 5
-   lineno=random(1,3)
-   say "Record" lineno "=" db~linein(lineno)
+do i = 1 to 5
+   lineno = random(1, 3)
+   say "Record" lineno "=" db~lineIn(lineno)
 end
 say "Press Enter to continue"; parse pull resp
 
-/* Case 3: Read entire file with CHARIN                   */
+-- Case 3: Read entire file with CHARIN
 say "Case 3: Read entire file with a single CHARIN..."
-say db~charin(1,150)
+say db~charIn(1, 60 * 3)
 say "Press Enter to continue"; parse pull resp
 
-/* Case 4: Read file sequentially with CHARIN             */
+-- Case 4: Read file sequentially with CHARIN
 say "Case 4: Sequential reads with CHARIN..."
-db~seek(1 read)         /* Reposition read pointer        */
-do i=1 to 3
-   say db~charin(,50)
+db~seek("1 read")        -- reposition read pointer
+do i = 1 to 3
+   say db~charIn(, 60)
 end
 say "Press Enter to continue"; parse pull resp
 
-/* Case 5: Read records in random order with CHARIN       */
+-- Case 5: Read records in random order with CHARIN
 say "Case 5: Random reads with CHARIN..."
-do i=1 to 5
-   lineno=random(1,3)
-   charno=((lineno-1)*50)+1
-   say "Record" lineno "Character" charno "=" db~charin(charno,50)
+do i = 1 to 5
+   lineno = random(1,3)
+   charno = (lineno - 1) * 60 + 1
+   say "Record" lineno "Character" charno "=" db~charIn(charno, 60)
 end
 say "Press Enter to continue"; parse pull resp
 
-/* Case 6: Write records in random order with LINEOUT     */
+-- Case 6: Write records in random order with LINEOUT
 say "Case 6: Replace record 2 with LINEOUT"
-db~lineout("This should replace line 2",2)
-do i=1 to 3
-   say db~linein(i)
+db~lineOut("This should replace line 2", 2)
+do i = 1 to 3
+   say db~lineIn(i)
 end
 say "Press Enter to continue"; parse pull resp
 
-/* Case 7: Write records in random order with CHAROUT     */
+-- Case 7: Write records in random order with CHAROUT
 say "Case 7: Replace record 2 with CHARIN..."
-db~charout("New record 2 from CHAROUT"~left(50,"."),51)
-db~seek(1 read)         /* Reposition read pointer        */
-do i=1 to 3
-   say db~charin(,50)
+db~charout("New record 2 from CHAROUT"~left(60, "."), 61)
+db~seek("1 read")        -- reposition read pointer
+do i = 1 to 3
+   say db~charin(, 60)
 end
 say "Press Enter to continue"; parse pull resp
 db~close
@@ -622,7 +616,7 @@ db~close
 
 <para>After opening the file, direct.rex writes three records using
 LINEOUT. The records are
-not padded to 50 characters, Rexx itself handles that. Because the file is opened
+not padded to 60 characters, Rexx itself handles that. Because the file is opened
 in binary mode, Rexx does not write line-end characters at the end of each
 line. It only writes the strings one after another to the stream.</para>
 <para>In Case 1, the LINEIN method is used to read the file. Because the file
@@ -677,12 +671,8 @@ line to be replaced. Unlike LINEOUT, you need to ensure that the string being
 written with CHAROUT is padded to the appropriate record length. Otherwise,
 part of the record being replaced remains in the file.</para>
 <para>Consequently, for random reading of files with fixed length records, line
-methods are often the better choice. However, one limitation of the line methods
-is that you cannot use them to write sparse records. That is, if a file already
-has 200 records, you can use LINEOUT to write record <emphasis role="italic">201</emphasis>, but you cannot use
-LINEOUT to write record <emphasis role="italic">300</emphasis>.
-With CHAROUT, however, you can open a new file
-and start writing at character position <emphasis role="italic">5000</emphasis> if you choose.</para>
+methods are often the better choice.
+</para>
 </section>
 
 <section id="checkfileexistence"><title>Checking for the Existence of a File</title>
@@ -692,7 +682,7 @@ and start writing at character position <emphasis role="italic">5000</emphasis> 
 <indexterm><primary>text files</primary>
 <secondary>querying existence</secondary></indexterm>
 <para>To check for the existence of a file, you use the
-QUERY method of the Stream class. The following <code>isthere.rex</code> program
+QUERY method of the Stream class. The following isthere.rex program
 accepts a file name as a command line argument and checks for the existence
 of that file.</para>
 
@@ -700,10 +690,10 @@ of that file.</para>
 <title>isthere.rex</title>
 <programlisting>
 <![CDATA[
-/* isthere.rex - test for the existence of a file        */
-parse arg fid                    /* Get the file name    */
-qfile=.stream~new(fid)           /* Create stream object */
-if qfile~query("exists")="" then /* Check for existence  */
+/* isthere.rex - test for the existence of a file */
+parse arg fid                      -- get the file name
+qfile = .Stream~new(fid)           -- create stream object
+if qfile~query("exists") = "" then -- check for existence
    say fid "does not exist."
 else
    say fid "exists."
@@ -715,7 +705,7 @@ else
 might not exist. This is acceptable because the file is not opened when the
 stream object is created.</para>
 <para>The QUERY method accepts one argument. To check for the existence of a
-file, you specify the string <computeroutput>"exists"</computeroutput> as
+file, you specify the string <literal>exists</literal> as
 previously shown. If the file exists, QUERY returns the full-path specification
 of the stream object. Otherwise, QUERY returns a null string.</para>
 </section>
@@ -736,21 +726,21 @@ example shows most of the QUERY arguments.</para>
 <![CDATA[
 /* infoon.rex - display information about a file */
 parse arg fid
-qfile=.stream~new(fid)
-fullpath=qfile~query("exists")
-if fullpath="" then do
+qfile = .Stream~new(fid)
+fullpath = qfile~query("exists")
+if fullpath = "" then do
    say fid "does not exist."
    exit
 end
 qfile~open("both")
-say ""
+say
 say "Full path name:" fullpath
 say "Date and time stamps (U.S. format):" qfile~query("datetime")
 say "            (International format):" qfile~query("timestamp")
-say ""
+say
 say "Handle associated with stream:" qfile~query("handle")
 say "                  Stream type:" qfile~query("streamtype")
-say ""
+say
 say "          Size of the file (characters):" qfile~query("size")
 say " Read position (in terms of characters):" qfile~query("seek read")
 say "Write position (in terms of characters):" qfile~query("seek write")
@@ -771,44 +761,43 @@ and to write to standard output (usually the display). You can also use the
 methods to write to the standard error stream. In Rexx, these default
 streams are represented by public objects of the Monitor class: <literal>.input</literal>,
 <literal>.output</literal>, and <literal>.error</literal>.</para>
-<para>The streams <emphasis role="italic">STDIN</emphasis>,
-<emphasis role="italic">STDOUT</emphasis>, and <emphasis role="italic">STDERR</emphasis> are transient streams. For transient
+<para>The streams STDIN, STDOUT, and STDERR are transient streams. For transient
 streams, you cannot use any method or method argument for positioning the
 read and write pointers. You cannot, for example, use the SEEK method on
-<emphasis role="italic">STDOUT</emphasis>.</para>
+STDOUT.</para>
 
-<para>Writing to <emphasis role="italic">STDOUT</emphasis> has the same effect as using
+<para>Writing to STDOUT has the same effect as using
 the SAY instruction. However,
 the SAY instruction always writes line-end characters at the end of the string.
-By using the CHAROUT method to write to <emphasis role="italic">STDOUT</emphasis>, you can control when line-end
+By using the CHAROUT method to write to STDOUT, you can control when line-end
 characters are written.</para>
-<para>The following example shows a modified <code>count.rex</code> program previously shown in
-<xref linkend="readtxtfile" />. <code>count.rex</code> has been modified
-to display a progress indicator. For every line processed, <code>count.rex</code> now uses
-CHAROUT to display a single period. <code>count.rex</code> does not write any line-end
+<para>The following example shows a modified count.rex program previously shown in
+<xref linkend="readtxtfile" />. count.rex has been modified
+to display a progress indicator. For every line processed, count.rex now uses
+CHAROUT to display a single period. count.rex does not write any line-end
 characters, so the periods wrap to the next line when they reach the end of
-the line in the Windows window.</para>
+the line.</para>
 
 <example>
 <title>Modified count.rex</title>
 <programlisting>
 <![CDATA[
-                            /* count counts the words in a file */
-parse arg path                          /* Get the file name    */
-count=0                                 /* Initialize the count */
-file=.stream~new(path)        /* Create a stream object for the input file */
-do while file~lines<>0        /* Process each line of the file */
-   text=file~linein           /* Read a line                   */
-   count=count+(text~words)   /* Count blank-delimited tokens  */
-   .output~charout(".")       /* Write period to STDOUT        */
+/* count.rex - counts the words in a file */
+parse arg path            -- get the file name
+count = 0                 -- initialize the count
+file = .Stream~new(path)  -- create a stream object for the input file
+do file~lines             -- process each line of the file
+  text = file~lineIn      -- read a line
+  count += text~words     -- count blank-delimited tokens
+  .output~charout(".")    -- write period to STDOUT
 end
-say ""
+say
 say count
 ]]>
 </programlisting>
 </example>
 
-<para>Reading from <emphasis role="italic">STDIN</emphasis> using LINEIN
+<para>Reading from STDIN using LINEIN
 is similar to reading with the PARSE PULL
 instruction:</para>
 
@@ -818,23 +807,23 @@ instruction:</para>
 <![CDATA[
 /* inexam.rex - example of reading STDIN with LINEIN  */
 
-/* Prompt for input with SAY and PARSE instructions   */
+-- Prompt for input with SAY and PARSE instructions
 say "What is your name?"
 parse pull response
 say "Hi" response
 say ""
 
-/* Now prompt using LINEOUT and LINEIN                */
-.output~lineout("What is your name?")
-response=.input~linein
-.output~lineout("Hi" response)
+-- Now prompt using LINEOUT and LINEIN
+.output~lineOut("What is your name?")
+response = .input~lineIn
+.output~lineOut("Hi" response)
 ]]>
 </programlisting>
 </example>
 
-<para>Using character methods with <emphasis role="italic">STDIN</emphasis> and <emphasis role="italic">STDOUT</emphasis> gives you more control over
+<para>Using character methods with STDIN and STDOUT gives you more control over
 the reading and writing of line-end characters. In the following example,
-the prompting string is written to <emphasis role="italic">STDOUT</emphasis> using
+the prompting string is written to STDOUT using
 CHAROUT. Because CHAROUT does
 not add any line-end characters to the stream, the display cursor is positioned
 after the prompt string on the same line.</para>
@@ -845,7 +834,7 @@ after the prompt string on the same line.</para>
 <![CDATA[
 /* inchar.rex - example of reading STDIN with CHARIN  */
 .output~charout("What is your name? ")
-response=.input~charin(,10)
+response = .input~charin( ,10)
 .output~charout("Hi" response)
 ]]>
 </programlisting>
@@ -857,18 +846,15 @@ the example, a length of 10 is specified. If fewer characters than the specified
 length are available, CHARIN waits until they become available. Otherwise,
 the characters are returned to your program. CHARIN does not strip any carriage-return
 or line-feed characters before returning the string to your program. You can
-observe this with <code>inchar.rex</code> by typing several strings that have less than ten
+observe this with inchar.rex by typing several strings that have less than ten
 characters and pressing Enter after each string:</para>
 
 <programlisting>
 <![CDATA[
-[C:\>inchar.rex
 What is your name? John
-Q.
 Public
 Hi John
-Q.
-Pu
+Publ
 ]]>
 </programlisting>
 
@@ -878,11 +864,10 @@ Pu
 <indexterm><primary>devices, sending information to</primary></indexterm>
 
 <para>You can use Windows
-devices by substituting a device name (such as <emphasis role="italic">PRN</emphasis>, <emphasis role="italic">LPT1</emphasis>,
-<emphasis role="italic">LPT2</emphasis>, <emphasis role="italic">COM1</emphasis>, and
+devices by substituting a device name (such as PRN, LPT1, LPT2, COM1, and
 so on) for the file name when you create a stream object. Then use line or
 character methods to read or write the device.</para>
-<para>The following example sends data to a printer (device name <emphasis role="italic">PRN</emphasis> in the example).
+<para>The following example sends data to a printer (device name PRN in the example).
 In addition to sending text data, the example also sends a control character
 for starting a new page. You can send other control characters or escape sequences
 in a similar manner. (Generally, these are listed in the manual for the device.)</para>
@@ -894,32 +879,25 @@ ASCII value as shown in the example.</para>
 <title>printit.rex</title>
 <programlisting>
 <![CDATA[
-/* printit.rex - Prints a text file                                    */
-say "Type file name: "           /* prompt for a file name */
-pull filename                    /* ...and get it from the user        */
-infile=.stream~new(filename)
-printer=.stream~new("prn:")
+/* printit.rex - Prints a text file */
+say "Type file name: "        -- prompt for a file name
+pull filename
+infile = .Stream~new(filename)
+printer = .Stream~new("prn:")
+newpage = 12~d2c              -- form-feed, the page-eject character
 
-newpage = 12~d2c                  /* save page-eject character         */
-
-/* Repeat this loop until no lines remain in the file */
-/* and keep track of the line count with COUNT        */
-
-do count = 1 until filename~lines = 0
-   if printer~lineout(infile~linein) <> 0 then do
-      say "Error: unable to write to printer"
-      leave
-   end
-   if count // 50 = 0 then                 /* if the line count is a */
-      printer~charout(newpage)             /* multiple of 50, then   */
-                                           /* start a new page by    */
-                                           /* sending the form feed  */
-
-end                               /* go back to the start of loop    */
-                                  /* until no lines remain           */
-
-infile~close                      /* close the file                  */
-exit                              /* end the program normally        */
+-- loop through the input file
+do count = 1 to infile~lines
+  if printer~lineOut(infile~lineIn) <> 0 then do
+    say "Unable to write to PRN:" printer~description
+    leave
+  end
+  -- if the line count is a multiple of 50,
+  -- then start a new page by sending the form feed
+  if count // 50 = 0 then
+    printer~charout(newpage)
+end
+infile~close
 ]]>
 </programlisting>
 </example>

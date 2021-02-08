@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -256,15 +256,12 @@ contains characters not allowed in a Rexx symbol.</para>
 
 <section id="creo"><title>Common Methods</title>
 <para>When running your program, four methods that Rexx looks for, and runs
-automatically when appropriate, are INIT,  <xref linkend="destroy" xrefstyle="template:UNINIT" />,
-MAKESTRING and  STRING.</para>
+automatically when appropriate, are INIT, <xref linkend="uninit" xrefstyle="template:UNINIT" />,
+MAKESTRING and STRING.</para>
 
 <section id="init"><title>Initializing Instances Using INIT</title>
 <para>
-<indexterm><primary>INIT method</primary>
-<secondary>constructor method</secondary></indexterm>
-<indexterm><primary>constructor</primary>
-<secondary>INIT method</secondary></indexterm>
+<indexterm><primary>INIT method</primary></indexterm>
 Object classes can create instances.
 When these instances require initialization, you'll want to define an
 INIT method to set a particular starting value or initiate some startup processing.
@@ -278,15 +275,15 @@ but before returning it, the new instance gets the INIT message sent to it.
 Any (initialization) arguments specified with the
 NEW message are passed on to the
 INIT method in the same order, which can use them
-to set the initial states of object variables. As the INIT method gets invoked automatically at
-object creation time it is also known as the Rexx <emphasis role="italic">constructor method</emphasis>.</para>
+to set the initial states of object variables.
+</para>
 <para>If a class overrides the INIT method it inherits from a superclass,
 the new INIT method must forward the INIT message up the
 hierarchy, to properly initialize the instance, using the <emphasis role="italic">SUPERCLASS overrides</emphasis>, so
 that each inherited INIT method has the opportunity to run  (using e.g. the statement
 <code>self~init:super</code>).
-An example in the next section demonstrates the use of
-the Rexx constructor method INIT.</para>
+An example in the next section demonstrates the use of INIT.
+</para>
 </section>
 
 <section id="retstr"><title>The MAKESTRING and STRING Methods</title>
@@ -351,7 +348,7 @@ The two ::METHOD directives define
 INIT and STRING. Whenever Rexx creates
 a new instance of a class, it calls the INIT method of the new instance. The sample
 INIT method uses an EXPOSE instruction to
-allow the method direct access to the object variables (attributes)
+allow the method direct access to the object variables
 <varname>name</varname>, <varname>description</varname>, and
 <varname>number</varname>: </para>
 
@@ -369,7 +366,7 @@ allow the method direct access to the object variables (attributes)
 <indexterm><primary>USE ARG instruction</primary></indexterm>
 The INIT method expects to be passed three arguments.
 The USE ARG instruction assigns these three arguments to the
-exposed object variables (attributes)
+exposed object variables
 <varname>name</varname>, <varname>description</varname>, and
 <varname>number</varname>, respectively. </para>
 
@@ -383,7 +380,7 @@ The STRING method returns the string
 <computeroutput>Part name:</computeroutput>, followed
 by the name of a part. The STRING method (of the Part class)
 does not expect any arguments.
-It uses the EXPOSE instruction to be able to directly access the object variable (attribute)
+It uses the EXPOSE instruction to be able to directly access the object variable
 <varname>name</varname>.
 The RETURN instruction returns the result string.</para>
 
@@ -431,7 +428,7 @@ to be invoked, which sends the INIT message together with the three received arg
 to the newly created instance, which in turn runs the INIT method
 as part of the object creation.
 The INIT method takes the three arguments you provide and saves them in its
-object's variables (attributes): <varname>name</varname>, <varname>description</varname>, and
+object's variables: <varname>name</varname>, <varname>description</varname>, and
 <varname>number</varname>: </para>
 <para>
 <indexterm><primary>SAY instruction</primary></indexterm>
@@ -443,19 +440,16 @@ instruction causes Rexx to create the required string value: as there is no
 MAKESTRING method in the Part class
 the STRING method gets invoked to return a string value.
 The STRING method uses EXPOSE to become
-able to directly access the <varname>name</varname> object variable (attribute) and returns it as part of the string
+able to directly access the <varname>name</varname> object variable and returns it as part of the string
 (<code>return &quot;Part name:&quot; name</code>).
 </para>
 </section>
 
-<section id="destroy"><title>Uninitializing and Deleting Instances Using UNINIT</title>
+<section id="uninit"><title>Uninitializing and Deleting Instances Using UNINIT</title>
 <para>
-<indexterm><primary>UNINIT method</primary>
-<secondary>destructor method</secondary></indexterm>
+<indexterm><primary>UNINIT method</primary></indexterm>
 <indexterm><primary>instances</primary>
 <secondary>uninitializing and deleting</secondary></indexterm>
-<indexterm><primary>destructor</primary>
-<secondary>UNINIT method</secondary></indexterm>
 Normally, object
 classes can create instances but have no direct control over their deletion.
 Once an object is no longer referenced in the program, it turns to garbage and
@@ -466,31 +460,18 @@ If the instance has allocated other system resources,
 Rexx cannot automatically release these
 resources because it is unaware that the instance has allocated them.
 An UNINIT method gives an object the opportunity to perform resource cleanup before
-the object is reclaimed by the garbage collector. This is done by the garbage collector for objects having an
-UNINIT method  implemented right before the object gets
-<emphasis role="italic">destroyed</emphasis> by sending it the UNINIT message.
-Because this method runs at destruction time only it is called the Rexx <emphasis role="italic">desctructor method</emphasis>.
+the object is reclaimed by the garbage collector.
 </para>
-<para>In the following example the NEW message gets an argument supplied that
-is meant to be used for setting the value of the object variable (attribute) <emphasis role="italic">text</emphasis> in the
-scratchpad class. As mentioned above the NEW method, after
-creating the instance, but before returning it gets the INIT message sent with the argument it
-received and will save that value in its <emphasis role="italic">text</emphasis> object variable (attribute) and displays that value using.
-the SAY instruction.</para>
-<para>Once the program is finished and the objects get destroyed by the garbage collector, each
-scratchpad object will get the UNINIT message sent to
-it, which in turn runs UNINIT method.  The method directly accesses teh <emphasis role="italic">text</emphasis>
-object variable (attribute) and displays its value with the SAY instruction:
+<para>The following example shows how Rexx automatically invokes INIT and UNINIT.
 </para>
 <example>
 <title>UNINIT Method</title>
 <programlisting>
 /* uninit.rex - example of UNINIT processing */
 
-a=.scratchpad~new("Of all the things I&apos;ve lost")
-a=.scratchpad~new("I miss my mind the most")
+a = .scratchpad~new("Of all the things I&apos;ve lost")
+a = .scratchpad~new("I miss my mind the most")
 say "Exiting program."
-exit
 
 ::class scratchpad
 
@@ -502,7 +483,6 @@ exit
   ::method uninit
     expose text
     say "Forgetting" text
-    return
 </programlisting>
 </example>
 
@@ -877,40 +857,24 @@ file descriptor value <literal>2</literal>.
 <listitem><para>is optional and will be set by Rexx if the Rexx program was called with arguments from the commandline. Rather than
 returning the commandline argument as a single string like the ARG() built-in function does,
 <literal>.syscargs</literal> array object will have the commandline argument string decomposed according to the rules of the programming
-language <emphasis role="italic">C</emphasis>. If this environment object is not set, because there were no commandline arguments supplied,
+language <emphasis role="italic">C</emphasis>. If this environment object is not set,
 the name of the environment symbol will be returned instead in uppercase letters, i.e. <literal>.SYSCARGS</literal> (note the leading dot which
 makes this symbol an environment symbol).
 </para>
 
 <example>
 <title>.SYSCARGS Environment Object</title>
-<para>Invoking the following Rexx program from the command line with <code>rexx syscargs.rex one
-&quot;second argument&quot;  three &quot;fourth argument&quot; five</code></para>
 <programlisting>
-<![CDATA[
-/*  runnig this program from the command line:
-      rexx syscargs.rex one "second argument" three "fourth argument" five
+/* results for running this program with command line arguments
+     one "second argument" three
+
+   3 arguments
+   one
+   second argument
+   three
 */
-/* syscargs.rex   */
-if .sysCargs~isA(.array) then             -- command line arguments parsed?
-do
-   say "there are.sysCargs~items:" .sysCargs~items -- show number of arguments
-   say
-   do counter i val over .sysCargs        -- show parsed arguments
-      say i":" val
-   end
-end
-
-Results:
-
-there are.sysCargs~items: 5
-
-1: one
-2: second argument
-3: three
-4: fourth argument
-5: five
-]]>
+say .sysCargs~items "arguments"
+say .sysCargs
 </programlisting>
 
 </example>
@@ -972,7 +936,7 @@ are: </para>
 This package can be retrieved programmatically with the statement <code>.context~package</code>.
 </para></listitem>
 
-<listitem><para>"&added50;" The current package <emphasis role="italic">local</emphasis> directory.
+<listitem><para>&added50;The current package <emphasis role="italic">local</emphasis> directory.
 The package local directory can be accessed programmatically with the statement <code>.context~package~local</code>.
 </para></listitem>
 
@@ -1005,7 +969,7 @@ of these directories include at least one period in the entry name.</para></note
 
 <programlisting>
 <![CDATA[
-/* establish a settings directory in the local environment directory*/
+/* establish a settings directory in the local environment directory */
 .local~setentry("my.settings", .directory~new)
 ]]>
 </programlisting>
@@ -1021,24 +985,24 @@ of these directories include at least one period in the entry name.</para></note
 <indexterm><primary>EXPOSE instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>EXPOSE instruction</secondary></indexterm>
-Methods may interact with object variables (attributes) and their
-associated data. But a method cannot directly interact with any object variable (attribute), only
-with those object variables (attributes) that are defined in the same class as the method (encapsulation).
-This protects the object variables' (attributes') data from being changed by &quot;unauthorized&quot;
+Methods may interact with object variables and their
+associated data. But a method cannot directly interact with any object variable, only
+with those object variables that are defined in the same class as the method (encapsulation).
+This protects the object variables' data from being changed by &quot;unauthorized&quot;
 methods belonging to other classes.
 </para>
-<para> All Methods of a particular class are able to directly access object variables (attributes) by
+<para> All Methods of a particular class are able to directly access object variables by
 using as their very first instruction the EXPOSE instruction
-followed by a blank delimited list of the object variable (attribute) names the method wishes to interact
+followed by a blank delimited list of the object variable names the method wishes to interact
 directly.
 </para>
 
 <section id="objwclsc"><title>Objects with a Class Scope</title>
 <para>Encapsulation usually takes place at the class level. The class is designed
 as a template of methods and variables. The instances themselves retain only
-the values of their object variables (attributes).</para>
+the values of their object variables.</para>
 <para>Within the hierarchy, the class structure ensures the integrity of a class's
-object variables (attributes), controlling the methods allowed to operate on them. The class structure
+object variables, controlling the methods allowed to operate on them. The class structure
 also provides for easy updating of the method code. If a method requires a
 change, you only have to change it once, at the class level. The change then
 is acquired by all the instances sharing the method.</para>
@@ -1054,8 +1018,8 @@ class to which they belong:</para>
 </figure>
 
 <para>Each class in a class hierarchy has a scope different from any other class.
-This is what allows an object variable (attribute) in a subclass to have the same name as an object variable (attribute)
-in a superclass, even though the methods that use the object variables (attributes) for completely unrelated
+This is what allows an object variable in a subclass to have the same name as an object variable
+in a superclass, even though the methods that use the object variables for completely unrelated
 purposes.</para>
 </section>
 
@@ -1460,7 +1424,7 @@ represent the Rexx programs running on the <emphasis role="italic">activity</emp
 <para>An invocation is pushed onto an <emphasis role="italic">activity</emphasis> when an executable unit is invoked.
 It is removed (or popped) when execution completes.</para>
 
-<section id="objvarpools"><title>Object (Instance) Variables (Attributes)</title>
+<section id="objvarpools"><title>Object (Instance) Variables</title>
 <para>
 <indexterm><primary>object instance variables</primary></indexterm>
 <indexterm><primary>object variables</primary>
@@ -1471,38 +1435,38 @@ It is removed (or popped) when execution completes.</para>
 <secondary>exposing</secondary></indexterm>
 Every object has its own set of instance variables, also known as attributes.
 These are variables associated solely with the
-object. When an object's method runs, it first identifies the instance variables (attributes)
+object. When an object's method runs, it first identifies the instance variables
 it intends to work with.
 Technically, it &quot;exposes&quot; these instance (object) variables, using
 the Rexx instruction EXPOSE. Exposing the object's variables distinguishes
 them from variables used by the method itself, which are not exposed. Every
 method an object owns&mdash;that is, all the instance methods in the object's
-class&mdash;can expose variables from the object's instance variables (attributes).</para>
+class&mdash;can expose variables from the object's instance variables.</para>
 <para>Therefore, an object's instance variables includes variables:</para>
 <itemizedlist>
 <listitem><para>Exposed by methods defined by the object's class. This set of instance variables is
-called an object variable (attribute) pool.</para></listitem>
+called an object variable pool.</para></listitem>
 <listitem><para>Exposed by methods defined by other classes in the inheritance hierarchy.
-The methods of each class share object variables (attributes) in a pool scoped to just that class.</para></listitem>
+The methods of each class share object variables in a pool scoped to just that class.</para></listitem>
 </itemizedlist>
-<para>A class's object variable (attribute) pool, together with the methods that expose them,
+<para>A class's object variable pool, together with the methods that expose them,
 is called a class scope. Rexx exploits this class
 scope to achieve concurrency. To explain in more detail, the object's instance variables are contained
-in a collection of instance variable (attribute) pools. Each instance variable (attribute) pool is at a different scope in the object's
+in a collection of instance variable pools. Each instance variable pool is at a different scope in the object's
 inheritance chain. Methods defined at different class scopes do not directly share data,
 and can therefore run simultaneously.</para>
 <para>Scopes, like objects, hide and protect data from outside manipulation.
-Methods of the same scope share the instance variable (attribute) pool of that scope. The scope
-shields the instance variable (attribute) pool from methods operating at other scopes. This is why
-you can reuse object variable (attribute) names from class to class, without the variables (attributes) being
+Methods of the same scope share the instance variable pool of that scope. The scope
+shields the instance variable pool from methods operating at other scopes. This is why
+you can reuse object variable names from class to class, without the variables being
 accessed and possibly corrupted by a method outside their own class. So class
-scopes serve to divide an object's instance variables (attributes) into pools that can operate
-independently of each another. Several methods can use the same object instance variables (attributes)
-concurrently, as long as they confine themselves to instance variables (attributes) in their own
+scopes serve to divide an object's instance variables into pools that can operate
+independently of each another. Several methods can use the same object instance variables
+concurrently, as long as they confine themselves to instance variables in their own
 scope.</para>
 </section>
 
-<section id="prioritizeaccess"><title>Prioritizing Access to Instance Variables (Attributes)</title>
+<section id="prioritizeaccess"><title>Prioritizing Access to Instance Variables</title>
 <para>
 <indexterm><primary>access to object variables, prioritizing</primary></indexterm>
 <indexterm><primary>prioritizing access to object variables</primary></indexterm>
@@ -1510,15 +1474,15 @@ scope.</para>
 <indexterm><primary>prioritizing access to attributes</primary></indexterm>
 <indexterm><primary>locking a scope</primary></indexterm>
 Even with class scopes and subpools,
-an object variable (attribute) is vulnerable if several methods within the scope try to access
+an object variable is vulnerable if several methods within the scope try to access
 it at the same time. To handle this, Rexx ensures that when a particular method
-is activated and exposes object variables (attributes) from its scope, that method has exclusive
-use of the scope variable (attribute) pool until processing is complete. Until then, Rexx delays the
-execution of any other method that needs the same scope object variables (attributes).</para>
+is activated and exposes object variables from its scope, that method has exclusive
+use of the scope variable pool until processing is complete. Until then, Rexx delays the
+execution of any other method that needs the same scope object variables.</para>
 <para>Thus if different activities send several messages to the same object,
 Rexx forces the methods to run sequentially within a single scope. This
 &quot;first-in, first-out&quot; processing of methods in a scope
-prevents them from simultaneously accessing one object variable (attribute), and possibly
+prevents them from simultaneously accessing one object variable, and possibly
 corrupting the data.</para>
 </section>
 
@@ -1555,7 +1519,7 @@ calls.</para>
 <indexterm><primary>intra-object concurrency</primary></indexterm>
 Several methods can
 access the same object at the same time only if they are operating at different
-scopes. That is because they are working with separate variable (attribute) subpools.
+scopes. That is because they are working with separate variable subpools.
 If two methods in the same scope try to run on the object, Rexx by default
 processes them on a &quot;first-in, first-out&quot; basis, while treating internal
 methods as subroutines. You can, however, achieve full intra-object concurrency.
@@ -1575,34 +1539,34 @@ intra-object and default concurrency.</para></listitem></itemizedlist>
 <para>When intra-object concurrency at the scope level is needed,
 you must specifically employ these mechanisms (see the following section).
 Otherwise, Rexx sequentially processes the methods when they are competing
-for the same object variables (attributes).</para>
+for the same object variables.</para>
 
 <section id="activat"><title>Activating Methods</title>
 <para>By default, Rexx assumes that an active method requires exclusive use of
-its scope variable (attribute) pool. If another method attempts access at that time,
+its scope variable pool. If another method attempts access at that time,
 it is locked out until the first method finishes.
-This default intra-object serialization maintains the integrity of the instance variable (attribute)
+This default intra-object serialization maintains the integrity of the instance variable
 pool and prevents unexpected results. Rexx manages queues for incoming requests
 that result in messages being sent to the same object.</para>
-<para>Some methods can run concurrently without affecting instance variable (attribute) pool integrity
+<para>Some methods can run concurrently without affecting instance variable pool integrity
 or yielding unexpected results. When a method does not need exclusive use
-of its object variable (attribute) pool, use the UNGUARDED
+of its object variable pool, use the UNGUARDED
 option of the ::METHOD directive to provide unconditional intra-object concurrency.
 These mechanisms control the locking of an object's scope when a method
 is invoked.</para>
 <para>Many methods cannot use the UNGUARDED option
-because they sometimes require exclusive use of their object variable (attribute) pool. At other
+because they sometimes require exclusive use of their object variable pool. At other
 times, they must perform some action that involves the concurrent use of the
 same pool by a method on another activity. In this case, you can use the GUARD
 keyword instruction. When the method reaches the point in its processing where
-it no longer requires exclusive use of the object variable (attribute) pool, it can use the GUARD OFF instruction
+it no longer requires exclusive use of the object variable pool, it can use the GUARD OFF instruction
 to allow methods running on different activities to become active on the same scope.
 If the method needs to regain exclusive
 use, it uses the GUARD ON instruction.</para>
 <para>For more flexibility when activating methods, you can use GUARD ON/OFF
 with the &quot;WHEN <emphasis role="italic">expression</emphasis>&quot;
 option. Add this instruction to the
-method code at the point where exclusive use of the object variable (attribute) pool becomes
+method code at the point where exclusive use of the object variable pool becomes
 conditional. When processing reaches this point, Rexx evaluates
 <emphasis role="italic">expression</emphasis> to determine if it is true
 or false.</para>
@@ -1610,11 +1574,11 @@ or false.</para>
 <emphasis role="italic">expression</emphasis>&quot;, the
 active method keeps running until <emphasis role="italic">expression</emphasis>
 becomes true. To become true, another method must assign or drop an object
-variable (attribute) that is named in <emphasis role="italic">expression</emphasis>.
-Whenever an object variable (attribute) changes, Rexx reevaluates
+variable that is named in <emphasis role="italic">expression</emphasis>.
+Whenever an object variable changes, Rexx reevaluates
 <emphasis role="italic">expression.</emphasis> If
 <emphasis role="italic">expression</emphasis> becomes true, GUARD is turned off,
-exclusive use of the object variable (attribute) pool is released, and other methods needing
+exclusive use of the object variable pool is released, and other methods needing
 exclusive use can begin running. If
 <emphasis role="italic">expression</emphasis> becomes false again,
 GUARD is turned on and the active method regains exclusive use. </para>
