@@ -1,0 +1,161 @@
+#!/usr/bin/env rexx
+/*
+  svn, version 1.9.4 (r1740329)
+  Change Date: Do  7 Feb 2019 08:19:22 CET
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2019 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+/*
+  delegation.rex Show the concept of object method delegation
+
+  Purpose: make some tests for each ooRexx sample pgm distributed.
+
+  Built from a template provided by Rony G. Flatscher 2018-02-25
+  Amended based on month.testgroup for more complete testing.
+
+  Where possible the assertions are done both ways to make sure we 
+  do not get to much or to little output.
+
+*/
+
+  parse source . . fileSpec;
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.delegation.testGroup)
+
+  if locateSamplePrg("delegation.rex") == .nil then
+    group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+::class "delegation.testGroup" subclass ooTestCase public
+
+  ::attribute lookup class
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~SAMPLE_TEST
+
+    l = .directory~new
+    l~shouldStop = .true
+    l~prgPath = ""
+    l~prgOut = .array~new
+    self~lookup = l
+
+  ::method test_01_sampleExists
+
+    lookup = self~class~lookup
+    lookup~shouldStop = .true
+    lookup~prgOut = .array~new
+
+    prgPath = locateSamplePrg("delegation.rex")
+
+    -- Assert that the sample was located and that it exists.
+    self~assertNotNull(prgPath)
+    self~assertNotSame("", .stream~new(prgPath)~query("EXISTS"))
+
+    lookup~prgPath = prgPath
+    lookup~shouldStop = .false
+
+  ::method test_02_executes
+
+    lookup = self~class~lookup
+    lookup~shouldStop = .true
+
+    ret = execRexxPrg(lookup~prgPath, lookup~prgOut)
+
+    -- Assert there was not an internal error, that output was produced, and
+    -- that the return code is 0.
+    self~assertNotSame(9999, ret)
+    self~assertTrue(lookup~prgOut~items > 0)
+    self~assertSame(0, ret)
+
+    -- All okay, keep going.
+    lookup~stopStop = .false
+
+  ::method test_03_badArg
+
+    lookup = self~class~lookup
+    lookup~shouldStop = .true
+    lookup~prgOut~empty
+
+    ret = execRexxPrgWithArgs(lookup~prgPath, "dummyInput", lookup~prgOut)
+
+    -- The program ignores arguments, so we should get a good completion.
+    self~assertNotSame(9999, ret)
+    self~assertTrue(lookup~prgOut~items > 0)
+    self~assertSame(0, ret)
+
+    -- All okay, keep going.
+    lookup~stopStop = .false
+
+::method "test_04_delegation.rex"
+  
+  Line.1 = 'default implementation'
+  Line.2 = 'default implementation'
+  Line.3 = 'gnirts emoS'
+  Line.4 = 'hey back at you!'
+  Line.5 = 'A thing in a directory'
+  Line.0 = 5
+
+  prgPathName = locateSamplePrg("delegation.rex")
+ 
+  SELECT CASE .ooRexxUnit.OSName
+    when 'WINDOWS' then address command 'rexx' '"'prgPathName'"' with output stem myStem.
+    otherwise           address ''      'rexx' prgPathName with output stem myStem.
+  END /* Select */
+
+  DO i= 1 TO Line.0
+    self~assertEquals(Line.i,myStem.i)
+  END i
+
+  DO i= 1 TO myStem.0
+    self~assertEquals(Line.i,myStem.i)
+  END i
+
+--we are done in this testgroup
