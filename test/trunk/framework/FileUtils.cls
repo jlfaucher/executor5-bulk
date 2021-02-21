@@ -4,7 +4,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -77,6 +77,7 @@
     when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
     when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
     when .ooRexxUnit.OSName == "AIX" then stdErrToStdOut = '2>&1'
+    when .ooRexxUnit.OSName == "DARWIN" then stdErrToStdOut = '2>&1'
     otherwise stdErrToStdOut = '2>&1'
   end
 
@@ -158,6 +159,16 @@ return prgRet
       end
     end
 
+    when currentOS == "DARWIN" then do
+  -- This is only looking for ooRexx in the path set by the jenkins macOS
+  -- slave machine, amend if necessary
+      builddir = "~/workspace/ooRexx-macOS1014-build/oorexxBuild/bin/rexx"
+      FINDstream = .stream~new(builddir)
+      dir = FINDstream~qualify
+      if dir~pos(builddir~subStr(2,)) > 0 then dir = dir~left(dir~pos('/bin/rexx') -1)
+      else  dir = .nil
+    end
+
     otherwise do
       nop
     end
@@ -211,6 +222,9 @@ return dir
     when currentOS == "LINUX" | currentOS == "AIX" then do
       dir = findInstallDirOnUnix()
     end
+    when currentOS == "DARWIN" then do
+      dir = findInstallDirOnDARWIN()
+    end
 
     otherwise nop
   end
@@ -222,7 +236,7 @@ return dir
 /** locateSamplePrg()
  * Locates a sample program normally shipped with the ooRexx distribution.
  *
- * The sample is searched for in the location(s) for samples programsin a normal
+ * The sample is searched for in the location(s) for samples programs in a normal
  * install.  If it is not found, an attempt to find it using the assumption that
  * the test is being executed from within a build directory.  This second search
  * allows the test suite to be run by a developer from his build directory
@@ -278,6 +292,9 @@ return dir
       retObj = locateSampleOnUnix(name, installDir)
     end
 
+    when currentOS == "DARWIN" then do
+      retObj = locateSampleOnDARWIN(name, installDir)
+    end
     otherwise do
       nop
     end
@@ -317,6 +334,23 @@ return retObj
 
 return retObj
 -- End locateSampleOnUnix()
+
+/** locateSampleOnDARWIN()
+ * Two possible scenarios:
+ * (i) either we have Unix-like installation, examples are 
+ * /Applications/ooRexx5/bin/rexx
+ * /Users/jenkins/Applications/ooRexx5/bin/rexx
+ * (ii) or we have a "framework" installation, as for BSF4ooRexx
+ * /Library/Frameworks/ooRexx.framework/Versions/A/Commands/rexx
+ */
+::routine locateSampleOnDARWIN
+  use strict arg name, installDir
+
+  if sysIsFile(installDir || '../share/ooRexx/' || name) then return installDir || '../share/ooRexx/' || name
+  else if sysIsFile(installDir || '../shared/ooRexx/' || name) then return installDir || '../shared/ooRexx/' || name
+  else return .nil
+
+-- End locateSampleOnDARWIN()
 
 /** findInstallDirOnUnix()
  * Tries to locate the install directory on a Unix-like system using what is
@@ -391,6 +425,18 @@ return retObj
 
 return dir
 -- End findInstallDirOnUnix()
+
+/** findInstallDirOnDARWIN()
+ * Tries to locate the install directory on macOS (DARWIN) using what is
+ * known about how ooRexx gets installed on that system.
+ * @return   The fully qualified directory path to an installed ooRexx on
+ *           success, otherwise .nil.
+ */
+::routine findInstallDirOnDARWIN
+
+  if sysIsFile(.RexxInfo~executable) then return filespec('path',.RexxInfo~executable) 
+  else return .nil
+-- End findInstallDirOnDARWIN()
 
 ::routine haveRpm public
   cmdOut = .array~new
@@ -607,6 +653,10 @@ return fileName
       ret = RC
     end
     when .ooRexxUnit.OSName == "MACOSX" then do
+      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
+      ret = RC
+    end
+    when .ooRexxUnit.OSName == "DARWIN" then do
       'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
       ret = RC
     end
