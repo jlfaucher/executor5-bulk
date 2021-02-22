@@ -124,7 +124,6 @@ return prgRet
   -- been changed.
   currentDir = directory()
   if directory(.ooTest.originalWorkingDir) == "" then return .nil
-
   dir = .nil
   currentOS = .ooRexxUnit.OSName
 
@@ -363,35 +362,39 @@ return retObj
 
   dir = .nil
 
-  -- See if we can locate rexx.img using a package manager.
+  -- See if we can locate rexx executable using a package manager.
   select
     when haveRpm() then do
-      imageFile = checkRpmForInstalledFile("rexx.img")
+      execFile = checkRpmForInstalledFile("rexx")
     end
 
     when haveDpkg() then do
-      imageFile = checkDpkgForInstalledFile("rexx.img")
+      execFile = checkDpkgForInstalledFile("rexx")
     end
 
     when haveLpp() then do
-      imageFile = checkLppForInstalledFile("rexx.img")
+      execFile = checkLppForInstalledFile("rexx")
     end
 
-    otherwise imageFile = .nil
+    otherwise execFile = .nil
   end
   -- End select
 
   -- If no luck, try the default install location
-  if imageFile == .nil then do
-    imageFile = "/opt/ooRexx/bin/rexx.img"
+  if execFile == .nil then do
+    execFile = "/usr/bin/rexx"
   end
 
-  if SysIsFile(imageFile) then do
-    p = imageFile~pos("/bin/rexx.img")
+  if SysIsFile(execFile) then do
+    p = execFile~pos("/bin/rexx")
     if p <> 0 then do
-      return imageFile~left(p - 1)
+      return execFile~left(p - 1)
     end
   end
+
+  -- Still no luck? look if the executable for ooRexx is in the path
+  dir = SysSearchPath("PATH", "/bin/rexx")
+  if dir \== "" then return dir~left(dir~pos("/bin/rexx")-1)
 
   -- Still didn't find it.  Try one more thing.  The problem with this, is that
   -- if we find a rexx, we need to be sure it is ooRexx.  And, it is assuming
