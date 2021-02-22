@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2019 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007 - 2021 Rexx Language Association. All rights reserved.  */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -157,13 +157,20 @@ return testResult
   END /* Select */
 
   self~assertEquals(Line.1,myStem.1)
-  self~assertEquals(Line.2~SubWords(1,3),myStem.2~SubWords(1,3))
-  self~assertEquals(Line.3~SubWords(1,2),myStem.3~SubWords(1,2))
-  self~assertEquals(Line.4~SubWords(1,1),myStem.4~SubWords(1,1))
+  self~assertEquals(Line.2~subword(1,3),myStem.2~subword(1,3))
+  self~assertEquals(Line.3~subword(1,2),myStem.3~subword(1,2))
+  self~assertEquals(Line.4~subword(1,1),myStem.4~subword(1,1))
+  self~assertEquals(Line.4~subword(3,2),myStem.4~subword(3,2))
+  self~assertEquals(Line.4~subword(6,1),myStem.4~subword(6,1))
   self~assertEquals(Line.5,myStem.5)
-  self~assertEquals(Line.6~SubWords(1,2),myStem.6~SubWords(1,2))
-  self~assertEquals(Line.7~SubWords(1,7),myStem.7~SubWords(1,7))
+  self~assertEquals(Line.6~subword(1,2),myStem.6~subword(1,2))
+  self~assertEquals(Line.6~subword(4,3),myStem.6~subword(4,3))
+  self~assertEquals(Line.6~subword(8,2),myStem.6~subword(8,2))
+  self~assertEquals(Line.6~subword(10,1),myStem.6~subword(10,6))
+  self~assertEquals(Line.7~subword(1,7),myStem.7~subword(1,7))
+  self~assertEquals(Line.7~subword(9,1),myStem.7~subword(9,1))
   self~assertEquals(Line.8,myStem.8)
-  self~assertEquals(Line.9~SubWords(1,1),myStem.9~SubWords(1,1))
+  self~assertEquals(Line.9~subword(1,1),myStem.9~subword(1,1))
+  self~assertEquals(Line.9~subword(3,3),myStem.9~subword(3,3))
 
 --we are done in this testgroup
