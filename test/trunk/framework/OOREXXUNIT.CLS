@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1474,7 +1474,7 @@ return str
   use strict arg fName = ""
   fName = fName~string
 
-  fCountTestCases=1  -- default: individual test
+  fCountTestCases=0  -- default: no test cases counted yet
   self~caseInfo=.directory~new -- directory to contain information on test
 
   clzTCI=self~class~caseInfo    -- get access to clz' 'caseInfo' dir
