@@ -40,5 +40,8 @@
 @rem equals sign is not valid in a path name, so it will never exist.  In this
 @rem way, the entire string is treated as one token.
 
+echo.
+echo Setting env for Windows
+echo.
 for /F "usebackq tokens=1* delims==" %%i in (`cd`) do set FRAMEWORKPATH=%%i;%%i\framework;
 set PATH=%FRAMEWORKPATH%%PATH%
