@@ -50,7 +50,7 @@
   Built from a template provided by Rony G. Flatscher 2018-02-25
   Amended based on month.testgroup for more complete testing.
 
-  Where possible the assertions are done both ways to make sure we 
+  Where possible the assertions are done both ways to make sure we
   do not get to much or to little output.
 
 */
@@ -145,7 +145,31 @@ return testResult
     Line.5  = '(8+4i) / (4+i) is 2.11764706+0.470588235i'
     Line.6  = '(8+4i) % (4+i) is 2'
     Line.7  = '(8+4i) // (4+i) is 2i'
-    Line.0  = 7
+    Line.8  = ''
+    Line.9  = 'z1 = .complex~new(1,7) = 1+7i'
+    Line.10 = 'z2 = .complex~new(2,3) = 2+3i'
+    Line.11 = 'z3 = z1 + z2 = 3+10i'
+    Line.12 = 'z3 = + z2 = 2+3i'
+    Line.13 = 'z3 = z1 - z2 = -1+4i'
+    Line.14 = 'z3 = - z2 = -2-3i'
+    Line.15 = 'z3 = z1 * z2 = -19+17i'
+    Line.16 = 'z3 = z1 / z2 = 1.76923077+0.846153846i'
+    Line.17 = ''
+    Line.18 = 'z1 = .complex~new(1,3) = 1+3i'
+    Line.19 = 'z2 = .complex~new(4,) = 4'
+    Line.20 = 'z3 = z1 % z2 = 0'
+    Line.21 = 'z3 = z1 // z2 = 1+3i'
+    Line.22 = ''
+    Line.23 = 'z1 = .complex~new(3,3) = 3+3i'
+    Line.24 = 'z2 = .complex~new(2,-5) = 2-5i'
+    Line.25 = 'z1~compareTo(z2) = 1'
+    Line.26 = ''
+    Line.27 = 'check some syntactic features'
+    Line.28 = ''
+    Line.29 = '.complex~new(2,0) = 2'
+    Line.30 = '.complex~new(2,) = 2'
+    Line.31 = '.complex~new(0,2) = 2i'
+    Line.0  = 31
 
     currPath   = directory()
     prgPath    = locateSamplePrg("usecomp.rex")
