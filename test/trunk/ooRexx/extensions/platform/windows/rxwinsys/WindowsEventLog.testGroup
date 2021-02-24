@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -146,7 +146,7 @@ loadErr:
   l = .WindowsEventLog~new
 
   -- currentHandle is a private attribute.
-  self~expectSyntax(97.1)
+  self~expectSyntax(97.2)
   obj = l~currentHandle
 
 ::method test_initCode_attribute
@@ -219,10 +219,9 @@ loadErr:
   ret = l~getLogNames(logs)
   self~assertSame(0, ret)
 
-  do n over logs
+  do n over self~removeKnownIssues(logs)
     num = l~getNumber( , n)
-    self~assertTrue(num~datatype('W'), "Working with" n "log")
-    self~assertTrue(num >= 0, "Working with" n "log")
+    self~assertTrue(num >= 0, "getNumber" n "returned" num)
   end
 
 ::method test_getNumber03
@@ -249,10 +248,9 @@ loadErr:
   ret = l~getLogNames(logs)
   self~assertSame(0, ret)
 
-  do n over logs
+  do n over self~removeKnownIssues(logs)
     num = l~getLast( , n)
-    self~assertTrue(num~datatype('W'), "Working with" n "log")
-    self~assertTrue(num >= 0, "Working with" n "log")
+    self~assertTrue(num >= 0, "getLast" n "returned" num)
   end
 
 ::method test_getLast03
@@ -279,10 +277,9 @@ loadErr:
   ret = l~getLogNames(logs)
   self~assertSame(0, ret)
 
-  do n over logs
+  do n over self~removeKnownIssues(logs)
     num = l~getFirst( , n)
-    self~assertTrue(num~datatype('W'), "Working with" n "log")
-    self~assertTrue(num >= 0, "Working with" n "log")
+    self~assertTrue(num >= 0, "getFirst" n "returned" num)
   end
 
 ::method test_getFirst03
@@ -469,7 +466,7 @@ loadErr:
   ret = l~getLogNames(names)
   self~assertSame(0, ret)
 
-  do n over names
+  do n over self~removeKnownIssues(names)
     ret = l~open( , n)
     self~assertSame(0, ret, 'Working with' n)
 
@@ -505,23 +502,16 @@ loadErr:
 ::method test_readRecords03
   l = .WindowsEventLog~new
 
-  ret = l~readRecords( , , "System")
+  ret = l~readRecords( , , "System", 1, 50)
   self~assertSame(0, ret)
-  self~assertSame(l~getNumber( , "System"), l~events~items)
-
-::method test_readRecords04
-  l = .WindowsEventLog~new
-
-  ret = l~readRecords( , , "Security")
-  self~assertSame(0, ret)
-  self~assertSame(l~getNumber( , "Security"), l~events~items)
+  self~assertSame(50, l~events~items)
 
 ::method test_readRecords05
   l = .WindowsEventLog~new
 
-  ret = l~readRecords("FORWARDS" , , "System")
+  ret = l~readRecords("FORWARDS" , , "System", 1, 25)
   self~assertSame(0, ret)
-  self~assertSame(l~getNumber( , "System"), l~events~items)
+  self~assertSame(25, l~events~items)
 
 ::method test_readRecords06
   l = .WindowsEventLog~new
@@ -530,6 +520,19 @@ loadErr:
   self~assertSame(0, ret)
   self~assertSame(l~getNumber( , "System"), l~events~items)
 
+
+-- helper method: ignore log names known to have issues
+::method removeKnownIssues
+  use strict arg array
+
+  -- error -87: State, Parameters (SNMP issue)
+  array~removeItem("State")
+  array~removeItem("Parameters")
+
+  -- error -1314 (PRIVILEGE_NOT_HELD): Security
+  array~removeItem("Security")
+
+  return array
 
 
 ::class 'WindowsEventLog_Long.Suite' subclass WindowsEventLog.Suite
@@ -549,3 +552,5 @@ loadErr:
   num = l~getNumber(324, "nonsense")
   self~assertTrue(num < 0)
 
+
+::options all syntax

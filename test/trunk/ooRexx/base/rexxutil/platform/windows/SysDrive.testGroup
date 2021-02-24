@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,9 +54,6 @@ else
 
 -- test SysDriveInfo, SysVolumeLabel, SysFileSystemType
 
-::constant wmic_available (.Routine~new("wmic", "trace off; address 'path' 'wmic /?' with output stem ignore. error stem ignore.; return rc = 0")[])
-::constant mountvol_available (.Routine~new("mountvol", "trace off; address 'path' 'mountvol /?' with output stem ignore. error stem ignore.; return rc = 0")[])
-
 ::method test_driveinfo_args_too_many
   self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
   call SysDriveInfo "c:", ""
@@ -69,7 +66,7 @@ else
   self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
   call SysFileSystemType "c:", ""
 
--- null string should be returned for invalid or unused drive
+-- the current drive should be the default if no argument is given
 ::method test_no_args
   cd = directory()
   do d over "C:", "\\localhost\c$"
@@ -90,66 +87,56 @@ else
 
 -- there are a bunch of ways to specify a drive (i. e. volume)
 ::method test_volume_specifications
-  -- mountvol command is required
-  self~assertTrue(self~mountvol_available, "mountvol command is unavailable")
-  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", self~guid, -
+  -- https://docs.microsoft.com/en-us/previous-versions/windows/desktop/vdswmi/win32-volume
+  -- Win32_Volume may be deprecated, but it gives us what we need: the Volume GUID
+  disk = self~wmi('SELECT * FROM Win32_Volume WHERE DriveLetter = "C:"')
+  self~assertSame("OLEObject", disk~class~id, disk)
+
+  info = disk~FreeSpace disk~Capacity disk~Label -- drive free total label
+  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", disk~DeviceId, -
     "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
     "\\.\UNC\localhost\c$"
-    info = SysDriveInfo(volume) -- drive free total label
-    -- might have no label, or a label with embedded blanks
-    self~assertTrue(info~words >= 3, "SysDriveInfo" volume "=" info"; at least 3 words")
-    self~assertTrue(info~word(2) >= 0, "SysDriveInfo" volume "=" info"; free bytes")
-    self~assertTrue(info~word(3) >= 0, "SysDriveInfo" volume "=" info"; total bytes")
-    self~assertNotSame("", SysVolumeLabel(volume), "SysVolumeLabel" volume)
-    self~assertNotSame("", SysFileSystemType(volume), "SysFileSystemType" volume)
+    -- c is returned as c:, any trailing backslash is removed
+    vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
+    self~assertSame(vol info, SysDriveInfo(volume), "SysDriveInfo" volume)
+    self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
+    self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
   end
 
 -- test returned values for all drives in use
 ::method test_drives
-  -- wmic command is required
-  self~assertTrue(self~wmic_available, "wmic command is unavailable")
   do d over SysDriveMap("c:")~subWords
     info = SysDriveInfo(d)
     parse var info drive free size label
-    -- use WMI to retrieve volume information details
-    wmi = self~wmi(d, "DeviceID, FreeSpace, Size, VolumeName, FileSystem")
-    -- for inaccessible drives SysDriveInfo returns null string, no device id
-    self~assertOneOrAnother("", wmi["DeviceID"], drive, "SysDriveInfo" d info)
-    self~assertSame(wmi["FreeSpace"], free, "SysDriveInfo" d info)
-    self~assertSame(wmi["Size"], size, "SysDriveInfo" d info)
-    self~assertSame(wmi["VolumeName"], label, "SysDriveInfo" d info)
 
-    self~assertSame(wmi["VolumeName"], SysVolumeLabel(d), "SysVolumeLabel" d)
-    self~assertSame(wmi["FileSystem"], SysFileSystemType(d), "SysFileSystemType" d)
+    -- https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-logicaldisk
+    disk = self~wmi('SELECT * FROM Win32_LogicalDisk WHERE DeviceID = "' || d || '"')
+    self~assertSame("OLEObject", disk~class~id, disk)
+
+    -- for inaccessible drives SysDriveInfo returns the null string, no device id
+    self~assertOneOrAnother("", disk~DeviceID, drive, "SysDriveInfo" d info)
+    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info)
+    self~assertSameNilNull(disk~Size, size, "SysDriveInfo" d info)
+    self~assertSameNilNull(disk~VolumeName, label, "SysDriveInfo" d info)
+
+    self~assertSameNilNull(disk~VolumeName, SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSameNilNull(disk~FileSystem, SysFileSystemType(d), "SysFileSystemType" d)
   end
 
 
--- retrieve volume information
+-- like assertSame, but compare with nullstring instead of .nil
+::method assertSameNilNull
+  use strict arg expected, actual, description
+  self~assertSame((expected == .nil)~?("", expected), actual, description)
+
+-- retrieve WMI information
 ::method wmi
-  use strict arg drive, data
-  -- NOTE: wmic is deprecated and should be replaced by Powershell cmdlet
-  --   Get-CimInstance -ClassName Win32_logicaldisk
-  -- we ask wmic to return volume information details in the name=value format
-  address "path" "wmic logicaldisk" drive "get" data "/value" with output stem line.
-  wmi = .Stringtable~new(data~words)
-  do i = 1 to line.0
-    -- wmic is notorious for its superfluous trailing carriage-return
-    parse value line.i~strip("t", "0d"x) with name "=" wmi[name]
+  use strict arg query
+  info = query -- if the query fails, we return the query string
+  -- this should always return a set of a single object only
+  do info over .OLEObject~GetObject("winmgmts:")~ExecQuery(query)
   end
-  return wmi
-
--- retrieve the GUID for the given volume
-::method guid
-  -- there seems to be no nice way to retrieve a volume GUID
-  -- we use mountvol /? which lists current volume names with their GUIDs
-  -- we just pick the first GUID we find (typically for C:\)
-  mountvol = .Array~new
-  address "path" "mountvol /?" with output using (mountvol)
-  do line over mountvol
-    if line~strip~startsWith("\\?\Volume{") then
-      return line~strip
-  end
-  return "C"
+  return info
 
 
 ::options digits 18 all syntax
