@@ -161,14 +161,23 @@ return testResult
     otherwise           address ''      'rexx' prgPathName with output stem myStem.
   END /* Select */
 
-  DO i= 1 TO Line.0
-    IF i=10 THEN self~assertEquals(Line.i~subWord(1,5),myStem.i~subWord(1,5))
-    ELSE         self~assertEquals(Line.i,myStem.i)
+  DO i= 1 TO 9
+    self~assertEquals(Line.i,myStem.i)
   END i
 
-  DO i= 1 TO myStem.0
-    IF i=10 THEN self~assertEquals(Line.i~subWord(1,5),myStem.i~subWord(1,5))
-    ELSE         self~assertEquals(Line.i,myStem.i)
+/* Since line 10 may arrive at any time after line 9 we need account for check this */
+  DO i= 10 TO Line.0
+    IF myStem.i~word(1) = 'Result' THEN self~assertEquals(Line.10~subWord(1,6),myStem.i~subWord(1,6))
+    ELSE                                self~assertEquals(Line.11~subWord(1,5),myStem.i~subWord(1,5))
+  END i
+
+  DO i= 1 TO 9
+    self~assertEquals(Line.i,myStem.i)
+  END i
+
+  DO i= 10 TO myStem.0
+    IF myStem.i~word(1) = 'Result' THEN self~assertEquals(Line.10~subWord(1,6),myStem.i~subWord(1,6))
+    ELSE                                self~assertEquals(Line.11~subWord(1,5),myStem.i~subWord(1,5))
   END i
 
 --we are done in this testgroup
