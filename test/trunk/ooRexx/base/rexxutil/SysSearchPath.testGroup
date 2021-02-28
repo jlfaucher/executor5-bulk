@@ -102,14 +102,7 @@ else
       self~assertSame(file~absolutePath, SysSearchPath("", file~name, "current"), msg)
       self~assertSame(file~absolutePath, SysSearchPath("", "./"file~name, "current"), "./" || msg)
       -- option N won't search current directory
-      if .RexxInfo~platform~caselessStartsWith("DARWIN") then
-      do
-      -- avoid problems with hidden .DS_Store files on macOS
-         res = SysSearchPath("", file~name, "nocurrent")
-         if res~caselessPos('.DS_Store') = 0 then self~assertSame("", SysSearchPath("", file~name, "nocurrent"), msg)
-         else self~assertSame(res, SysSearchPath("", file~name, "nocurrent"), msg)
-      end
-      else self~assertSame("", SysSearchPath("", file~name, "nocurrent"), msg)
+      self~assertSame("", SysSearchPath("", file~name, "nocurrent"), msg)
     end
   end
 
