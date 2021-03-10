@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -55,16 +55,23 @@ return testResult
 
 ::class "INTERPRET.testGroup" subclass ooTestCase public
 
-::method "test_1"
-   x=12
-   Interpret 'x=1'
-   self~assertSame(x, 1)
+::method test_simple
+   x = 12
+   interpret "x += 1"
+   self~assertSame(x, 13)
 
-::method "test_2"
-   self~expectSyntax(47.1)
-   x=12
-   y='call intproc; return; intproc: x=1; return;'
-   Interpret y
+   interpret "interpret 'x += 1'"
+   self~assertSame(x, 14)
+
+::method test_interpret_label
+   self~expectSyntax(47.1) -- INTERPRET data must not contain labels
+   interpret "call intproc; return; intproc: x=1; return;"
+
+::method test_interpret_call
+  interpret "x = p(12)"
+  self~assertSame(x, 13)
+  return
+  p: return arg(1) + 1
 
 ::method test_interpret_no_expression
   -- Missing expression following INTERPRET keyword
@@ -72,6 +79,18 @@ return testResult
 
 ::method test_interpret_null
   interpret ""
+  interpret "--"
+  interpret ";"
+  interpret "interpret ''"
+
+::method test_interpret_return
+  interpret "return"
+  self~assertFail("return expected")
+
+::method test_interpret_raise
+  interpret "signal on nostring; call datatype .nil" -- raises NOSTRING
+  self~assertFail("nostring expected")
+  nostring:
 
 -- INTERPRET allows no directives
 ::method test_interpret_directive
@@ -91,5 +110,17 @@ return testResult
   self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
   interpret "nop; ::routine r"
 
+-- [bugs:#1750] INTERPRET .context~digits different from digits()
+::method test_interpret_settings
+  -- changes must propagate back to the parent, even if nested
+  interpret "interpret 'numeric digits 11; digits = digits() .context~digits'"
+  self~assertSame("11 11 11 11", digits digits() .context~digits)
 
-::options novalue error
+  interpret "interpret 'numeric fuzz 2; fuzz = fuzz() .context~fuzz'"
+  self~assertSame("2 2 2 2", fuzz fuzz() .context~fuzz)
+
+  interpret "interpret 'numeric form engineering; form = form() .context~form'"
+  self~assertSame("ENGINEERING ENGINEERING ENGINEERING ENGINEERING", form form() .context~form)
+
+
+::options all syntax
