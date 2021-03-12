@@ -1075,10 +1075,26 @@ return str
   -- Assertion holds.
   self~fAssertions += 1
 
-::method assertIsA
-  use strict arg target, class, msg = 'assertIsA'
+::method assertNil
+  use strict arg actual, msg = ""
 
-  self~assertTrue(target~isa(class), msg)
+  if .nil \== actual then
+    self~fail(self~makeFailure(".nil", actual, msg, "assertNil"))
+  self~fAssertions += 1
+
+
+::method assertNotNil
+  use strict arg actual, msg = ""
+
+  if .nil == actual then
+    self~fail(self~makeFailure("not .nil", ".nil", msg, "assertNotNil"))
+  self~fAssertions += 1
+
+::method assertIsA
+  use strict arg target, class, msg = ""
+
+  if \target~isA(class) then
+    self~fail(self~makeFailure(class~id, target~class~id, msg, "assertIsA"))
 
 -- compare two Collections for equality
 ::method assertSameList
@@ -2112,14 +2128,21 @@ return 0
 ::class TemporaryTestFile subclass File public
 ::method init
   expose package
-  use strict arg host, name
+  use strict arg host = .nil, name
 
-  -- get the package the class is defined in
-  if host~isA(.File) then do
+  -- let's see where we create the temporary file
+  if host == .nil then do
+    -- create the file in the user's temp folder
+    package = .nil
+    dir = .File~temporaryPath
+  end
+  else if host~isA(.File) then do
+    -- create the file in the given location
     package = .nil
     dir = host
   end
   else do
+    -- create the file in the same location as the package
     if host~isA(.Class) then
       package = host~package -- we've been called from a class method
     else
@@ -2209,13 +2232,25 @@ return 0
 ::method init
   use strict arg host, name
 
-  -- get the package the class is defined in
-  if host~isA(.File) then
+  -- let's see where we create the temporary file
+  if host == .nil then do
+    -- create the file in the user's temp folder
+    package = .nil
+    dir = .File~temporaryPath
+  end
+  else if host~isA(.File) then do
+    -- create the file in the given location
+    package = .nil
     dir = host
-  else if host~isA(.Class) then
-    dir = .File~new(host~package~name)~parentFile -- we're called from a class method
-  else
-    dir = .File~new(host~class~package~name)~parentFile
+  end
+  else do
+    -- create the file in the same location as the package
+    if host~isA(.Class) then
+      package = host~package -- we've been called from a class method
+    else
+      package = host~class~package
+    dir = .File~new(package~name)~parentFile
+  end
 
   self~init:super(name, dir)
 
@@ -2268,4 +2303,4 @@ return 0
   return 0
 
 
-::options novalue error
+::options novalue syntax

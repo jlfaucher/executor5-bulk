@@ -4,7 +4,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2078,7 +2078,7 @@ return
     if files~items == 0 then do
       err = .ExceptionData~new(timeStamp(), simpleFileSpec, .ExceptionData~ANOMLY)
       err~severity = "Warning"
-      err~msg = "No test containers found matching search paramters."
+      err~msg = "No test containers found matching search parameters."
       testResult~addException(err)
       return q
     end
@@ -2542,4 +2542,4 @@ return
 -- End of class: PhaseReport
 
 
-::options novalue error
+::options novalue syntax

@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -44,8 +44,31 @@
     #########################################################################
 -->
 <appendix id="mig"><title>Migration</title>
-<para>This appendix lists some differences between Open Object Rexx 5.0.0
+<para>This appendix lists some differences between Open Object Rexx 5.0
 and earlier versions of Open Object Rexx.</para>
+
+<section id="changed"><title>Incompatible ooRexx features</title>
+<para>Functions or features which have been changed in ooRexx 5.0 in a way
+that will lead to incompatibilities with prior versions.
+</para>
+
+<section id="changed.systempfilename"><title>RexxUtil SysTempFileName</title>
+<para><xref linkend="utlSystempfilename" xrefstyle="select:title"/>
+on Unix-like platforms now behaves identically to SysTempFileName on Windows.
+It no longer uses only the first five characters of the file name part of the
+template, appending a random string to make it unique.
+It also no more prepends an operating system-chosen writable path if no path
+is given in the template.
+Instead it now uses the same filler-based mechanism as the Windows version
+does.
+</para>
+<para>Existing ooRexx programs using SysTempFileName on Unix-like
+platforms will need to be amended.
+</para>
+</section>
+
+</section>
+
 
 <section id="deprecated"><title>Deprecated Rexx features</title>
 <para>In exceptional circumstances, ooRexx may deprecate functions or features,
@@ -85,7 +108,7 @@ semaphore-processing have been deprecated.
 </para>
 </section>
 
-<section id="deprecated.loaddrop"><title>RexxUtil SysLoadFuncs/SysDropFuncs </title>
+<section id="deprecated.loaddrop"><title>RexxUtil SysLoadFuncs/SysDropFuncs</title>
 <para>The RexxUtil functions SysLoadFuncs and SysDropFuncs have been deprecated.
 Since ooRexx 4.0.0 these functions do nothing.
 </para>

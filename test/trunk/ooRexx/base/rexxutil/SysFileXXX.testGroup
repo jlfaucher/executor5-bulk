@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,21 +39,47 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+parse source . . s
 
-    parse source . . fileSpec;
+group = .TestGroup~new(s)
+group~add(.SysFileXXX.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-    group = .TestGroup~new(fileSpec)
-    group~add(.SysFileXXX.testGroup)
-
-    if group~isAutomatedTest then return group
-
-    testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
 
 ::requires 'ooTest.frm'
-::class 'SysFileXXX.testgroup' subclass ooTestCase public
+::class SysFileXXX.testgroup subclass ooTestCase public
+
+/* File- and directory-related tests.
+   SysFileExists
+   SysIsFile
+   SysIsFileDirectory
+   SysFileDelete
+   SysMkDir
+   SysRmDir
+   SysFileCopy
+   SysFileMove
+   SysTempFileName
+
+   To Do:
+   SysFileMove cross-volume tests
+   SysMkDir second arg tests on Unix
+   SysIsFileLink
+
+   Unix home-directory (~) tests are in platform/unix/tilde.testGroup
+
+   NOTE that * and ? are not supported as wildcard characters, and are
+   invalid on Windows, but are valid characters (by themselves) on Unix.
+*/
+
+::constant existing (.TemporaryTestFile~new(self, "test_sysfile")~create("test"))
+::constant readonly (.TemporaryTestFile~new(self, "test_sysfile_readonly")~create("test")~~setReadOnly)
+::constant existingDir (.TemporaryTestDirectory~new(self, "test_sysfile_dir")~create)
+
+
+-- SysFileExists
 
 ::method test_fileexists_no_arg
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required
@@ -65,176 +91,399 @@ return testResult
 
 ::method test_fileexists_invalid
   self~assertFalse(SysFileExists(""))
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
   self~assertFalse(SysFileExists("*"))
-  self~assertFalse(SysFileExists("??"))
 
-::method test_fileexists_valid
+-- both files and directories
+::method test_fileexists
+  -- does not exist
+  self~assertFalse(SysFileExists("does-not-exist"))
+
+  -- read-only
+  self~assertTrue(SysFileExists(self~readonly~fullName))
+
+  -- directories
   self~assertTrue(SysFileExists("."))
-  self~assertTrue(SysFileExists("/."))
-  self~assertTrue(SysFileExists("./"))
-  self~assertTrue(SysFileExists("./."))
   self~assertTrue(SysFileExists(".."))
-  self~assertTrue(SysFileExists("../"))
-  self~assertTrue(SysFileExists("../."))
-  self~assertTrue(SysFileExists("/.."))
-  self~assertTrue(SysFileExists("./.."))
+  self~assertTrue(SysFileExists("/"))
+  self~assertTrue(SysFileExists(self~existingDir~fullName)) -- empty
+  self~assertTrue(SysFileExists(self~existing~parent)) -- not empty
+  do dir over .File~listRoots
+    self~assertTrue(SysFileExists(dir), "SysFileExists" dir)
+  end
 
-::method test_file_exists
+  -- file, absolute
+  self~assertTrue(SysFileExists(self~existing~fullName))
 
-    parse source . . me
+  -- file, relative
+  current = directory()
+  call directory self~existing~parent
+  self~assertTrue(SysFileExists(self~existing~name))
+  call directory current
 
-    directory = filespec('Location', me)
-    filename = filespec('Name', me)
 
-    -- the fully resolve directory and file should exist
-    self~assertTrue(sysFileExists(me))
-    self~assertTrue(sysFileExists(directory))
+-- SysIsFile
 
-    currentDir = Directory(directory)
-    self~assertTrue(SysFileExists(filename))
+::method test_isfile_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysIsFile
 
-    self~assertFalse(SysFileExists(filename||'xxxxx'))
+::method test_isfile_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysIsFile "", ""
 
-    self~assertTrue(SysIsFile(me))
-    self~assertTrue(SysIsFile(fileName))
-    self~assertFalse(SysIsFile(directory))
-    self~assertFalse(SysIsFile(""))
-    self~assertFalse(SysIsFile("."))
-    self~assertFalse(SysIsFile(".."))
+::method test_isfile_invalid
+  self~assertFalse(SysIsFile(""))
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
+  self~assertFalse(SysIsFile("*"))
 
-    self~assertFalse(SysIsFile(filename||'xxxxx'))
+::method test_isfile
+  -- does not exist
+  self~assertFalse(SysIsFile("does-not-exist"))
 
-    self~assertFalse(SysIsFileDirectory(me))
-    self~assertFalse(SysIsFileDirectory(fileName))
-    self~assertTrue(SysIsFileDirectory(directory))
-    self~assertTrue(SysIsFileDirectory("."))
-    self~assertTrue(SysIsFileDirectory(".."))
+  -- read-only
+  self~assertTrue(SysIsFile(self~readonly~fullName))
 
-    self~assertFalse(SysIsFileDirectory(directory||'xxxxx'))
+  -- directories are no files
+  self~assertFalse(SysIsFile("."))
+  self~assertFalse(SysIsFile(".."))
+  self~assertFalse(SysIsFile("/"))
+  self~assertFalse(SysIsFile(self~existingDir~fullName)) -- empty
+  self~assertFalse(SysIsFile(self~existing~parent)) -- not empty
+  do dir over .File~listRoots
+    self~assertFalse(SysIsFile(dir), "SysIsFile" dir)
+  end
 
-    temp = .TemporaryTestFile~new(self, 'testinput')
-    temp~create(("Line1","","Line3"))
+  -- absolute
+  self~assertTrue(SysIsFile(self~existing~fullName))
 
-    self~assertTrue(SysFileExists('testinput'))
-    self~assertEquals(0, SysFileDelete(temp~fullName))
-    self~assertFalse(SysFileExists('testinput'))
+  -- relative
+  current = directory()
+  call directory self~existing~parent
+  self~assertTrue(SysIsFile(self~existing~name))
+  call directory current
 
-    temp = .TemporaryTestFile~new(self, 'testinput2')
-    temp~create(("Line1","","Line3"))
 
-    self~assertTrue(SysFileExists('testinput2'))
-    self~assertEquals(0, SysFileDelete('testinput2'))
-    self~assertFalse(SysFileExists('testinput2'))
+-- SysIsFileDirectory
 
-    self~assertNotEquals(0, SysFileDelete('testinput3'))
-    self~assertNotEquals(0, SysFileDelete(directory))
+::method test_isfiledirectory_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysIsFileDirectory
 
-    temp = .TemporaryTestFile~new(self, 'testinput4')
-    temp~create(("Line1","","Line3"))
+::method test_isfiledirectory_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysIsFileDirectory "", ""
 
-    -- this only applies to Windows
-    if .ooRexxUnit.OSName == "WINDOWS" then do
-       tempFile = .File~new(temp~fullName)
-       tempFile~setReadOnly
-       self~assertFalse(tempFile~canWrite)
-       self~assertNotEquals(0, SysFileDelete('testinput4'))
-       self~assertTrue(SysFileExists('testinput4'))
-       tempFile~setWritable
-       self~assertEquals(0, SysFileDelete('testinput4'))
-    end
+::method test_isfiledirectory_invalid
+  self~assertFalse(SysIsFileDirectory(""))
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
+  self~assertFalse(SysIsFileDirectory("*"))
 
-    temp = .TemporaryTestDirectory~new(self, "testdir")
+::method test_isfiledirectory
+  -- does not exist
+  self~assertFalse(SysIsFileDirectory("does-not-exist"))
 
-    self~assertEquals(0, SysMkDir(temp~fullName))
-    self~assertTrue(SysIsFileDirectory(temp~fullName))
-    self~assertEquals(0, SysRmDir(temp~fullName))
-    self~assertFalse(SysFileExists(temp~fullName))
+  -- a file is not a directory
+  self~assertFalse(SysIsFileDirectory(self~existing~fullName))
 
-    call directory currentDir
+  -- directories
+  self~assertTrue(SysIsFileDirectory("."))
+  self~assertTrue(SysIsFileDirectory(".."))
+  self~assertTrue(SysIsFileDirectory("/"))
+  self~assertTrue(SysIsFileDirectory(self~existingDir~fullName)) -- empty
+  self~assertTrue(SysIsFileDirectory(self~existing~parent)) -- not empty
+  do dir over .File~listRoots
+    self~assertTrue(SysIsFileDirectory(dir), "SysIsFileDirectory" dir)
+  end
 
--- (Windows-only) UNC filename tests
-::method test_name_UNC
-  if \.RexxInfo~platform~caselessStartsWith("Windows") then
-      return
-  parse source . . this
-  thisFile = .File~new(this~changeStr(':', '$'), '\\localhost')
-  thisDir = thisFile~parentFile
-  self~assertTrue(SysFileExists(thisFile~absolutePath), thisFile~absolutePath "should exist")
-  self~assertTrue(SysIsFile(thisFile~absolutePath), thisFile~absolutePath "should exist")
-  self~assertTrue(SysFileExists(thisDir~absolutePath), thisDir~absolutePath "should exist")
-  self~assertTrue(SysIsFileDirectory(thisDir~absolutePath), thisDir~absolutePath "should exist")
 
-::method test_file_copy
-    parse source . . me
+-- SysFileDelete
 
-    directory = filespec('Location', me)
+::method test_filedelete_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFileDelete
 
-    lines = ("Line1","","Line3")
-    temp = .TemporaryTestFile~new(self, 'copysource')
-    temp~create(lines)
+::method test_filedelete_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysFileDelete "", ""
 
-    temp2 = .TemporaryTestFile~new(self, 'copytarget')
+::method test_filedelete_invalid
+  self~assertNotEquals(0, SysFileDelete(""))
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
+  self~assertNotEquals(0, SysFileDelete("*"))
 
-    self~assertEquals(0, SysFileCopy(temp~fullName, temp2~fullname))
-    self~assertTrue(SysFileExists(temp~fullName));
-    self~assertTrue(SysFileExists(temp2~fullName));
+-- deletes files only, no directories
+::method test_filedelete
+  -- does not exist
+  self~assertNotEquals(0, SysFileDelete("does-not-exist"))
 
-    s = .stream~new(temp2~fullName)
-    self~assertEquivalentList(lines, s~arrayIn)
-    s~close
+  -- cannot delete read-only file
+  self~assertNotEquals(0, SysFileDelete(self~readonly~fullName))
 
-    currentDir = Directory(directory)
+  -- directories are no files
+  self~assertNotEquals(0, SysFileDelete("."))
+  self~assertNotEquals(0, SysFileDelete(".."))
+  self~assertNotEquals(0, SysFileDelete("/"))
+  self~assertNotEquals(0, SysFileDelete(self~existing~parent))
 
-    lines = ("Line4","","Line6")
-    temp~create(lines)
+  -- absolute
+  delete = .TemporaryTestFile~new(self, "test_sysfile_delete")~create("test")
+  self~assertEquals(0, SysFileDelete(delete~fullName))
 
-    self~assertEquals(0, SysFileCopy('copysource', 'copytarget'))
-    self~assertTrue(SysFileExists('copysource'));
-    self~assertTrue(SysFileExists('copytarget'));
+  -- relative
+  delete = .TemporaryTestFile~new(self, "test_sysfile_delete")~create("test")
+  current = directory()
+  call directory delete~parent
+  self~assertEquals(0, SysFileDelete(delete~name))
+  call directory current
 
-    s = .stream~new('copytarget')
-    self~assertEquivalentList(lines, s~arrayIn)
-    s~close
 
-::method test_file_move
-    parse source . . me
+-- SysMkDir
 
-    directory = filespec('Location', me)
+::method test_mkdir_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysMkDir
 
-    lines = ("Line1","","Line3")
-    temp = .TemporaryTestFile~new(self, 'movesource')
-    temp~create(lines)
+-- on Windows SysMkDir accepts only one arg
+-- on Unix SysMkDir accepts up to two args
+-- tests to be done
 
-    temp2 = .TemporaryTestFile~new(self, 'movetarget')
+::method test_mkdir_invalid
+  self~assertNotEquals(0, SysMkDir(""))
+  self~assertNotEquals(0, SysMkDir("."))
+  self~assertNotEquals(0, SysMkDir(".."))
+  self~assertNotEquals(0, SysMkDir("/"))
+  -- can't test for wildcard chars as on Unix "*" or "??" are valid targets
 
-    self~assertEquals(0, SysFileMove(temp~fullName, temp2~fullname))
-    self~assertFalse(SysFileExists(temp~fullName));
-    self~assertTrue(SysFileExists(temp2~fullName));
+::method test_mkdir
+  -- unsuccessful if either a file or a directory with the same name exists
+  self~assertNotEquals(0, SysMkDir(self~existing~fullName))
+  self~assertNotEquals(0, SysMkDir(self~existingDir~fullName))
 
-    s = .stream~new(temp2~fullName)
-    self~assertEquivalentList(lines, s~arrayIn)
-    s~close
+  -- unsuccessful if more than last part to be created
+  self~assertNotEquals(0, SysMkDir("does-not-exist" || .File~separator || "directory"))
 
-    call SysFileDelete(temp2~fullName)
+  -- absolute
+  dir = .TemporaryTestDirectory~new(self, "test_sysmkdir")
+  self~assertEquals(0, SysMkDir(dir~fullName))
+  self~assertTrue(SysIsFileDirectory(dir~fullName))
+  self~assertEquals(0, SysRmDir(dir~fullName))
 
-    currentDir = Directory(directory)
+  -- relative
+  current = directory()
+  call directory dir~parent
+  self~assertEquals(0, SysMkDir(dir~name))
+  self~assertTrue(SysIsFileDirectory(dir~fullName))
+  self~assertEquals(0, SysRmDir(dir~name))
+  call directory current
 
-    lines = ("Line4","","Line6")
-    temp~create(lines)
 
-    self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
-    self~assertFalse(SysFileExists('movesource'));
-    self~assertTrue(SysFileExists('movetarget'));
+-- SysRmDir
 
-    s = .stream~new('movetarget')
-    self~assertEquivalentList(lines, s~arrayIn)
-    s~close
+::method test_rmdir_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysRmDir
 
-    temp~create(("Line7","","Line8"))
+::method test_rmdir_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysRmDir "", ""
 
-    self~assertNotEquals(0, SysFileMove('movesourcexxxx', 'movetargetxxxx'))
-    self~assertFalse(SysFileExists('movesourcexxxx'));
-    self~assertFalse(SysFileExists('movetargetxxxx'));
+::method test_rmdir_invalid
+  self~assertNotEquals(0, SysRmDir(""))
+  -- no wildcard characters allowed (but might match a directory "*" on Unix)
+  self~assertNotEquals(0, SysRmDir("*"))
+  -- target must contain both path and name, path alone is not enough
+  self~assertNotEquals(0, SysRmDir("."))
+  self~assertNotEquals(0, SysRmDir(".."))
+  self~assertNotEquals(0, SysRmDir("/"))
+
+::method test_rmdir
+  -- does not exist
+  self~assertNotEquals(0, SysRmDir("does-not-exist"))
+
+  -- to be removed, directory must be empty
+  dir = .TemporaryTestDirectory~new(self, "test_rmdir_empty")~create
+  file = .TemporaryTestFile~new(dir, "test_rmdir_file")~create("test")
+  self~assertNotEquals(0, SysRmDir(dir~fullName))
+  self~assertEquals(0, SysFileDelete(file~fullName))
+  self~assertEquals(0, SysRmDir(dir~fullName))
+
+  -- cannot delete read-only directory on Windows
+  -- (on Unix, no files can be created in a read-only directory, but the
+  --  directory itself can still be removed if empty)
+  if .RexxInfo~platform~caselessStartsWith("Windows") then do
+    read = .TemporaryTestDirectory~new(self, "test_rmdir_readonly")~create~~setReadOnly
+    self~assertNotEquals(0, SysRmDir(read~fullName))
+    read~setWritable
+    self~assertEquals(0, SysRmDir(read~fullName))
+  end
+
+
+-- SysFileCopy
+
+::method test_filecopy_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFileCopy
+
+::method test_filecopy_one_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysFileCopy ""
+
+::method test_filecopy_three_args
+  self~expectSyntax((88.922, 2)) -- Too many arguments in invocation; 2 expected
+  call SysFileCopy "", "", ""
+
+::method test_filecopy_invalid
+  existing = self~existing~fullName
+  self~assertNotEquals(0, SysFileCopy("", ""))
+  self~assertNotEquals(0, SysFileCopy("", existing))
+
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
+  self~assertNotEquals(0, SysFileCopy("*", existing))
+
+  -- can't test for wildcard chars as on Unix "*" or "??" are valid targets
+  -- target must contain both path and name, path alone is not enough
+  self~assertNotEquals(0, SysFileCopy(existing, "."))
+  self~assertNotEquals(0, SysFileCopy(existing, ".."))
+  self~assertNotEquals(0, SysFileCopy(existing, "/"))
+  self~assertNotEquals(0, SysFileCopy(existing, self~existingDir~fullName))
+
+  -- copying a file to itself isn't allowed
+  self~assertNotEquals(0, SysFileCopy(existing, existing))
+  self~assertTrue(SysFileExists(existing)) -- must still be there
+
+-- overwrites existing targets (except if read-only)
+::method test_filecopy
+  lines = "test 1", "", "test 3"
+  sourceFile = .TemporaryTestFile~new(self, "test_filecopy_source")~create(lines)
+  targetFile = .TemporaryTestFile~new(self, "test_filecopy_target")~~delete
+  source = sourceFile~fullName
+  target = targetFile~fullName
+  readonly = self~readonly~fullName
+
+  -- an unsuccessful copy: source missing
+  self~assertNotEquals(0, SysFileCopy("does-not-exist", target), "SysFileCopy does-not-exist" target)
+
+  -- an unsuccessful copy: target is read-only
+  self~assertNotEquals(0, SysFileCopy(source, readonly))
+
+  -- a successful copy
+  self~assertEquals(0, SysFileCopy(source, target), "SysFileCopy" source target)
+  self~assertTrue(SysFileExists(source))
+  self~assertTrue(SysFileExists(target))
+  s = .stream~new(targetFile)
+  self~assertEquivalentList(lines, s~arrayIn)
+  s~close
+
+  -- copy overwrites an existing target
+  -- we modify target so we can confirm target was overwritten
+  targetFile~create("test")
+  self~assertEquals(0, SysFileCopy(source, target), "SysFileCopy" source target)
+  self~assertTrue(SysFileExists(source))
+  self~assertTrue(SysFileExists(target))
+  s = .stream~new(targetFile)
+  self~assertEquivalentList(lines, s~arrayIn)
+  s~close
+  targetFile~delete
+
+  -- a successful copy with relative paths
+  targetFile~create("test")
+  current = directory()
+  call directory sourceFile~parent
+  self~assertEquals(0, SysFileCopy(sourceFile~name, targetFile~name), "SysFileCopy" sourceFile~name targetFile~name)
+  self~assertTrue(SysFileExists(sourceFile~name))
+  self~assertTrue(SysFileExists(targetFile~name))
+  s = .stream~new(targetFile)
+  self~assertEquivalentList(lines, s~arrayIn)
+  s~close
+  sourceFile~delete
+  targetFile~delete
+  call directory current
+
+
+-- SysFileMove
+
+::method test_filemove_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFileMove
+
+::method test_filemove_one_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysFileMove ""
+
+::method test_filemove_three_args
+  self~expectSyntax((88.922, 2)) -- Too many arguments in invocation; 2 expected
+  call SysFileMove "", "", ""
+
+::method test_filemove_invalid
+  existing = self~existing~fullName
+  self~assertNotEquals(0, SysFileMove("", ""))
+  self~assertNotEquals(0, SysFileMove("", existing))
+
+  -- no wildcard characters allowed (but might match a file "*" on Unix)
+  self~assertNotEquals(0, SysFileMove("*", existing))
+
+  -- can't test for wildcard chars as on Unix "*" or "??" are valid targets
+  -- target must contain both path and name, path alone is not enough
+  self~assertNotEquals(0, SysFileMove(existing, "."))
+  self~assertNotEquals(0, SysFileMove(existing, ".."))
+  self~assertNotEquals(0, SysFileMove(existing, "/"))
+  self~assertNotEquals(0, SysFileMove(existing, self~existingDir~fullName))
+
+  -- renaming a file to itself wouldn't really hurt
+  self~assertNotEquals(0, SysFileMove(existing, existing), "tracker bug #n/a moving a file to itself is explicitly forbidden on Unix, but works on Windows")
+  self~assertTrue(SysFileExists(existing)) -- must still be there
+
+-- rename (or move) for files and directories
+-- doesn't overwrite existing target
+-- cross-volume tests to be done
+::method test_filemove
+  lines = "test 1", "", "test 3"
+  sourceFile = .TemporaryTestFile~new(self, "test_filemove_source")~create(lines)
+  targetFile = .TemporaryTestFile~new(self, "test_filemove_target")~~delete
+  source = sourceFile~fullName
+  target = targetFile~fullName
+  existing = self~existing~fullName
+  existingDir = self~existingDir~fullName
+
+  -- an unsuccessful move: source missing
+  self~assertNotEquals(0, SysFileMove("does-not-exist", target), "SysFileMove does-not-exist" target)
+
+  -- an unsuccessful move: target already exists
+  self~assertNotEquals(0, SysFileMove(source, existing), "SysFileMove" source existing)
+  self~assertTrue(SysFileExists(source))
+  self~assertTrue(SysFileExists(existing))
+
+  -- a successful move
+  self~assertEquals(0, SysFileMove(source, target), "SysFileMove" source target)
+  self~assertFalse(SysFileExists(source))
+  self~assertTrue(SysFileExists(target))
+  s = .stream~new(targetFile)
+  self~assertEquivalentList(lines, s~arrayIn)
+  s~close
+
+  -- a successful move with relative paths (from target back to source)
+  current = directory()
+  call directory sourceFile~parent
+  self~assertEquals(0, SysFileMove(targetFile~name, sourceFile~name), "SysFileMove" targetFile~name sourceFile~name)
+  self~assertFalse(SysFileExists(target))
+  self~assertTrue(SysFileExists(source))
+  s = .stream~new(sourceFile)
+  self~assertEquivalentList(lines, s~arrayIn)
+  s~close
+  call directory current
+
+  -- move file into other directoy (source into existingDir)
+  targetFile = .File~new(sourceFile~name, existingDir)
+  target = targetFile~absolutePath
+  self~assertEquals(0, SysFileMove(source, target), "SysFileMove" source target)
+  self~assertFalse(SysFileExists(source))
+  self~assertTrue(SysFileExists(target))
+
+  targetFile~delete
+
+
+-- SysTempFileName
 
 ::method test_tempfile_no_arg
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required
@@ -306,9 +555,8 @@ return testResult
   return name~translate(, "0123456789", "?", name~length - template~length + 1)
 
 ::method test_tempfile_exhaust
-  dir = .File~new(self~class~package~name)~parentFile
-  template = .File~new("test_tempfile_exhaust", dir)~absolutePath
-  files = .Array~new
+  template = .TemporaryTestFile~new(self, "test_tempfile_exhaust")~absolutePath
+  files = .Array~new(100)
   file = .true
   loop
     name = SysTempFileName(template, "_")
@@ -327,50 +575,19 @@ return testResult
     file~delete
   end
 
-::method test_temp_file_name
-    parse source . . me
 
-    directory = filespec('Location', me)
-    currentDir = Directory(directory)
-
-    n = SysTempFileName("foo?.bar?")
-    self~assertEquals(0, n~pos('?'))
-    self~assertFalse(SysFileExists(n))
-
-    lines = ("Line1","","Line3")
-    tempfiles = .array~new(10)
-
-    loop i = 0 to 9
-       temp = .TemporaryTestFile~new(self, 'foo'||i)
-       temp~create(lines)
-       tempfiles~append(temp)
-    end
-
-    -- this should ensure this can't be created
-    n = SysTempFileName("foo?")
-    self~assertEquals("", n)
-
-    n = SysTempFileName("foo*.bar*", '*')
-    self~assertEquals(0, n~pos('*'))
-    self~assertFalse(SysFileExists(n))
+-- (Windows-only) UNC filename tests
+::method test_unc_windows_only
+  if \.RexxInfo~platform~caselessStartsWith("Windows") then
+      return
+  parse source . . this
+  thisFile = .File~new(this~changeStr(':', '$'), '\\localhost')
+  thisDir = thisFile~parentFile
+  self~assertTrue(SysFileExists(thisFile~absolutePath), thisFile~absolutePath "should exist")
+  self~assertTrue(SysIsFile(thisFile~absolutePath), thisFile~absolutePath "should exist")
+  self~assertTrue(SysFileExists(thisDir~absolutePath), thisDir~absolutePath "should exist")
+  self~assertTrue(SysIsFileDirectory(thisDir~absolutePath), thisDir~absolutePath "should exist")
 
 
 
-::method verifySeq
-  use arg source., result.
-
-  do i=0 to result.0
-     self~assertEquals(source.i, result.i)
-  end
-
-::method of
-  use arg target.
-  values = arg(2, 'a')
-
-  target.0 = values~items
-  do i = 1 to target.0
-      target.i = values[i]
-  end
-
-::options novalue error
-
+::options all syntax

@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,24 +66,25 @@ else
   self~assertEquals(0, f~length)
 
   -- some assertions on the various is tests
+  -- f doesn't exist, so nothing should work
   self~assertFalse(f~exists)
   self~assertFalse(f~isDirectory)
-  self~assertFalse(f~isFile)   -- returns false because it doesn't exit
-  self~assertFalse(f~isHidden) -- returns false because it doesn't exit
-  self~assertFalse(f~canRead)  -- returns false because it doesn't exit
-  self~assertFalse(f~canWrite) -- returns false because it doesn't exist
-  self~assertFalse(f~delete)   -- should fail because it doesn't exist
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isHidden)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+  self~assertFalse(f~delete)
 
-  self~assertSame(.nil, f~lastModified)  -- should fail because it doesn't exist
-  self~assertSame(.nil, f~list)          -- should fail because it doesn't exist
-  self~assertSame(.nil, f~listFiles)     -- should fail because it doesn't exist
+  self~assertSame(.nil, f~lastModified)
+  self~assertSame(.nil, f~list)
+  self~assertSame(.nil, f~listFiles)
 
   -- now create this and repeat a few of the tests
   self~assertTrue(f~makeDir)
   self~assertTrue(f~exists)
   self~assertTrue(f~isDirectory)
   self~assertFalse(f~isFile)
-  self~assertTrue(f~lastModified~isA(.DateTime))
+  self~assertIsA(f~lastModified, .DateTime)
 
   date = f~lastModified
   date = date~addYears(-1)
@@ -101,7 +102,7 @@ else
   self~assertTrue(f~exists)
   self~assertTrue(f~isDirectory)
   list = f~list
-  self~assertTrue(list~isA(.Array))
+  self~assertIsA(list, .Array)
   self~assertEquals(0, list~items)
   subfile = .File~new("A_real_file", f)
   s = .stream~new(subfile)
@@ -114,12 +115,12 @@ else
   self~assertEquals(3 + .endofline~length, subfile~length)
 
   list = f~list
-  self~assertTrue(list~isA(.Array))
+  self~assertIsA(list, .Array)
   self~assertEquals(1, list~items)
   self~assertEquals('A_real_file', list[1])
 
   list = f~listFiles
-  self~assertTrue(list~isA(.Array))
+  self~assertIsA(list, .Array)
   self~assertEquals(1, list~items)
   self~assertEquals(subFile, list[1])
   self~assertEquals(subFile~absolutePath, list[1]~path)
@@ -148,12 +149,12 @@ else
   self~assertTrue(subdir~parentFile~exists)
 
   list = f~list
-  self~assertTrue(list~isA(.Array))
+  self~assertIsA(list, .Array)
   self~assertEquals(1, list~items)
   self~assertEquals('Y', list[1])
 
   list = f~listFiles
-  self~assertTrue(list~isA(.Array))
+  self~assertIsA(list, .Array)
   self~assertEquals(1, list~items)
   self~assertEquals(subdir~parentFile, list[1])
   self~assertEquals(subdir~parent, list[1]~path)
@@ -171,6 +172,8 @@ else
   f4 = .file~new(fName, f~parentFile)   -- this should be the same file
   self~assertEquals(f, f4)
 
+  self~assertTrue(f~delete)
+
 
 -- additional timestamp tests
 ::method test_file_lastmodified
@@ -187,13 +190,13 @@ else
 
     -- file time from File~lastModified
     tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
-    self~assertTrue(tLastModified~isA(.DateTime))
+    self~assertIsA(tLastModified, .DateTime)
     -- When comparing with the current time, we ignore anything smaller than milliseconds
     -- because Windows returns the current time with only a millisecond resolution
     -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
     now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
     tLastModified = tLastModified~string~left(23) -- keep milliseconds, ignore microseconds
-    self~assertTrue(tLastModified <= now, "test timestamp" tLastModified" should be before" now)
+    self~assertTrue(tLastModified <= now, "test timestamp" tLastModified "should be before" now || "; expected to fail on FAT where write time has a resolution of 2 seconds")
     tLastModified = tLastModified~string~left(19) -- we'll ignore fractions of seconds
 
     -- file time from Stream~query("timestamp")
@@ -201,24 +204,23 @@ else
     q = .Stream~new(f)
     t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
     tQuery = t~word(1)"T"t~word(2)
-    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified "should be equal to ~query('timestamp')" tQuery)
     -- b. query an opened stream (will only work if no read/write lock is applied)
     -- (we want to test both SysFile::getTimeStamp code paths)
-    q~open("read shared")              -- will silently fail if locked
     t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
     tQuery = t~word(1)"T"t~word(2)
-    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified "should be equal to ~query('timestamp')" tQuery)
     q~close
 
     -- file time from SysGetFileDateTime(, "write")
     t = SysGetFileDateTime(f~absolutePath, "write") -- e. g. 2015-06-06 15:12:08
     tSysGet = t~word(1)"T"t~word(2)
-    self~assertEquals(tLastModified, tSysGet, "~lastModified timestamp" tLastModified" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+    self~assertEquals(tLastModified, tSysGet, "~lastModified timestamp" tLastModified "should be equal to SysGetFileDateTime() timestamp" tSysGet)
 
     -- file time from SysFileTree(dir, , "FL")
     call SysFileTree f~absolutePath, "FILE.", "FL" -- list files only; use long timestamps
     tTree = file.1~word(1)"T"file.1~word(2) -- e. g. 2015-06-06 15:12:08
-    self~assertEquals(tLastModified, tTree, "~lastModified timestamp" tLastModified" should be equal to SysFileTree() timestamp" tTree)
+    self~assertEquals(tLastModified, tTree, "~lastModified timestamp" tLastModified "should be equal to SysFileTree() timestamp" tTree)
 
     -- now let's start a second iteration with:
     -- a. an exclusive read/write lock on the test file, and
@@ -247,7 +249,7 @@ else
 
 ::method test_file_lastmodified_directory
   -- current directory must exist, so lastModified should never be nil
-  self~assertTrue(.File~new(".")~lastModified~isA(.DateTime))
+  self~assertIsA(.File~new(".")~lastModified, .DateTime)
 
 ::method test_file_lastmodified_nil
   -- setting lastModified will not create a file
@@ -263,7 +265,7 @@ else
   file = .TemporaryTestFile~new(self, "fractions")~~create("")
   now = .DateTime~new
   file~lastModified = now
-  self~assertSame(now, file~lastModified)
+  self~assertSame(now, file~lastModified, "expected to fail on FAT where write time has a resolution of 2 seconds")
 
 ::method test_file_lastaccessed_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
@@ -293,19 +295,19 @@ else
 
     -- file time from File~lastAccessed
     tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
-    self~assertTrue(tLastAccessed~isA(.DateTime))
+    self~assertIsA(tLastAccessed, .DateTime)
     -- When comparing with the current time, we ignore anything smaller than milliseconds
     -- because Windows returns the current time with only a millisecond resolution
     -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
     now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
     tLastAccessed = tLastAccessed~string~left(23) -- keep milliseconds, ignore microseconds
-    self~assertTrue(tLastAccessed <= now, "test timestamp" tLastAccessed" should be before" now)
+    self~assertTrue(tLastAccessed <= now, "test timestamp" tLastAccessed "should be before" now)
     tLastAccessed = tLastAccessed~string~left(19) -- we'll ignore fractions of seconds
 
     -- file time from SysGetFileDateTime(, "access")
     t = SysGetFileDateTime(f~absolutePath, "access") -- e. g. 2015-06-06 15:12:08
     tSysGet = t~word(1)"T"t~word(2)
-    self~assertEquals(tLastAccessed, tSysGet, "~lastAccessed timestamp" tLastAccessed" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+    self~assertEquals(tLastAccessed, tSysGet, "~lastAccessed timestamp" tLastAccessed "should be equal to SysGetFileDateTime() timestamp" tSysGet)
 
     -- now let's start a second iteration with:
     -- a. an exclusive read/write lock on the test file, and
@@ -318,7 +320,7 @@ else
 
 ::method test_file_lastaccessed_directory
   -- current directory must exist, so lastAccessed should never be nil
-  self~assertTrue(.File~new(".")~lastAccessed~isA(.DateTime))
+  self~assertIsA(.File~new(".")~lastAccessed, .DateTime)
 
 ::method test_file_lastaccessed_nil
   -- setting lastAccessed will not create a file
@@ -334,7 +336,7 @@ else
   file = .TemporaryTestFile~new(self, "fractions")~~create("")
   now = .DateTime~new
   file~lastAccessed = now
-  self~assertSame(now, file~lastAccessed)
+  self~assertSame(now, file~lastAccessed, "expected to fail on FAT where access time has a resolution of 1 day")
 
 
 -- listRoots tests
@@ -552,9 +554,9 @@ else
 
 ::method test_temporaryPath_accessible
   temp = .File~temporaryPath
-  self~assertTrue(temp~isDirectory, "temporaryPath" temp "should be a directory")
-  self~assertTrue(temp~canRead, "temporaryPath" temp "should be readable")
-  self~assertTrue(temp~canWrite, "temporaryPath" temp "should be writable")
+  self~assertTrue(temp~isDirectory, "temporaryPath" temp~string "should be a directory")
+  self~assertTrue(temp~canRead, "temporaryPath" temp~string "should be readable")
+  self~assertTrue(temp~canWrite, "temporaryPath" temp~string "should be writable")
 
 -- on Windows environment variables TMP, TEMP, USERPROFILE are checked in sequence
 ::method test_temporaryPath_environment_variables_windows
@@ -562,21 +564,21 @@ else
     return
 
   tmp = value("TMP", "c:\testtmp", "environment")
-  self~assertSame("c:\testtmp", .File~temporaryPath)
+  self~assertSame("c:\testtmp", .File~temporaryPath~string)
   call value "TMP", .nil, "environment"
 
   -- if TMP isn't set, TEMP is checked
   temp = value("TEMP", "c:\testtemp", "environment")
-  self~assertSame("c:\testtemp", .File~temporaryPath)
+  self~assertSame("c:\testtemp", .File~temporaryPath~string)
   call value "TEMP", .nil, "environment"
 
   -- if neither TMP nor TEMP is set, USERPROFILE is checked
   user = value("USERPROFILE", "c:\testuser", "environment")
-  self~assertSame("c:\testuser", .File~temporaryPath)
+  self~assertSame("c:\testuser", .File~temporaryPath~string)
   call value "USERPROFILE", .nil, "environment"
 
   -- if neither of those three is set, the current directory is returned
-  self~assertSame(directory(), .File~temporaryPath)
+  self~assertSame(directory(), .File~temporaryPath~string)
 
   -- restore environment
   call value "TMP", (tmp == "")~?(.nil, tmp), "environment"
@@ -614,22 +616,22 @@ else
   .File~searchPath("", "", "")
 
 ::method test_searchPath_one_arg_not_valid
-  self~assertNull(.File~searchPath(""))
-  self~assertNull(.File~searchPath("*"))
-  self~assertNull(.File~searchPath("/"))
-  self~assertNull(.File~searchPath("\"))
-  self~assertNull(.File~searchPath("C:"))
+  self~assertNil(.File~searchPath(""))
+  self~assertNil(.File~searchPath("*"))
+  self~assertNil(.File~searchPath("/"))
+  self~assertNil(.File~searchPath("\"))
+  self~assertNil(.File~searchPath("C:"))
   firstDir = value("PATH", , "environment")~makeArray(.File~pathSeparator)[1]
-  self~assertNull(.File~searchPath(firstDir))
+  self~assertNil(.File~searchPath(firstDir))
 
 ::method test_searchPath_two_args_not_valid
-  self~assertNull(.File~searchPath("", ""))
-  self~assertNull(.File~searchPath("*", "*"))
-  self~assertNull(.File~searchPath("/", value("PATH", , "environment")))
-  self~assertNull(.File~searchPath("\", value("LIBPATH", , "environment")))
+  self~assertNil(.File~searchPath("", ""))
+  self~assertNil(.File~searchPath("*", "*"))
+  self~assertNil(.File~searchPath("/", value("PATH", , "environment")))
+  self~assertNil(.File~searchPath("\", value("LIBPATH", , "environment")))
   path = value("PATH", , "environment")
   firstDir = path~makeArray(.File~pathSeparator)[1]
-  self~assertNull(.File~searchPath(firstDir, path))
+  self~assertNil(.File~searchPath(firstDir, path))
 
 ::method test_searchPath_one_arg
   -- we assume that the default shell is in PATH
@@ -658,8 +660,8 @@ else
 
 ::method test_searchpath1
 
-  self~assertNull(.file~searchPath("*non existent filename*", "."))
-  self~assertNull(.file~searchPath("*non existent filename*", (".", "..")))
+  self~assertNil(.file~searchPath("*non existent filename*", "."))
+  self~assertNil(.file~searchPath("*non existent filename*", (".", "..")))
 
   -- the following assumes the executable is on the path
   executable = .file~new(.rexxinfo~executable)
@@ -668,14 +670,14 @@ else
 
   file = .file~searchPath(executable~name, currentPath)
 
-  self~assertTrue(file~isa(.File))
-  self~assertEquals(executable~absolutePath, file~absolutePath)
+  self~assertIsA(file, .File)
+  self~assertEquals(executable~absolutePath, file~absolutePath, "this may fail if rexx is run directly from a build tree")
 
   currentPath = currentPath~makeArray(.File~pathSeparator)
 
   file = .file~searchPath(executable~name, currentPath)
 
-  self~assertTrue(file~isa(.File))
+  self~assertIsA(file, .File)
   self~assertEquals(executable~absolutePath, file~absolutePath)
 
   loop i = 1 to currentPath~items
@@ -684,7 +686,7 @@ else
 
   file = .file~searchPath(executable~name, currentPath)
 
-  self~assertTrue(file~isa(.File))
+  self~assertIsA(file, .File)
   self~assertEquals(executable~absolutePath, file~absolutePath)
 
   parse source . . thisFile
@@ -693,13 +695,13 @@ else
   filename = me~name
   directory = me~parent
 
-  self~assertNotNull(.file~searchPath(filename, directory), "01 : Must be found because current dir is in path")
-  self~assertNotNull(.file~searchPath(filename, .array~of(.file~new(directory))), "01 : Must be found because current dir is in path")
-  self~assertNotNull(.file~searchPath(filename, ("dummy before", directory, "dummy after")), "02 : Must be found because current dir is in path")
-  self~assertNotNull(.file~searchPath(filename, ("dummy before", .file~new(directory), "dummy after")), "02 : Must be found because current dir is in path")
+  self~assertNotNil(.file~searchPath(filename, directory), "01 : Must be found because current dir is in path")
+  self~assertNotNil(.file~searchPath(filename, .array~of(.file~new(directory))), "01 : Must be found because current dir is in path")
+  self~assertNotNil(.file~searchPath(filename, ("dummy before", directory, "dummy after")), "02 : Must be found because current dir is in path")
+  self~assertNotNil(.file~searchPath(filename, ("dummy before", .file~new(directory), "dummy after")), "02 : Must be found because current dir is in path")
 
   curdir = directory(directory)
-  self~assertNotNull(.file~searchPath(filename, "."), "04 : Must be found because current dir is searched")
+  self~assertNotNil(.file~searchPath(filename, "."), "04 : Must be found because current dir is searched")
   call directory curdir -- restore
 
 
@@ -719,12 +721,12 @@ else
   -- parent of /root/name must be /root
   self~assertSame(root, file~parent)
   -- grand parent of /root/name must be .nil
-  self~assertNull(file~parentFile~parent)
+  self~assertNil(file~parentFile~parent)
 
   -- repeat for parentFile method
   root = .File~new(root)
   self~assertSame(root, file~parentFile)
-  self~assertNull(file~parentFile~parentFile)
+  self~assertNil(file~parentFile~parentFile)
 
 ::method test_parent_current_directory
   dir = directory()
@@ -750,12 +752,12 @@ else
     self~assertSame(dir, file~parentFile)
     file = file~parentFile
   end
-  self~assertNull(file~parent)
-  self~assertNull(file~parentFile)
+  self~assertNil(file~parent)
+  self~assertNil(file~parentFile)
 
   -- incomplete UNC paths don't allow parent
-  self~assertNull(.File~new("\\localhost")~parent)
-  self~assertNull(.File~new("\\127.0.0.1")~parent)
+  self~assertNil(.File~new("\\localhost")~parent)
+  self~assertNil(.File~new("\\127.0.0.1")~parent)
 
 -- Win32 namespaces, Windows-only
 ::method test_parent_windows_namespace
@@ -766,12 +768,12 @@ else
   file = .File~new("\\?\C:\Windows\System32")
   self~assertSame("\\?\C:\Windows", file~parent)
   self~assertSame("\\?\C:\", file~parentFile~parent)
-  self~assertNull(file~parentFile~parentFile~parent)
+  self~assertNil(file~parentFile~parentFile~parent)
 
   -- Win32 device namespace
   self~assertSame("\\.\", .File~new("\\.\NUL")~parent)
-  self~assertNull(.File~new("\\.\")~parent)
-  self~assertNull(.File~new("con")~parent)
+  self~assertNil(.File~new("\\.\")~parent)
+  self~assertNil(.File~new("con")~parent)
 
 
 -- extension tests
@@ -817,11 +819,11 @@ else
   firstPath = .File~new(value("PATH", , "environment")~makeArray(.File~pathSeparator)[1])
   if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then do
     self~assertFalse(.File~isCaseSensitive, "Windows and Mac file system is expected to be case-insensitive")
-    self~assertFalse(firstPath~isCaseSensitive, firstPath "expected to be case-insensitive")
+    self~assertFalse(firstPath~isCaseSensitive, firstPath~string "expected to be case-insensitive")
   end
   else do
     self~assertTrue(.File~isCaseSensitive, "typical Unix file systems is expected to be case-sensitive")
-    self~assertTrue(firstPath~isCaseSensitive, firstPath "expected to be case-sensitive")
+    self~assertTrue(firstPath~isCaseSensitive, firstPath~string "expected to be case-sensitive")
   end
 
 ::method test_iscasesensitive_file
@@ -833,9 +835,9 @@ else
   do file over homeFiles
     if file~isFile then do
       if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then
-        self~assertFalse(file~isCaseSensitive, file "expected to be case-insensitive")
+        self~assertFalse(file~isCaseSensitive, file~string "expected to be case-insensitive")
       else
-        self~assertTrue(file~isCaseSensitive, file "expected to be case-sensitive")
+        self~assertTrue(file~isCaseSensitive, file~string "expected to be case-sensitive")
       end
   end
 
@@ -880,6 +882,7 @@ else
   if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
     return
 
+  numeric digits 18 -- we expect very large files sizes
   do system over "hiberfil.sys", "swapfile.sys", "pagefile.sys"
     -- does the file exist?
     call SysFileTree SysBootDrive() || "\" || system, f., "fo"
@@ -902,4 +905,4 @@ else
   end
 
 
-::options novalue syntax
+::options all syntax

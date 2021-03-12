@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -112,7 +112,7 @@ else
   self~assertSame("2020-04-01" time, SysGetFileDateTime(test))
   self~assertSame(0, SysSetFileDateTime(test, , "04:05:59"))
   -- now the date must still be unchanged
-  self~assertSame("2020-04-01 04:05:59", SysGetFileDateTime(test))
+  self~assertSame("2020-04-01 04:05:59", SysGetFileDateTime(test), "expected to fail on FAT where write time has a resolution of 2 seconds")
 
   -- set both date and time, winter time
   self~assertSame(0, SysSetFileDateTime(test, "2020-02-02", "15:30:01"))
@@ -125,7 +125,7 @@ else
   self~assertSame("2020-08-02 00:30:59", SysGetFileDateTime(test, "write"))
 
   -- SysSetFileDateTime sets the modified (write) date/time only
-  -- other file timstamps, created and accessed, should be unchanged
+  -- other file timestamps, created and accessed, should be unchanged
   -- Create time is available on Windows only
   if .RexxInfo~platform~caselessStartsWith("Windows") then
     -- If this test is run again after only a few seconds in between,
@@ -145,7 +145,7 @@ else
   fileTime = .DateTime~fromIsoDate(timestamp~replaceAt("T", 11, 1) || ".000000")
   now = .DateTime~new
   delta = (now - fileTime)~totalSeconds
-  self~assertTrue(delta > 0 & delta < 1.1, "file time" timestamp", current time" now)
+  self~assertTrue(delta > 0 & delta < 1.1, "file time" timestamp", current time" now~string)
 
   self~AssertSame(0, SysSetFileDateTime(test, "2020-03-04", "05:06:07"), "SysSetFileDateTime("test", 2020-03-04, 05:06:07)")
   self~AssertSame("2020-03-04 05:06:07", SysGetFileDateTime(test, "write"), "SysGetFileDateTime("test", write)")
@@ -154,4 +154,4 @@ else
   testFile~delete
 
 
-::options novalue syntax
+::options all syntax
