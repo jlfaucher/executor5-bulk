@@ -5,12 +5,12 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -41,10 +41,9 @@
 /*----------------------------------------------------------------------------*/
 
 parse source . . s
-
 group = .TestGroup~new(s)
 -- adding a suite will allow for one-time setup and tearDown
-group~addWithSuite(.SysIni.testGroup, .SysIni.testSuite)
+group~add(.SysIni.testGroup)
 group~restrictOS("WINDOWS")
 if group~isAutomatedTest then
   return group
@@ -53,52 +52,30 @@ else
 
 ::requires 'ooTest.frm'
 
--- by defining a test suite we can have a setup method run just once
--- before all tests and a tearDown method once after all tests
-::class SysIni.testSuite subclass ooTestSuite public
-::method setup
-  .SysIni.testGroup~create
-
-::method tearDown
-  .SysIni.testgroup~remove
-
 
 ::class SysIni.testgroup subclass ooTestCase public
 
--- will run exactly once before all our tests run
-::method create class
-  expose ini
-  ini = .TemporaryTestFile~new(self, "TestGet.ini")
-  ini~createFromResource("iniFile")
-
--- will run exactly once after all tests have finished
-::method remove class
-  expose ini
-  ini~delete
-
-::attribute ini class get
-::attribute ini get
-  return self~class~ini~absolutePath
-
+::constant iniFile (.TemporaryTestFile~new(self, "test_sysini.ini")~createFromResource("iniFile"))
+::constant ini (self~iniFile~absolutePath)
 
 ::method test_no_args
-  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
   call SysIni
 
 ::method test_one_arg
-  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
   call SysIni self~ini
 
 ::method test_two_args
-  self~expectSyntax(88.901) -- Missing argument; argument 3 is required
+  self~expectSyntax((88.901, 3)) -- Missing argument; argument 3 is required
   call SysIni self~ini, "app1"
 
 ::method test_apps_no_stem
-  self~expectSyntax(88.901) -- Missing argument; argument 3 is required
+  self~expectSyntax((88.901, 3)) -- Missing argument; argument 3 is required
   call SysIni self~ini, "ALL:"
 
-::method disabledtest_keys_no_stem
-  self~expectSyntax(40.919)
+::method test_keys_no_stem
+  self~expectSyntax((88.901, 4)) -- Missing argument; argument 4 is required
   call SysIni self~ini, "app2", "all:"
 
 ::method test_stem_null
@@ -170,7 +147,7 @@ else
 
 ::method test_delete
   -- this is a "delete" test, so we give it its own ini file
-  ini = .TemporaryTestFile~new(self, "TestDelete.ini")
+  ini = .TemporaryTestFile~new(self, "test_sysini_delete.ini")
   ini~createFromResource("iniFile")
   iniName = ini~absolutePath
 
@@ -187,7 +164,7 @@ else
 
 ::method test_set
   -- this is a "set" test, so we give it its own ini file
-  ini = .TemporaryTestFile~new(self, "TestFileReadWrite.ini")
+  ini = .TemporaryTestFile~new(self, "test_sysini_read_write.ini")
   ini~createFromResource("iniFile")
   iniName = ini~absolutePath
 
@@ -227,4 +204,4 @@ key3=val3.2
 ::END
 
 
-::options novalue syntax
+::options all syntax

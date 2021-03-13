@@ -852,6 +852,7 @@ else
   -- privilege issue, the TEMP path is a good place to run the test.
   sensitiveDir = .TemporaryTestDirectory~new(.File~temporaryPath, "test_iscasesensitive_fsutil")~create
   trace off
+  signal off error -- don't let ::OPTIONS ALL SYNTAX trigger on non-zero rc
   address "" with output stem ignore. error stem ignore.
   "fsutil file setCaseSensitiveInfo" sensitiveDir~absolutePath "enable"
   if rc \= 0 then do
@@ -882,7 +883,7 @@ else
   if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
     return
 
-  numeric digits 18 -- we expect very large files sizes
+  numeric digits 18 -- we expect very large file sizes
   do system over "hiberfil.sys", "swapfile.sys", "pagefile.sys"
     -- does the file exist?
     call SysFileTree SysBootDrive() || "\" || system, f., "fo"
