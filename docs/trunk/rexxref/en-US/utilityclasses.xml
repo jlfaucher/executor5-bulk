@@ -7,13 +7,13 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -1241,7 +1241,7 @@ December 31, 2016 at 23:59:60 UTC.
 <!-- modified: change class methods list to 2-column format for better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!--   <member><xref linkend="mthDateTimeInit" xrefstyle="template:new (Inherited Class Method)"/></member> -->
-<!-- $GENERATED-20200207-START rexxrefClassTable(DateTime) -->
+<!-- $GENERATED-20210314-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
 <tgroup cols="1">
@@ -1319,6 +1319,7 @@ December 31, 2016 at 23:59:60 UTC.
    <member><xref linkend="mthDateTimeIsoDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeLanguageDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeLongTime" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDateTimeMakeString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeMicroseconds" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeMinutes" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeMonth" xrefstyle="select:title"/></member>
@@ -1351,7 +1352,7 @@ December 31, 2016 at 23:59:60 UTC.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20200207-END rexxrefClassTable(DateTime) -->
+<!-- $GENERATED-20210314-END rexxrefClassTable(DateTime) -->
 
 <section id="mthDateTimeMinDate"><title>minDate (Class Method)</title>
 <indexterm><primary>minDate method</primary>
@@ -2211,6 +2212,23 @@ say .DateTime~new(2020, 2, 10)~ordinalDate    -- 2020-041
 Returns the seconds portion of the timestamp time-of-day.
 </para>
 </section>
+
+<!-- Class DateTime - method makeString ============================ -->
+<section id="mthDateTimeMakeString" revisionflag="added"><title>&added50;makeString</title>
+<indexterm><primary>makeString method</primary><secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of DateTime class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/datetime_makestring.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the timestamp formatted as a string in extended ISO format
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
+This is an alias of the
+<xref linkend="mthDateTimeString" xrefstyle="select:title"/> method.
+</para>
+</section>
+
 
 <section id="mthDateTimeMicroseconds"><title>microseconds</title>
 <indexterm><primary>microseconds method</primary>
@@ -3379,7 +3397,7 @@ and will not change if you change the default directory.
 
 <!-- Modified: class columns="2" -->
 <!-- Modified: lastAccessed= and lastModified= combined into attribute -->
-<!-- $GENERATED-20200405-START rexxrefClassRow(File) -->
+<!-- $GENERATED-20210314-START rexxrefClassTable(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -3443,6 +3461,7 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileListFiles" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileMakeDir" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileMakeDirs" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileMakeString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileName" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileParent" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileParentFile" xrefstyle="select:title"/></member>
@@ -3458,7 +3477,7 @@ and will not change if you change the default directory.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20200405-END rexxrefClassRow(File) -->
+<!-- $GENERATED-20210314-END rexxrefClassTable(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -4270,6 +4289,23 @@ of the receiver object.
 If the directory already exists then the result is &false;.
 </para>
 </section>
+
+
+<!-- Class File - method makeString ================================ -->
+<section id="mthFileMakeString" revisionflag="added"><title>&added50;makeString</title>
+<indexterm><primary>makeString method</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of File class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_makestring.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the fully qualified path as a string.
+This is an alias of the
+<xref linkend="mthFileAbsolutePath" xrefstyle="select:title"/> method.
+</para>
+</section>
+
 
 <section id="mthFileName"><title>name</title>
 <indexterm><primary>name method</primary>
@@ -10025,7 +10061,11 @@ operations between TimeSpan objects.
 
 <!-- modified: changed class method list from 3- to 2-column for a better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!-- $GENERATED-20190429-START rexxrefClassTable(TimeSpan) -->
+<!--
+  <simplelist columns="2">
+   <member><xref linkend="mthTimeSpanInit" xrefstyle="template:new (Inherited Class Method)"/></member>
+-->
+<!-- $GENERATED-20210314-START rexxrefClassTable(TimeSpan) -->
 <table id="ooRexxTimeSpanClass" frame="all" pgwide="1">
 <title>TimeSpan Class</title>
 <tgroup cols="1">
@@ -10079,6 +10119,7 @@ operations between TimeSpan objects.
    <member><xref linkend="mthTimeSpanHashCode" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanHours" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTimeSpanMakeString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanMicroseconds" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanMinutes" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanSeconds" xrefstyle="select:title"/></member>
@@ -10094,7 +10135,7 @@ operations between TimeSpan objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190429-END rexxrefClassTable(TimeSpan) -->
+<!-- $GENERATED-20210314-END rexxrefClassTable(TimeSpan) -->
 
 <section id="mthTimeSpanFromDays"><title>fromDays (Class Method)</title>
 <indexterm><primary>fromDays method</primary>
@@ -10540,6 +10581,24 @@ smaller than the receiving object.</para>
 <para>Returns the seconds component of the TimeSpan, as a positive number.
 </para>
 </section>
+
+
+<!-- Class TimeSpan - method makeString ============================ -->
+<section id="mthTimeSpanMakeString" revisionflag="added"><title>&added50;makeString</title>
+<indexterm><primary>makeString method</primary><secondary>of TimeSpan class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of TimeSpan class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/timespan_makestring.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the time span formatted as a string in the format
+<literal>-dddddddd.hh:mm:ss.uuuuuu</literal>.
+This is an alias of the
+<xref linkend="mthTimeSpanString" xrefstyle="select:title"/> method.
+</para>
+</section>
+
 
 <section id="mthTimeSpanMicroseconds"><title>microseconds</title>
 <indexterm><primary>microseconds method</primary>
