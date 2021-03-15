@@ -10,7 +10,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -664,7 +664,7 @@ else
   self~assertNil(.file~searchPath("*non existent filename*", (".", "..")))
 
   -- the following assumes the executable is on the path
-  executable = .file~new(.rexxinfo~executable)
+  executable = .RexxInfo~executable
 
   currentPath = Value("PATH",,"ENVIRONMENT")
 
@@ -877,6 +877,24 @@ else
   sensitiveFile~delete
   sensitiveSubdir~delete
   sensitiveDir~delete
+
+
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .File~new(".")~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .File~new(".")~makeString(.nil)
+
+::method test_string_makestring
+  name = "relative"
+  f = .File~new(name)
+  self~assertSame(name, f~string)
+  self~assertSame(f~absolutePath, f~makeString)
+
 
 -- [bugs:#1724] File attributes for Windows system files cannot be read
 ::method test_system_files_windows_only

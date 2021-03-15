@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -344,4 +344,20 @@ return testResult
     self~assertEquals(expected, a_timespan~string == '0'a_string)
 
 
-::options novalue error
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .TimeSpan~new(1)~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .TimeSpan~new(1)~makeString(.nil)
+
+::method test_string_makestring
+  t =  .TimeSpan~new(123)
+  self~assertSame(t~string, t~makeString)
+
+
+
+::options all syntax

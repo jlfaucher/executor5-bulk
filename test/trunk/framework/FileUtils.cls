@@ -9,7 +9,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -70,176 +70,19 @@
 
   if \ output~isInstanceOf(.array) then return 9999
 
-  -- This is only known to be good for AIX, Linux and Windows.  When issued under
-  -- another OS, it is likely to fail.  The select is used so that the proper
-  -- code can be placed here when it does fail.
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
-    when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
-    when .ooRexxUnit.OSName == "AIX" then stdErrToStdOut = '2>&1'
-    when .ooRexxUnit.OSName == "DARWIN" then stdErrToStdOut = '2>&1'
-    otherwise stdErrToStdOut = '2>&1'
-  end
+  address '' with output append using (output) error append using (output)
+  address '' cmd
+  return rc
 
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  cmd = cmd '>' tmpOutFile stdErrToStdOut
-  cmd
-  prgRet = RC
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  do line over tmpArray
-    output~append(line)
-  end
-  fsObj~close
-
-  j = deleteFile(tmpOutFile)
-
-return prgRet
-
-
-/** findBuildDir()
- *
- * Determines the top-level directory in the ooRexx build source tree.
- *
- * This function works on the assumption that the test suite is being executed
- * from a developer's build directory.  There are a couple of variables that
- * can be used to over-ride that assumption.  But, if those variables are not
- * set then this function will only succeed when the assumption is true.
- */
-::routine findBuildDir public
-
-  -- When the -Dname=value arg is added to testOORexx then it will over-ride
-  -- all else.  TODO check that this is the correct name.
-  if .local~hasEntry("OOREXX_BUILD_HOME") then return .OOREXX_BUILD_HOME
-
-  -- Setting the variable in the environment will be next in the order of
-  -- precedence.  TODO change the REXX_BUILD_HOME var in the make files.
-  dir = value("OOREXX_BUILD_HOME", , 'ENVIRONMENT'); -- say 'dir:' dir
-  if dir \== "" then return dir
-
-  -- Change directory to the directory the test suite was started from.  If we
-  -- have an error, just return.  On error the current directory will not have
-  -- been changed.
-  currentDir = directory()
-  if directory(.ooTest.originalWorkingDir) == "" then return .nil
-  dir = .nil
-  currentOS = .ooRexxUnit.OSName
-
-  -- As new OSes are added to the list of OSes that the test suite runs on, this
-  -- select will need to be expanded.
-  select label FIND_BUILD_DIR_LABEL
-    when currentOS == 'WINDOWS' then do
-      -- On Windows check for SRC_DRV and SRC_DIR
-      srcDrv = value("SRC_DRV", , 'ENVIRONMENT')
-      srcDir = value("SRC_DIR", , 'ENVIRONMENT')
-      if srcDrv \== "", srcDir \== "" then do
-        tmpDir = srcDrv || srcDir
-        if SysIsFileDirectory(tmpDir) then do
-          dir = tmpDir
-          leave FIND_BUILD_DIR_LABEL
-        end
-      end
-
-      -- Assume
-      tmp = directory("..\")
-      if tmp \== "" then dir = directory()
-    end
-
-    when currentOS == 'LINUX' | currentOS = 'AIX' then do
-      -- On AIX and Linux we could be in the root to begin with, or in .libs
-      if .ooTest.originalWorkingDir~right(6) == "/.libs" then do
-        tmp = directory("../")
-        if tmp \== "" then dir = directory()
-      end
-      else do
-        dir = directory()
-      end
-    end
-
-    when currentOS == "DARWIN" then do
-  -- This is only looking for ooRexx in the path set by the jenkins macOS
-  -- slave machine, amend if necessary
-      builddir = "~/workspace/ooRexx-macOS1014-build/oorexxBuild/bin/rexx"
-      FINDstream = .stream~new(builddir)
-      dir = FINDstream~qualify
-      if dir~pos(builddir~subStr(2,)) > 0 then dir = dir~left(dir~pos('/bin/rexx') -1)
-      else  dir = .nil
-    end
-
-    otherwise do
-      nop
-    end
-  end FIND_BUILD_DIR_LABEL
-  -- End select
-
-  -- Restore the current directory.
-  j = directory(currentDir)
-
-return dir
--- End findBuildDir()
-
-/** findInstallDir()
- *
- * Determines if ooRexx is installed on the current system and returns the root
- * directory of the installation.  Returns .nil if the install directory can not
- * be determined.
- *
- * @return  The fully-qualified path to the install directory on success,
- *          otherwise .nil
- *
- * @note    This is a 'best attempt' function.  If .nil is returned, it
- *          indicates ooRexx is probably not installed, not that ooRexx for
- *          sure is not installed.
- */
-::routine findInstallDir public
-
-  dir = .nil
-  currentOS = .ooRexxUnit.OSName
-
-  -- Notes for extending this on new platforms.  For unix-like platforms, if
-  -- the generic findInstallDirOnUnix() can be slightly tweaked to work for the
-  -- platform, then do that.  If the generic function is not sufficient, then
-  -- add a platform specific function, like maybe findInstallDirOnBSD().  If
-  -- the platform is not unix-like, then a new function will probably be needed.
-
-  select
-    when currentOS == "WINDOWS" then do
-      -- On Windows, the install package sets REXX_HOME.
-      home = value("REXX_HOME", , 'ENVIRONMENT')
---    say 'home:' home
-
-      -- Verify (to some degree) that this is the correct install directory.
-      if home \== "" then do
-        if SysIsFileDirectory(home) then do
-          if SysIsFile(home"\rexx.exe") then dir = home
-        end
-      end
-    end
-
-    when currentOS == "LINUX" | currentOS == "AIX" then do
-      dir = findInstallDirOnUnix()
-    end
-    when currentOS == "DARWIN" then do
-      dir = findInstallDirOnDARWIN()
-    end
-
-    otherwise nop
-  end
-  -- End select
-
-return dir
--- End findInstallDir()
 
 /** locateSamplePrg()
  * Locates a sample program normally shipped with the ooRexx distribution.
  *
- * The sample is searched for in the location(s) for samples programs in a normal
- * install.  If it is not found, an attempt to find it using the assumption that
- * the test is being executed from within a build directory.  This second search
- * allows the test suite to be run by a developer from his build directory
- * without having a regular install.
+ * An attempt is made to find it using the assumption that the test is being
+ * executed from within a build directory.  This allows the test suite to be
+ * run by a developer from his build directory without having a regular
+ * install.  The sample is also searched for in the location(s) for sample
+ * programs in a normal install.
  *
  * @param   name REQUIRED
  *            The name of the sample program.
@@ -250,310 +93,31 @@ return dir
 ::routine locateSamplePrg public
   use strict arg name
 
-  retObj = .nil
+  /*
+  CMake build tree definitions
+  set (CMAKE_SAMPLES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/samples)
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+  CMake install definitions (Windows, Unix)
+  set (INSTALL_SAMPLES_DIR samples)
+  set (INSTALL_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME})
 
-  currentOS = .ooRexxUnit.OSName
-  installDir = findInstallDir()
+  if the executable is ...               the samples are located in ...
+  C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\
+  C:\...\ooRexxBuild\rel\bin\rexx.exe    C:\...\ooRexxBuild\rel\samples\
+  /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/
+  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/
+  /Applications/.../bin/rexx             /Applications/.../share/ooRexx/ (?)
+  /Users/.../Applications/.../bin/rexx   /Users/.../Applications/.../share/ooRexx/ (?)
+  /Library/Frameworks/.../Commands/rexx  /Library/Frameworks/.../Shared/ooRexx/
+  */
 
-  -- When the test suite begins running on a new OS, then another when clause
-  -- will need to be added to the select for that OS.  If the new OS is unix-
-  -- like, then the generic locateSampleOnUnix() function can most likely be
-  -- used.  It that is not possible, then write a OS specific function, like
-  -- maybe locateSampleOnBSD().
-
-  select label FINDSAMPLE
-    when currentOS == "WINDOWS" then do
-      if installDir \== .nil then do
-        j = SysFileTree(installDir'\samples\'name, f., 'FOS')
-        if j == 0, f.0 == 1, SysIsFile(f.1) then do
-          retObj = f.1
-          leave FINDSAMPLE
-        end
-      end
-
-      buildRoot = findBuildDir()
-
-      if buildRoot \== .nil then do
-        sampleDir = buildRoot || "\samples\"
-
-        if SysIsFileDirectory(sampleDir) then do
-          -- Okay, we are good (in all probability.)
-          j = SysFileTree(sampleDir || name, f., 'FOS')
-          if j == 0, f.0 == 1, SysIsFile(f.1) then do
-            retObj = f.1
-            leave FINDSAMPLE
-          end
-        end
-      end
-    end
-
-    when currentOS == "LINUX" | currentOS == "AIX" then do
-      retObj = locateSampleOnUnix(name, installDir)
-    end
-
-    when currentOS == "DARWIN" then do
-      retObj = locateSampleOnDARWIN(name, installDir)
-    end
-    otherwise do
-      nop
-    end
-  end findSample -- End select
-
-return retObj
--- End locateSamplePrg()
-
-::routine locateSampleOnUnix
-  use strict arg name, installDir
-
-  retObj = .nil
-
-  if installDir \== .nil then do
-    j = SysFileTree(installDir'/share/ooRexx/'name, f., 'FOS')
-    if j == 0, f.0 == 1, SysIsFile(f.1) then do
-      retObj = f.1
-    end
+  install = .RexxInfo~executable~parent
+  do samples over "samples/", "../samples/", "../share/ooRexx/", "../Shared/ooRexx/"
+    sample = .File~new(samples || name, install)
+    if sample~isFile then
+      return sample~absolutePath
   end
-
-  if retObj == .nil then do
-    -- Not found, see if we can get a build directory
-    buildRoot = findBuildDir()
-
-    if buildRoot \== .nil then do
-      sampleDir = buildRoot || "/samples/"
-
-      if SysIsFileDirectory(sampleDir) then do
-        -- Okay, we are good (in all probability.)
-        j = SysFileTree(sampleDir || name, f., 'FOS')
-        if j == 0, f.0 == 1, SysIsFile(f.1) then do
-          retObj = f.1
-        end
-      end
-    end
-  end
-
-return retObj
--- End locateSampleOnUnix()
-
-/** locateSampleOnDARWIN()
- * Two possible scenarios:
- * (i) either we have Unix-like installation, examples are 
- * /Applications/ooRexx5/bin/rexx
- * /Users/jenkins/Applications/ooRexx5/bin/rexx
- * (ii) or we have a "framework" installation, as for BSF4ooRexx
- * /Library/Frameworks/ooRexx.framework/Versions/A/Commands/rexx
- */
-::routine locateSampleOnDARWIN
-  use strict arg name, installDir
-
-  if sysIsFile(installDir || '../share/ooRexx/' || name) then return installDir || '../share/ooRexx/' || name
-  else if sysIsFile(installDir || '../shared/ooRexx/' || name) then return installDir || '../shared/ooRexx/' || name
-  else return .nil
-
--- End locateSampleOnDARWIN()
-
-/** findInstallDirOnUnix()
- * Tries to locate the install directory on a Unix-like system using what is
- * known about how ooRexx gets installed on those systems.
- *
- * @return   The fully qualified directory path to an installed ooRexx on
- *           success, otherwise .nil.
- */
-::routine findInstallDirOnUnix
-
-  dir = .nil
-
-  -- See if we can locate rexx executable using a package manager.
-  select
-    when haveRpm() then do
-      execFile = checkRpmForInstalledFile("rexx")
-    end
-
-    when haveDpkg() then do
-      execFile = checkDpkgForInstalledFile("rexx")
-    end
-
-    when haveLpp() then do
-      execFile = checkLppForInstalledFile("rexx")
-    end
-
-    otherwise execFile = .nil
-  end
-  -- End select
-
-  -- If no luck, try the default install location
-  if execFile == .nil then do
-    execFile = "/usr/bin/rexx"
-  end
-
-  if SysIsFile(execFile) then do
-    p = execFile~pos("/bin/rexx")
-    if p <> 0 then do
-      return execFile~left(p - 1)
-    end
-  end
-
-  -- Still no luck? look if the executable for ooRexx is in the path
-  dir = SysSearchPath("PATH", "/bin/rexx")
-  if dir \== "" then return dir~left(dir~pos("/bin/rexx")-1)
-
-  -- Still didn't find it.  Try one more thing.  The problem with this, is that
-  -- if we find a rexx, we need to be sure it is ooRexx.  And, it is assuming
-  -- the install set up a soft link.
-  softLink = ""
-  cmdOut = .array~new
-  ret = issueCmd('which rexx', cmdOut)
-  if ret == 0, cmdOut~items == 1 then do
-    rexxFile = cmdOut[1]
-    cmdOut~empty
-    ret = issueCmd('ls -la' rexxFile, cmdOut)
-    if ret == 0, cmdOut~items == 1 then do
-      if cmdOut[1]~left(1) == 'l' then softLink = cmdOut[1]
-    end
-  end
-
-  if softLink \== "" then do
-    parse var softLink discard "->" rexxFile
-    rexxFile = rexxFile~strip
-    if rexxFile \== "" then do
-      binDir = rexxFile~left(rexxFile~pos("rexx") - 1)
-      if SysIsFile(binDir"/rxftp.cls"), SysIsFile(binDir"/rxregexp.cls") then do
-        p = rexxFile~pos("/bin/rexx")
-        if p <> 0 then do
-          tmp = rexxFile~left(p - 1)
-          if SysIsFileDirectory(tmp) then dir = tmp
-        end
-      end
-    end
-  end
-
-return dir
--- End findInstallDirOnUnix()
-
-/** findInstallDirOnDARWIN()
- * Tries to locate the install directory on macOS (DARWIN) using what is
- * known about how ooRexx gets installed on that system.
- * @return   The fully qualified directory path to an installed ooRexx on
- *           success, otherwise .nil.
- */
-::routine findInstallDirOnDARWIN
-
-  if sysIsFile(.RexxInfo~executable) then return filespec('path',.RexxInfo~executable) 
-  else return .nil
--- End findInstallDirOnDARWIN()
-
-::routine haveRpm public
-  cmdOut = .array~new
-  ret = issueCmd('which rpm', cmdOut)
-  if ret == 0 then return .true
-  else return .false
-
-::routine haveDpkg public
-  cmdOut = .array~new
-  ret = issueCmd('which dpkg', cmdOut)
-  if ret == 0 then return .true
-  else return .false
-
-::routine haveLpp public
-  cmdOut = .array~new
-  ret = issueCmd('which lslpp', cmdOut)
-  if ret == 0 then return .true
-  else return .false
-
-
-/** checkRpmForInstalledFile()
- * Uses rpm to check that: 1.) ooRexx is installed by rpm, 2.) the specified
- * file is installed, and 3.) what the fully qualified path name of the file is.
- *
- * @param   name  The file name to check for.
- *
- @ @return  The fully qualified file name if ooRexx is installed and the file is
- @          installed as part of the ooRexx package, otherwise .nil.
- */
-::routine checkRpmForInstalledFile public
-  use strict arg name
-
-  fileName = .nil
-  cmdOut = .array~new
-  ret = issueCmd('rpm -q ooRexx', cmdOut)
-
-  if ret == 0 then do
-    cmdOut = .array~new
-
-    -- Escape the dot(s) in the file name
-    escName = escapeDots(name)
-
-    ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
-    if cmdOut~items == 1 then fileName = cmdOut[1]
-  end
-  return fileName
-
-/** checkDpkgForInstalledFile()
- * Uses the debian package manager, dpkg, to check that: 1.) ooRexx is installed
- * by dpkg, 2.) the specified file is installed, and 3.) what the fully
- * qualified path name of the file is.
- *
- * @param   name  The file name to check for.
- *
- @ @return  The fully qualified file name if ooRexx is installed and the file is
- @          installed as part of the ooRexx package, otherwise .nil.
- */
-::routine checkDpkgForInstalledFile public
-  use strict arg name
-
-  fileName = .nil
-  cmdOut = .array~new
-  ret = issueCmd('dpkg -s oorexx', cmdOut)
-
-  if ret == 0 then do
-    cmdOut = .array~new
-
-    -- Escape the dot(s) in the name
-    escName = escapeDots(name)
-
-    ret = issueCmd('dpkg -L oorexx | grep' escName, cmdOut)
-    if cmdOut~items == 1 then fileName = cmdOut[1]
-  end
-  return fileName
-
-/** checkLppForInstalledFile()
- *
- * We use lslpp to get the list of installed files.
- *
- * @param   name  The file name to check for.
- *
- @ @return  The fully qualified file name if ooRexx is installed and the file is
- @          installed as part of the ooRexx package, otherwise .nil.
- */
-::routine checkLppForInstalledFile public
-  use strict arg name
-
-  fileName = .nil
-
-  cmdOut = .array~new
-  ret = issueCmd('lslpp -L ooRexx.rte', cmdOut)
-
-  if ret == 0 then do
-    cmdOut = .array~new
-
-    -- Escape the dot(s) in the name
-    escName = escapeDots(name)
-
-    ret = issueCmd('lslpp -f ooRexx.rte | grep' escName, cmdOut)
-    if cmdOut~items == 1 then fileName = strip(cmdOut[1])
-  end
-  return fileName
-
-::routine escapeDots
-  use strict arg name
-
-  escName = ""
-  tmp = name
-  do which tmp~pos('.') <> 0
-    parse var tmp front '.' tmp
-    escName = escName || front || '\.'
-  end
-
-  return escName || tmp
+  return .nil
 
 
 /* createFile( src, name ) - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -591,43 +155,9 @@ return fileName
   use strict arg src, baseName
 return createFile(src, baseName || '.rex')
 
-/* addToFile( src, name )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-  Appends to an existing file using the supplied source.
-
-  Input:
-    src   REQUIRED
-      An array containing the lines to be added to the file.
-
-    name  REQUIRED
-      The name of the file being appended.
-
-  Returns:
-    The fully qualified name of the file on succes.  Returns the empty string
-    on error.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine addToFile public
-  use strict arg src, name
-
-  fileName = ""
-  fsObj = .stream~new(name)
-  state = fsObj~open("WRITE APPEND")
-  if state~abbrev("READY") then do
-    do line over src
-      fsObj~lineout(line)
-    end
-    fsObj~close
-    fileName = fsObj~qualify
-  end
-
-return fileName
--- End addToFile( src, name )
-
 /* deleteFile( fileName )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-  Provides a platform independent file delete.  On some platforms, SysFileDelete
-  does not force a deletion.  This function will force the deletion where
-  possible.
+  Provides a platform independent file delete.
 
   Input:
     fileName REQUIRED
@@ -639,35 +169,10 @@ return fileName
 ::routine deleteFile public
   use strict arg fileName
 
-  -- On AIX (ksh), Linux (bash) and Windows the delete can be forced.  Not sure
-  -- on other OSes.  Windows files need to be quoted, some test cases use file
-  -- names with spaces in them.  TODO, need to check behavior on other OSes.
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then do
-      'del /q /f'  .TestUtil~enQuote(fileName) '1>nul 2>&1'
-      ret = RC
-    end
-    when .ooRexxUnit.OSName == "LINUX" then do
-      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
-      ret = RC
-    end
-    when .ooRexxUnit.OSName == "AIX" then do
-      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
-      ret = RC
-    end
-    when .ooRexxUnit.OSName == "MACOSX" then do
-      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
-      ret = RC
-    end
-    when .ooRexxUnit.OSName == "DARWIN" then do
-      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
-      ret = RC
-    end
-    otherwise ret = SysFileDelete(fileName)
-  end
+  file = .File~new(fileName)
+  file~setWritable
+  return file~delete
 
-return ret
--- End deleteFile( fileName )
 
 /* execRexxPrgWithArgs( prgName, params, output )- - - - - - - - - - - - - - -*\
 
@@ -784,3 +289,6 @@ returnNil:
 
 returnCode:
   return condition('O')~code
+
+
+::options all syntax error condition

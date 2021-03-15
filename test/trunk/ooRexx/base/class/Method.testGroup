@@ -5,12 +5,12 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -107,12 +107,6 @@ return testResult
   self~expectSyntax(93.961)            -- The source argument must be a string or array object
   .Method~new("test", .nil)
 
--- rexxref says, 'source' must be an Array, but in fact any object with a
--- makeArray() method is accepted
-::method test_new_two_args_string_non_array
-  self~expectSyntax(93.961)            -- The source argument must be a string or array object
-  .Method~new("test", .DateTime~new)
-
 ::method test_new_two_args_string_sparse_array
   self~expectSyntax(93.952)            -- Method argument source is an array and does not contain all string values
   .Method~new("test", ("nop", , "return"))
@@ -128,10 +122,6 @@ return testResult
 ::method test_new_three_args_string_omitted_string
   self~expectSyntax(88.901)            -- Missing argument; the source argument is required
   .Method~new("test", , "programscope")
-
-::method test_new_three_args_string_string_nil
-  self~expectSyntax(40.904)            -- NEW argument 3 must be one of "PROGRAMSCOPE", Method, Routine, Package object
-  .Method~new("test", "nop", .nil)
 
 ::method test_new_three_args_string_string_null
   self~expectSyntax(40.904)            -- NEW argument 3 must be one of "PROGRAMSCOPE", Method, Routine, Package object
@@ -264,10 +254,6 @@ return testResult
 ::method test_newFile_two_args_omitted_string
   self~expectSyntax(88.901)            -- Missing argument; the name argument is required
   .Method~newFile(, "programscope")
-
-::method test_newFile_two_args_string_nil
-  self~expectSyntax(40.904)            -- NEWFILE argument 2 must be one of "PROGRAMSCOPE", Method, Routine, or Package object
-  .Method~newFile("filename", .nil)
 
 ::method test_newFile_two_args_string_null
   self~expectSyntax(40.904)            -- NEWFILE argument 2 must be one of "PROGRAMSCOPE", Method, Routine, or Package object
@@ -585,4 +571,4 @@ NOP
 ::END
 
 
-::options novalue error
+::options all syntax

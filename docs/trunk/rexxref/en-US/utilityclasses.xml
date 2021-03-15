@@ -8062,7 +8062,8 @@ say .RexxInfo~endofline    -- '0a'x /* Unix */
 <imagedata fileref="images/classes/rexxinfo_executable.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns the full path of the currently executing interpreter.
+<para>Returns a new File instance of the full path of the currently executing
+interpreter.
 </para>
 <para>See also method <xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/>.
 </para>
@@ -8071,8 +8072,8 @@ say .RexxInfo~endofline    -- '0a'x /* Unix */
 <indexterm><primary>examples</primary><secondary>executable method</secondary></indexterm>
 </title>
 <programlisting><![CDATA[
-say .RexxInfo~executable    -- e.g. Windows: C:\Program Files\ooRexx\rexx.exe
-say .RexxInfo~executable    -- e.g. Unix: /usr/bin/rexx
+say .RexxInfo~executable    -- (Windows e.g.) C:\Program Files\ooRexx\rexx.exe
+say .RexxInfo~executable    -- (Unix e.g.) /usr/local/bin/rexx
 ]]></programlisting></example></para>
 </section>
 
@@ -8256,7 +8257,8 @@ which both also return the language level as the second token of their result.
 <imagedata fileref="images/classes/rexxinfo_librarypath.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns the path of the shared or dynamic libraries for the currently running Rexx interpreter.
+<para>Returns a new File instance of the path of the shared or dynamic libraries
+for the currently running Rexx interpreter.
 </para>
 <para>See also method <xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/>.
 </para>
@@ -8265,8 +8267,8 @@ which both also return the language level as the second token of their result.
 <indexterm><primary>examples</primary><secondary>libraryPath method</secondary></indexterm>
 </title>
 <programlisting><![CDATA[
-say .RexxInfo~libraryPath    -- e. g. Windows: C:\Program Files\ooRexx
-say .RexxInfo~libraryPath    -- e. g. Unix: /usr/lib/
+say .RexxInfo~libraryPath    -- (Windows e.g.) C:\Program Files\ooRexx
+say .RexxInfo~libraryPath    -- (Unix e.g.) /usr/local/lib/
 ]]></programlisting></example></para>
 </section>
 

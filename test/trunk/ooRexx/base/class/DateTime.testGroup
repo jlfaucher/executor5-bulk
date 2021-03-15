@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -927,6 +927,21 @@ return testResult
   end
 
 
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .DateTime~new~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .DateTime~new~makeString(.nil)
+
+::method test_string_makestring
+  d = .DateTime~new
+  self~assertSame(d~string, d~makeString)
+
+
 ::method getUtcTime
   numeric digits 20
   return date('f') + time('o')
@@ -954,4 +969,5 @@ return testResult
 ::method getLocalModifier
   return self~getOffsetModifier(self~getLocalOffset)
 
-::options novalue error
+
+::options all syntax

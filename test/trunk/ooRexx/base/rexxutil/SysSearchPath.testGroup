@@ -10,7 +10,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -109,15 +109,15 @@ else
 -- files with an absolute path are always found
 ::method test_searchpath_absolute
   parse source . . file
-  do absolute over file, .RexxInfo~executable
+  do absolute over file, .RexxInfo~executable~absolutePath
     self~assertSame(absolute, SysSearchPath("", absolute))
     self~assertSame(absolute, SysSearchPath("no-variable", absolute))
     self~assertSame(absolute, SysSearchPath("PATH", absolute))
   end
 
 ::method test_searchpath_rexx
-  rexxPath = .Rexxinfo~executable
-  rexx = filespec("name", rexxPath)
+  rexxPath = .Rexxinfo~executable~absolutePath
+  rexx = .Rexxinfo~executable~name
 
   self~assertSame(rexxPath, SysSearchPath("PATH", rexx), "this may fail if rexx is run directly from a build tree")
   self~assertSame(rexxPath, SysSearchPath("PATH", rexx, "c"))
@@ -134,18 +134,24 @@ else
   name = filespec("name", file)
   path = filespec("location", file) -- this keeps a trailing delimiter
   pathStripped = path~strip("t", "/")
-  -- to avoid surprises we dont't search the current directory
+  -- we're doing a relative search
+  current = directory()
+  call directory path
+  -- make sure we don't search the current directory
   self~assertSame("",   self~searchPath(.Array~of(""), name, "N"))
-  self~assertSame("",   self~searchPath(("", ""), name, "n"))
+-- On Windows SearchPath() searches current directory when a path part is the
+-- null string.  So we skip this
+--self~assertSame("",   self~searchPath(("", ""), name, "n"))
   self~assertSame(file, self~searchPath(.Array~of(path), name, "n"))
   self~assertSame(file, self~searchPath(.Array~of(pathStripped), name, "n"))
   self~assertSame(file, self~searchPath(("abc", path, pathStripped, "xyz"), name, "n"))
   self~assertSame(file, self~searchPath(("abc"~copies(500), path), name, "n"))
+  call directory current
 
 ::method searchPath
   use strict arg list, file, option = "c"
   call value "test_searchpath", list~toString(, .File~pathSeparator), "environment"
-  return SysSearchPath("test_searchpath", file)
+  return SysSearchPath("test_searchpath", file, option)
 
 
 ::options all syntax

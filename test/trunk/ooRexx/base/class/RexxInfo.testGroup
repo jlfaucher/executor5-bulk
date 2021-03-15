@@ -5,12 +5,12 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -59,45 +59,38 @@ return testResult
   /*
   architecture              64
   casesensitivefiles        1
-  date                      9 Mar 2019
+  date                      14 Mar 2021
   digits                    9
   directoryseparator        /
   endOfLine                 '0A'x
-  executable                /usr/bin/rexx
+  executable                /usr/local/bin/rexx
   form                      SCIENTIFIC
   fuzz                      0
   internaldigits            18
   internalmaxnumber         999999999999999999
   internalminnumber         -999999999999999999
   languagelevel             6.05
-  librarypath               /usr/lib/
+  librarypath               /usr/local/lib/
   majorversion              5
   maxarraysize              99999999999999999
   maxexponent               999999999
   maxpathlength             4096
   minexponent               -999999999
   modification              0
-  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Mar 2019
+  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 14 Mar 2021
   package                   The REXX Package
   pathseparator             :
   platform                  LINUX
   release                   0
-  revision                  11828
+  revision                  12194
   version                   5.0.0
-
-  parse version:
-  REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Mar 2019
-
-  parse source:
-  LINUX COMMAND ...
   */
 
 ::method test_rexxInfo_package
   self~assertTrue(.RexxInfo~package~isA(.Package), ".RexxInfo~package should return a .Package instance")
 
 ::method test_rexxInfo_digits
-  self~assertEquals("NUM", .RexxInfo~digits~dataType, ".RexxInfo~digits should return a numeric value")
-  self~assertEquals(digits(), .RexxInfo~digits, ".RexxInfo~digits should be current digits()")
+  self~assertEquals(9, .RexxInfo~digits, ".RexxInfo~digits should always bei 9")
 
 ::method test_rexxInfo_fuzz
   self~assertEquals("NUM", .RexxInfo~fuzz~dataType, ".RexxInfo~fuzz should return a numeric value")
@@ -178,20 +171,19 @@ return testResult
   -- to know if this happens
   -- on Unix-based systems the exectuable's name may be rexx-oorexx
   -- instead of rexx if a build for update-alternatives was done
+  self~assertIsA(.RexxInfo~executable, .File, ".RexxInfo~executable expected to be a File instance")
   if .RexxInfo~platform~caselessStartsWith("Windows") then
-    self~assertTrue(.RexxInfo~executable~endsWith("\rexx.exe"), ".RexxInfo~executable '" || .RexxInfo~executable || "' should end in '\rexx.exe'")
+    self~assertSame("rexx.exe", .RexxInfo~executable~name, ".RexxInfo~executable '" .RexxInfo~executable "' name expected to be 'rexx.exe'")
   else
-    self~assertOneOrAnother("rexx", "rexx-oorexx", .File~new(.RexxInfo~executable)~name, ".RexxInfo~executable '" || .RexxInfo~executable || "' is expected to end in 'rexx' or 'rexx-oorexx'")
-  self~assertTrue(.File~new(.RexxInfo~executable)~exists, ".RexxInfo~executable '" || .RexxInfo~executable || "' should exist")
-  self~assertTrue(.File~new(.RexxInfo~executable)~isFile, ".RexxInfo~executable '" || .RexxInfo~executable || "' should be an existing file")
+    self~assertOneOrAnother("rexx", "rexx-oorexx", .RexxInfo~executable~name, ".RexxInfo~executable '" .RexxInfo~executable "' name expected to be 'rexx' or 'rexx-oorexx'")
+  self~assertTrue(.RexxInfo~executable~isFile, ".RexxInfo~executable '" .RexxInfo~executable "' should be an existing file")
 
 ::method test_rexxInfo_libraryPath
   -- in rare cases .RexxInfo~libraryPath may be .nil because it couldn't be determined
   -- but for a typical test scenario this should not happen, so we really want
   -- know when and why this happens
-  self~assertTrue(.RexxInfo~libraryPath~endsWith(.File~separator), ".RexxInfo~libraryPath '" || .RexxInfo~executable || "' should end in '" || .File~separator || "'")
-  self~assertTrue(.File~new(.RexxInfo~libraryPath)~exists, ".RexxInfo~libraryPath '" || .RexxInfo~executable || "' should exist")
-  self~assertTrue(.File~new(.RexxInfo~libraryPath)~isDirectory, ".RexxInfo~libraryPath '" || .RexxInfo~executable || "' should be an existing directory")
+  self~assertIsA(.RexxInfo~libraryPath, .File, ".RexxInfo~libraryPath expected to be a File instance")
+  self~assertTrue(.RexxInfo~libraryPath~isDirectory, ".RexxInfo~libraryPath '" .RexxInfo~executable "' should be an existing directory")
 
 
-::options novalue syntax
+::options digits 18 all syntax
