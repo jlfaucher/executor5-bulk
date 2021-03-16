@@ -155,6 +155,38 @@ return fileName
   use strict arg src, baseName
 return createFile(src, baseName || '.rex')
 
+/* addToFile( src, name )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Appends to an existing file using the supplied source.
+
+  Input:
+    src   REQUIRED
+      An array containing the lines to be added to the file.
+
+    name  REQUIRED
+      The name of the file being appended.
+
+  Returns:
+    The fully qualified name of the file on succes.  Returns the empty string
+    on error.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine addToFile public
+  use strict arg src, name
+
+  fileName = ""
+  fsObj = .stream~new(name)
+  state = fsObj~open("WRITE APPEND")
+  if state~abbrev("READY") then do
+    do line over src
+      fsObj~lineout(line)
+    end
+    fsObj~close
+    fileName = fsObj~qualify
+  end
+
+return fileName
+-- End addToFile( src, name )
+
 /* deleteFile( fileName )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
   Provides a platform independent file delete.
