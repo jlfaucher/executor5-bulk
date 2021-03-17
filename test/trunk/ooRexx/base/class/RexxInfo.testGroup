@@ -87,7 +87,9 @@ return testResult
   */
 
 ::method test_rexxInfo_package
-  self~assertTrue(.RexxInfo~package~isA(.Package), ".RexxInfo~package should return a .Package instance")
+  self~assertIsA(.RexxInfo~package, .Package, ".RexxInfo~package should return a .Package instance")
+  self~assertSame("The REXX Package", .RexxInfo~package, ".RexxInfo~package should be The REXX Package")
+  self~assertSame("REXX", .RexxInfo~package~name, ".RexxInfo~package~name should REXX")
 
 ::method test_rexxInfo_digits
   self~assertEquals(9, .RexxInfo~digits, ".RexxInfo~digits should always bei 9")
@@ -100,15 +102,14 @@ return testResult
   self~assertTrue('ENGINEERING SCIENTIFIC'~wordPos(.RexxInfo~form) > 0, ".RexxInfo~form should return either 'ENGINEERING' or 'SCIENTIFIC'")
   self~assertEquals(form(), .RexxInfo~form, ".RexxInfo~form should be current form()")
 
-::method test_rexxInfo_internalDigits
-  self~assertEquals("NUM", .RexxInfo~internalDigits~dataType, ".RexxInfo~internalDigits should return a numeric value")
-  self~assertTrue(.RexxInfo~internalDigits >= digits(), ".RexxInfo~internalDigits should be equal to or larger than digits()")
+::method test_rexxInfo_internal
+  self~assertOneOrAnother(9, 18, .RexxInfo~internalDigits, ".RexxInfo~internalDigits expected to be 9 or 18")
   digits = "9"~copies(.RexxInfo~internalDigits)
   self~assertEquals(digits, .RexxInfo~internalMaxNumber)
   self~assertEquals(-digits, .RexxInfo~internalMinNumber)
 
 ::method test_rexxInfo_maxArraySize
-  self~assertEquals("NUM", .RexxInfo~internalMaxNumber~dataType, ".RexxInfo~internalMaxNumber should return a numeric value")
+  self~assertSame(.RexxInfo~internalMaxNumber % 10 + 1, .RexxInfo~maxArraySize)
 
 ::method test_rexxInfo_exponent
   self~assertEquals("NUM", .RexxInfo~maxExponent~dataType)
@@ -123,7 +124,7 @@ return testResult
   parse version version
   self~assertEquals(version, .RexxInfo~name, ".RexxInfo~name should be equal to parse version")
 
-::method test_rexxInfo_langaugeLevel
+::method test_rexxInfo_languageLevel
   self~assertTrue(.RexxInfo~languageLevel~length > 0, ".RexxInfo~languageLevel should return a non-null string")
 
 ::method test_rexxInfo_majorVersion_release_modification_version
