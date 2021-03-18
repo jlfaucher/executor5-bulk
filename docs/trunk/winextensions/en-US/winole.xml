@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Windows Extensions SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -59,7 +59,7 @@
   OLE (Object Linking and Embedding) is an implementation of COM (Component Object Model). OLE automation
   makes it possible for one application to manipulate objects implemented in another application, or to
   expose objects so they can be manipulated. ooRexx provides two classes, OLEObject (<xref
-  linkend="clsOLEOjbect" />) and OLEVariant (<xref linkend="clsOLEVariant" /> that allow
+  linkend="clsOLEObject" />) and OLEVariant (<xref linkend="clsOLEVariant" /> that allow
   the programmer to take advantage of this ability to manipulate objects that are exposed as OLE objects.
 </para>
 <para>
@@ -146,12 +146,12 @@
   Some, but not all, OLE automation objects support <emphasis role="italic">events</emphasis>. The most
   prevalent use of OLE is for the automation server (the OLE object) to implement methods that the
   automation client (the ooRexx OLEObject) invokes. However, it is also possible for the automation
-  client (the ooRexx OLEOjbect) to implement methods that the automation server (the OLE object) invokes.
+  client (the ooRexx OLEObject) to implement methods that the automation server (the OLE object) invokes.
 </para>
 <para>
   The methods that the automation client implements are called event methods and the automation server
   that suports event methods is called a <emphasis role="italic">connectable</emphasis> object. The
-  connectable object defines the events it supports by defining the name of the method and its arugments,
+  connectable object defines the events it supports by defining the name of the method and its arguments,
   but does not implement the method. Rather the automation client implements the method. The client asks
   the automation server to make a <emphasis role="italic">connection</emphasis>. If the connection is
   established, then from that point on whenever one of the defined events occurs, the server invokes the
@@ -161,15 +161,15 @@
   In effect, what is happening is that the automation server is <emphasis
   role="italic">notifying</emphasis> the automation client that some event has occurred and giving the
   client a chance to react to the event. Any number of clients can be connected to the same connectable
-  object at the same time. Each client will recieve a notification for any event they are interested in.
-  There is no need for the client to receive notifications for evey event. When the client is not
+  object at the same time. Each client will receive a notification for any event they are interested in.
+  There is no need for the client to receive notifications for every event. When the client is not
   interested in an event, the client simply does not implement a method for that event.
 </para>
 <para>
   The original implementation of OLEObject allowed the Rexx programmer to use events in this way: The
   programmer defines and implements a subclass of the OLEObject. Within the subclass, the programmer
-  defines and implements the event methods for which she wants to recieve notifications. The progammer
-  has the client make a connection to the automation server at the time the OLEObject object is instaniated (<xref
+  defines and implements the event methods for which she wants to receive notifications. The programmer
+  has the client make a connection to the automation server at the time the OLEObject object is instantiated (<xref
   linkend="oleobjinit" /> by using the <computeroutput>WITHEVENTS</computeroutput>
   keyword for the <emphasis role="italic">events</emphasis> argument. If the
   <computeroutput>WITHEVENTS</computeroutput> keyword is not used during instantiation, then no event
@@ -178,7 +178,7 @@
 <para>
   This is relatively easy to understand and a simple example should make this clear. In the following,
   rather than create a new OLEObject, the programmer defines a subclass of the OLEObject, a WatchedIE
-  class. The WatcheID object is instantiated with events. This tells the OLEObject to make an event
+  class. The WatchedIE object is instantiated with events. This tells the OLEObject to make an event
   connection, if possible. In the subclass, the programmer implements the events he is interested in
   receiving notifications for.
 </para>
@@ -277,8 +277,8 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 <para>
   To prevent this scenario, when an event method of an OLE object has the same name as a normal method
   name, the programmer must prepend <computeroutput>OLEEvent_</computeroutput> to the method name. The
-  implementation of OLEObject assumes the programer has done so. If the programmer does not name the
-  event methods using this convention, the results are unpredicatable.
+  implementation of OLEObject assumes the programmer has done so. If the programmer does not name the
+  event methods using this convention, the results are unpredictable.
 </para>
 <para>
   <emphasis role="bold">Note</emphasis> that <emphasis role="italic">only</emphasis> the event method
@@ -289,7 +289,7 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>
-  This example is a compelete working program. To run it, Microsoft OutLook must be installed. The
+  This example is a complete working program. To run it, Microsoft OutLook must be installed. The
   program demonstrates some of the various methods of the OLEObject that deal with events. The interface
   to the program is simplistic, but workable.
 </para>
@@ -413,7 +413,7 @@ return 0
 </example>
 </section>
 
-<section id="clsOLEOjbect"><title>The OLEObject Class</title>
+<section id="clsOLEObject"><title>The OLEObject Class</title>
 <indexterm><primary>OLEObject class</primary></indexterm>
 <indexterm><primary>OLE Automation</primary>
 <secondary>OLEObject class</secondary></indexterm>
@@ -943,7 +943,7 @@ ONSTATUSBAR
   for <emphasis role="italic">methodObject</emphasis> are the same as those for the second argument to
   the <computeroutput>setMethod</computeroutput> method of the<computeroutput>.Object</computeroutput>
   class. That is, it can be a method object, a string containing a method source line, or an array of
-  strings containgin individual method source lines.
+  strings containing individual method source lines.
 </para>
 <para>
   The purpose of this method is to add an event method to a OLEObject after the object has been
@@ -1201,7 +1201,7 @@ GoHome
   method.
 </para>
 <para>
-  Note that file system names are monikers. Therefore, if a file is assoicated with an application that
+  Note that file system names are monikers. Therefore, if a file is associated with an application that
   is an OLE automation server, a new OLE object can be instantiated by using the file name as the
   moniker. Obviously, this is not true of every file. It is true for files like
   <computeroutput>.xls</computeroutput> and <computeroutput>.doc</computeroutput> files, for example,
@@ -1471,7 +1471,7 @@ the left of the decimal point and 4 digits to the right)</entry>
 </tbody>
 </tgroup>
 </table>
-<para>* VT_ARRY and VT_BYREF are combined with any of the other variant types
+<para>* VT_ARRAY and VT_BYREF are combined with any of the other variant types
 and never used alone. VT_ARRAY and another variant type are used for a SAFEARRAY
 datatype, an array of the other variant type.  VT_BYREF and another variant type
 are used to pass the other variant type to or from an OLE object by reference.
@@ -1487,7 +1487,7 @@ handles this transparently.</para>
 
 <para>
 The OLEVariant class enhances the support for OLE Automation provided by the
-OLEObject class (<xref linkend="clsOLEOjbect" /> and is used in conjunction with
+OLEObject class (<xref linkend="clsOLEObject" /> and is used in conjunction with
 that class.  An OLEVariant object is used as a parameter in a method call of
 an OLEObject object.  In the OLEObject's role as a proxy for a OLE / COM
 object, the parameters in method calls are forwarded on to the actual OLE /

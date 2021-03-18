@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Windows Extensions SGML file.
     #
-    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -49,7 +49,7 @@
 <indexterm><primary>class</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
 <para>
-  The <computeroutput>WindowsEventLog</computeroutput> class provides functionaliy to interact with the
+  The <computeroutput>WindowsEventLog</computeroutput> class provides functionality to interact with the
   Windows system event log.
 </para>
 <para>
@@ -205,7 +205,7 @@ HKEY_LOCAL_MACHINE
   <listitem>
     <para>
       Many of <computeroutput>WindowsEventLog</computeroutput> instance methods have a <emphasis
-      role="italic">server</emphasis> argument. This argument indentifies which machine contains the
+      role="italic">server</emphasis> argument. This argument identifies which machine contains the
       desired event log. The argument is always optional, with the default server being the local
       machine. In all cases, using the empty string is the same as omitting the argument.
     </para>
@@ -361,7 +361,7 @@ eventLog~open( , "LoadPerf")
 </row>
 <row>
 <entry>description</entry>
-<entry>A descripiton of the event</entry>
+<entry>A description of the event</entry>
 <entry>Enclosed in single quotes</entry>
 </row>
 <row>
@@ -442,7 +442,7 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
 <entry>Information*</entry>
 <entry>
   * The Windows API allows the numeric value of 0. This is not a separate event type, but rather a mapping of 0 to the
-  Infomation event type. The <computeroutput>WindowsEventLog</computeroutput> also allows the use of 0 for the numeric value
+  Information event type. The <computeroutput>WindowsEventLog</computeroutput> also allows the use of 0 for the numeric value
   of an event type and maps it to Information.
 </entry>
 <entry>Information</entry>
@@ -606,11 +606,11 @@ Smallest possible read buffer is 16 kilobytes
   <varlistentry><term><emphasis role="bold">~minimumReadMax=</emphasis> (set minimumReadMax)</term>
   <listitem>
     <para>
-      <computeroutput>minimumReadMax=</computeroutput> is a private method, not inteneded to be changed
+      <computeroutput>minimumReadMax=</computeroutput> is a private method, not intended to be changed
       by the programmer.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">~minimumReadMax</emphasis> (get minmumReadMax)</term>
+  <varlistentry><term><emphasis role="bold">~minimumReadMax</emphasis> (get minimumReadMax)</term>
   <listitem>
     <para>
       The maximum number of kilobytes that the minimum read buffer can be set to.
@@ -964,7 +964,7 @@ end
   Reads the desired event records from the specified event log. Each record is stored in the events(<xref
   linkend="atrEvents" />) array. After a successful read, all records will be contained in the
   <computeroutput>events</computeroutput> array in the order there were read. Prior to starting the read
-  opereation the array is emptied.
+  operation the array is emptied.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1226,7 +1226,7 @@ Displayed 5 records
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example writes some fictious data to an event log.
+      This example writes some fictitious data to an event log.
 <example id="ex.WindowsEventLog-9-class">
 <title>WindowsEventLog class - write method</title>
 <programlisting>

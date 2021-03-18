@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Windows Extensions SGML file.
     #
-    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -50,7 +50,7 @@
 <secondary>WindowsProgramManager class</secondary></indexterm>
 <para>
   The <computeroutput>WindowsRegistry</computeroutput> class allows the programmer to interface with the
-  operating sytem APIs that are used to access the <emphasis role="italic">registry</emphasis>. The class
+  operating system APIs that are used to access the <emphasis role="italic">registry</emphasis>. The class
   can be used to query the registry and modify, add, and delete entries.
 </para>
 <para>
@@ -91,7 +91,7 @@
   most recently opened handle and supplies this handle when the programmer omits the parent handle
   argument in a method. This mechanism is implemented through the current_key (<xref
   linkend="wrAtrCurrentKey" />) attribute.  When a method has a parent handle argument and
-  the programmer omits the arguement, the current key handle is used.
+  the programmer omits the argument, the current key handle is used.
 </para>
 <para>
   The WindowsRegistry class is not a built-in class; it is defined in the file winSystm.cls.
@@ -375,7 +375,7 @@ newKey = rg~create(rg~local_machine, "myOwnKey")
   delete keys recursively, use the delete() (<xref linkend="mthWRDelete" />) method.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguements</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
     <para>The two arguments are:
       <variablelist>
@@ -496,7 +496,7 @@ say "my default value is:" myval.data
     say "Type is" myval.type
     if myval.type = "NORMAL" then say "Value is" myval.data
   else do
-    say "Error getting registery value."
+    say "Error getting registry value."
   end
 </programlisting>
 </example>
@@ -670,7 +670,7 @@ unlock the registry data file filename.</para>
           <variablelist>
           <varlistentry><term>ALL</term>
           <listitem><para>
-            Opens the key with all possible access. Although this is the default, as discused above some
+            Opens the key with all possible access. Although this is the default, as discussed above some
             forethought should be given to using this access.
           </para></listitem></varlistentry>
           <varlistentry><term>WRITE</term>
