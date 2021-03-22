@@ -62,7 +62,7 @@
  *          9999 is returned as an error indication.
  */
 ::routine issueCmd public
-  use strict arg cmd, output, error = (output), , input = .nil
+  use strict arg cmd, output, error = (output), input = .nil
 
   if input == .nil then
     address '' with output append using (output) error append using (error)
