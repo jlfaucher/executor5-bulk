@@ -1,7 +1,3 @@
-/*
-  SVN Revision: $Rev: 3047 $
-  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
-*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
@@ -66,11 +62,12 @@
  *          9999 is returned as an error indication.
  */
 ::routine issueCmd public
-  use strict arg cmd, output
+  use strict arg cmd, output, error = (output), , input = .nil
 
-  if \ output~isInstanceOf(.array) then return 9999
-
-  address '' with output append using (output) error append using (output)
+  if input == .nil then
+    address '' with output append using (output) error append using (error)
+  else
+    address '' with output append using (output) error append using (error) input using (input)
   address '' cmd
   return rc
 
@@ -103,12 +100,15 @@
 
   if the executable is ...               the samples are located in ...
   C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\
-  C:\...\ooRexxBuild\rel\bin\rexx.exe    C:\...\ooRexxBuild\rel\samples\
+  C:\...\ooRexxBuild\rel\bin\rexx.exe    C:\...\ooRexxBuild\rel\samples\ (*)
   /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/
-  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/
+  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/ (*)
   /Applications/.../bin/rexx             /Applications/.../share/ooRexx/ (?)
   /Users/.../Applications/.../bin/rexx   /Users/.../Applications/.../share/ooRexx/ (?)
   /Library/Frameworks/.../Commands/rexx  /Library/Frameworks/.../Shared/ooRexx/
+
+  (*) currently not all samples are copied into the build tree, e. g. those
+      Windows-specific samples in misc, ole, oodialog, or ooSQLite
   */
 
   install = .RexxInfo~executable~parent
@@ -117,6 +117,11 @@
     if sample~isFile then
       return sample~absolutePath
   end
+  -- We can't find the sample.  As a last resort, we might have an environment
+  -- variable giving the path to a samples directory (e. g. in the SVN tree)
+  sample = .File~new(name, value("OOREXX_SAMPLES", , "environment"))
+  if sample~isFile then
+      return sample~absolutePath
   return .nil
 
 
@@ -230,10 +235,10 @@ return fileName
     for an internal error.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::routine execRexxPrgWithArgs public
-  use strict arg prgName, params, output
+  use strict arg prgName, params, output, error = (output), input = .nil
 
   cmd = 'rexx' .TestUtil~enQuote(prgName) params
-  prgRet = issueCmd(cmd, output)
+  prgRet = issueCmd(cmd, output, error, input)
 
 return prgRet
 -- End execRexxPrgWithArgs( prgName, params, output )
@@ -243,8 +248,8 @@ return prgRet
  * delegates to execRexxPrgWithArgs().
  */
 ::routine execRexxPrg public
-  use strict arg prgName, output
-return execRexxPrgWithArgs(prgName, "", output)
+  use strict arg prgName, output, error = (output), input = .nil
+return execRexxPrgWithArgs(prgName, "", output, error, input)
 
 
 /* createOleObject( id ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

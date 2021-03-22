@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -1100,10 +1100,8 @@ return str
 ::method assertSameList
   use strict arg expected, actual, msg = "assertSameList"
 
-  if expected~isA(.Collection), actual~isA(.Collection) then do
-    if \isCollectionEqual(expected, actual) then
-      self~fail(self~makeFailure(expected, actual, msg, "assertSameList"))
-  end
+  if \isCollectionEqual(expected, actual) then
+    self~fail(self~makeFailure(expected, actual, msg, "assertSameList"))
 
   -- Assertion holds.
   self~fAssertions += 1
@@ -1112,10 +1110,9 @@ return str
 ::method assertEquivalentList
   use strict arg expected, actual, msg = "assertEquivalentList"
 
-  if expected~isA(.Collection), actual~isA(.Collection) then do
-    if \isCollectionEquivalent(expected, actual) then
-      self~fail(self~makeFailure(expected, actual, msg, "assertEquivalentList"))
-  end
+  -- same items, but in a potentially different order
+  if \isCollectionEquivalent(expected, actual) then
+    self~fail(self~makeFailure(expected, actual, msg, "assertEquivalentList"))
 
   -- Assertion holds.
   self~fAssertions += 1
@@ -1868,25 +1865,6 @@ exceptionHandler:
   use arg expected, actual
 
   return actual~equivalent(expected)
-
-
-   /* function returning .true, if both collections can be regarded to be equal (i.e.,
-      each can be regarded to be a subset of the other), .false else
-      CAUTION: .true is returned for e. g. isCollEqual((1,2,3), (3,2,1))
-   */
-::routine IsCollEqual public
-  use arg expected, received
-
-  /* Starting with 3.2 (language level 6.02) no more guessing necessary, check for collection
-     type and act accordingly.
-  */
-  if expected~isA(.Collection), received~isA(.Collection), -
-     expected~subset(received), received~subset(expected) then
-  do
-     return .true -- the one collection is a subset of the other
-  end
-
-  return .false   -- not dealing with collections or collections not a subset of each other
 
 
 /* *********************************************************************************** */

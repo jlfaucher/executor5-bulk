@@ -13,7 +13,7 @@
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -3503,7 +3503,7 @@ to as alphabetic character options.</para>
 <para>TRACE actions correspond to the alphabetic character options as follows:
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">All</emphasis></term>
+<varlistentry><term><emphasis role="bold"><option>All</option></emphasis></term>
 <listitem><para>Traces (that is, displays) all clauses before execution.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Commands</option></term>
@@ -3531,10 +3531,11 @@ This is the same as the <computeroutput>Normal</computeroutput> option.
 results during the evaluation of expressions and substituted names.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Labels</option></term>
-<listitem><para>Traces only labels passed during execution. This is especially
-useful with debug mode, when the language processor pauses after each label. It
-also helps the user to note all internal subroutine calls and transfers of
-control because of the SIGNAL instruction.
+<listitem><para>Traces method and routine invocations, internal subroutine calls,
+transfers of control because of the SIGNAL instruction, and labels passed during
+program execution.
+This is especially useful with debug mode, when the language processor pauses
+after each invocation or call.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Normal</option></term>
 <listitem><para>Traces any failing command after execution, together with the
@@ -3710,7 +3711,7 @@ an indication of a syntax error when in interactive debugging.
 </term>
 <listitem><para>Identifies an entry to a routine or method.  This
 trace entry will only appear if tracing is enabled using the ::OPTIONS
-directive using TRACE A, TRACE R, or TRACE I.
+directive using TRACE A, TRACE R, TRACE I or TRACE L.
 </para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>K></computeroutput>
 <indexterm><primary>flag, tracing</primary>
