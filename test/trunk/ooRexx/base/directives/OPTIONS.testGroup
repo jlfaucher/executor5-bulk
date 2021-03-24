@@ -588,7 +588,7 @@ return testResult
     '       >I> Routine "R" in package "".', -
     '     4 *-*   lbl:', -
     '       >I> Method "M" with scope "C" in package "".')
-  self~assertSameList(traceExpected, trace)
+  self~assertSameList(traceExpected, trace, .Array~of("expected:")~appendAll(traceExpected)~~append("actual:")~appendAll(trace)~toString)
 
 -- [bugs:#1581] trace "all" crashes when the scope of a method is NIL
 ::method test_options_trace_all_with_floating_method
