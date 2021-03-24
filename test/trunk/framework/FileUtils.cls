@@ -58,8 +58,24 @@
  *   An array.  The output produced by issuing the command is returned in this
  *   array.  The output is appended to the array.
  *
- * @return  Returns the return code produced by issuing the command.  However,
- *          9999 is returned as an error indication.
+ * @param error  OPTIONAL [In / Out]
+ *   An array.  The error output produced by issuing the command is returned in
+ *   this array.  Lines are appended to the array.  If not specified, error
+ *   lines are returned together with output.
+ *
+ * @param input  OPTIONAL [In]
+ *   An array.  The output produced by issuing the command is returned in this
+ *   array.  The output is appended to the array.
+ *
+ *  error  OPTIONAL [In / Out]
+ *    An array object in which the executed program's error output is returned.
+ *    Error lines are appended to the array.  If error is not specified, error
+ *    lines are returned together with output.
+ *
+ *  input  OPTIONAL [In]
+ *    An array object providing standard input to the executed program.
+ *
+ * @return  Returns the return code produced by issuing the command.
  */
 ::routine issueCmd public
   use strict arg cmd, output, error = (output), input = .nil
@@ -114,13 +130,13 @@
   install = .RexxInfo~executable~parent
   do samples over "samples/", "../samples/", "../share/ooRexx/", "../Shared/ooRexx/"
     sample = .File~new(samples || name, install)
-    if sample~isFile then
+    if sample~exists then
       return sample~absolutePath
   end
   -- We can't find the sample.  As a last resort, we might have an environment
   -- variable giving the path to a samples directory (e. g. in the SVN tree)
   sample = .File~new(name, value("OOREXX_SAMPLES", , "environment"))
-  if sample~isFile then
+  if sample~exists then
       return sample~absolutePath
   return .nil
 
@@ -226,13 +242,20 @@ return fileName
       either use the empty string, or use the convenience function execRexxPrg
 
     output  REQUIRED  [In / Out]
-      An array object in which the the executed program's output is returned.
+      An array object in which the executed program's standard output is returned.
       The output lines are appended to the array, so the array does not need to
       be empty.
 
+    error  OPTIONAL [In / Out]
+      An array object in which the executed program's error output is returned.
+      Error lines are appended to the array.  If error is not specified, error
+      lines are returned together with output.
+
+    input  OPTIONAL [In]
+      An array object providing standard input to the executed program.
+
   Returns:
-    The return code produced by executing the program on success.  Returns 9999
-    for an internal error.
+    The return code produced by executing the program on success.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::routine execRexxPrgWithArgs public
   use strict arg prgName, params, output, error = (output), input = .nil
