@@ -147,41 +147,35 @@ return testResult
 
 ::method "test_04_interface.rex"
 
-  Line.1 = 'a Rectangle is a shape'
-  Line.2 = 'r~area: 10'
-  Line.3 = ''
-  Line.4 = 'a Circle is a shape'
-  Line.5 = 'c~area: 12.566370614359172954'
-  Line.6 = ''
-  Line.7 = 'a SHAPE is a shape'
-  Line.0 = 7
-
   prgPathName = locateSamplePrg('interface.rex')
 
+  rxOut.1 = 'a Rectangle is a shape'
+  rxOut.2 = 'r~area: 10'
+  rxOut.3 = ''
+  rxOut.4 = 'a Circle is a shape'
+  rxOut.5 = 'c~area: 12.566370614359172954'
+  rxOut.6 = ''
+  rxOut.7 = 'a SHAPE is a shape'
+  rxOut.0 = 7
+
+  rxErr.1 = '    70 *-* say g~name'
+  rxErr.2 = "Error 93 running "prgPathName" line 70:  Incorrect call to method."
+  rxErr.3 = 'Error 93.965:  Method NAME is ABSTRACT and cannot be directly invoked.'
+  rxErr.0 = 3
+
   SELECT CASE .ooRexxUnit.OSName
-    when 'WINDOWS' then address command 'rexx' '"'prgPathName'"' with output stem myStem.
-    otherwise           address ''      'rexx' prgPathName with output stem myStem.
+ when 'WINDOWS' then address command 'rexx' '"'prgPathName'"' with output stem myOut. error stem myErr.
+    otherwise           address ''      'rexx' prgPathName with output stem myOut. error stem myErr.
   END /* Select */
 
-/*
-WHAT TO DO ABOUT THIS?
-
-70 *-* say g~name
-
-Error 93 running /Users/po/Applications/ooRexx5/share/ooRexx/interface.rex line 70:  Incorrect call to method.
-Error 93.965:  Method NAME is ABSTRACT and cannot be directly invoked.
-
-Neither of these tests are working becasue there are two correct answers first.
-self~expectSyntax(93)
-self~expectSyntax(93.965)
-
-*/
-
-  DO i= 1 TO Line.0
-    self~assertEquals(Line.i,myStem.i)
+  self~assertEquals(rxOut.0,myOut.0)
+  DO i= 1 TO rxOut.0
+    self~assertEquals(rxOut.i,myOut.i)
   END i
 
--- dummy assertion
---self~assertTrue(.true)
+  self~assertEquals(rxErr.0,myErr.0)
+  DO i= 1 TO rxErr.0
+    self~assertEquals(rxErr.i,myErr.i)
+  END i
 
 --we are done in this testgroup
