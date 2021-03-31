@@ -5,12 +5,12 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2021 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -40,12 +40,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/*
-  synchronousConcurrency.rex work queue to synchronize activity between threads.
-  For this test to work we need to launch the sample program from where
-  "Jabberwocky.txt" is located = with the samples.
-*/
-
 parse source . . s
 group = .TestGroup~new(s)
 group~add(.synchronousConcurrency.testGroup)
@@ -64,70 +58,15 @@ else
 ::constant ooTestType (.ooTestTypes~SAMPLE_TEST)
 
 ::method "test_synchronousConcurrency.rex"
+  sample = locateSamplePrg("synchronousConcurrency.rex")
+  self~assertNotNil(sample)
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(0, execRexxPrg(sample, output, error))
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
+  -- the sample should print the full jabberwocky.txt
+  jabberwocky = .File~new("jabberwocky.txt", .File~new(sample)~parent)
+  self~assertSameList(output, .Stream~new(jabberwocky)~arrayIn, "jabberwocky.txt expected")
 
-  prgPath    = locateSamplePrg("synchronousConcurrency.rex")
-  currPath   = directory()
-  samplePath = filespec('path',prgPath)
-  myStem     = .array~new
-
-  Line.1  = "Jabberwocky"
-  Line.2  = ""
-  Line.3  = "'Twas brillig, and the slithy toves"
-  Line.4  = "Did gyre and gimble in the wabe:"
-  Line.5  = "All mimsy were the borogoves,"
-  Line.6  = "And the mome raths outgrabe."
-  Line.7  = ""
-  Line.8  = "'Beware the Jabberwock, my son!"
-  Line.9  = "The jaws that bite, the claws that catch!"
-  Line.10 = "Beware the Jubjub bird, and shun"
-  Line.11 = "The frumious Bandersnatch!'"
-  Line.12 = ""
-  Line.13 = "He took his vorpal sword in hand:"
-  Line.14 = "Long time the manxome foe he sought --"
-  Line.15 = "So rested he by the Tumtum tree,"
-  Line.16 = "And stood a while in thought."
-  Line.17 = ""
-  Line.18 = "And, as in uffish thought he stood,"
-  Line.19 = "The Jabberwock, with eyes of flame,"
-  Line.20 = "Came whiffling through the tulgey wood,"
-  Line.21 = "And burbled as it came!"
-  Line.22 = ""
-  Line.23 = "One two! One two! And through and through"
-  Line.24 = "The vorpal blade went snicker-snack!"
-  Line.25 = "He left it dead, and with its head"
-  Line.26 = "He went galumphing back."
-  Line.27 = ""
-  Line.28 = "'And hast thou slain the Jabberwock?"
-  Line.29 = "Come to my arms, my beamish boy!"
-  Line.30 = "Oh frabjous day! Callooh! Callay!'"
-  Line.31 = "He chortled in his joy."
-  Line.32 = ""
-  Line.33 = "'Twas brillig, and the slithy toves"
-  Line.34 = "Did gyre and gimble in the wabe:"
-  Line.35 = "All mimsy were the borogoves,"
-  Line.36 = "And the mome raths outgrabe."
-  Line.37 = ""
-  Line.38 = "Lewis Carroll"
-  Line.0  = 38
-
-  -- Assert that the sample was located and that it exists.
-  self~assertNotNull(prgPath)
-  self~assertTrue(SysFileExists(prgPath))
-
-  -- We need to move to where the sample is
-  -- Execute the test
-  -- Then move back to where we were before and check the return value
-  address '' 'cd' samplePath
-  res = execRexxPrg(prgPath, myStem.)
-  address '' 'cd' currPath
-  self~assertSame(0, res)
-
-  DO i= 1 TO Line.0
-    self~assertEquals(Line.i,myStem.i)
-  END i
-
-  DO i= 1 TO myStem.0
-    self~assertEquals(Line.i,myStem.i)
-  END i
 
 ::options all syntax

@@ -64,7 +64,7 @@ else
   output = .Array~new
   error = .Array~new
   self~assertRc(0, execRexxPrg(sample, output, error))
-  self~assertRc(0, error~items, "unexpected error output" output~toString)
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
   self~assertTrue(output~items >= 8, "at least 8 lines of output expected; found" output~items)
   -- the last line is expected to end with "-i", the first item of the sorted array
   last = output[output~last]

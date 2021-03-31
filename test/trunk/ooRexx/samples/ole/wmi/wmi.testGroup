@@ -65,7 +65,7 @@ else
   output = .Array~new
   error = .Array~new
   self~assertRc(0, execRexxPrg(sample, output, error))
-  self~assertRc(0, error~items, "unexpected error output" output~toString)
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
   self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
   -- the last line is expected to start with "Status:" ("Status: OK")
   last = output[output~last]
@@ -77,7 +77,7 @@ else
   output = .Array~new
   error = .Array~new
   self~assertRc(0, execRexxPrg(sample, output, error))
-  self~assertRc(0, error~items, "unexpected error output" output~toString)
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
   self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
   -- the last line is expected to always be "OS type: WINNT"
   last = output[output~last]
@@ -90,7 +90,7 @@ else
   output = .Array~new
   error = .Array~new
   self~assertRc(0, execRexxPrg(sample, output, error))
-  self~assertRc(0, error~items, "unexpected error output" output~toString)
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
   self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
   -- the last is line expected to have a number as its first word, e. g. "5832 rexx.exe"
   last = output[output~last]
@@ -102,7 +102,7 @@ else
   output = .Array~new
   error = .Array~new
   self~assertRc(0, execRexxPrg(sample, output, error, "Q"))
-  self~assertRc(0, error~items, "unexpected error output" output~toString)
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
   self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
   -- the last but fifth line expected to be like "[310] This service .."
   last = output[output~last - 5]
