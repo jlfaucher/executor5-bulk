@@ -65,10 +65,10 @@ else
 
 ::method "test_synchronousConcurrency.rex"
 
-  prgPath = locateSamplePrg("synchronousConcurrency.rex")
+  prgPath    = locateSamplePrg("synchronousConcurrency.rex")
   currPath   = directory()
   samplePath = filespec('path',prgPath)
-  myStem = .array~new
+  myStem     = .array~new
 
   Line.1  = "Jabberwocky"
   Line.2  = ""
@@ -112,14 +112,15 @@ else
 
   -- Assert that the sample was located and that it exists.
   self~assertNotNull(prgPath)
-  self~assertNotSame("", .stream~new(prgPath)~query("EXISTS"))
+  self~assertTrue(SysFileExists(prgPath))
 
   -- We need to move to where the sample is
   -- Execute the test
-  -- Then move back to where we were before
+  -- Then move back to where we were before and check the return value
   address '' 'cd' samplePath
   res = execRexxPrg(prgPath, myStem.)
   address '' 'cd' currPath
+  self~assertSame(0, res)
 
   DO i= 1 TO Line.0
     self~assertEquals(Line.i,myStem.i)
