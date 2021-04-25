@@ -1677,12 +1677,12 @@ if \s~open("read")~startsWith("READY") then
 </imageobject>
 </mediaobject>
 
-<para>Maps a UNICODE character string to an ASCII character string.  The new character
+<para>Maps a Unicode character string to an ASCII character string.  The new character
 string and additional information is returned in the outstem.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">string</emphasis></term>
-<listitem><para>A string containing the UNICODE characters to be mapped.
+<listitem><para>A string containing the Unicode characters to be mapped.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">codepage</emphasis></term>
 <listitem><para>Specifies the code page used to perform the conversion.
@@ -1700,18 +1700,18 @@ specify one of the following values:</para>
 <listitem><para>OEM code page.
 </para></listitem></varlistentry>
 <varlistentry><term>SYMBOL</term>
-<listitem><para>Windows 2000: symbol code page.
+<listitem><para>symbol code page.
 </para></listitem></varlistentry>
 <varlistentry><term>THREAD_ACP
 <indexterm><primary>thread</primary></indexterm>
 </term>
-<listitem><para>Windows 2000: current thread's ANSI code page.
+<listitem><para>current thread's ANSI code page.
 </para></listitem></varlistentry>
 <varlistentry><term>UTF7</term>
-<listitem><para>Windows NT 4.0 and Windows 2000: translate using UTF-7.
+<listitem><para>translate using UTF-7.
 </para></listitem></varlistentry>
 <varlistentry><term>UTF8</term>
-<listitem><para>Windows NT 4.0 and Windows 2000: translate using UTF-8. When
+<listitem><para>translate using UTF-8. When
 this is set, <computeroutput>mappingflags</computeroutput> must be set.
 </para></listitem></varlistentry>
 </variablelist>
@@ -3933,11 +3933,11 @@ say "current window rectangle is ("top"," left") ("bottom"," right")"
 </imageobject>
 </mediaobject>
 
-<para>Maps a character string to a UNICODE string.</para>
+<para>Maps a character string to a Unicode string.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">string</emphasis></term>
-<listitem><para>A string containing the UNICODE characters to be mapped.
+<listitem><para>A string that should be mapped to Unicode characters.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">codepage</emphasis></term>
 <listitem><para>Specifies the code page used to perform the conversion.
@@ -3954,18 +3954,18 @@ specify one of the following values:</para>
 <listitem><para>OEM code page.
 </para></listitem></varlistentry>
 <varlistentry><term>SYMBOL</term>
-<listitem><para>Windows 2000: symbol code page.
+<listitem><para>symbol code page.
 </para></listitem></varlistentry>
 <varlistentry><term>THREAD_ACP
 <indexterm><primary>thread</primary></indexterm>
 </term>
-<listitem><para>Windows 2000: current thread's ANSI code page.
+<listitem><para>current thread's ANSI code page.
 </para></listitem></varlistentry>
 <varlistentry><term>UTF7</term>
-<listitem><para>Windows NT 4.0 and Windows 2000: translate using UTF-7.
+<listitem><para>translate using UTF-7.
 </para></listitem></varlistentry>
 <varlistentry><term>UTF8</term>
-<listitem><para>Windows NT 4.0 and Windows 2000: translate using UTF-8. When
+<listitem><para>translate using UTF-8. When
 this is set, <computeroutput>translateflags</computeroutput> must be set.
 </para></listitem></varlistentry>
 </variablelist>
@@ -4207,7 +4207,7 @@ only)</title>
 </imageobject>
 </mediaobject>
 
-<para>Decrypts a given file (Windows 2000 only).</para>
+<para>Decrypts a given file.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
@@ -4250,7 +4250,7 @@ only)</title>
 </imageobject>
 </mediaobject>
 
-<para>Encrypts a given file (Windows 2000 only).</para>
+<para>Encrypts a given file.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
@@ -4350,11 +4350,11 @@ only)</title>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">description</emphasis></term>
-<listitem><para>A string identifying the printer.  On Windows 2000 or later this
-  string can be just the printer name.  For earlier versions of Windows, the
-  string must have the form "Printername,Drivername,Portname".
+<listitem><para>A string identifying the printer.
+  This can be either just the printer name, or be of
+  the form "Printername,Drivername,Portname".
 <note><title>Note</title><para>
-  For Windows 2000 or later either form of the description string is accepted.
+  Either form of the description string is accepted.
   However, using just the printer name is the preferred method.  Using the
   "Printername,Drivername,Portname" form will invoke an outdated Windows API
   that Microsoft has deprecated.
@@ -4423,7 +4423,6 @@ if SysWinGetPrinters(list.) == 0 then do
       numberOK = .true
 
       if i > 0 then do
-        /* Assumes we are on Windows 2000 or later. */
         parse var list.i pname",".
         ret = SysWinSetDefaultPrinter(pname)
         if ret <> 0 then do
