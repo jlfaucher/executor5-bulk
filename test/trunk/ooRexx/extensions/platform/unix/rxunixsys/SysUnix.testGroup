@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -246,33 +246,59 @@ return testResult
     self~assertEquals("NUM", SysAccess(file, 2)~datatype())
     self~assertEquals("NUM", SysAccess(file, 4)~datatype())
 
-::method 'testSysWordexp_1'
-    parse source . . file
-    self~assertTrue(SysWordexp('~/*')~isa(.array))
-
-::method 'testSysSetxattr'
-    parse source . . file
-    if rxfuncquery("SysSetxattr") then -- may be unavailable on some systems
+::method test_wordexp
+    -- wordexp is expected to be available at least on Linux and Darwin
+    if .Rexxinfo~platform == "LINUX" | .Rexxinfo~platform == "DARWIN" then
+      self~assertSame(0, rxfuncquery("SysWordExp"), "wordexp should be available on" .Rexxinfo~platform)
+    if rxfuncquery("SysWordExp") then
       return
-    self~assertEquals("NUM", SysSetxattr(file, 'user.mime_type', 'rexx/exec')~datatype())
 
-::method 'testSysGetxattr'
-    parse source . . file
-    if rxfuncquery("SysGetxattr") then -- may be unavailable on some systems
-      return
-    self~assertNotEquals("", SysGetxattr(file, 'user.mime_type'))
+    parse source . this .
+    self~assertSameList(.File~new(this)~parentFile~list, SysWordExp("*"))
 
-::method 'testSysListxattr'
-    parse source . . file
-    if rxfuncquery("SysListxattr") then -- may be unavailable on some systems
+::method test_xattr
+    -- xattr functions are available on Linux and Darwin only
+    if .Rexxinfo~platform == "LINUX" | .Rexxinfo~platform == "DARWIN" then
+      self~assertSame(0, rxfuncquery("SysGetXattr"), "xattr functions should be available on" .Rexxinfo~platform)
+    if rxfuncquery("SysGetXattr") then
       return
-    self~assertTrue(SysListxattr(file)~isa(.array))
 
-::method 'testSysRemovexattr'
-    parse source . . file
-    if rxfuncquery("SysRemovexattr") then -- may be unavailable on some systems
-      return
-    self~assertEquals("NUM", SysRemovexattr(file, 'user.mime_type')~datatype())
+    file = .TemporaryTestFile~new(, "test_xattr")~create("test_xattr")
+    f = file~string
+
+    -- no extended attributes yet
+    list = SysListXattr(f)
+    self~assertIsA(list, .Array)
+    self~assertSame(0, list~items)
+    self~assertSame("", SysGetXattr(f, "user.author"))
+    self~assertSame(-1, SysRemoveXattr(f, "user.author"))
+
+    -- add extended attributes
+    self~assertSame(0, SysSetXattr(f, "user.author", "ooRexx"))
+    self~assertSame(0, SysSetXattr(f, "user.mime_type", "text/x-oorexx"))
+
+    -- list extended attributes
+    list = SysListXattr(f)
+    self~assertIsA(list, .Array)
+    self~assertSame(2, list~items)
+    self~assertSameList(("user.author", "user.mime_type"), list)
+    self~assertSame("text/x-oorexx", SysGetXattr(f, "user.mime_type"))
+    self~assertSame("ooRexx", SysGetXattr(f, "user.author"))
+    self~assertSame("", SysGetXattr(f, "author")) -- does not exist
+
+    -- remove extended attributes
+    self~assertSame(-1, SysRemoveXattr(f, "author")) -- does not exist
+    self~assertSame(0, SysRemoveXattr(f, "user.author"))
+    list = SysListXattr(f)
+    self~assertSame(1, list~items)
+    self~assertSame("user.mime_type", list[1])
+    self~assertSame("text/x-oorexx", SysGetXattr(f, "user.mime_type"))
+
+    self~assertSame(-1, SysRemoveXattr(f, "user.author")) -- already removed
+    self~assertSame(0, SysRemoveXattr(f, "user.mime_type"))
+    self~assertSame(0, SysListXattr(f)~items)
+
+    file~delete
 
 ::method test_SysGetservbyname
   -- we assume the following line exists in /etc/services
@@ -323,4 +349,4 @@ return testResult
   return .String~alnum || "./"
 
 
-::options novalue syntax
+::options all syntax
