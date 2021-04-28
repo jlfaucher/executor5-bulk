@@ -1446,7 +1446,16 @@ return str
 ::method formatObjectInfo private
   use arg o, hint = ""
 
-  return hint || ppp(o~string) -- ", identityHash=" || o~identityHash
+  if o~isA(.Array) then do
+    string = o~makeString(, ", ")
+    if string~length < 200 then
+      string = "an Array (" || ppp(string) || ")"
+    else
+      string = "an Array with" o~items "items"
+  end
+  else
+    string = ppp(o~string)
+  return hint || string
 
 
 ::method exclusiveOr private

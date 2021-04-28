@@ -178,6 +178,8 @@ return testResult
 
 ::method test_sysstat_inode
   -- we expect inodes to be unique positive whole numbers
+  -- node numbers may be very large like 12889391383 seen on Darwin
+  numeric digits 18
   unique = .Set~new
   do name over self~names
     inode = SysStat(name, "i")
@@ -252,9 +254,8 @@ return testResult
       self~assertSame(0, rxfuncquery("SysWordExp"), "wordexp should be available on" .Rexxinfo~platform)
     if rxfuncquery("SysWordExp") then
       return
-
-    parse source . this .
-    self~assertSameList(.File~new(this)~parentFile~list, SysWordExp("*"))
+    -- expand all files in current directory
+    self~assertEquivalentList(.File~new(".")~list, SysWordExp("*"))
 
 ::method test_xattr
     -- xattr functions are available on Linux and Darwin only
@@ -266,10 +267,11 @@ return testResult
     file = .TemporaryTestFile~new(, "test_xattr")~create("test_xattr")
     f = file~string
 
-    -- no extended attributes yet
-    list = SysListXattr(f)
-    self~assertIsA(list, .Array)
-    self~assertSame(0, list~items)
+    -- our test file may have been created with some initial extended
+    -- attributes, e.g. "security.selinux" on Fedora
+    -- we ignore them
+    initial = SysListXattr(f)
+    self~assertIsA(initial, .Array)
     self~assertSame("", SysGetXattr(f, "user.author"))
     self~assertSame(-1, SysRemoveXattr(f, "user.author"))
 
@@ -277,11 +279,11 @@ return testResult
     self~assertSame(0, SysSetXattr(f, "user.author", "ooRexx"))
     self~assertSame(0, SysSetXattr(f, "user.mime_type", "text/x-oorexx"))
 
-    -- list extended attributes
-    list = SysListXattr(f)
+    -- list/get extended attributes
+    list = SysListXattr(f)~difference(initial) -- ignore initial attributes
     self~assertIsA(list, .Array)
     self~assertSame(2, list~items)
-    self~assertSameList(("user.author", "user.mime_type"), list)
+    self~assertEquivalentList(("user.author", "user.mime_type"), list)
     self~assertSame("text/x-oorexx", SysGetXattr(f, "user.mime_type"))
     self~assertSame("ooRexx", SysGetXattr(f, "user.author"))
     self~assertSame("", SysGetXattr(f, "author")) -- does not exist
@@ -289,14 +291,14 @@ return testResult
     -- remove extended attributes
     self~assertSame(-1, SysRemoveXattr(f, "author")) -- does not exist
     self~assertSame(0, SysRemoveXattr(f, "user.author"))
-    list = SysListXattr(f)
+    list = SysListXattr(f)~difference(initial) -- ignore initial attributes
     self~assertSame(1, list~items)
     self~assertSame("user.mime_type", list[1])
     self~assertSame("text/x-oorexx", SysGetXattr(f, "user.mime_type"))
 
     self~assertSame(-1, SysRemoveXattr(f, "user.author")) -- already removed
     self~assertSame(0, SysRemoveXattr(f, "user.mime_type"))
-    self~assertSame(0, SysListXattr(f)~items)
+    self~assertSame(0, SysListXattr(f)~difference(initial)~items)
 
     file~delete
 
