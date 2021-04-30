@@ -254,8 +254,15 @@ return testResult
       self~assertSame(0, rxfuncquery("SysWordExp"), "wordexp should be available on" .Rexxinfo~platform)
     if rxfuncquery("SysWordExp") then
       return
+
     -- expand all files in current directory
-    self~assertEquivalentList(.File~new(".")~list, SysWordExp("*"))
+    -- note that wordexp() metachars won't match a leading period
+    current = .File~new(".")~list
+    do i = 1 to current~items
+      if current[i]~startsWith(".") then
+        current~remove(i)
+    end
+    self~assertEquivalentList(current, SysWordExp("*"))
 
 ::method test_xattr
     -- xattr functions are available on Linux and Darwin only
