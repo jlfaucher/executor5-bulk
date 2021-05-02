@@ -5,12 +5,12 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -39,43 +39,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.RxMath.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  -- The test cases in this test group all need the RxMath functions loaded.
-  -- Since this only needs to be done once, we create an ooTestSuite subclass
-  -- with a setUp() and a tearDown() method.  These methods will only be called
-  -- once, one time before any of the test cases are executed and one time after
-  -- all the test cases have finished.
-  --
-  -- Then, to use the test suite subclass, we add both the test case class and
-  -- the test suite to the test group using the appropriately named
-  -- addWithSuite() method.
-
-  group~addWithSuite(.RxMath.testGroup, .RxMathSuite)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--------------------------------------------------------------------------------------------
 ::requires 'rxmath' LIBRARY
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
--------------------------------------------------------------------------------------------
-::class 'RxMathSuite' subclass ooTestSuite public
 
--------------------------------------------------------------------------------------------
 ::class "RxMath.testGroup" subclass ooTestCase public
--------------------------------------------------------------------------------------------
-::attribute digits
--------------------------------------------------------------------------------------------
-::method 'setUp'
-    self~digits = digits()
 
-::method 'tearDown'
-    numeric digits self~digits
--------------------------------------------------------------------------------------------
 ::method 'test_RxCalcSqrtA'
 -- This set of unitTests is brought to you by the Square Root function
 -- If precision works for one function, it'll work for all them
@@ -101,16 +77,11 @@ return testResult
     end
 
 -- Test that default numeric digits' value is used if expression is not specified
-    if self~digits == 9 then
-        expected = sqrt_expected[self~digits]
-    else
-        expected = sqrt_expected[16]
-    self~assertSame(expected, RxCalcSqrt(3))
+    self~assertSame(sqrt_expected[digits()], RxCalcSqrt(3))
 
 -- Test that manually set numeric digits' value is used if expression is not specified
     numeric digits 5
-    expected = sqrt_expected[digits()]
-    self~assertSame(expected, RxCalcSqrt(3))
+    self~assertSame(sqrt_expected[5], RxCalcSqrt(3))
 
 ::method 'test_RxCalcSqrtB'
 -- Test syntax on precision value of 0
@@ -1762,17 +1733,60 @@ return testResult
     self~expectSyntax('40.1')
     RxCalcArcTan(.1526,,'e')
 
--- This set of unitTest is brought to you by ERROR
 
--- On Linux matherr is not getting linked in properly, so the error output is
--- different. I consider this a minor bug, that the rxmath functions do not
--- behave exactly the same cross platform.  But, for the 3.2.0 version of the
--- ooRexxUnit tests, fix this so that the tests pass on Linux.
-::method 'testRxCalcArcSinError'
-    self~assertSame('nan', RxCalcArcSin(25))
+-- nan and infinity tests
 
-::method 'testRxCalcArcCosError'
-    self~assertSame('nan', RxCalcArcCos(25))
+-- calling any of the math functions with a "nan" argument is valid, but will
+-- always result in a "nan" result
+::method test_nan_argument
+    do function over "sqrt", "exp", "log", "log10", "sin", "cos", "tan", "cotan", "arcsin", "arccos", "arctan", "sinh", "cosh", "tanh"
+      call ("rxcalc" || function) "nan"
+      self~assertSame("nan", result)
+    end
+    self~assertSame("nan", RxCalcPower(2, "nan"))
+    self~assertSame("nan", RxCalcPower("nan", 2))
+    self~assertSame("nan", RxCalcPower("nan", "nan"))
+
+::method test_nan
+    self~assertSame("nan", RxCalcSqrt(-1))
+    self~assertSame("nan", RxCalcArcSin(1.0001))
+    self~assertSame("nan", RxCalcArcCos(1.0001))
+
+::method test_infinity_argument
+    self~assertSame("nan", RxCalcSqrt("-infinity"))
+    self~assertSame("+infinity", RxCalcSqrt("+infinity"))
+
+    self~assertSame(0, RxCalcExp("-infinity"))
+    self~assertSame("+infinity", RxCalcExp("+infinity"))
+
+    self~assertSame("+infinity", RxCalcPower("+infinity", 2))
+    self~assertSame("+infinity", RxCalcPower("-infinity", 2))
+    self~assertSame("-infinity", RxCalcPower("-infinity", 3))
+    self~assertSame("+infinity", RxCalcPower(2, "+infinity"))
+    self~assertSame(0, RxCalcPower(2, "-infinity"))
+
+    self~assertSame(-90, RxCalcArcTan("-infinity"))
+    self~assertSame(90, RxCalcArcTan("+infinity"))
+
+::method test_infinity
+    self~assertSame("+infinity", RxCalcExp(709.8), "exp(709.8) should be +inf:" RxCalcExp(709.8))
+
+    -- maximum double is ~1.79769e308; log(1.79769e308) is ~709.78
+    self~assertTrue(RxCalcExp(709.7) > 1e308, "exp(709.7) should work:" RxCalcExp(709.7))
+    self~assertSame("+infinity", RxCalcExp(709.8), "exp(709.8) should be +inf:" RxCalcExp(709.8))
+
+    -- 2^1023 < maximum double < 2^1024
+    self~assertTrue(RxCalcPower(2, 1023) > 8e307, "power(2, 1023) should work:" RxCalcPower(2, 1023))
+    self~assertSame("+infinity", RxCalcPower(2, 1024), "power(2, 1024) should be +inf:" RxCalcPower(2, 1024))
+
+    -- (-2)^1023 > minimum double > (-2)^1025
+    self~assertTrue(RxCalcPower(-2, 1023) < -1e307, "power(-2, 1023) should work:" RxCalcPower(-2, 1023))
+    self~assertSame("+infinity", RxCalcPower(-2, 1024), "power(-2, 1024) should be +inf:" RxCalcPower(-2, 1024))
+    self~assertSame("-infinity", RxCalcPower(-2, 1025), "power(-2, 1025) should be -inf:" RxCalcPower(-2, 1025))
+
+    -- a bit arbitrary, but well ..
+    self~assertSame("+infinity", RxCalcTan(90))
+    self~assertSame("-infinity", RxCalcTan(270))
 
 
-::options novalue error
+::options all syntax

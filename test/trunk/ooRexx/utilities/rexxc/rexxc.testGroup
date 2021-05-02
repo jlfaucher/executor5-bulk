@@ -76,7 +76,9 @@ return testResult
   address "" "rexxc" self~testSourceNotExist with output stem s. error stem e.
   -- Error 3.901:  Failure during initialization: Program .. was not found
   self~assertRc(-3, rc)
-  self~assertTrue(s.0 > 0, "'rexxc -s' is expected to produce a few lines of output")
+  -- (only) on SunOS/Solaris no redirected output is captured - reason unknown
+  -- rexx -e "address '' 'rexxc nonexisting' with output stem o. error stem e.; say o.0 e.0"
+  self~assertTrue(s.0 > 0, "tracker bug #n/a: on SunOS/Solaris no output is captured")
   self~assertTrue(e.0 > 0, "'rexxc" self~testSourceNotExist"' is expected to produce some lines of syntax error output")
 
 ::method test_rexxc_three_args
@@ -90,7 +92,7 @@ return testResult
   address "" "rexxc" self~q(source~fullName) with output stem s. error stem e.
   -- Error 13.1:  Incorrect character in program "@" ('40'X)
   self~assertRc(-13, rc)
-  self~assertTrue(s.0 > 0, "rexxc is expected to produce a few lines of output")
+  self~assertTrue(s.0 > 0, "tracker bug #n/a: on SunOS/Solaris no output is captured")
   self~assertTrue(e.0 > 0, "'/**/@' is expected to produce some lines of syntax error output")
 
 ::method test_rexxc_one_arg
@@ -99,7 +101,7 @@ return testResult
     source~createFromResource(resource)
     address "" "rexxc" self~q(source~fullName) with output stem s. error stem e.
     self~assertRc(0, rc, "'"resource"' Rexx code expected to compile with rc 0")
-    self~assertTrue(s.0 > 0, "rexxc" self~testSource "is expected to produce a few lines of output")
+    self~assertTrue(s.0 > 0, "tracker bug #n/a: on SunOS/Solaris no output is captured")
     self~assertTrue(e.0 = 0, "rexxc" self~testSource "is expected to produce no error output")
   end
 
@@ -124,7 +126,7 @@ return testResult
     source~createFromResource(resource)
     address "" "rexxc" self~q(source~fullName) self~q(compiled~absolutePath) with output using (o) error using (e)
     self~assertRc(0, rc, "'"resource"' Rexx code expected to compile with rc 0")
-    self~assertTrue(o~items > 0, "a few lines of output expected from rexxc '"resource"'")
+    self~assertTrue(o~items > 0, "tracker bug #n/a: on SunOS/Solaris no output is captured")
     self~assertSame("", e~toString, "unexpected error output from rexxc '"resource"'")
 
     -- compiled code should have been generated; check shebang and header
@@ -157,4 +159,4 @@ return 99
 ::END
 
 
-::options novalue error
+::options all syntax error condition

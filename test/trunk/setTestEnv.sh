@@ -1,12 +1,12 @@
 #! /bin/sh
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
 #/* distribution. A copy is also available at the following address:           */
-#/* http://www.oorexx.org/license.html                                         */
+#/* https://www.oorexx.org/license.html                                        */
 #/*                                                                            */
 #/* Redistribution and use in source and binary forms, with or                 */
 #/* without modification, are permitted provided that the following            */
@@ -36,33 +36,6 @@
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
 
-
-UNAME_SYSTEM=`(uname -s) 2>/dev/null`  || UNAME_SYSTEM=unknown
-
-case "${UNAME_SYSTEM}" in
-    AIX)
-      echo "Setting env for AIX"
-      frameworkPath=`pwd`:`pwd`/framework:
-      export PATH=$frameworkPath$PATH
-      export LIBPATH=`pwd`/bin/AIX:$LIBPATH
-      exit ;;
-
-    Linux)
-      echo "Setting env for Linux"
-      frameworkPath=`pwd`:`pwd`/framework:
-      export PATH=$frameworkPath$PATH
-      export LD_LIBRARY_PATH=`pwd`/bin/LINUX:$LD_LIBRARY_PATH
-      ;;
-
-    Darwin)
-      echo "Setting env for MacOS"
-      frameworkPath=`pwd`:`pwd`/framework:
-      export PATH=$frameworkPath$PATH
-      export LD_LIBRARY_PATH=`pwd`/bin/DARWIN:$LD_LIBRARY_PATH
-      ;;
-
-    *)
-    echo "Unsupported OS"
-    ;;
-
-esac
+echo "Setting env"
+frameworkPath=`pwd`:`pwd`/framework:
+export PATH=$frameworkPath$PATH
