@@ -1749,6 +1749,9 @@ else
 
 ::method test_nan
     self~assertSame("nan", RxCalcSqrt(-1))
+    self~assertSame("nan", RxCalcLog(-0.1))
+    self~assertSame("nan", RxCalcLog10(-0.1))
+    self~assertSame("nan", RxCalcPower(-2, 5.1))
     self~assertSame("nan", RxCalcArcSin(1.0001))
     self~assertSame("nan", RxCalcArcCos(1.0001))
 
@@ -1758,12 +1761,16 @@ else
 
     self~assertSame(0, RxCalcExp("-infinity"))
     self~assertSame("+infinity", RxCalcExp("+infinity"))
+    self~assertSame(0, RxCalcExp("-infinity"))
 
     self~assertSame("+infinity", RxCalcPower("+infinity", 2))
     self~assertSame("+infinity", RxCalcPower("-infinity", 2))
     self~assertSame("-infinity", RxCalcPower("-infinity", 3))
     self~assertSame("+infinity", RxCalcPower(2, "+infinity"))
     self~assertSame(0, RxCalcPower(2, "-infinity"))
+
+    self~assertSame("+infinity", RxCalcLog("+infinity"))
+    self~assertSame("+infinity", RxCalcLog10("+infinity"))
 
     self~assertSame(-90, RxCalcArcTan("-infinity"))
     self~assertSame(90, RxCalcArcTan("+infinity"))
@@ -1774,6 +1781,9 @@ else
     -- maximum double is ~1.79769e308; log(1.79769e308) is ~709.78
     self~assertTrue(RxCalcExp(709.7) > 1e308, "exp(709.7) should work:" RxCalcExp(709.7))
     self~assertSame("+infinity", RxCalcExp(709.8), "exp(709.8) should be +inf:" RxCalcExp(709.8))
+
+    self~assertSame("-infinity", RxCalcLog(0))
+    self~assertSame("-infinity", RxCalcLog10(0))
 
     -- 2^1023 < maximum double < 2^1024
     self~assertTrue(RxCalcPower(2, 1023) > 8e307, "power(2, 1023) should work:" RxCalcPower(2, 1023))
