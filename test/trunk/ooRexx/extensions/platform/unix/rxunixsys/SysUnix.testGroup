@@ -162,28 +162,29 @@ return testResult
 ::method test_sysstat_device
   -- we expect a device ID to be a whole number
   -- (on Darwin Catalina 19.3.0 /dev/null device ID is returned as -783243024)
+  numeric digits 20
 
   -- the file and the directory are assumed to reside on the same device
   self~assertSame(SysStat(self~file, "D"), SysStat(self~directory, "DEV"), "file and directory device IDs expected to be the same")
 
   -- /dev/null is a device of its own
   id = SysStat(self~characterDevice, "d")
-  self~assertTrue(id~dataType("Internal whole"), self~characterDevice "device ID should be a whole number; found" id)
+  self~assertTrue(id~dataType("whole"), self~characterDevice "device ID should be a whole number; found" id)
 
   -- st_rdev, device ID (if special file)
   do name over self~names
     id = SysStat(name, "r")
-    self~assertTrue(id~dataType("Internal whole"), name "rdev should be a whole number; found" id)
+    self~assertTrue(id~dataType("whole"), name "rdev should be a whole number; found" id)
   end
 
 ::method test_sysstat_inode
   -- we expect inodes to be unique positive whole numbers
-  -- node numbers may be very large like 12889391383 seen on Darwin
-  numeric digits 18
+  -- inode numbers may be very large like 12889391383 seen on Darwin
+  numeric digits 20
   unique = .Set~new
   do name over self~names
     inode = SysStat(name, "i")
-    self~assertTrue(inode~dataType("Internal whole"), name "inode should be a whole number; found" inode)
+    self~assertTrue(inode~dataType("whole"), name "inode should be a whole number; found" inode)
     self~assertTrue(inode > 0, name "inode should be positive; found" inode)
     self~assertFalse(unique~hasItem(inode), name "inode should be unique; found" inode)
     unique~put(inode)
@@ -206,16 +207,17 @@ return testResult
   -- we expect the number of links to be a non-negative whole number
   do name over self~names
     links = SysStat(name, "NUMBERLINKS")
-    self~assertTrue(links~dataType("Internal whole"), name "links should be a whole number; found" links)
+    self~assertTrue(links~dataType("whole"), name "links should be a whole number; found" links)
     self~assertTrue(links >= 0, name "links should not be negative; found" links)
   end
 
 ::method test_sysstat_ids
   -- we expect owner ID and group ID to be non-negative whole numbers
+  numeric digits 20
   do name over self~names
     do option over "UID", "GID"
       id = SysStat(name, option)
-      self~assertTrue(id~dataType("Internal whole"), name "ID should be a whole number; found" id)
+      self~assertTrue(id~dataType("whole"), name "ID should be a whole number; found" id)
       self~assertTrue(id >= 0, name "ID should not be negative; found" id)
     end
   end
@@ -271,7 +273,9 @@ return testResult
     if rxfuncquery("SysGetXattr") then
       return
 
-    file = .TemporaryTestFile~new(, "test_xattr")~create("test_xattr")
+    -- we create a temporary file within our test tree, avoiding /tmp as it may
+    -- be a tmpfs files system not supporting user.* extended attributes
+    file = .TemporaryTestFile~new(self, "test_xattr")~create("test_xattr")
     f = file~string
 
     -- our test file may have been created with some initial extended
@@ -292,7 +296,7 @@ return testResult
     self~assertSame(2, list~items)
     self~assertEquivalentList(("user.author", "user.mime_type"), list)
     self~assertSame("text/x-oorexx", SysGetXattr(f, "user.mime_type"))
-    self~assertSame("ooRexx", SysGetXattr(f, "user.author"))
+    self~assertSame("ooRexx", SysGetXattr(f, "user.author"), "may fail on tmpfs:" f)
     self~assertSame("", SysGetXattr(f, "author")) -- does not exist
 
     -- remove extended attributes
