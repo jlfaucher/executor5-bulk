@@ -49,7 +49,7 @@
   Built from a template provided by Rony G. Flatscher 2018-02-25
   Amended based on month.testgroup for more complete testing.
 
-  Where possible the assertions are done both ways to make sure we 
+  Where possible the assertions are done both ways to make sure we
   do not get to much or to little output.
 
 */
@@ -142,7 +142,7 @@ return testResult
   inArr=('Hello World')
 
   prgPathName = locateSamplePrg("sfclient.rex")
- 
+
   SELECT CASE .ooRexxUnit.OSName
     when 'WINDOWS' then address command 'rexx' '"'prgPathName'"' with input using (inArr) output stem myStem.
     otherwise           address ''      'rexx' prgPathName with input using (inArr) output stem myStem.
@@ -190,7 +190,7 @@ return testResult
   clientOutputStem2.  = .stem~new
 
   currPath   = directory()
-  samplePath = filespec('path',prgPathName)
+  samplePath = filespec('location',prgPathName)-- on Windows we need the drive
 
   -- We need to move to where the sample is
   SELECT CASE .ooRexxUnit.OSName
