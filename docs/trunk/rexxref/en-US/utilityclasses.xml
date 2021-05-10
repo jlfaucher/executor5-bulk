@@ -9046,6 +9046,143 @@ been previously created.  The method return value is the name of current queue b
 </section>
 
 
+<section id="clsSingleton" revisionflag="added"><title>&added50;Singleton Class (Metaclass)</title>
+<indexterm><primary>Singleton class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Singleton class</secondary></indexterm>
+<indexterm><primary>metaclass</primary>
+<secondary>Singleton class</secondary></indexterm>
+
+<para>The <classname>Singleton</classname> class is a <emphasis role="italic">metaclass</emphasis> (a subclass
+of the ooRexx metaclass <classname>Class</classname>) which can be used for any ooRexx class, if the programmer
+wishes only a single instance of a class to be created. In this case the class directive needs to denote
+<classname>Singleton</classname>  in its <emphasis role="italic">METACLASS</emphasis> option.
+</para>
+<para>
+This class is defined as a MXIN class.
+</para>
+
+
+<!-- rgf, manually inserted, not generated -->
+<!-- $GENERATED-20210509-START rexxrefClassTable(Singleton) -->
+<table id="ooRexxSingletonClass" frame="all" pgwide="1">
+<title>Singleton Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Singleton</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthSingletonNew" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20210509-END rexxrefClassTable(Singleton) -->
+
+<section id="mthSingletonNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Singleton class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Singleton class</tertiary></indexterm>
+
+<para>This metaclass makes sure that only a <emphasis role="italic">single
+instance</emphasis> of a class can be created, a  <emphasis role="bold">singleton</emphasis>.
+After a singleton got created each time a <methodname>NEW</methodname> message gets sent to the class will cause that
+singleton to be returned. The metaclass <classname>Singleton</classname>
+makes also sure that the singleton object will return itself upon receiving the
+<methodname>COPY</methodname> message by defining a proper <methodname>COPY</methodname> method
+for the singleton.</para>
+
+</section>
+
+<!-- TODO: programming sample with output! -->
+<example>
+<title>Employing the Singleton (meta)class</title>
+<para>The following program defines a class <classname>TEST</classname> which makes sure that each instance has a unique
+number in its instance attribute <methodname>nr</methodname>. The <classname>TESTSINGLETON</classname> subclass
+uses the <emphasis role="italic">METACLASS Singleton</emphasis> option to make sure that it only creates a single instance, a
+singleton. The program will loop over the classes <classname>TEST</classname> and <classname>TESTSINGLETON</classname>,
+creates three instances of each and displays the value of the instance attribute <methodname>nr</methodname> and the
+<methodname>identityHash</methodname> value of each instance, which uniquely identifies each each instance of a class (cf.
+the <methodname>MAKESTRING</methodname> definition).
+</para>
+
+<programlisting><![CDATA[
+#!/usr/bin/env rexx
+do clz over .test, .testSingleton   -- iterate over the two classes
+   rounds=3
+   say "creating" rounds "objects of type:" clz
+   do i=1 to rounds
+      say "   round #" i":" clz~new -- create new instance
+   end
+   say
+end
+
+/* ========================================================================= */
+/** This Test class counts the number of instances that get created for it.  */
+::class Test
+/* ------------- class method and class attribute definitions -------------- */
+::method init class  -- class constructor
+  expose counter
+  counter=0          -- make sure attribute is initialized to 0
+
+::attribute counter get private class  -- getter method that increases counter
+  expose counter     -- access attribute
+  counter+=1         -- increase counter by 1
+  return counter     -- return new counter value
+/* ------------- instance method and instance attribute definitions -------- */
+::attribute nr get   -- getter method
+
+::method init        -- constructor that sets the value of attribute nr
+  expose nr          -- expose attribute
+  nr=self~class~counter -- new instance: fetch new counter from class and save it
+
+::method makestring  -- a string representation of the object
+  expose nr          -- expose attribute
+                     -- return a string representation
+  return "a" self~class~id"[nr="nr",identityHash="self~identityHash"]"
+
+/* ========================================================================= */
+/** This class makes sure that only a single instance of it gets created by
+*   using Singleton as its metaclass.
+*/
+::class TestSingleton subclass Test metaclass Singleton
+]]></programlisting>
+</example>
+
+<para>Output of running the above program (the hash values may differ on each run):</para>
+
+<programlisting><![CDATA[
+creating 3 objects of type: The TEST class
+   round # 1: a TEST[nr=1,identityHash=-49085937]
+   round # 2: a TEST[nr=2,identityHash=-49089489]
+   round # 3: a TEST[nr=3,identityHash=-49093009]
+
+creating 3 objects of type: The TESTSINGLETON class
+   round # 1: a TESTSINGLETON[nr=1,identityHash=-49114993]
+   round # 2: a TESTSINGLETON[nr=1,identityHash=-49114993]
+   round # 3: a TESTSINGLETON[nr=1,identityHash=-49114993]
+]]></programlisting>
+
+<para>As can be seen from the output there are three distinct instances of the class <classname>TEST</classname>, however
+the three instances of the class <classname>TESTSINGLETON</classname> are identical (cf. the values of
+<methodname>nr</methodname> and <methodname>identityHash</methodname>).
+</para>
+</section>
+
+
+
 <section id="clsStackFrame"><title>StackFrame Class</title>
 <indexterm><primary>StackFrame class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -9361,6 +9498,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 </programlisting></para>
 </section>
 </section>
+
 
 
 <section id="clsStreamSupplier"><title>StreamSupplier Class</title>

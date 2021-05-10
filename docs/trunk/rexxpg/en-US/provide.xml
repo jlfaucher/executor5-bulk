@@ -182,6 +182,8 @@ classes.
 
         <listitem><para><xref linkend="clsSet" xrefstyle="template:Set" /><emphasis role="italic"> (inherit <xref linkend="clsMapCollection" xrefstyle="template:MapCollection" /> <xref linkend="clsSetCollection" xrefstyle="template:SetCollection" />)</emphasis></para></listitem>
 
+        <listitem><para><xref linkend="clsSingleton" xrefstyle="template:Singleton" /> &added50;</para></listitem>
+
         <listitem><para><xref linkend="clsStackFrame" xrefstyle="template:StackFrame" /></para></listitem>
 
         <listitem><para><xref linkend="clsStem" xrefstyle="template:Stem" /><emphasis role="italic"> (inherit <xref linkend="clsMapCollection" xrefstyle="template:MapCollection" />)</emphasis></para></listitem>
@@ -921,6 +923,17 @@ collection type for collections that constrain the <emphasis role="italic">index
 </para>
 </section>
 
+<section id="clsSingleton" revisionflag="added"><title>&added50; The Singleton Class (Metaclass)</title>
+<indexterm><primary>classes</primary>
+<secondary>Singleton class</secondary></indexterm>
+<para>The Singleton class allows one to restrict the number of instances that can be
+created from a class to a single instance, the <emphasis role="italic">singleton</emphasis>.
+</para>
+<para>The class Singleton
+        subclasses (specializes) <xref linkend="clsClass" xrefstyle="template:Class" />.
+</para>
+</section>
+
 <section id="clsStackFrame"><title>The StackFrame Class</title>
 <indexterm><primary>classes</primary>
 <secondary>StackFrame class</secondary></indexterm>
@@ -1145,7 +1158,7 @@ instances acquire methods from their own classes. Any method created for the Obj
 class is automatically made available to every other class in the hierarchy.</para>
 </section>
 
-<section id="clsClass"><title>The Class Class</title>
+<section id="clsClass"><title>The Class Class (Metaclass)</title>
 <para>The Class class is used for generating new classes. If a class is like a
 factory for producing instances, Class is like a factory
 for producing factories. Class is the parent of every
