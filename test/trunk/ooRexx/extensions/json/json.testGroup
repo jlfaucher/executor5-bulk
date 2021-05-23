@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -265,6 +265,7 @@ else
   self~assertIsA(dir, .Directory)
   self~assertSame(1, dir~items)
   self~assertSame("value", dir["name"])
+  self~assertSame('{"name":"value"}', j~toJson(dir)~space(0))
 
   json = '{"first": 123, "second": "xyz"}'
   dir = j~fromJson(json)
@@ -272,6 +273,7 @@ else
   self~assertSame(2, dir~items)
   self~assertSame(123, dir["first"])
   self~assertSame("xyz", dir["second"])
+  self~assertOneOrAnother('{"first":123,"second":"xyz"}', '{"second":"xyz","first":123}', j~toJson(dir)~space(0))
 
 
 -- we have a bunch of samples in ./valid and ./invalid
