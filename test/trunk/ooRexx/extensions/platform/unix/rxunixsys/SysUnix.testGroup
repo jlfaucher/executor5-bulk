@@ -282,7 +282,8 @@ return testResult
     -- attributes, e.g. "security.selinux" on Fedora
     -- we ignore them
     initial = SysListXattr(f)
-    self~assertIsA(initial, .Array)
+    -- returns -1 instead of an Array if no extended attribute support
+    self~assertIsA(initial, .Array, "may fail if file system has no support for extended attributes")
     self~assertSame("", SysGetXattr(f, "user.author"))
     self~assertSame(-1, SysRemoveXattr(f, "user.author"))
 
