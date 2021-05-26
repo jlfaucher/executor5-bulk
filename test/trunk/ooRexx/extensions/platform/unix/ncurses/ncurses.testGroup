@@ -41,15 +41,34 @@
 /*----------------------------------------------------------------------------*/
 parse source . . fileSpec
 group = .TestGroup~new(fileSpec)
-group~add(.ncurses.testGroup)
-group~restrictOS("UNIX")
-.context~package~loadPackage("ncurses.cls")
+group~addWithSuite(.ncurses.testGroup, .ncurses.testSuite)
+--group~restrictOS("UNIX")
 if group~isAutomatedTest then
   return group
 else
   return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
+
+::class 'ncurses.testSuite' subclass ooTestSuite public
+::method setUp
+  use strict arg testResult
+  signal on syntax
+  .context~package~loadPackage("ncurses.cls")
+  return
+
+  syntax:
+  parse source . . fileSpec
+  err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = 'Failed to load "ncurses.cls"'
+  err~severity = "Unrecoverable"
+
+  testResult~addException(err)
+  testResult~stop
+
+
 ::class 'ncurses.testgroup' subclass ooTestCase public
 
 -- this is a stub only - real tests need to be written
