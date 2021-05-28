@@ -42,7 +42,7 @@
 parse source . . fileSpec
 group = .TestGroup~new(fileSpec)
 group~addWithSuite(.ncurses.testGroup, .ncurses.testSuite)
---group~restrictOS("UNIX")
+group~restrictOS("UNIX")
 if group~isAutomatedTest then
   return group
 else
