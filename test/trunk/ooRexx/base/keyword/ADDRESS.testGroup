@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1394,14 +1394,19 @@ end
   if \self~isWindows then do
     "cd ~"
     self~assertSame(0, rc, "cd ~ returns" SysgetErrorText(rc))
-    self~assertSame(value("HOME", , "environment"), directory())
+    -- we may find (e. g. on FreeBSD) user home directories to be soft links
+    -- /home -> /usr/home which gives a mismatch as directory() returns the
+    -- resolved path /usr/home/.. while HOME is /home/..
+    -- as Rexx doesn't seem to provide a function to convert a path to a path
+    -- with resolved soft links, we just accept both $HOME and /usr/$HOME (a hack)
+    home = value("HOME", , "environment")
+    homeUsr = "/usr" || home
+    self~assertOneOrAnother(home, homeUsr, directory())
 
     call directory current
     "cd ~" || userid()
     self~assertSame(0, rc, "cd ~" || userid() "returns" SysgetErrorText(rc))
-    self~assertSame(value("HOME", , "environment"), directory())
-
-
+    self~assertOneOrAnother(home, homeUsr, directory())
   end
 
   call directory original

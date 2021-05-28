@@ -1998,11 +1998,11 @@ syntax:
 */
 ::routine ooRexxUnit.getShellName public
 
-   parse upper source opsys +1
+   parse upper source os .
 
       -- make sure we address the shell
-   shell="CMD"          -- default to the OS2/Windows shell
-   if pos(opsys, "WO")=0 then    -- if not running under OS/2 or Windows assume Unix
+   shell="CMD"          -- default to the Windows shell
+   if \os~abbrev("WIN") then    -- if not running under Windows assume Unix
    do
       unixShell=value("SHELL", , "environment")    -- get the fully qualified shell
       shell=substr(unixShell, 1+lastpos("/", unixShell))    -- extract name of shell
@@ -2013,13 +2013,6 @@ syntax:
 /* Determine and return the operating system under which the currently executing
    program is running.  Provides an uniform method for test cases to determine
    which operating system they are executing on.
-
-   The possible list of return words as of ooRexx 3.2.0 is:
-
-     WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
-
-   Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
-   NETBSD.
 */
 ::routine ooRexxUnit.getOSName public
 
