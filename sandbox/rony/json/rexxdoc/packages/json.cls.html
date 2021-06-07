@@ -74,7 +74,7 @@
                     <input type="text" id="search" class="form-control" placeholder="Search" id="test" data-provide="typeahead" autocomplete=off>
                 </div>
                 <span class="navbar-right">
-                        <span class="label label-info">Run-Date: 6 Jun 2021, 17:38:15</span>
+                        <span class="label label-info">Run-Date: 7 Jun 2021, 13:52:23</span>
                 </span>
             </form>
         </div>
@@ -164,7 +164,7 @@
    obj['Parents']= .array~of('Anna', 'Bertram') -- a .Array (an OrderableCollection)
    obj['Salary']  =.nil          -- no value at all (not employed)
    obj['rich']    =.json~false   -- use .Json's false (a JsonBoolean)
-   obj['poor']    =.json~true    -- use .Json's ture (a JsonBoolean)
+   obj['poor']    =.json~true    -- use .Json's true (a JsonBoolean)
    call show "obj", obj          -- show Rexx object
    say "======================================"
 
@@ -192,7 +192,8 @@
    obj2=j~fromJson(jsonString2)  -- create object from JSON string
    call show "obj2", obj2        -- show Rexx object
    say "--------------------------------------"
-</pre>   Yields:
+</pre>
+<p> Yields:
 <pre>
    show(): 'obj', dumping a .StringTable:
 
@@ -288,7 +289,7 @@
    obj['Parents']= .array~of('Anna', 'Bertram') -- a .Array (an OrderableCollection)
    obj['Salary']  =.nil          -- no value at all (not employed)
    obj['rich']    =.json~false   -- use .Json's false (a JsonBoolean)
-   obj['poor']    =.json~true    -- use .Json's ture (a JsonBoolean)
+   obj['poor']    =.json~true    -- use .Json's true (a JsonBoolean)
    call show "obj", obj          -- show Rexx object
    say "======================================"
 
@@ -316,7 +317,8 @@
    obj2=j~fromJson(jsonString2)  -- create object from JSON string
    call show "obj2", obj2        -- show Rexx object
    say "--------------------------------------"
-</pre>   Yields:
+</pre>
+<p> Yields:
 <pre>
    show(): 'obj', dumping a .StringTable:
 
@@ -472,7 +474,7 @@
                                                     <div class="panel-body">
                                                         Setter that allows to change the <code>.Directory</code> to another dirlike class (e.g.   <code>.StringTable</code> since ooRexx 5.0) to be used to encode the JSON object in a Rexx object.
                                                             <br /><br />
-                                                            <b>param</b>: newDirlikeClass either the .StringTable (default) or .Directory class
+                                                            <b>param</b>: newDirlikeClass either the .Directory class (default) or .StringTable class
 P <br />
                                                             <b>return</b>: oldClass the class previously used to encode JSON object data <br />
                                                     </div>

@@ -92,7 +92,7 @@
    obj['Parents']= .array~of('Anna', 'Bertram') -- a .Array (an OrderableCollection)
    obj['Salary']  =.nil          -- no value at all (not employed)
    obj['rich']    =.json~false   -- use .Json's false (a JsonBoolean)
-   obj['poor']    =.json~true    -- use .Json's ture (a JsonBoolean)
+   obj['poor']    =.json~true    -- use .Json's true (a JsonBoolean)
    call show "obj", obj          -- show Rexx object
    say "======================================"
 
@@ -122,7 +122,7 @@
    say "--------------------------------------"
 </pre>
 *
-*   Yields:
+<p> Yields:
 *
 <pre>
    show(): 'obj', dumping a .StringTable:
@@ -192,7 +192,7 @@
 
 ::attribute version get class
   use strict arg           -- no argument allowed!
-  return "100.20210606"    -- version in the form: major*100+minor || "." || yyyymmdd
+  return "100.20210607"    -- version in the form: major*100+minor || "." || yyyymmdd
 
 
 /*
@@ -221,10 +221,10 @@
   use strict arg string=""
 
   select
-     when string~left(4) = "00 00 FE FF"x then return "UTF-32BE"
-     when string~left(4) = "FF FE 00 00"x then return "UTF-32LE"
-     when string~left(2) = "FE FF"x       then return "UTF-16BE"
-     when string~left(2) = "FF FE"x       then return "UTF-16LE"
+     when string~startsWith("00 00 FE FF"x) then return "UTF-32BE"
+     when string~startsWith("FF FE 00 00"x) then return "UTF-32LE"
+     when string~startsWith("FE FF"x      ) then return "UTF-16BE"
+     when string~startsWith("FF FE"x      ) then return "UTF-16LE"
      otherwise return "UTF-8"    -- default encoding
   end
 
@@ -238,10 +238,10 @@
   use strict arg string=""
 
   select
-     when string~left(4) = "00 00 FE FF"x then return 5
-     when string~left(4) = "FF FE 00 00"x then return 5
-     when string~left(2) = "FE FF"x       then return 3
-     when string~left(2) = "FF FE"x       then return 3
+     when string~startsWith("00 00 FE FF"x) then return 5
+     when string~startsWith("FF FE 00 00"x) then return 5
+     when string~startsWith("FE FF"x      ) then return 3
+     when string~startsWith("FF FE"x      ) then return 3
      otherwise return 1          -- default offset (default encoding, UTF-8)
   end
 
@@ -293,18 +293,15 @@
 /** Setter that allows to change the <code>.Directory</code> to another dirlike class (e.g.
 *   <code>.StringTable</code> since ooRexx 5.0) to be used to encode the JSON object in a Rexx object.
 *
-* @param newDirlikeClass either the .StringTable (default) or .Directory class
+* @param newDirlikeClass either the .Directory class (default) or .StringTable class
 *
 P @return oldClass the class previously used to encode JSON object data
 */
 ::attribute jsonDirClass set class
   expose json_dirClass
   use strict arg newDirlikeClass
-
-  oldClass=.json.DirClass
   json_dirClass=newDirlikeClass                    -- save class in package local
  .context~package~local~json.DirClass=newDirlikeClass  -- save in package local to speed up lookup
- return old                      -- return previous class that got used for encoding object values
 
 /** StringTable with unescape JSON strings. */
 ::attribute uJS        private class
