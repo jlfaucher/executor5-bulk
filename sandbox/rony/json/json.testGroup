@@ -447,6 +447,10 @@ else
   self~assertEquals(.json~jsonDirClass, obj2~class)
   self~assertTrue(compareObj(o,obj2))
 
+  jBooleanClz=.json~true~class
+  self~assertIsA(obj2['rich'],jBooleanClz)
+  self~assertIsA(obj2['poor'],jBooleanClz)
+
   ---
   jsonString3=j~toMinifiedJson(o)
   self~assertEquals(minified,jsonString3)
@@ -552,6 +556,18 @@ compareObj: procedure
   self~assertEquals("true",  true~request("json"))
   self~assertEquals("false", false~request("json"))
 
+  self~assertTrue(clz~new(1))
+  self~assertTrue(clz~new("true"))
+  self~assertTrue(clz~new(.true))
+
+  self~assertFalse(clz~new(0))
+  self~assertFalse(clz~new("false"))
+  self~assertFalse(clz~new(.false))
+
+
+  -- last one
+  self~expectSyntax(88.900)
+  val=clz~new("not a logical value, nor 'false', 'true'")
 
 -- create private test classes that implement one of makestring, makejson, makearray
 --------------------------------------------------------------------

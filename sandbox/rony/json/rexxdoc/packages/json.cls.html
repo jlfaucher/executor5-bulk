@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
 
-    <title>ooRexxDoc - json.cls - json.cls</title>
+    <title>ooRexxDoc - JSON (JavaScript Object Notation) - json.cls</title>
 
     <style type="text/css">
         body { padding-top: 70px; }
@@ -74,7 +74,7 @@
                     <input type="text" id="search" class="form-control" placeholder="Search" id="test" data-provide="typeahead" autocomplete=off>
                 </div>
                 <span class="navbar-right">
-                        <span class="label label-info">Run-Date: 7 Jun 2021, 13:52:23</span>
+                        <span class="label label-info">Run-Date: 8 Jun 2021, 14:17:28</span>
                 </span>
             </form>
         </div>
@@ -149,106 +149,7 @@
                 <br /><br />
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        This class implements <a href="https://www.rfc-editor.org/info/rfc8259">RFC 8259</a>
-(formerly <code>RFC 4627</code>) and allows to encode Rexx objects as JSON strings and   parse JSON strings into Rexx objects.
-
-<p> This version does no Unicode related encoding or decoding.   (Rexx programmers can do Unicode related processing e.g. by taking advantage of Java via the   <a href="https://sourceforge.net/projects/bsf4oorexx/">BSF4ooRexx</a>   package which defines the public routine 'bsf.iconv(string,fromCharset,toCharset)').
-<p>The mapping between Rexx and JSON is as follows:   <ul>   <li>a Rexx <code>MapCollection</code> maps to a JSON object (comma separated list of       index ':' item(s), enquoted in curly brackets), a JSON object by default to a <code>.Directory</code>,   <li>an OrderdCollection maps to a JSON array (comma separated list of values, enquoted in sqaure brackets),       a JSON array to a <code>.Array</code>,   <li>if a Rexx object contains the "makejson" conversion method, it will be used and the
-        returned JSON encoding string used for it,   <li>string values map to JSON strings (enquoted in double quotes) and vice versa,   <li><code>.true</code> (the value <code>1</code>) maps to JSON <code>true</code> (no surrounding quotes),       a JSON <code>true</code> to an instance of <code>.JsonBoolean</code> that behaves like <code>.true</code>,   <li><code>.false</code> (the value <code>0</code>) maps to JSON <code>false</code> (no surrounding quotes),       a JSON <code>false</code> to an instance of <code>.JsonBoolean</code> that behaves like <code>.false</code>,   <li><code>.nil</code> maps to JSON <code>null</code> (no surrounding quotes).   </ul>   If one needs to keep the boolean property in the JSON encoding, the Rexx objects   <code>.json~true</code> (an instance of </code>.JsonBoolean</code>) and   <code>.json~false</code> (an instance of </code>.JsonBoolean</code>) must be used, as   they will render to their respective JSON encodings (<code>true</code> or <code>false</code>).
-<p>Example:
-
-<pre>
-   obj=.StringTable~new          -- a .StringTable (a MapCollection)
-   obj['Name']    ="Caesar"      -- a string
-   obj['children']=3             -- a number
-   obj['Parents']= .array~of('Anna', 'Bertram') -- a .Array (an OrderableCollection)
-   obj['Salary']  =.nil          -- no value at all (not employed)
-   obj['rich']    =.json~false   -- use .Json's false (a JsonBoolean)
-   obj['poor']    =.json~true    -- use .Json's true (a JsonBoolean)
-   call show "obj", obj          -- show Rexx object
-   say "======================================"
-
-   j=.json~new                   -- create a minifying JSON converter
-
-   jsonString1=j~toJson(obj)     -- encode object as JSON string
-   say
-   say "json (minified):"
-   say
-   say jsonString1               -- show (minified) JSON string
-   say
-   say "rendering 'jsonString1' to 'obj1':"
-   obj1=j~fromJson(jsonString1)  -- create object from JSON string
-   call show "obj1", obj1        -- show Rexx object
-   say "--------------------------------------"
-
-   j~legible=.true               -- make JSON string legible for humans
-   jsonString2=j~toJson(obj)
-   say
-   say "json (legible):"
-   say
-   say jsonString2               -- show (legible) JSON string
-   say
-   say "rendering 'jsonString2' to 'obj2':"
-   obj2=j~fromJson(jsonString2)  -- create object from JSON string
-   call show "obj2", obj2        -- show Rexx object
-   say "--------------------------------------"
-</pre>
-<p> Yields:
-<pre>
-   show(): 'obj', dumping a .StringTable:
-
-       children: 3
-       Name    : Caesar
-       Parents : Anna, Bertram
-       poor    : 1
-       rich    : 0
-       Salary  : The NIL object
-   ======================================
-
-   json (minified):
-
-   {"children":3,"Name":"Caesar","Parents":["Anna","Bertram"],"poor":true,"rich":false,"Salary":null}
-
-   rendering 'jsonString1' to 'obj1':
-   show(): 'obj1', dumping a .Directory:
-
-       children: 3
-       Name    : Caesar
-       Parents : Anna, Bertram
-       poor    : 1
-       rich    : 0
-       Salary  : The NIL object
-   --------------------------------------
-
-   json (legible):
-
-   {
-       "children": 3,
-       "Name": "Caesar",
-       "Parents": [
-           "Anna",
-           "Bertram"
-       ],
-       "poor": true,
-       "rich": false,
-       "Salary": null
-   }
-
-   rendering 'jsonString2' to 'obj2':
-   show(): 'obj2', dumping a .Directory:
-
-       children: 3
-       Name    : Caesar
-       Parents : Anna, Bertram
-       poor    : 1
-       rich    : 0
-       Salary  : The NIL object
-   --------------------------------------
-</pre>
-                            <br /><br />
-                            <b>author</b>: Brandon W. Cherry (original author) <br />
-                            <b>author</b>: Rony G. Flatscher (adapted and added code to ooRexx 4.2.0 and 5.0.0) <br />
-                            <b>author</b>: Adrian Baginski (added minify, toMinifiedJson) <br />
+                        This ooRexx package supplies the <a href="https://en.wikipedia.org/wiki/JSON">JSON</a>   (JavaScript Object Notation) support.
                     </div>
                 </div>
 
@@ -818,7 +719,7 @@ P <br />
         </div>
     </div>
     <br />
-    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
     <script src="../js/typeahead-bootstrap.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/search-data.js"></script>

@@ -41,6 +41,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+/** This ooRexx package supplies the <a href="https://en.wikipedia.org/wiki/JSON">JSON</a>
+*   (JavaScript Object Notation) support.
+*/
 
 
 
@@ -192,7 +195,7 @@
 
 ::attribute version get class
   use strict arg           -- no argument allowed!
-  return "100.20210607"    -- version in the form: major*100+minor || "." || yyyymmdd
+  return "100.20210608"    -- version in the form: major*100+minor || "." || yyyymmdd
 
 
 /*
@@ -435,9 +438,8 @@ P @return oldClass the class previously used to encode JSON object data
     whitespace=clz~whitespace
     endsValue =clz~endsValue
 
-    --- rgf, 2016-07-17: indentation related to ease reading of generated JSON files
     level =0      -- start out with level 0
-    indent="    "  -- use four spaces per level for indentation
+    indent="    " -- use four spaces per level for indentation
 
 
 /**
@@ -504,7 +506,7 @@ P @return oldClass the class previously used to encode JSON object data
 *
 * @param  rexxObject the Rexx object to encode
 */
-::method encodeOrderedCollection private   -- rgf, 2016-07-17: instead of parseRexxArray
+::method encodeOrderedCollection private
     expose buffer level indent legible
     use arg rexxObject
 
@@ -562,7 +564,7 @@ P @return oldClass the class previously used to encode JSON object data
 *
 * @param  rexxObject the Rexx object to encode
 */
-::method encodeMapCollection private -- rgf, 2016-07-18: sort by index to allow easier checks for humans in the resulting JSON file
+::method encodeMapCollection private
     expose buffer level indent legible
     use arg rexxObject
 
@@ -646,7 +648,7 @@ syntax:
 * @param  rexxObject the Rexx string to encode
 * @param  bQuote optional logical value, defaults to .false, if .true, enquotes Rexx string value
 */
-::method encodeRexxString private      -- rgf, 2016-07-17
+::method encodeRexxString private
     expose buffer eJS level indent rexx2json legible
     use strict arg rexxObject, bQuote=.false
 
@@ -661,7 +663,7 @@ syntax:
            else
               buffer~append(rexxObject)
         end
-        else   -- rgf, 2016-07-24): create a MutableBuffer from Rexx string, use changeStr()
+        else
         do
             mb=.mutableBuffer~new(rexxObject,rexxObject~length*2)
             -- leave Unicode escapes as is
@@ -695,7 +697,6 @@ syntax:
 /* ========================================================================= */
 
 
--- rgf, 2016-07-24: all methods controlled by fromJSON rely on character-by-character based parsing
 /**
  * Converts a JSON encoded string to a Rexx object.
  *
@@ -833,7 +834,7 @@ parseError: raise propagate
         self~trimLeadingWhitespace
         rexxDirectory[index] = self~parseJSONvalue
     end
-    else raise user parseError array('Expected colon separating JSON object name and value is missing') -- rgf, made text a little bit clearer
+    else raise user parseError array('Expected colon separating JSON object name and value is missing')
     return
 parseError: raise propagate
 
@@ -1114,13 +1115,6 @@ parseError: raise propagate
 
 /* ========================================================================= */
 
-/*
-*   -- rgf, 2016-07-17: define a class to explicitly represent a JSON boolean to ease generating correct JSON files
-*   -- rgf, 2016-07-23: - as Orderable is broken as of 4.2.0 and unclear whether 5.0.0 gets it corrected, this class
-*                         explicilty defines the methods "=", "\=", "<>" and "><" to get correct comparison results
-*                       - inherit comparable (indicates that compareTo is implemented), allows sorting
-*/
-
 /** ooRexx class to represent a JSON boolean (logical) value. It inherits from the ooRexx mixinclass
 *   <code>Comparable</code> and therefore implements its abstract method <code>compareTo</code>.
 *
@@ -1134,7 +1128,7 @@ parseError: raise propagate
 
 ::attribute version get class
   use strict arg           -- no argument allowed!
-  return "100.20210602"    -- version in the form: major*100+minor || "." || yyyymmdd
+  return "100.20210608"    -- version in the form: major*100+minor || "." || yyyymmdd
 
 /** Class getter attribute method that refers to the proxy object that represents the value <code>.true</code>.
 */
