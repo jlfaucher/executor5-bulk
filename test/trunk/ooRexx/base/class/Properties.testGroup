@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -132,7 +132,7 @@ return testResult
    .properties~new~setProperty(1 , )
 
 ::method "test_SETPROPERTY_ERR_04"
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.938) -- Method argument .. must have a string value
    .properties~new~setProperty(1 , .nil)
 
 
@@ -443,4 +443,4 @@ return testResult
   self~assertEquals(val, props~getLogical(key))
 
 
-::options novalue error
+::options novalue syntax

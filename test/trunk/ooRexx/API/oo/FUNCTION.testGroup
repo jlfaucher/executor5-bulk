@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -743,17 +743,17 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- .nil doesn't honour request("string")
 ::method test_CSTRING_nil
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestCstringArg .nil
 
 -- an object with neither a string nor a makeString method
 ::method test_CSTRING_no_string_no_makestring
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestOptionalCstringArg .NoString_NoMakestring~new
 
 -- an object with a string but no makeString method
 ::method test_CSTRING_string_no_makestring
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestCstringArg .String_NoMakestring~new
 
 -- all classes with a makeString method should work
@@ -782,17 +782,17 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- .nil doesn't honour request("string")
 ::method test_RexxString_nil
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestStringArg .nil
 
 -- an object with neither a string nor a makeString method
 ::method test_RexxString_no_string_no_makestring
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestOptionalStringArg .NoString_NoMakestring~new
 
 -- an object with a string but no makeString method
 ::method test_RexxString_string_no_makestring
-  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  self~expectSyntax(88.909) -- Argument 1 must have a string value
   call TestStringArg .String_NoMakestring~new
 
 -- all classes with a makeString method should work

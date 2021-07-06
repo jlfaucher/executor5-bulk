@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -253,7 +253,7 @@ return testResult
    self~assertSame('NV'~compare(nv), '0')
 
 ::method "test_53"
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    var =  'NV.'~compare(nv.)
 
 ::method "test_54"
@@ -501,7 +501,7 @@ return testResult
    self~assertSame('NV*'~compare(nv,'*'), '0')
 
 ::method "test_121"
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    var = 'NV.*'~compare(nv.,'*')
 
 ::method "test_122"
@@ -512,7 +512,7 @@ return testResult
    self~assertSame('nv'~compare('NV*',nv), '0')
 
 ::method "test_124"
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    self~assertSame('nv.'~compare('NV.*',nv.), '0')
 
 ::method "test_125"

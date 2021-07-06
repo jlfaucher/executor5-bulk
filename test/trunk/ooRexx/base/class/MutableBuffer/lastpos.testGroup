@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -225,11 +225,11 @@ return testResult
 
 ::method 'test032'
     mb = .mutablebuffer~new('NV.')
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = mb~lastPos(nv.)
 
 ::method 'test033'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     mb = .mutablebuffer~new(nv.)
 
 ::method 'test034'
@@ -239,7 +239,7 @@ return testResult
 
 ::method 'test035'
     mb = .mutablebuffer~new('NV.')
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = mb~lastPos(nv.)
 
 ::method 'test036'
@@ -253,7 +253,7 @@ return testResult
     self~assertSame(mb~lastPos('NV'), nv~lastPos('NV'))
 
 ::method 'test038'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     mb = .mutablebuffer~new(nv.)
 
 ::method 'test039'
@@ -673,7 +673,7 @@ return testResult
 
 ::method 'test117'
     mb = .mutablebuffer~new('NV.')
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = mb~lastPos(nv.,1)
 
 ::method 'test118'
@@ -683,7 +683,7 @@ return testResult
 
 ::method 'test119'
     mb = .mutablebuffer~new('NV.')
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = mb~lastPos(nv.,1)
 
 ::method 'test120'
@@ -697,7 +697,7 @@ return testResult
     self~assertSame(mb~lastPos('NV',1), nv~lastPos('NV',1))
 
 ::method 'test122'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     mb = .mutablebuffer~new(nv.)
 
 ::method 'test123'
@@ -1044,7 +1044,7 @@ return testResult
 
 ::METHOD "testLastPosSyntax2"
    b = .mutableBuffer~new("1234567890")
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    b~lastPos(.nil)
 
 ::METHOD "testLastPosSyntax3"

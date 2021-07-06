@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -94,7 +94,7 @@ return testResult
   .object~new~hasMethod
 
 ::method test_hasmethod_no_string
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909) -- Argument .. must have a string value
   .object~new~hasMethod(.nil)
 
 ::method test_hasmethod_two_args
@@ -555,7 +555,7 @@ return testResult
   self~assertEquals("My Test Object", o~string)
 
 ::method test_objectname_not_string
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909) -- Argument .. must have a string value
   .object~new~objectname = .nil
 
 ::method test_objectname_no_arg
@@ -1383,4 +1383,4 @@ return testResult
   .UninitTracker~recordUninit(self)
 
 
-::options novalue error
+::options novalue syntax

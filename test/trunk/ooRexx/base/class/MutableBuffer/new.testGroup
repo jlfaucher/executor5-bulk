@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -58,17 +58,17 @@ return testResult
    b = .mutableBuffer~new("1234")
    self~assertNotNull(b, "Failed to get instance")
 ::method "testInstance2"
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    b = .mutableBuffer~new(.nil)
 ::method "testInstance3"
    self~expectSyntax(93.923)
    b = .mutableBuffer~new("",.nil)
 ::method "testInstance4"
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    b = .mutableBuffer~new(.nil,.nil)
 ::method "testInstance5"
    self~expectSyntax(93.923)
    b = .mutableBuffer~new("",-1)
 
 
-::options novalue error
+::options novalue syntax

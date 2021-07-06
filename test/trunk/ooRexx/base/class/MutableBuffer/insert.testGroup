@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -643,7 +643,7 @@ return testResult
 
 ::method 'test131'
     mb = .mutablebuffer~new('*')
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,nv.)~string
 
 ::method 'test132'
@@ -1294,11 +1294,11 @@ return testResult
    b~insert("",-1)
 ::METHOD "testInsertSyntax3"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    b~insert(.nil)
 ::METHOD "testInsertSyntax4"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.938)
+   self~expectSyntax(88.909) -- Argument .. must have a string value
    b~insert("",,,.nil)
 ::METHOD "testInsertSyntax5"
    b = .mutableBuffer~new("123456")

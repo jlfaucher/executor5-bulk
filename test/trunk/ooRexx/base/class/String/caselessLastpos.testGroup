@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -169,7 +169,7 @@ return testResult
     self~assertSame('0', '12+1 12+2 12+3 12+4'~caselessLastPos(+14))
 
 ::method 'test032'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = 'NV.'~caselessLastPos(nv.)
 
 ::method 'test033'
@@ -179,7 +179,7 @@ return testResult
     self~assertSame('1', 'NV'~caselessLastPos(nv))
 
 ::method 'test035'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = 'NV.'~caselessLastPos(nv.)
 
 ::method 'test036'
@@ -457,14 +457,14 @@ return testResult
     self~assertSame('3', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~caselessLastPos('Z',+14))
 
 ::method 'test117'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = 'NV.'~caselessLastPos(nv.,1)
 
 ::method 'test118'
     self~assertSame(0, 'NV'~caselessLastPos(nv,1))
 
 ::method 'test119'
-    self~expectSyntax(93.938)
+    self~expectSyntax(88.909) -- Argument .. must have a string value
     xre = 'NV.'~caselessLastPos(nv.,1)
 
 ::method 'test120'
