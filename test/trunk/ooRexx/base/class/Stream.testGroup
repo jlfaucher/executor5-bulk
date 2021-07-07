@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -369,34 +369,14 @@ return testResult
 -- Tests arrayin() syntax
 ::method test_arrayIn_syntax01
 
-  src = .array~new(12)
-  do i = 1 to 12
-    src[i] = 'line' i
-  end
-  fileName = createFile(src, "delMe.stream.syntax_01")
-  self~assertTrue(fileName \== "")
-
-  fsObj = .stream~new(fileName)
-  self~streamTestingFile = fsObj
-
-  self~expectSyntax(93.915)
-  a = fsObj~arrayin("words")
+  self~expectSyntax(93.915) -- Method option must be one of "CL"
+  .Stream~new("/")~arrayIn("words")
 
 
 ::method test_arrayIn_syntax02
 
-  src = .array~new(12)
-  do i = 1 to 12
-    src[i] = 'line' i
-  end
-  fileName = createFile(src, "delMe.stream.syntax_02")
-  self~assertTrue(fileName \== "")
-
-  fsObj = .stream~new(fileName)
-  self~streamTestingFile = fsObj
-
-  self~expectSyntax(93.902)
-  a = fsObj~arrayin("LINES", "CHARS")
+  self~expectSyntax(93.902) --Too many arguments in invocation of method; 1 expected
+  .Stream~new("/")~arrayIn("LINES", "CHARS")
 
 
 ::method test_arrayIn_syntax03
@@ -424,18 +404,16 @@ return testResult
 
 ::method test_arrayIn_syntax04
 
-  src = .array~new(12)
-  do i = 1 to 12
-    src[i] = 'line' i
-  end
-  fileName = createFile(src, "delMe.stream.syntax_02")
-  self~assertTrue(fileName \== "")
+  self~expectSyntax(93.902) --Too many arguments in invocation of method; 1 expected
+  .Stream~new("/")~arrayIn( , "BYTES")
 
-  fsObj = .stream~new(fileName)
-  self~streamTestingFile = fsObj
 
-  self~expectSyntax(93.902)
-  a = fsObj~arrayin( , "BYTES")
+-- [bugs:#1771] Stream's 'arrayin' does not return array object
+::method test_arrayIn_nonexisting
+
+  a = .Stream~new("/")~arrayIn -- not a file
+  self~assertIsA(a, .Array)
+  self~assertSame(0, a~items)
 
 
 -- Tests arrayin() with empty file, created
