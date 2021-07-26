@@ -79,7 +79,7 @@ else
 ::constant existingDir (.TemporaryTestDirectory~new(self, "test_sysfile_dir")~create)
 ::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
 
--- return file system roots, but without potentially empty CD-ROM drives
+-- return file system roots without potentially inaccessible CD-ROM drives
 ::method roots
   roots = .File~listRoots
   if self~isWindows then do
@@ -323,7 +323,7 @@ else
   -- cannot delete read-only directory on Windows
   -- (on Unix, no files can be created in a read-only directory, but the
   --  directory itself can still be removed if empty)
-  if .RexxInfo~platform~caselessStartsWith("Windows") then do
+  if self~isWindows then do
     read = .TemporaryTestDirectory~new(self, "test_rmdir_readonly")~create~~setReadOnly
     self~assertNotEquals(0, SysRmDir(read~fullName))
     read~setWritable
@@ -591,7 +591,7 @@ else
 
 -- (Windows-only) UNC filename tests
 ::method test_unc_windows_only
-  if \.RexxInfo~platform~caselessStartsWith("Windows") then
+  if \self~isWindows then
       return
   parse source . . this
   thisFile = .File~new(this~changeStr(':', '$'), '\\localhost')
