@@ -77,6 +77,18 @@ else
 ::constant existing (.TemporaryTestFile~new(self, "test_sysfile")~create("test"))
 ::constant readonly (.TemporaryTestFile~new(self, "test_sysfile_readonly")~create("test")~~setReadOnly)
 ::constant existingDir (.TemporaryTestDirectory~new(self, "test_sysfile_dir")~create)
+::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
+
+-- return file system roots, but without potentially empty CD-ROM drives
+::method roots
+  roots = .File~listRoots
+  if self~isWindows then do
+    -- try to avoid (empty) CD-ROM drives, but always test C:\
+    do cd over SysDriveMap("D", "CDROM")~makeArray(" ")
+      roots~removeItem(cd"\")
+    end
+  end
+  return roots
 
 
 -- SysFileExists
@@ -108,7 +120,7 @@ else
   self~assertTrue(SysFileExists("/"))
   self~assertTrue(SysFileExists(self~existingDir~fullName)) -- empty
   self~assertTrue(SysFileExists(self~existing~parent)) -- not empty
-  do dir over .File~listRoots
+  do dir over self~roots
     self~assertTrue(SysFileExists(dir), "SysFileExists" dir)
   end
 
@@ -150,7 +162,7 @@ else
   self~assertFalse(SysIsFile("/"))
   self~assertFalse(SysIsFile(self~existingDir~fullName)) -- empty
   self~assertFalse(SysIsFile(self~existing~parent)) -- not empty
-  do dir over .File~listRoots
+  do dir over self~roots
     self~assertFalse(SysIsFile(dir), "SysIsFile" dir)
   end
 
@@ -192,7 +204,7 @@ else
   self~assertTrue(SysIsFileDirectory("/"))
   self~assertTrue(SysIsFileDirectory(self~existingDir~fullName)) -- empty
   self~assertTrue(SysIsFileDirectory(self~existing~parent)) -- not empty
-  do dir over .File~listRoots
+  do dir over self~roots
     self~assertTrue(SysIsFileDirectory(dir), "SysIsFileDirectory" dir)
   end
 
@@ -555,11 +567,12 @@ else
   return name~translate(, "0123456789", "?", name~length - template~length + 1)
 
 ::method test_tempfile_exhaust
-  template = .TemporaryTestFile~new(self, "test_tempfile_exhaust")~absolutePath
+  -- we assume that the file path won't contain additional '#' characters
+  template = .TemporaryTestFile~new(self, "test#tempfile#exhaust")~absolutePath
   files = .Array~new(100)
   file = .true
   loop
-    name = SysTempFileName(template, "_")
+    name = SysTempFileName(template, "#")
     if name = "" then
       leave
     files~append(.File~new(name))

@@ -92,6 +92,7 @@ else
   disk = self~wmi('SELECT * FROM Win32_Volume WHERE DriveLetter = "C:"')
   self~assertSame("OLEObject", disk~class~id, disk)
 
+  -- this test requires that drive C: actually has a label set
   info = disk~FreeSpace disk~Capacity disk~Label -- drive free total label
   do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", disk~DeviceId, -
     "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
