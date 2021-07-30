@@ -1,12 +1,12 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -95,6 +95,24 @@ return testResult
    self~assertNotEquals(-1, retc)
    s~close()
    return
+
+::method test_options_timeout
+   s = .socket~new()
+
+   milliseconds = 300
+   self~assertSame(0, s~setOption("SO_RCVTIMEO", milliseconds))
+   -- there seems to some rounding/adjusting going on on Linux
+   -- we accept a delta of up to 10 ms
+   ms = s~getOption("SO_RCVTIMEO")
+   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_RCVTIMEO set to" milliseconds", get returns" ms)
+
+   milliseconds = 9876
+   self~assertSame(0, s~setOption("SO_SNDTIMEO", milliseconds))
+   -- there seems to some rounding/adjusting going on on Linux
+   -- we accept a delta of up to 10 ms
+   ms = s~getOption("SO_SNDTIMEO")
+   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
+   s~close
 
 ::method test_004
    -- can we bind a socket?
@@ -207,4 +225,4 @@ return testResult
    return
 
 
-::options novalue error
+::options all syntax
