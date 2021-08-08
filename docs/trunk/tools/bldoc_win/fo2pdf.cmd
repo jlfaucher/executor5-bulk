@@ -55,18 +55,20 @@ if not defined fop_opts (
     set fop_opts=-Xmx1280M
     set nofopts=1
 )
-setlocal
-if not defined %fo_files% (
-    echo Unable to find fo_files\%whichdoc%.fo.
-    echo Make sure the DOC2FO command has run successfully.
-    goto :eof
-)
+if not defined fo_files set fo_files=fo_files
 set in_file=%fo_files%\%whichdoc%.fo
 if not exist %in_file% (
     echo Unable to find %in_file%.
     echo Make sure the DOC2FO command has run successfully.
     goto :eof
 )
+if not defined fopver for /f %%v in ('dir fop-* /ad /b /od') do set fopver=%%v
+if not defined fopver (
+    echo Unable to find Apache FOP.
+    echo Make sure the SETUP command has run successfully.
+    goto :eof
+)
+setlocal
 if not defined log_files set log_files=log_files
 if not exist %log_files% (
     echo Unable to find %log_files%.
@@ -80,8 +82,9 @@ if not exist %PDF_files% (
 )
 set out_file=%PDF_files%\%whichdoc%.pdf
 set fopcfg=%docpath%\%whichdoc%\en-US\Common_Content\fop.cfg
-echo %time:~0,-3% - Creating %out_file% from %in_file% using Apache FOP
-call fop-2.4\fop\fop.bat -c %fopcfg% %in_file% %out_file% 2>%log_file%
+set foplvl=%fopver:~4%
+echo %time:~0,-3% - Creating %out_file% from %in_file% using Apache FOP %foplvl%
+call %fopver%\fop\fop.bat -c %fopcfg% %in_file% %out_file% 2>%log_file%
 where rexx /q
 if %errorlevel% EQU 0 (
     rexx chk4pdf.rex %out_file%
@@ -92,3 +95,4 @@ if defined nofopts (
     set nofopts=
     set fop_opts=
 )
+exit /b

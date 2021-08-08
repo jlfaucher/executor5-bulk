@@ -188,8 +188,8 @@
     -- Finally the Apache FOP package
     -- https://xmlgraphics.apache.org/fop/download.html
     -- Use the above site to find an alternate mirror site if needed.
-    src_url = "http://us.mirrors.quenda.co/apache/xmlgraphics/fop/binaries/"
-    fop_pkg = "fop-2.4"
+    src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
+    fop_pkg = "fop-2.6"
     if \.file~new(".\"fop_pkg)~isDirectory then do
         say "Making Apache FOP package available. (5/5)"
         fop_zip_name = zips_dir"\"fop_pkg"-bin.zip"
