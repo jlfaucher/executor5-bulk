@@ -612,38 +612,6 @@ return testResult
 ::method test_delegate_no_body
   self~assertSyntaxError(99.946, ("::method test delegate target", "return 123"))
 
--- [feature-requests:#720] Change method default to UNGUARDED if no EXPOSE/USE LOCAL
-::method test_guarded_default
-  -- with no method body, the default is UNGUARDED
-  do guard over "", "unguarded", "guarded"
-    do body over "", "-- comment", "/* comment */"
-      self~assertSame(guard = "guarded", self~runDynamicSource(("return .c~method('m')~isGuarded", "::class c", "::method m" guard, body)), "::method m" guard";" body)
-      self~assertSame(guard = "guarded", self~runDynamicSource(("return .c~instanceMethod('m')~isGuarded", "::class c", "::method m class" guard, body)), "::method m class" guard";" body)
-    end
-  end
-
-  -- if the first clause is USE LOCAL or EXPOSE, the default is GUARDED
-  do guard over "", "unguarded", "guarded"
-    do body over "use local", "use local x", "expose a", "/* comment */ expose a b"
-      self~assertSame(guard \= "unguarded", self~runDynamicSource(("return .c~method('m')~isGuarded", "::class c", "::method m" guard, body)), "::method m" guard";" body)
-      self~assertSame(guard \= "unguarded", self~runDynamicSource(("return .c~instanceMethod('m')~isGuarded", "::class c", "::method m class" guard, body)), "::method m class" guard";" body)
-    end
-  end
-
-  -- with any other first clause, the default is UNGUARDED
-  do guard over "", "unguarded", "guarded"
-    do body over "use arg a", "a = 1", "nop"
-      self~assertSame(guard = "guarded", self~runDynamicSource(("return .c~method('m')~isGuarded", "::class c", "::method m" guard, body)), "::method m" guard";" body)
-      self~assertSame(guard = "guarded", self~runDynamicSource(("return .c~instanceMethod('m')~isGuarded", "::class c", "::method m class" guard, body)), "::method m class" guard";" body)
-    end
-  end
-
-  -- for ABSTRACT, ATTRIBUTE, DELEGATE, or EXTERNAL methods the default is GUARDED
-  do type over "abstract", "attribute", "delegate d", "external 'library REXX file_case_sensitive'"
-    self~assertTrue(self~runDynamicSource(("return .c~method('m')~isGuarded", "::class c", "::method m" type)), "::method m" type)
-    self~assertTrue(self~runDynamicSource(("return .c~instanceMethod('m')~isGuarded", "::class c", "::method m class" type)), "::method m class" type)
-  end
-
 
 -- simple method for generating a test class
 ::method buildTestClass
