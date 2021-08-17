@@ -89,8 +89,14 @@ return testResult
             wmiDefault = objPrinter~Name
     end
     parse value SysWinGetDefaultPrinter() with sysDefault','.
--- Assert that sys & wmi return the same default printer
-    self~AssertSame(wmiDefault, sysDefault, "when run in a VM, this test may fail due to redirected printers")
+    -- When this test is run through ssh (a typical Jenkins scenario) the
+    -- wmi interface seems to shows all printers as non-default even though
+    -- a default printer is defined.  For such a case we skip the assert to
+    -- avoid a test failure.
+    -- Also, when this test is run through Remote Desktop, redirected printers
+    -- may show as default, causing a failure.  Thus the may-fail the message.
+    if wmiDefault \= "(none)" then
+      self~AssertSame(wmiDefault, sysDefault, "when run in a VM, this test may fail due to redirected printers")
 
 
 ::options all syntax
