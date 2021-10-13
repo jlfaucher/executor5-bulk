@@ -128,7 +128,7 @@
   */
 
   install = .RexxInfo~executable~parent
-  do samples over "samples/", "../samples/", "../share/ooRexx/", "../Shared/ooRexx/"
+  do samples over "samples/", "../samples/", "../share/ooRexx/samples/", "../Shared/ooRexx/samples/"
     sample = .File~new(samples || name, install)
     if sample~exists then
       return sample~absolutePath
