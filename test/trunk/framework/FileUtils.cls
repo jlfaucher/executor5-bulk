@@ -110,21 +110,25 @@
   CMake build tree definitions
   set (CMAKE_SAMPLES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/samples)
   set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
   CMake install definitions (Windows, Unix)
   set (INSTALL_SAMPLES_DIR samples)
-  set (INSTALL_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME})
+  set (INSTALL_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/samples)
 
   if the executable is ...               the samples are located in ...
-  C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\
-  C:\...\ooRexxBuild\rel\bin\rexx.exe    C:\...\ooRexxBuild\rel\samples\ (*)
-  /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/
-  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/ (*)
-  /Applications/.../bin/rexx             /Applications/.../share/ooRexx/ (?)
-  /Users/.../Applications/.../bin/rexx   /Users/.../Applications/.../share/ooRexx/ (?)
-  /Library/Frameworks/.../Commands/rexx  /Library/Frameworks/.../Shared/ooRexx/
+  C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\ (Win installed)
+  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\samples\ (*) (Win build)
+  /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/samples/ (Unix Linux)
+  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/ (*) (?)
+  /Applications/.../bin/rexx             /Applications/.../share/ooRexx/samples/ (macOS/Darwin installed)
+  /Users/.../Applications/.../bin/rexx   /Users/.../Applications/.../share/ooRexx/samples/ (macOS/Darwin installed)
+  /Library/Frameworks/.../Commands/rexx  /Library/Frameworks/.../Shared/ooRexx/samples/ (BSF4ooRexx installed)
+  /.../oorexxbuild/bin/rexx.exe      /.../oorexxbuild/samples/ (macOS/Darwin build)
 
   (*) currently not all samples are copied into the build tree, e. g. those
       Windows-specific samples in misc, ole, oodialog, or ooSQLite
+  ** 32 or 64 depending on bitness of Win
+
   */
 
   install = .RexxInfo~executable~parent
