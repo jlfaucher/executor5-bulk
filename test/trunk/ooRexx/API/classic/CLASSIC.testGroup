@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -192,13 +192,15 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'test_10_pullfrom_queue_2'
   expose t1
   q1 = 'MyTestQueue1'
-  -- add to a named queue
-  t1~testaddqueue(q1, 'FIFO test data' || d2c(0) || 'more data', 0) -- 0 = FIFO
-  self~assertEquals(0, t1~retc)
-  -- pull from a named queue
-  t1~testpullfromqueue(q1)
-  self~assertEquals(0, t1~retc)
-  self~assertEquals('FIFO test data', t1~flag) -- flag is the pulled data
+  do data over "test data", "", " ", '00'x, "contains" || '00'x || "null"
+    -- add to a named queue
+    t1~testaddqueue(q1, data, 0) -- 0 = FIFO
+    self~assertEquals(0, t1~retc)
+    -- pull from a named queue
+    t1~testpullfromqueue(q1)
+    self~assertEquals(0, t1~retc)
+    self~assertEquals(data, t1~flag) -- flag is the pulled data
+  end
 
 ::method 'test_11_delete_queue'
   expose t1

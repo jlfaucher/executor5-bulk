@@ -3643,6 +3643,8 @@ be pulled.
 </para></listitem></varlistentry>
 <varlistentry><term>DataBuf  (PRXSTRING) - output</term>
 <listitem><para>is the address of an RXSTRING for the returned value.
+The caller is responsible for releasing the RXSTRING storage with
+<xref linkend="rexxfreemem" xrefstyle="template:RexxFreeMemory" />(DataBuf->strptr).
 </para></listitem></varlistentry>
 <varlistentry><term>DateTime  (REXXDATETIME *) - output</term>
 <listitem><para>is the address of the entry's date and time stamp.  If the
@@ -3764,7 +3766,7 @@ or delete a queue named SESSION.</entry>
 <secondary>RexxPullQueue</secondary></indexterm>
 <para>RexxPullQueue removes the top entry from the queue and returns it to the
 caller.  RexxPullQueue is deprecated in favor of its more portable
-replacement RexxPullFromQueue (<xref linkend="rpulfque" />).
+replacement <xref linkend="rpulfque" xrefstyle="select:title"/>.
 </para>
 <programlisting language="C++">
 retc = RexxPullQueue(QueueName, DataBuf, DateTime, WaitFlag);

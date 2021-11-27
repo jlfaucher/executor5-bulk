@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,12 +39,8 @@
 ::class TestQueueFuncs public
 
 ::attribute retc get
-expose retc
-return retc
-
 ::attribute flag get -- this attribute contains method specific data
-expose flag
-return flag
+::attribute timestamp get -- RxxPullFromQueue timestamp info
 
 ::method TestCreateQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestCreateQueue"
 ::method TestOpenQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestOpenQueue"

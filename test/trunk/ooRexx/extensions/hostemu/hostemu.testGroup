@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2016-2016 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2016-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -40,79 +40,70 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-    parse source . . fileSpec;
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.hostemu.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-    group = .TestGroup~new(fileSpec)
-
-    group~add(.hostemu.testGroup)
-
-    signal on syntax name packageErr
-    .context~package~loadLibrary("hostemu")
-
-    if group~isAutomatedTest then return group
-
-    testResult = group~suite~execute~~print
-
-return testResult
-
-packageErr:
-  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
-  err~setLine(sigl)
-  err~conditionObject = condition('O')
-  c = err~conditionObject 
-  err~msg = "Failed to load external library 'hostemu' needed for this test group."
-
-  if group~isAutomatedTest then return err
-
-  err~print("Test group exception", .false)
-return .ooTestResult~new(5)~~addException(err)
-
--- End of entry point.
+::requires "hostemu" LIBRARY
 
 ::requires 'ooTest.frm'
 ::class 'hostemu.testgroup' subclass ooTestCase public
 
 ::method activate class
-  expose session diskrFile diskrFileLine diskrFileLines diskrFileLastLine diskwFile
-  -- get access to SESSION queue
-  session = .RexxQueue~new
+  expose diskrFile diskrLines diskwFile
   -- define DISKW test file name
   parse source . . sourcefile
   -- we need to quote file names containing slashes, so let's always quote
   diskrFile = '"'sourcefile'"'
-  diskrFileLines = sourceline()
-  diskrFileLastLine = sourceline(sourceline())
-  diskrFileLine = .context~package~source
+  diskr = .Stream~new(sourcefile)
+  diskr~open("read shared")
+  diskrLines = diskr~arrayIn
+  diskr~close
   diskwFile = '"'filespec("location", sourcefile) || "diskw.tmp" || '"'
 
-::attribute session get class
 ::attribute diskrFile get class
-::attribute diskrFileLines get class
-::attribute diskrFileLine get class
-::attribute diskrFileLastLine get class
+::attribute diskrLines get class
 ::attribute diskwFile get class
-
-::method emptySessionQueue
-  -- empty SESSION queue
-  self~class~session~empty
 
 ::attribute diskrFile get
   return self~class~diskrFile
 
-::attribute diskrFileLines get
-  return self~class~diskrFileLines
-
-::attribute diskrFileLine get
-  return self~class~diskrFileLine
-
-::attribute diskrFileLastLine get
-  return self~class~diskrFileLastLine
+::attribute diskrLines get
+  return self~class~diskrLines
 
 ::attribute diskwFile get
   return self~class~diskwFile
 
 ::method diskwFileDelete
   .File~new(self~class~diskwFile~strip(, '"'))~delete
+
+-- get access to SESSION queue
+::constant session (.RexxQueue~new)
+
+-- also test empty lines for [bugs:#1786] RexxPullFromQueue() returning invalid data for a null
+::constant fileLines ("line 1", "", " ", "fourth line", "last line")
+
+::method toArray
+  use strict arg stem
+  size = stem[0]
+  array = .Array~new(size)
+  do i = 1 to size
+    array~append(stem[i])
+  end
+  return array
+
+::method toStem
+  use strict arg array
+  stem = .Stem~new
+  stem[0] = array~items
+  do i = 1 to array~items
+    stem[i] = array[i]
+  end
+  return stem
 
 
 -- EXECIO "immediate command" tests
@@ -139,104 +130,79 @@ return .ooTestResult~new(5)~~addException(err)
 -- read file into SESSION queue, fifo is default
 ::method test_execio_diskr_default
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "execio * diskr" self~diskrFile "(finis"
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines, queued())
-  do queued() 
-    parse pull line
-  end
-  self~assertEquals(self~diskrFileLastLine, line, "last line should be last line in queue")
+  self~assertSameList(self~diskrLines, self~session~makeArray)
 
 -- read file into SESSION queue, fifo
 ::method test_execio_diskr_fifo
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "EXECIO * DISKR" self~diskrFile "(FINIS FIFO"
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines, queued())
-  do queued() 
-    parse pull line
-  end
-  self~assertEquals(self~diskrFileLastLine, line, "last line should be last line in queue")
+  self~assertSameList(self~diskrLines, self~session~makeArray)
 
 -- read file into SESSION queue, lifo
 ::method test_execio_diskr_lifo
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "execio * diskr" self~diskrFile "(finis lifo"
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines, queued())
-  parse pull line
-  self~assertEquals(self~diskrFileLastLine, line, "last line should be first line in a LIFO queue")
-  self~emptySessionQueue
+  diskrReversed = .CircularQueue~new(self~diskrLines~items)~appendAll(self~diskrLines)~makeArray("lifo")
+  self~assertSameList(diskrReversed, self~session~makeArray)
 
 -- read file into stem
 ::method test_execio_diskr_stem
   address "hostemu"
   "execio * diskr" self~diskrFile "(finis stem STEM."
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines, stem.0)
-  self~assertEquals(self~diskrFileLastLine, stem.[stem.0], "last line should be last line in stem")
+  self~assertSameList(self~diskrLines, self~toArray(stem.))
 
 -- read first two lines of file into queue
 ::method test_execio_diskr_two_lines_fifo
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "execio 2 diskr" self~diskrFile "(fifo finis"
   self~assertEquals(0, rc)
-  self~assertEquals(2, queued())
-  parse pull line
-  parse pull line
-  self~assertEquals(self~diskrFileLine[2], line, "second line should be last line in queue")
+  self~assertSameList(self~diskrLines~section(1, 2), self~session~makeArray)
 
--- read first line of file into queue
+-- read first two lines of file into stem
 ::method test_execio_diskr_two_lines_stem
   address "hostemu"
   "execio 2 diskr" self~diskrFile "(stem STEM. finis"
   self~assertEquals(0, rc)
-  self~assertEquals(2, stem.0)
-  self~assertEquals(self~diskrFileLine[2], stem.2, "second line should be in second stem")
+  self~assertSameList(self~diskrLines~section(1, 2), self~toArray(stem.))
 
 -- read file, starting with second line, into queue
 ::method test_execio_diskr_start_at_two_fifo
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "execio * diskr" self~diskrFile 2 "(fifo finis"
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines - 1, queued())
-  parse pull line
-  self~assertEquals(self~diskrFileLine[2], line, "second line should be first line in queue")
-  self~emptySessionQueue
+  self~assertSameList(self~diskrLines~section(2), self~session~makeArray)
 
 -- read file, starting with second line, into stem
 ::method test_execio_diskr_start_at_two_stem
   address "hostemu"
-  self~emptySessionQueue
   "execio * diskr" self~diskrFile 2 "(stem stem. finis"
   self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines - 1, stem.0)
-  self~assertEquals(self~diskrFileLine[2], stem.1, "second line should be first line in queue")
+  self~assertSameList(self~diskrLines~section(2), self~toArray(stem.))
 
 -- read four lines of file, starting with third line, into queue
 ::method test_execio_diskr_start_at_three_read_four_fifo
   address "hostemu"
-  self~emptySessionQueue
+  self~session~empty
   "execio 4 diskr" self~diskrFile 3 "(fifo finis"
   self~assertEquals(0, rc)
-  self~assertEquals(4, queued())
-  parse pull line
-  self~assertEquals(self~diskrFileLine[3], line, "third line should be first line in queue")
-  self~emptySessionQueue
+  self~assertSameList(self~diskrLines~section(3, 4), self~session~makeArray)
 
 -- read four lines of file, starting with third line, into stem
 ::method test_execio_diskr_start_at_three_read_four_stem
   address "hostemu"
-  self~emptySessionQueue
   "execio 4 diskr" self~diskrFile 3 "(stem stem. finis"
   self~assertEquals(0, rc)
-  self~assertEquals(4, stem.0)
-  self~assertEquals(self~diskrFileLine[3], stem.1, "third line should be first line in stem")
+  self~assertSameList(self~diskrLines~section(3, 4), self~toArray(stem.))
 
 -- EXECIO SKIP should ignore STEM
 ::method test_execio_diskr_stem_skip
@@ -252,8 +218,7 @@ return .ooTestResult~new(5)~~addException(err)
   "execio" skip "diskr" self~diskrFile "(skip"
   self~assertEquals(0, rc)
   "execio * diskr" self~diskrFile "(finis stem STEM."
-  self~assertEquals(0, rc)
-  self~assertEquals(self~diskrFileLines - skip, stem.0)
+  self~assertSameList(self~diskrLines~section(6), self~toArray(stem.))
 
 
 -- EXECIO DISKW tests
@@ -261,10 +226,10 @@ return .ooTestResult~new(5)~~addException(err)
 -- write file from SESSION queue, read in again and compare
 ::method test_execio_diskw_default
   address "hostemu"
-  self~emptySessionQueue
-  lines = 4
-  do i = 1 to lines
-    queue "queued line" i              -- need to QUEUE, not PUSH
+  self~session~empty
+  do line over self~fileLines
+    -- need to QUEUE, not PUSH
+    queue line
   end
   -- EXECIO DISKW will append, so remove temporary file
   self~diskwFileDelete
@@ -272,32 +237,23 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, rc)
   "execio * diskr" self~diskwFile "(finis stem diskr."
   self~assertEquals(0, rc)
-  self~assertEquals(lines, diskr.0)
-  do i = 1 to lines
-    self~assertEquals("queued line" i, diskr.i)
-  end
+  self~assertSameList(self~fileLines, self~toArray(diskr.))
   self~diskwFileDelete
 
 -- write file from stem, read in again and compare
 ::method test_execio_diskw_stem
   address "hostemu"
-  lines = 5
   -- create stem with more items than what we'll write out
-  diskw.0 = lines * 2
-  do i = 1 to diskw.0
-    diskw.i = "stem line" i
-  end
+  diskw. = self~toStem(self~fileLines)
+  lines = diskw.0 - 1
   -- EXECIO DISKW will append, so remove temporary file
   self~diskwFileDelete
   "execio" lines "diskw" self~diskwFile "(finis stem diskw."
   self~assertEquals(0, rc)
   "execio * diskr" self~diskwFile "(finis stem diskr."
   self~assertEquals(0, rc)
-  self~assertEquals(lines, diskr.0)
-  do i = 1 to lines
-    self~assertEquals(diskw.i, diskr.i)
-  end
+  self~assertSameList(self~fileLines~section(1, lines), self~toArray(diskr.))
   self~diskwFileDelete
 
-::options novalue error
--- tests in here check against this last source line, as self~diskrFileLines will show first line as "" instead of hashbang
+
+::options all syntax
