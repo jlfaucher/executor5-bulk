@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,17 +39,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-
-  group = .TestGroup~new(s)
-  group~add(.Macrospace.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Macrospace.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
 
@@ -65,12 +61,15 @@ return testResult
    SysSaveRexxMacroSpace
 */
 
-::constant macroName "Macrospace.rex"            -- should be in the same directory as this test
-::attribute macroPath get                        -- full path of "Macrospace.rex"
-  return self~class~macroPath
-::attribute macroPath get class
+-- we have two test programs in the same directory as our package
+-- Macrospace.rex (valid Rexx), and Macrospace.norex (invalid Rexx)
+::constant macroName "Macrospace.rex"
+::constant macroPath (.File~new(self~macroName, .File~new(.context~package~name)~parent))
 ::constant macroRc 99                            -- "Macrospace.rex" will return this rc
-::constant noMacroPath "Macrospace.norex"        -- a macro that doesn't exist
+
+-- full path to our invalid Rexx program
+::constant noMacroPath (.File~new("Macrospace.norex", .File~new(.context~package~name)~parent))
+
 ::constant macroSpacePath "Macrospace.img"       -- a macrospace we will save (and load from)
 ::constant noMacroSpacePath "Macrospace.noimg"   -- a macrospace that doesn't exist
 ::constant default "B"                           -- default 'option' value
@@ -95,18 +94,7 @@ return testResult
 ::constant sourceNotFound 7
 
 
--- set up 'macroPath'
-::method activate class
-  expose arg macroPath
-  forward class (super) continue
-  -- 'macroName' should be in the same directory as this test is
-  -- but in general, we will not be running with this as the current directory
-  -- so we need to figure out the absolute path to 'macroName'
-  parse source . . path
-  macroPath = filespec('path', path) || self~macroName
-
-
--- test availability of rexxutil Macrospce functions
+-- test availability of rexxutil Macrospace functions
 ::method test_functions
   do action over "Add" , "Drop" , "Query" , "Reorder"
     function = "Sys"||action||"RexxMacro"
@@ -116,8 +104,10 @@ return testResult
     function = "Sys"||action||"RexxMacroSpace"
     self~assertFalse(rxfuncquery(function), function "must be available")
   end
-  -- also see if we have an existing test macro
-  self~assertTrue(.File~new(self~macroPath)~canRead, "macro" self~macroPath "should be readable")
+  -- our two Rexx test files should exist
+  self~assertTrue(SysFileExists(self~macroPath), self~macroPath "should exist")
+  self~assertTrue(SysFileExists(self~noMacroPath), self~noMacroPath "should exist")
+
 
 -- SysAddRexxMacro() tests
 ::method test_add_no_arg_too_few
@@ -136,8 +126,13 @@ return testResult
   self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_null", ""))
   self~assertEquals("", SysQueryRexxMacro("test_add_null"))
 
-::method test_add_arg_path_not_existing
-  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_nopath", self~noMacroPath, "B"))
+::method test_add_arg_path_invalid
+  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_invalid", "/"), "b")
+  self~assertEquals("", SysQueryRexxMacro("test_add_null"))
+
+::method test_add_arg_path_no_valid_rexx
+  self~assertTrue(SysFileExists(self~noMacroPath))
+  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_norexx", self~noMacroPath, "B"))
   self~assertEquals("", SysQueryRexxMacro("test_add_nopath"))
 
 ::method test_add_arg_option_illegal
@@ -179,7 +174,12 @@ return testResult
   self~assertEquals(self~OK, SysAddRexxMacro("test_add_before", self~macroPath, "a"))
   self~assertEquals("A", SysQueryRexxMacro("test_add_before"))
 
--- TODO: test macros are also available to a different process
+::method test_add_other_interpreter
+  -- macros should be available to another Rexx interpreter
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_other", self~macroPath))
+  .RexxInfo~executable '-e "return test_other()"'
+  self~assertRc(self~macroRc, rc, "the test_other macro should be available")
 
 
 -- SysDropRexxMacro() tests
@@ -289,10 +289,6 @@ return testResult
 ::method test_load
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
 
-  -- remove saved macrospace
-  macroSpace = .File~new(self~macroSpacePath)
-  macroSpace~delete
-
   -- add two macros, save, run, and clear
   self~assertEquals(self~OK, SysAddRexxMacro("test_load_def", self~macroPath))
   self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
@@ -306,8 +302,7 @@ return testResult
   self~assertEquals(self~macroRc, test_load_after())
   self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
 
-  -- remove saved macrospace
-  macroSpace~delete
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
 
   -- assert that all three macros are there, and run
   self~assertEquals("A", SysQueryRexxMacro("test_load_after"), "macro 'test_load_after' should have survived load()")
@@ -328,21 +323,46 @@ return testResult
   call SysSaveRexxMacroSpace "", ""
 
 ::method test_save_file_null
-  -- known bug: SysSaveRexxMacroSpace() returns RXMACRO_OK for invalid file name
-  -- no bug report opened yet
-  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(""), "tracker bug #....")
+  self~assertEquals(self~OK, SysAddRexxMacro("test_file_null", self~macroPath))
+  -- cannot save to an invalid file name
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(""))
 
 ::method test_save_empty
-  -- remove saved macrospace
-  macroSpace = .File~new(self~macroSpacePath)
-  macroSpace~delete
-
-  -- known bug: saving an empty macrospace will return RXMACRO_OK, but not write a file
-  -- no bug report opened yet
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
-  self~assertEquals(self~OK, SysSaveRexxMacroSpace(self~macroSpacePath))
-  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(self~macroSpacePath), "tracker bug #....")
-  self~assertFalse(macroSpace~exists)
+  -- cannot save an empty macrospace
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertFalse(SysFileExists(self~macroSpacePath))
+
+::method test_save
+  self~assertEquals(self~OK, SysAddRexxMacro("test_save", self~macroPath))
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertTrue(SysFileExists(self~macroSpacePath))
+  -- macro still available after a save
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save"))
+
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_save_overwrite", self~macroPath))
+  -- save overwrites an existing macrospace file
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertTrue(SysFileExists(self~macroSpacePath))
+  self~assertEquals("", SysQueryRexxMacro("test_save"))
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save_overwrite"))
+
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
+
+::method test_save_many
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  parse source . . path
+  do i = 1 to 100
+    self~assertEquals(self~OK, SysAddRexxMacro("test_save_" || i, path))
+  end
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save_42"))
+
+  -- save/reload large macrospace file
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
+
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
 
 
-::options novalue error
+::options all syntax error condition
