@@ -7824,10 +7824,12 @@ other instances cannot be created or copied.
   </para></listitem>
   <listitem><para>
     the interpreter's
+    <xref linkend="mthRexxInfoDebug" xrefstyle="select:title"/>,
     <xref linkend="mthRexxInfoPlatform" xrefstyle="select:title"/>,
     addressing mode of its <xref linkend="mthRexxInfoArchitecture" xrefstyle="select:title"/>,
-    full <xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/> path, and
-    shared/dynamic <xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/>,
+    full <xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/> path,
+    shared/dynamic <xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/>, and
+    whether the interpreter is a <xref linkend="mthRexxInfoDebug" xrefstyle="select:title"/> version,
   </para></listitem>
   <listitem><para>
     and the platform-specific values for
@@ -7870,6 +7872,7 @@ other instances cannot be created or copied.
    <member><xref linkend="mthRexxInfoCopy" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthRexxInfoDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoDebug" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoDigits" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoEndofline" xrefstyle="select:title"/></member>
@@ -7974,6 +7977,23 @@ which both also return this date as the third to fifth token of their result.
 <para><example>
 <title>RexxInfo class &mdash; date method</title>
 <programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2016 /* e. g. */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method debug ================================ -->
+<section id="mthRexxInfoDebug" revisionflag="added"><title>&added50;debug</title>
+<para>
+<indexterm><primary>debug method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>debug method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_debug.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true if the interpreter is a debug version, .false if it is a release version.
+</para>
+<para><example>
+<title>RexxInfo class &mdash; debug method</title>
+<programlisting><![CDATA[say .RexxInfo~debug    -- 0 /* release version */, 1 /* debug version */
 ]]></programlisting></example></para>
 </section>
 
