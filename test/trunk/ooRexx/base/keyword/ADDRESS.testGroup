@@ -224,25 +224,20 @@ else
 -- the "path" environment should only search PATH, and neither any
 -- system directory nor the directory of the current executable
 ::method test_path_command
-   -- to test whether this works, we clear the PATH environment variable
-   -- this is a pretty dangerous thing, as it will break a lot of things
-   -- if not reversed immediately
-   path = value("PATH", .nil, "environment") -- clear PATH
-   -- with no PATH set, we should be unable to locate sh or cmd.exe
-   address "path" (self~command_noshell)
-   call value "PATH", path, "environment" -- restore PATH
-   -- @@BUG: this neither works on Windows nor Linux
-   self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH")
-   self~assertSame(-1, .rs)
-
-/* @@BUG: as above, neither works on Windows nor Linux
-   path = value("PATH", .nil, "environment") -- clear PATH
-   -- we should also be unable to locate rexx[.exe]
-   call value "PATH", path, "environment" -- restore PATH
-   address "path" (filespec("name", .RexxInfo~executable))
-   self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH"
-   self~assertSame(-1, .rs)
-*/
+   -- we should be unable to locate sh/CMD or rexx
+   do command over self~command_noshell, .RexxInfo~executable~name
+     -- note that on Unix there is a difference between an empty PATH
+     -- environment variable and a missing PATH.  The former works as we
+     -- expect, while the latter will search e. g. /usr/bin
+     path = value("PATH", "", "environment") -- clear PATH
+     -- with no PATH set, we should be unable to locate sh or cmd.exe
+     address "path" (command)
+     -- restore PATH immediately, otherwise it'll break a lot of things
+     call value "PATH", path, "environment" -- restore PATH
+     -- doesn't work on Windows, see [bugs:#1710]
+     self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH")
+     self~assertSame(-1, .rs)
+   end
 
 -- an invalid environment should raise FAILURE
 -- rexxref says: "An attempt to enter a command in an unknown command environment
@@ -251,7 +246,6 @@ else
    defaultEnvironment = address()
    signal on error
    signal on failure
-   trace off                           -- we don't want to see FAILURE trace output
    address "environment_not_exists" self~command_exists
    self~assertFail("an invalid environment should have raised FAILURE")
 
@@ -313,7 +307,6 @@ else
   environments = "1::" || address(), "1:sh", -
     "0:bsh", "0:bash", "0:ksh", "0:tcsh", "0:zsh", "1:command:sh", "1:system:sh"
 
-  trace off                            -- we don't want to see FAILURE trace output
   do env over environments
     parse var env required ":" shell ":" echo
     if echo = "" then
@@ -698,7 +691,6 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
 -- ADDRESS PATH
 
 ::method test_environment_path_null
-  trace off                            -- we don't want to see FAILURE trace output
   address "path" ""
   self~assertSame(.rs, -1, "address PATH null command is expected to fail")
 
