@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1799,6 +1799,12 @@ self~assertSame(time('L', time, format), "23:59:59.999999", "long  / subtest # 3
 self~assertSame(time('M', time, format), "1439", "long  / subtest # 4")
 self~assertSame(time('N', time, format), "23:59:59", "long  / subtest # 5")
 self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
+
+::method test_time_actual_time_defined
+  -- TIME(x) should be the same as TIME(x, TIME(x), x)
+  do option over "CFHLMNOST"~makeArray("") -- all options, except E and R
+    self~assertSame(time(option), time(option, time(option), option), "TIME("option") should be TIME("option", TIME("option")," option")")
+  end
 
 
 ::class "TIME.long.testGroup" subclass ooTestCase public
