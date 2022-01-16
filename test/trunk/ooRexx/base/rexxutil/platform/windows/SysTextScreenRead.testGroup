@@ -1,0 +1,109 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2021 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysTextScreenRead.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysTextScreenRead.testgroup subclass ooTestCase public
+
+::method test_screenread_args_none
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysTextScreenRead
+
+::method test_screenread_args_one
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysTextScreenRead 0
+
+::method test_screenread_args_too_many
+  self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
+  call SysTextScreenRead 0, 0, 0, 0
+
+
+-- the current drive should be the default if no argument is given
+::method test_no_args
+  cd = directory()
+  do d over "C:", "\\localhost\c$"
+    call directory d
+    self~assertSame(SysTextScreenReadInfo(d), SysTextScreenReadInfo())
+    self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
+    self~assertSame(SysFileSystemType(d), SysFileSystemType())
+  end
+  call directory cd
+
+-- null string should be returned for invalid or unused drive
+::method test_no_drive
+  do d over "", SysTextScreenReadMap(, "free")~word(1)
+    self~assertSame("", SysTextScreenReadInfo(d), "SysTextScreenReadInfo" d)
+    self~assertSame("", SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame("", SysFileSystemType(d), "SysFileSystemType" d)
+  end
+
+-- there are a bunch of ways to specify a drive (i. e. volume)
+::method test_volume_specifications
+  -- https://docs.microsoft.com/en-us/previous-versions/windows/desktop/vdswmi/win32-volume
+  -- Win32_Volume may be deprecated, but it gives us what we need: the Volume GUID
+  disk = self~wmi('SELECT * FROM Win32_Volume WHERE DriveLetter = "C:"')
+  self~assertSame("OLEObject", disk~class~id, disk)
+
+  -- this test requires that drive C: actually has a label set
+  info = disk~FreeSpace disk~Capacity disk~Label -- drive free total label
+  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", disk~DeviceId, -
+    "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
+    "\\.\UNC\localhost\c$"
+    -- c is returned as c:, any trailing backslash is removed
+    vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
+    self~assertSame(vol info, SysTextScreenReadInfo(volume), "SysTextScreenReadInfo" volume)
+    self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
+    self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
+  end
+
+-- test returned values for all drives in use
+
+
+::options all syntax

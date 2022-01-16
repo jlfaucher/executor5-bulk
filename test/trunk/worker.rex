@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1209,13 +1209,13 @@ return .ooTestConstants~SUCCESS_RC
   say '  -a  -DallTestTypes=bool           Include all test types'
   say '  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...'
   say '  -e  -DtestContainerExt=EXT        change default test container ext to EXT'
-  say '  -f  -DsingleFile=NAME             Excute the single NAME test group'
+  say '  -f  -DsingleFile=NAME             Execute the single NAME test group'
   say '  -F  -DfileList=N1 N2 ...          Execute the N1 N2 ... test groups'
   say '  -I, -DtestTypeIncludes=T1 T2 ...  Include test types T1 T2 ... keyword "all"'
   say '                                    indicates all test types'
   say '  -n  -DnoTests=bool                No tests to execute (deliberately)'
   say '  -o  -DoptionsFile=FILE            Use FILE as options file, not default file'
-  say '  -O  -DnoOptonsFile=bool           Do not use any options file'
+  say '  -O  -DnoOptionsFile=bool          Do not use any options file'
   say '  -p  -DfilesWithPattern=PA         Execute test groups matching PA'
   say '  -R, -DtestCaseRoot=DIR            DIR is root of search tree'
   say '  -x  -DexcludeFileList=N1 N2 ...   Exclude the N1 N2 ... test groups'

@@ -347,6 +347,19 @@ else
 
   y = .Datetime~new~year
   do date over "1969-12-31", "1970-01-01", y || "-01-01", y || "-02-28", y || "-08-08", y || "-12-31"
+    -- on NetBSD, most probably due to the mktime() (time_t)-1 ambiguity,
+    -- a UTC file timestamp of 1969-12-31T23:59:59 cannot be set
+    -- e. g. in a GMT+1 timezone:
+    -- touch -m -t 197001010059.59 file
+    -- touch: out of range or illegal time specification: [[CC]YY]MMDDhhmm[.SS]
+    -- timestamps plus/minus one second work
+    -- touch -m -t 197001010059.58 file
+    -- touch -m -t 197001010100.00 file
+    -- still, lastModified= returns .true, so we skip this on NetBSD
+    if .RexxInfo~platform~caselessStartsWith("NetBSD"), -
+       date == "1969-12-31" | date == "1970-01-01" then
+      iterate
+
     d00 = .DateTime~fromStandardDate(date, "-")
     d59 = d00~addHours(1)~addSeconds(-1)
     do 24
@@ -386,21 +399,59 @@ else
   end
 
 
--- absolutePath tests
+-- compareTo tests
+
+-- too many arguments
+::method test_compareto_no_arg
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .File~new(".")~compareTo
+
+::method test_compareto_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method
+  .File~new(".")~compareTo(.nil, .nil)
+
+::method test_compareto
+  root = .File~listRoots[1]
+  case = .File~isCaseSensitive
+  aLower = .File~new("a", root)
+  aUpper = .File~new("A", root)
+  bUpper = .File~new("B", root)
+  one = .File~new(1, root)
+  self~assertSame(0, aLower~compareTo(aLower))
+  self~assertTrue(aLower = aLower)
+  self~assertSame(case~?(1, 0), aLower~compareTo(aUpper))
+  self~assertSame(case~?(.false, .true), aLower < bUpper)
+  self~assertSame(case~?(1, -1), aLower~compareTo(bUpper))
+  self~assertSame(-1, one~compareTo(aLower))
+  self~assertTrue(one < aLower)
+  sorted = ""
+  do file over (aLower, bUpper, one)~sort
+    sorted = sorted file~name
+  end
+  self~assertSame(case~?("1 B a", "1 a B"), sorted~strip)
+
+
+-- absolutePath/absoluteFile tests
 
 -- too many arguments
 ::method test_absolutepath_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~new(".")~absolutePath(.nil)
 
+::method test_absolutefile_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~absoluteFile(.nil)
+
 
 -- normalization
 ::method test_absolutepath
   -- normalization should remove trailing slashes
-  current = .File~new(".")~absolutePath
   do path over ".", "./", ".//"
     current = .File~new(path)~absolutePath
     self~assertEquals(directory(), current, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current)
+    current = .File~new(path)~absoluteFile
+    self~assertIsA(current, .File, current~string)
+    self~assertEquals(directory(), current~string, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current~string)
   end
 
   if .File~separator = "/" then do
