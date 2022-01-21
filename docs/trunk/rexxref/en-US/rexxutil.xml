@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -2010,7 +2010,7 @@ with placeholders replaced with specified message inserts.
 </para>
 <para>SysGetMessage is implemented on Unix-like systems only.
 It always retrieves messages from the catalog's message set 1.
-To retrieves messages from a specified message set, use
+To retrieve messages from a specified message set, use
 <xref linkend="utlSysgetmessagex" xrefstyle="select:title"/>.
 </para>
 <para>To create a Unix message catalog use the
@@ -3764,28 +3764,36 @@ only)</title>
 </imageobject>
 </mediaobject>
 
-<para>Reads characters from a specified screen location. These include any
-<xref linkend="line-end" xrefstyle="template:line-end"/> characters
-if the number of character reads spans multiple lines.</para>
+<para>Returns characters from a specified console screen buffer location.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">row</emphasis></term>
 <listitem><para>The row from which to start reading.
+Console screen buffer rows are numbered from top to bottom starting
+with <literal>0</literal>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">col</emphasis></term>
 <listitem><para>The column from which to start reading.
+Console screen buffer columns are numbered from left to right starting
+with <literal>0</literal>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">len</emphasis></term>
-<listitem><para>The number of characters to read. The default is to read to the
-end of the screen.
+<listitem><para>The number of characters to read.
+The default is to read to the end of the console screen buffer.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Note that, on error, a  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.</para>
-<para>Limitations: This function reads in only screen characters
+
+<note><title>Limitation</title>
+<para>This function reads in only screen characters
 and does not consider the color attributes of each character read. When
 restoring a character string to the screen with SAY or the CHAROUT built-in
-function, the previous color settings are lost.</para>
+function, the previous color settings are lost.
+</para></note>
+<note><title>Note</title>
+<para>The Windows API used by function is not recommended any more.
+</para></note>
+
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenRead</secondary>
 <tertiary>example</tertiary></indexterm>
@@ -3796,11 +3804,12 @@ function, the previous color settings are lost.</para>
 <example id="ex.systextscreenread">
 <title>RexxUtil &mdash; SysTextScreenRead</title>
 <programlisting>
-/* Reading the entire screen */
+// read the entire console screen buffer
 screen = SysTextScreenRead(0, 0)
 
-/* Reading one line */
-line = SysTextScreenRead(2, 0, 80)
+// read one screen buffer line
+parse value SysTextScreenSize() with rows columns
+line = SysTextScreenRead(2, 0, columns)
 </programlisting>
 </example>
 </section>

@@ -52,6 +52,8 @@ else
 ::requires 'ooTest.frm'
 ::class SysTextScreenRead.testgroup subclass ooTestCase public
 
+::constant noConsole (SysCurPos()~length = 0)
+
 ::method test_screenread_args_none
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required
   call SysTextScreenRead
@@ -64,46 +66,50 @@ else
   self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
   call SysTextScreenRead 0, 0, 0, 0
 
+::method test_screenread_row_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(-1, 0))    -- row
 
--- the current drive should be the default if no argument is given
-::method test_no_args
-  cd = directory()
-  do d over "C:", "\\localhost\c$"
-    call directory d
-    self~assertSame(SysTextScreenReadInfo(d), SysTextScreenReadInfo())
-    self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
-    self~assertSame(SysFileSystemType(d), SysFileSystemType())
-  end
-  call directory cd
+::method test_screenread_col_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(0, -1))    -- col
 
--- null string should be returned for invalid or unused drive
-::method test_no_drive
-  do d over "", SysTextScreenReadMap(, "free")~word(1)
-    self~assertSame("", SysTextScreenReadInfo(d), "SysTextScreenReadInfo" d)
-    self~assertSame("", SysVolumeLabel(d), "SysVolumeLabel" d)
-    self~assertSame("", SysFileSystemType(d), "SysFileSystemType" d)
-  end
+::method test_screenread_len_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(0, 0, -1)) -- len
 
--- there are a bunch of ways to specify a drive (i. e. volume)
-::method test_volume_specifications
-  -- https://docs.microsoft.com/en-us/previous-versions/windows/desktop/vdswmi/win32-volume
-  -- Win32_Volume may be deprecated, but it gives us what we need: the Volume GUID
-  disk = self~wmi('SELECT * FROM Win32_Volume WHERE DriveLetter = "C:"')
-  self~assertSame("OLEObject", disk~class~id, disk)
+::method test_screenread_null
+  if self~noConsole -- the following tests require a console
+    then return
+  self~assertSame("", SysTextScreenRead(0, 0, 0))  -- zero length
+  parse value SystextScreenSize() with rows cols
+  self~assertSame("", SysTextScreenRead(rows - 1, cols))
+  self~assertSame("", SysTextScreenRead(rows, 0))
+  self~assertSame("", SysTextScreenRead(0, cols))
+  self~assertSame("", SysTextScreenRead(rows, cols))
 
-  -- this test requires that drive C: actually has a label set
-  info = disk~FreeSpace disk~Capacity disk~Label -- drive free total label
-  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", disk~DeviceId, -
-    "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
-    "\\.\UNC\localhost\c$"
-    -- c is returned as c:, any trailing backslash is removed
-    vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
-    self~assertSame(vol info, SysTextScreenReadInfo(volume), "SysTextScreenReadInfo" volume)
-    self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
-    self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
-  end
+::method test_screenread
+  if self~noConsole -- the following tests require a console
+    then return
+  parse value SystextScreenSize() with rows cols
+  lastRow = rows - 1
+  lastCol = cols - 1
+  -- no length specified
+  self~assertSame(1, SysTextScreenRead(lastRow, lastCol)~length)
+  self~assertSame(2, SysTextScreenRead(lastRow, lastCol - 1)~length)
+  self~assertSame(11, SysTextScreenRead(lastRow, lastCol - 10)~length)
+  self~assertSame(cols, SysTextScreenRead(lastRow, 0)~length)
+  self~assertSame(cols - 1, SysTextScreenRead(lastRow, 1)~length)
+  self~assertSame(cols + 1, SysTextScreenRead(lastRow - 1, lastCol)~length)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0)~length)
+  self~assertSame(rows * cols - 3 * cols - 5, SysTextScreenRead(3, 5)~length)
 
--- test returned values for all drives in use
+  -- length specified
+  self~assertSame(1, SysTextScreenRead(0, 0, 1)~length)
+  self~assertSame(10, SysTextScreenRead(0, 0, 10)~length)
+  self~assertSame(100, SysTextScreenRead(9, 9, 100)~length)
+  self~assertSame(rows * cols - 1, SysTextScreenRead(0, 0, rows * cols - 1)~length)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0, rows * cols)~length)
 
 
 ::options all syntax
