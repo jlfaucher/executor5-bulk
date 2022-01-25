@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -71,7 +71,7 @@ else
   cd = directory()
   do d over "C:", "\\localhost\c$"
     call directory d
-    self~assertSame(SysDriveInfo(d), SysDriveInfo())
+    self~assertSame(SysDriveInfo(d), SysDriveInfo(), "SysDriveInfo() test expected to sometimes fail with a small free space delta")
     self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
     self~assertSame(SysFileSystemType(d), SysFileSystemType())
   end
@@ -99,7 +99,7 @@ else
     "\\.\UNC\localhost\c$"
     -- c is returned as c:, any trailing backslash is removed
     vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
-    self~assertSame(vol info, SysDriveInfo(volume), "SysDriveInfo" volume)
+    self~assertSame(vol info, SysDriveInfo(volume), "SysDriveInfo("volume") test expected to sometimes fail with a small free space delta")
     self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
     self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
   end
@@ -116,7 +116,7 @@ else
 
     -- for inaccessible drives SysDriveInfo returns the null string, no device id
     self~assertOneOrAnother("", disk~DeviceID, drive, "SysDriveInfo" d info)
-    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info)
+    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta:" disk~FreeSpace - free)
     self~assertSameNilNull(disk~Size, size, "SysDriveInfo" d info)
     self~assertSameNilNull(disk~VolumeName, label, "SysDriveInfo" d info)
 
