@@ -347,21 +347,26 @@ else
 
   y = .Datetime~new~year
   do date over "1969-12-31", "1970-01-01", y || "-01-01", y || "-02-28", y || "-08-08", y || "-12-31"
-    -- on NetBSD, most probably due to the mktime() (time_t)-1 ambiguity,
-    -- a UTC file timestamp of 1969-12-31T23:59:59 cannot be set
+    -- we test 24 hours of two time timestamps:
+    -- 1. YYYY-MM-DD hh:00:00, with hh = 00 .. 23
+    d00 = .DateTime~fromStandardDate(date, "-")
+    -- 2. YYYY-MM-DD hh:59:59, with hh = 00 .. 23
+    d59 = d00~addHours(1)~addSeconds(-1)
+
+    -- on FreeBSD and NetBSD, most probably due to the mktime() (time_t)-1
+    -- ambiguity, a UTC file timestamp of 1969-12-31T23:59:59 cannot be set
     -- e. g. in a GMT+1 timezone:
     -- touch -m -t 197001010059.59 file
     -- touch: out of range or illegal time specification: [[CC]YY]MMDDhhmm[.SS]
     -- timestamps plus/minus one second work
     -- touch -m -t 197001010059.58 file
     -- touch -m -t 197001010100.00 file
-    -- still, lastModified= returns .true, so we skip this on NetBSD
-    if .RexxInfo~platform~caselessStartsWith("NetBSD"), -
+    -- still, lastModified= returns .true, so we test a different second
+    if .RexxInfo~platform~caselessStartsWith("NetBSD") | -
+       .RexxInfo~platform~caselessStartsWith("FreeBSD"), -
        date == "1969-12-31" | date == "1970-01-01" then
-      iterate
+      d59 = d59~addSeconds(-1) -- test hh:59:58 instead, with hh = 00 .. 23
 
-    d00 = .DateTime~fromStandardDate(date, "-")
-    d59 = d00~addHours(1)~addSeconds(-1)
     do 24
       self~assertTrue(file~"lastAccessed="(d00), d00~string)
       self~assertEquals(d00, file~lastAccessed, d00~string)
