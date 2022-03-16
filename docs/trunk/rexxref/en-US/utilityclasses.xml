@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -8702,6 +8702,9 @@ external data queue named <emphasis role="italic">name</emphasis>.
 </para>
 <para>If <emphasis role="italic">name</emphasis> is omitted, the
 <literal>SESSION</literal> queue is used.
+If <emphasis role="italic">name</emphasis> is specified as &nil; the new
+RexxQueue instance is associated with a newly created Rexx external data
+queue with a system-generated name.
 If <emphasis role="italic">name</emphasis> is specified and an external
 data queue named <emphasis role="italic">name</emphasis> exists, it is
 opened.
@@ -8768,7 +8771,7 @@ say .RexxQueue~create("myqueue")    -- S0000000000004B48Q000001E1BEE66F20 (e. g.
 </imageobject>
 </mediaobject>
 
-<para>Returns <literal>0</literal> if the the external data queue named
+<para>Returns <literal>0</literal> if the external Rexx named queue named
 <emphasis role="italic">name</emphasis> was successfully deleted.
 Non-zero results are the error codes from the RexxDeleteQueue()
 programming interface.
@@ -8815,8 +8818,11 @@ say .RexxQueue~exists("SESSION")    -- 1
 </imageobject>
 </mediaobject>
 
-<para>Tests if the external Rexx named queue <emphasis role="italic">name</emphasis> exists and
-creates the queue if it does not.
+<para>Returns <literal>0</literal> if the external Rexx named queue
+<emphasis role="italic">name</emphasis> exists, or, if it doesn't exist,
+can be successfully created.
+Non-zero results are the error codes from the RexxOpenQueue()
+programming interface.
 </para>
 </section>
 
@@ -8833,13 +8839,18 @@ creates the queue if it does not.
 </imageobject>
 </mediaobject>
 
-<para>Deletes the Rexx external queue associated with this RexxQueue instance.
+<para>Returns <literal>0</literal> if the external Rexx named queue
+associated with this RexxQueue instance was successfully deleted.
+Non-zero results are the error codes from the RexxDeleteQueue()
+programming interface.
+
 </para>
 <para>Calling the
 <xref linkend="mthRexxQueueLineOut" xrefstyle="select:title"/>,
 <xref linkend="mthRexxQueuePull" xrefstyle="select:title"/>,
-<xref linkend="mthRexxQueuePush" xrefstyle="select:title"/>, or
-<xref linkend="mthRexxQueueQueue" xrefstyle="select:title"/>
+<xref linkend="mthRexxQueuePush" xrefstyle="select:title"/>,
+<xref linkend="mthRexxQueueQueue" xrefstyle="select:title"/>, or
+<xref linkend="mthRexxQueueSay" xrefstyle="select:title"/>
 method of a RexxQueue instance with a deleted external data queue will
 result in an error.
 </para>
@@ -8859,6 +8870,8 @@ result in an error.
 </mediaobject>
 
 <para>Removes all items from the Rexx external queue associated with this RexxQueue instance.
+Returns <literal>0</literal> upon success, non-zero results are the error codes from
+the RexxClearQueue() programming interface.
 </para>
 </section>
 
