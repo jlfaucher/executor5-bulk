@@ -116,7 +116,7 @@ else
 
     -- for inaccessible drives SysDriveInfo returns the null string, no device id
     self~assertOneOrAnother("", disk~DeviceID, drive, "SysDriveInfo" d info)
-    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta:" disk~FreeSpace - free)
+    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta")
     self~assertSameNilNull(disk~Size, size, "SysDriveInfo" d info)
     self~assertSameNilNull(disk~VolumeName, label, "SysDriveInfo" d info)
 
