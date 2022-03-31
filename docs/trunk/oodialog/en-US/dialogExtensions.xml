@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1314,7 +1314,7 @@ sent along with the scroll bar event.
       <varlistentry><term>0</term>
       <listitem>
       <para>
-        Some error ocurred, the dialog was not executed.
+        Some error occurred, the dialog was not executed.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>1</term>
@@ -1495,9 +1495,9 @@ sent along with the scroll bar event.
   <varlistentry id="exampleExecuteAsync"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows an application that creates a <emphasis role="italic">tool pallette</emphasis> dialog. The tool
-    pallette dialog can not be executed until its underlying owner dialog has been created. So the main dialog is
-    started using <emphasis role="italic">executeAsync</emphasis>, then the pallette dialog is executed, and finally
+    This example shows an application that creates a <emphasis role="italic">tool palette</emphasis> dialog. The tool
+    palette dialog can not be executed until its underlying owner dialog has been created. So the main dialog is
+    started using <emphasis role="italic">executeAsync</emphasis>, then the palette dialog is executed, and finally
  <xref linkend="mthEndAsyncExecution"/> is used to wait for the main dialog to close:
 <programlisting>
 <![CDATA[
@@ -2317,7 +2317,7 @@ end
 <para>
   The <emphasis role="italic">installBitmapButton</emphasis> method installs the bitmaps for a bitmap push button and
   optionally connects the push button click <xref linkend="ovvEvents"/> with a method in the Rexx dialog.
-  When the button needs to be drawn, the ooDialog framework draws the button using the suppliced bitmaps rather than
+  When the button needs to be drawn, the ooDialog framework draws the button using the supplied bitmaps rather than
   having the operating system draw a default push button.
 </para>
 <variablelist>
@@ -2426,7 +2426,7 @@ end
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Retunrs 0 on success. Otherwise, returns -1 if the <emphasis role="italic">id</emphasis> argument was symbolic and
+    Returns 0 on success. Otherwise, returns -1 if the <emphasis role="italic">id</emphasis> argument was symbolic and
     could not be resolved and 1 for any other error.
   </para>
   </listitem></varlistentry>
@@ -2448,7 +2448,7 @@ end
   </para>
   <para>
     Once a bitmap push button is installed, the <xref linkend="mthChangeBitmapButton"/> method
-    can be used to change the bitmaps assoicated with the button.
+    can be used to change the bitmaps associated with the button.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3947,7 +3947,7 @@ Generic form:
       <varlistentry><term>bk [optional]</term>
       <listitem>
       <para>
-        Specifies the the background color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
+        Specifies the background color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
         a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument must
         be true.
       </para>
@@ -3955,7 +3955,7 @@ Generic form:
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        Specifies the the foreground color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
+        Specifies the foreground color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
         a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument must
         be true. The foreground color is the color that text is written in.
       </para>
@@ -4711,7 +4711,7 @@ Generic form:
       <para>
         The coordinates for the new size and position of the window as a <link
         linkend="ovvRectangleCoordinates">point/size</link> rectangle. The coordinates specify the upper left point of the
-        the new position, the width of the window and the height of the window. These coordinates can be specified using
+        new position, the width of the window and the height of the window. These coordinates can be specified using
         either a <xref linkend="clsRect"/> object, a <xref linkend="clsPoint"/> and a
         <xref linkend="clsSize"/> object, or the individual x and y coordinates, width, and height values.
       </para>

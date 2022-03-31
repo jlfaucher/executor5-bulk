@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -111,7 +111,7 @@
 </para>
 </section>
 
-<section id="defColorPalette" xreflabel="color pallette"><title>Color Palette</title>
+<section id="defColorPalette" xreflabel="color palette"><title>Color Palette</title>
 <para>
   An array that contains color values identifying the colors that can currently be displayed or drawn on the output
   device.
@@ -786,9 +786,9 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     In addition, the underlying Windows message processing loop provides a form of synchronization in Windows
     applications. Within the loop, a Windows application receives a message, processes it, then receives the next message,
-    processes it, and so on. In older ooDialog programs this syncronization was lost because ooDialog put the recieved
-    message on a queue, recieved the next message, put it on the queue, and continued. This meant that many messages could
-    be recieved in the processing loop before a single message was process by the ooDialog program. This loss of
+    processes it, and so on. In older ooDialog programs this synchronization was lost because ooDialog put the received
+    message on a queue, received the next message, put it on the queue, and continued. This meant that many messages could
+    be received in the processing loop before a single message was process by the ooDialog program. This loss of
     synchronization caused ooDialog applications to perform poorly.
   </para>
   <para>
@@ -1527,7 +1527,7 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="sct420Release"><title>ooDialog Release 4.2.0</title>
 <para>
-  ooDialog 4.2.0 was relased in late August of 2012. It was the first major enhancement of ooDialog in over a decade. This
+  ooDialog 4.2.0 was released in late August of 2012. It was the first major enhancement of ooDialog in over a decade. This
   ooDialog has a lot of new and different things in it. In addition to the new dialog classes, new dialog control classes,
   new methods on existing classes, it includes design changes intended to simplify areas of ooDialog
   that seem to have been confusing in the past. Enhancements have been made that fix areas of ooDialog that have always
@@ -1591,7 +1591,7 @@ xPixels = xDialogUnits * self~FactorX
     <computeroutput>oodWin32.cls</computeroutput>. An ooDialog program would need to <emphasis
     role="italic">require</emphasis> (using a <computeroutput>::requires</computeroutput> directive) one or more of
     these class files, depending on what parts of the ooDialog framework were going to be used. It was often confusing
-    to users as to which files needed to be required. Breaking the ooDialog framework into three peieces served no real
+    to users as to which files needed to be required. Breaking the ooDialog framework into three pieces served no real
     purpose. In 4.2.0, the three files have been combined into a single file. All ooDialog programs only need to
     <emphasis role="italic">require</emphasis> the <computeroutput>ooDialog.cls</computeroutput> file.
   </para>
@@ -1602,7 +1602,7 @@ xPixels = xDialogUnits * self~FactorX
     Previously certain dialog controls were deemed <emphasis role="italic">advanced</emphasis> and to use those controls, or
     even to use some features common to all controls, the programmer needed to inherit the
     <computeroutput>AdvancedControls</computeroutput> class. This was often confusing, and again there was no real reason for
-    it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous millenium. To simplify
+    it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous millennium. To simplify
     this, the need to inherit the <computeroutput>AdvancedControls</computeroutput> class has been eliminated. The methods to
     work with all controls are part of the base <xref linkend="chpDialogObject"/> object. The <link
     linkend="deprecatedAdvancedControls">AdvancedControls</link> class is deprecated.
@@ -2197,10 +2197,10 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">New Functionality in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    An implementation that allows acces to the Custom Draw facility in Microsoft's Common Control library has been added.
+    An implementation that allows access to the Custom Draw facility in Microsoft's Common Control library has been added.
   </para>
   <para>
-    Custom Draw allows, for example, the programmer to specify the text and ackground colors for individual rows in a
+    Custom Draw allows, for example, the programmer to specify the text and background colors for individual rows in a
     ListView, even for individual columns in the row. The programmer can specify the font of the text for individual
     list-view items. Etc., etc..
   </para>
@@ -2228,7 +2228,7 @@ xPixels = xDialogUnits * self~FactorX
     and all data associated with the item into a list-view at one time.
   </para>
   <para>
-    <xref linkend="clsLvCustomDrawSimple"/> class: The LvCustomDrawSimple class is used in conjuction with the custom draw
+    <xref linkend="clsLvCustomDrawSimple"/> class: The LvCustomDrawSimple class is used in conjunction with the custom draw
     facility for ListView controls.
   </para>
   </listitem></varlistentry>
@@ -2253,7 +2253,7 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">New utility classes in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    <xref linkend="clsTvCustomDrawSimple"/> class: The TvCustomDrawSimple class is used in conjuction with the custom draw
+    <xref linkend="clsTvCustomDrawSimple"/> class: The TvCustomDrawSimple class is used in conjunction with the custom draw
     facility for TreeView controls.
   </para>
   </listitem></varlistentry>
@@ -2667,7 +2667,7 @@ xPixels = xDialogUnits * self~FactorX
   <listitem>
   <para>
     <xref linkend="clsResizingAdmin"/> class: The ResizingAdmin class is a new mixin class. Dialogs that inherit this class
-    are automatically made resizable.  Any ooDialog dialog class can intherit the mixin class. By default, all controls in
+    are automatically made resizable.  Any ooDialog dialog class can inherit the mixin class. By default, all controls in
     the dialog are sized in proportion to the change in size of the dialog. Methods of the ResizingAdmin class allow the
     programmer to customize how the controls in the dialog are sized.
   </para>
@@ -2677,7 +2677,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     <xref linkend="clsBrowseForFolder"/> class: The ooDialog BrowseForFolder class provides access to the Windows
     BrowseForFolder COM object. It gives the Rexx programmer the ability to put up a standard dialog that allows the user to
-    select a folder. It is somewhat similar the the fileNameDialog() routine, except it is possible to select a folder.
+    select a folder. It is somewhat similar the fileNameDialog() routine, except it is possible to select a folder.
     Something that has not been possible in ooDialog previously. The programmer has access to the full set of customizations
     in the COM object.
   </para>
@@ -2892,7 +2892,7 @@ xPixels = xDialogUnits * self~FactorX
   <listitem>
   <para>
     <xref linkend="rtnWinTimer"/>: The WinTimer() public routine was originally implemented in a way that caused it consume
-    100% of the CPU in a busy loop. The routine has been re-implmented in a way that keeps the behaviour of the routine the
+    100% of the CPU in a busy loop. The routine has been re-implemented in a way that keeps the behaviour of the routine the
     same, without the high CPU use. The CPU use while waiting on the timer is now 0%.
   </para>
   </listitem></varlistentry>
@@ -3343,7 +3343,7 @@ xPixels = xDialogUnits * self~FactorX
   </listitem>
   </itemizedlist>
   <para>
-    An example showing how to embed contorls in a list view to allow in-place subitem editing.  The example also demonstrates
+    An example showing how to embed controls in a list view to allow in-place subitem editing.  The example also demonstrates
     the ResizingAdmin and BrowseForFolder classes.
   </para>
   <itemizedlist>
@@ -3564,7 +3564,7 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para>
   There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
-  furture releases. The <xref linkend="clsImage"/> and <xref linkend="clsImageList"/> classes
+  future releases. The <xref linkend="clsImage"/> and <xref linkend="clsImageList"/> classes
   to name just a few. Work will continue on extending those types of classes. In addition work will be done on
   implementing features requested by ooDialog programmers.
 </para>

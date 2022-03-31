@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -75,7 +75,7 @@
 </row>
 <row>
 <entry><xref linkend="dotConstDir"/></entry>
-<entry>an ooRexx <computeroutput>.Directory</computeroutput> object used to resolove <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs.</entry>
+<entry>an ooRexx <computeroutput>.Directory</computeroutput> object used to resolve <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs.</entry>
 </row>
 <row>
 <entry><xref linkend="clsDayState"/></entry>
@@ -264,7 +264,7 @@
 </row>
 <row>
 <entry><xref linkend="mthAutoDetectionClsApplicationManger"/></entry>
-<entry>Sets the application global default for <link linkend="paraAutomaticDataDetection">autoDetction</link> to off, or on.</entry>
+<entry>Sets the application global default for <link linkend="paraAutomaticDataDetection">autoDetection</link> to off, or on.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultFont"/></entry>
@@ -276,7 +276,7 @@
 </row>
 <row>
 <entry><xref linkend="ruapParseIncludeFile"/></entry>
-<entry>Reads a file and adds any symbol definitions found to the proper constant diretory.</entry>
+<entry>Reads a file and adds any symbol definitions found to the proper constant directory.</entry>
 </row>
 <row>
 <entry><xref linkend="ruapResolveNumericID"/></entry>
@@ -292,7 +292,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetDefaults"/></entry>
-<entry>Sets one or more of the global defualts for the application.</entry>
+<entry>Sets one or more of the global defaults for the application.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUseGlobalConstDir"/></entry>
@@ -357,7 +357,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <listitem>
   <para>
     Returns a complete path name of a directory, or the <computeroutput>.nil</computeroutput> object if the <xref
-    linkend="rtnLocate"/> rouitine has not been executed.
+    linkend="rtnLocate"/> routine has not been executed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">srcDir set:</emphasis></term>
@@ -372,7 +372,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <para>
     The purpose of the <emphasis role="italic">Locate</emphasis> function and the <emphasis role="italic">srcDir</emphasis>
     attribute is to help the programmer create complete path names for any auxiliary files needed by an application. This
-    allows the application to execute correctly, even if started from a directory other than its installtion directory. The
+    allows the application to execute correctly, even if started from a directory other than its installation directory. The
     documentation for the <xref linkend="rtnLocate"/> routine contains some additional insight into this purpose.
   </para>
   <para>
@@ -542,12 +542,12 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </variablelist>
 </section>  <!-- End ApplicationManager::addToConstDir() -->
 
-<section id="mthAutoDetectionClsApplicationManger" xreflabel="auotDetection"><title>auotDetection</title>
-<indexterm><primary>auotDetection</primary></indexterm>
-<indexterm><primary>ApplicationManager class</primary><secondary>auotDetection</secondary></indexterm>
+<section id="mthAutoDetectionClsApplicationManger" xreflabel="autoDetection"><title>autoDetection</title>
+<indexterm><primary>autoDetection</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>autoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--auotDetection(--+------+--)------------------><
+>>--autoDetection(--+------+--)------------------><
                     +--on--+
 ]]>
 </programlisting>
@@ -593,7 +593,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ApplicationManager::auotDetection() -->
+</section>  <!-- End ApplicationManager::autoDetection() -->
 
 <section id="mthDefaultFont" xreflabel="defaultFont"><title>defaultFont</title>
 <indexterm><primary>defaultFont</primary></indexterm>
@@ -701,7 +701,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
       <listitem>
       <para>
         When <emphasis role="italic">src</emphasis> is the file name of a resource <link
-        linkend="defResourceScript">script</link> file, the the <emphasis role="italic">id</emphasis> argument must be used
+        linkend="defResourceScript">script</link> file, the <emphasis role="italic">id</emphasis> argument must be used
         to specify the ICON resource ID to be used. The <emphasis role="italic">binary</emphasis> argument must be false to
         distinguish that the file is not a compiled resource file. The resource script will be searched for an ICON statement
         matching the <emphasis role="italic">id</emphasis> argument value and loaded if found.
@@ -730,7 +730,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
       <listitem>
       <para>
         If <emphasis role="italic">src</emphasis> is exactly <emphasis role="italic">oodialog.dll</emphasis>, case
-        insignificant, then the icon is loaded from the ooDialog DLL. ooDialog embedds a few icon images in its DLL file for
+        insignificant, then the icon is loaded from the ooDialog DLL. ooDialog embeds a few icon images in its DLL file for
         <link linkend="defDialogIcon">general</link> use by the programmer. If the <emphasis role="italic">id</emphasis>
         argument is not omitted, it must specify one of the pre-defined resource IDs of those icons. If <emphasis
         role="italic">id</emphasis> is ommitted then the default ID, IDI_DLG_OODIALOG, is used. This has no effect, unless
@@ -812,7 +812,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </section>  <!-- End ApplicationManager::defaultIcon() -->
 
 
-<section id="ruapParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeRile</title>
+<section id="ruapParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeFile</title>
 <programlisting>
 ResourceUtils::<xref linkend="mthParseIncludeFile"/>
 
@@ -1146,7 +1146,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 
 <para>
   The ooDialog framework supports a <xref linkend="ovvSymbolicIDMechanism"/> for using
-  <xref linkend="defSymbolicId"/> resource IDs for method aruments that required a resource ID. The global
+  <xref linkend="defSymbolicId"/> resource IDs for method arguments that required a resource ID. The global
   <xref linkend="dotConstDir"/> is part of that support. The <computeroutput>.constDir</computeroutput>
   is the most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
   programmer must specify a usage <xref linkend="entConstDirStrategy"/> that includes the use of the
@@ -1155,7 +1155,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <para>
   By default the <computeroutput>.constDir</computeroutput> is not used. The programmer specifies the usage strategy for
   the <computeroutput>.constDir</computeroutput> through the <emphasis role="italic">useGlobalConstDir</emphasis>
-  method. Optionaly, the programmer can load symbols into the <computeroutput>.constDir</computeroutput> at the same
+  method. Optionally, the programmer can load symbols into the <computeroutput>.constDir</computeroutput> at the same
   time the <computeroutput>.constDir</computeroutput> usage is specified.
 </para>
 <variablelist>
@@ -1303,7 +1303,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 </para>
 <para>
   The <computeroutput>.constDir</computeroutput> is the most efficient way to use symbolic IDs. However, to maintain
-  backwards compatiblity with older ooDialog programs its use is turned off by default. The
+  backwards compatibility with older ooDialog programs its use is turned off by default. The
   <computeroutput>.application</computeroutput> object, through its
  <xref linkend="mthUseGlobalConstDir"/> method or <xref linkend="mthSetDefaults"/>
   method is used to specify how the <computeroutput>.constDir</computeroutput> is used.
@@ -1840,7 +1840,7 @@ Error code 87 (0x00000057): The parameter is incorrect.
     <computeroutput>{3d2c9438-a3b0-494d-ba5d-10f53e6ec9cf}</computeroutput>
   </para>
   <para>
-    A GUID and a UUID are synomous and can be used interchangable in ooDialog.
+    A GUID and a UUID are synonymous and can be used interchangeably in ooDialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1930,7 +1930,7 @@ return 0
     All the open dialog objects are stored in a queue.  In the <computeroutput>onTile</computeroutput> method, which is
     invoked when the user selects the menu item, each dialog is fetched in turn from the queue.  Then the  dialog is
     repositioned at an offset from the preceding dialog. It is shifted to the right the width of 2 scroll bars and
-    shifted down the the width of the title bar.  (This width is the title bar width plus the thin border around the
+    shifted down the width of the title bar.  (This width is the title bar width plus the thin border around the
     title bar.)  The height of the thin border, the height of the title bar, and the width of a scroll bar are all
     determined by querying the system metrics.
 <programlisting>
@@ -2338,7 +2338,7 @@ return 0
   flags = .DlgUtil~or(0x00000018, 0x00000001)
   say "Flags value:" flags
 
-::requires 'oodDialog.cls'
+::requires 'ooDialog.cls'
 
 /* Output would be:
 
@@ -2816,7 +2816,7 @@ return 0
     control. The operating system returns true or false in the high word, for success or failure. The lines scrolled are
     in the low word. When the edit control is scrolled from the bottom towards the top, the number of lines is negative.
     This example shows the result of using the <xref linkend="mthScrollCommand"/> repeatedly until
-    the top of the edti control is reached:
+    the top of the edit control is reached:
 
 <programlisting id="exampleSLoWordClsDlgUtil">
 <![CDATA[
@@ -3399,10 +3399,10 @@ returns its handle.</para>
       <varlistentry><term>update [optional]</term>
       <listitem>
       <para>
-        By default this routine only sets the <computeroutput>.aplication's</computeroutput> <emphasis
-        role="italic">srcDir</emphasis> attriute the first time it is invoked. On succesive invocations, it does not change
-        the attribute. If update is true, it resets the <computeroutput>.aplication's</computeroutput> <emphasis
-        role="italic">srcDir</emphasis> attriute to the value it is returning.
+        By default this routine only sets the <computeroutput>.application's</computeroutput> <emphasis
+        role="italic">srcDir</emphasis> attribute the first time it is invoked. On successive invocations, it does not change
+        the attribute. If update is true, it resets the <computeroutput>.application's</computeroutput> <emphasis
+        role="italic">srcDir</emphasis> attribute to the value it is returning.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3420,7 +3420,7 @@ returns its handle.</para>
   <para>
     The primary purpose of the <emphasis role="italic">Locate</emphasis> function is to help the ooDialog programmer create
     complete path names for any resource files, or other auxiliary files, needed by an application. This in turns allows the
-    application to be executed from any directory. The <emphasis role="italic">Locate</emphasis> function is a conveience
+    application to be executed from any directory. The <emphasis role="italic">Locate</emphasis> function is a convenience
     function. The same functionality can be achieved using <emphasis role="italic">parse source</emphasis> and some mechanism
     for retaining the directory value.
   </para>
@@ -3429,7 +3429,7 @@ returns its handle.</para>
     application and the <emphasis role="italic">srcDir</emphasis> attribute of the <emphasis
     role="italic">.application</emphasis> object would be used elsewhere in the application to gain access to the directory
     value. If the programmer chooses to execute <emphasis role="italic">Locate</emphasis> more than once, then she would need
-    to decide if the <emphasis role="italic">srcDir</emphasis> attribute's value shoud be updated with the new direcotry
+    to decide if the <emphasis role="italic">srcDir</emphasis> attribute's value should be updated with the new directory
     value. Assuming, <emphasis role="italic">Locate</emphasis> is returning a new value. This is the purpose of the <emphasis
     role="italic">update</emphasis> argument. By default, the <emphasis role="italic">srcDir</emphasis> attribute will not be
     changed. Pass true as the first argument to <emphasis role="italic">Locate</emphasis> to force the routine to update the
@@ -3967,7 +3967,7 @@ returns its handle.</para>
       <para>
         Specifies a period in milliseconds to wait when a windows does not respond. The default <emphasis
         role="italic">timeOut</emphasis> is 5,000. If the <emphasis role="italic">timeOut</emphasis> is the special
-        value of 0, the the message is sent in a way that does not wait for any window to acknowledge the message and
+        value of 0, the message is sent in a way that does not wait for any window to acknowledge the message and
         the method returns immediately.
       </para>
       </listitem></varlistentry>
@@ -4340,7 +4340,7 @@ rc = play("Welcome.wav")
 </row>
 <row>
 <entry><xref linkend="mthInRect"/></entry>
-<entry>Tests if this point is within a specified rectanglular area.</entry>
+<entry>Tests if this point is within a specified rectangular area.</entry>
 </row>
 <row>
 <entry><xref linkend="mthStringPoint"/></entry>
@@ -4897,7 +4897,7 @@ Changed point q to be at (150,300)
 </programlisting>
 
 <para>
-  Tests if this point is within a specified rectanglular area.
+  Tests if this point is within a specified rectangular area.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5521,8 +5521,8 @@ size in pixels of the width is at index 3 and the height in pixels is at index
 <listitem>
 <para>
   There are a few problems with this routine. The main problem is with the values returned for the
-  <xref linkend="defDialogUnit"/>x. Since dialog units are depenedent on the font in use for a specific dialog, and there is
-  no dialog involved here, the routine calculates the dialog units using 8 point System font. It is higly unlikely that this
+  <xref linkend="defDialogUnit"/>x. Since dialog units are dependent on the font in use for a specific dialog, and there is
+  no dialog involved here, the routine calculates the dialog units using 8 point System font. It is highly unlikely that this
   is correct for any specific dialog.
 </para>
 <para>
@@ -5829,7 +5829,7 @@ New width: 100 new height: 300
   follow these two principles. When a comparison operator is doubled, it is a strict comparison. The
  <xref linkend="atrWidthClsSize"/> attribute of each <computeroutput>Size</computeroutput> object is
   compared and the <xref linkend="atrHeightClsSize"/> attribute of each <computeroutput>Size</computeroutput>
-  object is compared. Both comparsions must be true.
+  object is compared. Both comparisons must be true.
 </para>
 <para>
   When there is not a doubled operator, then the <emphasis role="italic">area</emphasis> of the size objects is
@@ -6171,7 +6171,7 @@ s2: a Size (2, 3)
 </row>
 <row>
 <entry><xref linkend="atrCyScreen"/></entry>
-<entry>The height of the primary monitor in pixles.</entry>
+<entry>The height of the primary monitor in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCySize"/></entry>
@@ -6665,7 +6665,7 @@ s2: a Size (2, 3)
 </programlisting>
 
 <para>
-  ReflectsThe height of a single-line menu bar.
+  Reflects the height of a single-line menu bar.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cyMenu get:</emphasis></term>
@@ -6897,7 +6897,7 @@ s2: a Size (2, 3)
 </para>
 </section>
 
-<section id="cnstWHEEL-PAGESCROLL" xreflabel="WHELL_PAGESCROLL"><title>WHEEL_PAGESCROLL (Constant)</title>
+<section id="cnstWHEEL-PAGESCROLL" xreflabel="WHEEL_PAGESCROLL"><title>WHEEL_PAGESCROLL (Constant)</title>
 <indexterm><primary>WHEEL_PAGESCROLL</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>WHEEL_PAGESCROLL</secondary></indexterm>
 <programlisting>
@@ -8536,7 +8536,7 @@ use arg treeId, key
 tree = self~newTreeView(treeId)
 
 -- If the delete key is pressed, delete the selected item, or if the insert
--- key is pressed insert a new item by programmaticaly clicking the New Item
+-- key is pressed insert a new item by programmatically clicking the New Item
 -- button. Otherwise ignore key.
 if key == .VK~DELETE then
    tree~delete(tree~selected)
@@ -9583,8 +9583,8 @@ WindowBase::<xref linkend="mthWindowRect"/>
     suspended for 1.1 seconds.
   </para>
   <para>
-    Windows is not a real time operating system. Any type of timer in Windows can only achieve an aproximate wait period. In
-    particular you can not expect a working wait period of less thatn 15 milliseconds with the <emphasis
+    Windows is not a real time operating system. Any type of timer in Windows can only achieve an approximate wait period. In
+    particular you can not expect a working wait period of less than 15 milliseconds with the <emphasis
     role="italic">WinTimer</emphasis> routine.
   </para>
   </listitem></varlistentry>

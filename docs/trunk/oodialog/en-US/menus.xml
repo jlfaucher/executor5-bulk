@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -73,7 +73,7 @@
    role="italic">window</emphasis> menu.  A shortcut menu is not attached to a menu bar and can appear anywhere on the
    screen.  Shortcut menus are typically activated by the user right-clicking on a specific portion of the screen and
    the menu items are usually only relevant to what the user clicked on.  For this reason, shortcut menus are often
-   called <emphasis role="italic">contetxt</emphasis> menus.  The window menu is also knows as the <emphasis
+   called <emphasis role="italic">context</emphasis> menus.  The window menu is also knows as the <emphasis
    role="italic">System</emphasis> menu or the <emphasis role="italic">Control</emphasis> menu.  The  System menu is
    usually managed exclusively by the system.  The user activates the System menu by clicking on the icon in the upper
    left corner of a window, or by right-clicking anywhere on the title bar. Unlike menu bars, child windows can have a
@@ -193,7 +193,7 @@
 </variablelist>
 <para>
   Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item,
-  accept either a menu item identifier or a menu item position. The menu item specifier is refered to generically as the
+  accept either a menu item identifier or a menu item position. The menu item specifier is referred to generically as the
   <emphasis role="italic">menu item ID</emphasis>. In ooDialog, all <emphasis role="italic">menu item IDs</emphasis> must be
   greater than 0. Since both identifiers and positions are numbers, the programmer needs to specify which is being used.
   However, by default, the ID is assumed to be an identifier. Therefore, the programmer only need indicate when the ID is a
@@ -267,7 +267,7 @@
 </para>
 <para>
   Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
-  connect a menu item and a button click to separate methods if the they both have the same resource ID.
+  connect a menu item and a button click to separate methods if they both have the same resource ID.
 </para>
 
 </section>  <!-- End Section::Menu Command Events -->
@@ -453,7 +453,7 @@
   </para>
   <para>
     As can be seen from the discussion above. the connection request type of making connections is primarily meant to
-    allow the programmer to automatically connect the menu items in a resourece script when the script is parsed
+    allow the programmer to automatically connect the menu items in a resource script when the script is parsed
     (<computeroutput>ScriptMenuBar</computeroutput>), or when the <emphasis role="italic">addItem</emphasis> method is
     used (<computeroutput>UserMenuBar</computeroutput>.)
   </para>
@@ -492,7 +492,7 @@
 <para>
   In general, only one type of making command event connections should be used in any one menu. Auto connection should
   never be used with the other two types of making connections. Mixing the 3 types of connecting command items to
-  methods can result in unpredicatable results.
+  methods can result in unpredictable results.
   <itemizedlist>
   <listitem>
   <para>
@@ -1341,7 +1341,7 @@
   inHex = .false
   ...
 
-::mehthod onHexSelect unguarded
+::method onHexSelect unguarded
   expose menuBar inHex
 
   if inHex then do
@@ -1748,7 +1748,7 @@
           context menu, but does not actually display it for some reason.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>INTIMENUPOPUP</term>
+        <varlistentry><term>INITMENUPOPUP</term>
         <listitem>
         <para>
           Notifies the application that a drop-down menu or submenu is about to become active. This allows the
@@ -1779,7 +1779,7 @@
     <para>
       Recall that menu objects exist and are not tied to dialog objects. Menu event connections can be, and maybe often
       are, made before a menu is assigned or attached to a dialog. Recall also that submenus in a menubar never have an
-      ower dialog. In these cases, omitting the <emphasis role="italic">dlg</emphasis> argument results in <emphasis
+      owner dialog. In these cases, omitting the <emphasis role="italic">dlg</emphasis> argument results in <emphasis
       role="italic">no</emphasis> connection being made.
     </para>
     </listitem></varlistentry>
@@ -1847,7 +1847,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example connects the INTIMENU event to the <emphasis role="italic">menuInit</emphasis> method in the dialog:
+    This example connects the INITMENU event to the <emphasis role="italic">menuInit</emphasis> method in the dialog:
 <programlisting>
 <![CDATA[
 
@@ -1942,7 +1942,7 @@
 <programlisting>
 <![CDATA[
 
-::method iniitDialog
+::method initDialog
   expose shortCutMenu
   ...
 
@@ -2039,7 +2039,7 @@
   <listitem>
   <para>
     The following example shows an event handler that disables some (most) of the items in a system menu before it is
-    shown. Whether or not the items are disabled is controled by an instance variable that is set in other parts of the
+    shown. Whether or not the items are disabled is controlled by an instance variable that is set in other parts of the
     application:
 
 <programlisting>
@@ -2128,10 +2128,10 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If both the <xref linkend="evtMenuObjectINITMENU"/> and INTITMENUPOPUP events are connected, then two successive event
+    If both the <xref linkend="evtMenuObjectINITMENU"/> and INITMENUPOPUP events are connected, then two successive event
     handlers will often be invoked. Take for instance a menu bar that contains a <emphasis role="italic">File</emphasis>
     submenu. If the user clicks on the <emphasis role="italic">File</emphasis> menu, the operating system first generates an
-    INITMENU notification (for the menubar about to become active) and then generates an INTIMENUPOPUP notification (for the
+    INITMENU notification (for the menubar about to become active) and then generates an INITMENUPOPUP notification (for the
     <emphasis role="italic">File</emphasis> submenu about to be come active.)
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -2282,7 +2282,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example connects four menu command items in the menu bar, by their sybmolic IDs, to 4 methods in the dialog.
+    This example connects four menu command items in the menu bar, by their symbolic IDs, to 4 methods in the dialog.
     The method names will be constructed from the text of the menu item:
 <programlisting>
 <![CDATA[
@@ -2695,7 +2695,7 @@
       If true, autoconnection is on. If false, autoconnection is off
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>MEHTODNAME</term>
+    <varlistentry><term>METHODNAME</term>
     <listitem>
     <para>
       The method name for autoconnection, if set. The <computeroutput>.nil</computeroutput> object if no method name is
@@ -2760,7 +2760,7 @@
   <listitem>
   <para>
     The number of items in a menu will include the separator and submenu items, but not the count of items in the
-    submeneus. In other words, it is not a recursive count, just a count of the single menu.
+    submenus. In other words, it is not a recursive count, just a count of the single menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4240,7 +4240,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns true on success, fasle on error.
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4801,7 +4801,7 @@
     invoking one of the <emphasis role="italic">is*</emphasis> methods before invoking it.
   </para>
   <para>
-    However, a failure of the Win32 API is extemely unlikely and using an invalid menu id is easily fixed. Indeed,
+    However, a failure of the Win32 API is extremely unlikely and using an invalid menu id is easily fixed. Indeed,
     letting a syntax condition be raised for an invalid menu id is usually the best practice. The syntax condition will
     point out the incorrect id early in the development of an ooDialog program. Once fixed, the error will never happen
     again.
@@ -5845,7 +5845,7 @@
   inHex = .false
   ...
 
-::mehthod onHexSelect unguarded
+::method onHexSelect unguarded
   expose menuBar inHex
 
   if inHex then do
@@ -5951,7 +5951,7 @@
 <indexterm><primary>The MenuBar Object</primary></indexterm>
 <indexterm><primary>menu bar object</primary></indexterm>
 <para>
-  A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
+  A menu bar is often called the top-level menu. It is the bar positioned just below the title bar of an application
   window or a dialog. The menu bar object is used, like the <xref linkend="clsMenu"/>,
   <xref linkend="chpDialogObject"/>, and dialog <xref linkend="chpDialogControlObject"/> objects as an
   abstract concept to document the ooDialog menu objects that represent menu bars. The menu bar classes in ooDialog are
@@ -5959,8 +5959,8 @@
  <xref linkend="clsScriptMenuBar"/> classes.
 </para>
 <para>
-  The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin classs and all menu bars
-  have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the the menu object, the menu bar
+  The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin class and all menu bars
+  have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the menu object, the menu bar
   object is essentially the <computeroutput>MenuBar</computeroutput> mixin class. Note that menu bars <emphasis
   role="italic">are</emphasis> menus. All menu bar objects have all the methods of the
  <xref linkend="clsMenu"/> object in addition to the methods specific to the menu bar.
@@ -6051,7 +6051,7 @@
     these conditions are not met, this method fails.
   </para>
   <para>
-    If this menu bar is already attached to a dialog and needs to be attached to a differnt dialog, first use the
+    If this menu bar is already attached to a dialog and needs to be attached to a different dialog, first use the
  <xref linkend="mthDetach"/> method to detach it. Then attach it to the other dialog. On the other hand, if the
     dialog already has a menu bar attached to it and this menu bar needs to be attached to that dialog get a reference
     to the dialog's current menu bar and use the <xref linkend="mthReplace"/> method.
@@ -6430,7 +6430,7 @@
   Instantiates a new <computeroutput>BinaryMenuBar</computeroutput> object.
 </para>
 <para>
-  The new menu bar is initiallly empty if <emphasis role="italic">menuSrc</emphasis> is omitted. If <emphasis
+  The new menu bar is initially empty if <emphasis role="italic">menuSrc</emphasis> is omitted. If <emphasis
   role="italic">menuSrc</emphasis> is not omitted, the menu template is obtained from the compiled binary resource
   pointed to by <emphasis role="italic">menuSrc</emphasis>.
 </para>
@@ -6480,7 +6480,7 @@
         A Rexx <computeroutput>.Pointer</computeroutput> object. If used, this argument must be a
         <computeroutput>.Pointer</computeroutput> object that represents a valid menu handle. Currently this source of
         the menu template is limited. The only way to get a menu handle is through the
- <xref linkend="mthGetMenuHandle"/> method. However, future enhancements to ooDialog will likey have
+ <xref linkend="mthGetMenuHandle"/> method. However, future enhancements to ooDialog will likely have
         other ways to get a menu handle.
       </para>
       </listitem></varlistentry>
@@ -6562,7 +6562,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example loads a menu bar from a DLL, immediately attaches it to the dialog, and connects all menu comand item
+    This example loads a menu bar from a DLL, immediately attaches it to the dialog, and connects all menu command item
     events to the <emphasis role="italic">onMenuSelect</emphasis> even handler method:
 <programlisting>
 <![CDATA[
@@ -6840,7 +6840,7 @@
 </row>
 <row>
 <entry><xref linkend="mthComplete"/></entry>
-<entry>Finializes the in-memory template and converts it to an actual menu bar.</entry>
+<entry>Finalizes the in-memory template and converts it to an actual menu bar.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDetach"/></entry>
@@ -7480,7 +7480,7 @@
     The Microsoft documentation indicates that a separator can not be used in a menu bar, only in a submenu. However, on
     Windows 7 at least, separators can be used in the menu bar. No vertical line is shown, but the separator will take
     up a little space. The separator <emphasis role="italic">type</emphasis> keywords work as expected. I.e., if the
-    separtor is given the RIGHTJUSTIFY type, it and all subsequent menut items are right justified in the menu bar.
+    separator is given the RIGHTJUSTIFY type, it and all subsequent menu items are right justified in the menu bar.
   </para>
   <para>
     It is suggested that the ooDialog programmer create an empty <xref linkend="clsBinaryMenuBar"/>
@@ -7527,7 +7527,7 @@
 </programlisting>
 
 <para>
-  The <emphasis role="italic">complete</emphasis> method finializes the in-memory template and converts it to an actual
+  The <emphasis role="italic">complete</emphasis> method finalizes the in-memory template and converts it to an actual
   menu bar.
 </para>
 <variablelist>
@@ -7738,7 +7738,7 @@
 <![CDATA[
 
   if \ lvPopup~connectContextMenu(onListViewContext, self~newListView(IDC_LV)~hwnd) then do
-    say 'Error conecting context menu. SystemErrorCode:' || -
+    say 'Error connecting context menu. SystemErrorCode:' || -
     .SystemErrorCode SysGetErrortext(.SystemErrorCode)
   end
   ...
@@ -7865,7 +7865,7 @@
     <listitem>
     <para>
       A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
-      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      connected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
       received. If omitted, all right-clicks on the dialog are received.
     </para>
     </listitem></varlistentry>
@@ -7949,7 +7949,7 @@
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End PopupMenu::connectContextMenu()::ClassMehtod -->
+</section>  <!-- End PopupMenu::connectContextMenu()::ClassMethod -->
 
 <section id="mthNewClsPopupMenu" xreflabel="new"><title>new (Class)</title>
 <indexterm><primary>new</primary><secondary>PopupMenu class</secondary></indexterm>
@@ -8133,7 +8133,7 @@
 
   contextMenu = createListViewMenu()
 
-  if \ contexMenu~assignTo(self, .true) then do
+  if \ contextMenu~assignTo(self, .true) then do
     say 'Error assigning the context menu. SystemErrorCode:' || -
     .SystemErrorCode SysGetErrortext(.SystemErrorCode)
   end
@@ -8182,7 +8182,7 @@
     <listitem>
     <para>
       A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
-      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      connected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
       received. If omitted, all right-clicks on the dialog are received.
     </para>
     </listitem></varlistentry>
@@ -8318,7 +8318,7 @@
 <![CDATA[
 
   if \ contextMenu~isAssigned then do
-    if \ contexMenu~assignTo(self, .true) then do
+    if \ contextMenu~assignTo(self, .true) then do
       say 'Error assigning the context menu. SystemErrorCode:' || -
       .SystemErrorCode SysGetErrortext(.SystemErrorCode)
     end
@@ -8336,12 +8336,12 @@
 <programlisting>
 <![CDATA[
 >>--show(--p--+-------+--+--------+--+--------------+--+---------------+--)----><
-              +-,-dlg-+  +-,-opts-+  +-,-bothButons-+  +-,-excludeRect-+
+              +-,-dlg-+  +-,-opts-+  +-,-bothButtons-+  +-,-excludeRect-+
 ]]>
 </programlisting>
 
 <para>
-  Displays a contex menu and returns after the user has selected an item or canceled the menu.  When the user selects an
+  Displays a context menu and returns after the user has selected an item or canceled the menu.  When the user selects an
   item, a <xref linkend="sctMenuCommandEvents"/> notification, using the id of the menu item selected, is generated. If the
   user cancels, nothing happens.
 </para>
@@ -8355,7 +8355,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen <xref linkend="defScreenCoordinates"/>) co-ordinates.
+      screen <xref linkend="defScreenCoordinates"/>) coordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8615,12 +8615,12 @@
 <programlisting>
 <![CDATA[
 >>--track(--p--+-------+--+--------+--+--------------+--+---------------+--)---><
-               +-,-dlg-+  +-,-opts-+  +-,-bothButons-+  +-,-excludeRect-+
+               +-,-dlg-+  +-,-opts-+  +-,-bothButtons-+  +-,-excludeRect-+
 ]]>
 </programlisting>
 
 <para>
-  Displays a contex menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
+  Displays a context menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
   role="italic">no</emphasis> <xref linkend="sctMenuCommandEvents"/> notification is generated. If the user cancels the menu
   0 is returned.
 </para>
@@ -8634,7 +8634,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen <xref linkend="defScreenCoordinates"/>) co-ordinates.
+      screen <xref linkend="defScreenCoordinates"/>) coordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8913,7 +8913,7 @@
   window of the menu. However, most applications don't process the notification, but rather let the OS handle the
   notification with the default processing. The ooDialog programmer can connect the event notification to a method in
   her Rexx dialog in the same manner as other event notifications are connected. If the programmer adds menu command
-  items to the System menu, the the event notification for the item should be connected and processed by the
+  items to the System menu, the event notification for the item should be connected and processed by the
   application.
 </para>
 
@@ -9332,7 +9332,7 @@
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
     <xref linkend="sctMenuCommandEventHandlers"/>s for <computeroutput>SystemMenu</computeroutput> events and
-    other types of menus. See the <link linkend="sctSystemMenuCommandEventHandler">section</link>/> exaplaining the event
+    other types of menus. See the <link linkend="sctSystemMenuCommandEventHandler">section</link>/> explaining the event
     handler for system menu command events.
   </para>
   </listitem></varlistentry>
@@ -9411,7 +9411,7 @@
     operating system removes the copied system menu and replaces it with the standard system menu.
   </para>
   <para>
-    This object will then no loger be valid.  <emphasis role="italic">Note</emphasis> however that any of the
+    This object will then no longer be valid.  <emphasis role="italic">Note</emphasis> however that any of the
     pre-defined System Command menu items that were connected to methods, will remain connected. Currently in ooDialog
     there is no way to 'unconnect' a method connection once it is made.
   </para>

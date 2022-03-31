@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -526,7 +526,7 @@ string. The coordinates are separated by blanks and are in the following order:
 
 <para>
   Given a <xref linkend="clsRect"/> object that specifies the window rectangle of a tab control, calculates
-  the display area of the the tab control. This method should be used when the size of the tab control is fixed and the
+  the display area of the tab control. This method should be used when the size of the tab control is fixed and the
   size of the contents of a page in the tab control can be adjusted.
 </para>
 <variablelist>
@@ -538,7 +538,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A <xref linkend="clsRect"/> object that specifies the window rect of the tab conrol when the method is
+      A <xref linkend="clsRect"/> object that specifies the window rect of the tab control when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the display
       area of the tab control.
     </para>
@@ -596,7 +596,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A <xref linkend="clsRect"/> object that specifies the display area of the tab conrol when the method is
+      A <xref linkend="clsRect"/> object that specifies the display area of the tab control when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the window
       rectangle of the tab control.
     </para>
@@ -863,7 +863,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>tab [opitonal]</term>
+      <varlistentry><term>tab [optional]</term>
       <listitem>
       <para>
         The index of the tab to insert. If you omit this argument, the index of the last tab added to the control, plus
@@ -1316,7 +1316,7 @@ the currently selected tab.</para>
   <para>
     This example allows the user to push a button to go to the next or previous tabs. Note that the <emphasis
     role="italic">onNewTab</emphasis> method is connected to the SELCHANGE event. Since the tab control does not
-    generate the SELCHAGE event when the <emphasis role="italic">selectIndex</emphasis> method is invoked, the program
+    generate the SELCHANGE event when the <emphasis role="italic">selectIndex</emphasis> method is invoked, the program
     just calls the <emphasis role="italic">onNewTab</emphasis> method directly.
 <programlisting>
 <![CDATA[
@@ -1429,7 +1429,7 @@ the currently selected tab.</para>
 
      -- The image list makes a copy of each image added to it.  So, we can now
      -- release the original image to free up some small amount of system
-     -- resoureces.
+     -- resources.
      image~release
   end
   else do

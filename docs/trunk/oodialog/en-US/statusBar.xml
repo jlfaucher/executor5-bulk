@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2013-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2013-2022 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -47,12 +47,12 @@
 <para>
   A status bar is a horizontal window at the bottom of a dialog that the programmer can use to display status information
   about the application. Status bars can be divided into more than one part to display different types of status information.
-  Status bars set their initial size and position automatically, ignoring any co-ordinates the programmer may have specified.
+  Status bars set their initial size and position automatically, ignoring any coordinates the programmer may have specified.
   By default they position themselves at the bottom edge of the dialog with a width as wide as the dialog and a height that
   is calculated based on the metrics for the font of the dialog.
 </para>
 <para>
-  Unlike other dialog controls, many resource editors do not have built-in supprort for status bars. However it is easy to
+  Unlike other dialog controls, many resource editors do not have built-in support for status bars. However it is easy to
   manually edit the .rc file and add a status bar. One technique is to add another control, say a combo box control, save the
   .rc file and then edit the combo box control definition in the .rc file to make it a status bar.
 </para>
@@ -95,8 +95,8 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 }
 ]]>
 </programlisting>
-  As noted, the status bar will ignore the size and position co-ordinate, so any 4 values will sufffice. This technique will
-  work for the ooDialog programmer wishing to ust a status bar in their <xref linkend="clsRcDialog"/> or <xref
+  As noted, the status bar will ignore the size and position coordinate, so any 4 values will suffice. This technique will
+  work for the ooDialog programmer wishing to use a status bar in their <xref linkend="clsRcDialog"/> or <xref
   linkend="clsResDialog"/> dialogs.
 </para>
 <para>
@@ -144,7 +144,7 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 </variablelist>
 </para>
 
-<section id="sctMethodsStatustBar"><title>Method Table</title>
+<section id="sctMethodsStatusBar"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary classes, methods, and attributes used in working
   with StatusBar objects, including the pertinent classes, and methods from other classes:
@@ -195,7 +195,7 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 </row>
 <row>
 <entry><xref linkend="mthGetParts"/></entry>
-<entry>Returns the number of parts in the status bar, and optionally, the co-ordinate of the right edge of each part.</entry>
+<entry>Returns the number of parts in the status bar, and optionally, the coordinate of the right edge of each part.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetRectClsStatusBar"/></entry>
@@ -329,7 +329,7 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns an array containing the borders on succees, or the <computeroutput>.nil</computeroutput> object on error.
+    Returns an array containing the borders on success, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -358,14 +358,14 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
   sb = self~newStatusBar(IDC_STATUS)
   a = sb~getBorders
   say 'Width Horizontal Border:' a[1]
-  say 'Width Vetical Border   :' a[2]
+  say 'Width Vertical Border  :' a[2]
   say 'Spacing Border         :' a[3]
   say
 
 /* Output might be:
 
 Width Horizontal Border: 0
-Width Vetical Border   : 2
+Width Vertical Border  : 2
 Spacing Border         : 2
 
 */
@@ -448,7 +448,7 @@ Spacing Border         : 2
 </programlisting>
 
 <para>
-  Returns the number of parts in the status bar, and optionally, the co-ordinate of the right edge of each part.
+  Returns the number of parts in the status bar, and optionally, the coordinate of the right edge of each part.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -544,7 +544,7 @@ Status bar has 4 parts.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the bounding rectangle on success, or the the <computeroutput>.nil</computeroutput> object on error.
+    Returns the bounding rectangle on success, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -877,7 +877,7 @@ Text for part 4: Viking Victory
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The singke argument is:
+    The single argument is:
   </para>
   <variablelist>
     <varlistentry><term>index [required]</term>
@@ -965,7 +965,7 @@ Text for part 4: Viking Victory
   end
   else do
       self~statusBarUpdates = 'on'
-      self~useAdavncedTasks
+      self~useAdvancedTasks
       self~useWizrds = .false
   end
 ]]>
@@ -1171,7 +1171,7 @@ Text for part 4: Viking Victory
 <![CDATA[
   sb = self~newStatusBar(IDC_STATUS)
 
-  -- We want the minimum heigt to be 28 pixels.
+  -- We want the minimum height to be 28 pixels.
   min = 28
   borders = sb~getBorders
 
@@ -1209,7 +1209,7 @@ Text for part 4: Viking Victory
     <para>
       An array of positive integers. Each integer specifies the right edge of a part in client <xref
       linkend="defScreenCoordinates"/>, in pixels. The array can not be sparse. The number of items in the array will be the
-      number parts created. A -1 specifies the remaing area of the status bar.
+      number parts created. A -1 specifies the remaining area of the status bar.
     </para>
     </listitem></varlistentry>
   </variablelist> </listitem></varlistentry>
@@ -1222,7 +1222,7 @@ Text for part 4: Viking Victory
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    It is important to note that the integers in the area represent the co-ordinate of the right edge of the part, not the
+    It is important to note that the integers in the area represent the coordinate of the right edge of the part, not the
     width of the part. A mistake the author often makes. For example, if a status bar has a width of 300, to divide it into 3
     equal parts, use an array of 100, 200, -1. Not an array of 100, 100, -1.
   </para>
@@ -1452,7 +1452,7 @@ Text for part 4: Viking Victory
     status~setText(text, 1, 'POPOUT')
     status~setTipText(text, 1)
 
-    text = "January in northen Canada"
+    text = "January in northern Canada"
     status~setText(text, 2, 'POPOUT')
     status~setTipText(text, 2)
 
@@ -1510,7 +1510,7 @@ Text for part 4: Viking Victory
     A status bar in simple mode displays only one part. In addition, when the text of the status bar is set, the operating
     system use a technique to redraw the text that reduces flicker. The <xref linkend="mthIsSimpleClsStatusBar"/> method can
     be used to test what mode the status bar is currently in. In addition the <xref linkend="kywStatusBarSIMPLEMODECHANGE"/>
-    event can be connected for the statust bar. The event handler will be invoked each time the status bar mode swtiches to
+    event can be connected for the status bar. The event handler will be invoked each time the status bar mode switches to
     or from simple.
   </para>
   </listitem></varlistentry>

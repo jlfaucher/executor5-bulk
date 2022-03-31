@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2013-2019 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2013-2022 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -128,7 +128,7 @@
   <para>
     The use of COM objects requirers that the COM library be initialized and released for <emphasis
     role="italic">each</emphasis> thread that a COM object is used in. Normally the Rexx programmer does not need to be much
-    aware of threading and thread issues. However the COM requiement that the library be initialized and released on each
+    aware of threading and thread issues. However the COM requirement that the library be initialized and released on each
     thread changes that. Using the <xref linkend="clsBrowseForFolder"/> object as an example, the normal usage pattern would
     be:
   </para>
@@ -167,7 +167,7 @@
     This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
     the programmer wants to use a different font for a dialog control, the <xref linkend="mthSetFont"/> method will fail unless
     the programmer has first initialized a font. If the programmer initializes a font using the <xref
-    linkend="mthCreateFontEx"/> method and does not release the font, then system resource leaks can ocurr. The only difference
+    linkend="mthCreateFontEx"/> method and does not release the font, then system resource leaks can occur. The only difference
     here is that this <emphasis role="italic">initialize / release</emphasis> cycle is on a per thread basis.
   </para>
   <para>
@@ -840,7 +840,7 @@ Error code 0 (0x00000000): The operation completed successfully.
     </para>
     <para>
       If this argument is omitted, the default ooDialog value, <emphasis role="italic">ooDialog Browse for Folder</emphasis>,
-      is set for the <emphasis role="italic">dlgTitle</emphasis> attribute. To prevent the ooDialg default value from being
+      is set for the <emphasis role="italic">dlgTitle</emphasis> attribute. To prevent the ooDialog default value from being
       used and have the Windows default used, set this argument to the <computeroutput>.nil</computeroutput> object, or to the empty string.
     </para>
     </listitem></varlistentry>
@@ -854,7 +854,7 @@ Error code 0 (0x00000000): The operation completed successfully.
     </para>
     <para>
       If this argument is omitted, the default ooDialog value, <emphasis role="italic">Select the folder needed</emphasis>,
-      is set for the <emphasis role="italic">banner</emphasis> attribute. To prevent the ooDialg default value from being
+      is set for the <emphasis role="italic">banner</emphasis> attribute. To prevent the ooDialog default value from being
       used and have the Windows default used, set this argument to the <computeroutput>.nil</computeroutput> object, or to
       the empty string.
     </para>
@@ -870,7 +870,7 @@ Error code 0 (0x00000000): The operation completed successfully.
     </para>
     <para>
       If this argument is omitted, the default ooDialog value, <emphasis role="italic">If the needed folder does not exist it
-      can be created</emphasis>, is set for the <emphasis role="italic">hint</emphasis> attribute. To prevent the ooDialg
+      can be created</emphasis>, is set for the <emphasis role="italic">hint</emphasis> attribute. To prevent the ooDialog
       default value from being used and have the Windows default used, set this argument to the
       <computeroutput>.nil</computeroutput> object, or to the empty string.
     </para>
@@ -969,8 +969,8 @@ Error code 0 (0x00000000): The operation completed successfully.
   <listitem>
   <para>
     By default, the text, <emphasis role="italic">Select the folder needed</emphasis> is set for the banner by the ooDialog
-    framework. By default, Windows will not use a baner. To use the Windows default behaviour rather than the ooDialog
-    default banner, set the <emphasis role="italic">banner</emphasis> attributed to the empty string, or the the
+    framework. By default, Windows will not use a banner. To use the Windows default behaviour rather than the ooDialog
+    default banner, set the <emphasis role="italic">banner</emphasis> attributed to the empty string, or the
     <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
@@ -1156,7 +1156,7 @@ Error code 0 (0x00000000): The operation completed successfully.
     linkend="clsDlgUtil"/> class can be used to determine the ID of the currently executing.
   </para>
   <para>
-    The recomendation is that the browse for folder dialog should be instantiated, used, and disposed of all on the same
+    The recommendation is that the browse for folder dialog should be instantiated, used, and disposed of all on the same
     thread. However, if the programmer has a need, or even just the desire, to use the browse for folder object on multiple
     threads, there is no reason why that can not be done. The programmer just needs to manage the initialization and release
     of the COM library herself.
@@ -1348,7 +1348,7 @@ leaving() thread ID 3580
   <listitem>
   <para>
     Returns a list of the keywords that specify the Browse For Folder dialog options that are currently set for this object.
-    The kewyords are listed and explained in the remarks section.
+    The keywords are listed and explained in the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">options set:</emphasis></term>
@@ -1604,7 +1604,7 @@ leaving() thread ID 3580
   <listitem>
   <para>
     The <emphasis role="italic">root</emphasis> attribute can be set using a number of different forms. By default, no root
-    folder is set. To remove a root folder, set the attribute to the emplty string or to the
+    folder is set. To remove a root folder, set the attribute to the empty string or to the
     <computeroutput>.nil</computeroutput> object. Use a full path name to set the root folder to the named folder. One of the
     <xref linkend="sctSpecialFolderNames"/> can be used. In addition, an item <link linkend="varItemIDList">ID</link> list
     can be used. An item ID list can be obtained through the <xref linkend="mthGetItemIDList"/> method.
@@ -1677,8 +1677,8 @@ leaving() thread ID 3580
   <varlistentry><term><emphasis role="bold">startDir set:</emphasis></term>
   <listitem>
   <para>
-    Set the <emphasis role="italic">startDir</emphasis> attribute to the full path name of the direcotry that should be
-    pre-selected when the browse for folder diaglo is started. To remove a starting directory, set this attribute to the
+    Set the <emphasis role="italic">startDir</emphasis> attribute to the full path name of the directory that should be
+    pre-selected when the browse for folder dialog is started. To remove a starting directory, set this attribute to the
     <computeroutput>.nil</computeroutput> object or to the empty string.
   </para>
   </listitem></varlistentry>
@@ -1838,7 +1838,7 @@ leaving() thread ID 3580
   <para>
     If the <emphasis role="italic">type</emphasis> argument is omitted this method should return some name for any shell
     item, virtual folder or not. In this case the method first tries to get a full file path name. But, if that fails the
-    method tries again using the flag for destop absolute editing. If the <emphasis role="italic">type</emphasis> argument is
+    method tries again using the flag for desktop absolute editing. If the <emphasis role="italic">type</emphasis> argument is
     used, then the method uses the specified SIGDN flag as is and returns whatever the shell returns.
   </para>
   </listitem></varlistentry>
@@ -2284,7 +2284,7 @@ leaving() thread ID 4032
     initialized and released for each thread the browse for folder object is used on. The ooDialog initializes the COM
     library on the thread the object is first instantiated on and releases the COM library on the thread that the <xref
     linkend="mthGetFolderBff"/> method, or the <xref linkend="mthGetItemIDList"/> is invoked on. If the same browse for folder
-    object is used on another thread than the thread it was instatiated on, the methods of the object may fail unless the COM
+    object is used on another thread than the thread it was instantiated on, the methods of the object may fail unless the COM
     library is initialized on the other thread. The <xref linkend="mthInitCOMBff"/> method is provided to perform the
     initialization, and the <emphasis role="italic">releaseCOM</emphasis> method is provided to release the COM library on
     the other thread.
@@ -2950,7 +2950,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The default state for the added item is enabled and visible. Control ittems in container control groups cannot be changed
+    The default state for the added item is enabled and visible. Control items in container control groups cannot be changed
     after they have been created, with the exception of their enabled and visible states. Container controls include radio
     button groups, combo boxes, drop-down lists on the Open or Save button, and menus.
   </para>
@@ -3063,7 +3063,7 @@ leaving() thread ID 4032
 
 ]]>
 </programlisting>
-    This secon example adds an edit box with a label, <emphasis role="italic">Some text please:</emphasis>, next to it. The
+    This second example adds an edit box with a label, <emphasis role="italic">Some text please:</emphasis>, next to it. The
     edit box will contain the string <emphasis role="italic">Useful text only</emphasis>:
 <programlisting>
 <![CDATA[
@@ -4184,7 +4184,7 @@ leaving() thread ID 4032
   ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG); say 'addControlItem:' .DlgUtil~errMsg(ret)
   ret = sfd~endVisualGroup(); say 'endVisualGroup:' .DlgUtil~errMsg(ret)
   ...
-  -- Set the intial state
+  -- Set the initial state
   ret = sfd~setFileTypeIndex(1)
   ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
 
@@ -4594,7 +4594,7 @@ leaving() thread ID 4032
     <varlistentry><term>text [required]</term>
     <listitem>
     <para>
-      The text to associate with the comntrol.
+      The text to associate with the control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4732,7 +4732,7 @@ leaving() thread ID 4032
     available:
 <programlisting>
 <![CDATA[
-  ret = cfd~setControlState(IDC_PB_DONE, 'VISABLE')
+  ret = cfd~setControlState(IDC_PB_DONE, 'VISIBLE')
 ]]>
 </programlisting>
   </para>
@@ -5589,7 +5589,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    To recieve event notifications from a common item dialog, the programmer creates a subclass of the
+    To receive event notifications from a common item dialog, the programmer creates a subclass of the
     <computeroutput>CommonDialogEvents</computeroutput> class and over-rides the event handler methods of the class for the
     events the programmer is interested in.
   </para>
@@ -5608,7 +5608,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <para>
     This example shows a technique that allows the label of the <emphasis role="italic">Cancel</emphasis> button to be
     changed. Before the common file dialog is opened a folder changing notification is sent. The example uses an event
-    handler method for that event and the first time it recieves the notification sets the label of the cancel button to
+    handler method for that event and the first time it receives the notification sets the label of the cancel button to
     <emphasis role="italic">Abort</emphasis>.
 <programlisting>
 <![CDATA[
@@ -5767,7 +5767,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
     somewhat contrived, but serves the purpose of an example. A <emphasis role="italic">Closer</emphasis> class is
     implemented with a <emphasis role="italic">close</emphasis> method. In the example, the <emphasis
     role="italic">close</emphasis> method is started executing on another thread. This method then sleeps for a short bit,
-    inovkes some methods on the open file dialog, and then invokes the <emphasis role="italic">close</emphasis> method of the
+    invokes some methods on the open file dialog, and then invokes the <emphasis role="italic">close</emphasis> method of the
     open file dialog:
 <programlisting>
 <![CDATA[
@@ -6318,7 +6318,7 @@ getFolder:           C:\Rexx\ooRexx
     say 'Tough luck, you are too slow.'
   end
 
-  -- If we relase the open file object before the
+  -- If we release the open file object before the
   -- second thread is finished we will have an error
   -- raised.  So we wait ...
   say 'Please wait while system resources are cleaned up ...'
@@ -6467,9 +6467,9 @@ ofd~releaseCom
     released on each thread and that the object is released.
   </para>
   <para>
-    Note however that the code doesn't guarentee that the <emphasis role="italic">getResult</emphasis> or <emphasis
-    role="italic">show</emphasis> is not invoked afte the COM object has been released. It just makes it unlikely. If the
-    user selects a file and the timeout happens at the same instant, both threads could recieve true from <emphasis
+    Note however that the code doesn't guarantee that the <emphasis role="italic">getResult</emphasis> or <emphasis
+    role="italic">show</emphasis> is not invoked after the COM object has been released. It just makes it unlikely. If the
+    user selects a file and the timeout happens at the same instant, both threads could receive true from <emphasis
     role="italic">isReleased</emphasis> method, because neither thread has yet invoked <emphasis
     role="italic">release</emphasis>.
 <programlisting>
@@ -6572,7 +6572,7 @@ ofd~releaseCom
     the COM library has already been released on the thread, then the Windows API is not called and false is returned.
   </para>
   <para>
-    When the <xref linkend="mthNewClsCommonItemDialog"/> method is invoked, ooDialog initalizes the COM library
+    When the <xref linkend="mthNewClsCommonItemDialog"/> method is invoked, ooDialog initializes the COM library
     automatically. When the <xref linkend="mthRelease"/> method is invoked, <emphasis role="italic">if it is the same thread
     </emphasis> as <emphasis role="italic">new</emphasis> was invoked on, ooDialog automatically releases the COM library. As
     long as the programmer follows the recommended practice of only using a common item dialog object on one thread, the
@@ -6655,7 +6655,7 @@ ofd~releaseCom
   <para>
     Unlike the <xref linkend="mthSetOkButtonLabel"/> method, which is supplied by the underlying COM dialog object, the
     <emphasis role="italic">setCancelButtonLabel</emphasis> is an enhancement added by ooDialog. Because of this, its use is
-    slightly different than the use of the <emphasis role="italic">setOkButtonLable</emphasis> method.
+    slightly different than the use of the <emphasis role="italic">setOkButtonLabel</emphasis> method.
   </para>
   <para>
     The ooDialog framework gets a handle to the Cancel button and resets its label to that specified. The button does not
@@ -6760,7 +6760,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    A dialog's pesistent state can include factors such as the last visited directory and the size and position of the
+    A dialog's persistent state can include factors such as the last visited directory and the size and position of the
     dialog. Typically, this state is persisted based on the name of the executable file. By specifying a GUID, a program
     can have different persisted states for different versions of the dialog within the same program, for example, a backup
     to file dialog and an open text document dialog.
@@ -6813,7 +6813,7 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>setDefaultExtension</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDefaultExtension(--exension--)------------><
+>>--setDefaultExtension(--extension--)------------><
 ]]>
 </programlisting>
 
@@ -6849,7 +6849,7 @@ ofd~releaseCom
   </para>
   <para>
     If this method is invoked before showing the dialog, the dialog will update the default extension automatically when the
-    uer chooses a new file type. See <xref linkend="mthSetFileTypes"/>.
+    user chooses a new file type. See <xref linkend="mthSetFileTypes"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7298,7 +7298,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The filter can only be set one time and can not be removed. The filter ojbect can not be reused.
+    The filter can only be set one time and can not be removed. The filter object can not be reused.
   </para>
   <para>
    The MSDN <xref linkend="defWindowsDoc"/> MSDN says both:
@@ -7312,7 +7312,7 @@ ofd~releaseCom
   </listitem>
   <listitem>
   <para>
-    Deprecated. <emphasis role="italic">setFilter</emphasis> mehtod is no longer available for use as of Windows 7
+    Deprecated. <emphasis role="italic">setFilter</emphasis> method is no longer available for use as of Windows 7
   </para>
   </listitem>
   </itemizedlist>
@@ -7329,7 +7329,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    In the example programs distributed with ooDialog, there is an exmple:
+    In the example programs distributed with ooDialog, there is an example:
     <computeroutput>saveFileWithFilter.rex</computeroutput> that demonstrates how to implement a <xref
     linkend="clsShellItemFilter"/> subclass and use it with the <emphasis role="italic">setFilter</emphasis> method.
   </para>
@@ -7544,7 +7544,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example uses the <emphasis role="italic">setTitle</emphasis> method to chage the title of the open file dialog to
+    This example uses the <emphasis role="italic">setTitle</emphasis> method to change the title of the open file dialog to
     <emphasis role="italic">The ooRexx Project's Open File Dialog</emphasis>
 <programlisting>
 <![CDATA[
@@ -7587,7 +7587,7 @@ ofd~releaseCom
     <listitem>
     <para>
       The Rexx dialog object that is the owner of the common item dialog. The owner dialog is disabled until the <emphasis
-      role="italic">show</emphasis> method retuns, which is usually the desired behavior.
+      role="italic">show</emphasis> method returns, which is usually the desired behavior.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7601,7 +7601,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The return from the <emphasis role="italic">show</emphasis> method specifies if the the dialog was shown with out error,
+    The return from the <emphasis role="italic">show</emphasis> method specifies if the dialog was shown with out error,
     and or if the user canceled the dialog. S_OK indicates that the dialog was shown without error and the user made a
     selection. If the user cancels the dialog the return is the <xref linkend="clsComConstants"/> CANCELED value. Any other
     value is an error code. To actually get the selection, the programmer uses the <xref linkend="mthGetResultCid"/> or the
@@ -7620,7 +7620,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This code snippet is exectued from within a method of an ooDialog dialog subclass. It sets the subclass object as the
+    This code snippet is executed from within a method of an ooDialog dialog subclass. It sets the subclass object as the
     owner of the open file dialog.
 <programlisting>
 <![CDATA[
@@ -7665,9 +7665,9 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    There can only be one <xref linkend="clsCommonDialogEvents"/> object assigned to a common item dialog. To stop recieving
+    There can only be one <xref linkend="clsCommonDialogEvents"/> object assigned to a common item dialog. To stop receiving
     event notifications an attached event handler can be removed. Once an event handler object has been attached and then
-    removed throuh the <emphasis role="italic">unadvise</emphasis> method, that object is no longer valid. The removed object
+    removed through the <emphasis role="italic">unadvise</emphasis> method, that object is no longer valid. The removed object
     can not be reattached though the <emphasis role="italic">advise</emphasis> method. Rather a new
     <computeroutput>CommonDialogEvents</computeroutput> object would need to be instantiated and attached.
   </para>
@@ -8145,7 +8145,7 @@ ofd~releaseCom
     When this event handler is invoked, the <xref linkend="mthGetResultCid"/> and <xref linkend="mthGetResults"/> methods can
     be invoked. The application can use this event handling method to perform additional validation before the dialog
     closes, or to prevent the dialog from closing. If the application prevents the dialog from closing, it should display
-    something to the user to indicate why the file is not acceptd. Typically the <emphasis role="italic">hwnd</emphasis>
+    something to the user to indicate why the file is not accepted. Typically the <emphasis role="italic">hwnd</emphasis>
     argument would be used as the owner window of the message dialog.
   </para>
   <para>
@@ -8258,7 +8258,7 @@ ofd~releaseCom
   ret = fileOpen~addText(IDC_TEXT_DIR, "")
   ret = fileOpen~endVisualGroup()
 
-  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Consol Rexx Program', '*.rxg')
+  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Console Rexx Program', '*.rxg')
   fileOpen~setFileTypes(filter)
   fileOpen~setFileTypeIndex(1)
 
@@ -8339,7 +8339,7 @@ ofd~releaseCom
   <listitem>
   <para>
     The programmer can call <xref linkend="mthSetFolder"/> from within this event handler to redirect navigation to an
-    alternate folder. The actual navigation does not occur until <emphasis role="italic">onFoldderChanging</emphasis> has
+    alternate folder. The actual navigation does not occur until <emphasis role="italic">onFolderChanging</emphasis> has
     returned.
   </para>
   <para>
@@ -8358,7 +8358,7 @@ ofd~releaseCom
   <listitem>
   <para>
     This is a contrived example used to show the basics of the <emphasis role="italic">onFolderChanging</emphasis> event
-    handler. The user is prevented from naviagating to any folder that contains <emphasis role="italic">rexx</emphasis> in
+    handler. The user is prevented from navigating to any folder that contains <emphasis role="italic">rexx</emphasis> in
     the folder name:
 <programlisting>
 <![CDATA[
@@ -8611,13 +8611,13 @@ ofd~releaseCom
       return self~FDESVR_ACCEPT
     end
     else if magicText == '' then do
-      msg = "IT does not allow overwritting this file.  Permission to overwrite " || -
+      msg = "IT does not allow overwriting this file.  Permission to overwrite " || -
             "the file can be granted by entering the correct key in the edit box."
       j = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
       return self~FDESVR_REFUSE
     end
     else do
-      msg = "IT does not allow overwritting this file.  Overwrite permission denied."
+      msg = "IT does not allow overwriting this file.  Overwrite permission denied."
       j = MessageDialog(msg, hwnd, title, 'OK', 'ERROR')
       return self~FDESVR_REFUSE
     end
@@ -8845,7 +8845,7 @@ ofd~releaseCom
 
   fileOpen~setOkButtonLabel('Open This File')
 
-  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Consol Rexx Program', '*.rxg')
+  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Console Rexx Program', '*.rxg')
   fileOpen~setFileTypes(filter)
   fileOpen~setFileTypeIndex(1)
 
@@ -9154,13 +9154,13 @@ ofd~releaseCom
   <listitem>
   <para>
     This example initiates an open file dialog and enables the multi-file selection capability. The dialog is shown and the
-    user's response is formattted into a text message which is used to display the results
+    user's response is formatted into a text message which is used to display the results
 <programlisting>
 <![CDATA[
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN_MULTI)
 
-  -- To allow the user to select multiple files, we need to add this keywod
+  -- To allow the user to select multiple files, we need to add this keyword
   -- to the options:
   ofd~options = ofd~options 'ALLOWMULTISELECT'
 
@@ -9502,8 +9502,8 @@ ofd~releaseCom
   The default implementation of <emphasis role="italic">includeItem</emphasis> simply returns S_OK for every item. To use the
   shell item filter to actually filter the items in the view of a common item dialog, the programmer creates a subclass of
   the <computeroutput>ShellItemFilter</computeroutput> and sets that object as the filter for a common item dialog using the
-  <emphasis role="italic">setFiter</emphasis> method. In the subclass, the programmer over-rides the <emphasis
-  role="italic">includItem</emphasis> method and returns S_OK or S_FALSE for each item, depending on the logic of the
+  <emphasis role="italic">setFilter</emphasis> method. In the subclass, the programmer over-rides the <emphasis
+  role="italic">includeItem</emphasis> method and returns S_OK or S_FALSE for each item, depending on the logic of the
   application.
 </para>
 <para>
@@ -9518,7 +9518,7 @@ ofd~releaseCom
 </listitem>
 <listitem>
 <para>
-  Deprecated. <emphasis role="italic">setFilter</emphasis> mehtod is no longer available for use as of Windows 7
+  Deprecated. <emphasis role="italic">setFilter</emphasis> method is no longer available for use as of Windows 7
 </para>
 </listitem>
 </itemizedlist>
@@ -9551,7 +9551,7 @@ ofd~releaseCom
 </row>
 <row>
 <entry><xref linkend="mthIncludeItem"/> </entry>
-<entry>Sets the status of a specific shell item to be incldued in the view, or not included.</entry>
+<entry>Sets the status of a specific shell item to be included in the view, or not included.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -9669,7 +9669,7 @@ ofd~releaseCom
   <listitem>
   <para>
     The default implementation of the <emphasis role="italic">includeItem</emphasis> returns S_OK for every item. For the
-    <computeroutput>ShllItemFilter</computeroutput> objec to be of any use, the programmer must over-ride this method and
+    <computeroutput>ShllItemFilter</computeroutput> object to be of any use, the programmer must over-ride this method and
     return S_FALSE for some items to exclude them.
   </para>
   </listitem></varlistentry>
@@ -9748,11 +9748,11 @@ ofd~releaseCom
 </section>
 
 <section id="mthGetFolderClsSimpleFolderBrowse" xreflabel="getFolder"><title>getFolder (Class Method)</title>
-<indexterm><primary>getFoder</primary><secondary>SimpleFolderBrowse class</secondary></indexterm>
+<indexterm><primary>getFolder</primary><secondary>SimpleFolderBrowse class</secondary></indexterm>
 <indexterm><primary>SimpleFolderBrowse class</primary><secondary>getFolder</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFolder(--+---------+-------+-+------ +-+---------+-+--------+-+---------+--)--><
+>>--getFolder(--+-------+-+-------+-+------ +-+---------+-+--------+-+---------+--)--><
                 +--capt-+ +-,-bnr-+ +-,-hnt-+ +-,-start-+ +-,-root-+ +-,-owner-+
 ]]>
 </programlisting>

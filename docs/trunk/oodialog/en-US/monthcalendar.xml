@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -136,7 +136,7 @@
 </row>
 <row>
 <entry><xref linkend="tmthCreateMonthCalendar"/></entry>
-<entry>Creates a MontCalendar control in an <xref linkend="clsUserDialog"/></entry>
+<entry>Creates a MonthCalendar control in an <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
 <entry><xref linkend="tmthConnectMonthCalendarEvent"/></entry>
@@ -836,7 +836,7 @@
   </para>
   <para>
     Note that many of the underlying dialog controls ignore their color settings when visual themes are enabled, unless
-    the theme is Windows Clasic. This is the case for the month calendar control.
+    the theme is Windows Classic. This is the case for the month calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1847,7 +1847,7 @@
 
 
 <section id="mthHitTestInfoClsMonthCalendar" xreflabel="hitTestInfo"><title>hitTestInfo</title>
-<indexterm><primary>hitTestInfo</primary><secondary>MonthCalendary class</secondary></indexterm>
+<indexterm><primary>hitTestInfo</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>hitTestInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1950,7 +1950,7 @@
           <para>
             The point, <emphasis role="italic">pt</emphasis>, was over a week number. This only applies when
             the month calendar has the WEEKNUMBERS style. The DATE index of the
-            <computeroutput>directory</computeroutput> object is set to the  the corresponding date in the leftmost
+            <computeroutput>directory</computeroutput> object is set to the corresponding date in the leftmost
             column.
           </para>
           </listitem></varlistentry>
@@ -2584,7 +2584,7 @@ Column: The NIL object
     <varlistentry><term>which [required]</term>
     <listitem>
     <para>
-      Specifies which part of the calendar will have its coler set. Exactly one of the following keywords must be used,
+      Specifies which part of the calendar will have its color set. Exactly one of the following keywords must be used,
       case is not significant:
     </para>
     <para>
@@ -2665,7 +2665,7 @@ Column: The NIL object
   </para>
   <para>
     Note that many of the underlying dialog controls ignore their color settings when visual themes are enabled, unless
-    the theme is Windows Clasic. This is the case for the month calendar control. Setting any of the calendar part
+    the theme is Windows Classic. This is the case for the month calendar control. Setting any of the calendar part
     colors will have no effect, except in the Windows Classic theme.
   </para>
   </listitem></varlistentry>
@@ -2853,7 +2853,7 @@ Column: The NIL object
   </para>
   <para>
     However, the programmer will need to use the <emphasis role="italic">setDayState</emphasis> method to properly
-    display the dates when the dialog with a month caldendar is first shown.
+    display the dates when the dialog with a month calendar is first shown.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -2954,7 +2954,7 @@ Column: The NIL object
   </para>
   <para>
     The most common use case for a month calendar is to display 1 month. In this case, when setting the day states for
-    the calendar, exactly 3 monts of day state objects are needed, (previouse, current, and next months.) The <emphasis
+    the calendar, exactly 3 months of day state objects are needed, (previouse, current, and next months.) The <emphasis
     role="italic">setDayStateQuick</emphasis> is simply a short cut method to take advantage of this foreknowledge.
   </para>
   </listitem></varlistentry>
@@ -3275,7 +3275,7 @@ Column: The NIL object
     <varlistentry><term>dates [required]</term>
     <listitem>
     <para>
-      An <computeroutput>Array</computeroutput> object containg two <computeroutput>DateTime</computeroutput> objects.
+      An <computeroutput>Array</computeroutput> object containing two <computeroutput>DateTime</computeroutput> objects.
       The <computeroutput>DateTime</computeroutput> object at index 1 must be the starting date of the selection and the
       <computeroutput>DateTime</computeroutput> object at index 2 must be the ending date of the selection. The time
       portion of the <computeroutput>DateTime</computeroutput> object is ignored.
@@ -3411,7 +3411,7 @@ Column: The NIL object
   <para>
     The single required argument is:
   <variablelist>
-    <varlistentry><term>rext [required] [in / out]</term>
+    <varlistentry><term>rect [required] [in / out]</term>
     <listitem>
     <para>
       A <xref linkend="clsRect"/> object that, on entry, describes a region that is greater than or equal to
@@ -3837,7 +3837,7 @@ Column: The NIL object
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>DayStates</computeroutput> object and initalizes the cache of
+  Instantiates a new <computeroutput>DayStates</computeroutput> object and initializes the cache of
  <xref linkend="clsDayState"/> objects. Each day state in the is initialized with the state of every day
   turned off.
 </para>

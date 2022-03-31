@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -188,7 +188,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsGrandchildClsEdit"/></entry>
-<entry>Notifies the ooDialgo framework that this edit control is a grandchild of the dialog and configures the underlying edit control to send four event notifications to the dialog, rather than its direct parent.</entry>
+<entry>Notifies the ooDialog framework that this edit control is a grandchild of the dialog and configures the underlying edit control to send four event notifications to the dialog, rather than its direct parent.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsModified"/></entry>
@@ -389,7 +389,7 @@
   </para>
   <para>
     When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
-    character to the default. This is an asterisk for earlier versions of Common Contorl <xref linkend="ovvComctl32"/>, a
+    character to the default. This is an asterisk for earlier versions of Common Control <xref linkend="ovvComctl32"/>, a
     solid circle for Comctl32 version 6.0 and later.
   </para>
   </listitem></varlistentry>
@@ -707,7 +707,7 @@
       <listitem>
       <para>
         <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>. If true, disable the edit
-        control's internal resizing.  If false, renable the behavior, if it has been disabled.  The default is
+        control's internal resizing.  If false, re-enable the behavior, if it has been disabled.  The default is
         <computeroutput>.true</computeroutput>
       </para>
       </listitem></varlistentry>
@@ -795,7 +795,7 @@
 </programlisting>
 
 <para>
-  Scrolls the position of the caret so tha it is visible in the edit control.
+  Scrolls the position of the caret so that it is visible in the edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1245,7 +1245,7 @@
 
 <section id="mthHideBalloon" xreflabel="hideBalloon"><title>hideBalloon</title>
 <indexterm><primary>hideBalloon</primary></indexterm>
-<indexterm><primary>Edit class</primary><secondary>hideBallon</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>hideBalloon</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--hideBalloon----------------------------------><
@@ -1273,7 +1273,7 @@
   <listitem>
   <para>
     The operating system will dismiss the balloon window automatically after 10 seconds with no programmer
-    intervention. The <emphasis role="italic">hideBallon</emphasis> method can be used to dismiss the ballon before the
+    intervention. The <emphasis role="italic">hideBalloon</emphasis> method can be used to dismiss the ballon before the
     10 seconds is up.
   </para>
   </listitem></varlistentry>
@@ -1364,7 +1364,7 @@
     method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
     will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
     RETURN and ESCAPE keydown events. These events occur when the user types the return, or enter, key, the escape key, or
-    the tab key. The fourth event is the KILLFOCUS event. The event ocurrs when the edit control loses the focus.
+    the tab key. The fourth event is the KILLFOCUS event. The event occurs when the edit control loses the focus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1721,7 +1721,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    On success, the number of charcutiers in the line specified. On error -1. In particular, -1 is returned if <emphasis
+    On success, the number of characters in the line specified. On error -1. In particular, -1 is returned if <emphasis
     role="italic">lineIndex</emphasis> is greater than the number of lines in the edit control.
   </para>
   </listitem></varlistentry>
@@ -2466,7 +2466,7 @@ Length of 3rd line: 21
 <![CDATA[
 
 ::method onHomeMenuItem
-  expose editControll
+  expose editControl
 
   success = .true
   do while success
@@ -2525,7 +2525,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method always returns o.
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -3191,7 +3191,7 @@ The new left margin is 10 and the new right margin is 5
 
 <section id="mthShowBalloon" xreflabel="showBalloon"><title>showBalloon</title>
 <indexterm><primary>showBalloon</primary></indexterm>
-<indexterm><primary>Edit class</primary><secondary>showBallon</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>showBalloon</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--showBalloon(--title,--text--+----------+--)--><
@@ -3344,7 +3344,7 @@ The new left margin is 10 and the new right margin is 5
 ::method onLostFocus
   expose editControl
 
-  -- When the edit control loses the focus, dismiss the alloon.
+  -- When the edit control loses the focus, dismiss the balloon.
   editControl~hideBalloon
 
 ]]>
@@ -3522,7 +3522,7 @@ The new left margin is 10 and the new right margin is 5
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>ctrlID</term>

@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -82,7 +82,7 @@
 <para>
   The operation of <emphasis role="bold">connecting</emphasis> a dialog control is the action of creating the attribute
   (the data attribute) in the Rexx dialog object, and internally mapping the attribute to the specified dialog control
-  in the underlying dialog. The operation of <emphasis role="bold">seting data</emphasis> then becomes the action of
+  in the underlying dialog. The operation of <emphasis role="bold">setting data</emphasis> then becomes the action of
   setting the state of the underlying dialog control to match the value of the corresponding attribute of the Rexx
   dialog object. The operation of <emphasis role="bold">getting data</emphasis> becomes the action of setting the value
   of the attribute in the Rexx dialog object to match the state of the corresponding dialog control in the underlying
@@ -93,7 +93,7 @@
   connecting data attributes. In addition to creating and connecting the data attributes, if automatic data field
   detection is on, when the underling dialog is created, the state of its controls are automatically set to the values
   of the data attributes. Likewise, when the dialog is closed, the values of the data attributes in the Rexx dialog are
-  set to the state of their correspondaing controls in the underlying dialog.
+  set to the state of their corresponding controls in the underlying dialog.
 </para>
 <para>
   Automatic data detection is implemented in all three main classes of dialogs, the <xref linkend="clsUserDialog"/>, <xref
@@ -514,8 +514,8 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectCheckBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connctChectBox(--id--+-------------------+--)---------------><
-                         +-,--attributeName--+
+>>--connectCheckBox(--id--+-------------------+--)---------------><
+                          +-,--attributeName--+
 
 ]]>
 </programlisting>
@@ -1158,7 +1158,7 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
   </para>
   </listitem></varlistentry>
-  <varlistentry id="exampleConnectListBoxMulti"><term><emphasis role="bold">Example Mulit Selection:</emphasis></term>
+  <varlistentry id="exampleConnectListBoxMulti"><term><emphasis role="bold">Example Multi Selection:</emphasis></term>
   <listitem>
   <para>
     This example shows how to use the <emphasis role="italic">connectListBox</emphasis> method with a multi-selection
@@ -1231,7 +1231,7 @@ return 0
 LANGUAGE 0, SUBLANG_NEUTRAL
 IDD_MULTI_SELECTION_DLG DIALOG 0, 0, 186, 148
 STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
-CAPTION "Visted States"
+CAPTION "Visited States"
 FONT 8, "Ms Shell Dlg 2"
 {
     CTEXT           "Select the states you've visited", IDC_STATIC, 29, 12, 127, 11, SS_CENTER
@@ -1382,7 +1382,7 @@ FONT 8, "Ms Shell Dlg 2"
   </para>
   <para>
     The <emphasis role="italic">data</emphasis> of a list <xref linkend="clsListView"/> is defined to be a
-    string containing the blank seperated index(es) of its selected item(s).
+    string containing the blank separated index(es) of its selected item(s).
   </para>
   <para>
     The <emphasis role="italic">connectCheckBox</emphasis> method should only be used when
@@ -2298,7 +2298,7 @@ say dialog~LISTBOX_DAYS
   A stem index for each  connected control is set.  The stem index is the numeric ID for the control.  The value at that
   index is the data of the matching dialog control.  In addition, if the <xref linkend="atrConstDir"/>
   directory has a symbolic ID for the numeric ID of the control, a stem index of the symbolic ID is also set.  This of
-  course only works reliably if the Rexx programmer uses unique numeric IDs for all resouces.
+  course only works reliably if the Rexx programmer uses unique numeric IDs for all resources.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3017,7 +3017,7 @@ dialog~setData
     The terms <emphasis role="italic">transfers</emphasis> and <emphasis role="italic">receives</emphasis> the data are
     holdovers from the original documentation and the original data <xref linkend="sctUnderstandingDataAttributes"/>
     abstraction. What the <emphasis role="italic">setDataAttribute</emphasis> method actually does is to set the state of the
-    underyling dialog control to the value of the connected data attribute. The defined value for the <emphasis
+    underlying dialog control to the value of the connected data attribute. The defined value for the <emphasis
     role="italic">data</emphasis> of any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method
     for the control.
   </para>
@@ -3063,7 +3063,7 @@ dialog~setData
 </para>
 <para>
   This method only works for controls that have been connected to a <link
-  linkend="sctUnderstandingDataAttributes">data</link> attributue. Either by <xref
+  linkend="sctUnderstandingDataAttributes">data</link> attribute. Either by <xref
   linkend="paraAutomaticDataDetection"/>, or through one of the
   <xref linkend="sctConnectDataMethods"/>) methods. Every connected control has its state set when this method is invoked.
   If the data stem, <emphasis role="italic">data.</emphasis> has no matching index for a connected control, that control's
@@ -3212,7 +3212,7 @@ self~setDataStem(dlgStem.)
     role="italic">setEditData</emphasis> has the same effect as the user typing text into the edit control. The
     connecte attribute in the Rexx dialog object (<computeroutput>DATA234</computeroutput>) still has the original
     value. Thus it is possible to undo the changes, (using the <emphasis role="italic">unDoChanges</emphasis> method,)
-    or to accept the changes, (using the <emphasis role="italic">accetpValues</emphasis> method.)
+    or to accept the changes, (using the <emphasis role="italic">acceptValues</emphasis> method.)
 
   <programlisting>
   <![CDATA[

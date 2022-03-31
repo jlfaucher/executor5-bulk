@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -52,7 +52,7 @@
 <para>
   The following table lists the general categories of user input in the Windows operating system, as described by the
   Windows documentation. Several of the categories have no current implmentation in ooDialog, or the implementation
-  is scatterd throughout the <xref linkend="chpDialogObject"/> and dialog
+  is scattered throughout the <xref linkend="chpDialogObject"/> and dialog
   <xref linkend="chpDialogControlObject"/> classes. These categories are mentioned here for completeness. Future versions of
   ooDialog may be enhanced to address those categories.
 <table id="tblUserInputClasses" frame="all"> <title>ooDialog User Input Groups</title>
@@ -76,7 +76,7 @@
 </row>
 <row>
 <entry><xref linkend="clsKeyboard"/>  Input</entry>
-<entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to receive and process that input. ooDialog has the <computeroutput>Keyboard</computeroutput> class to deal with functionality related to the keyboard. However, for historic reasons some of the keyboard related function is scattered throughout the the dialog and dialog control classes.</entry>
+<entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to receive and process that input. ooDialog has the <computeroutput>Keyboard</computeroutput> class to deal with functionality related to the keyboard. However, for historic reasons some of the keyboard related function is scattered throughout the dialog and dialog control classes.</entry>
 </row>
 <row>
 <entry><xref linkend="clsMouse"/> Input</entry>
@@ -761,7 +761,7 @@ of a simple entry line.</para>
   linkend="clsProgressBar"/>, an optional message, an optional status line, and an optional <emphasis
   role="italic">Cancel</emphasis> button. The dialog shows the progress a lengthy task is making to the user. The optional
   components of the dialog, the message text, the status line, et., can be used to convey more information concerning the
-  progrress, or the purpose of the dialog, to the user. The components can be used, or not used, according to the needs of
+  progress, or the purpose of the dialog, to the user. The components can be used, or not used, according to the needs of
   the application.
 </para>
 <para>
@@ -775,7 +775,7 @@ of a simple entry line.</para>
   width of the dialog with an equal margin on each side.
 </para>
 <para>
-  By default, the width of the dialog is calcualted based on the width of the message text. If there is no message, the width
+  By default, the width of the dialog is calculated based on the width of the message text. If there is no message, the width
   is calculated based on the width of a typical message. Or, the programmer can configure a width. The dialog maintains a
   minimum width that it will not be sized smaller than.
 </para>
@@ -940,9 +940,9 @@ of a simple entry line.</para>
   The <computeroutput>ProgressDialog</computeroutput> class uses a number of <emphasis role="italic">constant</emphasis>
   values that are defined using the <computeroutput>::constant</computeroutput> directive. Some of these constants may be of
   use to the programmer when working with a progress dialog object. These constants are listed and documented in this
-  section. The userful constants provided by the class are listed in the table below:
+  section. The useful constants provided by the class are listed in the table below:
 </para>
-<table id="tblConstantsProgressDialog" frame="all"> <title>Usefull Progress Dialog Constant Reference</title>
+<table id="tblConstantsProgressDialog" frame="all"> <title>Useful Progress Dialog Constant Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1*"/>
 <colspec colwidth="3*"/>
@@ -1329,7 +1329,7 @@ of a simple entry line.</para>
   <para>
     Marquee mode animates a progress bar in a way that shows activity but does not indicate what proportion of the task is
     complete. The highlighted part of the progress bar moves repeatedly along the length of the bar. The animation of the
-    progress bar can be started and stopped.  The speed of the the animation can also be controled. Marquee progress bars do
+    progress bar can be started and stopped.  The speed of the animation can also be controlled. Marquee progress bars do
     not have a range or position.
   </para>
   <para>
@@ -1444,7 +1444,7 @@ of a simple entry line.</para>
     No attempt is made during the height and width calculations to try and determine if the assigned message text will fit in
     the static control or not if the <emphasis role="italic">msgHeight</emphasis> is set higher than 1. This means the
     programmer can increase the over all height of the dialog by increasing the message height, even if the height does not
-    need to be increased to accomdate the message text.
+    need to be increased to accomodate the message text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1650,7 +1650,7 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">rangeMim</emphasis> attribute can also be set using the <emphasis
+    The <emphasis role="italic">rangeMin</emphasis> attribute can also be set using the <emphasis
     role="italic">min</emphasis> argument in the <xref linkend="mthNewClsProgressDialog"/> method.
   </para>
   </listitem></varlistentry>
@@ -1862,7 +1862,7 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example supplies the user with a visual clue that the operation completed successfull when it drops out of the
+    This example supplies the user with a visual clue that the operation completed successfully when it drops out of the
     processing loop. It then ends the dialog using the <emphasis role="italic">endNow</emphasis> method.
 <programlisting>
 <![CDATA[
@@ -1928,7 +1928,7 @@ of a simple entry line.</para>
   </para>
   <para>
     If the progress bar is in marquee mode, or the progress dialog was not instantiated correctly, this method does nothing.
-    If the underlying dialog has not been created yet, this method will wait until it has been createdd.
+    If the underlying dialog has not been created yet, this method will wait until it has been created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1992,7 +1992,7 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    An <computeroutput>Interruptible</computeroutput> object provides a genric way for the progress dialog to handle the user
+    An <computeroutput>Interruptible</computeroutput> object provides a generic way for the progress dialog to handle the user
     canceling the dialog. When the <emphasis role="italic">setInterruptible</emphasis> method is invoked, the <xref
     linkend="atrCanCancel"/> attribute is automatically set to true.
   </para>
@@ -2019,7 +2019,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example instantiates an <xref linkend="clsAlerter"/> object, which is a concrete implementation of the
-    <computeroutput>Interrruptible</computeroutput> class, and passes the object to the progress dialog. This allows the user
+    <computeroutput>Interruptible</computeroutput> class, and passes the object to the progress dialog. This allows the user
     to cancel the dialog. The <computeroutput>Alerter</computeroutput> class provides the <xref linkend="atrIsCanceled"/>
     attribute. By checking the <emphasis role="italic">isCanceled</emphasis> attribute within the processing loop, the
     application can determine if the user has canceled the operation and end the processing loop:
@@ -2065,7 +2065,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Updates the status line with the supplied text. The status line will aways begin with the string: <emphasis
+  Updates the status line with the supplied text. The status line will always begin with the string: <emphasis
   role="italic">Status: </emphasis> and continue with the supplied text.
 </para>
 <variablelist>
@@ -2267,7 +2267,7 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="mthInterruptibleClsAlerter"/></entry>
-<entry>Detemines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput> object is always interruptible.</entry>
+<entry>Determines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput> object is always interruptible.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2424,7 +2424,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Detemines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput>
+  Determines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput>
   object is always interruptible.
 </para>
 <variablelist>
@@ -2462,14 +2462,14 @@ of a simple entry line.</para>
   The <computeroutput>Interruptible</computeroutput> class defines an interface for an object that can be <emphasis
   role="italic">interrupted</emphasis>, but possibly only interrupted at certain times. It does this by defining two abstract
   methods. Users of the <computeroutput>Interruptible</computeroutput> class are expected to inherit this mixin class and
-  provide concrete implmentations of both abstract methods.
+  provide concrete implementations of both abstract methods.
 </para>
 <para>
   The <computeroutput>Interruptible</computeroutput> class is a helper class for the <xref linkend="clsProgressDialog"/>
   class. Only <emphasis role="italic">interruptible</emphasis> objects can be used as an argument for the <xref
   linkend="mthSetInterruptible"/> method. The progress dialog will invoke both methods of the
   <computeroutput>Interruptible</computeroutput> object, so concrete implementations for both methods must be provided to
-  prevent syntax conditions from bein raised.
+  prevent syntax conditions from being raised.
 </para>
 
 <section id="sctMethodsInterruptible"><title>Method Table</title>
@@ -2497,7 +2497,7 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="mthInterruptibleClsInterruptible"/></entry>
-<entry>Detemines if this object is interruptible at this point in time.</entry>
+<entry>Determines if this object is interruptible at this point in time.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2548,7 +2548,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Detemines if this object is interruptible at this point in time.
+  Determines if this object is interruptible at this point in time.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2560,7 +2560,7 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns true if this object can be interrupted now. Returns false if this object should not be interrrupted now, but can
+    Returns true if this object can be interrupted now. Returns false if this object should not be interrupted now, but can
     possibly be interrupted at a later time.
   </para>
   </listitem></varlistentry>
@@ -2592,7 +2592,7 @@ of a simple entry line.</para>
 <para>
   The basic steps to user the <computeroutput>SingleSelection</computeroutput> are to instantiate the dialog using the
   <emphasis role="italic">new</emphasis> method, run the dialog using the <emphasis role="italic">execute</emphasis> method,
-  and do something with the user's repsonse which is returned from the <emphasis role="italic">execute</emphasis> method.
+  and do something with the user's response which is returned from the <emphasis role="italic">execute</emphasis> method.
 </para>
 
 <section id="mthNewClsSingleSelection" xreflabel="new"><title>new</title>
@@ -2627,7 +2627,7 @@ of a simple entry line.</para>
       A title, the caption bar text, for the dialog
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>labels. [reuired]</term>
+    <varlistentry><term>labels. [required]</term>
     <listitem>
     <para>
       A stem with whole number numeric indexes, one through the number of radio buttons desired. The value for each index is
@@ -3165,8 +3165,8 @@ an error symbol.</para>
     <para>
       If the argument contains file name and path information, the initial directory will be determined by the path
       information and the <emphasis role="italic">File</emphasis> name edit control will contain the file information.
-      When the selfile argument contains only path information and no file name information, i.e. the
-      argument ends with a back slash <emphasis role="italic">\</emphasis>, then the initial directory will be that
+      When the argument contains only path information and no file name information, i.e. the
+      argument ends with a backslash <emphasis role="italic">\</emphasis>, then the initial directory will be that
       path and the <emphasis role="italic">File</emphasis> name edit control will be left blank.
     </para>
     <para>
@@ -3190,9 +3190,9 @@ an error symbol.</para>
     <varlistentry><term>msk [optional]</term>
     <listitem>
     <para>
-      This argument contsists of pairs of filter strings where each of the filter strings is separated with a
-      <computeroutput>'0'x</computeroutput> character and the pairs of strings within a filter are also seperated with a
-      <computeroutput>'0'x</computeroutput> charatcter. The first string in each pair describes the filter and the
+      This argument consists of pairs of filter strings where each of the filter strings is separated with a
+      <computeroutput>'0'x</computeroutput> character and the pairs of strings within a filter are also separated with a
+      <computeroutput>'0'x</computeroutput> character. The first string in each pair describes the filter and the
       second string in the pair is a list of file patterns to use for the filter. For instance, if the file pattern
       filter is <computeroutput>*.txt</computeroutput> then only files with the extension of
       <computeroutput>.txt</computeroutput> are displayed in the dialog. The file pattern can consist of any valid file
@@ -3232,7 +3232,7 @@ an error symbol.</para>
     </para>
     <para>
       The operating system does not change the order of the filters. In the open or save dialog the filters are
-      dislpayed in the File Types combo box in the order specified in the <emphasis role="italic">mask</emphasis>
+      displayed in the File Types combo box in the order specified in the <emphasis role="italic">mask</emphasis>
       argument.
     </para>
     <para>
@@ -3269,7 +3269,7 @@ an error symbol.</para>
     <varlistentry><term>title [optional]</term>
     <listitem>
     <para>
-      The window title for the save or open file idlaog. The default is <emphasis role="italic">Open a File</emphasis>
+      The window title for the save or open file dialog. The default is <emphasis role="italic">Open a File</emphasis>
       or <emphasis role="italic">Save File As</emphasis>, depending on what is specified for the <emphasis
       role="italic">type</emphasis> argument.
     </para>
@@ -3279,7 +3279,7 @@ an error symbol.</para>
     <para>
       The default file extension. The <emphasis role="italic">File Open</emphasis> or <emphasis role="italic">File
       Save</emphasis> dialog append this extension if the user does not type an extension.  Although this extension can
-      be any length, the opererating system only uses the first 3 characters. The string must not include the <emphasis
+      be any length, the operating system only uses the first 3 characters. The string must not include the <emphasis
       role="italic">.</emphasis> character.
     </para>
     <para>
@@ -3643,7 +3643,7 @@ returned rather than the empty string.
       </para>
       <para>
         The keywords are divided up into four groups. Except for the <emphasis role="italic">other
-        miscellaneous</emphasis> group, only one keyword from each groupd should be used, case is not significant. If
+        miscellaneous</emphasis> group, only one keyword from each group should be used, case is not significant. If
         more than one keyword in a group is used, the behavior is undefined.
       </para>
       <para>
@@ -3732,7 +3732,7 @@ returned rather than the empty string.
           <para>
             Task Modal: This is the same as APPLMODAL except that all the top-level windows belonging to the current
             thread are disabled if the <emphasis role="italic">hwnd</emphasis> argument is 0. Use this keyword when the
-            the programmer does not have a window handle available but still needs to prevent input to other windows in
+            programmer does not have a window handle available but still needs to prevent input to other windows in
             the application.
           </para>
           </listitem></varlistentry>
@@ -3822,7 +3822,7 @@ returned rather than the empty string.
       <varlistentry><term>0</term>
       <listitem>
       <para>
-        An error ocurred. the <xref linkend="dotSystemErrorCode"/> will be set.
+        An error occurred. the <xref linkend="dotSystemErrorCode"/> will be set.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>1 IDOK</term>
@@ -3905,8 +3905,8 @@ returned rather than the empty string.
     The <xref linkend="rtnAskDialog"/>, <xref linkend="rtnInfoDialog"/>, and
  <xref linkend="rtnErrorDialog"/> routines are all implemented using the
     <computeroutput>MessageDialog</computeroutput> routine. While they are simplier to use, they are not very flexible.
-    In addition because of the way <xref linkend="defModalModeless"/> dialogs are implemented, it is possbile that those
-    routines will not diable the correct dialog. If the programmer encounters problems with the wrong dialog being disabled,
+    In addition because of the way <xref linkend="defModalModeless"/> dialogs are implemented, it is possible that those
+    routines will not disable the correct dialog. If the programmer encounters problems with the wrong dialog being disabled,
     the solution is to use the <computeroutput>MessageDialog</computeroutput> routine and specify the
     proper window handle of the owner window.
   </para>
@@ -4071,7 +4071,7 @@ pwd = PasswordBox("Please enter your password","Security")
       A title, the caption bar text, for the dialog that will be invoked.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>labels [reuired]</term>
+    <varlistentry><term>labels [required]</term>
     <listitem>
     <para>
       An array with indexes one through the number of radio buttons desired. The value for each index is the label for the

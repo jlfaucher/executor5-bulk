@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -170,7 +170,7 @@
 </para>
 <para>
   Private methods of an object can not be invoked from outside of the object. If an event handling method is private, there
-  is no way for the operating systme to invoke that method to notify the dialog that the event has happened.
+  is no way for the operating system to invoke that method to notify the dialog that the event has happened.
 </para>
 </note>
 </section>
@@ -377,7 +377,7 @@
 </programlisting>
   <para>
     However, if the programmer is going to customize the calendar, having the event handler run concurrently is likely to
-    have the calendar shown befor the customization is finished. So, it makes much more sense to at least use the <emphasis
+    have the calendar shown before the customization is finished. So, it makes much more sense to at least use the <emphasis
     role="italic">sync</emphasis> option in this way:
   </para>
 <programlisting>
@@ -608,7 +608,7 @@
 </row>
 <row>
 <entry><xref linkend="mthConnectButtonEvent"/></entry>
-<entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
+<entry>Connects an event notification from a button control to a method in the Rexx Dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthConnectComboBoxEvent"/></entry>
@@ -827,7 +827,7 @@
         A filter to apply to the <emphasis role="italic">lP</emphasis> argument. The filter is bitwise <emphasis
         role="italic">anded</emphasis> with <emphasis role="italic">lP</emphasis> and if the result equals the numeric value
         of the actual lParam sent, it is considered a match. If omitted a filter of 0 is used. Note that WM_NOTIFY messages
-        are treated slightly idfferent, see the remarks.
+        are treated slightly different, see the remarks.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>wlRply [optional]</term>
@@ -864,7 +864,7 @@
   <para>
     The ooRexx interpreter strives to prevent the ooRexx programmer from shooting himself in the foot. However, the
     assumption is that if the programmer uses the <emphasis role="italic">addUserMsg</emphasis> method, despite the warnings,
-    that he knows what he is doing. When <emphasis role="italic">wlRply</emphasis> is true, the value retrned from the event
+    that he knows what he is doing. When <emphasis role="italic">wlRply</emphasis> is true, the value returned from the event
     handler is passed on to the operating system as is. It is possible, although unlikely, that an incorrect value could
     cause the program to crash. For instance, if the operating system is expecting a pointer to memory and the numeric value
     passed back from the event handler is not pointing to valid memory, the program will crash.
@@ -1704,7 +1704,7 @@ rexxControl: a Button
 <para>
   Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
  <xref linkend="clsButton"/> control. The <emphasis role="italic">connectButtonEvent</emphasis> method is used
-  for all types of buttons (push button, radio button, or check boxex.)
+  for all types of buttons (push button, radio button, or check boxes.)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1746,7 +1746,7 @@ rexxControl: a Button
           <varlistentry><term><xref linkend="evtButtonDROPDOWN"/></term>
           <listitem>
           <para>
-            Requires Windoes version <emphasis role="bold">Vista</emphasis> or later.
+            Requires Windows version <emphasis role="bold">Vista</emphasis> or later.
           </para>
           <para>
             The user has clicked on the down arrow in a <emphasis role="italic">split</emphasis> button.
@@ -1915,7 +1915,7 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -1960,7 +1960,7 @@ rexxControl: a Button
 <indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>PAINT</tertiary></indexterm>
 <indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>UNHILITE</tertiary></indexterm>
 <para>
-  The event handler for most of the button events recieves the same arguments and is coded in the same fashion. When the
+  The event handler for most of the button events receives the same arguments and is coded in the same fashion. When the
   handler is invoked is fairly clear from the name of the event. The CLICKED event handler is invoked when the button is
   clicked, etc..
 </para>
@@ -1982,7 +1982,7 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    The event handling method receives 5 arguments. The first and second arguments need to be retained for backwards
     compatibility, but the last 3 arguments are really what is needed:
   </para>
   <variablelist>
@@ -2098,7 +2098,7 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -2111,7 +2111,7 @@ rexxControl: a Button
     <listitem>
     <para>
       This argument is always true or false. If true, the user has started hovering the mouse over the button. If false, the
-      user was hoving the mouse and has now moved the mouse so it is no longer over the button.
+      user was hovering the mouse and has now moved the mouse so it is no longer over the button.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>rxButton</term>
@@ -2178,8 +2178,7 @@ rexxControl: a Button
 
 <para>
   Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
- <xref linkend="clsButton"/> control. The <emphasis role="italic">connectButtonEvent</emphasis> method is used
-  for all types of buttons (push button, radio button, or check boxex.)
+  <xref linkend="clsComboBox"/> control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2356,7 +2355,7 @@ rexxControl: a Button
 <indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>SELENDOK</tertiary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>UPDATE</tertiary></indexterm>
 <para>
-  The event handler for all of the combo box events recieves the same arguments and is coded in the same fashion. When the
+  The event handler for all of the combo box events receives the same arguments and is coded in the same fashion. When the
   handler is invoked is fairly clear from the name of the event. The DROPDOWN event handler is invoked when the drop down
   arrow is pushed, etc..
 </para>
@@ -2378,7 +2377,7 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    The event handling method receives 5 arguments. The first and second arguments need to be retained for backwards
     compatibility, but only the last 3 arguments are really needed:
   </para>
   <variablelist>
@@ -3020,7 +3019,7 @@ The drop down combo box sent a selection ended cancel notification message.
   calendar is open.
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
  <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler is ignored.
@@ -3123,7 +3122,7 @@ The drop down combo box sent a selection ended cancel notification message.
   place
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
  <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   date time change event handler is ignored.
@@ -3265,7 +3264,7 @@ The drop down combo box sent a selection ended cancel notification message.
   control sends the notification for the event after it has created the child month calendar control.
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
  <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the drop down event is ignored.
@@ -3629,7 +3628,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onKeyDown unguarded
-  use arg field, dateTiem, vKey, idFrom, hwndFrom, code, dtpObj
+  use arg field, dateTime, vKey, idFrom, hwndFrom, code, dtpObj
 
   return dateTime
 ]]>
@@ -3761,7 +3760,7 @@ The drop down combo box sent a selection ended cancel notification message.
   The event handler for the kill focus event is invoked when the DTP control loses the input focus.
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
  <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the kill focus event is ignored.
@@ -3827,7 +3826,7 @@ The drop down combo box sent a selection ended cancel notification message.
   The event handler for the set focus event is invoked when the DTP control gains the input focus.
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
  <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the set focus event is ignored.
@@ -4040,7 +4039,7 @@ The drop down combo box sent a selection ended cancel notification message.
   The <emphasis role="italic">connectDraw</emphasis> method connects the draw control event notification with a method
   in the Rexx dialog. This notification is sent to the underlying dialog by an owner-drawn button, combo box, list box,
   static, or menu, when a visual aspect of the control or menu has changed. In addition, if a tab control or a list-view have
-  the owner draw fixed style, they also recieve the notifiction.
+  the owner draw fixed style, they also receive the notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4158,7 +4157,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 8 arguments:
+    The event handling method receives 8 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -4199,7 +4198,7 @@ The drop down combo box sent a selection ended cancel notification message.
       A list of the following keywords separated by spaces, case is not significant. The keywords are separated into 3
       groups, type, action, and state. The keywords in the same group all start with the same prefix, ODT_ for type, ODA_ for
       action, and ODS_ for state. The list will contain at least one keyword from the type group. The keywords provide
-      information that allows the application to detemine what drawing operation needs to be done:
+      information that allows the application to determine what drawing operation needs to be done:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -4411,13 +4410,13 @@ The drop down combo box sent a selection ended cancel notification message.
     The MSDN documentation says that the event handler should return true when the application has handled the DRAW event
     notification. Which implies that false should be returned otherwise. Therefore, the ooDialog programmer should probably
     return true from the event handler. However, some experimentation with returning false has not shown any discernable
-    differeence than returning true.
+    difference than returning true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Although this documentation says the the device context passed in the <emphasis role="italic">hDC</emphasis> argument
+    Although this documentation says the device context passed in the <emphasis role="italic">hDC</emphasis> argument
     must be used to do the drawing in the event handler, ooDialog has examples that did not do this. Examples written prior
     to ooDialog 4.2.0 did not have the device context passed into the event handler. These examples used the <xref
     linkend="mthGetControlDC"/> method to get a device context for the owner-drawn control. This technique seems to work
@@ -4703,7 +4702,7 @@ return 0
 <indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>UPDATE</tertiary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>VSCROLL</tertiary></indexterm>
 <para>
-  The event handler for all of the edit control events recieves the same arguments and is coded in the same fashion. When
+  The event handler for all of the edit control events receives the same arguments and is coded in the same fashion. When
   the handler is invoked is fairly clear from the name of the event. The GOTFOCUS event handler is invoked when the edit
   control gets the focus, etc..
 </para>
@@ -4725,7 +4724,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    The event handling method receives 5 arguments. The first and second arguments need to be retained for backwards
     compatibility, but only the last 3 arguments are really needed:
   </para>
   <variablelist>
@@ -4964,7 +4963,7 @@ Help request:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 6 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -5841,7 +5840,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>keyCode</term>
@@ -6146,7 +6145,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>SELCANCEL</tertiary></indexterm>
 <indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>SELCHANGE</tertiary></indexterm>
 <para>
-  The event handler for all of the list box events recieves the same arguments and is coded in the same fashion. When
+  The event handler for all of the list box events receives the same arguments and is coded in the same fashion. When
   the handler is invoked is fairly clear from the name of the event. The GOTFOCUS event handler is invoked when the list box
   gets the focus, etc..
 </para>
@@ -6168,7 +6167,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    The event handling method receives 5 arguments. The first and second arguments need to be retained for backwards
     compatibility, but only the last 3 arguments are really needed:
   </para>
   <variablelist>
@@ -6232,7 +6231,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
    combo = self~newComboBox(35)
    combo~deleteAll
 
-   -- If no movie in the list box is selected, set eveything blank, otherwise,
+   -- If no movie in the list box is selected, set everything blank, otherwise,
    -- set everything to match the selected movie.
    if movieName == "" then do
      self~newEdit(32)~setText("")
@@ -6643,7 +6642,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -6700,7 +6699,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINEDIT</tertiary></indexterm>
 <para>
   The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
-  list-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
+  list-view. When label editing begins, an edit control is created by the operating system, but not positioned or displayed.
   Before it is displayed, the tree-view control sends a BEGINEDIT notification message. A label editing operation is only
   available when the list-view has the <xref linkend="styListViewEDIT"/> style.
 </para>
@@ -6767,7 +6766,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         <listitem>
         <para>
           The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewListView"/> method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is
           valid as long as the dialog is executing.
         </para>
@@ -6877,7 +6876,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <para>
   The event handler for the begin scroll event is invoked when a scrolling operation starts and the event handler for the
   end scroll event is invoked when a scrolling operation ends. The scrolling operation can be either horizontal or vertical
-  scrolling. Both event handlers recieve the same arguments and are basically coded the same.
+  scrolling. Both event handlers receive the same arguments and are basically coded the same.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
@@ -6897,7 +6896,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>ctrlID</term>
@@ -7020,7 +7019,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7131,7 +7130,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7157,7 +7156,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <para>
       One or more keywords, separated by blanks, that report the shift, alt, control key state. It will either be the single
       key word: <emphasis role="italic">NONE</emphasis>, or any combination of <emphasis role="italic">SHIFT</emphasis>
-      <emphasis role="italic">CONTORL</emphasis> <emphasis role="italic">ALT</emphasis>. The keywords report which of the
+      <emphasis role="italic">CONTROL</emphasis> <emphasis role="italic">ALT</emphasis>. The keywords report which of the
       keys were pressed at the time of the mouse click or double click.
     </para>
     </listitem></varlistentry>
@@ -7203,7 +7202,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7236,7 +7235,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <listitem>
   <para>
     The following example comes from and application that allows the user to sort the columns in the list view when it is in
-    report view. Whend the application is first opened none of the columns are sorted and the first click on any column sorts
+    report view. When the application is first opened none of the columns are sorted and the first click on any column sorts
     the list-view items on that column in ascending order. Subsequent clicks on the column header reverses the current state.
     If the column is sorted in ascending order, a click sorts it in descending order ...
 
@@ -7348,7 +7347,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       <listitem>
       <para>
         The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        the programmer. It is the same Rexx object the programmer would receive through the <xref
         linkend="mthNewListView"/> method.
       </para>
       </listitem></varlistentry>
@@ -7358,7 +7357,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <listitem>
     <para>
       When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
-      return true or false. To accept the edit text, return true. To disallow the the change to the label, return false.
+      return true or false. To accept the edit text, return true. To disallow the change to the label, return false.
       If, the edit operation was canceled by the user, the operating system ignores the return from the event handler.
       Returning a value from the event handler gives the programmer the option of determining if the new label for the
       specific list-view item is acceptable.
@@ -7503,7 +7502,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7577,7 +7576,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7629,7 +7628,7 @@ return
     The return from the event notifications in this <emphasis role="italic">general</emphasis> category is ignored by the
     operating system for some of the events, but has meaning for some of the other events. ooDialog has been enhanced to
     allow the programmer to return a meaningful value to the operating system from this general event handler. If the
-    <emphasis role="italic">willReply</emphasis> argument is set to true, the intepreter waits for the return value from the
+    <emphasis role="italic">willReply</emphasis> argument is set to true, the interpreter waits for the return value from the
     event handler and returns that value to the operating system. Here is a brief description of the meaning for the returned
     value for the general events:
   </para>
@@ -7751,7 +7750,7 @@ return
   <listitem>
   <para>
     The event handler must return a string value. If the string is not the empty string, it will be displayed as the info
-    tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
+    tip. If the empty string is returned, then the previous value of <emphasis role="italic">text</emphasis> is
     displayed. That is, if <emphasis role="italic">text</emphasis> is the empty string, no info tip will be shown. However,
     if <emphasis role="italic">text</emphasis> is not the empty string, that text will be displayed unchanged.
   </para>
@@ -7813,7 +7812,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -8122,7 +8121,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -8189,7 +8188,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -8887,13 +8886,13 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>wParam</term>
     <listitem>
     <para>
-      The numeric value of the WPARAM paramater of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
+      The numeric value of the WPARAM parameter of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
       meaning and is likely 0. Even if it is not 0, it still has no meaning.
     </para>
     </listitem></varlistentry>
@@ -8901,7 +8900,7 @@ return
     <listitem>
     <para>
       The numeric value of the LPARAM parameter of the notivication message. This value contains the new position
-      co-ordinates of the dialog. The low word of the number contains the new X position and the high word contains new y
+      coordinates of the dialog. The low word of the number contains the new X position and the high word contains new y
       position. The <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
     </para>
     </listitem></varlistentry>
@@ -9188,7 +9187,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -9363,13 +9362,13 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>wParam</term>
     <listitem>
     <para>
-      The numeric value of the WPARAM paramater of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
+      The numeric value of the WPARAM parameter of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
       meaning and is likely 0. Even if it is not 0, it still has no meaning.
     </para>
     </listitem></varlistentry>
@@ -9453,7 +9452,7 @@ return
         Notifies the dialog that a break will appear in the bar. The dialog determines whether to make the break.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywReBarNCHITEST" xreflabel="NCHITEST"><term><xref linkend="evtReBarNCHITTEST"/> </term>
+      <varlistentry id="kywReBarNCHITTEST" xreflabel="NCHITTEST"><term><xref linkend="evtReBarNCHITTEST"/> </term>
       <listitem>
       <para>
         Sent by a rebar control when the control receives a hit test request.
@@ -9568,7 +9567,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 7 arguments:
+    The event handling method receives 7 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -9655,7 +9654,7 @@ return
 <section id="evtReBarNCHITTEST" xreflabel="NCHITTEST"><title>NcHitTest Event Handler</title>
 <indexterm><primary>ReBar class</primary><secondary>events</secondary><tertiary>NCHITTEST</tertiary></indexterm>
 <para>
-  The event handler for the non-client hit test event is invoked when the rebar control recieves a hit test request. The
+  The event handler for the non-client hit test event is invoked when the rebar control receives a hit test request. The
   control then sends the NcHitTest notification to the dialog. The event handler can choose to allow the rebar to perform
   default processing of the hit test message, or to return its own value to over-ride the default hit test processing.
 </para>
@@ -9676,7 +9675,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -9694,7 +9693,7 @@ return
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      A <xref linkend="clsPoint"/> object specifying the mouse co-ordinates of the hit test message.
+      A <xref linkend="clsPoint"/> object specifying the mouse coordinates of the hit test message.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hit</term>
@@ -9706,7 +9705,7 @@ return
     <varlistentry><term>rebar</term>
     <listitem>
     <para>
-      The Rexx rebar object that represents the underlying rebar control that sent the noitification.
+      The Rexx rebar object that represents the underlying rebar control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -9782,7 +9781,7 @@ onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a 
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -9794,7 +9793,7 @@ onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a 
     <varlistentry><term>rebar</term>
     <listitem>
     <para>
-      The Rexx rebar object that represents the underlying rebar control that sent the noitification.
+      The Rexx rebar object that represents the underlying rebar control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -10001,7 +10000,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>wParam</term>
@@ -10015,7 +10014,7 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
-      The numeric value of the LPARAM parameter of the notivication message. This value contains the new size co-ordinates of
+      The numeric value of the LPARAM parameter of the notivication message. This value contains the new size coordinates of
       the dialog. The low word of the number contains the new width and the high word contains new height. The <xref
       linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
     </para>
@@ -10176,7 +10175,7 @@ onRelease() id: 1003 reBar: a ReBar
     implementation would also enforce a minimum width.
   </para>
   <para>
-    A complete implementation can be found in the <computeroutput>dlgAreaDemoThree.rex</computeroutput> example program.
+    A complete implementation can be found in the <computeroutput>dlgAreaUDemoThree.rex</computeroutput> example program.
 
 <programlisting>
 <![CDATA[
@@ -10215,7 +10214,7 @@ onRelease() id: 1003 reBar: a ReBar
 </variablelist>
 
 <section id="evtEventNotificationRESIZING" xreflabel="RESIZING"><title>Resizing Event Handler</title>
-<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>RESIZEING</tertiary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>RESIZING</tertiary></indexterm>
 <para>
   The event handler for the Resizing event is invoked when the size of the dialog is about to be changed. That is, it is
   invoked with arguments specifying the new size of the dialog, but before the change is actually made.
@@ -10238,7 +10237,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>rect</term>
@@ -10316,9 +10315,9 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    Return false to indicate the the co-ordinates specified in the <emphasis role="italic">rect</emphasis> arg are unchanged.
-    Otherwise, return true to indicate the co-ordinates have been changed and the operating system will set the new size of
-    the dialog to the changed co-ordinates.
+    Return false to indicate the coordinates specified in the <emphasis role="italic">rect</emphasis> arg are unchanged.
+    Otherwise, return true to indicate the coordinates have been changed and the operating system will set the new size of
+    the dialog to the changed coordinates.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -10960,7 +10959,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>posInfo</term>
@@ -11087,7 +11086,7 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      The name of the event handling method that to be invoked when the the size / move exit event occurs. The name must
+      The name of the event handling method that to be invoked when the size / move exit event occurs. The name must
       not be the empty string. When this argument is omitted the name defaults to <emphasis
       role="italic">onSizeMoveEnded</emphasis>.
     </para>
@@ -11190,7 +11189,7 @@ onRelease() id: 1003 reBar: a ReBar
 </variablelist>
 
 <section id="evtEventNotificationSIZEMOVEENDED" xreflabel="SIZEMOVEENDED"><title>SizeMoveEnded Event Handler</title>
-<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>SIZEMOVEEDNDED</tertiary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>SIZEMOVEENDED</tertiary></indexterm>
 <para>
   The event handler for the SizeMoveEnded event is invoked once, and only once, when the user has ended moving or ended
   sizing a window.
@@ -11213,20 +11212,20 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method does not recieve any arguments.
+    The event handling method does not receive any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The operaing system ignores any return from this notification. 0 make a good return value.
+    The operating system ignores any return from this notification. 0 make a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example uses the resize and the size move ended event together. Rather than redraw the dialog controls for every new
-    size while the user is dragging the dialog border, it waits and only redraws the controls when the user finishes reszing.
+    size while the user is dragging the dialog border, it waits and only redraws the controls when the user finishes resizing.
     To do this it sets a flag when the user starts to resize the dialog and then waits for the size move ended event to know
     that the user has finished:
 
@@ -11427,7 +11426,7 @@ onRelease() id: 1003 reBar: a ReBar
   <para>
     In this example, (a continuation of the above example,) the control ID determines if the user has double clicked on
     the employee job duties field, or the employee name field. The first 2 and the fourth args are not needed or used so they
-    are just discarded. The last arg, the Rexx static control object is passed on the the userUpdate() method:
+    are just discarded. The last arg, the Rexx static control object is passed on the userUpdate() method:
   </para>
 <programlisting>
 <![CDATA[
@@ -11450,7 +11449,7 @@ onRelease() id: 1003 reBar: a ReBar
 <indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>DISABLE</tertiary></indexterm>
 <indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>ENABLE</tertiary></indexterm>
 <para>
-  The event handler for all the static control events recieves the same arguments and is coded in the same fashion. When the
+  The event handler for all the static control events receives the same arguments and is coded in the same fashion. When the
   handler is invoked is fairly clear from the name of the event. The CLICKED event handler is invoked when the static control
   is clicked, etc..
 </para>
@@ -11472,7 +11471,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    The event handling method receives 5 arguments. The first and second arguments need to be retained for backwards
     compatibility, but the last 3 arguments are really what is needed:
   </para>
   <variablelist>
@@ -11658,7 +11657,7 @@ onRelease() id: 1003 reBar: a ReBar
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
       role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
-      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler must always
       return true or false. The events in the following list fall into this category:
     </para>
     <para>
@@ -11749,7 +11748,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -11777,7 +11776,7 @@ onRelease() id: 1003 reBar: a ReBar
     <para>
       A <xref linkend="clsPoint"/> object that specifies the location of the click. Note that MSDN says this point is in
       screen <xref linkend="defScreenCoordinates"/>, but from experimentation it appears to actually be in client
-      co-ordinates.
+      coordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>statusBar</term>
@@ -11848,7 +11847,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -11881,8 +11880,8 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example comes from an application that runs in <emphasis role="italic">basic</emphasis> and in a <emphasis
-    role="italic">advance</emphasis> mode. The status bar for the application contains a short cut to swtich modes by double
+    The following example comes from an application that runs in <emphasis role="italic">basic</emphasis> and in an <emphasis
+    role="italic">advanced</emphasis> mode. The status bar for the application contains a short cut to switch modes by double
     clicking on a section in the status bar. The user can also switch modes with the F3 key, or from the menu. No matter
     which method is used, the application switches mode by invoking the <xref linkend="mthSimple"/> method of the
     status bar. Therefore all the work of switching modes is done in th simple mode change event handler:
@@ -11899,7 +11898,7 @@ onRelease() id: 1003 reBar: a ReBar
   end
   else do
       self~statusBarUpdates = 'on'
-      self~useAdavncedTasks
+      self~useAdvancedTasks
       self~useWizrds = .false
   end
   return 0
@@ -12073,7 +12072,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -12157,7 +12156,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -12236,7 +12235,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -12268,7 +12267,7 @@ onRelease() id: 1003 reBar: a ReBar
   </para>
   <para>
     When the <emphasis role="italic">willReply</emphasis> argument was set to false or SYNC in the connect tab event method,
-    the ooDialog framwork replies to the operating system allowing the the tab to change. The return from the event handler
+    the ooDialog framwork replies to the operating system allowing the tab to change. The return from the event handler
     is ignored, but returning 0 is best practice.
   </para>
   </listitem></varlistentry>
@@ -12617,7 +12616,7 @@ onRelease() id: 1003 reBar: a ReBar
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
       role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
-      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler must always
       return true or false. The events in the following list fall into this category:
     </para>
     <para>
@@ -12704,7 +12703,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -12781,7 +12780,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -12808,7 +12807,7 @@ onRelease() id: 1003 reBar: a ReBar
     <para>
       A <xref linkend="clsPoint"/> object that specifies the location of the click. Not that MSDN says this point is in
       screen <xref linkend="defScreenCoordinates"/>, but from experimentation it appears to actually be in client
-      co-ordinates.
+      coordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>toolBar</term>
@@ -13047,7 +13046,7 @@ onRelease() id: 1003 reBar: a ReBar
 <para>
   The event handler for the NEEDTEXT event is invoked when the ToolTip is about to be displayed and the ToolTip needs the
   text to be displayed. When a tool is <link linkend="mthAddTool">added</link> to a ToolTip, the programmer normally supplies
-  a literal string to be used as the text. However, the ToolTip provides a specical value which essentially tells the ToolTip
+  a literal string to be used as the text. However, the ToolTip provides a special value which essentially tells the ToolTip
   to call back to the application when it needs the text to be displayed. The ToolTip calls back by sending the NEEDTEXT
   notification.
 </para>
@@ -13069,7 +13068,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>toolID</term>
@@ -13292,7 +13291,7 @@ onRelease() id: 1003 reBar: a ReBar
   The event handler for the SHOW event is invoked when the ToolTip is about to display its window.
 </para>
 <para>
-  The programmer must alwayse return a value from the event handler and the interpreter waits for this return. The <emphasis
+  The programmer must always return a value from the event handler and the interpreter waits for this return. The <emphasis
   role="italic">willReply</emphasis> argument of the <xref linkend="mthConnectToolTipEvent"/> method is ignored for this
   event. If the programmer does not intend to return a value from the event handler, the event should not be connected.
 </para>
@@ -13344,7 +13343,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example uses the ToolTip ID to determine which ToolTip tool is about to display. It then caclulates the
+    The following example uses the ToolTip ID to determine which ToolTip tool is about to display. It then calculates the
     position the ToolTip should be shown at, and uses <emphasis role="italic">setWindowPos</emphasis> to position the window
     at the point calculated. Finally, true is returned, so the ToolTip knows not to position itself at its default position:
 
@@ -13583,7 +13582,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 3 arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>posInfo</term>
@@ -13637,7 +13636,7 @@ Verify event code (should be 4): 4
   else if code == trackBar~DOWN then do
     ...
   end
-  else if code == trackBar~PAPEUP then do
+  else if code == trackBar~PAGEUP then do
     ...
   end
   --- and so on ...
@@ -13963,7 +13962,7 @@ Verify event code (should be 4): 4
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. In addition, ooDialog provides a
   default handler for these events. If the <emphasis role="italic">mthName</emphasis> argument is specified as <emphasis
-  role="italic">defTreeDragHandler</emphasis>, then this default event handler is uesed. How the event handlers work is
+  role="italic">defTreeDragHandler</emphasis>, then this default event handler is used. How the event handlers work is
   described separately below:
 </para>
 
@@ -14006,7 +14005,7 @@ Verify event code (should be 4): 4
         <varlistentry><term>pos</term>
         <listitem>
         <para>
-          The position, in client <link linkend="defScreenCoordinates">co-ordinates</link>, where the drag started. <emphasis
+          The position, in client <link linkend="defScreenCoordinates">coordinates</link>, where the drag started. <emphasis
           role="italic">pos</emphasis> is a <xref linkend="clsPoint"/> object.
         </para>
         </listitem></varlistentry>
@@ -14014,7 +14013,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
@@ -14074,14 +14073,14 @@ Verify event code (should be 4): 4
       <para>
         Specifies the postion of the cursor when the drag operation was initiated as a 2 word string. The first word is the x
         position, the second word is the y postion. The position is expressed in client <link
-        linkend="defScreenCoordinates">co-ordintates</link>.
+        linkend="defScreenCoordinates">coordinates</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>treeView</term>
       <listitem>
       <para>
         The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        the programmer. It is the same Rexx object the programmer would receive through the <xref
         linkend="mthNewTreeView"/> method.
       </para>
       </listitem></varlistentry>
@@ -14132,7 +14131,7 @@ Verify event code (should be 4): 4
 <indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>BEGINEDIT</tertiary></indexterm>
 <para>
   The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
-  tree-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
+  tree-view. When label editing begins, an edit control is created by the operating system, but not positioned or displayed.
   Before it is displayed, the tree-view control sends a BEGINEDIT notification message. A label editing operation is only
   available when the tree-view has the <xref linkend="styTreeViewEDIT"/> style.
 </para>
@@ -14196,7 +14195,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is
           valid as long as the dialog is executing.
         </para>
@@ -14296,7 +14295,7 @@ Verify event code (should be 4): 4
       <listitem>
       <para>
         The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        the programmer. It is the same Rexx object the programmer would receive through the <xref
         linkend="mthNewTreeView"/> method.
       </para>
       </listitem></varlistentry>
@@ -14330,7 +14329,7 @@ Verify event code (should be 4): 4
   internally. These events are only generated when the tree-view has the <xref linkend="styTreeViewEDIT"/> style.
 </para>
 <para>
-  The intenal handling of the events changes the label of the item if the user does not cancel the editing operation. If the
+  The internal handling of the events changes the label of the item if the user does not cancel the editing operation. If the
   user cancels the editing operation, the original lable is left unchanged. Allowing ooDialog to handle these events is less
   work for the programmer, but it is also inflexible.
 </para>
@@ -14390,7 +14389,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
@@ -14452,7 +14451,7 @@ Verify event code (should be 4): 4
       <listitem>
       <para>
         The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        the programmer. It is the same Rexx object the programmer would receive through the <xref
         linkend="mthNewTreeView"/> method.
       </para>
       </listitem></varlistentry>
@@ -14533,7 +14532,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
@@ -14688,7 +14687,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 6 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -14726,7 +14725,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      the programmer. It is the same Rexx object the programmer would receive through the <xref linkend="mthNewTreeView"/>
       method.
     </para>
     </listitem></varlistentry>
@@ -14806,7 +14805,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 6 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -14824,7 +14823,7 @@ Verify event code (should be 4): 4
     <varlistentry><term>what</term>
     <listitem>
     <para>
-      A string that indicates whether the item is going to expand or collapsd. The string will be either <emphasis
+      A string that indicates whether the item is going to expand or collapsed. The string will be either <emphasis
       role="italic">EXPANDED</emphasis> or <emphasis role="italic">COLLAPSED</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -14844,7 +14843,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      the programmer. It is the same Rexx object the programmer would receive through the <xref linkend="mthNewTreeView"/>
       method.
     </para>
     </listitem></varlistentry>
@@ -14972,7 +14971,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      the programmer. It is the same Rexx object the programmer would receive through the <xref linkend="mthNewTreeView"/>
       method.
     </para>
     </listitem></varlistentry>
@@ -14982,7 +14981,7 @@ Verify event code (should be 4): 4
   <listitem>
   <para>
     The event handler must return a string value. If the returned string is not the empty string, it will be displayed as the
-    info tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
+    info tip. If the empty string is returned, then the previous value of <emphasis role="italic">text</emphasis> is
     displayed. That is, if <emphasis role="italic">text</emphasis> is the empty string, no info tip will be shown. However,
     if <emphasis role="italic">text</emphasis> is not the empty string, that text will be displayed unchanged.
   </para>
@@ -15017,7 +15016,7 @@ Verify event code (should be 4): 4
   The event handler for the key down event is invoked when the user types a key when the tree-view control has the keyboard
   focus. The event handler is similar to the event handler for the <link linkend="evtTreeViewKEYDOWNEX">KEYDOWNEX</link>
   event, it is invoked for the same event. However, when the KEYDOWN keyword is use, the event handler receives fewer
-  arguments than when the KEYDWONEX key word is used.
+  arguments than when the KEYDOWNEX key word is used.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTreeViewEvent"/>
@@ -15056,7 +15055,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      the programmer. It is the same Rexx object the programmer would receive through the <xref linkend="mthNewTreeView"/>
       method.
     </para>
     </listitem></varlistentry>
@@ -15258,7 +15257,7 @@ Verify event code (should be 4): 4
     If the key pressed was a character key, the character is used as part of an incremental search. The event handler returns
     true to allow the character to be added to the incremental search and false to prevent the character from being added. If
     the key pressed was not a character key, then the return is ignored by the operating system. 0 makes a good return when
-    the operating system ingores the return value.
+    the operating system ignores the return value.
   </para>
   <para>
     If <emphasis role="italic">willReply</emphasis> was omitted, false, or SYNC, the event handler does not <emphasis
@@ -15315,7 +15314,7 @@ Verify event code (should be 4): 4
       role="italic">willReply</emphasis> is true, the programmer must return a value from the event handler and the
       interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
       wait for a reply. If <emphasis role="italic">willReply</emphasis> was SYNC, the interpreter waits for the reply, but
-      the actual value of the reply is disgarded.
+      the actual value of the reply is disregarded.
     </para>
 
     <programlisting>
@@ -15406,7 +15405,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
@@ -15483,7 +15482,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The operating system ignores the returned value from this notification. Good practice would be to always return a value
-      from any event handler. 0 is a good value for cases where the operating system ingores the returned value.
+      from any event handler. 0 is a good value for cases where the operating system ignores the returned value.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -15613,7 +15612,7 @@ Verify event code (should be 4): 4
         <listitem>
         <para>
           The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          the programmer. It is the same Rexx object the programmer would receive through the <xref
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
@@ -15667,7 +15666,7 @@ Verify event code (should be 4): 4
         The resource id of the tree-view sending the notification.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>lParma</term>
+      <varlistentry><term>lParam</term>
       <listitem>
       <para>
         This argument is a number that has no meaning within the Rexx code. It is the value the old implementation of the
@@ -15678,7 +15677,7 @@ Verify event code (should be 4): 4
       <listitem>
       <para>
         The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        the programmer. It is the same Rexx object the programmer would receive through the <xref
         linkend="mthNewTreeView"/> method.
       </para>
       </listitem></varlistentry>
@@ -15878,7 +15877,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx up-down object whose underlying up-down has sent the notification. This is a convenience for the
-      programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewUpDown"/> method.
+      programmer. It is the same Rexx object the programmer would receive through the <xref linkend="mthNewUpDown"/> method.
     </para>
     </listitem></varlistentry>
   </variablelist>

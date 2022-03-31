@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -162,7 +162,7 @@
         This argument specifies if the dialog is ending as though the user pressed the <emphasis
         role="italic">Ok</emphasis> button or the <emphasis role="italic">Cancel</emphasis> button. By default <emphasis
         role="italic">endLikeOk</emphasis> is false and the dialog is ended as though the user canceled the dialog. If
-        <emphasis role="italic">endLikOk</emphasis> is true, the dialog is ended as though the user pressed the
+        <emphasis role="italic">endLikeOk</emphasis> is true, the dialog is ended as though the user pressed the
         <emphasis role="italic">Ok</emphasis> button.
       </para>
       </listitem></varlistentry>
@@ -252,7 +252,7 @@
   <para>
     In order to ensure that dialogs used as controls in main dialogs behave consistently, the programmer is required to
     start execution of all controld dialogs using the <emphasis role="italic">execute</emphasis> method and to end the
-    dialog using the <xref linkend="mthEndExecution"/> method. Failure to do so is not guarenteed to
+    dialog using the <xref linkend="mthEndExecution"/> method. Failure to do so is not guaranteed to
     work.
   </para>
   </listitem></varlistentry>
@@ -1073,11 +1073,11 @@
 </row>
 <row>
 <entry>ID_PSRESTARTWINDOWS</entry>
-<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResultClsPSD"/> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
+<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResultClsPSD"/> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windows must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
 </row>
 <row>
 <entry>MAXPROPPAGES</entry>
-<entry>The maximun number of pages a property sheet dialog can have. This is an operating system restriction.</entry>
+<entry>The maximum number of pages a property sheet dialog can have. This is an operating system restriction.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -1205,7 +1205,7 @@
 </row>
 <row>
 <entry><xref linkend="mthPopupAsChildClsPSD"/></entry>
-<entry>Sarts a <emphasis role="italic">modeless</emphasis> propertry sheet dialog executing and returns immediately. The property sheet dialog is closed automatically when its parent is closed</entry>
+<entry>Starts a <emphasis role="italic">modeless</emphasis> property sheet dialog executing and returns immediately. The property sheet dialog is closed automatically when its parent is closed</entry>
 </row>
 <row>
 <entry><xref linkend="mthPressButton"/></entry>
@@ -1538,7 +1538,7 @@
     When the <emphasis role="italic">appIcon</emphasis> attribute is specified as a resource ID, then the image must be
     a resource in the resource <xref linkend="clsResourceImage"/> specified by the
  <xref linkend="atrResourcesClsPSD"/> attribute. When the property sheet dialog is shown, if an icon can not
-    be loaded from the resource image, the the property sheet dialog will not have a dialog icon.
+    be loaded from the resource image, the property sheet dialog will not have a dialog icon.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1547,7 +1547,7 @@
     Raises syntax errors when incorrect usage in setting the attribute is detected. If the <emphasis
     role="italic">appIcon</emphasis> attribute is set to a numeric value, the ooDialog framework can not detect whether
     the number is correct or not. If the number, (or if the number a symbolic ID resolves to,) is not a resource ID of a
-    resource in the <emphasis role="italic">resources</emphasis> resource image, the the property sheet dialog will not
+    resource in the <emphasis role="italic">resources</emphasis> resource image, then the property sheet dialog will not
     have a dialog icon when it is shown.
   </para>
   </listitem></varlistentry>
@@ -1558,7 +1558,7 @@
 <programlisting>
 <![CDATA[
 
-  -- For the appliation icon of the dialog we will use the ooRexx icon which is
+  -- For the application icon of the dialog we will use the ooRexx icon which is
   -- available for general use from oodialog.dll.
   propDlg~resources = .ResourceImage~new("oodialog.dll", propDlg)
   propDlg~appIcon = "IDI_DLG_OOREXX"
@@ -1735,7 +1735,7 @@
     of the <xref linkend="clsPropertySheetPage"/> dialog object for each page in a property sheet
     dialog. However, assigning an image list to the <emphasis role="italic">imageList</emphasis> attribute takes
     precedence over the <emphasis role="italic">tabIcon</emphasis> attribute of a property sheet page dialog. If an
-    image list is asigned to the <emphasis role="italic">imageList</emphasis> attribute of the property sheet dialog,
+    image list is assigned to the <emphasis role="italic">imageList</emphasis> attribute of the property sheet dialog,
     the <emphasis role="italic">tabIcon</emphasis> attribute of the property sheet page dialog is not checked.
   </para>
   </listitem></varlistentry>
@@ -1768,7 +1768,7 @@
   <listitem>
   <para>
     Returns an array of the dialog objects used for the pages of the property sheet dialog. The dialog object at index 1
-    is the dialog for the first page in the property sheet. The dialog object at index 2 is the the dialog for the
+    is the dialog for the first page in the property sheet. The dialog object at index 2 is the dialog for the
     second page, etc..
   </para>
   </listitem></varlistentry>
@@ -1848,12 +1848,12 @@
   <listitem>
   <para>
     This example shows the assignment of a <computeroutput>ResourceImage</computeroutput> object to the <emphasis
-    role="italic">resources</emphasis> attribute and specifing the resource ID to use for the appIcon of the property
+    role="italic">resources</emphasis> attribute and specifying the resource ID to use for the appIcon of the property
     sheet dialog:
 <programlisting>
 <![CDATA[
 
-  -- For the appliation icon of the dialog we will use the ooRexx icon which is
+  -- For the application icon of the dialog we will use the ooRexx icon which is
   -- available for general use from oodialog.dll.
 
   propDlg~resources = .ResourceImage~new("oodialog.dll", propDlg)
@@ -1957,8 +1957,8 @@
   <listitem>
   <para>
     The <emphasis role="italic">watermark</emphasis> attribute should be set either to an
- <xref linkend="clsImage"/> object of the bitmap to display as the warermark of a Wizard dialog, or to the
-    resource ID of the bitmap to be used. Do not set the <emphasis role="italic">watermakr</emphasis> attribute if the
+ <xref linkend="clsImage"/> object of the bitmap to display as the watermark of a Wizard dialog, or to the
+    resource ID of the bitmap to be used. Do not set the <emphasis role="italic">watermark</emphasis> attribute if the
     dialog is not a Wizard97 property sheet dialog.
   </para>
   </listitem></varlistentry>
@@ -1983,7 +1983,7 @@
   <para>
     This example creates a Wizard97 property sheet dialog and sets the watermark bitmap to an
     <computeroutput>Image</computeroutput> object. The bitmap will be loaded from the
-    <computeroutput>tickerWizardRexxLA.bmp</computeroutput> bitmap file:
+    <computeroutput>ticketWizardRexxLA.bmp</computeroutput> bitmap file:
 <programlisting>
 <![CDATA[
 
@@ -2070,7 +2070,7 @@
   <para>
     The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
     constant of the <xref linkend="clsPropertySheetDialog"/> reflects this number.  If the
-    programer tries to insert or add a page past this number, a condition is raised.
+    programmer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2887,7 +2887,7 @@
   <para>
     The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
     constant of the <xref linkend="clsPropertySheetDialog"/> reflects this number.  If the
-    programer tries to insert or add a page past this number, a condition is raised.
+    programmer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2937,7 +2937,7 @@
   <listitem>
   <para>
     The PROPSHEETPAGE handle is not the same as the window handle of the page. This method is added for completeness. In
-    the current implementation of ooDialog, the PROPESHEET handle is not of much use to the programmer. However, future
+    the current implementation of ooDialog, the PROPSHEET handle is not of much use to the programmer. However, future
     version of ooDialog may have enhancements that require a PROPSHEETPAGE handle.
   </para>
   </listitem></varlistentry>
@@ -2999,7 +2999,7 @@
 
 <para>
   The <emphasis role="italic">popupAsChild</emphasis> method starts a <link linkend="defModalModeless">modeless</link>
-  propertry sheet dialog executing and returns immediately. It is very similar to the <xref linkend="mthPopupClsPSD"/>
+  property sheet dialog executing and returns immediately. It is very similar to the <xref linkend="mthPopupClsPSD"/>
   method, but has the additional functionality that it is closed automatically when the <emphasis
   role="italic">parent</emphasis> dialog is closed.
 </para>
@@ -3929,7 +3929,7 @@
   <para>
      Typically, the application enables only the Next button for the welcome page, enables the Next and Back buttons for
      the interior pages, and enables the Back and Finish buttons for the completion page.  The Cancel button is always
-     enabled. Normally, setting FINISH or DISABLEDFINISH replaces the Next button with a Finish button. To changes this
+     enabled. Normally, setting FINISH or DISABLEFINISH replaces the Next button with a Finish button. To changes this
      to display both Next and Finish buttons simultaneously, set the WIZARDHASFINISH keyword in the options when the
  <xref linkend="mthNewClsPropertySheetDialog"/> is instantiated. With that option, every
      page will then display all four buttons.
@@ -4467,11 +4467,11 @@
 <para>
   The process for connecting <xref linkend="ovvEvents"/> handlers for the property sheet page
   dialogs takes a slightly different approach than that of other dialog classes in the ooDialog framework. The property
-  sheet page class provides a default event handler for all property sheet page specifc events.
+  sheet page class provides a default event handler for all property sheet page specific events.
 </para>
 <para>
   Rather than connecting a property sheet page event to a specified method in the Rexx dialog, the programmer over-rides
-  the default handler in the dialog. This is similiar to how the <xref linkend="mthOk"/> and
+  the default handler in the dialog. This is similar to how the <xref linkend="mthOk"/> and
  <xref linkend="mthCancel"/> events are handled in the <xref linkend="chpDialogObject"/> object.
 </para>
 <para>
@@ -4714,7 +4714,7 @@
     To display text for the header title in a wizard dialog page, the programmer can set the <emphasis
     role="italic">headerTitle</emphasis> attribute to the text to be displayed. This text is used when the underlying
     page is first created. Setting the attribute after the page has been created has no effect. Likewise, setting this
-    attribute to any text has no effect if the the page is a page in a non-wizard dialog.
+    attribute to any text has no effect if the page is a page in a non-wizard dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4853,7 +4853,7 @@
     label for the tab.
   </para>
   <para>
-    In addition to setting the <emphasis role="italic">pageTtle</emphasis> attribute, the USETITLE keyword needs to be
+    In addition to setting the <emphasis role="italic">pageTitle</emphasis> attribute, the USETITLE keyword needs to be
     included in the <emphasis role="italic">pageOpts</emphasis> argument to the <emphasis role="italic">new</emphasis>
     method of the page. However, in general, the ooDialog framework will set the keyword correctly if / when the
     <emphasis role="italic">pageTitle</emphasis> attrbiute is set, and the Rexx programmer does not need to worry about
@@ -4996,7 +4996,7 @@
   </para>
   <para>
     Typically, the resources used by the property sheet page would include the tab icon and the strings used for the
-    header title, header subtile, page title, etc.. However, the current implementation does not yet support retrieving
+    header title, header subtilte, page title, etc.. However, the current implementation does not yet support retrieving
     string resources from a <computeroutput>ResourceImage</computeroutput>. Therefore, at this point, it is really only
     the tab icon for this page that would be contained in the <emphasis role="italic">resources</emphasis> attribute.
     Future versions of ooDialog will likely be enhanced to work with string resources in a resource image.
@@ -5079,7 +5079,7 @@
     resource ID of the icon if the icon image is contained in a compiled resource file. If the attribute is set to a
     resource ID, then the <xref linkend="atrResourcesClsPSP"/> attribute must be set to a
  <xref linkend="clsResourceImage"/> object that contains the icon image. If the attribute is set to an
-    <computeroutput>Image</computeroutput> object, the the image has to be an actual icon image. It can not be a bitmap
+    <computeroutput>Image</computeroutput> object, then the image has to be an actual icon image. It can not be a bitmap
     or cursor.
   </para>
   <para>
@@ -5215,7 +5215,7 @@
     Setting the <emphasis role="italic">wantAccelerators</emphasis> attribute to true won't by itself give the
     programmer notification of the translate accelerator event because the default
  <xref linkend="mthTranslateAccelerator"/> event handler just returns 0. The programmer must also
-    over-ride the <emphasis role="italic">translateAcclerator</emphasis> method in her subclass and process the
+    over-ride the <emphasis role="italic">translateAccelerator</emphasis> method in her subclass and process the
     notification in the over-ride.
   </para>
   </listitem></varlistentry>
@@ -5288,7 +5288,7 @@
       <listitem>
       <para>
         This argument is true if the user clicked the OK button. It is also set to true if the
- <xref linkend="mthCancelToClose"/> method had inovked on the propertery sheet and the user clicked
+ <xref linkend="mthCancelToClose"/> method had inovked on the property sheet and the user clicked
         the Close button. It is set to false if the user clicked the Apply button.
       </para>
       </listitem></varlistentry>
@@ -5301,7 +5301,7 @@
       <varlistentry><term>rexxPage</term>
       <listitem>
       <para>
-        This argument is set to the Rexx property sheet page object that had the focuse when the user clicked the
+        This argument is set to the Rexx property sheet page object that had the focus when the user clicked the
         button.
       </para>
       </listitem></varlistentry>
@@ -5797,7 +5797,7 @@
   <para>
     Return a whole number. If the returned number is 0, the property sheet
  <xref linkend="clsPropertySheetDialog"/> sends the QUERYSIBLINGS message on to the next page in the property
-    sheet. If the number is not 0, then the property sheet dialog does not send the message on the the next page and
+    sheet. If the number is not 0, then the property sheet dialog does not send the message on the next page and
     returns its value from the <xref linkend="mthQuerySiblings"/> method. The default implementation
     returns 0.
   </para>
@@ -6108,7 +6108,7 @@ Generic form:
   <listitem>
   <para>
     This is a convenience method to set both the <emphasis role="italic">cx</emphasis> and <emphasis
-    role="italic">cy</emphasis> attributes at one time. The documentation on the two attrribtes is relevant here. This
+    role="italic">cy</emphasis> attributes at one time. The documentation on the two attributes is relevant here. This
     is one of the few <computeroutput>PropertySheetPage</computeroutput> methods that is not an event handler.
   </para>
   </listitem></varlistentry>
@@ -6230,14 +6230,14 @@ Generic form:
           <listitem>
           <para>
             This message is sent to the window with the keyboard focus when a SYSKEYDOWN message is translated by the
-            oeprating system. The <emphasis role="italic">keyCode</emphasis> argument specifies the character code of a
+            operating system. The <emphasis role="italic">keyCode</emphasis> argument specifies the character code of a
             system dead key, that is, a dead key that is pressed while holding down the ALT key.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SYSKEYDOWN</term>
           <listitem>
           <para>
-            Thise message is posted to the window with the keyboard focus when the user presses the F10 key (which
+            This message is posted to the window with the keyboard focus when the user presses the F10 key (which
             activates the menu bar) or holds down the ALT key and then presses another key. It also occurs when no
             window currently has the keyboard focus, in this case, the message is sent to the active window. The
             <emphasis role="italic">keyCode</emphasis> argument is the virtual-key code of the key being pressed.
@@ -6264,7 +6264,7 @@ Generic form:
       <listitem>
       <para>
         A <computeroutput>Directory</computeroutput> that further clarifies the status of the keyboard message. The
-        <computeroutput>Dirctory</computeroutput> object will contain the following indexes where the value of each
+        <computeroutput>Directory</computeroutput> object will contain the following indexes where the value of each
         index will be either <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>:
       </para>
       <para>
@@ -6365,7 +6365,7 @@ Generic form:
   return self~PSNRET_NOERROR
 
 /* Output for a shift-M keystroke, i.e. typing capital M. Note the repeated messages
-   for the shift key bein held down:
+   for the shift key being held down:
 
 KEYDOWN 16
 Released: 0 was down: 0 is extended: 0
@@ -6646,7 +6646,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       </para>
       <para>
         The argument is true if the user clicked the OK button. It is also set to true if the
- <xref linkend="mthCancelToClose"/> method had inovked on the propertery sheet and the user clicked
+ <xref linkend="mthCancelToClose"/> method had inovked on the property sheet and the user clicked
         the Close button. It is set to false if the user clicked the Apply button.
       </para>
       </listitem></varlistentry>
@@ -6678,11 +6678,11 @@ Got return from indexToID() ret: 0x00000000004EAF60
     returns PSNRET_NOERROR.
   </para>
   <para>
-    Therefore, a better stategy than over-riding the <emphasis role="italic">apply</emphasis> method, might be to
+    Therefore, a better strategy than over-riding the <emphasis role="italic">apply</emphasis> method, might be to
     over-ride the <emphasis role="italic">validate</emphasis> method. In the over-ride, return PSNRET_INVALID or
     PSNRET_INVALID_NOCHANGEPAGE to prevent the dialog from closing and return PSNRET_NOERROR to allow the dialog to
     close. The advantage to this is that the <xref linkend="mthApplyClsPSP"/> method also handles some
-    internal house keeping when the return is PNSRET_NOERROR. By over-riding <emphasis role="italic">validate</emphasis>
+    internal house keeping when the return is PSNRET_NOERROR. By over-riding <emphasis role="italic">validate</emphasis>
     instead of <emphasis role="italic">apply</emphasis>, the Rexx programmer has fewer details to take care of.
   </para>
   </listitem></varlistentry>
@@ -7059,7 +7059,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
           method name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed. The resulting text is then <emphasis
-          role="bold">prepened</emphasis> with the text <computeroutput>ID</computeroutput>.
+          role="bold">prepend</emphasis> with the text <computeroutput>ID</computeroutput>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTCHECKS</term>

@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -47,7 +47,7 @@
 <indexterm><primary>dialog control object</primary></indexterm>
 <indexterm><primary>dialog control object</primary></indexterm>
 <para>
-  This chapter discussses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the <xref
+  This chapter discusses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the <xref
   linkend="chpDialogObject"/> object. It lists the methods that are common to all dialog controls. In the
   graphical user interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
   Therefore, many of the methods of a dialog control object are the same as the methods of the dialog object. These are
@@ -70,7 +70,7 @@
   sending the proper message to the control or by accessing the control window directly.
 </para>
 
-<section id="sctMethodsDlgContorlObject"><title>Method Table</title>
+<section id="sctMethodsDlgControlObject"><title>Method Table</title>
 <para>
   The following table lists the class methods, attributes, and instance methods that all dialog controls have in
   common:
@@ -197,7 +197,7 @@
 </row>
 <row>
 <entry><xref linkend="mthData"/></entry>
-<entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
+<entry>Retrieves the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDataEquals"/></entry>
@@ -317,7 +317,7 @@
 </row>
 <row>
 <entry><xref linkend="wbdcoGetRect"/></entry>
-<entry>Returns the dimesions of the control.</entry>
+<entry>Returns the dimensions of the control.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdcoGetSize"/></entry>
@@ -1252,7 +1252,7 @@ Generic form:
     <varlistentry><term>controlObj</term>
     <listitem>
     <para>
-      The dialog control object representing the underlying control that recieved the keyboard character event notification.
+      The dialog control object representing the underlying control that received the keyboard character event notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1271,7 +1271,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    This example comes from some code my nephew wrote. I wrote a typing tutorial for my neice and nephews, they each had
+    This example comes from some code my nephew wrote. I wrote a typing tutorial for my niece and nephews, they each had
     their own copy. Each week their typing scores were expected to get better. If their score was worse, they were
     assigned extra chores for the next week.  My nephew injected the following code into his brother's typing tutorial.
     He thought it was hilarious, his brother was not amused:
@@ -1485,7 +1485,7 @@ Generic form:
       </para>
       <para>
         The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
-        are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
+        are 0 through 255. There are some integer values between 0 and 255 that do not have a virtual key assigned to
         them. For example, 0, 7, 10, 11, and 255 are not used. The <xref linkend="clsVK"/> class contains
         constants for all of the defined virtual keys.
       </para>
@@ -1675,12 +1675,12 @@ Generic form:
   <para>
     The dialog object also has a <xref linkend="mthConnectKeyPressDialogObject"/> method.  It is
     important to note this distinction between the two methods. The method of the dialog control object (this method)
-    will capture any key press event when the specific dialog control has the focus. The method of the dialg object will
+    will capture any key press event when the specific dialog control has the focus. The method of the dialog object will
     capture all key press events when the dialog is the active window.
   </para>
   <para>
     This includes key presses when a dialog control in the dialog has the focus. This implies that if you connect the
-    same key press event to both the dialog and to a specific dialog control, if the key press event ocurrs when the
+    same key press event to both the dialog and to a specific dialog control, if the key press event occurs when the
     dialog control has the focus, you will receive two event notifications.
   </para>
   </listitem></varlistentry>
@@ -1821,7 +1821,7 @@ Generic form:
 ::method initDialog
   expose editControl
 
-  editControl = self~newEdit(IDC_EDTIT)
+  editControl = self~newEdit(IDC_EDIT)
   ...
 
   -- Capture the D key press when either the Alt or Control keys are
@@ -1880,7 +1880,7 @@ Generic form:
   <para>
     The current <emphasis role="italic">data</emphasis> of the dialog control. Exactly what the format of the <emphasis
     role="italic">data</emphasis> takes is dependent on the type of the control. The Data Attribute Methods
-    <link linkend="sctDataAttributes">xection</link> of this reference has a detailed discussion on data attributes and the
+    <link linkend="sctDataAttributes">section</link> of this reference has a detailed discussion on data attributes and the
     meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
   </para>
   </listitem></varlistentry>
@@ -2508,10 +2508,10 @@ Generic form:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>bk [optionaal]</term>
+      <varlistentry><term>bk [optional]</term>
       <listitem>
       <para>
-        Specifies the the background color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        Specifies the background color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
         or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
         must be true.
       </para>
@@ -2519,7 +2519,7 @@ Generic form:
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        Specifies the the foreground color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        Specifies the foreground color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
         or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
         must be true. The foreground color is the color that text is written in.
       </para>
@@ -2832,7 +2832,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example updates a tree-view control to use the small triangle images for its expando buttons:
+    This example updates a tree-view control to use the small triangle images for its expand buttons:
 <programlisting>
 <![CDATA[
 
@@ -3112,7 +3112,7 @@ Generic form:
   <listitem>
   <para>
     In some cases, a control may behave in a different manner, depending on the version of the common control library.
-    This mostly happens when bugst were fixed in later versions. The <emphasis role="italic">useVersion</emphasis>
+    This mostly happens when bugs were fixed in later versions. The <emphasis role="italic">useVersion</emphasis>
     method allows the programmer to inform the control which behavior is expected. Which version behavior the control
     has been requested to use can be determined through the <link linkend="mthUsingVersion">usingVersion</link> method.
   </para>
@@ -3120,7 +3120,7 @@ Generic form:
     <emphasis role="bold">Note:</emphasis> If common control version 6 is in use, regardless of what value is set using
     <emphasis role="italic">versionNumber</emphasis>, <emphasis role="italic">useVersion</emphasis> returns version 6.
     Testing seems to indicate that if common control version 6 is in use, the <emphasis
-    role="italic">useVersion</emphasis> method has no effect. The method is provided becasue the Microsoft documentation
+    role="italic">useVersion</emphasis> method has no effect. The method is provided because the Microsoft documentation
     in many places suggests to use it with Custom Draw.
   </para>
   </listitem></varlistentry>

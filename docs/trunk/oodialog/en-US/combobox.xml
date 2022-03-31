@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -197,7 +197,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsDropDownList"/></entry>
-<entry>Determines if this combo box is a drop-down lis combo box.</entry>
+<entry>Determines if this combo box is a drop-down list combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsDropDownOpen"/></entry>
@@ -836,7 +836,7 @@ new orleans
     <listitem>
     <para>
       For simple and drop-down combo boxes this index contains the Rexx <xref linkend="clsEdit"/>  object that
-      represents the child edit control of the combo box. Drop-down list comboxes do not have a child edit control, and this
+      represents the child edit control of the combo box. Drop-down list combo boxes do not have a child edit control, and this
       index will contain the Rexx combo box object itself. (The operating system returns the combo box for this value.)
     </para>
     </listitem></varlistentry>
@@ -1513,11 +1513,11 @@ New minimum visible setting is:  10
     method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
     will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
     RETURN, and ESCAPE keydown events. These events occur when the user types the return, (or enter,) key, the escape key, or
-    the tab key. The fourth event is the KILLFOCUS event. This event ocurrs when the combo box control loses the focus.
+    the tab key. The fourth event is the KILLFOCUS event. This event occurs when the combo box control loses the focus.
   </para>
   <para>
     <emphasis role="bold">Note</emphasis> that this method will probably only work properly for drop-down list combo boxes.
-    The simple and drop-down combo boxes have a child edit control that recives the keyboard focus rather than the combo box.
+    The simple and drop-down combo boxes have a child edit control that receives the keyboard focus rather than the combo box.
     For simple and drop-down combo boxes, the programmer should be get the edit control using the <xref
     linkend="mthGetEditControl"/> method and then use the <computeroutput>Edit</computeroutput> class <xref
     linkend="mthIsGrandchildClsEdit"/> method on the edit object rather than the <emphasis
@@ -2199,7 +2199,7 @@ New minimum visible setting is:  10
   <para>
     Since a combo box is not a single control, but rather is composed of several different controls, the <xref
     linkend="mthSetColor"/> and <xref linkend="mthSetSysColor"/> methods do not work well with a combo box. Typically only the
-    selection field is colored and the color for thelist part of the combo box is left unchanged. The <emphasis
+    selection field is colored and the color for the list part of the combo box is left unchanged. The <emphasis
     role="italic">setFullColor</emphasis> method is used to set the color for all of the combo box.
   </para>
   <para>
@@ -2324,7 +2324,7 @@ New minimum visible setting is:  10
   longest = .Size~new
 
   comboBox = self~newComboBox(IDC_CBO_ONE)
-  do i over combolBoxItems
+  do i over comboBoxItems
     comboBox~add(i)
 
     size = self~getTextSizePx(i)

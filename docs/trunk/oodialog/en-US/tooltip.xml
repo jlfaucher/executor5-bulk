@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2022 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -122,7 +122,7 @@
   For the operating system, the first part of the 2-part identifier is the handle of the window that the ToolTip will send
   notifications to. The second part of the identifier can be a second window handle, if the ToolTip is going to subclass that
   window, or an unique number if the ToolTip is not going to subclass the tool. This may seem somewhat complicated to the
-  Rexx programmer, especially if the programer has little experience with the underlying details of programming dialog
+  Rexx programmer, especially if the programmer has little experience with the underlying details of programming dialog
   controls.
 </para>
 <para>
@@ -132,8 +132,8 @@
 </para>
 <para>
   This documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be
-  a combination of two Rexx objects, but quite often only one object is needed to indentify a tool.
-  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have a required argument, a <emphasis
+  a combination of two Rexx objects, but quite often only one object is needed to identify a tool.
+  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identified, have a required argument, a <emphasis
   role="italic">toolHwnd</emphasis> argument, followed by a second optional argument a <emphasis
   role="italic">toolID</emphasis> argument. The <emphasis role="italic">toolHwnd</emphasis> argument is usually argument 1,
   followed by the <emphasis role="italic">toolID</emphasis> argument. However, in some cases the <emphasis
@@ -182,7 +182,7 @@
     role="italic">toolID</emphasis> can be a dialog control or a number. However, if <emphasis
     role="italic">toolHwnd</emphasis> is a dialog control, the <emphasis role="italic">toolID</emphasis> must be a number.
     The second part of the 2-part operating system identifier is set to the window handle of the dialog control, if <emphasis
-    role="italic">toolID</emphasis> is a dialoog control. Otherwise the second part is set to the number specified. Note that
+    role="italic">toolID</emphasis> is a dialog control. Otherwise the second part is set to the number specified. Note that
     numbers can be specified using <link linkend="defSymbolicId">symbolic</link> IDs just as other types of resource IDs are.
   </para>
   </listitem></varlistentry>
@@ -212,7 +212,7 @@
 </row>
 <row>
 <entry><link linkend="clsToolInfo">ToolInfo</link></entry>
-<entry>A <computeroutput>ToolInfo</computeroutput> object is used to supply tool information to, or recieve tool information from, the ToolTip control.</entry>
+<entry>A <computeroutput>ToolInfo</computeroutput> object is used to supply tool information to, or receive tool information from, the ToolTip control.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Useful</emphasis></entry>
@@ -951,7 +951,7 @@
       <listitem>
       <para>
         A <xref linkend="clsRect"/> object used to specify the rectangle to adjust. On a successful return, the coordinates
-        in the rectangle will be adjusted as specified by the <emphasis role="italic">larger</emphasis> arguent.
+        in the rectangle will be adjusted as specified by the <emphasis role="italic">larger</emphasis> argument.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>larger [optional]</term>
@@ -1860,14 +1860,14 @@ Text for the tool tip: Over main dialog, top left quadrant
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Retunrs true if there is a current tool, false if there is not.
+    Returns true if there is a current tool, false if there is not.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     In essence, this convenience method tests if the <xref linkend="mthGetCurrentToolInfo"/> method will return a
-    <computeroutput>ToolInof</computeroutput> object or the <computeroutput>.nil</computeroutput> object.
+    <computeroutput>ToolInfo</computeroutput> object or the <computeroutput>.nil</computeroutput> object.
   </para> </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ToolTip::hasCurrentTool() -->
@@ -1970,7 +1970,7 @@ Generic form:
     say 'Tool info  hwnd:    ' hitTool~rexxHwnd
   end
 
-/* Output could be for instantce:
+/* Output could be for instance:
 
 Got hit
 Tool info  hwnd:     a SimpleDialog
@@ -2158,7 +2158,7 @@ Tool info  resource: The NIL object
   </para>
   <para>
     Note that when the <emphasis role="italic">manageAtypicalTool</emphasis> method starts the monitoring process, it
-    <emphasis role="italic">always</emphasis> forwards all mouse messages to the ToolTip, even if both optional arugments are
+    <emphasis role="italic">always</emphasis> forwards all mouse messages to the ToolTip, even if both optional arguments are
     ommitted. This is not always desirable. To prevent this, use the NORELAY keyword.
   </para>
   </listitem></varlistentry>
@@ -2182,7 +2182,7 @@ Tool info  resource: The NIL object
   </para>
   <para>
     Note that the third optional argument is an array with no values at index 1 and index 2. The <emphasis
-    role="italic">onShowToolTip</emphasis> value at index 3 is the altenative method name to invoke for the SHOW event:
+    role="italic">onShowToolTip</emphasis> value at index 3 is the alternative method name to invoke for the SHOW event:
 <programlisting>
 <![CDATA[
 
@@ -2196,7 +2196,7 @@ Tool info  resource: The NIL object
 
   ...
 
-  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'), .array~of( , , 'onShowToolTp'))
+  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'), .array~of( , , 'onShowToolTip'))
 
 ]]>
 </programlisting>
@@ -2396,7 +2396,7 @@ Tool info  resource: The NIL object
           <varlistentry><term>AUTOMATIC</term>
           <listitem>
           <para>
-            Sets all 3 delaty times to their default propotions. The autopop time will be ten times the initial time and the
+            Sets all 3 delay times to their default proportions. The autopop time will be ten times the initial time and the
             reshow time will be one fifth the initial time. When using this keyword, use a positive value for <emphasis
             role="italic">time</emphasis> to specify the initial time, in milliseconds.  Use a negative <emphasis
             role="italic">time</emphasis> to return all three delay times to their default values. This is the default if the
@@ -2878,7 +2878,7 @@ Tool info  resource: The NIL object
     <emphasis role="italic">setToolInfo</emphasis> method, these properties may be lost.
   </para>
   <para>
-    Instead, the programmer should first request the tool's current <computeroutput>ToolIno</computeroutput> object by using
+    Instead, the programmer should first request the tool's current <computeroutput>ToolInfo</computeroutput> object by using
     the <xref linkend="mthGetToolInfo"/> method. Then, modify the attributes of this object as needed and pass it back to
     the ToolTip control using the <emphasis role="italic">setToolInfo</emphasis> method.
   </para>
@@ -3245,7 +3245,7 @@ Generic form:
 </row>
 <row>
 <entry><link linkend="mthForID">forID</link></entry>
-<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used for tool <link linkend="sctToolIdentification">indentification.</link></entry>
+<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used for tool <link linkend="sctToolIdentification">identification.</link></entry>
 </row>
 <row>
 <entry><link linkend="mthNewClsToolInfo">new</link></entry>
@@ -3332,7 +3332,7 @@ Generic form:
   <para>
     The new <computeroutput>ToolInfo</computeroutput> object is especially constructed to be of use in the <xref
     linkend="mthHitTestInfoClsToolTip"/> method. To be explicit, the <computeroutput>ToolInfo</computeroutput> object returned is
-    initialized to an empty state and the normal tool indentifiers are not set.  The returned
+    initialized to an empty state and the normal tool identifiers are not set.  The returned
     <computeroutput>ToolInfo</computeroutput> object is not suitable to be used in any other methods that required a
     <computeroutput>ToolInfo</computeroutput> object, except the <emphasis role="italic">hitTest</emphasis> method.
   </para>
@@ -3411,7 +3411,7 @@ NO hit
 
 <para>
   Returns a new <computeroutput>ToolInfo</computeroutput> object to be used for tool <link
-  linkend="sctToolIdentification">indentification.</link>
+  linkend="sctToolIdentification">identification.</link>
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3621,7 +3621,7 @@ NO hit
     <varlistentry><term>rsv [optional]</term>
     <listitem>
     <para>
-      Reserved for future enhancement. This argument is completely ignrored in the current implmentation of ooDialog. Future
+      Reserved for future enhancement. This argument is completely ignored in the current implmentation of ooDialog. Future
       versions may be enhance to use this argument to specify a <xref linkend="clsResourceImage"/> object containing binary
       resources for the tool.
     </para>
@@ -3836,7 +3836,7 @@ NO hit
   <para>
     When the tool is not an application-defined rectangular area, the value of the <emphasis role="italic">rect</emphasis>
     attribute is a <computeroutput>rect</computeroutput> object whose coordinates are all 0. When the <emphasis
-    role="italic">flags</emphasis> attribute includes the IDIHWND keyword, the <emphasis role="italic">rect</emphasis>
+    role="italic">flags</emphasis> attribute includes the IDISHWND keyword, the <emphasis role="italic">rect</emphasis>
     attriubte is ignored by the ToolTip.
   </para>
   </listitem></varlistentry>
@@ -4054,7 +4054,7 @@ NO hit
   <listitem>
   <para>
     Returns the user data set for the tool, or the <computeroutput>.nil</computeroutput> object is no user data has been
-    assiged.
+    assigned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>

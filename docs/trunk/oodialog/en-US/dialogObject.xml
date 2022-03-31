@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -508,7 +508,7 @@
 </row>
 <row>
 <entry><xref linkend="mthDlgUnit2pixel"/></entry>
-<entry>Takes a dimension expressed in dialog units of this dialog and tranforms it to a dimension expressed in pixels.</entry>
+<entry>Takes a dimension expressed in dialog units of this dialog and transforms it to a dimension expressed in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdoDraw"/></entry>
@@ -776,7 +776,7 @@
 </row>
 <row>
 <entry><xref linkend="wbdoGetRect"/></entry>
-<entry>Returns the dimesions of the dialog.</entry>
+<entry>Returns the dimensions of the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="deGetSBPos"/></entry>
@@ -1272,7 +1272,7 @@
 </row>
 <row>
 <entry><xref linkend="deSetForegroundWindow"/></entry>
-<entry>Brings the specified window to the foregrouond.</entry>
+<entry>Brings the specified window to the foreground.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetGroup"/></entry>
@@ -1999,7 +1999,7 @@ say 'Starting standard dialog demonstration...'
   <para>
     Set <emphasis role="italic">autoDetect</emphasis> to <computeroutput>.true</computeroutput> or
     <computeroutput>.false</computeroutput> to automatic detection on or off. A syntax condition is raised if the
-    programmer attempts to set the attribut to any other value.
+    programmer attempts to set the attribute to any other value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2313,7 +2313,7 @@ WindowBase::<xref linkend="atrFactorY"/>
   <![CDATA[
     fontName = "Tahoma"
     fontSize = 20
-    message = "Drive z: is a network drive and is not accesible."
+    message = "Drive z: is a network drive and is not accessible."
     title = "Disk Drive Error"
 
     dlg = .MessageBox~new( , , message, title, fontName, fontSize)
@@ -2923,7 +2923,7 @@ DialogExtensions::<xref linkend="mthEndAsyncExecution"/>
     <varlistentry><term>0</term>
     <listitem>
     <para>
-      Some error ocurred, the dialog was not executed.
+      Some error occurred, the dialog was not executed.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>1</term>
@@ -4553,7 +4553,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the Rexx ToolTip object that represents the Windows ToolTip control with the sepcified resource ID, or the
+    Returns the Rexx ToolTip object that represents the Windows ToolTip control with the specified resource ID, or the
     <computeroutput>.nil</computeroutput> object on any error
   </para>
   </listitem></varlistentry>
@@ -5533,9 +5533,9 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
       <varlistentry><term>isClr [optional]</term>
       <listitem>
       <para>
-        Speicifes if the <emphasis role="italic">color</emphasis> argument is a COLORREF or a palette index. If true, the
+        Specifies if the <emphasis role="italic">color</emphasis> argument is a COLORREF or a palette index. If true, the
         <emphasis role="italic">color</emphasis> argument is interpreted as a COLORREF, if false it is interpreted to be a
-        pallete index. The default if this argument is omitted is false.
+        palette index. The default if this argument is omitted is false.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -6001,7 +6001,7 @@ DialogExtensions::<xref linkend="mthGetControlRect"/>
   </para>
   <para>
     If the empty string is returned, the programmer can check the <emphasis role="italic">.systemErrorCode</emphasis>
-    to determine if the text for the control is really the empty string, or if an error ocurred.
+    to determine if the text for the control is really the empty string, or if an error occurred.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6096,7 +6096,7 @@ DialogExtensions::<xref linkend="mthGetControlRect"/>
   <para>
     All windows can have text associated with them, although some times it is simply the empty string. If the empty
     string is returned, the programmer can check the <emphasis role="italic">.systemErrorCode</emphasis> to determine if
-    the text for the window is really the empty string, or if an error ocurred.
+    the text for the window is really the empty string, or if an error occurred.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9521,7 +9521,7 @@ var2  "09"x  ,
       <programlisting>
       <![CDATA[
     ::method calcSizes private
-      expose msgRect okRext
+      expose msgRect okRect
 
       -- Get the size needed for the message, place the static
       -- control at (10, 10) in the dialog.
@@ -9530,7 +9530,7 @@ var2  "09"x  ,
       msgRect = .Rect~new(10, 10, size~width, size~height)
       ...
 
-      -- Get a reactangle for the ok push button, we know we
+      -- Get a rectangle for the ok push button, we know we
       -- want the width and height to be 40 and 14.
 
       okRect = .Rect~new(0, 0, 40, 14)
@@ -9811,7 +9811,7 @@ var2  "09"x  ,
   yPos = 10 + size~height + 5
   self~createStaticText(IDC_ST_DESCRIPTION, 10, yPos, 176, 20, "TEXT LEFT", caption)
 
-  -- Position the Ok button top aligned with the caption and aligne with the
+  -- Position the Ok button top aligned with the caption and align with the
   -- right edge of the picture.
   xPos = 10 + size~width - 50
   self~createPushButton(IDOK, xPos, yPos, 50, 14, "DEFAULT", "Ok", ok)

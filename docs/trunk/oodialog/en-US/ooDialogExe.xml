@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2013-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2013-2022 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -47,7 +47,7 @@
 <para>
   The distribution of ooDialog includes an executable file, named: <computeroutput>ooDialog.exe</computeroutput>. This
   executable file is located in the same directory as the <computeroutput>oodialog.dll</computeroutput> and
-  <computeroutput>ooDialog.cls</computeroutput> files. In the typical installation of ooRexx or ooDialog, this diretory will
+  <computeroutput>ooDialog.cls</computeroutput> files. In the typical installation of ooRexx or ooDialog, this directory will
   be in the PATH which allows ooDialog.exe to be accessed from anywhere on the computer.
 </para>
 
@@ -139,7 +139,7 @@ option flags:
 
 programName:
   The first argument that does not begin with '-' is taken as the name
-  of a Rexxx program to be executed.
+  of a Rexx program to be executed.
 
 arg1 ... argN:
   Arguments 1 through N are passed on to programName.
@@ -188,23 +188,23 @@ C:\Rexx>
   Because it is a console application, whenever rexx.exe starts, the operating system creates a console window if it is not
   already being executed from a console window. For a purely graphical application, as most ooDialog programs are, this
   secondary console window can be an annoyance. The ooDialog executable, (and rexxhide.exe,) are built as a windowed
-  applicattion and internally use the ooRexx naive API to start an instance of the interpreter to execute the Rexx program.
+  application and internally use the ooRexx naive API to start an instance of the interpreter to execute the Rexx program.
   Because they are built as a windowed application, no console window is created by the operating system.
 </para>
 <para>
   One drawback that rexxhide.exe has, is that since it is built as a windowed application with no console window, all text
-  normally writen to the console is lost. This includes the error condition text written when a condition is raised. Because
+  normally written to the console is lost. This includes the error condition text written when a condition is raised. Because
   of this Rexx programs run under rexxhide.exe just silently end if a problem in the program raises a condition. This can be
   frustrating because the program will just terminate and there is no way to know why.
 </para>
 <para>
   The ooDialog executable has been enhanced to help with this situation. If a condition is raised and the Rex program is
-  terminated, oodialg.exe traps the condition text and then displays it in a window when the interpreter terminates.
+  terminated, ooDialog.exe traps the condition text and then displays it in a window when the interpreter terminates.
 </para>
 
 <note><title>Note</title>
   <para>
-    This discussion on using ooDialgo.exe as a program launcher mostly refers to launching ooDialog programs. However,
+    This discussion on using ooDialog.exe as a program launcher mostly refers to launching ooDialog programs. However,
     ooDialog.exe will execute any ooRexx program. It is not restricted to launching only ooDialog programs.
   </para>
 </note>
@@ -239,7 +239,7 @@ C:\Rexx>ooDialog.exe ooRexx\ooRexxTry.rex
     for ooDialog example programs for years. In the short cut, ooDialog.exe can be used instead of rexxhide.exe:
 <programlisting>
 <![CDATA[
-/* The ooRexx installer has set up a Start menu item to the ooDialog sample.rex programe like this: */
+/* The ooRexx installer has set up a Start menu item to the ooDialog sample.rex program like this: */
 
 Target type:      Application
 Target location:  ooRexx
@@ -314,7 +314,7 @@ C:\Rexx>
 ]]>
 </programlisting>
     For people not familar with creating file types and associations, ooDialog.exe can be used to configure file associations
-    for the system through a graphical user interface. This use of ooDialgo.exe is explained in the next section
+    for the system through a graphical user interface. This use of ooDialog.exe is explained in the next section
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -380,7 +380,7 @@ C:\Rexx>
 </para>
 <para>
   This is shown below. Note that the lower left quadrant of the dialog displays the security status of the running process.
-  In this case the process is shown as <emphasis role="italic">not</emphasis> elevatd. Changing the All Users file
+  In this case the process is shown as <emphasis role="italic">not</emphasis> elevated. Changing the All Users file
   associations would required that the process be elevated.
   <figure id="figElevatedDialog"><title>Elevation Required</title>
   <mediaobject>
@@ -503,7 +503,7 @@ C:\Rexx>
   </para>
   <para>
     Likewise, if an extension is selected in the <emphasis role="italic">Currently Associated</emphasis> list box and the
-    <emphasis role="italic">Remove</emphasis> button is clicked then the extension is imediately un-associated. The <emphasis
+    <emphasis role="italic">Remove</emphasis> button is clicked then the extension is immediately un-associated. The <emphasis
     role="italic">Remove</emphasis> button is the only way to un-associate an extension using the dialog.
   </para>
   <para>
@@ -518,7 +518,7 @@ C:\Rexx>
   <listitem>
   <para>
     These two radio buttons are used to switch between dual column view, explained above, and single column view. In single
-    column view the current registery values are shown only as they relate to the current scope. If the <link
+    column view the current registry values are shown only as they relate to the current scope. If the <link
     linkend="figDualColumnExample">dual column</link> figure were to be switched to single column view, it would appear like
     this:
     <figure id="figSingleColumnExample"><title>Single Column Example</title>
@@ -532,7 +532,7 @@ C:\Rexx>
     In some ways the single column view may be less confusing. But, for file associations, it does not present a true
     picture. The .ood extension is listed in the suggested extensions list box, but there is no real reason to associate it.
     Since .ood is associated for the current user, when the operating system merges the file associations for all users and
-    the current user, it becomes associated in effect. Switching betweed the two views may be the best way to understand the
+    the current user, it becomes associated in effect. Switching between the two views may be the best way to understand the
     current associations.
   </para>
   </listitem></varlistentry>
@@ -569,15 +569,15 @@ C:\Rexx>
   </listitem>
   <listitem>
   <para>
-    Unlike file associations, the operating system does not merge the All Users PATHEXT and the Curren User's PATHEXT
+    Unlike file associations, the operating system does not merge the All Users PATHEXT and the Current User's PATHEXT
     values. If the current user sets a PATHEXT value, it <emphasis role="italic">replaces</emphasis> the All Users PATHEXT
     for that user.
   </para>
   </listitem>
   <listitem>
   <para>
-    A poorly formed PATHEXT value can cause the system to behave erractically. For instance if PATHEXT did not contain the
-    <computeroutput>.EXE</computeroutput> extension, programs might not be able to be executed. For this reason, the dialolg
+    A poorly formed PATHEXT value can cause the system to behave erratically. For instance if PATHEXT did not contain the
+    <computeroutput>.EXE</computeroutput> extension, programs might not be able to be executed. For this reason, the dialog
     will not remove the .exe, .cmd, .com, and .bat extensions from PATHEXT. The only exception to this is if the scope is the
     Current User, the dialog will allow the user to completely delete the PATHEXT variable for the Current User. The All
     Users PATHEXT can not be deleted through the dialog.
@@ -598,7 +598,7 @@ C:\Rexx>
   <para>
     The PATHEXT edit box and Add button are similar in use to the File Association Extension edit box and Add button. The
     dialog user types the extension in the edit box and clicks the <emphasis role="italic">Add</emphasis> button to add a
-    file extension to the PATHEXE list box for the current scope. The dot character may or may not be used. If the extension
+    file extension to the PATHEXT list box for the current scope. The dot character may or may not be used. If the extension
     entered in the edit box does not start with a dot character, one is added. The extension is also upper-cased. Other than
     that, no attempt is made to validate the entry typed by the dialog user.
   </para>
@@ -637,7 +637,7 @@ C:\Rexx>
     The upper <emphasis role="italic">Add</emphasis> button has already been described. If the user has typed an extension in
     the edit box, the <emphasis role="italic">Add</emphasis> button will add that extension to the list box. The <emphasis
     role="italic">Add --></emphasis> button on the left serves a similar function. If an item in the <emphasis
-    role="italic">Currently Registerd</emphasis> list box is selected, clicking the <emphasis role="italic">Add
+    role="italic">Currently Registered</emphasis> list box is selected, clicking the <emphasis role="italic">Add
     --></emphasis> will add it to the list box.
   </para>
   <para>

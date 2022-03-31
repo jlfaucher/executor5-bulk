@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -361,13 +361,13 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    Acceleration information allows the up-down control change its position faster the longer the user holds down the
     control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
     seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
     seconds increment the postion by 8.
   </para>
   <para>
-    The accelerations are always sorted by seconds in ascending order. Typically the first acelleration would be 0
+    The accelerations are always sorted by seconds in ascending order. Typically the first acceleration would be 0
     seconds with an increment of 1. The programmer can change the acceleration information for the up-down control
     through the <xref linkend="mthSetAcceleration"/> method.
   </para>
@@ -430,7 +430,7 @@
   <para>
     The return is the dialog <xref linkend="chpDialogControlObject"/> object that is the buddy window of
     the up-down control. Normally, or at least most often, this will be an <xref linkend="clsEdit"/> object.
-    Howver, it could be some other type of dialog control object. If the up-down control does not have a buddy window,
+    However, it could be some other type of dialog control object. If the up-down control does not have a buddy window,
     then <computeroutput>.nil</computeroutput> is returned.
   </para>
   </listitem></varlistentry>
@@ -505,7 +505,7 @@
   <para>
     This example retrieves the up-down's position value during validation when the dialog is closing. If the user has
     manually typed in a value in the buddy edit control, then that is the value that will be used. However, if that
-    vaule is out of range, the validation is failed and the user is warned:
+    value is out of range, the validation is failed and the user is warned:
 <programlisting>
 <![CDATA[
 
@@ -652,13 +652,13 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    Acceleration information allows the up-down control change its position faster the longer the user holds down the
     control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
     seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
     seconds increment the postion by 8, etc..
   </para>
   <para>
-    The accelerations must be sorted in the array, by seconds, in ascending order. Typically the first acelleration
+    The accelerations must be sorted in the array, by seconds, in ascending order. Typically the first acceleration
     would be 0 seconds with an increment of 1.
   </para>
   </listitem></varlistentry>
@@ -796,7 +796,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When an up-down control has the AUOTBUDDY style, the up-down control selects the previous window in the dialog
+    When an up-down control has the AUTOBUDDY style, the up-down control selects the previous window in the dialog
     template as its buddy window. If the up-down control does not have that style, the <emphasis
     role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control as the buddy window. Of
     course, the <emphasis role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control, when
@@ -1022,7 +1022,7 @@ Generic form:
   staticPresident~setText(president)
 
   select
-    when president == 'Abraham Lincon' then do
+    when president == 'Abraham Lincoln' then do
       r = .directory~new
       r~min = 1809
       r~max = 1865

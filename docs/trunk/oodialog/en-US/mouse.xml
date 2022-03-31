@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -54,9 +54,9 @@
 <para>
   <emphasis role="bold">Mouse Cursor:</emphasis> As the user moves the mouse across the screen, the operating system
   paints a bitmap on the screen that gives the user feedback as to the position of the mouse. This bitmap is called the
-  <emphasis role="italic">mouse cursor</emphasis>. The cusor has a single pixel point in the bitmap called the <emphasis
+  <emphasis role="italic">mouse cursor</emphasis>. The cursor has a single pixel point in the bitmap called the <emphasis
   role="italic">hot spot</emphasis>. The position of the hot spot is considered to be the position of the mouse. All
-  mouse messages are, normally, sent to the window beneath the hot spot, whether or not that window is acitve or has the
+  mouse messages are, normally, sent to the window beneath the hot spot, whether or not that window is active or has the
   keyboard focus.
 </para>
 <para>
@@ -390,7 +390,7 @@
   <listitem>
   <para>
     The operating system sends all mouse related <xref linkend="ovvWindowMessages"/>s to the window the
-    mouse is over. Because of this, each Rexx mouse object is assoicated with a specific window. This is important for
+    mouse is over. Because of this, each Rexx mouse object is associated with a specific window. This is important for
     the programmer to understand, especially when connecting mouse event notifications. Since all dialog controls are
     windows, when the mouse is over a dialog, most messages go to one of the dialog controls that make up the dialog.
     Therefore, if the programmer is interested is the mouse event notifications, much of the time the programmer will
@@ -435,7 +435,7 @@
 </variablelist>
 </section>  <!-- End Mouse::new() -->
 
-<section id="mthDoubleClickTime" xreflabel="doubleClickTime"><title>doubleClickTime (Class Mehod)</title>
+<section id="mthDoubleClickTime" xreflabel="doubleClickTime"><title>doubleClickTime (Class Method)</title>
 <indexterm><primary>doubleClickTime</primary></indexterm>
 <indexterm><primary>Mouse class</primary><secondary>doubleClickTime</secondary></indexterm>
 <programlisting>
@@ -835,7 +835,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example checks the current double-click time and if it is below 500 milliseconds, it resets the the time to the
+    This example checks the current double-click time and if it is below 500 milliseconds, it resets the time to the
     usual system default.
 <programlisting>
 <![CDATA[
@@ -1148,7 +1148,7 @@
   </para>
   <para>
     Sets the <xref linkend="dotSystemErrorCode"/> to 0, but there are no operating system
-    errors that would change the varible.
+    errors that would change the variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1454,7 +1454,7 @@
       <para>
         Exactly one of the following keywords, case is not significant. The argument adds some control as to how the
         ooDialog framework replies to the operating system for the specified event notification. This argument is only
-        applicapable in certain cases. See the Remarks section for further details.
+        applicable in certain cases. See the Remarks section for further details.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -1514,11 +1514,11 @@
     <emphasis role="bold">Note</emphasis> that to properly handle and process mouse event messages, it is usually
     necessary for the interpreter to wait for the reply from the event handler. If the programmer specifies false for
     the <emphasis role="italic">willReply</emphasis> argument, the event handler is likely to behave unpredictably. This
-    is particularily true for the the MOUSEMOVE event.
+    is particularly true for the MOUSEMOVE event.
   </para>
   <para>
     For mouse events, there are several possible ways for the ooDialog framework to reply to the operating system in
-    repsonse to the underlying notification message. The possible replies are dependent on which type of window the
+    response to the underlying notification message. The possible replies are dependent on which type of window the
     mouse event is for, a dialog window or a dialog control window.
   </para>
   <variablelist>
@@ -2166,7 +2166,7 @@
     <varlistentry><term>delta</term>
     <listitem>
     <para>
-      A whole number that represents the amount the scroll wheel was turned. The operating system alway sends a multiple
+      A whole number that represents the amount the scroll wheel was turned. The operating system always sends a multiple
       of 120. Microsoft says this is to allow for future expansion with hardware that has a finer grain of control. If
       the number is positive, the user turned the wheel away from herself and indicates to scroll up. When negative
       the user turned the wheel towards himself, and indicates to scroll down.
@@ -2211,7 +2211,7 @@
   <listitem>
   <para>
     The following example uses the <xref linkend="mthConnectEvent"/> method to connect the mouse wheel
-    event sent to the edit control to a method in the Rexx dialog. This then allows the programmer to supply some custon
+    event sent to the edit control to a method in the Rexx dialog. This then allows the programmer to supply some custom
     scrolling.  Normally, a multi-line edit control handles the mouse wheel event itself and the notification message
     will never reach the dialog.
 <programlisting>
@@ -2229,7 +2229,7 @@
 
 ::method onMouseWheel unguarded
   expose eData
-  use arg state, pos, mosue, delta
+  use arg state, pos, mouse, delta
 
   -- If the mouse is not over the edit control, do nothing and
   -- return .true to indicate the event was processed.
@@ -2371,7 +2371,7 @@
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        The initial position of the cursor, in screen <xref linkend="defScreenCoordinates"/>) coodinates, specified
+        The initial position of the cursor, in screen <xref linkend="defScreenCoordinates"/>) coordinates, specified
         as a <xref linkend="clsPoint"/> object. Recall that screen coordinates are always in pixels.
       </para>
       </listitem></varlistentry>
@@ -2463,7 +2463,7 @@
   <listitem>
   <para>
     The window <xref linkend="defHandle"/> of the window, belonging to the same dialog as this mouse's
-    window, that had previously captured the mouse, or 0 if no window previosly had the capture.
+    window, that had previously captured the mouse, or 0 if no window previously had the capture.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2732,7 +2732,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">no</emphasis> method is convenience method. It is exactly equivalent to usingthe
+    The <emphasis role="italic">no</emphasis> method is convenience method. It is exactly equivalent to using the
  <xref linkend="mthSetCursor"/> method with the NO keyword.
   </para>
   </listitem></varlistentry>
@@ -2808,14 +2808,14 @@
   <listitem>
   <para>
     This example is a snippet of code from a drag and drop enabled program. It is part of the processing of the left
-    button up event handler. If <emphasis role="italic">draggin</emphasis> is <computeroutput>.true</computeroutput>
+    button up event handler. If <emphasis role="italic">dragging</emphasis> is <computeroutput>.true</computeroutput>
     then we know that the mouse was captured when the drag operation was initiated, so the capture is released. The
     return from <emphasis role="italic">releaseCapture</emphasis> is not checked because it is unlikely to fail:
 <programlisting>
 <![CDATA[
 
   if dragging then do
-    okayToDrop = (cusorIsNoDrop \== .true)
+    okayToDrop = (cursorIsNoDrop \== .true)
 
     dragging = .false
     cursorIsNoDrop = .false
@@ -2975,7 +2975,7 @@
 
   -- Restore the cursor.
   oldCursorPos~decr
-  mouse~restoreCursor(oldCusor)
+  mouse~restoreCursor(oldCursor)
   mouse~setCursorPos(oldCursorPos)
 
 ]]>
@@ -3162,7 +3162,7 @@
 
   -- Restore the cursor.
   oldCursorPos~decr
-  mouse~setCursor(oldCusor)
+  mouse~setCursor(oldCursor)
   mouse~setCursorPos(oldCursorPos)
 
 ]]>
@@ -3441,7 +3441,7 @@ Generic form:
           <para>
             Rather than treating this as a tracking request, the <emphasis role="italic">answer</emphasis> argument,
             which must be a <computeroutput>.Directory</computeroutput> object, is filled in. The
-            <computeroutput>Directory</computeroutput> object will contain an EVENT and a HOVERTIME index. These indexs
+            <computeroutput>Directory</computeroutput> object will contain an EVENT and a HOVERTIME index. These indexes
             will contain values such that, had they been used for the <emphasis role="italic">event</emphasis> and
             <emphasis role="italic">hoverTime</emphasis> arguments to the <emphasis role="italic">trackEvent</emphasis>
             method, the method would generate the current tracking.
@@ -3478,7 +3478,7 @@ Generic form:
         <varlistentry><term>EVENT</term>
         <listitem>
         <para>
-          A keyword list, using the same keywords thar are listed for the <emphasis role="italic">event</emphasis>
+          A keyword list, using the same keywords that are listed for the <emphasis role="italic">event</emphasis>
           argument. The keywords will reflect the current tracking. If the list had been used in a tracking request,
           they would produce the current tracking.
         </para>
@@ -3513,7 +3513,7 @@ Generic form:
   </para>
   <para>
     The system default hover time out is initially the menu drop-down time, which is 400 milliseconds. The system
-    default hover rectangle is the same as the double-click rectangle. Hovever, these values may be changed / customized
+    default hover rectangle is the same as the double-click rectangle. However, these values may be changed / customized
     by the user.
   </para>
   </listitem></varlistentry>
@@ -3626,7 +3626,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">wait</emphasis> method is convenience method. It is exactly equivalent to usingthe
+    The <emphasis role="italic">wait</emphasis> method is convenience method. It is exactly equivalent to using the
  <xref linkend="mthSetCursor"/> method with the WAIT keyword.
   </para>
   </listitem></varlistentry>

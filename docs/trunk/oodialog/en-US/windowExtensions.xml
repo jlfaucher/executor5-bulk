@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -482,7 +482,7 @@
     <varlistentry><term><emphasis role="italic">additional [optional]</emphasis></term>
     <listitem>
     <para>
-      Specifies additional characteristics of the requested font. If this argument is omitted, deault values are used for all
+      Specifies additional characteristics of the requested font. If this argument is omitted, default values are used for all
       characteristics. The <emphasis role="italic">additional</emphasis> argument can be either:
     </para>
     <itemizedlist>
@@ -503,7 +503,7 @@
       <listitem>
       <para>
         The indexes of the object specify the additional font characteristics. For any missing index, the default value is
-        used for that characteristic. Unrecogized indexes are ignored. The indexes are listed below. Each index maps to an
+        used for that characteristic. Unrecognized indexes are ignored. The indexes are listed below. Each index maps to an
         argument of the <computeroutput>CreateFont()</computeroutput> Win32 API. The Rexx programmer can, and maybe should,
         consult the MSDN <xref linkend="defWindowsDoc"/> to get complete information on the individual arguments. The value
         for each index must be either numeric or logical, depending on the index.
@@ -596,7 +596,7 @@
       <listitem>
       <para>
         One or more of the following keywords, separated by blanks. Case is not significant. The UNDERLINE, ITALIC, and
-        STRIKEOUT keywords specify the corresponing type of font. All the other keywords specify the weight of the font.
+        STRIKEOUT keywords specify the corresponding type of font. All the other keywords specify the weight of the font.
         Using more that one of the weight keywords is the list is undefined:
       </para>
         <simplelist type='horiz' columns='3'>
@@ -621,7 +621,7 @@
   <listitem>
   <para>
     The return is a handle to a font that can be used in any ooDialog method that requires a font
-    handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
+    handle. Because of the way the font mapper works, it is hard to conceive of a circumstance where
     this method would fail. However, if it were to fail, the
     <xref linkend="dotSystemErrorCode"/> would be non-zero.
   </para>
@@ -695,7 +695,7 @@
   additional = .directory~new
   additional~italic = .true
   additional~weight = FW_BOLD
-  additional~outputPrecison = OUT_TT_ONLY_PRECIS
+  additional~outputPrecision = OUT_TT_ONLY_PRECIS
 
   hFont = self~createFontEx("Times New Roman", 14, additional)
 
@@ -824,7 +824,7 @@
     </tbody></tgroup>
     </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxOutputPrecision" xreflabel="OUTPUTPRECSION"><term><emphasis role="bold">outputPrecsion</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxOutputPrecision" xreflabel="OUTPUTPRECISION"><term><emphasis role="bold">outputPrecision</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       The output precision defines how closely the output must match the requested font's height, width,
@@ -1548,19 +1548,19 @@ context. </para>
     <varlistentry><term>x [required]</term>
     <listitem>
     <para>
-      The x co-ordinate of the position in the area to start filling.
+      The x coordinate of the position in the area to start filling.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>y [required]</term>
     <listitem>
     <para>
-      The x co-ordinate of the position in the area to start filling.
+      The x coordinate of the position in the area to start filling.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>color [required]</term>
     <listitem>
     <para>
-      Specifies the color that outlines the area to be filled. The color can be spedified as a color pallette <link
+      Specifies the color that outlines the area to be filled. The color can be specified as a color palette <link
       linkend="defColor">index</link>, or as a <xref linkend="defColorRef"/> color.
     </para>
     </listitem></varlistentry>
@@ -1597,7 +1597,7 @@ context. </para>
   </listitem>
   <listitem>
   <para>
-    The point is outside the clipping regionthat is, it is not visible on the device.
+    The point is outside the clipping region, that is, it is not visible on the device.
   </para>
   </listitem>
   </itemizedlist>
@@ -1675,10 +1675,10 @@ context. </para>
   </para>
   <para>
     In addition, for programmers that may read the Microsoft <xref linkend="defWindowsDoc"/> on the Windows <emphasis
-    role="italic">FillRect</emphasis> API, the <emphasis role="italic">fillRect</emphasis> method fills the entire recatangle
+    role="italic">FillRect</emphasis> API, the <emphasis role="italic">fillRect</emphasis> method fills the entire rectangle
     specified. The Windows API does not include the rectangle's right and bottom sides. That API fills a rectangle up to, but
     not including, the right column and bottom row. If the ooDialog programmer needs that behaviour, she should subtract 1
-    from the right and bottom co-ordinates of the <emphasis role="italic">rect</emphasis> object.
+    from the right and bottom coordinates of the <emphasis role="italic">rect</emphasis> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1697,7 +1697,7 @@ context. </para>
   <para>
     This example comes from a clock program that displays the digital time. The time is updated every second. If the previous
     time is not erased, it just becomes a smear as the different digits are written over the top of each other. The example
-    gets a system brush that is the color of the background of the clock and uses that to erase the bacground of the area
+    gets a system brush that is the color of the background of the clock and uses that to erase the background of the area
     that displays the digital time before it is updated with the current time:
 <programlisting>
 <![CDATA[
@@ -1965,11 +1965,11 @@ When you have finished with the device context, call <xref linkend="mthFreeDC"/>
   <para>
     This is an example from a fictious program where a custom font is used to emphasis the text in two
     static controls.  When the user does some action, the text in one control is emphasised and the
-    other is de-emphsised.  One way to do this is to just swap the fonts.
+    other is de-emphasised.  One way to do this is to just swap the fonts.
 <programlisting>
 <![CDATA[
 ::method onToggle private
-  static1 = self~newStatic(IDC_ST_OUTSTANDING_BLANCE)
+  static1 = self~newStatic(IDC_ST_OUTSTANDING_BALANCE)
   static2 = self~newStatic(IDC_ST_LASTPAYMENT)
 
   font1 = static1~getFont
@@ -2059,7 +2059,7 @@ within the device context. </para>
   </para>
   <para>
     To paint with a system color brush, an application should use <emphasis role="italic">getSysBrush</emphasis> instead of
-    useing <xref linkend="mthCreateBrush"/>, because <emphasis role="italic">getSysBrush</emphasis> returns a cached brush
+    using <xref linkend="mthCreateBrush"/>, because <emphasis role="italic">getSysBrush</emphasis> returns a cached brush
     instead of allocating a new one. System color brushes are owned by the system and must not be destroyed.
   </para>
   </listitem></varlistentry>
@@ -2484,7 +2484,7 @@ the default brush is white. </para>
 <para>
   If the argument is omitted, the rectangle is just outlined (drawn) with the active pen. otherwise the rectangle is
   filled with the active brush. The keyword would be &quot;FILL&quot; to file the rectangle, but the argument is not
-  actually checked. If the argument is used, the rectangel is filled, if it is not used the rectangle is outlined..
+  actually checked. If the argument is used, the rectangle is filled, if it is not used the rectangle is outlined..
 </para>
 </listitem></varlistentry> </variablelist> </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2843,7 +2843,7 @@ failed.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the previous alignment of the device context as a string of keywords. The string is indentical to what the <xref
+    Returns the previous alignment of the device context as a string of keywords. The string is identical to what the <xref
     linkend="mthGetTextAlign"/> method would have returned if the method was invoked immediately prior to invoking this
     method. On error the empty string is returned.
   </para>

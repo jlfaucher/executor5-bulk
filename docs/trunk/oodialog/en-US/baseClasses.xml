@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -148,7 +148,7 @@
 
 <section id="mthCreateReBarWindow" xreflabel="createReBarWindow"><title>createReBarWindow</title>
 <indexterm><primary>createReBarWindow</primary></indexterm>
-<indexterm><primary>CreateWindows class</primary><secondary>createSReBarWindow</secondary></indexterm>
+<indexterm><primary>CreateWindows class</primary><secondary>createReBarWindow</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--createReBarWindow(--id--+----------+--)------><
@@ -233,7 +233,7 @@
         <varlistentry><term>TOOLTIPS</term>
         <listitem>
         <para>
-          This style keword is for completeness, the rebar control itself does not yet support tool tips.
+          This style keyword is for completeness, the rebar control itself does not yet support tool tips.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>VARHEIGHT</term>
@@ -263,7 +263,7 @@
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          Gives the reboar control the <xref linkend="wsdisabled"/> window style. By default the control is enabled
+          Gives the rebar control the <xref linkend="wsdisabled"/> window style. By default the control is enabled
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
@@ -310,7 +310,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that a rebar window ignores any position or size co-ordinates when it is created. It automatically positions
+    Note that a rebar window ignores any position or size coordinates when it is created. It automatically positions
    and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
   </para>
   </listitem></varlistentry>
@@ -327,7 +327,7 @@
   <listitem>
   <para>
     This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
-    resourc only DLL for the program only supported rebars in a very limited way, the programmer elected to create the rebar
+    resource only DLL for the program only supported rebars in a very limited way, the programmer elected to create the rebar
     by using the <computeroutput>CreateWindows</computeroutput> mixin class:
 <programlisting>
 <![CDATA[
@@ -457,7 +457,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that a status bar window ignores any position or size co-ordinates when it is created. It automatically positions
+    Note that a status bar window ignores any position or size coordinates when it is created. It automatically positions
    and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
   </para>
   </listitem></varlistentry>
@@ -604,7 +604,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that a status bar window ignores any position or size co-ordinates when it is created. It automatically positions
+    Note that a status bar window ignores any position or size coordinates when it is created. It automatically positions
    and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
   </para>
   </listitem></varlistentry>
@@ -701,7 +701,7 @@
   specific to items within the control.
 </para>
 <para>
-  Part of the the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
+  Part of the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
   stage will either be part of the overall painting of the control or part of the painting of an item the control contains.
   The stage is identified by a constant value supplied by the <computeroutput>CustomDraw</computeroutput> class. The possible
   draw stages are described in the following table:
@@ -793,7 +793,7 @@
 <tbody>
 <row>
 <entry><xref linkend="cnstCDRF_DODEFAULT "/></entry>
-<entry>The control will draw itself. It will not send additional event notifications for this paint cycle. This respons cannot be used with any other response.</entry>
+<entry>The control will draw itself. It will not send additional event notifications for this paint cycle. This response cannot be used with any other response.</entry>
 </row>
 <row>
 <entry><xref linkend="cnstCDRF_NOTIFYITEMDRAW"/></entry>
@@ -891,7 +891,7 @@
     <listitem>
     <para>
       The last part of using custom draw is coding the event handler. In ooDialog, the information from the Windows dialog
-      control is passed on the the Rexx event handler in the form of an object. Each individual dialog control type has a
+      control is passed on the Rexx event handler in the form of an object. Each individual dialog control type has a
       control specific class that is used to pass the information. Details on how to code the event handler are explained in
       the documentation of the control specific class.
     </para>
@@ -947,8 +947,8 @@
 </para>
 <para>
   There are a number of reasons for only supporting simple custom draw at this point. For one, it is probably sufficient for
-  everything an ooDialog programmer will want to do. It allows the most useful functionality of custom draw to be delievered
-  sooner and leaves the possiblity of future enhancements providing more functionality. Drawing in Windows needs to be done
+  everything an ooDialog programmer will want to do. It allows the most useful functionality of custom draw to be delivered
+  sooner and leaves the possibility of future enhancements providing more functionality. Drawing in Windows needs to be done
   quickly and efficiently. This type of programming is normally done in a low-level language. It is not clear that a complete
   implementation of custom draw would produce satisfactory results.
 </para>
@@ -960,7 +960,7 @@
   colors and fonts for any individual item or subitem.
 </para>
 <para>
-  In simple custom draw, the Rexx event handler will not recieve notifications for the postpaint, preerase, and posterase
+  In simple custom draw, the Rexx event handler will not receive notifications for the postpaint, preerase, and posterase
   drawing stages. The ooDialog programmer just needs to focus on handling the prepaint notifications for items and subitems.
 </para>
 
@@ -1212,7 +1212,7 @@
   <listitem>
   <para>
     The <emphasis role="italic">customDraw</emphasis> method must be invoked before any other use of custom draw. It
-    performs the basic initialization that allows ooDialog to inteact with the Windows custom draw service. The basic
+    performs the basic initialization that allows ooDialog to interact with the Windows custom draw service. The basic
     sequence is to invoke the <emphasis role="italic">customDraw</emphasis> method and then register the control(s) that
     will use custom draw.
   </para>
@@ -1282,7 +1282,7 @@
       <varlistentry><term>reserved [optional]</term>
       <listitem>
       <para>
-        Reserverd for future use. This argument is currently ignored.
+        Reserved for future use. This argument is currently ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1306,7 +1306,7 @@
     role="italic">ctrlName</emphasis> argument. Failure to do so will result in undefined behaviour.
   </para>
   <para>
-    The event handling method for the custom draw event will recieve a single object as its argument. The object
+    The event handling method for the custom draw event will receive a single object as its argument. The object
     conveys information to the event handler concerning the event and receives information from the event handle to pass
     back to the underlying Windows control. The exact object will depend on the type of dialog control. List-views will
     receive a <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link> object and tree-views will receive a <link
@@ -1409,7 +1409,7 @@
     black.
   </para>
   <para>
-    CLR_DEFAULT and CLR_INVALID are actually the same value. The CLR_INVAID keyword is provided for completeness.
+    CLR_DEFAULT and CLR_INVALID are actually the same value. The CLR_INVALID keyword is provided for completeness.
   </para>
   <para>
     The functionality of the <emphasis role="italic">rgb</emphasis> method is identical to the functionality of the
@@ -1469,7 +1469,7 @@
   </itemizedlist>
 </para>
 
-<section id="sctMethodsDialogContorlObject"><title>Method Table</title>
+<section id="sctMethodsDialogControlObject"><title>Method Table</title>
 <para>
   The following table lists the attribute methods and instance methods of the
   <computeroutput>DialogControl</computeroutput> class:
@@ -3559,8 +3559,8 @@ PlainBaseDialog::<xref linkend="mthComboDrop"/>
 PlainBaseDialog::<xref linkend="mthConnectCheckBox"/>
 
 <![CDATA[
->>--connctChectBox(--id--+-------------------+--)---------------><
-                         +-,--attributeName--+
+>>--connectCheckBox(--id--+-------------------+--)---------------><
+                          +-,--attributeName--+
 ]]>
 </programlisting>
 </section>
@@ -4805,7 +4805,7 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
 <section id="sctMethodsResourceUtils"><title>Method Table</title>
 <para>
   The following table list the methods of the <computeroutput>ResourceUtils</computeroutput> class for use by the
-  programer:
+  programmer:
 </para>
 <table id="tblResourceUtilsMethods" frame="all">
 <title>ResourceUtils Methods</title>
@@ -4899,7 +4899,7 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
     role="bold">is</emphasis> the global <xref linkend="dotConstDir"/>.
   </para>
   <para>
-    Each index in the the <computeroutput>Directory</computeroutput> object assigned to the <emphasis
+    Each index in the <computeroutput>Directory</computeroutput> object assigned to the <emphasis
     role="italic">constDir</emphasis> attribute is the symbolic name of a resource ID. The item at that index is the
     numeric value of the <xref linkend="defResourceId"/>. Once a symbolic ID is added to the <emphasis
     role="italic">constDir</emphasis> directory as an index, that symbolic ID can be used in place of the numeric

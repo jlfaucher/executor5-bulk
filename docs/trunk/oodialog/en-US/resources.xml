@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -54,7 +54,7 @@
 <para>
   The data in standard resources describes things familar to ooDialog programmers like, dialog boxes,
   icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator tables,
-  string-table entries, message-table entries, and other resourcess that ooDialog does not currently have
+  string-table entries, message-table entries, and other resources that ooDialog does not currently have
   support for, but may support in the future.
 </para>
 <para>
@@ -101,7 +101,7 @@
 <indexterm><primary>Image class</primary></indexterm>
 <para>
   The Image class is used to work with and manipulate images.  Currently, the image types supported include bitmaps,
-  icons, cursors (cusors are a type of icon,) and enhanced metafiles.  The enhanced metafile support is very limited at
+  icons, cursors (cursors are a type of icon), and enhanced metafiles.  The enhanced metafile support is very limited at
   this time.
 </para>
 <para>
@@ -114,8 +114,8 @@
   methods used when ooDialog was first developed.  It will allow access to more of the modern features of the Windows
   user interface than the older approach does.  The older bitmap methods were designed to work with Windows 3.1 and have
   a number of limitations.  The ooDialog programmer is strongly encouraged to migrate her code towards the .Image
-  class.  The older bitmap methods should be considered depracated, to a degree.  Unfortunately, replacement methods for
-  all of the older bitmap methods have not as yet been implmented.  So, the older methods may still be necessary for
+  class.  The older bitmap methods should be considered deprecated, to a degree.  Unfortunately, replacement methods for
+  all of the older bitmap methods have not as yet been implemented.  So, the older methods may still be necessary for
   some situations.
 </para>
 <para id="paraClsImageRelease">
@@ -671,7 +671,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         <member>OBM_ZOOMD</member> <member>OBM_RESTORED</member> <member>OBM_UPARROWD</member>
         <member>OBM_DNARROWD</member>
 
-        <member>OBM_RGARROWD</member> <member>OBM_LFARROWD</member> <member>OBM_MNARROW</member>
+        <member>OBM_RGARROWD</member> <member>OBM_LFARROWD</member> <member>OBM_DNARROW</member>
         <member>OBM_COMBO</member> <member>OBM_UPARROWI</member> <member>OBM_DNARROWI</member>
         <member>OBM_RGARROWI</member> <member>OBM_LFARROWI</member> <member>OBM_SIZE</member>
         <member>OBM_BTSIZE</member> <member>OBM_CHECK</member> <member>OBM_CHECKBOXES</member>
@@ -1051,7 +1051,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
+    Raises syntax errors when incorrect arguments are detected. This includes an invalid symbolic ID.
   </para>
   <para>
     Sets the <xref linkend="dotSystemErrorCode"/>.
@@ -1908,8 +1908,8 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           An array of non-null .Image objects.  The array must not be sparse, that is each index in the
-          array must contain an .Image ojbect.  The images can be bitmaps, icons, or cursors, but each
-          image in the array must be the same type. (Remember that curors are icons, so that the array
+          array must contain an .Image object.  The images can be bitmaps, icons, or cursors, but each
+          image in the array must be the same type. (Remember that cursors are icons, so that the array
           can contain a mixture of icons and cursors.) Bitmaps can not be mixed with icons or cursors.
         </para>
       </listitem></varlistentry>
@@ -1951,7 +1951,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       files1[ 7] = "Lamp.ico"
       files1[ 8] = "Mountain.ico"
       files1[ 9] = "Normal.ico"
-      files1[10] = "Penquin.ico"
+      files1[10] = "Penguin.ico"
       files1[11] = "Picture.ico"
       files1[12] = "Pushed.ico"
       files1[13] = "Question32.ico"
@@ -2009,7 +2009,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </programlisting>
 
 <para>
-  Adds a bitmap image, or images, to the image list.  The COLOREF cRef is used to generate the mask.
+  Adds a bitmap image, or images, to the image list.  The COLORREF cRef is used to generate the mask.
 </para>
 <para>
   Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
@@ -2060,7 +2060,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       This example comes from a dialog with a Tab control.  An image list is used to set an icon for each
       tab.  Each icon is a colored letter on a white background.  Using a white color to generate the
-      mask causes the image to be drawn tranparently.  The colored letter itself shows, and the rest of
+      mask causes the image to be drawn transparently.  The colored letter itself shows, and the rest of
       the image lets the underlying color show through.
       <programlisting>
       <![CDATA[
@@ -2129,7 +2129,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the image list is null.
     </para>
     <para>
-      Provides an interface to the <computeroutput>ImageList_Duplcate()</computeroutput> API. The
+      Provides an interface to the <computeroutput>ImageList_Duplicate()</computeroutput> API. The
       MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
@@ -2504,7 +2504,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   Used to check if an image list is valid. This method can be invoked on any image list, even after it
   has been released.  An image list will always be null after it has been released.  It is conceivable
   that, if an error occurs during an image list creation, the returned image list might be null.
-  However, this is extemely unlikely.  Therefor, for all practical purposes, an image list will only be
+  However, this is extremely unlikely.  Therefore, for all practical purposes, an image list will only be
   null after it has been released.
 </para>
 <variablelist>
@@ -2594,11 +2594,11 @@ A fancy purple: 16734709 (0x00FF59F5)
         return self~cancel:super
 
       ::method cleanUp private
-        expose coolTempImages warningImages buidingStatusImages
+        expose coolTempImages warningImages buildingStatusImages
 
         if coolTempImages \== .nil then coolTempImages~release
         if warningImages \== .nil then warningImages~release
-        if buildingStatusImages \== .nil then buildStatusImages~release
+        if buildingStatusImages \== .nil then buildingStatusImages~release
 
       ]]>
       </programlisting>
@@ -2775,7 +2775,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   The ResourceImage class contains methods and function to assist in the loading of resources into memory
   and obtaining handles to the desired resources.  ooDialog has always had, limited, access to resources
   in modules through the <xref linkend="clsResDialog"/> class.  The ResourceImage class
-  expands that access, both improving it and making the access avaiable in any ooDialog program, with or
+  expands that access, both improving it and making the access available in any ooDialog program, with or
   without ResDialog objects. The class supports the loading of, and obtaining handles to, resources from
   any binary executable file.
 </para>
@@ -2784,7 +2784,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   system resources if a module containing the resources is no longer needed.  The
   general <link linkend="paraClsImageRelease">remarks</link> concerning freeing the
   <xref linkend="clsImage"/> class are applicable here.  The release() method will ignore requests
-  to release the module when it is known absoulutely that the module should not be released, such as in
+  to release the module when it is known absolutely that the module should not be released, such as in
   the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
   programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
   class will do as requested.  As with the images that the .Image class represents, the system resources
@@ -2879,7 +2879,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       This argument must be either a string file name or a dialog object. If <emphasis role="italic">fileOrDlg</emphasis> is
       a string, it specifies the file name of an executable module containing resources that the ooDialog program
       wants to access. If it is a dialog object in the current program, then it specifies that the module containing the
-      resources is one of the modules already avalable to the program.  That is, either the
+      resources is one of the modules already available to the program.  That is, either the
       <computeroutput>oodialog.dll</computeroutput> module, or the module used for instantiating a <xref
       linkend="mthNewClsResDialog"/> <computeroutput>ResDialog</computeroutput> object.
     </para>
@@ -2889,7 +2889,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       which is always loaded in any ooDialog program.
     </para>
     <para>
-      If <emphasis role="italic">fileOrDlg</emphasis> is a string file name, then the file name alone is sufficent. The
+      If <emphasis role="italic">fileOrDlg</emphasis> is a string file name, then the file name alone is sufficient. The
       operating system will search the path for the file as it normally does when a program is executed.  If the module is
       not in the path then a full, or relative, file name is required.
     </para>
@@ -2991,7 +2991,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         </para>
         <para>
           <emphasis role="bold">Note:</emphasis> At this time symbolic IDs are not supported for this argument.  That
-            restriction may be lifted in a furture version of ooDialog.
+            restriction may be lifted in a future version of ooDialog.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>type</term>
@@ -3413,7 +3413,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   If the resource image represents the <computeroutput>oodialog.dll</computeroutput> module, or the
   module used for a ResDialog, then the resource image should never be released.  The
-  <computeroutput>release()</computeroutput> method will ignore release requests in those sitautions.
+  <computeroutput>release()</computeroutput> method will ignore release requests in those situations.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3508,7 +3508,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This example uses the <computeroutput>systemErrorCode</computeroutput> attribute to get more
-      information on a possbile error, rather than the <computeroutput>.systemErrorCode</computeroutput>.
+      information on a possible error, rather than the <computeroutput>.systemErrorCode</computeroutput>.
       <programlisting>
       <![CDATA[
       ::method initDialog

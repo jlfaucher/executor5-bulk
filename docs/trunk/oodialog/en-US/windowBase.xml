@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -401,13 +401,13 @@
   okButton = self~newPushButton(IDOK)
   cancelButton = self~newPushButton(IDCANCEL)
 
-  say "Window handeles:"
+  say "Window handles:"
   say "  ok button:    " okButton~hwnd
   say "  cancel button:" cancelButton~hwnd
 
 /* Output might be:
 
-Window handeles:
+Window handles:
   ok button:     0x00180298
   cancel button: 0x001A037A
 
@@ -447,7 +447,7 @@ Window handeles:
   <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
   <listitem>
   <para>
-    For a dialog control, the valus is always 0.
+    For a dialog control, the value is always 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -824,7 +824,7 @@ The dialog unit height of the button is: 11
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the window <xref linkend="defHandle"/> of the first child window meeting the seach criteria. If
+    Returns the window <xref linkend="defHandle"/> of the first child window meeting the search criteria. If
     the point lies within the parent window, but not within a child window meeting the search criteria, then the handle
     of the parent window is returned. If the point lies outside of the parent window, then 0 is returned.
   </para>
@@ -860,10 +860,10 @@ The dialog unit height of the button is: 11
 
   hwnd = self~childWindowFromPoint(pt)
   if hwnd = self~newListView(IDC_LV_ADDRESSES)~hwnd then do
-    say 'The point 20, 25 is contained by the Adresses list view.'
+    say 'The point 20, 25 is contained by the Addresses list view.'
   end
   else do
-  say 'The point 20, 25 is not contained by the Adresses list view.'
+  say 'The point 20, 25 is not contained by the Addresses list view.'
   end
 
 ]]>
@@ -1028,7 +1028,7 @@ Generic form:
   <para>
     The <emphasis role="italic">clientRect</emphasis> method supplies an alternative to the
  <xref linkend="mthGetClientRect"/>(hwnd) method, to allow returning a
-    <computeroutput>.Rect</computeroutput> object, which is usually more convienent, rather than a string of blank
+    <computeroutput>.Rect</computeroutput> object, which is usually more convenient, rather than a string of blank
     separated values.
   </para>
   </listitem></varlistentry>
@@ -1139,7 +1139,7 @@ Generic form:
 <para>
   The <emphasis role="italic">disable</emphasis>() method disables the window. When a window is disabled it no longer
   responds to the mouse of the keyboard.  The operating system usually draws disabled windows in a way that makes it
-  eassy for the user to see that the window is disabled.
+  easy for the user to see that the window is disabled.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1224,7 +1224,7 @@ if self~isVisible then self~disable
     <listitem>
     <para>
       Marks the window as visible, but does not force it to be redrawn. If the window is already marked as visible this
-      will have no effect. If the window is marked as invisible, then the next time the operating systme draws the
+      will have no effect. If the window is marked as invisible, then the next time the operating system draws the
       window it will become visible. Note that this is subtly different than using just NORMAL with a dialog window. If
       the dialog is minimized or maximized, it is not restored. In addition, it is not given the focus. This is exactly
       equivalent to the <xref linkend="mthShowFast"/> method.
@@ -1286,7 +1286,7 @@ if self~isVisible then self~disable
   </para>
   <para>
     Sets the <xref linkend="dotSystemErrorCode"/> back to zero. However, the operating
-    system does not set the error code for any of the APIs used by this method, so the variable will alwasy be zero
+    system does not set the error code for any of the APIs used by this method, so the variable will always be zero
     after invoking this method.
   </para>
   </listitem></varlistentry>
@@ -1322,7 +1322,7 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
 </programlisting>
 
 <para>
-  The draw method casuses the entire <xref linkend="defClientArea"/> of the window to be immemdiately repainted. It is
+  The draw method causes the entire <xref linkend="defClientArea"/> of the window to be immediately repainted. It is
   exactly the same as the <xref linkend="mthRedrawClient"/> method, except that the background is never erased.
 </para>
 <variablelist>
@@ -1611,7 +1611,7 @@ List control extended style flags:
 ::method exampleInfo private
 
   say 'The resource ID of the Ok push button is:  ' self~newPushButton(IDOK)~getID
-  say 'The identifcation number of this dialog is:' self~getID
+  say 'The identification number of this dialog is:' self~getID
 ]]>
 </programlisting>
   </para>
@@ -2150,7 +2150,7 @@ stFont2~setRect(r)
   <para>
     Part of the purpose of this method is to provide backwards compatibility to the
     <xref linkend="ovvDeprecated"/> <emphasis role="italic">getTextSize</emphasis> method. This is the
-    reason for the rather convulted arguments. In general, the Rexx programmer should always use the
+    reason for the rather convoluted arguments. In general, the Rexx programmer should always use the
  <xref linkend="mthGetTextSizePx"/> method.
   </para>
   </listitem></varlistentry>
@@ -2481,7 +2481,7 @@ else
     <listitem>
     <para>
       The coordinates to map. This argument must be either a <xref linkend="clsPoint"/> object or a <xref linkend="clsRect"/>
-      object. On a sucessful return, this object will be transformed so that it contains the mapped coordinates.
+      object. On a successful return, this object will be transformed so that it contains the mapped coordinates.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2544,7 +2544,7 @@ else
   -- The point p is in client coordinates of the NFL list view.  We are
   -- going to map that point back to the client coordinates of the list view
   -- where the row is being dropped.  Then the drag item can determine where
-  -- the insertion poing for the row should be in the target list view.
+  -- the insertion point for the row should be in the target list view.
 
   lvNFL~mapWindowPoints(dragItem~target~hwnd, p)
 
@@ -3014,7 +3014,7 @@ Generic form:
   <listitem>
   <para>
     This example calculates the position a number of <computeroutput>ControlDialogs</computeroutput> need so that they
-    overlap the the display area in a tab control and then moves them all to that position. When the dialog appears, the
+    overlap the display area in a tab control and then moves them all to that position. When the dialog appears, the
     first tab is displayed, so the control dialog for that tab is made visible while the other control dialogs remain
     hidden. Since the NOZORDER is not used, all the control dialogs are placed so that they are ahead of the tab control
     window. This ensures that the tab control is displayed properly.
@@ -3603,7 +3603,7 @@ Generic form:
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> formt.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -3692,7 +3692,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> formt.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -4196,7 +4196,7 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setWindowPos</emphasis> method is used to change the size, position, visiblity, and Z
+  The <emphasis role="italic">setWindowPos</emphasis> method is used to change the size, position, visibility, and Z
   order of this window. Windows are ordered according to their appearance on the screen. The topmost window receives
   the highest rank and is the first window in the Z order.
 </para>
@@ -5093,7 +5093,7 @@ Generic form:
   <para>
     The <emphasis role="italic">windowRect</emphasis> method supplies an alternative to the
     <xref linkend="mthGetRect"/>(hwnd) method, to allow returning a
-    <computeroutput>.Rect</computeroutput> object, which is usually more convienent, rather than a string of blank
+    <computeroutput>.Rect</computeroutput> object, which is usually more convenient, rather than a string of blank
     separated values.
   </para>
   </listitem></varlistentry>
@@ -5111,7 +5111,7 @@ Generic form:
   <para>
     This example uses <emphasis role="italic">windowRect</emphasis> to get the position of a tab control on the screen
     and then translates those coordinates to its position in the <xref linkend="defClientArea"/> of the
-    dialot.
+    dialog.
 <programlisting>
 <![CDATA[
 

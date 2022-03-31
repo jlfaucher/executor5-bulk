@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2022 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -880,7 +880,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   The <computeroutput>DlgAreaU</computeroutput> class is a subclass of the <xref linkend="clsDlgArea"/>
   class that helps with the creation of dynamically resizable dialogs. This class provides assistance in resizing and /
   or positioning controls when a dialog is resized.  When the <computeroutput>DlgArea</computeroutput> and
-  <computeroutput>DlgAreaU</computeroutput> classes are used together, the they provide a convenient way to create
+  <computeroutput>DlgAreaU</computeroutput> classes are used together, they provide a convenient way to create
   resizable dialogs.
 </para>
 <para>
@@ -1662,7 +1662,7 @@ u~resize(self, sizeinfo)
   <varlistentry id="varDefaultSizing"><term><emphasis role="bold">Default Sizing Policy:</emphasis></term>
   <listitem>
   <para>
-    The initial default sizing policy is relatively simple. The left edge of a dialong control is pinned proportionally to
+    The initial default sizing policy is relatively simple. The left edge of a dialog control is pinned proportionally to
     the left edge of the dialog. The top edge of a dialog control is pinned proportionally to the top edge of the dialog. And
     so on, the right edge of a control to the right edge of the dialog, bottom edge of a control to the bottom edge of the
     dialog.
@@ -1723,7 +1723,7 @@ u~resize(self, sizeinfo)
 <para>
   The <emphasis role="italic">pinned to window</emphasis>. The window an edge is pinned to must be either another dialog
   control window or the dialog window itself. Resource IDs are used to specify other dialog control windows. A special
-  contstant value, IDC_DEFAULT_PINTO_WINDOW, is provided to specify the dialog window. However, the dialog window is also the
+  constant value, IDC_DEFAULT_PINTO_WINDOW, is provided to specify the dialog window. However, the dialog window is also the
   default, usually the IDC_IDC_DEFAULT_PINTO_WINDOW constant does not need to be specified.
 </para>
 </listitem>
@@ -1740,25 +1740,25 @@ u~resize(self, sizeinfo)
     <varlistentry><term>Left:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Top:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Right:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Bottom:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y coordinate.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1773,25 +1773,25 @@ u~resize(self, sizeinfo)
     <varlistentry><term>Left:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Top:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Right:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Bottom:</term>
     <listitem>
     <para>
-      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y coordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>XCenter:</term>
@@ -1876,7 +1876,7 @@ u~resize(self, sizeinfo)
   </listitem></varlistentry>
 </variablelist>
 <para>
-  There are a number of sizing definitons that would result in incorrectly sized contorls. Take for instance control A that
+  There are a number of sizing definitons that would result in incorrectly sized controls. Take for instance control A that
   is pinned to an edge in control B. If control B were to come after control A in the sizing table, then when control A was
   being resized, it would be resized in relationship to the <emphasis role="italic">old</emphasis> size of control B.
   Whatever relationship was desired with the control B window would not be carried out correctly. In a case like this, the
@@ -1901,7 +1901,7 @@ u~resize(self, sizeinfo)
 <section id="sctMethodsResizingAdmin"><title>Method Table</title>
 <para>
   The following table lists the methods of the <computeroutput>ResizingAdmin</computeroutput> class for use by the
-  programer:
+  programmer:
 </para>
 <table id="tblResizingAdminMethods" frame="all">
 <title>ResizingAdmin Methods</title>
@@ -2520,7 +2520,7 @@ u~resize(self, sizeinfo)
     For any of the optional edge sizing definition arguments that are omitted, a sizing edge defintion is constructed using
     the default sizing in effect at the time. Not that the default sizing can be changed using the <xref
     linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultTop"/>, etc., methods. Changing the default sizing has no effect on
-    the sizing defintion for any control that has already been added to the sizing table. It only effects sizign added after
+    the sizing definition for any control that has already been added to the sizing table. It only affects sizing added after
     the default has been changed.
   </para>
   </listitem></varlistentry>
@@ -3004,7 +3004,7 @@ u~resize(self, sizeinfo)
   <para>
     The default sizing definition is used for any control that does not have any sizing record in the sizing table. It is
     also used for any missing edge defintions in a partially defined record. E.g., if the application explicitly sets only
-    the top edge definition for a dialog control, the default sizing defintitions for the left, right, and bottom edges will
+    the top edge definition for a dialog control, the default sizing definitions for the left, right, and bottom edges will
     be used.
   </para>
   </listitem></varlistentry>
@@ -3023,7 +3023,7 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example comes from an application that changes the default sizing to one that is better for the application. All the
-    dialog controls whose sizing is not explictly defined in the application will have their left and right sides pinned to
+    dialog controls whose sizing is not explicitly defined in the application will have their left and right sides pinned to
     the left side of dialog. The STATIONARY keyword means that the sides will remain the same pixel distance from the left
     edge as they start with. A similar thing with the top and bottom of the controls, they will be pinned to the bottom of a
     list-view. The effect of this, is that the dialog controls using the default sizing will all remain the same size. They
@@ -3167,13 +3167,13 @@ u~resize(self, sizeinfo)
     Many of the methods of the <computeroutput>ResizingAdmin</computeroutput> can only be invoked during the execution of the
     <emphasis role="italic">defineSizing</emphasis> method. All sizing definitions must be done within the <emphasis
     role="italic">defineSizing</emphasis> method. The <emphasis role="italic">defineSizing</emphasis> method executes before
-    the underlying Windows dialog is created. The implication of this is that methods that require the underlying Winodws
+    the underlying Windows dialog is created. The implication of this is that methods that require the underlying Windows
     dialog to exist can not be used in <emphasis role="italic">defineSizing</emphasis>.
   </para>
   <para>
     The <emphasis role="italic">defineSizing</emphasis> method is invoked as the last procedure in the initialization of the
     base dialog object. Error conditions during the <emphasis role="italic">defineSizing</emphasis> method cause the
-    initializtion of the base dialog object to fail.
+    initialization of the base dialog object to fail.
   </para>
   <para>
     <emphasis role="bold">Note</emphasis>, the default implementation of the <emphasis role="italic">defineSizing</emphasis>
@@ -3198,7 +3198,7 @@ u~resize(self, sizeinfo)
 
     -- The only control in this dialog is the list-view.  We define its sizing
     -- so that each edge of the list-view maintains the same distance to its
-    -- corresponding edeg of the dialog:
+    -- corresponding edge of the dialog:
     self~controlSizing(IDC_LV_MAIN,                            -
                        .array~of('STATIONARY', 'LEFT'),        -
                        .array~of('STATIONARY', 'TOP'),         -
@@ -3364,7 +3364,7 @@ u~resize(self, sizeinfo)
     <para>
       An array of the dialog <link linkend="atrDlgID">IDs</link> of each control dialog.  Each item in the array is assumed
       to be the dlgID of one of the dialog pages.  Each item in the array may be numeric or symbolic.  The items must be
-      valid dialog IDs, that is a whole number greater than 0, or a sysmbolic ID that resolves to a whole number gereater
+      valid dialog IDs, that is a whole number greater than 0, or a symbolic ID that resolves to a whole number greater
       than 0.
     </para>
     <para>
@@ -3479,7 +3479,7 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     In this example the default sizing is going to be changed to pin the top and bottom edges of controls to a list-view in
-    the application. There needs to be a sizing definintion for the list-view already in the table to do that, but the sizing
+    the application. There needs to be a sizing definition for the list-view already in the table to do that, but the sizing
     for the list-view is that of the current default sizing. The <emphasis role="italic">useDefaultSizing</emphasis> method
     provides a convenient way to add the list-view's record:
 <programlisting>
@@ -3595,7 +3595,7 @@ u~resize(self, sizeinfo)
   Whether the event handler must return a value and if the interpreter waits (or does not wait) for this return is specified
   by using the <emphasis role="italic">willReply</emphasis> argument in the <xref linkend="mthWantSizeEnded"/> method. When
   <emphasis role="italic">willReply</emphasis> is true, the event handler must return a value and the interpreter waits for
-  that return. Otherwise, the interpreter does not wait for the return and the event handerl is not <emphasis
+  that return. Otherwise, the interpreter does not wait for the return and the event handler is not <emphasis
   role="italic">required</emphasis> to return a value. Good practice would be to always return a value from an event handler.
 </para>
 
@@ -3612,7 +3612,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method does not recieve any arguments.
+    The event handling method does not receive any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>

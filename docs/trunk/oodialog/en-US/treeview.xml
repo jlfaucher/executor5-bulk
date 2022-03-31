@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -225,7 +225,7 @@
 </row>
 <row>
 <entry><xref linkend="mthItemInfoClsTreeView"/></entry>
-<entry>The <emphasis role="italic">itemInfo</emphasis> method returnes the attributes of the specified item as a stem.</entry>
+<entry>The <emphasis role="italic">itemInfo</emphasis> method returns the attributes of the specified item as a stem.</entry>
 </row>
 <row>
 <entry><xref linkend="itemstrc"/></entry>
@@ -454,7 +454,7 @@
       <varlistentry><term>usr [optional]</term>
       <listitem>
       <para>
-        Associates the specified value with the tree-view item being added. This value is commonly refered to as the
+        Associates the specified value with the tree-view item being added. This value is commonly referred to as the
         <emphasis role="italic">item data</emphasis> for the item. This can be any Rexx object that the programmer wants to
         use. The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to retrieve this value. The
         <link linkend="mthSetItemDataClsTreeView">setItemData</link> method, and several other methods, can also be used to
@@ -1036,7 +1036,7 @@ associated with the specified parent item.</para>
       <para>
         If <emphasis role="italic">abbrev</emphasis> is true and <emphasis role="italic">text</emphasis> is <emphasis
         role="italic">Coffee product</emphasis>, then the labels <emphasis role="italic">coffee product</emphasis>, <emphasis
-        role="italic">COFFEE products</emphasis>, and <emphasis role="italic">coffee prodution</emphasis> will all match.
+        role="italic">COFFEE products</emphasis>, and <emphasis role="italic">coffee production</emphasis> will all match.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1181,7 +1181,7 @@ item in the client window of a tree-view control.</para>
   self~doImageLists
   return self~cancel:super
 
-::method odImageLists
+::method doImageLists
   expose treeView
 
   types = .array~of('NORMAL', 'STATE')
@@ -1492,10 +1492,10 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The argument(s) specify the coordindates of the point to test. These coordinates can be specified using either a
+    The argument(s) specify the coordinates of the point to test. These coordinates can be specified using either a
  <xref linkend="clsPoint"/> object, or by the x and y coordinate of the point:
     <variablelist>
-      <varlistentry><term>pointToTest [requried]</term>
+      <varlistentry><term>pointToTest [required]</term>
       <listitem>
       <para>
         The x, y coordinates of the point to test. As noted either a <computeroutput>Point</computeroutput> object or
@@ -1909,7 +1909,7 @@ of <emphasis role="italic">hItem</emphasis>.
 </programlisting>
 
 <para>
-  The <emphasis role="italic">itemInfo</emphasis> method returnes the attributes of the specified item as a stem.
+  The <emphasis role="italic">itemInfo</emphasis> method returns the attributes of the specified item as a stem.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1920,7 +1920,7 @@ of <emphasis role="italic">hItem</emphasis>.
       <varlistentry><term>hItem [required]</term>
       <listitem>
       <para>
-        The handle of the tree-view item whose attributes are to be retunred.
+        The handle of the tree-view item whose attributes are to be returned.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1929,7 +1929,7 @@ of <emphasis role="italic">hItem</emphasis>.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns a stem on success, or -1 if an error ocurred. The tails, (the indexes,) of the stem will be:
+    Returns a stem on success, or -1 if an error occurred. The tails, (the indexes,) of the stem will be:
   </para>
 
   <variablelist>
@@ -1962,7 +1962,7 @@ of <emphasis role="italic">hItem</emphasis>.
     <varlistentry><term><emphasis role="bold">!STATE</emphasis></term>
     <listitem>
     <para>
-      A string consisting of 0 or more of the followin keywords:
+      A string consisting of 0 or more of the following keywords:
     </para>
     <variablelist>
       <varlistentry><term>EXPANDED</term>
@@ -2497,7 +2497,7 @@ siblings:
 </variablelist>
 </section>
 
-<section id="nextvisible" xreflabel="netxVisible"><title>NextVisible</title>
+<section id="nextvisible" xreflabel="nextVisible"><title>NextVisible</title>
 <indexterm><primary>NextVisible</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2649,7 +2649,7 @@ in all other cases.
       <varlistentry><term>hItem [required]</term>
       <listitem>
       <para>
-        The the tree-view item whose data value is being removed.
+        The tree-view item whose data value is being removed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3284,11 +3284,11 @@ was not specified or is 0.
   </para>
   <para>
     The comparison method must return a whole number and this value is passed on to the tree-view control. The method must
-    return a negative value if the first item should come before the second item, a postive number if the first item should
+    return a negative value if the first item should come before the second item, a positive number if the first item should
     come after the second item, and 0 if the items are equivalent.
   </para>
   <para>
-    The arguments passed to the comparsion method are the item data items associated with the two items beig compared. This
+    The arguments passed to the comparsion method are the item data items associated with the two items being compared. This
     is why the sort will not work correctly if tree-view items are not assigned a item data item. The comparison method
     should be coded as follows:
   </para>
@@ -3824,7 +3824,7 @@ visible:
   <listitem>
   <para>
     In <link linkend="sctSimpleCustomDraw">simple</link> custom draw, the ooDialog framework handles many of draw stage
-    notifications internaly and the event handler only gets invoked for the <xref linkend="cnstCDDS_ITEMPREPAINT"/> draw
+    notifications internally and the event handler only gets invoked for the <xref linkend="cnstCDDS_ITEMPREPAINT"/> draw
     stage.
   </para>
   </listitem></varlistentry>

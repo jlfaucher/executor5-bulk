@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1314,8 +1314,8 @@
 <indexterm><primary>ListView class</primary><secondary>addRowFromArray</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addRowFromArray(--data--+--------------+--+--------------+--)--------------><
-                            +-,-itemIndex--+  +-,-strIfNull--+
+>>--addRowFromArray(--data--+--------------+--+-------------+--)--------------><
+                            +-,-itemIndex--+  +-,-strIfNil--+
 ]]>
 </programlisting>
 
@@ -1335,7 +1335,7 @@
     <para>
       An array object. The string value of each item in the array is used as the text for the item and subitems of the
       list-view item. The item at index 1 of the array is used as the text for the list-view item. The item at index 2 is
-      used as the the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
+      used as the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
       not be sparse
     </para>
     </listitem></varlistentry>
@@ -1864,7 +1864,7 @@ when the column is clicked on:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example deletes the seleceted item.
+    This example deletes the selected item.
 <programlisting>
 <![CDATA[
 ::method deleteSelectedItem
@@ -1962,9 +1962,9 @@ when the column is clicked on:
   <para>
     However, this is not true, deleting column 0 will succeed if all the other columns are deleted first. What can not be
     deleted is the list-view item information for column 0. When a column for a subitem is deleted, the subitem information
-    is deleted. But, when column 0 is deleted the item inforation is not deleted. If, after deleting column 0, the
+    is deleted. But, when column 0 is deleted the item information is not deleted. If, after deleting column 0, the
     application switches the view from report to one of the other views, like icon, the information for each item will
-    display. In report view, nothing will show if all columns have been delteted.
+    display. In report view, nothing will show if all columns have been deleted.
   </para>
   <para>
     Only use the <emphasis role="italic">adjustFullRows</emphasis> argument to <link
@@ -2395,7 +2395,7 @@ end of the list.
     As explained in the <link linkend="sctInternalSorting">section</link> on internal sorting considerations, the ooDialog
     framework does its best to keep the full row objects assigned as the <link
     linkend="mthSetItemDataClsListView">item</link> data of each list-view item in sync with the actual item. However, when a
-    column is deleted or insterted, the programmer needs to take some action to alert the framework that the full row objects
+    column is deleted or inserted, the programmer needs to take some action to alert the framework that the full row objects
     need to be updated. The <emphasis role="italic">fixFullRowColumns</emphasis> is provided as one option the programmer can
     use to take action. The other options are to manually update the item data of each list-view item, or to use the
     <emphasis role="italic">adjustFullRows</emphasis> argument of the <xref linkend="mthDeleteColumn"/> or <xref
@@ -3118,7 +3118,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     a <computeroutput>LvFullRow</computeroutput> object.
   </para>
   <para>
-    The returned object from <emphasis role="italic">getFullRow</emphasis> can be set as the item data to allow the interanl
+    The returned object from <emphasis role="italic">getFullRow</emphasis> can be set as the item data to allow the internal
     sorting. When invoking the <emphasis role="italic">setItemData</emphasis> method with a
     <computeroutput>LvFullRow</computeroutput> object as the argument, the internal house keeping that the ooDialog framework
     needs to do for internal sorts is done automatically. However, if the returned full row object is instead used to insert
@@ -3214,7 +3214,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <programlisting>
 <![CDATA[
 
-::method initDilaog
+::method initDialog
   expose list
 
   ...
@@ -3279,7 +3279,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
       </simplelist>
     </para>
     <para>
-      The default value if this argument is omittied is NORMAl.
+      The default value if this argument is omitted is NORMAl.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3380,9 +3380,9 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <listitem>
   <para>
     When <emphasis role="italic">_item</emphasis> is a <computeroutput>LvItem</computeroutput> object, this method returns
-    true on success and false on error. On success the atributes of the <emphasis role="italic">_item</emphasis> object,
+    true on success and false on error. On success the attributes of the <emphasis role="italic">_item</emphasis> object,
     which is a <computeroutput>LvItem</computeroutput> object reflect the information requested. On error, the value of the
-    attrbiutes are undefined.
+    attributes are undefined.
   </para>
   <para>
     When <emphasis role="italic">_item</emphasis> is the index of a list-view item, then on success, this method returns a
@@ -3937,7 +3937,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
         <computeroutput>LvSubItem</computeroutput> object then the <emphasis role="italic">subitemIndex</emphasis> is
         ignored. If <emphasis role="italic">_item</emphasis> is not a <computeroutput>LvSubItem</computeroutput> object then
         <emphasis role="italic">subitemIndex</emphasis> is required and specifies the one-based index of the subitem to be
-        qureied.
+        queried.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4112,7 +4112,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     height is set to 4 times the hit of the list-view subitem. When the combo box is first shown, it does not show the
     drop-down list and its height is very close to the height of the list-view subitem.  However, its height is restricted to
     the height of the subitem, the drop-down list will not show when the user clicks on the down arrow icon. Setting its
-    height larger than the subitme allows the drop-down list to open and show 3 items:
+    height larger than the subitem allows the drop-down list to open and show 3 items:
 <programlisting>
 <![CDATA[
 
@@ -4171,7 +4171,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 </programlisting>
 
 <para>
-  Retrievs the current view of this list-view.
+  Retrieves the current view of this list-view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4453,7 +4453,7 @@ Generic Form:
               The point is within the group header.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term>GroupStatIcon</term>
+            <varlistentry><term>GroupStateIcon</term>
             <listitem>
             <para>
               The point is within the state icon of the group.
@@ -4511,7 +4511,7 @@ Generic Form:
     what the operating system returns. Experimentation shows that the values returned can vary depending on the version of
     Windows a program is executing on. Some values also differ depending on the style(s) of the list-view. For instance, the
     presence or absence of the <link linkend="mthAddExtendedStyle">extended</link> FULLROWSELECT style changes some of the
-    values when hit testing the exact same spot. In addition, Micsoft documents some values, such as ABOVE, that are never
+    values when hit testing the exact same spot. In addition, Microsoft documents some values, such as ABOVE, that are never
     seen during testing.
   </para>
   <para>
@@ -4597,7 +4597,7 @@ Generic Form:
 <para>
   The subitem number. This argument is used to insert the text for a subitem of the item. In report view,
   the label (text) for the item is placed in column 0. The text for subitem 1 is placed in column 1, the
-  text for subitem 2 is placed in column 2, and so on. If you omit this argument, or use 0, the the
+  text for subitem 2 is placed in column 2, and so on. If you omit this argument, or use 0, the
   <emphasis role="italic">text</emphasis> argument is assigned as the label (text) of the item. If you
   use this argument and it is greater than 0, then the <emphasis role="italic">text</emphasis> argument
   is assigned as the text of that subitem. <emphasis role="bold">Note</emphasis> that when this argument
@@ -7153,7 +7153,7 @@ select, and the full row select extended list-view styles to a
 seconds. If the user pauses his mouse over a row in the list-view for .4 of a
 second the row is automatically selected.
 <programlisting> <![CDATA[
-::method initDilaog
+::method initDialog
 
   ...
   list = self~newListView(IDC_LIST)
@@ -7758,7 +7758,7 @@ and on the system colors used for a selection.
         <varlistentry><term>REPORT</term>
         <listitem>
         <para>
-          Set thhe list-view to report view. Each item appears on its own line, with information arranged in columns.
+          Set the list-view to report view. Each item appears on its own line, with information arranged in columns.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -7935,7 +7935,7 @@ grid position.</para>
             in the list-view. Recall that the first subitem is in column 1, the second subitem is in column 2, and so
             on. The value of the COLUMN index specifies which text the sort is performed on. A value of 0 specifies that
             the sort is performed on the item text. Non-zero values specify that the sort is performed on the text of
-            the subitem specified. I.e., a value of 2 specifies the the sort is performed on the text of subitem 2. If
+            the subitem specified. I.e., a value of 2 specifies the sort is performed on the text of subitem 2. If
             omitted, the default value is 0.
           </para>
           </listitem></varlistentry>
@@ -8024,7 +8024,7 @@ grid position.</para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Intenal Sort</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Internal Sort</emphasis></term>
   <listitem>
   <para>
     When an internal sort is used, the work of the sort is done in the native API implementation code. In essence, within
@@ -8539,7 +8539,7 @@ that allows the user to remove the check mark from all the check boxes:
   notification, the event handler will also be invoked when the draw stage is subitem prepaint. For simple custom draw, the
   ooDialog framework handles the other draw stages internally. It makes the appropriate response to the dialog control so
   that the dialog control will send the item prepaint notifications. It is then up to the programmer to request that the
-  control send the subitem prepaint notifcations.
+  control send the subitem prepaint notifications.
 </para>
 <para>
   The single argument passed to the event handler is a <computeroutput>LvCustomDrawSimple</computeroutput> object. The event
@@ -8913,9 +8913,9 @@ that allows the user to remove the check mark from all the check boxes:
   <listitem>
   <para>
     In <link linkend="sctSimpleCustomDraw">simple</link> custom draw, the ooDialog framework handles many of draw stage
-    notifications internaly and the event handler only gets invoked for 2 of the draw stages. Because of this, the draw stage
+    notifications internally and the event handler only gets invoked for 2 of the draw stages. Because of this, the draw stage
     value will always be either <xref linkend="cnstCDDS_ITEMPREPAINT"/> or <xref linkend="cnstCDDS_SUBITEMPREPAINT"/>. In
-    addtion, the value will only be CDDS_SUBITEMPREPAINT if the programmer has requested subitem notifications by setting
+    addition, the value will only be CDDS_SUBITEMPREPAINT if the programmer has requested subitem notifications by setting
     the <xref linkend="atrReplyLV"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
     notification.
   </para>
@@ -9034,7 +9034,7 @@ that allows the user to remove the check mark from all the check boxes:
       cdInfo~clrText   = self~RGB( 17,   5, 250)
       cdInfo~clrTextBk = self~RGB(115, 245, 186)
       cdInfo~font      = checkedFont
-      cdInfo~reply     = .DlgUtil~or(self~CDRF_NEWFONT, self~CDRF_NOTFYSUBITEMDRAW)
+      cdInfo~reply     = .DlgUtil~or(self~CDRF_NEWFONT, self~CDRF_NOTIFYSUBITEMDRAW)
   end
 
   ...
@@ -9285,7 +9285,7 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">reply set:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">reply</emphasis> attribute should be set to onem or a combination, of the CDRF_* constant
+    The <emphasis role="italic">reply</emphasis> attribute should be set to one or a combination, of the CDRF_* constant
     values.
   </para>
   </listitem></varlistentry>
@@ -9383,7 +9383,7 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example is a snippet of code from a program where the second subitem in a list-view is a number. If the nubmer is
+    This example is a snippet of code from a program where the second subitem in a list-view is a number. If the number is
     negative, it is drawn in red text and if it is not negative, is is drawn in black text:
 <programlisting>
 <![CDATA[
@@ -9458,19 +9458,19 @@ that allows the user to remove the check mark from all the check boxes:
   list. This information can change over time as the application is used. For instance, the text of an item could be changed.
   When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
   full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
-  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
+  this is not always possible. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
   object in synch with the list-view item.
 </para>
 <para>
   When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
   or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
-  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
+  items that corresponds to the column. Every item in a list-view always has the same number of subitems. If all items in the
   list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
   row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
   the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
   in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
   list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
-  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
+  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to facilitate internal
   sorting.
 </para>
 <para>
@@ -9636,7 +9636,7 @@ that allows the user to remove the check mark from all the check boxes:
     <para>
       An array object. The string value of each item in the array is used as the text for the item and subitems of the
       list-view item. The item at index 1 of the array is used as the text for the list-view item. The item at index 2 is
-      used as the the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
+      used as the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
       not be sparse
     </para>
     </listitem></varlistentry>
@@ -9790,7 +9790,7 @@ that allows the user to remove the check mark from all the check boxes:
 ]]>
 </programlisting>
 
-    These statements will raise a syntax codition:
+    These statements will raise a syntax condition:
 
 <programlisting>
 <![CDATA[
@@ -10424,7 +10424,7 @@ Item text:              ca@sharp.org
 </row>
 <row>
 <entry><xref linkend="atrMaskClsLvi"/></entry>
-<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvItem</computeroutput> object are valid to set or recieve information of the list-view item.</entry>
+<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvItem</computeroutput> object are valid to set or receive information of the list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrOverlayImageIndexClsLvi"/></entry>
@@ -10448,11 +10448,11 @@ Item text:              ca@sharp.org
 <indexterm><primary>LvItem class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--+-------+--+-------------+--+------------+--+-------+---->
-          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-itemData-+  +-,-msk-+
+>>--new(--+--------+--+-------+--+--------------+--+------------+--+-------+---->
+          +--indx--+  +-,-txt-+  +-,-imageIndex-+  +-,-itemData-+  +-,-msk-+
 
->---+------------+-+---------------+-+----------+-+-----------+-+--------+--)--><
-    +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
+>---+-------------+-+----------------+-+----------+-+-----------+-+--------+--)--><
+    +-,-itemState-+ +-,-itemStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
 ]]>
 </programlisting>
 
@@ -10829,7 +10829,7 @@ Item text:              ca@sharp.org
     role="italic">indx</emphasis> and <emphasis role="italic">msk</emphasis> arguments would be used in the <emphasis
     role="italic">new</emphasis> method. The <emphasis role="italic">indx</emphasis> argument would be set to the index of
     the item and the <emphasis role="italic">msk</emphasis> argument would be set for all the information that was wanted to
-    be retreived.
+    be retrieved.
   </para>
   <para>
     On the other hand, if the <computeroutput>LvItem</computeroutput> is going to be used to set the information for a
@@ -10864,7 +10864,7 @@ Item text:              ca@sharp.org
 ]]>
 </programlisting>
     This example instantiates a <computeroutput>LvItem</computeroutput> object that will be used to query the information
-    maintained by the list-view for the item at index 21. All information for the item is desired, so the the masks are set
+    maintained by the list-view for the item at index 21. All information for the item is desired, so the masks are set
     to receive all information. Note that the value of the list-view <link
     linkend="sctListViewConstantMethods">constants</link> IMAGENONE and GROUPIDNONE are both -2:
 <programlisting>
@@ -10946,7 +10946,7 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">columnFormats get:</emphasis></term>
   <listitem>
   <para>
-    Returns an array of column formats. Eeach index of the array specifies the format of the corresponding column in Tile
+    Returns an array of column formats. Each index of the array specifies the format of the corresponding column in Tile
     view. The formats are specified by one of the LVCFVT_* <link
     linkend="sctListViewConstantMethods">constants</link> of the <computeroutput>ListView</computeroutput> class.
   </para>
@@ -10972,7 +10972,7 @@ Item text:              Line 22
     role="italic">columns</emphasis> array. The <emphasis role="italic">columnFormats</emphasis> attribute does not have to
     be set if the <emphasis role="italic">columns</emphasis> attribute is set. In this case the default format for each
     column is used. But, if the <emphasis role="italic">columnFormats</emphasis> attribute is set, the <emphasis
-    role="italic">colums</emphasis> attribute must also be set and the two arrays must be the same size.
+    role="italic">columns</emphasis> attribute must also be set and the two arrays must be the same size.
   </para>
   <para>
     For each index in the <emphasis role="italic">columns</emphasis> array, the same index in the <emphasis
@@ -11027,7 +11027,7 @@ Item text:              Line 22
   <para>
     To set which columns are displayed in Tile view, assign an array to this attribute. The number of items in the array
     specifies how many columns are displayed. The maximum is 20. The array can not be sparse. Each index of the array should
-    contain the subitem index to be displayed. The subitems are displayed in the same oder as their index appears in the
+    contain the subitem index to be displayed. The subitems are displayed in the same order as their index appears in the
     array.
   </para>
   </listitem></varlistentry>
@@ -11044,7 +11044,7 @@ Item text:              Line 22
     <emphasis role="italic">columns</emphasis> array. The <emphasis role="italic">columnFormats</emphasis> attribute does not
     have to be set if the <emphasis role="italic">columns</emphasis> attribute is set. In this case the default format for
     each column is used. But, if the <emphasis role="italic">columnFormats</emphasis> attribute is set, the <emphasis
-    role="italic">colums</emphasis> attribute must also be set and the two arrays must be the same size. For each index in
+    role="italic">columns</emphasis> attribute must also be set and the two arrays must be the same size. For each index in
     the <emphasis role="italic">columns</emphasis> array, the same index in the <emphasis
     role="italic">columnFormats</emphasis> array specifies the format for that column.
   </para>
@@ -11360,7 +11360,7 @@ Item text:              Line 22
   <para>
     The state string contains a list of blank separated keywords. When assigning the string to this attribute case is
     insignificant. When getting the value of this attribute, the returned keywords will be all upper-cased. The possible
-    keywores are:
+    keywords are:
   </para>
   <para>
     <simplelist type='vert' columns='3'>
@@ -11559,7 +11559,7 @@ Item text:              Line 22
 
 <para>
   The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the
-  <computeroutput>LvItem</computeroutput> object are valid to set or recieve the information of the list-view item.
+  <computeroutput>LvItem</computeroutput> object are valid to set or receive the information of the list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
@@ -11572,7 +11572,7 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
   <listitem>
   <para>
-    To specify which attributes in this item are to be used to set or recieve information, assign a list of blank separated
+    To specify which attributes in this item are to be used to set or receive information, assign a list of blank separated
     keywords to this attribute. The possible keywords are listed in the remarks section.
   </para>
   </listitem></varlistentry>
@@ -11689,7 +11689,7 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example sets the text label, the icon index, the item data, and the indext for the item at index 11, without
+    This example sets the text label, the icon index, the item data, and the indent for the item at index 11, without
     changing any other information of the item. In this example, the mask attribute is set explicitly to make a point. But
     it is not actually needed:
 <programlisting>
@@ -11967,7 +11967,7 @@ Item text:              Line 22
 </row>
 <row>
 <entry><xref linkend="atrImageIndexClsLvSi"/></entry>
-<entry>Reflects the index in the smalll icon <link linkend="mthSetImageListClsListView">image</link> list for this subitem.</entry>
+<entry>Reflects the index in the small icon <link linkend="mthSetImageListClsListView">image</link> list for this subitem.</entry>
 </row>
 <row>
 <entry><xref linkend="atrItemClsLvSi"/></entry>
@@ -11975,7 +11975,7 @@ Item text:              Line 22
 </row>
 <row>
 <entry><xref linkend="atrMaskClsLvSi"/></entry>
-<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvSubItem</computeroutput> object are valid to set or recieve the information for a list-view item's subitem.</entry>
+<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvSubItem</computeroutput> object are valid to set or receive the information for a list-view item's subitem.</entry>
 </row>
 <row>
 <entry><xref linkend="atrSubItemClsLvSi"/></entry>
@@ -12026,7 +12026,7 @@ Item text:              Line 22
     <varlistentry><term>subItem [required]</term>
     <listitem>
     <para>
-      The one-based index of this subitem. The argument can not be less than 1. The <emphasis role="italic">suItem</emphasis>
+      The one-based index of this subitem. The argument can not be less than 1. The <emphasis role="italic">subItem</emphasis>
       argument sets the <xref linkend="atrSubItemClsLvSi"/> attribute of this subitem.
     </para>
     <para>
@@ -12144,7 +12144,7 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns a newly instantiated and initalized <computeroutput>LvSubItem</computeroutput> object.
+    Returns a newly instantiated and initialized <computeroutput>LvSubItem</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -12313,7 +12313,7 @@ Item text:              Line 22
 
 <para>
   The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the
-  <computeroutput>LvSubItem</computeroutput> object are valid to set or recieve the information for a list-view item's
+  <computeroutput>LvSubItem</computeroutput> object are valid to set or receive the information for a list-view item's
   subitem.
 </para>
 <variablelist>
@@ -12327,7 +12327,7 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
   <listitem>
   <para>
-    To specify which attributes in this item are to be used to set or recieve information, assign a list of blank separated
+    To specify which attributes in this item are to be used to set or receive information, assign a list of blank separated
     keywords to this attribute. The possible keywords are listed in the remarks section.
   </para>
   </listitem></varlistentry>
@@ -12522,7 +12522,7 @@ Item text:              Line 22
 
 ::method addQualifier private
     expose list
-    use strict arg itemIndex, subitemIdnex, additionalText
+    use strict arg itemIndex, subitemIndex, additionalText
 
     lvSubItem = .LvSubItem~new(itemIndex, subitemIndex, , , 'TEXT')
     if list~getSubItem(lvSubItem) then do
