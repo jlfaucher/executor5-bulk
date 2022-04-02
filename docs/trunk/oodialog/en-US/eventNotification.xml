@@ -768,12 +768,12 @@
   <listitem>
   <para>
     All arguments, except for <emphasis role="italic">mth</emphasis>, <emphasis role="italic">rxMsg</emphasis>, and <emphasis
-    role="italic">wlRply</emphasis>, represent whole numbers in their hexidecimal format. For convenience, the programmer can
+    role="italic">wlRply</emphasis>, represent whole numbers in their hexadecimal format. For convenience, the programmer can
     either use the numeric value for these argument, or the numbers can be expressed in conventional <xref
     linkend="defConventionalHex"/> format. It is important to realize that since bitwise <emphasis
     role="italic">and</emphasis> is used with <emphasis role="italic">winMsg</emphasis>, <emphasis
     role="italic">wP</emphasis>, and <emphasis role="italic">lP</emphasis> and their respective filters, it is the
-    hexidecimal format of the whole numbers that is relevant.
+    hexadecimal format of the whole numbers that is relevant.
   </para>
   <para>
     The arguments are:
@@ -5821,7 +5821,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   dialog has the focus.
 </para>
 <para>
-  The interpreter replies immediately to the operating system when the key is pressed. Tthe event handler is then invoked
+  The interpreter replies immediately to the operating system when the key is pressed. The event handler is then invoked
   concurrently as a separate activity and the interpreter does not wait for the return. The value returned from the event
   handler is ignored and the programmer need not return a value from the handler. However, good practice would be to always
   return a value from an event handler.
@@ -12188,9 +12188,9 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example comes from a program that sometimes allows hexidecimal numbers to be used and at other times does
-    not. When the user changes the tab to the one with index 3, and if hexidecimal numbers are currently allowed, the
-    hexidecimal entry field is enabled, otherwise it is disabled:
+    The following example comes from a program that sometimes allows hexadecimal numbers to be used and at other times does
+    not. When the user changes the tab to the one with index 3, and if hexadecimal numbers are currently allowed, the
+    hexadecimal entry field is enabled, otherwise it is disabled:
 <programlisting>
 <![CDATA[
 ::method onSelChange unguarded
@@ -12198,7 +12198,7 @@ onRelease() id: 1003 reBar: a ReBar
 
   edit = self~newEdit(IDC_EDIT_HEX)
 
-  if tabControl~selectedIndex == 3 & self~allowHexidecimal then edit~enable
+  if tabControl~selectedIndex == 3 & self~allowHexadecimal then edit~enable
   else edit~disable
 
   return 0

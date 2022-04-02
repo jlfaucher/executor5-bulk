@@ -263,7 +263,7 @@
 <entry>Adds symbols, symbolic IDs, to the <computeroutput>.constDir</computeroutput>.</entry>
 </row>
 <row>
-<entry><xref linkend="mthAutoDetectionClsApplicationManger"/></entry>
+<entry><xref linkend="mthAutoDetectionClsApplicationManager"/></entry>
 <entry>Sets the application global default for <link linkend="paraAutomaticDataDetection">autoDetection</link> to off, or on.</entry>
 </row>
 <row>
@@ -318,7 +318,7 @@
   single instance for the <computeroutput>ApplicationManager</computeroutput> is instantiated by the ooDialog framework
   for each application and placed in the <computeroutput>.local</computeroutput> environment as the
   <xref linkend="dotApplication"/>. All methods of the
-  <computeroutput>ApplicationManger</computeroutput> are invoked by the programmer though the
+  <computeroutput>ApplicationManager</computeroutput> are invoked by the programmer though the
   <computeroutput>.application</computeroutput> object.
 </para>
 </section>  <!-- End ApplicationManager::new() -->
@@ -542,7 +542,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </variablelist>
 </section>  <!-- End ApplicationManager::addToConstDir() -->
 
-<section id="mthAutoDetectionClsApplicationManger" xreflabel="autoDetection"><title>autoDetection</title>
+<section id="mthAutoDetectionClsApplicationManager" xreflabel="autoDetection"><title>autoDetection</title>
 <indexterm><primary>autoDetection</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>autoDetection</secondary></indexterm>
 <programlisting>
@@ -1002,7 +1002,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
             <computeroutput>ApplicationManager</computeroutput> do. The following indexes of the
             <computeroutput>directory</computeroutput> object are recognized. Indexes not in the list are ignored. For
             each index, the corresponding documentation for the method of the
-            <computeroutput>ApplicationManger</computeroutput> may contain additional insight. E.g. restrictions on the
+            <computeroutput>ApplicationManager</computeroutput> may contain additional insight. E.g. restrictions on the
             value for the item at the index are identical to restrictions listed in the method documentation.
             <variablelist>
               <varlistentry><term><emphasis role="bold">CONSTDIRUSAGE:</emphasis></term>
@@ -1027,7 +1027,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
               <para>
                 Sets the default for <xref linkend="mthInitAutoDetection"/> data detection. This is
                 equivalent to the <emphasis role="italic">on</emphasis> argument in the
- <xref linkend="mthAutoDetectionClsApplicationManger"/> method.
+ <xref linkend="mthAutoDetectionClsApplicationManager"/> method.
               </para> </listitem></varlistentry>
               <varlistentry><term><emphasis role="bold">FONTNAME</emphasis></term>
               <listitem>
@@ -4012,7 +4012,7 @@ returns its handle.</para>
              Do not enforce the time-out period as long as the receiving thread is processing messages.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>ERRONONEXIT</term>
+          <varlistentry><term>ERRORONEXIT</term>
           <listitem>
           <para>
             <emphasis role="bold">Vista or later only.</emphasis> The broadcast function should return 0 if the
@@ -6076,7 +6076,7 @@ s2: a Size (2, 3)
 </para>
 <para>
   System metric values and configuration settings can not be changed. The Rexx programmer can not assign a value to any
-  attribute of the <computeroutput>SM</computeroutput> class.  A syntax condition is raised if the programmer attemps to
+  attribute of the <computeroutput>SM</computeroutput> class.  A syntax condition is raised if the programmer attempts to
   change the value of an attribute.
 </para>
 <para>

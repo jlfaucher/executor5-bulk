@@ -289,7 +289,7 @@
     of the error code. For example, one of the shell object methods could return 2147500068. Converted to hexadecimal this is
     0x80004024. A search for 0x80004024 quickly leads to 0x80004024: The specified activation could not occur in the client
     context as specified. In addition, the <xref linkend="mthErrMsg"/> method of the <computeroutput>DlgUtil</computeroutput>
-    class will return a formatted error message string for any HRESULT code in either decimal or hexidecimal. The <emphasis
+    class will return a formatted error message string for any HRESULT code in either decimal or hexadecimal. The <emphasis
     role="italic">errMsg</emphasis> message works for system error codes also. For example:
 
 <programlisting>
@@ -1499,7 +1499,7 @@ leaving() thread ID 3580
   bff~owner = self
   bff~root = 'CSIDL_PRINTERS'
 
-  bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
+  bff~options = 'BROWSEFORPRINTER NONEWFOLDERBUTTON'
 ]]>
 </programlisting>
   </para>
@@ -1546,7 +1546,7 @@ leaving() thread ID 3580
     disable the owner dialog until the user has closed the browse dialog. This is normally the behaviour wanted.
   </para>
   <para>
-    Note that setting the <emphasis role="italic">owner</emphasis> attribute before the underlying ownere dialog has been
+    Note that setting the <emphasis role="italic">owner</emphasis> attribute before the underlying owner dialog has been
     created will have not effect.
   </para>
   </listitem></varlistentry>
@@ -1642,7 +1642,7 @@ leaving() thread ID 3580
   bff~owner = self
   bff~root = 'CSIDL_PRINTERS'
 
-  bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
+  bff~options = 'BROWSEFORPRINTER NONEWFOLDERBUTTON'
 ]]>
 </programlisting>
   </para>
@@ -9201,7 +9201,7 @@ ofd~releaseCom
 <para>
   A SaveFileDialog object is a concrete subclass of the <xref linkend="clsCommonItemDialog"/>. The programmer does not
   instantiate a new <computeroutput>CommonItemDialog</computeroutput> object, but rather instantiates a new
-  <computeroutput>SaveFileDiaog</computeroutput> or <xref linkend="clsOpenFileDialog"/> object. The
+  <computeroutput>SaveFileDialog</computeroutput> or <xref linkend="clsOpenFileDialog"/> object. The
   <computeroutput>SaveFileDialog</computeroutput> is only available on Windows Vista or later operating systems.
 </para>
 

@@ -900,7 +900,7 @@
     list~add(, ,"30")
 
     -- 0 is the index in the image list for the icon for item 1
-    list~~add("Sue", 0)~~add(,"Thaxton")~~add(, ,"29")
+    list~~add("Sue", 0)~~add(,"Thaxtor")~~add(, ,"29")
   end
 
 ]]>
@@ -3365,7 +3365,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
         When <emphasis role="italic">_item</emphasis> is a <computeroutput>LvItem</computeroutput> object then it can be
         used to only retrieve some of the list-view item's information. The value of the <xref linkend="atrMaskClsLvi"/>
         attribute determines which information is retrieved. The attributes of the <computeroutput>LvItem</computeroutput>
-        specified by the mask are set to the current value of that information in the list-view's item. Attrbibutes not
+        specified by the mask are set to the current value of that information in the list-view's item. Attributes not
         specified by the mask are ignored.
       </para>
       <para>
@@ -8403,7 +8403,7 @@ dynamically remove some patients from the statement list.
   expose billingList
 
   text = self~newEdit(IDC_EDIT_MINAMOUNT)~getText
-  minimun = self~decimalNumber(text)
+  minimum = self~decimalNumber(text)
 
   if minimum > 0 then do i = 0 to billingList~items
     if billingList~isChecked(i) then do
@@ -11106,7 +11106,7 @@ Item text:              Line 22
     failures is to new set the attribute to 0.
   </para>
   <para>
-    ooDialog does not currently support list-view groups, but it is likely that a future enhancement will add this suppor.
+    ooDialog does not currently support list-view groups, but it is likely that a future enhancement will add this support.
     The <emphasis role="italic">groupID</emphasis> attribute is part of the first steps towards implementing the
     support for list-view groups.
   </para>
@@ -12163,7 +12163,7 @@ Item text:              Line 22
   <listitem>
   <para>
     This example shows <computeroutput>LvSubItem</computeroutput> objects being instantiated and used in a <xref
-    linkend="clsLvFullRow"/> object, which in turn is used to add a new item to the list-view. Note that the list-viw has the
+    linkend="clsLvFullRow"/> object, which in turn is used to add a new item to the list-view. Note that the list-view has the
     extended SUBITEMIMAGES style and the use of the <emphasis role="italic">imageIndex</emphasis> argument in the <emphasis
     role="italic">new</emphasis> method. Each column in the list-view will have its own icon:
 <programlisting>
