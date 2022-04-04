@@ -53,10 +53,14 @@ else
 ::class SysSleep.testgroup subclass ooTestCase public
 
 ::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
--- on Windows we allow SysSleep to be up to 12 ms early or 30 ms late
--- on Unix-like systems ist must not be early and can be 2 ms late at most
-::constant tooEarly (self~isWindows~?(0.012, 0))
-::constant tooLate (self~isWindows~?(0.030, 0.002))
+-- on Windows we allow SysSleep to be up to 21 ms early or 30 ms late
+-- on Unix-like systems it must never(*) be early, but we allow it being up
+-- to 26 ms late (we're seeing such long delays e. g. in our MacOS or NetBSD
+-- VM agents)
+-- (*) "nanosleep() function causes the calling thread to sleep for the amount
+-- of time specified [but] the actual time slept may be longer"
+::constant tooEarly (self~isWindows~?(0.021, 0))
+::constant tooLate (self~isWindows~?(0.030, 0.026))
 
 ::method test_sleep_no_arg
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required

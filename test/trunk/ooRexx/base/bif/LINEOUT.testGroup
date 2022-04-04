@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,88 +39,202 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
+parse source . . s
 
-  group = .TestGroup~new(s)
-  group~add(.LineOut.testGroup)
+group = .TestGroup~new(s)
+group~add(.Lineout.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
-::requires 'FileUtils.cls'
 
-/* class: LineOut.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+::class LineOut.testGroup public subclass ooTestCase
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "LineOut.testGroup" public subclass ooTestCase
+::constant file (.TemporaryTestFile~new(self, "lineout"))
 
-::method test_simple
-
-  -- Set things up, be sure we are opened okay
-  f = 'lineOutTest.delMe'
-  ret = stream(f, 'C', "OPEN")
-  self~assertSame("READY:", ret)
-
-  -- Should return 0 on success
-  ret = lineout(f, "line 1")
-  self~assertSame(0, ret)
-
-  -- Close and delete the file
-  ret = stream(f, 'C', "CLOSE")
-  self~assertSame("READY:", ret)
-
-  j = deleteFile(f)
-
-::method test_lineoutCloses
-
-  f = 'lineOutClosesTest.delMe'
-  ret = stream(f, 'C', "OPEN")
-  self~assertSame("READY:", ret)
-
-  ret = lineout(f, "line 1")
-  self~assertSame(0, ret)
-
-  -- Close the file using lineout()
-  ret = lineout(f)
-  self~assertSame(0, ret)
-
-  -- Now, if the file was not closed, we won't be able to delete it using
-  -- SysFileDelete().
-  ret = SysFileDelete(f)
-  self~assertSame(0, ret)
-
-::method test_lineout_double_close
-
-  f = "lineout.delMe"
-  ret = lineout(f, 'line 1')
-  self~assertSame(0, ret)
-
-  -- Close the file, return should be 0 and query state should be unknown
-  ret = lineout(f)
-  state = stream(f, "STATE")
-
-  self~assertSame(0, ret)
-  self~assertSame("UNKNOWN", state)
-
-  -- Close it again and expect the same results.  This is a regression test, at
-  -- one time there was a bug where a second close was corrupting the heap.
-  ret = lineout(f)
-  state = stream(f, "STATE")
-
-  self~assertSame(0, ret)
-  self~assertSame("UNKNOWN", state)
-
-  ret = deleteFile(f)
-
--- End of class: LineOut.testGroup
+::method assertFile
+  use strict arg array
+  s = .Stream~new(self~file)~~open("read shared")
+  data = s~arrayIn
+  s~close -- close before asserting
+  self~assertSame(array~makeArray~toString(, ", "), data~toString(, ", "))
 
 
-::options novalue error
+::method test_four_args_too_many
+  self~expectSyntax(40.4) -- Too many arguments in invocation of LINEOUT
+  call lineout 1, 2, 3, 4
+
+::method test_line_transient
+  self~expectSyntax(93.958) -- Positioning of transient streams is not valid
+  call lineout , , 2
+
+::method test_line_nonnumeric
+  self~expectSyntax(40.12) -- LINEOUT argument 3 must be a whole number
+  call lineout self~file, , "line"
+
+::method test_line_negative
+  self~expectSyntax(93.907) -- Method argument 1 must be a positive whole number
+  call lineout self~file, , -1
+
+::method test_line_zero
+  self~expectSyntax(93.907) -- Method argument 1 must be a positive whole number
+  call lineout self~file, , 0
+
+::method test_stdout
+  self~file~delete
+  .Output~destination(.Stream~new(self~file))
+  call lineout , ""
+  call lineout , "line 2"
+  call lineout "stdout", "line 3"
+  call lineout "STDOUT:"               -- close before checking
+  call lineout                         -- another close
+  self~assertFile(("", "line 2", "line 3"))
+
+::method test_stderr
+  self~file~delete
+  .Error~destination(.Stream~new(self~file))
+  call lineout "stderr:", "line"
+  call lineout "STDERR", ""
+  call lineout "Stderr:"               --@@ gives unexpected issues, maybe a bug
+  self~assertFile(("line", ""))
+
+::method test_queue
+  .stdque~empty
+  call lineout "queue:", "line"
+  call lineout "QUEUE:", ""
+  call lineout "QUEUE:"                -- "close" does nothing
+  self~assertSame(2, .stdque~queued)
+  self~assertSame("line", .stdque~linein)
+  self~assertSame("", .stdque~linein)
+
+-- writing to an invalid file raises NOTREADY
+::method test_invalid_file
+  signal off notready
+  self~assertSame(1, lineout("/"))
+  signal on notready
+  call lineout "/", "line"
+  self~assertFail("should raise NOTREADY")
+  notready:
+
+-- cannot write to a file opened for read-only
+::method test_readonly
+  -- our file must exist in order to successfully open it r/o
+  self~file~create("exists")
+  self~assertSame("READY:", stream(self~file, "c", "open read"))
+  signal on notready
+  call lineout self~file, "line"
+  self~assertFail("should raise NOTREADY")
+  notready:
+
+::method test_plain
+  self~file~delete
+  -- set current directory for relative test
+  cd = directory()
+  call directory self~file~parent
+  name = self~file~name
+  self~assertSame(0, lineout(name, ""))
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile(.Array~of(""))
+
+  -- CHAROUT, then LINEOUT
+  self~assertSame(0, charout(name, "l"))
+  self~assertSame(0, lineout(name, "ine"))
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile(("", "line"))
+  call directory cd
+
+-- LINEOUT appends to existing file
+::method test_append
+  self~file~create("exists" || .endofline)
+  self~assertSame(0, lineout(self~file, "appends"))
+  self~assertSame(0, lineout(self~file)) -- close before checking
+  self~assertFile(("exists", "appends"))
+
+  -- appends again
+  self~assertSame(0, lineout(self~file, "appends again"))
+  call stream self~file, "c", "flush"    -- flush before checking
+  self~assertFile(("exists", "appends", "appends again"))
+
+-- test consecutive relative/absolute LINEOUT
+::method test_relative_absolute
+  self~file~delete
+  -- set current directory for relative test
+  cd = directory()
+  call directory self~file~parent
+  call lineout self~file~name, ""
+  call lineout self~file~absolutePath, "line 2"
+  call lineout self~file~name, "line3"
+  call lineout self~file~absolutePath  -- close before checking
+  self~assertFile(("", "line 2", "line3"))
+  call directory cd
+
+-- external routine calls inherit the stream table
+::method test_context
+-- not a good test
+-- would work in any case as LINEOUT always appends
+  self~file~delete
+  name = self~file~path
+  self~assertSame(0, lineout(name, "program"))
+  self~assertSame(0, label(name))
+  self~assertSame(0, procedure(name))
+  self~assertSame(0, routine(name))
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile(("program", "label", "procedure", "routine"))
+  return
+
+  label:
+    return lineout(arg(1), "label")
+
+  procedure: procedure
+    return lineout(arg(1), "procedure")
+
+  ::routine routine
+    return lineout(arg(1), "routine")
+
+-- third argmument
+::method test_position
+  self~file~delete
+  name = self~file~path
+  self~assertSame(0, lineout(name, "line1", 2)) -- written as line 1
+  self~assertSame(0, lineout(name, "line2", 2)) -- written as line 2
+  self~assertSame(0, lineout(name, "line3", 2)) -- overwrites line 2
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile(("line1", "line3"))
+  self~assertSame(0, lineout(name, , 1)) -- position at line 1
+  self~assertSame(0, lineout(name, "first"))
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile(("first", "line3"))
+
+-- maximum record length
+::method test_line_too_long
+  self~assertSame("READY:", stream(self~file, "c", "open write shared replace binary reclength 8"))
+  self~expectSyntax(93) -- Incorrect call to method
+  call lineout self~file, "morethan8"
+
+-- write binary records
+::method test_binary
+  name = self~file
+  self~assertSame("READY:", stream(name, "c", "open write shared replace binary reclength 5"))
+  do n = 5 to 1 by -1
+    self~assertSame(0, lineout(name, n~copies(n), n))
+  end
+  call stream name, "c", "flush"       -- flush before checking
+  self~assertFile("1    22   333  4444 55555")
+
+/*@@BUG
+Positioning/closing doesn't work for a binary stream, although docs say:
+"You can omit the string for persistent streams. If you specify line,
+the write position is set to the start of the line that was given,
+nothing is written to the stream, and the function returns 0. If you
+specify neither line nor string, the stream is closed."
+*/
+  self~assertSame(0, lineout(name, , 3)) -- position at record 3, @@instead clears record 2
+  self~assertSame(0, lineout(name, "three"))
+  self~assertSame(0, lineout(name)) --@@clears record 4
+--@@lf~assertFile("1    22   three4444 55555")
+  self~assertFile("1         three     55555") -- @@wrong
+
+
+::options all syntax

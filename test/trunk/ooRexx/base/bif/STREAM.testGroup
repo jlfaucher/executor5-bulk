@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -861,15 +861,18 @@ return testResult
 
   dirName = 'TempTestingDir'
 
-  -- Make sure this doesn't exist for some bizarre reason.
-  if SysFileExists(dirName) then do
-    j = SysRmDir(dirName)
+  -- Make sure this doesn't exist
+  call SysRmDir dirName
+  self~assertFalse(SysFileExists(dirName), "directory" dirName "should not exist")
+
+  now = .DateTime~new
+  -- wait a bit if SysMkDir might run in the next second
+  do while now~microseconds > 950000
+    call SysSleep 0.05
+    now = .DateTime~new
   end
-
-  self~assertFalse(SysFileExists(dirName), "Directory:" dirName "must not exist at start of test")
-
   self~assertSame(0, SysMkDir(dirName))
-  parse value .DateTime~new~isoDate with d 'T' t '.' .
+  parse value now~isoDate with d 'T' t '.' .
   eTimeStamp = d t
   eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
 
