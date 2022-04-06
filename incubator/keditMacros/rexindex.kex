@@ -19,7 +19,7 @@
 *               Treat routines correctly & sort to top                        */*{1.05}*/
 *               Ignore constant & options directives                          */*{1.05}*/
 *               Bugfix: bring back wrong class method if keyword mixed case   */*{1.05}*/
-*                                                                             *
+* 1.06 Apr 2022 Ignore Annotate Resource (and End) directives                 */*{1.06}*/                                                           *
 *******************************************************************************
 menu_length = 28
 old_pos     = line.1()
@@ -47,9 +47,8 @@ do forever                                              /* Build the menu    */
   parse upper var parms parms '/*' .                                           /*{1.03}*/
   parse upper var directive uDirective
 
-                                                        /* dont add to menu  *//*{1.05}*/
-  if wordpos(uDirective,'REQUIRES ATTRIBUTE CONSTANT OPTIONS') >0 then iterate
-  if wordpos('ATTRIBUTE',parms)>0 then iterate          /* dont add to menu  */
+                                                        /* dont add to menu  *//*{1.05}*/ /*{1.06}*/
+  if wordpos(uDirective,'ANNOTATE ATTRIBUTE CONSTANT END OPTIONS REQUIRES RESOURCE') >0 then iterate
 
   classMethod = (wordpos('CLASS',parms) > 0)
   select
