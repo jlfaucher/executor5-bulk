@@ -43,7 +43,7 @@
 parse source . . fileSpec;
 
 group = .TestGroup~new(fileSpec)
-group~add(.SysGetXxxxPathName.testGroup)
+group~add(.SysGetXxxPathName.testGroup)
 group~restrictOS("WINDOWS")
 
 if group~isAutomatedTest then return group
@@ -54,7 +54,7 @@ return testResult
 -- End of entry point.
 
 ::requires 'ooTest.frm'
-::class 'SysGetXxxxPathName.testgroup' subclass ooTestCase public
+::class 'SysGetXxxPathName.testgroup' subclass ooTestCase public
 
 ::method test_long_no_args
   self~expectSyntax(88.901) -- Error 88.901:  Missing argument; the 1 argument is required

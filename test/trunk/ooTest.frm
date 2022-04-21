@@ -4,7 +4,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -781,9 +781,7 @@ return
   ::method printFailureInfo private
     use arg data
 
-
     say "[failure]" data~when
-    self~printSVNInfo(data)
     say "  Test:  " data~testName
     say "  Class: " data~className
     say "  File:  " pathCompact(data~where, 70)
@@ -806,11 +804,10 @@ return
     different = (data~where~compareTo(data~conditionObject~program) <> 0)
 
     say "[error]" data~when
-    self~printSVNInfo(data)
     say "  Test:  " data~testName
     say "  Class: " data~className
     say "  File:  " pathCompact(data~where, 70)
-    say "  Event: " pp(data~type) "raised unexpectedly."
+    say "  Event: " data~type "raised unexpectedly."
     if data~conditionObject~message \== .nil then
       say "    "data~conditionObject~message
     if different then
@@ -820,23 +817,6 @@ return
       say line
     end
     say
-
-  /** printSVNInfo()
-   * Problem report objects have an additionalObject attribute.  For both
-   * assert failures and error reports this attribute is set to the test case
-   * object.  The test case *class* object has the SVN information in its
-   * information directory.
-   */
-  ::method printSVNInfo private
-    use strict arg problem
-
-    if problem~additionalObject~isA(.ooTestCase) then do
-      info = problem~additionalObject~class~caseInfo
-      if info~hasEntry("test_Case-revsion") then do
-        parse value info~entry("test_Case-date") with date time offset junk
-        say "  svn:    r" || info~entry("test_Case-revsion") "  Change date:" date time offset
-      end
-    end
 
   ::method calcStats private
     expose failTable notifications
@@ -1706,17 +1686,6 @@ return
 
     data = .directory~new
     data~setentry("test_Case-source", self~pathName)
-    data~setentry("test_Case-revsion", "unknown")
-    data~setentry("test_Case-date", "unknown")
-
-    parse value src[3] with '$Rev:' rev '$' .
-    parse value src[4] with '$Date:' date '$' .
-
-    rev = rev~strip
-    date = date~strip
-
-    if rev \== "" then data~setentry("test_Case-revsion", rev)
-    if date \== "" then data~setentry("test_Case-date", date)
 
     self~testInfo = data
   -- End createMetaData()

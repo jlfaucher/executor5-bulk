@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -524,7 +524,7 @@ return .Rexxinfo~architecture
   TestCaseTable[aTestCase]~queue(errData)
 
 
-::method addFailure
+::method addFailure unguarded
   expose fFailures TestCaseTable logQueue
   use arg aTestCase, failData
 
@@ -1304,9 +1304,29 @@ return str
 
   if data~isA(.String) then data = self~makeFailure("n/a", "n/a", data, "fail")
 
-  msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
-
-  RAISE syntax 93.964 array (msg, data)
+  -- Tests which run assertXxxx() method calls in threads spawned by the REPLY
+  -- instruction require special handling.  As REPLY threads run at the base
+  -- base of the stack, we cannot raise SYNTAX.  Instead, we directly modify
+  -- our test result instance.  For this to work, a test result must have been
+  -- provided as an argument to the test method call.  This will have happened
+  -- when the test method is named with a trailing "replyAssert" marker.  Also
+  -- note that for these types of failure the test method will continue to run
+  -- as it is not being stopped by a raised SNYTAX.  To further support this,
+  -- the framework makes method addFailure UNGUARDED.
+  frames = .context~stackframes
+  bottom = frames[frames~last]
+  -- is this a REPLY thread to which we provided  a test result argument?
+  if bottom~type == "METHOD", bottom~name~caselessEndsWith("replyAssert") then do
+    data~className = self~class~id
+    data~testName = bottom~name
+    data~setLine(bottom~line)
+    result = bottom~arguments[1] -- retrieve our test result object
+    result~addFailure(self, data)
+  end
+  else do
+    msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
+    RAISE syntax 93.964 array (msg, data)
+  end
 
 
 ::attribute conditionExpected private
@@ -1580,7 +1600,19 @@ return str
 
    -- The test case method itself is invoked by creating a message object and
    -- sending it to ourself.
-   .message~new(self, methodName)~send
+
+   -- Tests which run assertXxxx() method calls in threads spawned by the REPLY
+   -- instruction require special handling.  As REPLY threads run at the base
+   -- base of the stack, we cannot raise SYNTAX.  Instead, we directly modify
+   -- our test result instance.  For this to work, we have to supply the test
+   -- result as an argument to the test method call.  But as existing test
+   -- groups like USE.testGroup rely on the fact that test methods have no
+   -- arguments, we only supply this argument if the test method is named with
+   -- a trailing "replyAssert" marker.
+   if methodName~caselessEndsWith("replyAssert") then
+     .message~new(self, methodName)~send(, aTestResult)
+  else
+     .message~new(self, methodName)~send
 
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
