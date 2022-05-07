@@ -41,17 +41,38 @@
 */
 
 nl="0d0a"x
+parse source . . thisPgm
+thisLocation=filespec('location',thisPgm)
 
    -- create a stylesheet link with a fully quailified name in addition to one without a path
-stylesheet="oleinfo.css"
 
 -- oleinfo.properties
-props=.Properties~load("oleinfo.properties")
-stylesheet     =props~getProperty("cssFileName", stylesheet)~strip
-bIncorporateCss=props~getLogical("incorporateCSS", .true)
+propsFile="oleinfo.properties"
+if \sysFileExists(propsFile) then propsFile=thisLocation||propsFile
 
-if \sysFileExists(stylesheet) then  -- if no css available, then only add a link
-   bIncorporateCss=.false  -- make sure we do not attempt to incoporpate
+if sysFileExists(propsFile) then
+do
+   props=.Properties~load(propsFile)
+   stylesheet     =props~getProperty("cssFileName", stylesheet)~strip
+   bIncorporateCss=props~getLogical("incorporateCSS", .true)
+end
+else  -- no cssFile found, just refer to it, do not attempt to incorporate
+do
+   stylesheet     ="oleinfo.css"
+   bIncorporateCss=.false
+end
+
+if bIncorporateCss then    -- does stylesheet exist?
+do
+   if \sysFileExists(stylesheet) then
+   do
+      tmpStyleSheet=thisLocation||stylesheet
+      if sysFileExists(tmpStyleSheet) then
+         styleSheet=tmpStyleSheet
+      else     -- does not exist, do not incorporate CSS, leave original name intact
+         bIncorporateCss=.false
+   end
+end
 
 tmpLocalCss=""
 if bIncorporateCss then -- if .true get css-definitions and copy them into the head
@@ -66,11 +87,9 @@ do
 
    if tmp="" then    -- hmm, not found, maybe wer are not in our home directory, try it with that
    do
-      parse source . . full_path       -- get fully qualified name of this program
-      tmp=stream(filespec("d", full_path) || filespec("p", full_path) || stylesheet, "c", "query exists")
-      -- tmp9="tmp1="tmp1 nl " tmp="tmp
-      if window <> "WINDOW" then call alert tmp
-                            else .error~say(tmp)
+      errMsg="Problem, cannot locate stylesheet:" stylesheet
+      if window <> "WINDOW" then call alert msg
+                            else .error~say(msg)
    end
 
    tmpLocalCss='<link rel="stylesheet" type="text/css" href="'stylesheet'" id="rgf_css">    '
@@ -946,23 +965,4 @@ function flip(base_id)                       // basename of the id-values we nee
   			'	 return                                                                      'nl ,
   			'</script>                                                                      'nl
 ::END
-
-
-/* Utility routine to copy the entries of a .Properties to a new .StringTable,
-   save uppercase version of index with the stripped property value, add an
-   entry with an uppercased index concatenated with ".ORI" to allow fetching
-   the original index (to allow fetching the unedited property value if needed).
-   This way it becomes possible to send the name of a property as a message to
-   get the (stripped) property value.
-*/
-::routine properties2stringTable    -- Properties to StringTable
-  use arg props
-  st=.stringTable~new
-  do idx over props~allindexes         -- iterate over all indices (property names)
-     st[idx]       = props[idx]        -- save index and item unchanged
-     uidx          = idx~upper
-     st[uidx".ORI"]= idx               -- save original case of index that gets used
-     st[uidx]      = props[idx]~strip  -- strip leading and trailing whitespace from property value
-  end
-  return st
 
