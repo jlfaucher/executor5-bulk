@@ -19,6 +19,7 @@
                                 whether its content should get incorporated to the generated
                                 HTML (style-element in the head-element; default: true)
             2022-05-05, ---rgf, change utility name from "oleinfo.html" to "createOLEInfo.rex" in footer
+            2022-05-08, ---rgf, add bitness to title
 
 	author:  Rony G. Flatscher,
 				Wirtschaftsuniversitaet/Vienna
@@ -188,7 +189,7 @@ end
   outMB=.mutableBuffer~new
   -- call time "r"
 
-  call sag '<h1 class="hilite">' a~oleString '</h1>'
+  call sag '<h1 class="hilite">' a~oleString '('.rexxinfo~architecture'-bit)' '</h1>'
   call sag
   call sag 'Definitions from typelib:' '[<span class="doc hilite">'a~libname'</span>]'
   call sag 'with the brief documentation:'

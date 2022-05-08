@@ -4,6 +4,12 @@
 ooRexx set of Window programs for analyzing and documenting registered Windows
 OLE/COM components.
 
+Please note: Windows will expose only those ProgIDs that match the bitness of
+             the program (ooRexx). Therefore running these little utilities with
+             32-bit and 64-bit versions of the ooRexx interpreter may yield
+             different ProgIDs. (ooRexx 5 allows 32-bit and 64-bit versions to run
+             in parallel on the same Windows computer.)
+
 
 - listProgIds.rex   ... program lists all registered Windows OLE/COM components
 
@@ -104,5 +110,36 @@ OLE/COM components.
 
 
 
-Rony G. Flatscher, http://www.wu.ac.at, Vienna, 2022-05-03
+Rony G. Flatscher, http://www.wu.ac.at, Vienna, 2022-05-05
+
+P.S.: Demonstration on how to create documentation about an OLE object that
+      may be returned as a result of a method or property query: this sample
+      will fetch the current "document" object from MSIE and uses "createOleInfo.rex"
+      to create a HTML documentation about its published interfaces on the fly.
+
+      All generated HTML documentation will get displayed in the browser.
+
+      Save the following ooRexx program in a file named "test.rex" and run it:
+
+        -- MSIE example (begin) ---
+        strIE="InternetExplorer.Application"
+        ie=.oleObject~new(strIE)   -- create an instance of IE, returns an OLEObject
+        ie~visible=.true           -- make IE window visible
+
+        ie~navigate("https://www.RexxLA.org")
+        do while ie~busy           -- wait until page got fully loaded
+           call sysSleep 0.01
+        end
+
+        doc=ie~document            -- get document object from IE
+
+        -- note: OLE objects do not always publish what they offer!
+           -- create documentation for document object, full documentation, show in browser
+        call createOleInfo doc, "ie~document", .false, .true
+           -- document Internetexplorer, full documentation (with constants), show in browser
+        call createOleInfo ie, strIE, .false, .true
+           -- document Internetexplorer, reference documentation, show in browser
+        call createOleInfo ie, strIE, .true, .true
+        ie~quit
+        -- MSIE example (end) ---
 

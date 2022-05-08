@@ -1,8 +1,8 @@
 /*
    name:    listProgIds.rex
-   version: 1.0
+   version: 1.1
    date:    2022-04-28
-   changed:
+   changed: 2022-05-08, ---rgf: - indicate bitness of ProgID
 
    author:  Rony G. Flatscher
    purpose: list all ProgIDs, optionally with their CLSID
@@ -38,6 +38,7 @@ do
    say "sorting" items "took:" pp(time2-time1)
    say
 end
+prefix=.rexxinfo~architecture"-bit #"
 len=items~length
 do counter i idx over allProgIds    -- idx is the ProgID
    if needle<>"", idx~caselessPos(needle)=0 then iterate
@@ -45,9 +46,9 @@ do counter i idx over allProgIds    -- idx is the ProgID
    o=all_progid~at(idx)    -- get ooRexx classid object
    hint=checkProgId(idx)   -- supply hint whether ProgID adhers to MS specs
    if bCLSID then
-      say "#" i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5) "CLSID:" o~clsid
+      say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5) "CLSID:" o~clsid
    else
-      say "#" i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5)
+      say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5)
 end
 time3=.DateTime~new
 if bTiming then
