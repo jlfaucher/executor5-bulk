@@ -702,6 +702,21 @@ return testResult
   -- not description set if the error condition is raised
   self~assertEquals('HALT Test', condition~description)
 
+::method test_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~items)
+  self~assertEquals(2,arr~items:.collection,"override: ~item:.collection")
+  self~assertEquals(2,arr~copy:.object~items,"override: arr~copy:.object~items")
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(97.1)
+  self~assertEquals(2,arr~items:not_a_superclass)
+
+::method test_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(97.1)
+  self~assertEquals(2,arr~items:.rexxinfo)   -- is not a superclass of .array
+
 -- simple class with methods for testing async operation
 ::class StartTester
 ::method delayValueReturn
