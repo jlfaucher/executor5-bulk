@@ -160,8 +160,7 @@ return testResult
 -- issued from a different class context
 ::method test_send_override_context
   obj = .sendTester~new
-  obj~send(('TestTarget', .sendTester2))
-  self~assertTrue(.true)
+  self~assertEquals(456, obj~send(('TestTarget', .sendTester2)))
 
 ::method test_send_override_empty_array
   obj = .sendTester~new
@@ -216,8 +215,7 @@ return testResult
 -- issued from a different class context
 ::method test_sendwith_override_context
   obj = .sendTester~new
-  obj~sendWith(('TestTarget', .sendTester2), (1,2))
-  self~assertTrue(.true)
+  self~assertEquals(456, obj~sendWith(('TestTarget', .sendTester2), (1,2)))
 
 ::method test_sendWith_override_empty_array
   obj = .sendTester~new
@@ -313,8 +311,7 @@ return testResult
 -- issued from a different class context
 ::method test_start_override_context
   obj = .sendTester~new
-  obj~start(('TestTarget', .sendTester2))
-  self~assertTrue(.true)
+  self~assertEquals(456, obj~start(('TestTarget', .sendTester2))~result)
 
 ::method test_start_override_empty_array
   obj = .sendTester~new
@@ -404,8 +401,7 @@ return testResult
 -- issued from a different class context
 ::method test_startWith_override_context
   obj = .sendTester~new
-  obj~startWith(('TestTarget', .sendTester2), (1,2))
-  self~assertTrue(.true)
+  self~assertEquals(456, obj~startWith(('TestTarget', .sendTester2), (1,2))~result)
 
 ::method test_startWith_override_empty_array
   obj = .sendTester~new
