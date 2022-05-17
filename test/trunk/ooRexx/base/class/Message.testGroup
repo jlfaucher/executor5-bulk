@@ -704,16 +704,12 @@ return testResult
   self~assertEquals(2,arr~copy:.object~items)
 
   not_a_superclass="nixi, noxi"
-  -- MessageClass would issue: 88.914 "Argument SCOPE must be an instance of the Class class."
   self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
-  -- self~expectSyntax(93.957)   -- Target object "an Array" is not a subclass of the message override scope (nixi, noxi).
   self~assertEquals(2,arr~items:not_a_superclass)
 
 
 ::method test_override_from_nonself_method_not_in_superclass
   arr="a","b"
-  -- MessageClass would issue: 88.914 "Argument SCOPE must be an instance of the Class class."
-  -- self~expectSyntax(93.957)   -- Target object "an Array" is not a subclass of the message override scope (a RexxInfo).
   self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
   self~assertEquals(2,arr~items:.rexxinfo)   -- is not a superclass of .array
 
