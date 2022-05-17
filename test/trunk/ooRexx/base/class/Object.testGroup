@@ -158,10 +158,10 @@ return testResult
   self~assertEquals(123, obj~testSendWith(obj, ('TestTarget', .sendTester), (1,2)))
 
 -- issued from a different class context
-::method test_send_override_bad_context
+::method test_send_override_context
   obj = .sendTester~new
-  self~expectSyntax(98.938)
   obj~send(('TestTarget', .sendTester2))
+  self~assertTrue(.true)
 
 ::method test_send_override_empty_array
   obj = .sendTester~new
@@ -214,10 +214,10 @@ return testResult
   obj~testSend(obj, ('TestTargetXXXX', .array))
 
 -- issued from a different class context
-::method test_sendwith_override_bad_context
+::method test_sendwith_override_context
   obj = .sendTester~new
-  self~expectSyntax(98.938)
   obj~sendWith(('TestTarget', .sendTester2), (1,2))
+  self~assertTrue(.true)
 
 ::method test_sendWith_override_empty_array
   obj = .sendTester~new
@@ -311,10 +311,10 @@ return testResult
   self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
 
 -- issued from a different class context
-::method test_start_override_bad_context
+::method test_start_override_context
   obj = .sendTester~new
-  self~expectSyntax(98.938)
   obj~start(('TestTarget', .sendTester2))
+  self~assertTrue(.true)
 
 ::method test_start_override_empty_array
   obj = .sendTester~new
@@ -402,10 +402,10 @@ return testResult
   self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
 
 -- issued from a different class context
-::method test_startWith_override_bad_context
+::method test_startWith_override_context
   obj = .sendTester~new
-  self~expectSyntax(98.938)
   obj~startWith(('TestTarget', .sendTester2), (1,2))
+  self~assertTrue(.true)
 
 ::method test_startWith_override_empty_array
   obj = .sendTester~new
@@ -1144,8 +1144,143 @@ return testResult
   hash = ref~value~identityHash
   self~assertTrue(.UninitTracker~forceUninit(ref, hash))
 
+
+
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
+
+-- SEND method
+::method test_send_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~send("items") )
+  self~assertEquals(2,arr~send( ("items",.collection)))
+  self~assertEquals(2,arr~send( ("copy",.object))~send("items"))
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~send( ("items",not_a_superclass)) )
+
+::method test_send_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~send( ("items", .rexxinfo)) )  -- is not a superclass of .array
+
+
+::method test_send_override_among_mixinclasses
+  o=.mixin2~new
+  self~assertEquals("mixin2" , o~send("info")           )
+  self~assertEquals("mixin2" , o~send( ("info",.mixin2 )) )
+  self~assertEquals("base"   , o~send( ("info",.base   )) )
+  self~assertEquals("mixin1a", o~send( ("info",.mixin1a)) )
+  self~assertEquals("mixin1b", o~send( ("info",.mixin1b)) )
+
+  self~expectSyntax(93.957) -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  o~send( ("info",.nixinoxi) )
+
+-- SENDWITH method
+::method test_sendwith_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~sendWith("items",.array~new) )
+  self~assertEquals(2,arr~sendWith( ("items",.collection),(1,2)))
+  self~assertEquals(2,arr~sendWith( ("copy",.object),.array~new)~sendWith("items",.array~new))
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~sendWith( ("items",not_a_superclass),.array~new) )
+
+::method test_sendwith_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~sendWith( ("items", .rexxinfo),.array~new) )  -- is not a superclass of .array
+
+
+::method test_sendwith_override_among_mixinclasses
+  o=.mixin2~new
+  self~assertEquals("mixin2" , o~sendWith("info",(1,2))           )
+  self~assertEquals("mixin2" , o~sendWith( ("info",.mixin2 ),(1,2)) )
+  self~assertEquals("base"   , o~sendWith( ("info",.base   ),(1,2)) )
+  self~assertEquals("mixin1a", o~sendWith( ("info",.mixin1a),(1,2)) )
+  self~assertEquals("mixin1b", o~sendWith( ("info",.mixin1b),(1,2)) )
+
+  self~expectSyntax(93.957) -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  o~sendWith( ("info",.nixinoxi),(1,2) )
+
+-- START method
+::method test_start_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~start("items")~result )
+  self~assertEquals(2,arr~start( ("items",.collection))~result)
+  self~assertEquals(2,arr~start( ("copy",.object))~result~start("items")~result)
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~start( ("items",not_a_superclass))~result )
+
+::method test_start_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~start( ("items", .rexxinfo))~result )  -- is not a superclass of .array
+
+
+::method test_start_override_among_mixinclasses
+  o=.mixin2~new
+  self~assertEquals("mixin2" , o~start("info")~result           )
+  self~assertEquals("mixin2" , o~start( ("info",.mixin2 ))~result )
+  self~assertEquals("base"   , o~start( ("info",.base   ))~result )
+  self~assertEquals("mixin1a", o~start( ("info",.mixin1a))~result )
+  self~assertEquals("mixin1b", o~start( ("info",.mixin1b))~result )
+
+  self~expectSyntax(93.957) -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  o~start( ("info",.nixinoxi) )~result
+
+-- STARTWITH method
+::method test_startWith_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~startWith("items",.array~new)~result )
+  self~assertEquals(2,arr~startWith( ("items",.collection),.array~new)~result)
+  self~assertEquals(2,arr~startWith( ("copy",.object),.array~new)~result~startWith("items",.array~new)~result)
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~startWith( ("items",not_a_superclass),.array~new)~result )
+
+::method test_startWith_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~startWith( ("items", .rexxinfo),.array~new)~result )  -- is not a superclass of .array
+
+
+::method test_startWith_override_among_mixinclasses
+  o=.mixin2~new
+  self~assertEquals("mixin2" , o~startWith("info",(1,2))~result           )
+  self~assertEquals("mixin2" , o~startWith( ("info",.mixin2 ),(1,2))~result )
+  self~assertEquals("base"   , o~startWith( ("info",.base   ),(1,2))~result )
+  self~assertEquals("mixin1a", o~startWith( ("info",.mixin1a),(1,2))~result )
+  self~assertEquals("mixin1b", o~startWith( ("info",.mixin1b),(1,2))~result )
+
+  self~expectSyntax(93.957) -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  o~startWith( ("info",.nixinoxi),(1,2) )~result
+
+
+::class nixinoxi     -- has info method, but class is on its own
+::method info
+  return "nixinoxi"
+
+::class base
+::method info
+  return "base"
+
+::class mixin1a mixinclass base
+::method info
+  return "mixin1a"
+
+::class mixin1b mixinclass base
+::method info
+  return "mixin1b"
+
+::class mixin2 mixinclass mixin1b inherit mixin1a
+::method info
+  return "mixin2"
 
 
 -- End of class: object.testGroup
