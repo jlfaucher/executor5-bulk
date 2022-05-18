@@ -726,6 +726,25 @@ return testResult
   o~info:.nixinoxi
 
 
+-- SEND at class object level in mixins
+::method test_send_override_among_mixinclasses_class
+  o=.mixin2       -- use the class object
+  m=.message~new(o,"clzInfo")
+  self~assertEquals("mixin2_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin2))
+  self~assertEquals("mixin2_class" , m~send)
+
+  m=.message~new(o,("clzInfo",.base))
+  self~assertEquals("base_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin1a))
+  self~assertEquals("mixin1a_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin1b))
+  self~assertEquals("mixin1b_class" , m~send)
+
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m=.message~new(o, ("clzInfo",.nixinoxi))
+  m~send
+
 -- SEND
 ::method test_send_override_from_nonself
   arr="a","b"
@@ -900,22 +919,33 @@ return testResult
 
 
 ::class nixinoxi     -- has info method, but class is on its own
+::method clzInfo class
+  return "nixinoxi_class"
+
 ::method info
   return "nixinoxi"
 
 ::class base
+::method clzInfo class
+  return "base_class"
 ::method info
   return "base"
 
 ::class mixin1a mixinclass base
+::method clzInfo class
+  return "mixin1a_class"
 ::method info
   return "mixin1a"
 
 ::class mixin1b mixinclass base
+::method clzInfo class
+  return "mixin1b_class"
 ::method info
   return "mixin1b"
 
 ::class mixin2 mixinclass mixin1b inherit mixin1a
+::method clzInfo class
+  return "mixin2_class"
 ::method info
   return "mixin2"
 
