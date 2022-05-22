@@ -62,4 +62,11 @@ return testResult
     self~assertNil(sc~CLSID)
     self~assertNil(sc~ProgID)
 
+
+::method 'test_hasOleMethod'
+    wsh = .oleObject~new("WScript.Shell")
+    self~assertTrue(wsh~hasOleMethod("createShortCut"))
+    self~assertFalse(wsh~hasOleMethod("create-Short Cut this can not exist"))
+
+
 ::options novalue error
