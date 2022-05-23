@@ -530,6 +530,234 @@ myOLEObject = .OLEObject~new("InternetExplorer.Application")
 
 </section>
 
+<section id="oleobgetob"><title>getObject (Class method)</title>
+<indexterm><primary>getObject method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getObject method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getobject.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  This is a class method that allows you to obtain an OLE object through the use of a moniker. A moniker
+  is a string and is similar to a nickname. Monikers are used by OLE to connect to and activate OLE
+  objects. OLE returns the object that the moniker identifies.
+</para>
+<para>
+  If the object is already running, OLE will find it in memory. If the object is stored passively on
+  disk, OLE will locate a server for the object, run the server, and have the server bring the object
+  into the running state. This makes monikers very easy for the automation client to use. OLE hides all
+  the details from the client. However, since the OLEObject also hides all the details when a new OLE
+  object is instantiated, for the Rexx programmer there is not much difference between using the
+  <computeroutput>getObject</computeroutput> method and using the <computeroutput>new</computeroutput>
+  method.
+</para>
+<para>
+  Note that file system names are monikers. Therefore, if a file is associated with an application that
+  is an OLE automation server, a new OLE object can be instantiated by using the file name as the
+  moniker. Obviously, this is not true of every file. It is true for files like
+  <computeroutput>.xls</computeroutput> and <computeroutput>.doc</computeroutput> files, for example,
+  because Word and Excel are OLE automation applications.
+</para>
+<para>
+  The optional <emphasis role="italic">class</emphasis> argument can be used to specify a subclass of
+  OLEObject, and can be used to obtain an OLE object that supports events
+  (the<computeroutput>&apos;WITHEVENTS&apos;</computeroutput> option will be used in this case).  This
+  method is similar to the <computeroutput>new</computeroutput> method where the programmer supplies a
+  ProgID or CLSID. In this case the programmer supplies a moniker.
+</para>
+<example id="ex.ole-getObkectMoniker">
+<title>OLEObject - getObjectMoniker method</title>
+<programlisting>
+/* create a Word.Document by opening a certain file */
+myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjaddeventmethod"><title>addEventMethod</title>
+<indexterm><primary>addEventMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addEventMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_addeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  <computeroutput>addEventMethod</computeroutput> adds a new method to this object's collection of
+  methods. The <emphasis role="italic">name</emphasis> argument specifies the name of the new method and
+  the <emphasis role="italic">methodObject</emphasis> argument defines the method. The acceptable values
+  for <emphasis role="italic">methodObject</emphasis> are the same as those for the second argument to
+  the <computeroutput>setMethod</computeroutput> method of the<computeroutput>.Object</computeroutput>
+  class. That is, it can be a method object, a string containing a method source line, or an array of
+  strings containing individual method source lines.
+</para>
+<para>
+  The purpose of this method is to add an event method to a OLEObject after the object has been
+  instantiated. See the OLE Events (<xref linkend="oleevents" />) section for more details on events.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  Note that in this example, the printNewMail method is defined as a floating method. See the
+  documentation for the <computeroutput>.methods</computeroutput> directory in the Open Object Rexx
+  Reference book for more details if needed.
+</para>
+<example id="ex.ole-printNewMail">
+<title>OLEObject - printNewMail method</title>
+<programlisting>
+<![CDATA[
+
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+
+...
+
+::method printNewMail unguarded
+  use arg mailItem
+  say 'You have mail'
+  say 'Subject:' mailItem~subject
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobclsid" revisionflag="added"><title>&added50;CLSID</title>
+<indexterm><primary>CLSID attribute</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>CLSID</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_clsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the string value of the CLSID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
+</section>
+
+<section id="oleobjconnectevents"><title>connectEvents</title>
+<indexterm><primary>connectEvents method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>connectEvents</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_connectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  The connectEvents() method is used to connect the instantiated automation client (the OLEObject
+  subclass object) to the automation server (the OLE object) at any time. The method returns
+  <computeroutput>.true</computeroutput> if the connection was made, otherwise
+  <computeroutput>.false</computeroutput>. Remember, not all OLE objects support events. The programmer
+  can determine if the OLE object supports events by using the isConnectable() (<xref
+  linkend="oleobjisconnectable" />) method.
+</para>
+<example id="ex.ole-connectEvents">
+<title>OLEObject - connectEvents method</title>
+<programlisting>
+<![CDATA[
+
+  wordApp = .OLEObject~new("Word.Application")
+  wordApp~visible = .true
+  document = wordApp~documents~Add
+
+  wordApp~connectEvents
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjdisconnectevents"><title>disconnectEvents</title>
+<indexterm><primary>disconnectEvents method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disconnectEvents</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_disconnectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  This method disconnects from the connectable OLE object. The method returns
+  <computeroutput>.false</computeroutput> if there is not a current connection, otherwise
+  <computeroutput>.true</computeroutput>. After this method is called, the OLE object will no longer
+  invoke the event methods, in effect stopping event notifications.
+</para>
+<para>
+  The internal data structures used to manage events remain intact. The programmer can use the connectEvents() (<xref
+  linkend="oleobjconnectevents" />) method to reconnect at any time. Since the
+  internal data structures do not need to be rebuilt, this will save some small amount of processor time.
+  To completely remove the internal data structures use the removeEventHandler() (<xref
+  linkend="oleobjremoveeventhandler" />) method.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  This example shows some code snippets from a program that monitors the user's inbox in OutLook. When a
+  new mail item arrives, the user is notified. The interface for the program allows the user to turn off
+  the notifications when she wants, then turn them back on later. When the interface signals the program
+  to stop the notifications, the program simply disconnects the events from the OutLook object. When the
+  user wants to resume notifications, the program reconnects the events.
+</para>
+<example id="ex.ole-disconnectEvents">
+<title>OLEObject - disconnectEvents method</title>
+<programlisting>
+<![CDATA[
+
+  outLook = .oleObject~new("Outlook.Application")
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  ...
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+  inboxItems~connectEvents
+
+  ...
+
+    select
+      when status == 'disconnect' then do
+        inboxItems~disconnectEvents
+        say 'ooRexx Mail Monitor - paused ...'
+      end
+      when status == "reconnect" then do
+        inboxItems~connectEvents
+        say 'ooRexx Mail Monitor - monitoring ...'
+      end
+      otherwise do
+        nop
+      end
+    end
+    -- End select
+
+
+]]>
+</programlisting>
+</example>
+</section>
+
 <section id="oledispatch"><title>dispatch</title>
 <indexterm><primary>dispatch method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
@@ -699,382 +927,6 @@ ONSTATUSBAR
 </para>
 </section>
 
-<section id="oleobclsid" revisionflag="added"><title>&added50;CLSID</title>
-<indexterm><primary>CLSID attribute</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>attribute</primary>
-<secondary>CLSID</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_clsid.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the string value of the CLSID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
-</section>
-
-<section id="oleobjconnectevents"><title>connectEvents</title>
-<indexterm><primary>connectEvents method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>connectEvents</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_connectevents.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  The connectEvents() method is used to connect the instantiated automation client (the OLEObject
-  subclass object) to the automation server (the OLE object) at any time. The method returns
-  <computeroutput>.true</computeroutput> if the connection was made, otherwise
-  <computeroutput>.false</computeroutput>. Remember, not all OLE objects support events. The programmer
-  can determine if the OLE object supports events by using the isConnectable() (<xref
-  linkend="oleobjisconnectable" />) method.
-</para>
-<example id="ex.ole-connectEvents">
-<title>OLEObject - connectEvents method</title>
-<programlisting>
-<![CDATA[
-
-  wordApp = .OLEObject~new("Word.Application")
-  wordApp~visible = .true
-  document = wordApp~documents~Add
-
-  wordApp~connectEvents
-
-]]>
-</programlisting>
-</example>
-</section>
-
-<section id="oleobjisconnected"><title>isConnected</title>
-<indexterm><primary>isConnected method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>isConnected</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_isconnected.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  Determines if the OLEObject instance is currently connected to a connectable OLE automation server.
-  Returns <computeroutput>.true</computeroutput> if the instance is connected and
-  <computeroutput>.false</computeroutput> if not.
-</para>
-<example id="ex.ole-isConnected">
-<title>OLEObject - isConnected method</title>
-<programlisting>
-<![CDATA[
-  wordObj = .oleObject~new("Word.Application", "WITHEVENTS")
-  if wordObj~isConnected then do
-    ...
-  end
-  else do
-    ...
-  end
-
-]]>
-</programlisting>
-</example>
-</section>
-
-
-<section id="oleobhasolemethod" revisionflag="added"><title>&added50;hasOleMethod</title>
-<indexterm><primary>hasOleMethod method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>hasOleMethod</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_hasolemethod.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Queries whether a method named methodName exists.
-Returns <computeroutput>.true</computeroutput> if methodName exists, <computeroutput>.false</computeroutput> else.</para>
-</section>
-
-
-<section id="oleobjisconnectable"><title>isConnectable</title>
-<indexterm><primary>isConnectable method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>isConnectable</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_isconnectable.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  Determines if the OLE object is a connectable object. In other words, does the OLE object support event
-  methods and will it accept connections at this time. Not all OLE objects support events, probably the
-  majority do not support events. This method returns <computeroutput>.true</computeroutput> if the
-  object is connectable, otherwise <computeroutput>.false</computeroutput>.
-</para>
-<example id="ex.ole-isConnectable">
-<title>OLEObject - isConnectable method</title>
-<programlisting>
-<![CDATA[
-
-  outLook = .oleObject~new("Outlook.Application")
-
-  -- This searches all folders for the 'Mailbox - .. ' folder.  Which is
-  -- usually the default folder in a business installation of Outlook.
-  nameSpace = outLook~getNameSpace('MAPI')
-  folders = nameSpace~folders
-  do i = 1 to folders~count
-    if folders~item(i)~name~caselessPos("Mailbox") <> 0 then do
-      theMailBoxFolder = folders~item(i)
-      leave
-    end
-  end
-
-  -- Now that we have the Mailbox folder, get the collection of folders that
-  -- are contained in the Mailbox folder.
-  folders = theMailBoxFolder~folders
-
-  if folders~isConnectable then do
-    -- Add event methods to the folders object.
-    ...
-  end
-
-]]>
-</programlisting>
-</example>
-</section>
-
-<section id="oleobprogid" revisionflag="added"><title>&added50;ProgID</title>
-
-<indexterm><primary>ProgID attribute</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>attribute</primary>
-<secondary>ProgID</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_progid.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the string value of the ProgID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
-</section>
-
-
-<section id="oleobjdisconnectevents"><title>disconnectEvents</title>
-<indexterm><primary>disconnectEvents method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>disconnectEvents</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_disconnectevents.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  This method disconnects from the connectable OLE object. The method returns
-  <computeroutput>.false</computeroutput> if there is not a current connection, otherwise
-  <computeroutput>.true</computeroutput>. After this method is called, the OLE object will no longer
-  invoke the event methods, in effect stopping event notifications.
-</para>
-<para>
-  The internal data structures used to manage events remain intact. The programmer can use the connectEvents() (<xref
-  linkend="oleobjconnectevents" />) method to reconnect at any time. Since the
-  internal data structures do not need to be rebuilt, this will save some small amount of processor time.
-  To completely remove the internal data structures use the removeEventHandler() (<xref
-  linkend="oleobjremoveeventhandler" />) method.
-</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<para>
-  This example shows some code snippets from a program that monitors the user's inbox in OutLook. When a
-  new mail item arrives, the user is notified. The interface for the program allows the user to turn off
-  the notifications when she wants, then turn them back on later. When the interface signals the program
-  to stop the notifications, the program simply disconnects the events from the OutLook object. When the
-  user wants to resume notifications, the program reconnects the events.
-</para>
-<example id="ex.ole-disconnectEvents">
-<title>OLEObject - disconnectEvents method</title>
-<programlisting>
-<![CDATA[
-
-  outLook = .oleObject~new("Outlook.Application")
-  inboxID = outLook~getConstant(olFolderInBox)
-  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
-
-  ...
-
-  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
-  inboxItems~connectEvents
-
-  ...
-
-    select
-      when status == 'disconnect' then do
-        inboxItems~disconnectEvents
-        say 'ooRexx Mail Monitor - paused ...'
-      end
-      when status == "reconnect" then do
-        inboxItems~connectEvents
-        say 'ooRexx Mail Monitor - monitoring ...'
-      end
-      otherwise do
-        nop
-      end
-    end
-    -- End select
-
-
-]]>
-</programlisting>
-</example>
-</section>
-
-<section id="oleobjremoveeventhandler"><title>removeEventHandler</title>
-<indexterm><primary>removeEventHandler method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>removeEventHandler</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_removeeventhandler.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  Removes the event handler and cleans up the internal data structures used to manage events. No event
-  methods will be invoked after this method is called. See the disconnectEvents() (<xref
-  linkend="oleobjdisconnectevents" />) method for a way to temporarily disconnect
-  from event notifications.
-</para>
-<example id="ex.ole-removeEventHandler">
-<title>OLEObject - removeEventHandler method</title>
-<programlisting>
-<![CDATA[
-
-  inboxItems~removeEventHandler
-  inboxItems~removeEventMethod("ItemAdd")
-
-]]>
-</programlisting>
-</example>
-</section>
-
-<section id="oleobjaddeventmethod"><title>addEventMethod</title>
-<indexterm><primary>addEventMethod method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>addEventMethod</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_addeventmethod.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  <computeroutput>addEventMethod</computeroutput> adds a new method to this object's collection of
-  methods. The <emphasis role="italic">name</emphasis> argument specifies the name of the new method and
-  the <emphasis role="italic">methodObject</emphasis> argument defines the method. The acceptable values
-  for <emphasis role="italic">methodObject</emphasis> are the same as those for the second argument to
-  the <computeroutput>setMethod</computeroutput> method of the<computeroutput>.Object</computeroutput>
-  class. That is, it can be a method object, a string containing a method source line, or an array of
-  strings containing individual method source lines.
-</para>
-<para>
-  The purpose of this method is to add an event method to a OLEObject after the object has been
-  instantiated. See the OLE Events (<xref linkend="oleevents" />) section for more details on events.
-</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<para>
-  Note that in this example, the printNewMail method is defined as a floating method. See the
-  documentation for the <computeroutput>.methods</computeroutput> directory in the Open Object Rexx
-  Reference book for more details if needed.
-</para>
-<example id="ex.ole-printNewMail">
-<title>OLEObject - printNewMail method</title>
-<programlisting>
-<![CDATA[
-
-  inboxID = outLook~getConstant(olFolderInBox)
-  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
-
-  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
-
-...
-
-::method printNewMail unguarded
-  use arg mailItem
-  say 'You have mail'
-  say 'Subject:' mailItem~subject
-
-
-]]>
-</programlisting>
-</example>
-</section>
-
-<section id="oleobjremoveeventmethod"><title>removeEventMethod</title>
-<indexterm><primary>removeEventMethod method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>removeEventMethod</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_removeeventmethod.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  Removes the event method with the specified <emphasis role="italic">name</emphasis> that has been
-  previously added to this object by the addEventMethod() (<xref linkend="oleobjaddeventmethod" />)
-  method.
-</para>
-<example id="ex.ole-removeEventMethod">
-<title>OLEObject - removeEventMethod method</title>
-<programlisting>
-<![CDATA[
-
-  inboxID = outLook~getConstant(olFolderInBox)
-  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
-
-  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
-  inboxItems~connectEvents
-
-  ...
-
-::method doneWithItemEvents private
-  expose inboxItems
-
-  inboxItems~removeEventHandler
-  inboxItems~removeEventMethod("ItemAdd")
-
-]]>
-</programlisting>
-</example>
-</section>
-
 <section id="oleobgetknme"><title>getKnownMethods</title>
 <indexterm><primary>getKnownMethods method</primary>
 <secondary>of OLEObject class</secondary></indexterm>
@@ -1228,55 +1080,6 @@ GoHome
 </programlisting>
 </section>
 
-<section id="oleobgetob"><title>getObject (Class method)</title>
-<indexterm><primary>getObject method</primary>
-<secondary>of OLEObject class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>getObject method</secondary>
-<tertiary>of OLEObject class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/oleobj/oleobj_getobject.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>
-  This is a class method that allows you to obtain an OLE object through the use of a moniker. A moniker
-  is a string and is similar to a nickname. Monikers are used by OLE to connect to and activate OLE
-  objects. OLE returns the object that the moniker identifies.
-</para>
-<para>
-  If the object is already running, OLE will find it in memory. If the object is stored passively on
-  disk, OLE will locate a server for the object, run the server, and have the server bring the object
-  into the running state. This makes monikers very easy for the automation client to use. OLE hides all
-  the details from the client. However, since the OLEObject also hides all the details when a new OLE
-  object is instantiated, for the Rexx programmer there is not much difference between using the
-  <computeroutput>getObject</computeroutput> method and using the <computeroutput>new</computeroutput>
-  method.
-</para>
-<para>
-  Note that file system names are monikers. Therefore, if a file is associated with an application that
-  is an OLE automation server, a new OLE object can be instantiated by using the file name as the
-  moniker. Obviously, this is not true of every file. It is true for files like
-  <computeroutput>.xls</computeroutput> and <computeroutput>.doc</computeroutput> files, for example,
-  because Word and Excel are OLE automation applications.
-</para>
-<para>
-  The optional <emphasis role="italic">class</emphasis> argument can be used to specify a subclass of
-  OLEObject, and can be used to obtain an OLE object that supports events
-  (the<computeroutput>&apos;WITHEVENTS&apos;</computeroutput> option will be used in this case).  This
-  method is similar to the <computeroutput>new</computeroutput> method where the programmer supplies a
-  ProgID or CLSID. In this case the programmer supplies a moniker.
-</para>
-<example id="ex.ole-getObkectMoniker">
-<title>OLEObject - getObjectMoniker method</title>
-<programlisting>
-/* create a Word.Document by opening a certain file */
-myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
-</programlisting>
-</example>
-</section>
 
 <section id="oleobgetoutpar"><title>getOutParameters</title>
 <indexterm><primary>getOutParameters method</primary>
@@ -1330,6 +1133,208 @@ aMethod([in] A, [in] B, [out] sumAB, [out] productAB),
 <para>then the <computeroutput>out</computeroutput> array would contain the sum
 of A and B at position one, and the product at position two.</para>
 </section>
+
+<section id="oleobhasolemethod" revisionflag="added"><title>&added50;hasOleMethod</title>
+<indexterm><primary>hasOleMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasOleMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_hasolemethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Queries whether a method named methodName exists.
+Returns <computeroutput>.true</computeroutput> if methodName exists, <computeroutput>.false</computeroutput> else.</para>
+</section>
+
+<section id="oleobjisconnectable"><title>isConnectable</title>
+<indexterm><primary>isConnectable method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isConnectable</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnectable.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Determines if the OLE object is a connectable object. In other words, does the OLE object support event
+  methods and will it accept connections at this time. Not all OLE objects support events, probably the
+  majority do not support events. This method returns <computeroutput>.true</computeroutput> if the
+  object is connectable, otherwise <computeroutput>.false</computeroutput>.
+</para>
+<example id="ex.ole-isConnectable">
+<title>OLEObject - isConnectable method</title>
+<programlisting>
+<![CDATA[
+
+  outLook = .oleObject~new("Outlook.Application")
+
+  -- This searches all folders for the 'Mailbox - .. ' folder.  Which is
+  -- usually the default folder in a business installation of Outlook.
+  nameSpace = outLook~getNameSpace('MAPI')
+  folders = nameSpace~folders
+  do i = 1 to folders~count
+    if folders~item(i)~name~caselessPos("Mailbox") <> 0 then do
+      theMailBoxFolder = folders~item(i)
+      leave
+    end
+  end
+
+  -- Now that we have the Mailbox folder, get the collection of folders that
+  -- are contained in the Mailbox folder.
+  folders = theMailBoxFolder~folders
+
+  if folders~isConnectable then do
+    -- Add event methods to the folders object.
+    ...
+  end
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjisconnected"><title>isConnected</title>
+<indexterm><primary>isConnected method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isConnected</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnected.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Determines if the OLEObject instance is currently connected to a connectable OLE automation server.
+  Returns <computeroutput>.true</computeroutput> if the instance is connected and
+  <computeroutput>.false</computeroutput> if not.
+</para>
+<example id="ex.ole-isConnected">
+<title>OLEObject - isConnected method</title>
+<programlisting>
+<![CDATA[
+  wordObj = .oleObject~new("Word.Application", "WITHEVENTS")
+  if wordObj~isConnected then do
+    ...
+  end
+  else do
+    ...
+  end
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+
+
+
+<section id="oleobprogid" revisionflag="added"><title>&added50;ProgID</title>
+
+<indexterm><primary>ProgID attribute</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>ProgID</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_progid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the string value of the ProgID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
+</section>
+
+
+
+<section id="oleobjremoveeventhandler"><title>removeEventHandler</title>
+<indexterm><primary>removeEventHandler method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeEventHandler</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventhandler.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Removes the event handler and cleans up the internal data structures used to manage events. No event
+  methods will be invoked after this method is called. See the disconnectEvents() (<xref
+  linkend="oleobjdisconnectevents" />) method for a way to temporarily disconnect
+  from event notifications.
+</para>
+<example id="ex.ole-removeEventHandler">
+<title>OLEObject - removeEventHandler method</title>
+<programlisting>
+<![CDATA[
+
+  inboxItems~removeEventHandler
+  inboxItems~removeEventMethod("ItemAdd")
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="oleobjremoveeventmethod"><title>removeEventMethod</title>
+<indexterm><primary>removeEventMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeEventMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Removes the event method with the specified <emphasis role="italic">name</emphasis> that has been
+  previously added to this object by the addEventMethod() (<xref linkend="oleobjaddeventmethod" />)
+  method.
+</para>
+<example id="ex.ole-removeEventMethod">
+<title>OLEObject - removeEventMethod method</title>
+<programlisting>
+<![CDATA[
+
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+  inboxItems~connectEvents
+
+  ...
+
+::method doneWithItemEvents private
+  expose inboxItems
+
+  inboxItems~removeEventHandler
+  inboxItems~removeEventMethod("ItemAdd")
+
+]]>
+</programlisting>
+</example>
+</section>
+
 
 <section id="oleobunk"><title>unknown</title>
 <indexterm><primary>unknown method</primary>
