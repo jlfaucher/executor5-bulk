@@ -16,9 +16,9 @@
 
    license: CPL 1.0, Apache License 2.0
 */
-parse arg indicator needle
+parse arg indicator needle .
 bCLSID=(indicator=1)
-if \bCLSID then needle=indicator
+if \bCLSID then needle=indicator -- shift to needle
 
 bTiming=.false -- .true -- determines whether timings are shown
 time0=.DateTime~new
@@ -40,15 +40,22 @@ do
 end
 prefix=.rexxinfo~architecture"-bit #"
 len=items~length
+bDots=.false
 do counter i idx over allProgIds    -- idx is the ProgID
    if needle<>"", idx~caselessPos(needle)=0 then iterate
 
    o=all_progid~at(idx)    -- get ooRexx classid object
-   hint=checkProgId(idx)   -- supply hint whether ProgID adhers to MS specs
+   hint=checkProgId(idx)   -- supply hint whether ProgID adheres to MS specs
    if bCLSID then
-      say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5) "CLSID:" o~clsid
+   do
+      if bDots then
+         say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70,".") || hint~left(5,".") "CLSID:" o~clsid
+      else
+         say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) || hint~left(5) "CLSID:" o~clsid
+      bDots=\bDots
+   end
    else
-      say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) hint~left(5)
+      say prefix i~right(len)"/"items":" "ProgId:" pp(idx)~left(70) || hint~left(5)
 end
 time3=.DateTime~new
 if bTiming then

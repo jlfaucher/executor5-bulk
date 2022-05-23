@@ -20,6 +20,8 @@
                                 HTML (style-element in the head-element; default: true)
             2022-05-05, ---rgf, change utility name from "oleinfo.html" to "createOLEInfo.rex" in footer
             2022-05-08, ---rgf, add bitness to title
+            2022-05-10, ---rgf, - remove bitness from title, indicate .rexxInfo~name in subtitle
+                                - change footer to link ooRexx to Sourceforge
 
 	author:  Rony G. Flatscher,
 				Wirtschaftsuniversitaet/Vienna
@@ -189,11 +191,19 @@ end
   outMB=.mutableBuffer~new
   -- call time "r"
 
-  call sag '<h1 class="hilite">' a~oleString '('.rexxinfo~architecture'-bit)' '</h1>'
+  call sag '<h1 class="hilite">' a~oleString '</h1>'
   call sag
   call sag 'Definitions from typelib:' '[<span class="doc hilite">'a~libname'</span>]'
   call sag 'with the brief documentation:'
   call sag '[<span class="doc hilite">'a~libdoc'</span>]'
+
+  if .rexxinfo~revision>12393 then     -- attributes ProgID and CLSID are available
+  do
+     call sag '<p style="font-size: 75%">Effective ProgID: [<span class="doc hilite">'a~oleobject~progid'</span>]'
+     call sag 'CLSID: [<span class="doc hilite">'a~oleobject~clsid'</span>]</p>'
+  end
+
+  call sag '<br> <span style="font-size: 50%;">(These published interfaces got retrieved using the <em>.OLEInfo</em> class from ooRexx with the exact name: <em>&quot;'.rexxinfo~name'&quot;</em>.)</span>'
   call sag
 
   if arg(4, "Exists") then call sag htmlString  -- insert received HTML-string
@@ -209,11 +219,9 @@ end
   call sag '<div class="bottom_info">'
   call sag '<hr>'
   call sag 'Created with <span class="hilite">'
-  call sag '<a href="http://www.ooRexx.org">ooRexx (Open Object</a>'
-  call sag '<strong><a href="http://www.RexxLA.org">Rexx)</a></strong> </span> (&quot;createOleInfo.rex&quot;)'
+  call sag '<a href="https://sourceforge.net/projects/oorexx/">ooRexx</a> (Open Object'
+  call sag '<strong><a href="https://www.RexxLA.org">Rexx)</a></strong> </span> (&quot;createOleInfo.rex&quot;)'
 
-  -- call sag '<a href="http://www.software.ibm.com/ad/obj-rexx/">Object</a>'
-  -- call sag '<strong><a href="http://www.RexxLA.org">Rexx</a></strong> </span> (&quot;oleinfo_html.rex&quot;)'
   call sag 'on' '<span class="hilite">' pp(date("s") time()) '</span>'
   call sag 'run by' '<span class="hilite">' pp(.rgf.info) '</span>'
   call sag '<hr>'

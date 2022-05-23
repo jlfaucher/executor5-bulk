@@ -11,6 +11,8 @@
             2022-04-27, ---rgf, renamed from "rgf_reg_classids.rex" to "reg_classids.rex",
                                 updated university domain; removed obsolete "sort_util.rex"
             2022-04-28, ---rgf, renamed from "reg_classids.rex" to "reg_classids4ole.rex"
+            2022-05-23, ---rgf, add PROGID to "all_progid" even if a VersionIndependentProgID exists
+                                (this way all ProgIDs are really available)
 
 	author: Rony G. Flatscher,
 			Wirtschaftsuniversitaet/Vienna
@@ -242,8 +244,13 @@
 
       -- all_progid~setentry(odir~versionIndependentProgid, o)
       .clsid~all_progid[odir~versionIndependentProgid] = o
+-- say "versionIndependentProgId:" pp(odir~versionIndependentProgid) "-> o:" pp(o) "CLSID:" pp(o~clsid)
    end
-   else .clsid~all_progid[odir~progid] = o -- o.k., then use PROGID
+   -- else
+do
+   .clsid~all_progid[odir~progid] = o -- o.k., then use PROGID
+-- say "                  ProgId:" pp(odir~progId) "-> o:" pp(o)  "CLSID:" pp(o~clsid)
+end
 
    if odir~hasentry("TREATAS")                   then
    do
