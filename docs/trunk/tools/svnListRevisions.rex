@@ -112,7 +112,7 @@ if path<>"" then call test path
   parse arg path
 
   outData=.array~new
-  command="svn --xml --incremental list" path
+  command="svn -r HEAD --xml --incremental list" path
   address system command with output using (outData)
   if rc<>0 then
      raise syntax 40.900 array ( .context~name "(line" .line"): command" pp(command) "caused return code RC="pp(rc))
