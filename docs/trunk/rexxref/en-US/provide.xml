@@ -563,13 +563,8 @@ forward to(target) message(name) arguments(arguments)
 <secondary>for methods</secondary>
 <tertiary>changing</tertiary></indexterm>
 <indexterm><primary>changing the search order for methods</primary></indexterm>
-<para>You can change the usual search order for methods by: </para>
-<orderedlist>
-<listitem><para>Ensuring that the receiver object is the sender object.
-(You usually do this by specifying the special variable
-<xref linkend="xself" xrefstyle="template:SELF"/>).
-</para></listitem>
-<listitem><para>Specifying a colon and a class symbol after the message name.
+<para>You can change the usual search order for methods by
+specifying a colon and a class symbol after the message name.
 The class symbol can be a variable name or an environment symbol. It identifies
 the class object to be used as the starting point for the method search.</para>
 <para>The class object must be a superclass of the class defining the active
@@ -578,8 +573,8 @@ active method, the object's own class.
 The class symbol is usually the special variable
 <xref linkend="xsuper" xrefstyle="template:SUPER"/>,
 but it can be any <xref linkend="ensym" xrefstyle="template:environment symbol"/>
-or variable name whose value is a valid class.</para></listitem>
-</orderedlist>
+or variable name whose value is a valid class.</para>
+
 <para>Suppose you create an Account class that is a subclass of the Object
 class, define a TYPE method for the Account class, and create the Savings class
 that is a subclass of Account. You could define a TYPE method for the Savings
