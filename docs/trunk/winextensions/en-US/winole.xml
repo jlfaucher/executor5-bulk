@@ -426,21 +426,26 @@ return 0
 </para>
 <simplelist>
 <member>new (Class method)</member>
+<member>getObject(Class method)</member>
 <member>addEventMethod</member>
-<member>connectEvents</member>
+<member>class</member>
 <member>CLSID</member>
+<member>copy</member>
+<member>connectEvents</member>
 <member>disconnectEvents</member>
 <member>dispatch</member>
 <member>getConstant</member>
 <member>getKnownEvents</member>
 <member>getKnownMethods</member>
-<member>getObject(Class method)</member>
 <member>getOutParameters</member>
-<member>isConnected</member>
+<member>hasOleMethod</member>
 <member>isConnectable</member>
+<member>isConnected</member>
 <member>ProgID</member>
-<member>removeEvents</member>
 <member>removeEventHandler</member>
+<member>removeEventMethod</member>
+<member>start</member>
+<member>startWith</member>
 <member>unknown</member>
 </simplelist>
 <para>
@@ -634,6 +639,41 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </example>
 </section>
 
+<section id="oleobclass" revisionflag="added"><title>&added50;class</title>
+<indexterm><primary>class method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>class</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_class.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('class')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-classOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  clz=oleObj~class:.object    -- use method 'class' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
 <section id="oleobclsid" revisionflag="added"><title>&added50;CLSID</title>
 <indexterm><primary>CLSID attribute</primary>
 <secondary>of OLEObject class</secondary></indexterm>
@@ -648,6 +688,40 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </mediaobject>
 
 <para>Returns the string value of the CLSID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
+</section>
+
+<section id="oleobcopy" revisionflag="added"><title>&added50;copy</title>
+<indexterm><primary>copy method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>copy</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_copy.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('copy')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-copyOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  o=oleObj~copy:.object    -- use method 'copy' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
 </section>
 
 <section id="oleobjconnectevents"><title>connectEvents</title>
@@ -1335,6 +1409,74 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
 </example>
 </section>
 
+
+<section id="oleobstart" revisionflag="added"><title>&added50;start</title>
+<indexterm><primary>start method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>start</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_start.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('start')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-startOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  r=oleObj~start:.object(…)    -- use method 'start' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobstartwith" revisionflag="added"><title>&added50;startWith</title>
+<indexterm><primary>startwith method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>startwith</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_startwith.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('startwith')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-startwithOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  r=oleObj~startWith:.object(…) -- use method 'startWith' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
 
 <section id="oleobunk"><title>unknown</title>
 <indexterm><primary>unknown method</primary>
