@@ -22,6 +22,9 @@
             2022-05-08, ---rgf, add bitness to title
             2022-05-10, ---rgf, - remove bitness from title, indicate .rexxInfo~name in subtitle
                                 - change footer to link ooRexx to Sourceforge
+            2022-05-24, ---rgf, - only access attributes CLSID and ProgID if ooRexx is newer
+                                  than 2022-05-16 (not using revision number as that could
+                                  eventually change, e.g. when ooRexx moves from svn to git)
 
 	author:  Rony G. Flatscher,
 				Wirtschaftsuniversitaet/Vienna
@@ -197,7 +200,9 @@ end
   call sag 'with the brief documentation:'
   call sag '[<span class="doc hilite">'a~libdoc'</span>]'
 
-  if .rexxinfo~revision>12393 then     -- attributes ProgID and CLSID are available
+   -- determine date of ooRexx interpreter, if newer than 20220516, then the attributes CLSID and ProgId are available
+  sdate=date("s",.rexxinfo~date) -- turns ooRexx production date into a sorted date (YYYYMMDD)
+  if sdate>"20220516" then       -- show attributes ProgID and CLSID
   do
      call sag '<p style="font-size: 75%">Effective ProgID: [<span class="doc hilite">'a~oleobject~progid'</span>]'
      call sag 'CLSID: [<span class="doc hilite">'a~oleobject~clsid'</span>]</p>'
