@@ -67,7 +67,7 @@ else
   cd = directory()
   do d over "C:", "\\localhost\c$"
     call directory d
-    self~assertSame(SysDriveInfo(d), SysDriveInfo(), "SysDriveInfo() test expected to sometimes fail with a small free space delta")
+    self~assertAlmostSameInfo(SysDriveInfo(d), SysDriveInfo(), "SysDriveInfo() test expected to sometimes fail with a small free space delta")
     self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
     self~assertSame(SysFileSystemType(d), SysFileSystemType())
   end
@@ -95,7 +95,7 @@ else
     "\\.\UNC\localhost\c$"
     -- c is returned as c:, any trailing backslash is removed
     vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
-    self~assertSame(vol info, SysDriveInfo(volume), "SysDriveInfo("volume") test expected to sometimes fail with a small free space delta")
+    self~assertAlmostSameInfo(vol info, SysDriveInfo(volume), "SysDriveInfo("volume") test expected to sometimes fail with a small free space delta")
     self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
     self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
   end
@@ -112,19 +112,35 @@ else
 
     -- for inaccessible drives SysDriveInfo returns the null string, no device id
     self~assertOneOrAnother("", disk~DeviceID, drive, "SysDriveInfo" d info)
-    self~assertSameNilNull(disk~FreeSpace, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta")
-    self~assertSameNilNull(disk~Size, size, "SysDriveInfo" d info)
-    self~assertSameNilNull(disk~VolumeName, label, "SysDriveInfo" d info)
+    self~assertAlmostSame(disk~FreeSpace~string, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta")
+    self~assertSame(disk~Size~string, size, "SysDriveInfo" d info)
+    self~assertSame(disk~VolumeName~string, label, "SysDriveInfo" d info)
 
-    self~assertSameNilNull(disk~VolumeName, SysVolumeLabel(d), "SysVolumeLabel" d)
-    self~assertSameNilNull(disk~FileSystem, SysFileSystemType(d), "SysFileSystemType" d)
+    self~assertSame(disk~VolumeName~string, SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame(disk~FileSystem~string, SysFileSystemType(d), "SysFileSystemType" d)
   end
 
 
--- like assertSame, but compare with nullstring instead of .nil
-::method assertSameNilNull
+-- like assertSame, but a small free space delta is accepted
+::method assertAlmostSame
   use strict arg expected, actual, description
-  self~assertSame((expected == .nil)~?("", expected), actual, description)
+  if expected~dataType("n"), actual~dataType("n") then
+    -- volume free space can change rapidly, allow some fuzz
+    self~assertTrue((expected - actual)~abs <= 512 * 1024, expected"," actual"," description)
+  else
+    self~assertSame(expected, actual, description)
+
+-- like assertSame, but allow a small free space delta (second token)
+-- volume free space can change rapidly, allow some fuzz, e. g.
+-- C: 9123733504 254721126400 Windows
+-- C: 9123729408 254721126400 Windows
+::method assertAlmostSameInfo
+  use strict arg expected, actual, description
+  parse var expected drive free size label
+  parse var actual . actualFree .
+  if (free - actualFree)~abs <= 512 * 1024 then
+    expected = drive actualFree size label
+  self~assertSame(expected, actual, description)
 
 -- retrieve WMI information
 ::method wmi
