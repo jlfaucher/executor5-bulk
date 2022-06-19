@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: RexxExtensions Library XML File
     #
-    # Copyright (c) 2010-2019, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2010-2022, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -389,10 +389,10 @@ base one CSV file on another.
 <title>Attributes</title>
 
 <section>
-<title>DELIMETER Attribute</title>
+<title>DELIMITER Attribute</title>
 <indexterm><primary>csvStream</primary>
-<secondary>DELIMETER attribute</secondary></indexterm>
-<indexterm><primary>DELIMETER attribute</primary>
+<secondary>DELIMITER attribute</secondary></indexterm>
+<indexterm><primary>DELIMITER attribute</primary>
 <secondary>scvStream</secondary></indexterm>
 <para>
 This is the character which delimits the fields (as long as it does not appear within a
@@ -450,7 +450,7 @@ See <emphasis>Changing the behaviour of a csvStream object</emphasis> under the 
 <example>
 <title>Files without headers</title>
 <programlisting>
-csv = .csvStream~new('c:\MyData.csv') /* 2nd arg defaults to no headers */
+csv = .csvStream~new('MyData.csv') /* 2nd arg defaults to no headers */
 /* csv~skipHeaders = .false                UnNoOp to return header line */
 
 csv~open('write')                       /*=File looks like this=*/
@@ -468,14 +468,14 @@ do while csv~chars > 0                  /* New record           */
 end                                     /*======================*/
 csv~close
 
-::requires 'csvstream.cls'
+::requires 'csvStream.cls'
 </programlisting>
 </example>
 
 <example>
 <title>Files with headers</title>
 <programlisting>
-csv = .csvStream~new('c:\headered.csv',.true)
+csv = .csvStream~new('headered.csv', .true)
 csv~open          /* Stream class defaults to both ie:readWrite */
 myTable = .table~new
 myTable~put('red','colour')
@@ -496,14 +496,14 @@ Do while csv~chars > 0                  /* new record           */
 End                                     /*======================*/
 csv~close
 
-::requires 'csvstream.cls'
+::requires 'csvStream.cls'
 </programlisting>
 </example>
 
 <example>
 <title>Example with error checking</title>
 <programlisting>
-csv = .csvStream~new('c:\BadData.csv')
+csv = .csvStream~new('BadData.csv')
 
 csv~open('read')
 if csv~state = 'READY'
@@ -524,7 +524,7 @@ then do
 end
 else say 'COULD NOT OPEN CSV FILE -' csv~description
 
-::requires 'csvstream.cls'
+::requires 'csvStream.cls'
 </programlisting>
 </example>
 </section>
