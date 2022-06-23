@@ -333,18 +333,24 @@ databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
 </para>
 </listitem></varlistentry>
 
-<varlistentry><term><filename>ole\apps\MSWordStyles.rex</filename></term>
+<varlistentry><term><filename>ole\apps\MSExcel_cURL.rex</filename></term>
 <listitem>
-<para>Demonstrate how one can interact with <emphasis role="italic">Microsoft Word</emphasis>
-databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
+<para>
+Using <emphasis role="italic">OLE</emphasis> creates a new <emphasis role="italic">Microsoft Excel</emphasis>
+worksheet, queries the weather with the <emphasis role="italic">cURL</emphasis> command and inserts the received data.
+Using the worksheet temperature data a simple chart gets created.
 </para>
 </listitem></varlistentry>
 
-<varlistentry><term><filename>ole\apps\MSPowerPoint.rex</filename></term>
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_getMethods.rex</filename></term>
 <listitem>
-<para>Demonstrate how one can interact with <emphasis role="italic">Microsoft PowerPoint</emphasis>
-databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
+<para>
+ Example from <emphasis role="italic">"winextensions.pdf"</emphasis>,
+ <emphasis role="italic">"Example 8.11. OLEObject - getKnownMethods method"</emphasis>:
+ query and list all known methods from Microsoft Internet Explorer
 </para>
+
+
 </listitem></varlistentry>
 
 <varlistentry><term><filename>ole\apps\MSOutlook.rex</filename></term>
@@ -354,9 +360,23 @@ databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
 </para>
 </listitem></varlistentry>
 
-<varlistentry><term><filename>ole\apps\MSExcelCUrl.rex</filename></term>
+<varlistentry><term><filename>ole\apps\MSOutlook_monitorInbox.rex</filename></term>
 <listitem>
-<para>Demonstrate how one can interact with <emphasis role="italic">Microsoft Excel</emphasis>
+<para>
+Example from <emphasis role="italic">"winextensions.pdf"</emphasis>,
+<emphasis role="italic">"Example 8.3. OLEObject - Monitor Outlook"</emphasis>:
+ open <emphasis role="italic">Microsoft Outlook</emphasis>, attach an ooRexx
+ <emphasis role="italic">"ItemAdd"</emphasis> event listener
+ to monitor the inbox for adding new mails. The program takes commands
+ by watching every second whether one of the files <filename>pause.monitor</filename>,
+ <filename>restart.monitor</filename> or <filename>stop.monitor</filename> got
+ created in the meantime by the user.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSPowerPoint_layouts.rex</filename></term>
+<listitem>
+<para>Demonstrate how one can interact with <emphasis role="italic">Microsoft PowerPoint</emphasis>
 databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
 </para>
 </listitem></varlistentry>
@@ -364,6 +384,16 @@ databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
 <varlistentry><term><filename>ole\apps\oleUtils.frm</filename></term>
 <listitem>
 <para>Provides some useful utilities for working with the OLEObject class.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSWord_useStyles.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis>  creates a <emphasis role="italic">Micorsoft Word</emphasis>
+document, adds text using various styles and waits for the user to press the <emphasis role="italic">enter</emphasis>
+(<emphasis role="italic">return</emphasis>) key before changing font
+attributes of the styles named <emphasis role="italic">"Title"</emphasis> and <emphasis role="italic">"Heading 1"</emphasis>.
 </para>
 </listitem></varlistentry>
 
