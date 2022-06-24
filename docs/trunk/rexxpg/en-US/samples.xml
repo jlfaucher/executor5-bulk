@@ -368,12 +368,52 @@ role="italic">TextFrame</emphasis>, paragraphs and apply various formattings.
 </para>
 </listitem></varlistentry>
 
-<varlistentry><term>ole\apps\MSAccessDemo.rex</term>
+<varlistentry><term><filename>ole\apps\Lotus123.rex</filename></term>
+<listitem><para>Creates a new spreadsheet in
+<emphasis role="italic">Lotus 1-2-3</emphasis>
+and fills in a table with fictional
+revenue numbers. The table also contains a calculated field and different
+styles. A second sheet is added with a 3D chart displaying the revenue data.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusNotes_mail.rex</filename></term>
+<listitem><para>Creates a mail message in
+<emphasis role="italic">Lotus Notes</emphasis>
+and sends it to a number of recipients automatically.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusWordPro.rex</filename></term>
+<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis>,
+enters some text with different attributes, and finally saves and prints the document.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusWordPro_clickHereFields.rex</filename></term>
+<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis> with
+a provided <emphasis role="italic">Smartmaster</emphasis>.
+Fills in some <emphasis role="italic">"Click here"</emphasis> fields with data prompted by the program or
+queried from the system. Finally the document is saved to the directory in which this Rexx
+program is located and is sent to the printer.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSAccessDemo.rex</filename></term>
 <listitem>
 <para>Demonstrate how one can interact with <emphasis role="italic">Jet (MS Access)</emphasis>
 databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
 </para>
 </listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSAccess_contacts.rex</filename></term>
+<listitem>
+<para>
+Demonstrate how one can create a database in <emphasis role="italic">Microsoft Access</emphasis>
+using <emphasis role="italic">ActiveX/OLE</emphasis>.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSExcel.rex</filename></term>
+<listitem><para>Creates a <emphasis role="italic">Microsoft Excel</emphasis> sheet, enters some data,
+and saves it.
+</para></listitem></varlistentry>
 
 <varlistentry><term><filename>ole\apps\MSExcel_cURL.rex</filename></term>
 <listitem>
@@ -394,6 +434,13 @@ Using <emphasis role="italic">OLE</emphasis> creates a new <emphasis role="itali
 </para>
 </listitem></varlistentry>
 
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_events.rex</filename></term>
+<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
+<itemizedlist>
+<listitem><para>Navigate to the RexxLA homepage and disallow the changing of the URL to a
+page not in that "address space".</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+
 <varlistentry><term><filename>ole\apps\MSInternetExplorer_getMethods.rex</filename></term>
 <listitem>
 <para>
@@ -402,6 +449,24 @@ Using <emphasis role="italic">OLE</emphasis> creates a new <emphasis role="itali
  query and list all known methods from Microsoft Internet Explorer
 </para>
 </listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_navigate.rex</filename></term>
+<listitem><para>Starts <emphasis role="italic">Internet Explorer</emphasis> and shows the
+<emphasis role="italic">IBM</emphasis> homepage.
+After 10 seconds the <emphasis role="italic">RexxLA</emphasis> events page will be displayed for 10 seconds.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_search.rex</filename></term>
+<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
+<itemizedlist>
+<listitem><para>Search for the string "Rexx" on the RexxLA Web page, and go randomly
+to one of the found sites.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_stockPrice.rex</filename></term>
+<listitem><para>Gets the stock price from the RexxLA internet page with
+<emphasis role="italic">Microsoft Internet Explorer</emphasis>, and stores it in a Rexx variable.
+</para></listitem></varlistentry>
 
 <varlistentry><term><filename>ole\apps\MSOutlook.rex</filename></term>
 <listitem>
@@ -441,15 +506,12 @@ Example from <emphasis role="italic">"winextensions.pdf"</emphasis>,
  Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">MS
  PowerPoint</emphasis> presentation about REXX and ooRexx and then start it as a presentation.
 </para>
-
-
 </listitem></varlistentry>
 
-<varlistentry><term><filename>ole\apps\oleUtils.frm</filename></term>
-<listitem>
-<para>Provides some useful utilities for working with the OLEObject class.
-</para>
-</listitem></varlistentry>
+<varlistentry><term><filename>ole\apps\MSWord_createModify.rex</filename></term>
+<listitem><para>Creates a <emphasis role="italic">Microsoft Word</emphasis> document, enters some text,
+and saves it. The program then loads the document again and modifies it.
+</para></listitem></varlistentry>
 
 <varlistentry><term><filename>ole\apps\MSWord_useStyles.rex</filename></term>
 <listitem>
@@ -461,88 +523,15 @@ attributes of the styles named <emphasis role="italic">"Title"</emphasis> and <e
 </para>
 </listitem></varlistentry>
 
-<varlistentry><term>ole\apps\samp01.rex</term>
-<listitem><para>Starts <emphasis role="italic">Internet Explorer</emphasis> and shows the <emphasis role="italic">IBM</emphasis> homepage.
-After 10 seconds the <emphasis role="italic">IBM</emphasis> news page is displayed.
-</para></listitem></varlistentry>
+<varlistentry><term><filename>ole\apps\oleUtils.frm</filename></term>
+<listitem>
+<para>Provides some useful utilities for working with the OLEObject class.
+</para>
+</listitem></varlistentry>
 
-<varlistentry><term>ole\apps\samp02.rex</term>
-<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Shell</emphasis> object:
-<itemizedlist spacing="compact">
-<listitem><para>Query environment string</para></listitem>
-<listitem><para>List special folders</para></listitem>
-<listitem><para>Create a shortcut on the desktop</para></listitem>
-</itemizedlist>
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp03.rex</term>
-<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Network</emphasis>
-object:
-<itemizedlist spacing="compact">
-<listitem><para>Query computer name, user name</para></listitem>
-<listitem><para>List network connections for drives and printers</para></listitem>
-</itemizedlist>
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp04.rex</term>
-<listitem><para>Creates a mail message in
-<emphasis role="italic">Lotus Notes</emphasis>
-and sends it to a number of recipients automatically.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp05.rex</term>
-<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis>,
-enters some text with different attributes, and finally saves and prints the document.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp06.rex</term>
-<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis> with
-a provided <emphasis role="italic">Smartmaster</emphasis>.
-Fills in some <emphasis role="italic">"Click here"</emphasis> fields with data prompted by the program or
-queried from the system. Finally the document is saved to the directory in which this Rexx
-program is located and is sent to the printer.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp07.rex</term>
-<listitem><para>Creates a new spreadsheet in
-<emphasis role="italic">Lotus 1-2-3</emphasis>
-and fills in a table with fictional
-revenue numbers. The table also contains a calculated field and different
-styles. A second sheet is added with a 3D chart displaying the revenue data.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp08.rex</term>
-<listitem><para>Creates a <emphasis role="italic">Microsoft Word</emphasis> document, enters some text,
-and saves it. The program then loads the document again and modifies it.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp09.rex</term>
-<listitem><para>Creates a <emphasis role="italic">Microsoft Excel</emphasis> sheet, enters some data,
-and saves it.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp10.rex</term>
+<varlistentry><term><filename>ole\apps\ScriptingFileSystemObject.rex</filename></term>
 <listitem><para>Uses the <emphasis role="italic">Windows Script Host FileSystemObject</emphasis> to obtain information
 about the drives of the system.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp11.rex</term>
-<listitem><para>Gets the stock price from the RexxLA internet page with
-<emphasis role="italic">Microsoft Internet Explorer</emphasis>, and stores it in a Rexx variable.
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp12.rex</term>
-<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
-<itemizedlist>
-<listitem><para>Navigate to the RexxLA homepage and disallow the changing of the URL to a
-page not in that "address space".</para></listitem></itemizedlist>
-</para></listitem></varlistentry>
-
-<varlistentry><term>ole\apps\samp13.rex</term>
-<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
-<itemizedlist>
-<listitem><para>Search for the string "Rexx" on the RexxLA Web page, and go randomly
-to one of the found sites.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
 
 <varlistentry><term><filename>ole\apps\ShellApplication_listSystemFolders.rex</filename></term>
@@ -552,6 +541,25 @@ to one of the found sites.</para></listitem></itemizedlist>
  and queries all Windows system folders.
 </para>
 </listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\WScriptNetwork.rex</filename></term>
+<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Network</emphasis>
+object:
+<itemizedlist spacing="compact">
+<listitem><para>Query computer name, user name</para></listitem>
+<listitem><para>List network connections for drives and printers</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\WScriptShell.rex</filename></term>
+<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Shell</emphasis> object:
+<itemizedlist spacing="compact">
+<listitem><para>Query environment string</para></listitem>
+<listitem><para>List special folders</para></listitem>
+<listitem><para>Create a shortcut on the desktop</para></listitem>
+<listitem><para>Use a GUI popup</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
 
 <varlistentry><term>ole\oleinfo\oleinfo.rex</term>
 <listitem><para>This application is a "small" browser for OLE objects.
