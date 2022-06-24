@@ -58,17 +58,8 @@ return testResult
    --
    self~assertSame(tmpLine, .LINE)
 
-
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- Here tmpLine is hard coded for an absolute test.  It lines are added or
-   -- or removed above this, the test will fail.  Then the hard coded value
-   -- must be adjusted.
-   tmpLine = 71
-   --
-   --
-   --
-   self~assertSame(tmpLine, .line)
+   signal foo; foo: tmpline = sigl; envline = .line
+   self~assertSame(tmpLine, envline)
 
 
 ::method "test_local_directory_entries"
