@@ -481,40 +481,19 @@ loadErr:
   self~expectSyntax(88.922)
   l~close("now")
 
-::method test_readRecords01
-  l = .WindowsEventLog~new
-
-  ret = l~readRecords
-  self~assertSame(0, ret)
-  self~assertSame(l~getNumber, l~events~items)
-
-::method test_readRecords02
-  l = .WindowsEventLog~new
-
-  ret = l~readRecords( , , "Application")
-  self~assertSame(0, ret)
-  self~assertSame(l~getNumber( , "Application"), l~events~items)
-
 ::method test_readRecords03
   l = .WindowsEventLog~new
 
-  ret = l~readRecords( , , "System", 1, 50)
+  ret = l~readRecords( , , "System", l~getFirst(, "System"), 50)
   self~assertSame(0, ret)
   self~assertSame(50, l~events~items)
 
 ::method test_readRecords05
   l = .WindowsEventLog~new
 
-  ret = l~readRecords("FORWARDS" , , "System", 1, 25)
+  ret = l~readRecords("FORWARDS" , , "System", l~getFirst(, "System"), 25)
   self~assertSame(0, ret)
   self~assertSame(25, l~events~items)
-
-::method test_readRecords06
-  l = .WindowsEventLog~new
-
-  ret = l~readRecords("BACKWARDS" , , "System")
-  self~assertSame(0, ret)
-  self~assertSame(l~getNumber( , "System"), l~events~items)
 
 
 -- helper method: ignore log names known to have issues
@@ -538,6 +517,30 @@ loadErr:
 ::method init class
   forward class (super) continue
   self~ooTestType = .ooTestTypes~UNIT_LONG_TEST
+
+-- may take minutes to finish
+::method test_readRecords01
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber, l~events~items)
+
+-- may take minutes to finish
+::method test_readRecords02
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords( , , "Application")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "Application"), l~events~items)
+
+-- may take minutes to finish
+::method test_readRecords06
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords("BACKWARDS" , , "System")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "System"), l~events~items)
 
 ::method test_getNumber04
   l = .WindowsEventLog~new

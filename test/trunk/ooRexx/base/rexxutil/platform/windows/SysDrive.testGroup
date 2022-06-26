@@ -102,7 +102,8 @@ else
 
 -- test returned values for all drives in use
 ::method test_drives
-  do d over SysDriveMap("c:")~subWords
+  -- to avoid this test failing on empty CD-ROM drives, we'll skip all CD-ROMs
+  do d over SysDriveMap()~subWords~difference(SysDriveMap(, "cdrom")~subWords)
     info = SysDriveInfo(d)
     parse var info drive free size label
 
@@ -130,7 +131,7 @@ else
   else
     self~assertSame(expected, actual, description)
 
--- like assertSame, but allow a small free space delta (second token)
+-- SysDriveInfo string assertSame, but allow a small free space delta (second token)
 -- volume free space can change rapidly, allow some fuzz, e. g.
 -- C: 9123733504 254721126400 Windows
 -- C: 9123729408 254721126400 Windows
