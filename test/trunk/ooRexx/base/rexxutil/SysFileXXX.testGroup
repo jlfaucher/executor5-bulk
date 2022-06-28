@@ -102,6 +102,10 @@ else
   -- no wildcard characters allowed (but might match a file "*" on Unix)
   self~assertFalse(SysFileExists("*"))
 
+::method test_fileexists_nil_invalid
+  self~expectSyntax(88.909)
+  call sysFileExists .nil
+
 -- both files and directories
 ::method test_fileexists
   -- does not exist
