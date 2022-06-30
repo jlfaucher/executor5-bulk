@@ -41,3 +41,14 @@ create/change documentation parts.
           Note: the tools for Linux are relying on an internet connection and are
           considerably slower than on macOS or Windows. Proposals for amendments
           are welcome.
+
+- JenkinsDocBuildTools.zip
+
+        - contains the tools to build the ooRexx documentation on a macOS Jenkins
+          agent; unzip and copy the contents of this folder to a folder to be used
+          for building the documents and follow the instructions in WhatIsHere.txt.
+          This folder contains the rex script used by Jenkins to 
+          (i) build the ooRexx documentation (if amended)
+          (ii) upload the ooRexx documentation
+          The script will check and build/upload only documents that have been
+          amended. Instructions for use are embedded in the script.
