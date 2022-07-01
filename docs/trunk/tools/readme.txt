@@ -1,4 +1,4 @@
-docs\trunk\tools (as of: 2020-05-26)
+docs\trunk\tools (as of: 2022-07-01)
 ------------------------------------
 
 This directory is supposed to collect all utilities that can be used to
@@ -16,6 +16,11 @@ create/change documentation parts.
 
         - if SVG images get created by exporting an ODG image using OpenOffice, then
           remove the string " embedded" in the font-family name that AOO adds
+
+- svnListRevisions.rex
+
+        - This tool uses "svn list --xml --incremental" to get the revision numbers
+          of all files and directories under revision control from the supplied path.
 
 - bldoc_win:
 
