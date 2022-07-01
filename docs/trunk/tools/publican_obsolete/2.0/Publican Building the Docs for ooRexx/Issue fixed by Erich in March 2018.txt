@@ -1,0 +1,41 @@
+From erich.steinboeck@gmail.com Fri Mar  2 04:38:41 2018
+
+I finally fixed this issue by manually changing a line in
+publican\xsl\pdf.xsl
+
+from
+<xsl:include href=3D"
+http://docbook.sourceforge.net/release/xsl/current/fo/footnote.xsl"/>
+
+to
+<xsl:include
+href=3D"file:///C:/Program%20Files%20(x86)/Publican/docbook-xsl-1.76.1/fo/f=
+ootnote.xsl"/>
+
+not nice, but works for me
+
+======================================================================
+
+On Sun, Nov 15, 2015 at 2:48 PM, Erich Steinb=C3=B6ck <erich.steinboeck@gma=
+il.com
+> wrote:
+
+> When working offline or during Sourceforge outages like the one yesterday
+> evening I'm receiving the following Publican error:
+>
+> xsl:include : unable to load http://docbook.sourceforge.
+> net/release/xsl/current/
+> fo/footnote.xsl
+>
+> I uninstalled and re-installed Publican (Windows installer) with Docbook
+> selected, all other brands deselected, but wasn't offered any "local
+> install" option.
+>
+> Windows Registry keys seem to be set correctly:
+>
+> WriteRegStr HKLM "Software\Publican" "" C:\Program Files (x86)\Publican
+> WriteRegStr HKLM "Software\Publican" "dtd_path" "C:\Program Files
+> (x86)\Publican\DocBook_DTD"
+> WriteRegStr HKLM "Software\Publican" "xsl_path" "C:\Program Files
+> (x86)\Publican\docbook-xsl-1.76.1"
+>
