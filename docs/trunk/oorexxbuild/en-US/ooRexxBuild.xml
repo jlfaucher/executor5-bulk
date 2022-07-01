@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Build Machine Document XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -47,6 +47,8 @@
 	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+<chapter><title>WORK IN PROGRESS FAR FROM READY</title>
+</chapter>
 
 <chapter><title>Release Build Environment Description</title>
 
@@ -97,55 +99,96 @@ KVM environment. This would ease security concerns and provide the easiest setup
 </para></listitem>
 </itemizedlist>
 </section>
+
+<section><title>Update 2018-2022</title>
+
+<para>After having been hosted in a cloud solution for some time, with some
+performance problems, it was decided to try to migrate Jenkins to a system more
+in line with the solution initially drawn up. It was agreed that the Requirements
+were essentially the same as before.
+</para>
+</section>
+
+<section><title>New Solution</title>
+
+<itemizedlist>
+<listitem><para>It was determined that rather than running all the software on
+one single powerfull (and expensive) server, a better solution would be to
+use one server as a controller, running the Jenkins webserver, and to connect
+to distributed agents provided by volounteers. This is also the recommended
+setup for Jenkins, since running agent tasks on the controller is deprecated for
+safety reasons. This also requires only a moderatly powerful server and the
+build system is easily scalable. Initially one server and three agents were
+donated to the project (Windows, macOS and Raspberry Linux agents) and further
+remote agents were contributed.
+</para></listitem>
+<listitem><para>During 2021 and 2022 it was once again experimented with
+virtualisation, this time using Virtualbox running on a machine separated from
+the Jenkins controller.
+</para></listitem>
+<listitem><para>The server used as Controller was set up using Ubuntu, whereas
+the machine hosting Virtualbox was a macOS machine. Since macOS can only be
+installed in a VM running on true Apple hardware, this provided the additional
+advantage that all kinds of platforms could be set up in virtual machines
+(Windows, macOS, Linux, Unix)
+</para></listitem>
+</itemizedlist>
+</section>
 </chapter>
 
-<chapter><title>Build Machine Functional Description</title>
+<chapter><title>Build Machine (Controller) Functional Description</title>
 
-<para>The following is the server hardware configuration chosen to support the
-ooRexx build environment.
+<para>The following is the server hardware configuration to support the
+ooRexx build environment:
 </para>
 
 <simplelist>
-<member>Dell T110 server
+<member>Dell T20 server
 </member>
 <member>Quad Core Intel<trademark class="registered"></trademark>
-Xeon<trademark class="registered"></trademark> CPU
+Xeon<trademark class="registered"></trademark> 3.2 GHz CPU
 </member>
-<member>16GiB DDR2, 533 MHz, 4X4G Dual Ranked DIMMS Memory
+<member>12GiB DDR3
 </member>
-<member>2TB, SATA II, 3.5-inch, 7.2K RPM Hard Drive
+<member>System disk: Crucial BX500 240 GB 3D NAND SATA 2,5-Zoll SSD
+</member>
+<member>Data disk: 1 TB TOSHIBA DT01ACA100 (MS2OA7S0)
+</member>
+<member>Backup disk: WDC Western Digital WD5000AAVS-00ZTB0 (01.01B01)
 </member>
 <member>CDROM/DVD R/W
 </member>
 </simplelist>
 
-<para>The following software was installed on the server.
+<para>The following operating system and ooRexx is currently installed on the
+Controller (2022-07-01):
 </para>
 
 <itemizedlist>
-<listitem><para>Fedora 17 with Virtualization enabled
+<listitem><para>Ubuntu 20.04 LTS
 </para></listitem>
-<listitem><para>ooRexx version 4.1 for Linux
+<listitem><para>ooRexx version 5.0.0
 </para></listitem>
 </itemizedlist>
 
 <section><title>Build Host User Accounts</title>
 
-<para>After Fedora was installed on the server one user account was extablished
-to own everything concerning the build process and administration of the server.
-The account name was <emphasis role="italic">buildorx</emphasis>.
+<para>After Ubuntu was installed on the Controller one user account was
+established to own everything concerning the build process and administration of
+the server. The account name was <emphasis role="italic">jenkins</emphasis>.
 This account is very important because it will own the shared files for
 the guest operating systems.
 </para>
 
-<para>The <emphasis role="italic">buildorx</emphasis> account will also own the
-HTML pages used to control the server through the Apache web interface.
+<para>A <emphasis role="italic">jenkins</emphasis> account is used on all
+physical machines, whereas a <emphasis role="italic">osboxes</emphasis> account
+is used on all virtual machines. More about this later.
 </para>
 </section>
 
 <section><title>Disk Layout</title>
 
-<para>After considering a number of different partitioning schemes for the build
+<para>CONTINUE HERE After considering a number of different partitioning schemes for the build
 server it was determined that the best alternative would be to keep the
 partitioning scheme as simple as possible and still provide for upgrades to
 the host system. The following scheme was applied to the server disk.
