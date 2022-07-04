@@ -2749,5 +2749,11 @@ end
     end
   end
 
+-- tests for the [bugs:1695] "if format(99.999,,2,,2) \== '1.00E+2' then say 'ok' segfaults"
+
+::method test_format_bug_1695_as_reported
+
+  self~assertSame('1.00E+2', '99.999'~format(,2,,2))
+
 
 ::options novalue error
