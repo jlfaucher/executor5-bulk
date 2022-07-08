@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2022 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -189,7 +189,7 @@
     -- https://xmlgraphics.apache.org/fop/download.html
     -- Use the above site to find an alternate mirror site if needed.
     src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
-    fop_pkg = "fop-2.6"
+    fop_pkg = "fop-2.7"
     if \.file~new(".\"fop_pkg)~isDirectory then do
         say "Making Apache FOP package available. (5/5)"
         fop_zip_name = zips_dir"\"fop_pkg"-bin.zip"
