@@ -1,7 +1,6 @@
-#!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2022 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,39 +34,42 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* Name: DOC_PROPS.REX                                                        */
+/* Name: GETDOCREV.REX                                                        */
 /* Type: Object REXX Script                                                   */
 /*                                                                            */
--- REQUIRES file for scripts to build ooRexx documents
-    prop_fn = 'bldoc.env'   -- name of the properties file
+/* Get the SVN revision level and revision date of a document. Expects one
+    argument - the name of the document specified as the directory name of the
+    source under docs/trunk. E.g. the Rexx Reference book is rexxref.
 
-    if .file~new(prop_fn)~exists then   -- load the saved properties
-        props = .properties~load(prop_fn)
-    else do                             -- need to create a new properties file
-        props = .properties~new
-        props~setProperty('prop_fn', prop_fn)   -- save the name of the file
-        -- set all the default values
-        props~setProperty('OS_type', .RexxInfo~platform)
-        props~setProperty('dir_sep', .RexxInfo~directorySeparator)
-        props~setProperty('docpath', '')
-        props~setProperty('whichdoc', '')
-        props~setProperty('work_folder', 'work_folder')
-        props~setProperty('fo_files', 'fo_files')
-        props~setProperty('log_files', 'log_files')
-        props~setProperty('PDF_files', 'pdf_files')
-        props~setProperty('HTML_folders','html_folders')
-        props~setProperty('HTML_zipfiles','html_zipfiles')
-        props~setProperty('xslt_opts', '')
-        props~setProperty('fop_opts', '-Xmx1280M')
-        props~setLogical('verbose', .false)
-        props~setLogical('zip_HTML', .true)
-        props~setLogical('rexxref', .true)
-        props~setLogical('rexxapi', .true)
-        props~save(prop_fn)         -- save it in the properties file
-    end
-    .local~doc.props = props        -- put the properties collection in .local
+   Normally run as part of the DOCPREP.REX program when preprocessing the
+    entity file for some documents, it can also be run from the command line.
+    An optional second parameter can be supplied to specify the path to the
+    working copy of the documents (docpath).  This value can also be retrieved
+    from an environment variable named DOCPATH.  If this is not specified, the
+    SVN revision level of the document in the repository will be determined.
 
-::routine save_props public
-    props = .doc.props
-    prop_fn = props~getProperty('prop_fn')
-    props~save(prop_fn)
+   The return value (or output to the console if being run from the command
+    line) is a two word string of the revision level and the revision date.
+*/
+    parse arg doc .
+    parse source . how .
+    svnURL = "https://svn.code.sf.net/p/oorexx/code-0/docs/trunk/"
+    if how = "COMMAND" then
+        docpath = arg(1)~word(2)
+    else
+        docpath = arg(2)
+    if docpath = "" then
+        docpath = value('docpath', , 'ENVIRONMENT') --is a working copy defined?
+    -- use working copy if available
+    where = (docpath~strip("T", "\") = "")~?(svnURL, docpath"\")
+    svncmd = "svn log" where || doc "-l 1"
+    -- use the svn log command to get the most recent change information for
+    --  the document
+    address path svncmd with output stem log.
+    -- the second line of the output starts with the revision number and also
+    --  contains the revision date; e.g. r12347
+    parse var log.2 rev . . . rdate .
+    if how = "COMMAND" then
+        say "The" doc "document is at revision" rev rdate"."
+    else
+        return rev rdate

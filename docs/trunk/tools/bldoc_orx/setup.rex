@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -194,22 +194,27 @@
     -- https://xmlgraphics.apache.org/fop/download.html
     -- Use the above site to find an alternate mirror site if needed.
     src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
-    fop_pkg = "fop-2.6"
-    if \.file~new(".\"fop_pkg)~isDirectory then do
-        say "Making Apache FOP package available. (5/5)"
-        fop_zip_name = zips_dir"\"fop_pkg"-bin.zip"
-        fop_zip = .file~new(fop_zip_name)
-        if \fop_zip~exists then do
-            say _"Downloading" fop_pkg"-bin.zip"
-            call retrieve src_url||fop_pkg"-bin.zip", fop_zip_name
-            if result \= 0 then
-                say _"Error retrieving" fop_pkg"-bin.zip; RC was" result"."
-        end
-        if fop_zip~exists then do
-            say _"Unzipping" fop_pkg"-bin.zip"
-            call unzip fop_zip_name, .
-            if result \= 0 then
-                say _"Error unzipping" fop_pkg"-bin.zip; RC was" result"."
+    fop_lvl = getfoplvl()   -- determine the latest version from the Web page
+    if fop_lvl = "??" then
+        say "Unable to determine the latest version of Apache FOP."
+    else do
+        fop_pkg = "fop-"fop_lvl
+        if \.file~new(".\"fop_pkg)~isDirectory then do
+            say "Making Apache FOP package available. (5/5)"
+            fop_zip_name = zips_dir"\"fop_pkg"-bin.zip"
+            fop_zip = .file~new(fop_zip_name)
+            if \fop_zip~exists then do
+                say _"Downloading" fop_pkg"-bin.zip"
+                call retrieve src_url||fop_pkg"-bin.zip", fop_zip_name
+                if result \= 0 then
+                    say _"Error retrieving" fop_pkg"-bin.zip; RC was" result"."
+            end
+            if fop_zip~exists then do
+                say _"Unzipping" fop_pkg"-bin.zip"
+                call unzip fop_zip_name, .
+                if result \= 0 then
+                    say _"Error unzipping" fop_pkg"-bin.zip; RC was" result"."
+            end
         end
     end
 
@@ -229,13 +234,13 @@
     exit
 
 retrieve: procedure -- get the package from the Internet
-    parse arg url, zipfile
+    parse arg url, outfile
     if arg(3, O) then   -- use the newer BITS method
         address path -
-            "powershell Start-BitsTransfer """url""" -Destination" zipfile
+            "powershell Start-BitsTransfer """url""" -Destination" outfile
     else                -- use older API
         address path -
-            "powershell Invoke-WebRequest" url "-OutFile" zipfile
+            "powershell Invoke-WebRequest" url "-OutFile" outfile
     return RC
 
 unzip: procedure    -- extract the package files to the appropriate location
@@ -243,3 +248,21 @@ unzip: procedure    -- extract the package files to the appropriate location
     address path -
     "powershell Expand-Archive -Path" zipfile "-DestinationPath" outdir "-Force"
     return RC
+
+getfoplvl: procedure    -- determine the current level of FOP
+    fopHomePage = "https://xmlgraphics.apache.org/fop/"
+    htmlFile = .file~new("fop_page.htm")
+    call retrieve fopHomePage, htmlFile~name
+    fopPage = .stream~new(htmlFile)
+    fopLines = fopPage~arrayin
+    fopPage~close
+    htmlFile~delete
+    lvl = '??'  -- default if unable to find the line with the latest level
+    do i=1 to fopLines~items
+        if fopLines[i]~pos('latest version of FOP is available at') > 0 then do
+            -- found the line, now get the value of the latest level
+            parse value fopLines[i] with . '<a' . '>FOP ' lvl '<' .
+            leave
+        end
+    end
+    return lvl

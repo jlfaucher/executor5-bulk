@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -129,6 +129,28 @@
             end
             when ext = 'ENT' then do    -- TBD
                 -- process the entities file, updating the VERSION and EDITION
+                -- determine if this document needs these changes
+                if props~getLogical(whichdoc~lower, .false) then do
+                    parse value getdocrev(whichdoc, docpath) with rev rdate
+                    do j = 1 to theLines~items
+                        parse value theLines[j] with w1 w2 w3 .
+                        if w2 = "VERSION", w1 = "<!ENTITY" then do  -- VERSION
+                            if w3~countstr(".") > 2 then do -- has revision lvl
+                                -- remove the revision level
+                                parse var w3 v1 "." v2 "." v3 "." .
+                                w3 = v1"."v2"."v3'">'
+                                theLines[j] = w1 w2 w3
+                            end
+                        end
+                        if w2 = "EDITION", w1 = "<!ENTITY" then do  -- EDITION
+                            if (w3~left(3) = '"0.') | ,   -- old format
+                               (w3~pos('(revision') > 0) then do
+                                w3 = '"'rdate '(revision' rev~substr(2)')">'
+                                theLines[j] = w1 w2 w3
+                            end
+                        end
+                    end
+                end
                 newSource = .file~new(work_folder||_||aFile~name)
                 .stream~new(newSource)~~arrayOut(theLines)~close
             end
