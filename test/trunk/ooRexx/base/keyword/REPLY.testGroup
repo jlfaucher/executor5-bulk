@@ -158,11 +158,12 @@ else
   self~assertSame("started", self~read)
   -- wait until the REPLY thread has started filling the data array
   loop 10000 while self~data~items = 0
+     call syssleep .1
   end
-  -- in all likelihood the data array should not yet be fully filled
+  -- at this point, the only thing we can reliably test for is > 0
   lines = self~data~items
   self~assertTrue(self~eof) -- guarded method will wait for EOF
-  self~assertTrue(lines < self~data~items, lines "should be less than" self~data~items)
+  self~assertTrue(lines > 0, lines "should be greater than 0")
 
 ::attribute data unguarded
 ::attribute eof
