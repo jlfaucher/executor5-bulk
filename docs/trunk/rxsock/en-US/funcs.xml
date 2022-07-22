@@ -627,7 +627,8 @@ error.</para>
 
 <para>The return value is the dotAddress of the local host.
 </para>
-<note><para>SockGetHostId() interfaces with the C function gethostid().
+<note><para>SockGetHostId() interfaces with the C functions gethostname() and gethostbyname() for Windows platforms and with the C function getifaddrs() for non-Windows platforms (Unix, Linux, macOS). For non-Windows platforms lacking getifaddrs() there is a fallback to using
+gethostname() and gethostbyname().
 </para></note>
 </section>
 
@@ -2114,4 +2115,3 @@ socket.
 <para>This function is identical to SockClose().</para>
 </section>
 </chapter>
-
