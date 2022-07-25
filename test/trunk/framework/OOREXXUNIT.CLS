@@ -491,65 +491,42 @@ return .Rexxinfo~architecture
 
 ::class "TestResult" public subclass TestCollectingParameter
 
-::attribute logQueue               -- ooRexxUnit only
-::attribute TestCaseTable          -- ooRexxUnit only
-
 -- The default formatter class for this test result.
 ::attribute formatter private
 
 ::method init
-  expose fErrors fFailures fRunTests fStop fTestRuns TestCaseTable logQueue fAssertions
+  expose fErrors fFailures fRunTests fStop fTestRuns fAssertions
 
   fErrors=.queue~new
   fFailures=.queue~new
-  logQueue=.queue~new
 
   fAssertions=0
   fRunTests=0
   fStop=.false
 
-  TestCaseTable=.table~new
-
   self~setVerbosity(self~DEFAULT_VERBOSITY)
   self~formatter = .SimpleFormatter
 
 ::method addError
-  expose fErrors TestCaseTable logQueue
+  expose fErrors
   use arg aTestCase, errData
 
   fErrors~queue(errData)
-  logQueue~queue(errData)
-
-  -- TODO find out who uses this info and tell them it is broke.
-  TestCaseTable[aTestCase]~queue(errData)
-
 
 ::method addFailure unguarded
-  expose fFailures TestCaseTable logQueue
+  expose fFailures
   use arg aTestCase, failData
 
   fFailures~queue(failData)
-  logQueue~queue(failData)
-
-  -- TODO find out who uses this info and tell them it is broke.
-  TestCaseTable[aTestCase]~queue(failData)
 
 ::method assertCount    -- ooRexxUnit only
   expose fAssertions
   return fAssertions
 
 ::method endTest        -- informs that the supplied test was completed
-  expose TestCaseTable fStop logQueue fAssertions
+  expose fStop fAssertions
   use arg aTestCase
 
-  dateTime=timeStamp()
-  TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
-
-  -- save class' 'caseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
-
-  logQueue~queue(dir)
   fAssertions=fAssertions+aTestCase~assertCount
   fStop=.false          -- reset indicator
 
@@ -585,23 +562,13 @@ return .Rexxinfo~architecture
   return fStop
 
 ::method startTest
-  expose TestCaseTable fStop fRunTests logQueue
+  expose fStop fRunTests
   use arg aTestCase
 
-  if TestCaseTable~hasindex(aTestCase)=.false then -- already a queue created for it?
-     TestCaseTable[aTestCase]=.queue~new
-
-  dateTime=timeStamp()
-  TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
-
-  -- save class' 'testCaseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
-
-  logQueue~queue(dir)
-
   fStop=.false          -- reset indicator
+if \aTestCase~isA(.TestSuite) then
   fRunTests=fRunTests+1 -- increase run counter
+--say "startTest" fRunTests aTestCase~getName aTestCase~class~id
 
 ::method stop           --  mark that the test run should stop
   expose fStop
@@ -1095,6 +1062,9 @@ return str
 
   if \target~isA(class) then
     self~fail(self~makeFailure(class~id, target~class~id, msg, "assertIsA"))
+
+  -- Assertion holds.
+  self~fAssertions += 1
 
 -- compare two Collections for equality
 ::method assertSameList
@@ -2309,10 +2279,11 @@ return 0
 ::method uninit
   self~delete
 
--- a dummy class for disabling output to .output or .debugoutput
+-- a dummy class for disabling output to .output, .error. or .traceOutput
 ::class NullOutput
 ::method lineout
   return 0
+::method say
 
 
 ::options novalue syntax

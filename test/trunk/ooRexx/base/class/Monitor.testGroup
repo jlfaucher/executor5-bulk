@@ -35,60 +35,81 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
-
-  group = .TestGroup~new(fileSpec)
-  group~add(.Monitor.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Monitor.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "Monitor.testGroup" subclass ooTestCase public
+::class Monitor.testGroup subclass ooTestCase public
 
-::method 'test_currentA'
-    expected = .stdout
-    self~assertEquals(expected, .output~current)
+::method test_current_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .Monitor~new~current(.nil)
 
-::method 'test_currentB'
-    expected = 'STDOUT'
-    self~assertEquals(expected, .output~current)
+::method test_destination_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Monitor~new~destination(.nil, .nil)
 
-::method 'test_ZdestinationA'  -- make these be the last tests (Z)
-    o_stream = .stream~new('my.new1')
-    o_stream~open('Write Replace Nobuffer')
-    .local~setentry("output",.monitor~new(o_stream))
-    say .output~current
-    linesInStream = o_stream~lines
-    .output~destination(.stdout)
-    o_stream~close
-    -- Clean Up now in case assert fails
-    if o_stream~query('exists') \= '' then
-        call SysFileDelete('my.new1')
-    expected = 1
-    self~assertEquals(expected, linesInStream)
-    self~assertEquals("STDOUT", .output~current, 'Output destination should be back to stdout')
+::method test_new_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Monitor~new(.nil, .nil)
 
-::method 'test_ZdestinationB'
-    o_stream = .stream~new('my.new2')
-    o_stream~open('Write Replace Nobuffer')
-    .local~setentry("output",.monitor~new(o_stream))
-    say .output~current
-    linesInStream = o_stream~lines
-    .output~destination(.stdout)
-    the_line = o_stream~linein
-    o_stream~close
-    -- Clean Up now in case assert fails
-    if o_stream~query('exists') \= '' then
-        call SysFileDelete('my.new2')
-    expected = 'my.new2'
-    self~assertEquals(expected, the_line)
-    self~assertEquals("STDOUT", .output~current, 'Output destination should be back to stdout')
+::method test_simple
+  -- empty Monitor returns .nil
+  self~assertNull(.Monitor~new~current)
+
+  self~assertNull(.Monitor~new(.nil)~current)
+
+  -- must be exactly the same instance
+  d = .Destination~new
+  self~assertSame(d, .Monitor~new(d)~current)
+  self~assertNotSame(d, .Monitor~new(.Destination~new)~current)
+
+::method test_push_pop
+  d1 = .Object~new
+  d2 = .Destination~new("other")
+  m = .Monitor~new
+  self~assertNull(m~current)
+  -- destination(d) returns the current 'd', not the previous one
+  -- same for destination(), which pops, and then returns current
+  self~assertSame(d1, m~destination(d1)) -- set d1 destination
+  self~assertSame(d1, m~current)
+  self~assertSame(d2, m~destination(d2)) -- set d2 destination
+  self~assertSame(d2, m~current)
+  self~assertSame(d1, m~destination) -- set to previous destination d1
+  self~assertSame(d1, m~current)
+  self~assertNull(m~destination)
+  self~assertNull(m~current)
+
+::method test_unknown_invalid
+  -- we have no access to the Queue of destinations
+  self~expectSyntax(97.1) -- Object .. does not understand message "ITEMS"
+  .Monitor~new(.Destination~new)~items
+
+::method test_unknown
+  -- run methods that Monitor doesn't have, but Destination does
+  m = .Monitor~new(.Destination~new("d"))
+  self~assertSame("d", m~instance)
+  self~assertTrue(m~threeArgs(1, 2, 3))
 
 
-::options novalue error
+::class Destination
+::attribute instance get
+::method init
+  expose instance
+  use strict arg instance = .nil
+::method threeArgs
+  use strict arg one, two, three
+  return .true
+
+
+-- for tests of the .error, .input, .output, and .traceoutput Monitors
+-- see environmentEntries.testGroup
+
+
+::options all syntax
