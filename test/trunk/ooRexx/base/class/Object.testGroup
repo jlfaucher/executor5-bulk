@@ -1145,6 +1145,16 @@ return testResult
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
 
+-- hashCode method
+
+-- if hashCode doesn't return a value, RexxObject::hash() must raise an error
+::method test_hashcode_return
+  self~expectSyntax((91.999, "HASHCODE")) -- Message "HASHCODE" did not return a result
+  -- create an object with a hashCode method that doesn't return a value
+  index = .Object~enhanced(.StringTable~of(("hashCode", "")))
+  .Table~new[index] = ""
+
+
 -- SEND method
 ::method test_send_override_from_nonself
   arr="a","b"
@@ -1510,4 +1520,5 @@ return testResult
   .UninitTracker~recordUninit(self)
 
 
-::options novalue syntax
+-- we have a few test cases relying on implicit STRING
+::options all syntax nostring condition
