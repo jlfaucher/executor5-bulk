@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2022 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -100,6 +100,16 @@
 ::routine TestFindContextClass PUBLIC EXTERNAL "LIBRARY orxfunction TestFindContextClass"
 ::routine TestAddCommandEnvironment PUBLIC EXTERNAL "LIBRARY orxfunction"
 
+::routine TestRaiseException0 EXTERNAL "LIBRARY orxfunction TestRaiseException0"
+::routine TestRaiseException1 EXTERNAL "LIBRARY orxfunction TestRaiseException1"
+::routine TestRaiseException2 EXTERNAL "LIBRARY orxfunction TestRaiseException2"
+::routine TestRaiseException EXTERNAL "LIBRARY orxfunction TestRaiseException"
+::routine TestThrowException             EXTERNAL "LIBRARY orxfunction"
+::routine TestThrowException0            EXTERNAL "LIBRARY orxfunction"
+::routine TestThrowException1            EXTERNAL "LIBRARY orxfunction"
+::routine TestThrowException2            EXTERNAL "LIBRARY orxfunction"
+
+
 ::class TypeConstants PUBLIC
 ::constant ObjectType 11
 ::constant IntType    12
@@ -125,3 +135,5 @@
 ::constant SizeType    33
 ::constant SSizeType   34
 ::constant PointerStringype   35
+
+::class ExceptionTester

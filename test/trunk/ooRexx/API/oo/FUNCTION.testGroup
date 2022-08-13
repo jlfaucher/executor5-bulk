@@ -1737,6 +1737,236 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("", b.2)
   self~assertSame("Line3", b.3)
 
+::method TestRaiseException001
+  c = self~RaiseException0X(3000)
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = self~RaiseException0X(6002)
+  self~assertSame(6, c~rc)
+  self~assertSame(6.2, c~code)
+  self~assertSame(0, c~additional~size)
+
+::method TestRaiseException101
+
+  c = self~RaiseException1X(99925, "Fred")
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+::method TestRaiseException201
+  c = self~RaiseException2X(13001, "F", c2x("F"))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+::method TestRaiseException01
+  c = self~RaiseExceptionX(3000, .array~new(0))
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = self~RaiseExceptionX(99925, .array~of("Fred"))
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+  c = self~RaiseExceptionX(13001, .array~of("F", c2x("F")))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+  c = self~RaiseExceptionX(40901, .array~of("FRED", 80, "yada"))
+  self~assertSame(40, c~rc)
+  self~assertSame(40.901, c~code)
+  self~assertSame(3, c~additional~size)
+  self~assertSame("FRED", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame("yada", c~additional[3])
+
+  c = self~RaiseExceptionX(88907, .array~of("min", 80, 100, 0))
+  self~assertSame(88, c~rc)
+  self~assertSame(88.907, c~code)
+  self~assertSame(4, c~additional~size)
+  self~assertSame("min", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame(100, c~additional[3])
+  self~assertSame(0, c~additional[4])
+
+::method TestThrowException001
+  c = self~ThrowException0X(3000)
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = self~ThrowException0X(6002)
+  self~assertSame(6, c~rc)
+  self~assertSame(6.2, c~code)
+  self~assertSame(0, c~additional~size)
+
+::method TestThrowException101
+  c = self~ThrowException1X(99925, "Fred")
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+::method TestThrowException201
+  c = self~ThrowException2X(13001, "F", c2x("F"))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+::method TestThrowException01
+  c = self~ThrowExceptionX(3000, .array~new(0))
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = self~ThrowExceptionX(99925, .array~of("Fred"))
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+  c = self~ThrowExceptionX(13001, .array~of("F", c2x("F")))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+  c = self~ThrowExceptionX(40901, .array~of("FRED", 80, "yada"))
+  self~assertSame(40, c~rc)
+  self~assertSame(40.901, c~code)
+  self~assertSame(3, c~additional~size)
+  self~assertSame("FRED", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame("yada", c~additional[3])
+
+  c = self~ThrowExceptionX(88907, .array~of("min", 80, 100, 0))
+  self~assertSame(88, c~rc)
+  self~assertSame(88.907, c~code)
+  self~assertSame(4, c~additional~size)
+  self~assertSame("min", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame(100, c~additional[3])
+  self~assertSame(0, c~additional[4])
+
+::method RaiseExceptionX
+  use strict arg num, subs
+
+  continue = .false
+  signal on syntax
+
+  call TestRaiseException num, subs
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertTrue(continue, "No return after RAISE call")
+     return condition('o')
+
+::method RaiseException0X
+  use strict arg num
+
+  continue = .false
+  signal on syntax
+
+  call TestRaiseException0 num
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertTrue(continue, "No return after RAISE call")
+     return condition('o')
+
+::method RaiseException1X
+  use strict arg num, sub1
+
+  continue = .false
+  signal on syntax
+
+  call TestRaiseException1 num, sub1
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertTrue(continue, "No return after RAISE call")
+     return condition('o')
+
+::method RaiseException2X
+  use strict arg num, sub1, sub2
+
+  continue = .false
+  signal on syntax
+
+  call TestRaiseException2 num, sub1, sub2
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertTrue(continue, "No return after RAISE call")
+     return condition('o')
+
+
+::method ThrowExceptionX
+  use strict arg num, subs
+
+  continue = .false
+  signal on syntax
+
+  call TestThrowException num, subs
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertFalse(continue, "Return after THROW call")
+     return condition('o')
+
+::method ThrowException0X
+  use strict arg num
+
+  continue = .false
+  signal on syntax
+
+  call TestThrowException0 num
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertFalse(continue, "Return after THROW call")
+     return condition('o')
+
+::method ThrowException1X
+  use strict arg num, sub1
+
+  continue = .false
+  signal on syntax
+
+  call TestThrowException1 num, sub1
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertFalse(continue, "Return after THROW call")
+     return condition('o')
+
+::method ThrowException2X
+  use strict arg num, sub1, sub2
+
+  continue = .false
+  signal on syntax
+
+  call TestThrowException2 num, sub1, sub2
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+     self~assertFalse(continue, "Return after THROW call")
+     return condition('o')
+
 
 
 ::class ArrayInputStream public inherit InputStream
