@@ -1901,6 +1901,16 @@ return .ooTestResult~new(5)~~addException(err)
      self~assertTrue(continue, "No return after RAISE call")
      return condition('o')
 
+-- a test of some of the infrastructure for nested attach calls in native code, including
+-- the ability to raise exceptions
+::method TestNestedActivities
+  signal on syntax
+  call TestNestedAttach .test~new
+  self~assertFalse(.true, "Signal on syntax not raised")
+
+  syntax:
+  -- this worked if we got here
+
 ::method RaiseException2X
   use strict arg num, sub1, sub2
 
@@ -1967,6 +1977,10 @@ return .ooTestResult~new(5)~~addException(err)
      self~assertFalse(continue, "Return after THROW call")
      return condition('o')
 
+-- just a simple class we can send a message to while testing nested activities
+::class nestTest
+::method string
+  return "Bazinga"
 
 
 ::class ArrayInputStream public inherit InputStream

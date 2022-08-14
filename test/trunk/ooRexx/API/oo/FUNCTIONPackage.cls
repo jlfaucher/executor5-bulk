@@ -108,6 +108,7 @@
 ::routine TestThrowException0            EXTERNAL "LIBRARY orxfunction"
 ::routine TestThrowException1            EXTERNAL "LIBRARY orxfunction"
 ::routine TestThrowException2            EXTERNAL "LIBRARY orxfunction"
+::routine TestNestedAttach               EXTERNAL "LIBRARY orxfunction"
 
 
 ::class TypeConstants PUBLIC
