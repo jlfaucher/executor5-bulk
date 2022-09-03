@@ -2550,11 +2550,12 @@ typedef struct {
 </programlisting>
 </example>
 <para>The <emphasis role="italic">rxcmd_command</emphasis> field contains
-the issued command. <emphasis role="italic">Rxcmd_address</emphasis>,
-<emphasis role="italic">rxcmd_addressl</emphasis>,
-<emphasis role="italic">rxcmd_dll</emphasis>, and
-<emphasis role="italic">rxcmd_dll_len</emphasis> fully define the current
-ADDRESS setting. <emphasis role="italic">Rxcmd_retc</emphasis> is an RXSTRING
+the issued command. <emphasis role="italic">rxcmd_address</emphasis> and
+<emphasis role="italic">rxcmd_addressl</emphasis> define the current
+ADDRESS setting.
+<emphasis role="italic">rxcmd_dll</emphasis> currently is always NULL and
+<emphasis role="italic">rxcmd_dll_len</emphasis> is always zero.
+<emphasis role="italic">rxcmd_retc</emphasis> is an RXSTRING
 for the return code value assigned to Rexx special variable RC.</para>
 <para>The exit handler can set <emphasis role="italic">rxfcfail</emphasis>
 or <emphasis role="italic">rxfcerr</emphasis>
@@ -3176,6 +3177,7 @@ return context->WholeNumber(rc);
 <member><xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title" /></member>
 <member><xref linkend="mthFreeObjectMemory" xrefstyle="select:title" /></member>
 <member><xref linkend="mthGetContextVariableReference" xrefstyle="select:title" /></member>
+<member><xref linkend="mthGetInterpreterInstance" xrefstyle="select:title" /></member>
 <member><xref linkend="mthGetObjectVariableReference" xrefstyle="select:title" /></member>
 <member><xref linkend="mthIsErrorRedirected" xrefstyle="select:title" /></member>
 <member><xref linkend="mthIsInputRedirected" xrefstyle="select:title" /></member>
@@ -5258,6 +5260,34 @@ dir = context->GetGlobalEnvironment();
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>A RexxDirectoryObject pointer to the .environment Directory.</para>
+</section>
+
+<section id="mthGetInterpreterInstance" revisionflag="added"><title>&added50;GetInterpreterInstance</title>
+<indexterm><primary>GetInterpreterInstance</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetInterpreterInstance</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetInterpreterInstance</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>GetInterpreterInstance</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>GetInterpreterInstance</secondary></indexterm>
+<!-- GetInterpreterInstance --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxInstance *instance;
+
+// Method Syntax Form(s)
+
+instance = context->GetInterpreterInstance();
+]]>
+</programlisting>
+<para>Returns the interpreter instance context the current context is running on.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>A RexxInstance pointer to the interpreter instance context.</para>
 </section>
 
 <section id="mthGetLocalEnvironment"><title>GetLocalEnvironment</title>
@@ -8461,12 +8491,14 @@ Items are converted to strings and missing items are replaced by a null string.
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
     <row><entry><emphasis role="italic">data</emphasis></entry>
     <entry><para>The returned string.
-    If no more items or lines are available, NULL is returned.
+    If no more items or lines are available, or there is no input redirection,
+    NULL is returned.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">length</emphasis></entry>
     <entry><para>The returned length of <emphasis role="italic">data</emphasis>.
     If an item is missing, or no more items or lines are available,
+    or there is no input redirection,
     <literal>0</literal> is returned.
     </para></entry>
     </row>
@@ -8515,10 +8547,12 @@ Missing items are replaced by a null string.
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
     <row><entry><emphasis role="italic">data</emphasis></entry>
     <entry><para>The returned string.
+        NULL if there is no input redirection.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">length</emphasis></entry>
     <entry><para>The returned length of <emphasis role="italic">data</emphasis>.
+        <literal>0</literal> if there is no input redirection.
     </para></entry>
     </row>
 </tbody></tgroup></informaltable>
@@ -10627,6 +10661,8 @@ context->WriteError(data, length);
 <para>Adds a string to an error output redirection Rexx object that was
 specified using the WITH subkeyword of an ADDRESS instruction.
 </para>
+<para>This API is a no-op if there is no error redirection.
+</para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
     <row><entry><emphasis role="italic">data</emphasis></entry>
@@ -10674,6 +10710,8 @@ line-end characters as separate items or lines to an error output redirection
 Rexx object that was specified using the WITH subkeyword of an ADDRESS
 instruction.
 </para>
+<para>This API is a no-op if there is no error redirection.
+</para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
     <row><entry><emphasis role="italic">data</emphasis></entry>
@@ -10719,6 +10757,8 @@ context->WriteOutput(data, length);
 </programlisting>
 <para>Adds a string to an output redirection Rexx object that was
 specified using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para>This API is a no-op if there is no output redirection.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -10766,6 +10806,8 @@ context->WriteOutputBuffer(data, length);
 line-end characters as separate items or lines to an output redirection
 Rexx object that was specified using the WITH subkeyword of an ADDRESS
 instruction.
+</para>
+<para>This API is a no-op if there is no output redirection.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
