@@ -35,41 +35,26 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
-  group~add(.CONDITION.testGroup)
+parse source . . s
 
-  if group~isAutomatedTest then return group
+group = .TestGroup~new(s)
+group~add(.CONDITION.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  testResult = group~suite~execute~~print
 
-return testResult
+::requires 'ooTest.frm'
 
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
-::class "CONDITION.testGroup" subclass ooTestCase public
-
-::method "test_1"
-   validopts='cdisCDISoOaA'
-   append='uyfgsduyvbfeh@&ª'
-   Do i=1 To length(validopts)
-      arg=substr(validopts,i,1)
-      exp_res = ''
-      If pos(arg,'aAoO')>0 Then
-         exp_res = .nil
-      self~assertSame(exp_res, condition(arg), "checking arg:" arg)
-      arg=arg||substr(append,i)
-      self~assertSame(exp_res, condition(arg), "checking arg:" arg)
-      End
-
+::class CONDITION.testGroup subclass ooTestCase public
 
 ::method test_condition_invalid_arg_null
-  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDIORS
+  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDEIORS
   call condition ""
 
 ::method test_condition_invalid_arg_z
-  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDIORS
+  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDEIORS
   call condition "Z"
 
 ::method test_condition_too_many_args
@@ -85,6 +70,20 @@ return testResult
   self~validObjectIndexes~difference( -
     ("ADDITIONAL", "RESULT", "RC", "CODE", "ERRORTEXT", "MESSAGE", "POSITION")) )
 
+-- defaults should be returned if no active condition
+-- also, only option's first letter is checked
+::method test_condition_none
+  -- "a" and "o" should return .nil
+  do option over "a", "Add", "o", "object"
+    self~assertSame(.nil, condition(option), "CONDITION(" || option || ") should be .nil after a CONDITION(R)")
+  end
+  -- all other options should return null string
+  do option over "c", "cn", "d", "D ", "e", "EX", "i", "Instr", "s", "state"
+    self~assertSame("", condition(option), "CONDITION(" || option || ") should be null string after a CONDITION(R)")
+  end
+  self~assertSame("", condition("r"))
+  self~assertSame("", condition("RESET"))
+
 -- SIGNAL trap all possible exceptions, and check CONDITION() results
 ::method test_condition_signal
   cond = 0
@@ -93,6 +92,7 @@ return testResult
   start:
   signal on any
   cond += 1
+  drop rc                              -- reset for RC tests
   select case cond
     when 1 then do
       expected = ("ERROR", "exit 1")
@@ -140,7 +140,6 @@ return testResult
   self~fail("condition" cond "didn't raise")  -- should never happen
 
   any:
-  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
 
@@ -171,6 +170,26 @@ return testResult
   self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
   self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
 
+  -- CONDITION("E") and RC
+  -- only for SYNTAX will an error code be placed in rc
+  -- but rc is also set for ERROR and FAILURE because of how we raise it
+  select case condition("c")
+    when "ERROR" then self~assertSame(1, rc) -- rc from "exit 1"
+    when "FAILURE" then self~assertSame(30, rc) -- rc from invalid address
+    when "SYNTAX" then do
+      self~assertSame(43, rc) -- rc from the invalid call
+      self~assertIsA(object["RC"], .String, "for SYNTAX errors the condition object should have an RC item")
+      self~assertSame(rc, object["RC"])
+      self~assertIsA(object["CODE"], .String, "for SYNTAX errors the condition object should have a CODE item")
+      parse value object["CODE"] with code "." subcode
+      self~assertSame(code, rc)
+      self~assertSame(subcode, condition("e"))
+      self~assertIsA(object["ERRORTEXT"], .String, "for SYNTAX errors the condition object should have an ERRORTEXT item")
+      self~assertSame(errortext(rc), object["ERRORTEXT"])
+    end
+    otherwise self~assertFalse(var("RC")) -- no rc if no SYNTAX error
+  end
+
   -- CONDITION("D") must be the same as object["DESCRIPTION"]
   self~assertSame(expected[2], condition("description"), "CONDITION(D)")
   self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
@@ -191,7 +210,7 @@ return testResult
 
   -- assert that CONDITION('R') works as expected
   call condition "reset"
-  do option over "c", "d", "i", "s"
+  do option over "c", "d", "e", "i", "s"
     self~assertSame("", condition(option), "CONDITION(" || option || ") should be null string after a CONDITION(R)")
   end
   do option over "a", "o"
@@ -207,24 +226,29 @@ return testResult
   instruction = "CALL"
   raised = 0
 
+  drop rc                              -- reset for RC tests
   call on error name any
   expected = ("ERROR", "exit 1")
   "exit 1"                             -- ERROR, Windows/Linux
 
+  drop rc                              -- reset for RC tests
   call on failure name any
   expected = ("FAILURE", "fails")
   trace off                            -- avoid trace output from FAILURE
   address a_failure "fails"            -- FAILURE
   trace normal
 
+  drop rc                              -- reset for RC tests
   call on halt name any
   expected = ("HALT", "raised", "halt")
   call raiseHalt                       -- HALT
 
+  drop rc                              -- reset for RC tests
   call on notready name any
   expected = ("NOTREADY", "/", "/")
   call charin "/"                      -- NOTREADY
 
+  drop rc                              -- reset for RC tests
   call on user USER_CONDITION name any
   expected = ("USER USER_CONDITION", "raised", "user")
   call raiseUser                       -- USER USER_CONDITION
@@ -236,7 +260,6 @@ return testResult
   any:
   raised += 1                          -- count how often we've been called
 
-  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
 
@@ -276,6 +299,15 @@ return testResult
   -- CONDITION("C") must be the same as object["CONDITION"]
   self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
   self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
+
+  -- CONDITION("E") and RC
+  self~assertSame("", condition("extra"), "CONDITION(E) should be null string")
+  -- rc wont't be set (except for ERROR and FAILURE)
+  select case condition("c")
+    when "ERROR" then self~assertSame(1, rc) -- rc from "exit 1"
+    when "FAILURE" then self~assertSame(30, rc) -- rc from invalid address
+    otherwise self~assertFalse(var("RC")) -- no rc if no SYNTAX error
+  end
 
   -- CONDITION("D") must be the same as object["DESCRIPTION"]
   self~assertSame(expected[2], condition("description"), "CONDITION(D)")
