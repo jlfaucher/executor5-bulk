@@ -35,408 +35,449 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
-
-  group = .TestGroup~new(fileSpec)
-  group~add(.Properties.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Properties.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
+::class Properties.testGroup subclass ooTestCase public
 
-::class "testData"
-::method init class
-  expose dirData files
+-- new class method
 
-  dirData=.directory~new
-  dirData["ENTRY1"]="VALUE1"
-  dirData["entry2"]="value2"
+::method test_new_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new(0, 0)
 
-  files=.array~of("testProperty1.prop", "testProperty2.prop")
+::method test_new_invalid
+  self~expectSyntax((93.923, -10)) -- Invalid length argument specified; found "-10"
+  .Properties~new(-10)
 
+::method test_new
+  .Properties~new
+  .Properties~new(0)
+  .Properties~new(256)
 
-::method dirData  attribute class
-::method files    attribute class
 
-   -- class named exactly like file
-::class "Properties.testGroup" subclass ooTestCase public
+-- load class method
 
-   -- create "testProperties1.prop", make sure
-::method internal_setup
-  self~internal_tearDown         -- make sure no leftover files exist
-  file=.testData~files[1]        -- get file name to use
-  dir =.testData~dirData         -- get directory data
-  arr =dir~makearray
-  call lineout file, "-- a comment, created" date("S") time("L")
-  call lineout file, ""
+::method test_load_class_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~load
 
-  call lineout file, "-- no blanks inserted:"
-  call lineout file, arr[1]"="dir[arr[1]]
-  call lineout file, ""
+::method test_load_class_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~load("", "")
 
-  call lineout file, "-- blanks around key and leading blanks in value inserted!"
-  call lineout file, "  " arr[2]"   ="dir[arr[2]]
-  call lineout file, ""
-  call lineout file  -- close file
-  call lineout file  -- close file
+::method test_load_class
+  p = .Properties~load(.ArrayStream~new(.resources~p))
+  self~assertIsA(p, .Properties)
+  self~assertTrue(p~getLogical("f"))
+  self~assertFalse(p~bool)
+  self~assertNull(p["bool"]) -- names are case-sensitive
+  self~assertSame(" blank", p~getProperty("leading-blank"))
+  self~assertSame(42, p~getWhole("number"))
 
 
-::method internal_tearDown
-  do file over .testData~files
-     if stream(file, "C", "QUERY EXISTS")<>"" then -- file exists, remove it
-     do
-        call sysFileDelete file
-     end
-  end
 
+-- put method
 
-   -- test arguments ---------------------------------------------
+::method test_put_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~put
 
-::method "test_LOAD_ARG_1"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .Properties~load
+::method test_put_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~put("")
 
-::method "test_LOAD_ARG_2"
-   self~expectSyntax(93.902)     -- too many arguments
-   .Properties~load(1,2)
+::method test_put_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~put(, "a")
 
-::method "test_SAVE_ARG_1"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .Properties~new~SAVE
+::method test_put_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~put("", "", "")
 
-::method "test_SAVE_ARG_2"
-   self~expectSyntax(93.902)     -- too many arguments
-   .Properties~new~SAVE(1,2)
+::method test_put_no_string_value
+  self~expectSyntax((93.938, 1)) -- Method argument 1 must have a string value
+  .Properties~new~put(.nil, "nil") -- must have a String value
 
-   -- SETPROPERTY
-::method "test_SETPROPERTY_ERR_01"
-   self~expectSyntax(93.902)
-   .properties~new~setProperty(1,2,3)
-
-::method "test_SETPROPERTY_ERR_02"
-   self~expectSyntax(93.903)
-   .properties~new~setProperty( ,2)
-
-::method "test_SETPROPERTY_ERR_03"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .properties~new~setProperty(1 , )
-
-::method "test_SETPROPERTY_ERR_04"
-   self~expectSyntax(93.938) -- Method argument .. must have a string value
-   .properties~new~setProperty(1 , .nil)
-
-
-   -- GETPROPERTY
-::method "test_GETPROPERTY_ERR_01"
-   self~expectSyntax(93.902)
-   .properties~new~GETProperty(1, 2, 3)
-
-::method "test_GETPROPERTY_ERR_02"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .properties~new~GETProperty( )
-
-::method "test_GETPROPERTY_DEFAULT_VALUE"
-   val="aha"
-   self~assertEquals(val, .properties~new~getProperty("x", val))
-
-
-
-   -- SETWHOLE
-::method "test_SETWHOLE_ERR_01"
-   self~expectSyntax(93.903)
-   .properties~new~setWHOLE()
-
-::method "test_SETWHOLE_ERR_02"
-   self~expectSyntax(93.905)
-   .properties~new~setWHOLE(1, "aha")
-
-
-   -- GETWHOLE
-::method "test_GETWHOLE_ERR_01"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   key="a"
-   val="b"
-   p=.properties~new~~setProperty(key, val)
-
-   self~expectSyntax(26.901)        -- expect a syntax exception (not an integer/whole value!)
-   p~getWHOLE(key)
-
-
-::method "test_GETWHOLE_ERR_02"
-
-   p=.properties~new                -- create (empty) Properties
-   self~expectSyntax(26.901)        -- expect a syntax exception (not an integer/whole value!)
-   p~getWHOLE("nixi")
-
-
-::method "test_GETWHOLE_DEFAULT"
-   p=.properties~new
-   key="a"
-   val=1
-   self~assertEquals(val, p~getWHOLE(key, val))
-   val=0
-   self~assertEquals(val, p~getWHOLE(key, val))
-
-
-   -- SETLOGICAL
-::method "test_SETLOGICAL_ERR_01"
-   self~expectSyntax(93.903)
-   .properties~new~setLOGICAL()
-
-::method "test_SETLOGICAL_ERR_02"
-   self~expectSyntax(34.901)
-   .properties~new~setLOGICAL(1, "aha")
-
-
-   -- GETLOGICAL
-::method "test_GETLOGICAL_ERR_01"
-   -- self~expectSyntax(26.901)
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   key="a"
-   val="b"
-   p=.properties~new~~setProperty(key, val)
-   self~expectSyntax(34.904)        -- expect a syntax exception (not a logical value!)
-   p~getLOGICAL(key)
-
-::method "tst_GETLOGICAL_ERR_02"
-   p=.properties~new                -- create empty Properties
-   self~expectSyntax(34.904)        -- expect a syntax exception (not a logical value!)
-   self~assertNull(props~getLogical(key))
-
-
-::method "test_GETLOGICAL_DEFAULT"
-   p=.properties~new
-   key="a"
-   val=1
-   self~assertEquals(val, p~getLOGICAL(key, val))
-   val=0
-   self~assertEquals(val, p~getLOGICAL(key, val))
-
-
-
-   -- []=
-::method "test_[]=_ERR_01"
-   self~expectSyntax(93.902)
-   .properties~new~"[]="(1,2,3)
-
-::method "test_[]=_ERR_02"
-   self~expectSyntax(93.903)
-   .properties~new~"[]="(,2)
-
-::method "test_[]=_ERR_03"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .properties~new~"[]="(1)
-
-::method "test_[]=_ERR_04"
-   self~expectSyntax(88.909)
-   .properties~new~"[]="(1, .nil)
-
-
-   -- PUT
-::method "test_PUT_ERR_01"
-   self~expectSyntax(93.902)
-   .properties~new~"PUT"(1,2,3)
-
-::method "test_PUT_ERR_02"
-   self~expectSyntax(93.903)
-   .properties~new~"PUT"(,2)
-
-::method "test_PUT_ERR_03"
-   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
-   .properties~new~"PUT"(1)
-
-::method "test_PUT_ERR_04"
-   self~expectSyntax(88.909)
-   .properties~new~"PUT"(1, .nil)
-
-
-
-
-::method "test_load_via_classmethod"
-  self~internal_setup
-  str=.stream~new(.testData~files[1])
-  props=.properties~load(str)
-  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
-
-  s=.testData~dirData~supplier   -- were the entries retrieved correctly?
-  n=1
-  do while s~available
-     n=n+1
-     self~assertTrue(props~hasIndex(s~index))
-     self~assertSame(s~item, props[s~index])
-     s~next
-  end
-  str~close
-  self~internal_tearDown
-
-
--- 'load' class method loading .File instance
-::method "test_properties_loadclass_file"
-  self~internal_setup
-  p = .Properties~load(.File~new(.testData~files[1]))
-  self~assertEquals(2, p~items)
-  do with index index item item over .testData~dirData
-    self~assertTrue(p~hasIndex(index))
-    self~assertSame(item, p[index])
-  end
-  self~internal_tearDown
-
--- 'load' instance method loading .File instance
-::method "test_properties_load_file"
-  self~internal_setup
+::method test_put
   p = .Properties~new
-  p~load(.File~new(.testData~files[1]))
-  self~assertEquals(2, p~items)
-  do with index index item item over .testData~dirData
-    self~assertTrue(p~hasIndex(index))
-    self~assertSame(item, p[index])
-  end
-  self~internal_tearDown
+  p~put("value", "")
+  p~put("", "index")
+  p~put(1, 0)
+  p~put(.File~new("."), "f")
+  self~assertSame("value", p[""])
+  self~assertSame("", p["index"])
+  self~assertSame(1, p[0])
+  self~assertIsA(p["f"], .String) -- Property values must be Strings
 
--- 'save' instance method saving to .File instance
-::method "test_properties_save_file"
 
-  self~internal_setup
+-- HashCollection []= method is an alias of put
 
-  -- build Property and Array instance from test data, save Property instance
-  f = .File~new(.testData~files[2])
+::method test_bracketEquals_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~"[]="
+
+::method test_bracketEquals_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~"[]="("")
+
+::method test_bracketEquals_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~"[]="(, "a")
+
+::method test_bracketEquals_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~"[]="("", "", "")
+
+::method test_bracketEquals_no_string_value
+  self~expectSyntax((93.938, 1)) -- Method argument 1 must have a string value
   p = .Properties~new
-  a = .Array~new
-  do with index name item value over .testData~dirData
-    p[name] = value
-    a~append(name"="value)
-  end
-  p~save(f)
+  p["nil"] = .nil -- must have a String value
 
-  -- manually read saved file, and compare with Array
-  s = .Stream~new(f)
-  s~open("read shared")
-  self~assertSameList(a, s~arrayIn)
-  s~close
-
-  self~internal_tearDown
+::method test_bracketEquals
+  p = .Properties~new
+  p[""] = "value"
+  p["index"] = ""
+  p[0] = 1
+  p["f"] = .File~new(".")
+  self~assertSame("value", p[""])
+  self~assertSame("", p["index"])
+  self~assertSame(1, p[0])
+  self~assertIsA(p["f"], .String) -- Property values must be Strings
 
 
-::method "test_load_and_save_via_instanceMethod_using_Stream_Objects"
-  self~internal_setup
+-- getLogical
 
-  str=.stream~new(.testData~files[1])
-  props=.properties~new
-  props~load(str)
-  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
+::method test_getLogical_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getLogical
 
-  s=.testData~dirData~supplier   -- were the entries retrieved correctly?
-  n=1
-  do while s~available
-     n=n+1
-     self~assertTrue(props~hasIndex(s~index))
-     self~assertSame(s~item, props[s~index])
-     s~next
-  end
-  str~close
+::method test_getLogical_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getLogical(, "a")
 
-   -- save properties with property file
-  str2=.stream~new(.testData~files[2])~~open("REPLACE")
-  props~save(str2)
-  str2~close
+::method test_getLogical_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getLogical("", "", "")
 
-  str2=.stream~new(.testData~files[2])
-  props2=.properties~new~~load(str2)
-  str2~close
+::method test_getLogical_missing_no_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  .Properties~new~getLogical("")
 
-  n=0
-  do idx over props
-     n=n+1
-     val1=props[idx]
-     val2=props2[idx]
-     self~assertEquals(val1, val2)
-  end
-  self~internal_tearDown
+::method test_getLogical_missing_invalid_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  .Properties~new~getLogical("", -1)
 
+::method test_getLogical_exists_invalid
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  p = .Properties~new
+  p["not boolean"] = 2
+  p~getLogical("not boolean")
 
-::method "test_load_and_save_via_instanceMethod_using_String_to_contain_name"
-  self~internal_setup
+::method test_getLogical_exists_invalid_with_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  p = .Properties~new
+  p["no-bool"] = -1
+  p~getLogical("no-bool", .true)
 
-  str=.testData~files[1]
-  props=.properties~new
-  props~load(str)
-  self~assertEquals(2, props~items, "subtest_01 - using class method 'load'")
-
-  s=.testData~dirData~supplier   -- were the entries retrieved correctly?
-  n=1
-  do while s~available
-     n=n+1
-     self~assertTrue(props~hasIndex(s~index))
-     self~assertSame(s~item, props[s~index])
-     s~next
-  end
-
-   -- save properties with property file
-  str2=.testData~files[2]
-  props~save(str2)
-  props2=.properties~new~~load(str2)
-
-  n=0
-  do idx over props
-     n=n+1
-     val1=props[idx]
-     val2=props2[idx]
-     self~assertEquals(val1, val2)
-  end
-  self~internal_tearDown
+::method test_getLogical
+  p = .Properties~new
+  p[".false"] = .false
+  p[".true"] = .true
+  p["false"] = "false" -- will be interpreted as .false
+  p["true"] = "true" -- will be interpreted as .true
+  self~assertFalse(p~getLogical("none", 0)) -- doesn't exist, uses default
+  self~assertTrue(p~getLogical("none", 1)) -- doesn't exist, uses default
+  self~assertFalse(p~getLogical(".false"))
+  self~assertFalse(p~getLogical(".false", 0))
+  self~assertFalse(p~getLogical(".false", 1))
+  self~assertTrue(p~getLogical(".true"))
+  self~assertFalse(p~getLogical("false"))
+  self~assertTrue(p~getLogical("true"))
 
 
+-- getWhole
 
-::method "test_get_and_set_properties"
-  props=.properties~new
-  key="rgf"
-  val=1
-  logVal="true"
+::method test_getWhole_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getWhole
+
+::method test_getWhole_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getWhole(, "a")
+
+::method test_getWhole_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getWhole("", "", "")
+
+::method test_getWhole_missing_no_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  .Properties~new~getWhole("")
+
+::method test_getWhole_missing_invalid_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  .Properties~new~getWhole("", 3.14)
+
+::method test_getWhole_exists_invalid
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  p = .Properties~new
+  p["float"] = 3.14
+  p~getWhole("float")
+
+::method test_getWhole_exists_invalid_with_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  p = .Properties~new
+  p["float"] = 3.14
+  p~getWhole("float", 42)
+
+::method test_getWhole
+  p = .Properties~new
+  p["whole"] = 42
+  p["whole.zero"] = 555.0
+  p["minus"] = -1
+  self~assertSame(99, p~getWhole("none", 99)) -- doesn't exist
+  self~assertSame(42, p~getWhole("whole"))
+  self~assertSame(42, p~getWhole("whole", 0))
+  self~assertSame(42, p~getWhole("whole", ""))
+  self~assertSame(555.0, p~getWhole("whole.zero"))
+  self~assertSame(555.0, p~getWhole("whole.zero", 0))
+  self~assertSame(555.0, p~getWhole("whole.zero", ""))
+  self~assertSame(-1, p~getWhole("minus"))
+  self~assertSame(-1, p~getWhole("minus", 0))
+  self~assertSame(-1, p~getWhole("minus", ""))
 
 
-  self~assertNull(props~getProperty(key))
+-- getProperty, []
 
-  props~setProperty(key, val)
-  self~assertEquals(val, props~getProperty(key))
-  self~assertEquals(val, props~getWhole(key))
+::method test_getProperty_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getProperty
 
-  props~setLogical(key, val)
-  self~assertEquals(logVal, props~getProperty(key))
-  self~assertEquals(val, props~getLogical(key))
+::method test_getProperty_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getProperty(, "a")
 
-  props~setWhole(key, val)
-  self~assertEquals(val, props~getProperty(key))
-  self~assertEquals(val, props~getWhole(key))
+::method test_getProperty_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getProperty("", "", "")
 
-  props~setLogical(key, val)
-  self~assertEquals(logVal, props~getProperty(key))
-  self~assertEquals(val, props~getLogical(key))
+::method test_getProperty
+  p = .Properties~new
+  p[""] = "nullstring"
+  p[".false"] = .false -- will become "false" String
+  p[".true"] = .true -- will become "true" String
+  p["f"] = "false"
+  p["t"] = "true"
+  p["Repunit"] = 1~copies(20)
+  p["spaced"] = " - "
+  self~assertSame(.nil, p~getProperty("doesnt-exist"))
+  self~assertSame(.nil, p~getProperty("doesnt-exist", .nil))
+  self~assertSame("", p~getProperty("doesnt-exist", ""))
+  self~assertSame(555, p~getProperty("doesnt-exist", 555))
+  self~assertSame("nullstring", p~getProperty(""))
+  self~assertSame("nullstring", p~getProperty("", 333))
+  self~assertSame(0, p~getProperty(".false"))
+  self~assertSame(1, p~getProperty(".true"))
+  self~assertSame("false", p~getProperty("f")) -- "false" String
+  self~assertSame("true", p~getProperty("t")) -- "true" String
+  self~assertSame(.nil, p["repunit"]) -- names are case-sensitive
+  self~assertSame(1~copies(20), p["Repunit"])
+  self~assertSame("", p~getProperty("REPUNIT", "")) -- names are case-sensitive
+  self~assertSame(" - ", p~getProperty("spaced"))
 
 
-  key="rgf"
-  val=0
-  logVal="false"
-  props~setProperty(key, val)
-  self~assertEquals(val, props~getProperty(key))
-  self~assertEquals(val, props~getWhole(key))
+-- setLogical
 
-  props~setLogical(key, val)
-  self~assertEquals(logVal, props~getProperty(key))
-  self~assertEquals(val, props~getLogical(key))
+::method test_setLogical_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setLogical
 
-  props~setWhole(key, val)
-  self~assertEquals(val, props~getProperty(key))
-  self~assertEquals(val, props~getWhole(key))
+::method test_setLogical_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setLogical("")
 
-  props~setLogical(key, val)
-  self~assertEquals(logVal, props~getProperty(key))
-  self~assertEquals(val, props~getLogical(key))
+::method test_setLogical_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setLogical(, 0)
+
+::method test_setLogical_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setLogical("", "", "")
+
+::method test_setLogical_invalid
+  self~expectSyntax((34.901, "value")) -- Logical value must be exactly "0" or "1"; found "value"
+  .Properties~new~setLogical("f", "value")
+
+::method test_setLogical
+  p = .Properties~new
+  p~setLogical("flag", .true)
+  self~assertSame("true", p["flag"]) -- "true" String
+  self~assertSame("true", p~getProperty("flag")) -- "true" String
+  self~assertSame(.true, p~getLogical("flag")) -- .true value
 
 
-::options novalue syntax
+-- setWhole
+
+::method test_setWhole_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setWhole
+
+::method test_setWhole_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setWhole("")
+
+::method test_setWhole_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setWhole(, 0)
+
+::method test_setWhole_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setWhole("", "", "")
+
+::method test_setWhole_invalid
+  self~expectSyntax((93.905, 2, 3.14)) -- Method argument 2 must be a whole number; found "3.14"
+  .Properties~new~setWhole("f", 3.14)
+
+::method test_setWhole
+  p = .Properties~new
+  p~setWhole("one", .true)
+  p~setWhole("-", -42)
+  self~assertSame(1, p["one"])
+  self~assertSame(-42, p["-"])
+
+
+-- setProperty
+
+::method test_setProperty_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setProperty
+
+::method test_setProperty_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setProperty("")
+
+::method test_setProperty_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setProperty(, 0)
+
+::method test_setProperty_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setProperty("", "", "")
+
+::method test_setProperty_invalid
+  self~expectSyntax((93.938, 2)) -- Method argument 2 must have a string value
+  .Properties~new~setProperty("", .nil)
+
+::method test_setProperty
+  p = .Properties~new
+  p~setProperty("ONE", .true)
+  p~setProperty("-", -42)
+  p~setProperty("b", " ")
+  p~setProperty("f", .File~new("."))
+  self~assertSame(1, p~one) -- use our unknown() method
+  self~assertSame(-42, p["-"])
+  self~assertSame(" ", p["b"])
+  self~assertIsA(p["f"], .String)
+
+
+-- load, save
+
+::method test_load_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~load
+
+::method test_load_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new~load("", "")
+
+::method test_save_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~save
+
+::method test_save_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new~save("", "")
+
+::method test_load
+  p = .Properties~new
+  p~load(.ArrayStream~new(.resources~p))
+  self~assertTrue(p~getLogical("f"))
+  self~assertFalse(p~bool)
+  self~assertNull(p["bool"]) -- names are case-sensitive
+  self~assertSame(" blank", p~getProperty("leading-blank"))
+  self~assertSame(42, p~getWhole("number"))
+
+::method test_save
+  p = .Properties~new
+
+  p~setLogical("flag", .true)
+  lines = .Array~new
+  p~save(.ArrayStream~new(lines))
+  self~assertSame(1, lines~items)
+  self~assertSame("flag=true", lines[1])
+
+  p~empty
+  p~load(.ArrayStream~new(lines))
+  self~assertSame("true", p~getProperty("flag"))
+
+  p~empty
+  p~setProperty("string", " leading & trailing space ")
+  lines~empty
+  p~save(.ArrayStream~new(lines))
+  self~assertSame(1, lines~items)
+  self~assertSame("string= leading & trailing space ", lines[1])
+
+
+-- methods inherited from Directory
+
+::method test_inherited
+  p = .Properties~new
+  p~setLogical("one", .true)
+  p~setWhole("-", -42)
+  p~setProperty("s", "String")
+  self~assertSameList(("one", "-", "s"), p~allIndexes)
+  self~assertSameList(("true", -42, "String"), p~allItems)
+  self~assertSame(-42, p~at("-"))
+  self~assertTrue(p~hasIndex("one"))
+  self~assertTrue(p~hasItem("String"))
+  self~assertSame("-", p~index(-42))
+  self~assertFalse(p~isEmpty)
+  self~assertSame(3, p~items)
+  p~empty
+  self~assertSame(0, p~items)
+
+
+::class ArrayStream subclass Stream
+::method init
+  expose lines i
+  use strict arg lines
+  i = 0
+::method lineOut
+  expose lines
+  lines~append(arg(1))
+::method lineIn
+  expose lines i
+  i += 1
+  if i > lines~size then
+    raise notready
+  return lines[i]
+
+-- a test Properties "file"
+::resource p
+-- property data
+f=true
+BOOL=0
+
+leading-blank= blank
+number=42
+::END
+
+
+::options all syntax
