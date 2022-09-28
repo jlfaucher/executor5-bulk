@@ -1,0 +1,184 @@
+<!DOCTYPE node PUBLIC "//freedesktop//DTD DBUS Object Introspection 1.0//EN"  
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg name="data" direction="out" type="s"/>
+    </method>
+  </interface>
+  <interface name="oorexx.dbus.ooTestService">
+    <method name="ReplyArray">
+      <arg name="input" direction="in" type="as"/>
+      <arg name="output" direction="out" type="as"/>
+    </method>
+    <method name="ReplyBoolean">
+      <arg name="inp" direction="in" type="b"/>
+      <arg name="out" direction="out" type="b"/>
+    </method>
+    <method name="ReplyByte">
+      <arg name="input" direction="in" type="y"/>
+      <arg name="output" direction="out" type="y"/>
+    </method>
+    <method name="ReplyDouble">
+      <arg name="input" direction="in" type="d"/>
+      <arg name="output" direction="out" type="d"/>
+    </method>
+    <method name="ReplyInt16">
+      <arg name="input" direction="in" type="n"/>
+      <arg name="output" direction="out" type="n"/> 
+    </method>
+    <method name="ReplyInt32"> 
+      <arg name="input" direction="in" type="i"/>                            
+      <arg name="output" direction="out" type="i"/>
+    </method>                                                                         
+    <method name="ReplyInt64">                                          
+      <arg name="input" direction="in" type="x"/>                            
+      <arg name="output" direction="out" type="x"/>
+    </method>                                                                       
+    <method name="ReplyObjpath">                                        
+      <arg name="input" direction="in" type="o"/>                            
+      <arg name="output" direction="out" type="o"/> 
+    </method>                                                                      
+    <method name="ReplySignature">                                      
+      <arg name="input" direction="in" type="g"/>                            
+      <arg name="output" direction="out" type="g"/>  
+    </method>                                                                   
+    <method name="ReplyString">                                         
+      <arg name="input" direction="in" type="s"/>                             
+      <arg name="output" direction="out" type="s"/>  
+    </method>                                                                   
+    <method name="ReplyUint16">                                         
+      <arg name="input" direction="in" type="q"/>
+      <arg name="output" direction="out" type="q"/>
+    </method>
+    <method name="ReplyUint32">
+      <arg name="input" direction="in" type="u"/>
+      <arg name="output" direction="out" type="u"/>
+    </method>
+    <method name="ReplyUint64">
+      <arg name="input" direction="in" type="t"/>
+      <arg name="output" direction="out" type="t"/>
+    </method>
+    <method name="ReplyUnix_fd">
+      <arg name="input" direction="in" type="h"/>
+      <arg name="output" direction="out" type="h"/>
+    </method>                                
+    <method name="ReplyVariant">
+      <arg name="input" direction="in" type="v"/>    
+      <arg name="output" direction="out" type="v"/>
+    </method>
+    <method name="ReplyStruct">
+      <arg name="input" direction="in" type="(si)"/>
+      <arg name="output" direction="out" type="(si)"/>
+    </method>                       
+    <method name="ReplyArrayofBoolean">         
+      <arg name="input" direction="in" type="ab"/>
+      <arg name="output" direction="out" type="ab"/>
+    </method>
+    <method name="ReplyArrayofByte"> 
+      <arg name="input" direction="in" type="ay"/>
+      <arg name="output" direction="out" type="ay"/>
+    </method>
+    <method name="ReplyArrayofDouble">
+      <arg name="input" direction="in" type="ad"/>
+      <arg name="output" direction="out" type="ad"/>
+    </method>
+    <method name="ReplyArrayofInt16">
+      <arg name="input" direction="in" type="an"/>
+      <arg name="output" direction="out" type="an"/>
+    </method>
+    <method name="ReplyArrayofInt32">
+      <arg name="input" direction="in" type="ai"/>
+      <arg name="output" direction="out" type="ai"/>
+    </method>
+    <method name="ReplyArrayofInt64">
+      <arg name="input" direction="in" type="ax"/>
+      <arg name="output" direction="out" type="ax"/>
+    </method>
+    <method name="ReplyArrayofobjpath">
+      <arg name="input" direction="in" type="ao"/>  
+      <arg name="output" direction="out" type="ao"/>
+    </method>
+    <method name="ReplyArrayofSignature">
+      <arg name="input" direction="in" type="ag"/> 
+      <arg name="output" direction="out" type="ag"/>
+    </method>
+    <method name="ReplyArrayofString">
+      <arg name="input" direction="in" type="as"/>        
+      <arg name="output" direction="out" type="as"/>
+    </method>
+    <method name="ReplyArrayofUint16">
+      <arg name="input" direction="in" type="aq"/>
+      <arg name="output" direction="out" type="aq"/>
+    </method>    
+    <method name="ReplyArrayofUint32">
+      <arg name="input" direction="in" type="au"/>
+      <arg name="output" direction="out" type="au"/>
+    </method>       
+    <method name="ReplyArrayofUint64">
+      <arg name="input" direction="in" type="at"/>
+      <arg name="output" direction="out" type="at"/>
+    </method>
+    <method name="ReplyArrayofUnix_fd">
+      <arg name="input" direction="in" type="ah"/>
+      <arg name="output" direction="out" type="ah"/>
+    </method>
+    <method name="ReplyArrayofVariant">
+      <arg name="input" direction="in" type="av"/>
+      <arg name="output" direction="out" type="av"/>
+    </method>
+    <method name="ReplyArrayofStrucure">
+      <arg name="input" direction="in" type="a(s)"/>
+      <arg name="output" direction="out" type="a(s)"/>
+    </method>
+    <method name="ReplyDict">
+      <arg name="input" direction="in" type="a{si}"/>
+      <arg name="output" direction="out" type="a{si}"/>
+    </method>
+    <method name="TestReplySlotDir">
+    <arg name="input" direction="in" type="s"/>
+    <arg name="output" direction="out" type="a{sv}"/>
+    </method>
+    <method name="TestError">
+    <arg name="result" direction="out" type="s"/>
+    </method>
+    <method name="TestError2">
+     <arg name="result" direction="out" type="s"/>
+    </method>
+    <method name="TestError3">
+     <arg name="result" direction="out" type="s"/>
+    </method>
+    <method name="TestError4">
+      <arg name="result" direction="out" type="s"/>
+    </method>
+    <method name="TestError5">
+      <arg name="result" direction="out" type="s"/>
+    </method>
+    <method name="Shutdown"></method>
+    <signal name="Ready">
+    <arg name="started" type="sb"/>
+    </signal>
+    <signal name="Exit">
+    <arg name="result" type="s"/>
+    </signal>
+    <property name="Info" access="read"  type="s"/> 
+    <property name="SetInfo" access="write" type="s"/>
+    <property name="MethodName" access="readwrite" type="s"/>
+  </interface>
+  <interface name="org.freedesktop.DBus.Properties">
+    <method name="Get">
+      <arg name="interface_name" type="s" direction="in"/>
+      <arg name="property_name" type="s" direction="in"/>
+      <arg name="value" type="v" direction="out"/>
+    </method>
+    <method name="Set">
+      <arg name="interface_name" type="s" direction="in"/>
+      <arg name="property_name" type="s" direction="in"/>
+      <arg name="value" type="v" direction="in"/>
+    </method>
+    <method name="GetAll">
+      <arg name="interface_name" type="s" direction="in"/>
+      <arg name="props" type="a{sv}" direction="out"/>
+    </method>
+  </interface>
+</node>
