@@ -76,7 +76,7 @@
   -- define end-of-line chars
   .local~ooRexxUnit.line.separator=.endOfLine
 
-  -- Set the path and directory separator characers for the current OS. A select
+  -- Set the path and directory separator characters for the current OS. A select
   -- is used so that if the test suite needs to be run on an OS with different
   -- characters, it can easily be added here.
   select
@@ -1021,7 +1021,7 @@ return str
   self~fAssertions += 1
 
 
-::method assertNull
+::method assertNull -- deprecated, use assertNil instead
   use strict arg actual, msg = ""
 
   if \ (.nil = actual) then do
@@ -1032,7 +1032,7 @@ return str
   self~fAssertions += 1
 
 
-::method assertNotNull
+::method assertNotNull -- deprecated, use assertNotNil instead
   use strict arg actual, msg = ""
 
   if (.nil = actual) then do
@@ -1378,9 +1378,9 @@ return str
   if \additionalReceived~isA(.Array) then
      return .false -- a SYNTAX error should always supply an ADDITIONAL Array
 
-  if additionalReceived~items \== additionalExpected~items then
-     return .false
-  do i = 1 to additionalReceived~items
+  -- only check expected message inserts
+  -- no ned for the assert call to specify all received inserts
+  do i = 1 to additionalExpected~items
      if additionalReceived[i] \== additionalExpected[i] then
         return .false
   end
@@ -1699,7 +1699,7 @@ exceptionHandler:
  * contained in an instance method named "dataxml1" and would be requested using
  * lines = self~dataitem("xml1")
  */
-::method dataItem
+::method dataItem -- deprecated, use ::RESOURCE directive instead
   use strict arg name
 
   method = self~instanceMethod("DATA"||name~upper)
@@ -2096,7 +2096,7 @@ pp: procedure
  *
  *  Variation on simpleDumpTestResults() that formats the result output in a
  *  more "console-friendly" manner.  The information is broken up into lines,
- *  with an attempt made to keep all lines no longer than 80 characers wide.
+ *  with an attempt made to keep all lines no longer than 80 characters wide.
  */
 ::routine simpleFormatTestResults public
    use arg aTestResult, title = ""
