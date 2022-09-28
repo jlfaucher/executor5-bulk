@@ -35,145 +35,253 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.DATE.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  group = .TestGroup~new(fileSpec)
-  group~add(.Date.testGroup)
+::requires 'ooTest.frm'
 
-  if group~isAutomatedTest then return group
+::class DATE.testGroup subclass ooTestCase public
 
-  testResult = group~suite~execute~~print
+::constant optionsArg1 "BDEFILMNOSTUW"
+::constant optionsArg3 "BDEFINOSTU" -- all, except L, M, and W
+::constant monthNamesFull (("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))
+::constant monthNamesShort (("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+::constant weekdayNames (("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
-return testResult
--- End of entry point.
 
-::requires 'ooTest.frm'     -- load the ooRexxUnit classes
+-- DATE(option, string, option2, osep, isep)
 
-::class "DATE.testGroup" subclass ooTestCase public
+::method test_arg_one_invalid
+  self~expectSyntax((40.904, "DATE", 1, self~optionsArg1, "-")) -- DATE argument 1 must be one of BDEFILMNOSTUW; found "-"
+  call date "-"
 
-::method 'test01'
-    self~expectSyntax(40.904)
-    date('*')
+::method test_arg_two_noformat
+  self~expectSyntax(40.19) -- DATE argument 2, "", is not in the format described by argument 3, "N"
+  call date , ""
 
-::method 'test02'
-    self~expectSyntax(40.904)
-    date('Z')
+::method test_args_three_two_missing
+  self~expectSyntax(40.5) -- Missing argument in invocation of DATE; argument 2 is required
+  call date "n", , "n"
 
-::method 'test03'
-    validopts = 'bdemnosuwBDEMNOSUW'
-    do i = 1 to length(validopts) / 2
-        a = substr('*@A1B2C3D4EFGHIJKLMNOPQRSTUVWXYZ',i,i)
-        b = substr(validopts,i,1)
-        c = translate(b)
-        self~assertSame(date(b||a), date(b))
-    end
+::method test_arg_three_invalid
+  self~expectSyntax((40.904, "DATE", 3, self~optionsArg3, "W")) -- DATE argument 3 must be one of BDEFINOSTU; found "W"
+  call date , "Monday", "w" -- although a valid arg 1 format, w is invalid for arg 3
 
-::method 'test04'
-    validopts = 'bdemnosuwBDEMNOSUW'
-    do i = 1 to length(validopts) / 2
-        a = substr('*@A1B2C3D4EFGHIJKLMNOPQRSTUVWXYZ',i,i)
-        b = substr(validopts,i,1)
-        c = translate(b)
-        self~assertSame(date(b||a), date(c))
-    end
+::method test_arg_three_noformat
+  self~expectSyntax(40.19) -- DATE argument 2, "", is not in the format described by argument 3, "F"
+  call date , "", "f"
 
-::method 'test05'
-    day.00='Sunday'
-    day.01='Monday'
-    day.02='Tuesday'
-    day.03='Wednesday'
-    day.04='Thursday'
-    day.05='Friday'
-    day.06='Saturday'
+-- not sure why we won't support alphanumeric separators, but rexxref
+-- says: "Any nonalphanumeric character or an empty string can be used."
+::method test_arg_four_invalid
+  self~expectSyntax((40.43, "DATE", 4)) -- DATE argument 4 must be a single non-alphanumeric character or the null string; found "a"
+  call date , , , "a"
 
-    month.01='January'
-    month.02='February'
-    month.03='March'
-    month.04='April'
-    month.05='May'
-    month.06='June'
-    month.07='July'
-    month.08='August'
-    month.09='September'
-    month.10='October'
-    month.11='November'
-    month.12='December'
+::method test_args_four_one_incompatible
+  self~expectSyntax((40.44, "DATE", 1, "B", 4)) -- DATE argument 1, "B", is a format incompatible with the separator specified in argument 4
+  call date "b", , , ""
 
-    x = 0
+-- no alphanumeric input separator allowed
+::method test_arg_five_invalid
+  self~expectSyntax((40.43, "DATE", 5)) -- DATE argument 5 must be a single non-alphanumeric character or the null string; found "a"
+  call date , "", , , "a"
 
-    validopts = 'bdemnosuwBDEMNOSUW'
+::method test_args_five_two_missing
+  self~expectSyntax(40.5) -- Missing argument in invocation of DATE; argument 2 is required
+  call date , , , , "-"
 
-    do while x < 256
-        a = d2c(x)
-        if verify(a,validopts) then
-            goodopt = .false
-        else
-            goodopt = .true
+::method test_args_five_two_incompatible
+  self~expectSyntax(40.44) -- DATE argument 2, "1 May 2022", is a format incompatible with the separator specified in argument 5
+  call date , "1 May 2022", , , "-"
 
-        dx = date()
-        dy = date()
-        do i = 1 to length(validopts) / 2
-            dx ||= '*'date(substr(validopts,i,1))
-            dy ||= '*'date(translate(substr(validopts,i,1)))
-        end
+::method test_args_six_too_many
+  self~expectSyntax((40.4, "DATE", 5)) -- Too many arguments in invocation of DATE; maximum expected is 5
+  call date , , , , , ""
 
-        parse var dx d0 '*' db '*' dd '*' de '*' dm '*' dn '*' do '*' ds '*' du '*' dw
-        parse var d0 d0dd d0mon d0yyyy
-        parse var de dedd '/' demm '/' deyy
-        parse var do doyy '/' domm '/' dodd
-        parse var ds dsyy 5  dsmm 7 dsdd
-        parse var du dumm '/' dudd '/' duyy
-        year  = dsyy
-        month = dsmm
-        day   = dsdd
 
-        pdays = 0
-        do i = (year % 100) * 100 to year - 1
-            if leapyear(i) then
-                pdays += 366
-            else
-                pdays += 365
-        end
+-- an output separator is only valid for options EINOSU
+::method test_outputseparator_incompatible
+  options = self~optionsArg1
+  valid = "EINOSU"
+  i = 0
+  loop:
+    i += 1
+    if i > options~length then
+      signal end
+    option = options[i]
+    signal on syntax
+    call date option, , , ""
+    -- option is valid for an output separator
+    self~assertTrue(valid~contains(option), "option" option "should be valid for output separator")
+    signal loop
+  syntax:
+    -- output separator is incompatible with this option
+    signal off syntax
+    self~assertTrue(\valid~contains(option), "option" option "should be incompatible with output separator")
+    signal loop
+  end:
 
-        cdays = 0
-        do i = 1 to month-1
-            if i= 1 | i = 3 | i = 5 | i = 7 | i = 8 | i = 10 | i = 12 then
-                cdays += 31
-            else
-                if i = 2 then
-                    if leapyear(year) then
-                        cdays += 29
-                    else
-                        cdays += 28
-                else
-                    cdays += 30
-        end
 
-        cdays += day
-        days = pdays + cdays
+-- omitted means the same as "normal" (dd Mmm yyyy)
+::method test_simple_normal
+  parse value date("s") with year +4 month +2 day +2
+  month3 = self~monthNamesShort[month]
+  self~assertSame(day month3 year, date())
+  self~assertSame(date(), date("normal"))
+  -- test for correct three-letter month names
+  do m = 1 to self~monthNamesShort~items
+    month = self~monthNamesShort[m]
+    self~assertSame("1" month year, date(, year||m~right(2, 0)||"01", "S"))
+    self~assertSame("28" month year + 1, date("n", (year + 1)||m~right(2, 0)||"28", "s"))
+  end
+  -- with output separator
+  self~assertSame(day||month3||year, date(, , , ""))
+  self~assertSame(day||month3||year, date("n", , , ""))
+  self~assertSame(day"/"month3"/"year, date(, , , "/"))
+  self~assertSame(day"/"month3"/"year, date("NORM", , , "/"))
 
-        self~assertSame(dy, dx)
+-- days since 1 January 0001 (excluding the current day)
+::method test_simple_base
+  self~assertTrue(date("base")~dataType("Num"), date("base") "should be a number")
+  self~assertTrue(date("b") > 738000 & date("b") < 750000, "738000 <" date("b") "< 750000 expected")
+  self~assertSame(0, date("b", "1 Jan 0001"))
+  -- if we add the excluded 31 Dec 9999 and add 366 days for leap year 10000,
+  -- we arrive at 10000 years of 365.2425 days/year in the Gregorian calendar
+  self~assertEquals(365.2425 * 10000, 1 + 366 + date("b", "31 Dec 9999"))
 
-        self~assertSame(d0dd, strip(day,'l',0))
-        self~assertSame(d0mon, SUBSTR(month.month,1,3))
-        self~assertSame(d0yyyy, year)
-        self~assertSame(cdays, dd)
-        self~assertSame(right(year//100,2,0), deyy)
-        self~assertSame(month, demm)
-        self~assertSame(day, dedd)
-        self~assertSame(month.month, dm)
-        self~assertSame(year, dsyy)
-        self~assertSame(month, dsmm)
-        self~assertSame(day, dsdd)
-        self~assertSame(right(year//100,2,0), duyy)
-        self~assertSame(month, dumm)
-        self~assertSame(day, dudd)
+-- days since 1 January (including the current day)
+::method test_simple_days
+  self~assertTrue(date("days")~dataType("Num"), date("days") "should be a number")
+  self~assertTrue(date("d") >= 1 & date("d") <= 366, "1 <" date("d") "< 366 expected")
+  parse value date() with . . year
+  self~assertSame(1, date("d", "1 Jan" year))
+  self~assertSame(365, date("d", "31 Dec 2023"))
+  self~assertSame(366, date("d", "31 Dec 2024"))
 
-        wdi = right((days-2)//7,2,'0')
-        self~assertSame(day.wdi, dw)
-        self~assertSame(date('n'), date())
-        x += 1
-    end
+-- dd/mm/yy
+::method test_simple_european
+  parse value date("S") with . +2 year +2 month + 2 day
+  self~assertSame(day"/"month"/"year, date("e"))
+  self~assertSame("01/01/23", date("e", "1 Jan 2023"))
+  self~assertSame("31/12/23", date("e", "31 Dec 2023"))
+  -- with output separator
+  self~assertSame(day||month||year, date("euro", , , ""))
+  self~assertSame(day":"month":"year, date("E", , , ":"))
+
+-- microseconds since 00:00:00.000000 on 1 January 0001
+::method test_simple_full
+  numeric digits 18
+  self~assertTrue(date("full")~dataType("Num"), date("full") "should be a number")
+  self~assertTrue(date("F") > 63799000000000000 & date("f") < 64344000000000000, "63799000000000000 <" date("F") "< 64344000000000000 expected")
+  self~assertSame(0, date("F", "1 Jan 0001"))
+  -- if we add the 31 Dec 9999 and add 366 days for leap year 10000,
+  -- we arrive at 10000 years of 365.2425 days/year in the Gregorian calendar
+  microsPerDay = 24 * 3600 * 1e6
+  days367 = (1 + 366) * microsPerDay
+  self~assertEquals(365.2425 * 10000 * microsPerDay, days367 + date("f", "31 Dec 9999"))
+
+-- yyyy-mm-dd
+::method test_simple_iso
+  parse value date("S") with year +4 month + 2 day
+  self~assertSame(year"-"month"-"day, date("ISO"))
+  self~assertSame("2023-01-01", date("i", "1 Jan 2023"))
+  self~assertSame("2023-12-31", date("i", "31 Dec 2023"))
+  -- with output separator
+  self~assertSame(year||month||day, date("I", , , ""))
+  self~assertSame(year"|"month"|"day, date("Iso", , , "|"))
+  self~assertSame(date("standard"), date("iso", , , ""))
+
+-- dd Mmmmmmmm yyyy
+::method test_simple_language
+  parse value date("s") with year +4 month +2 day +2
+  self~assertSame(day self~monthNamesFull[month] year, date("language"))
+  -- test for correct full month names
+  do m = 1 to self~monthNamesFull~items
+    month = self~monthNamesFull[m]
+    self~assertSame("1" month year, date("l", year||m~right(2, 0)||"01", "S"))
+    self~assertSame("28" month year + 1, date("Lang", (year + 1)||m~right(2, 0)||"28", "s"))
+  end
+
+-- Mmmmmmmm
+::method test_simple_month
+  parse value date("s") with year +4 month +2 day +2
+  self~assertSame(self~monthNamesFull[month], date("month"))
+  -- test for correct full month names
+  do m = 1 to self~monthNamesFull~items
+    month = self~monthNamesFull[m]
+    self~assertSame(month, date("M", year||m~right(2, 0)||"01", "S"))
+    self~assertSame(month, date("MON", (year + 1)||m~right(2, 0)||"28", "s"))
+  end
+
+-- yy/mm/dd
+::method test_simple_ordered
+  parse value date("S") with . +2 year +2 month + 2 day
+  self~assertSame(year"/"month"/"day, date("Ordered"))
+  self~assertSame("23/01/01", date("O", "1 Jan 2023"))
+  self~assertSame("23/12/31", date("o", "31 Dec 2023"))
+  -- with output separator
+  self~assertSame(year||month||day, date("order", , , ""))
+  self~assertSame(year"!"month"!"day, date("OR", , , "!"))
+
+-- yyyymmdd
+::method test_simple_standard
+  parse value date("S") with year +4 month + 2 day
+  self~assertSame(year||month||day, date("Standard"))
+  self~assertSame("20230101", date("s", "1 Jan 2023"))
+  self~assertSame("20231231", date("S", "31 Dec 2023"))
+  -- with output separator
+  self~assertSame(year||month||day, date("Std", , , ""))
+  self~assertSame(year"="month"="day, date("s", , , "="))
+  self~assertSame(date("iso"), date("standard", , , "-"))
+
+-- seconds since 00:00:00.000000 on 1 January 1970
+::method test_simple_ticks
+  numeric digits 18
+  self~assertTrue(date("ticks")~dataType("Num"), date("ticks") "should be a number")
+  self~assertTrue(date("T") > 1664000000 & date("T") < 2240000000, "1664000000 <" date("T") "< 2240000000 expected")
+  self~assertSame(0, date("t", "1 Jan 1970"))
+  -- to find the number of days between 1 Jan 0001 and 1 Jan 1970 we add
+  -- 2000 Gregorian years (with 365.2425 days each) to arrive at 1 Jan 2001,
+  -- from where we substract 31 years (each with 365 days) and 8 leap days
+  -- in this 31-year period
+  daysEpoch = 365.2425 * 2000 - 31 * 365 - 8
+  self~assertEquals(-daysEpoch * 24 * 3600, date("TICKS", "1 Jan 0001"))
+  -- the number of days between 1 Jan 0001 and 31 Dec 9999 is 10000 Gregorian
+  -- years (with 365.2425 days each) minus the 366-day year 10000 minus one day.
+  -- From that we substract the days to 1 Jan 1970 calculated above.
+  days9999 = 365.2425 * 10000 - 366 - 1 - daysEpoch
+  self~assertEquals(days9999 * 24 * 3600, date("TICKS", "31 Dec 9999"))
+
+-- mm/dd/yy
+::method test_simple_usa
+  parse value date("S") with . +2 year +2 month + 2 day
+  self~assertSame(month"/"day"/"year, date("USA"))
+  self~assertSame("01/01/23", date("u", "1 Jan 2023"))
+  self~assertSame("12/31/23", date("U", "31 Dec 2023"))
+  -- with output separator
+  self~assertSame(month||day||year, date("usa", , , ""))
+  self~assertSame(month"?"day"?"year, date("Usa", , , "?"))
+
+-- Wwwwwww
+::method test_simple_weekday
+  self~assertTrue(self~weekdayNames~hasItem(date("weekday")), date("weekday") "should be a valid weekday name")
+  -- test for correct wekday names (1 Jan 2024 is a Monday)
+  do w = 1 to self~weekdayNames~items
+    self~assertSame(self~weekdayNames[w], date("W", w "Jan 2024"), "DATE(W," w "Jan 2024)")
+  end
+
+
+::method test_same_options
+  -- DATE(x) should be the same as DATE(x, DATE(x), x)
+  do option over self~optionsArg3~makeArray("")
+    self~assertSame(date(option), date(option, date(option), option), "DATE("option") should be DATE("option", DATE("option")," option")")
+  end
+
 
 -- Methods taken directly from Rick's generated testGroup
 ::METHOD 'test_standard'
@@ -998,8 +1106,6 @@ self~assertSame(date('I', date, format), "2000-02-29", "iso               / subt
 self~assertSame(date('I', date, format, ''), "20000229", "iso_no_sep        / subtest # 22")
 self~assertSame(date('I', date, format, '/'), "2000/02/29", "iso_slash_sep     / subtest # 23")
 
-::routine leapyear
-    return((arg(1)//4=0)&(0=(arg(1)//100=0)))|(arg(1)//400=0)
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
@@ -1036,4 +1142,4 @@ self~assertSame(date('I', date, format, '/'), "2000/02/29", "iso_slash_sep     /
     self~assertSame('02/13/96', DATE('U','13.Feb.1996','N', ,'.'))
 
 
-::options novalue error
+::options all syntax
