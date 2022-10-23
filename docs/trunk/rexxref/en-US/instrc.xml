@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -262,7 +262,7 @@ specifies an input line.
 </para>
 <para>If option <option>STREAM</option> is specified,
 <emphasis role="italic">stream</emphasis> must be a literal string,
-a constant expression, or an expression enclosed in parentheses that
+a constant symbol, an environment symbol, or an expression enclosed in parentheses that
 evaluates to a string which is used as the stream name.
 Input lines for the command are read from
 <emphasis role="italic">stream</emphasis> using the
@@ -270,7 +270,7 @@ Input lines for the command are read from
 </para>
 <para>If option <option>USING</option> is specified,
 <emphasis role="italic">expr</emphasis> must be a literal string,
-a constant expression, or an expression enclosed in parentheses that
+a constant symbol, an environment symbol, or an expression enclosed in parentheses that
 evaluates to a String, a Stem object, an InputStream, a Monitor or a File object,
 or an Array object or any other object that supports a
 <methodname>makeArray</methodname> method (e. g. a RexxQueue object).
@@ -310,7 +310,7 @@ command.
 </para>
 <para>If option <option>STREAM</option> is specified,
 <emphasis role="italic">stream</emphasis> must be a literal string,
-a constant expression, or an expression enclosed in parentheses that
+a constant symbol, an environment symbol, or an expression enclosed in parentheses that
 evaluates to a string which is used as the stream name.
 Output or error lines from the command are written to the stream with the
 <methodname>lineOut</methodname> method.
@@ -323,7 +323,7 @@ output lines are appended to <emphasis role="italic">stream</emphasis>.
 </para>
 <para>If option <option>USING</option> is specified,
 <emphasis role="italic">expr</emphasis> must be
-a constant expression, or an expression enclosed in parentheses that
+a constant symbol, an environment symbol, or an expression enclosed in parentheses that
 evaluates to a Stem object, an OutputStream, a Monitor, a RexxQueue,
 a File object, or an OrderedCollection object.
 If the resulting object is a Stem or a File object, output lines are
@@ -3936,7 +3936,7 @@ the same current argument data.</para>
 for an argument, the expression is evaluated to provide a default value for an
 argument when the corresponding argument does not exist.
 The default <emphasis role="italic">expr</emphasis> must be a literal string,
-a constant expression, or an expression enclosed in parentheses.
+a constant symbol, an environment symbol, or an expression enclosed in parentheses.
 No default value is allowed for variable reference terms.
 </para>
 <para>The <option>STRICT</option> option imposes additional constraints on argument processing.
