@@ -262,7 +262,7 @@ specifies an input line.
 </para>
 <para>If option <option>STREAM</option> is specified,
 <emphasis role="italic">stream</emphasis> must be a literal string,
-a constant symbol, an environment symbol, or an expression enclosed in parentheses that
+a constant symbol, or an expression enclosed in parentheses that
 evaluates to a string which is used as the stream name.
 Input lines for the command are read from
 <emphasis role="italic">stream</emphasis> using the
@@ -270,7 +270,7 @@ Input lines for the command are read from
 </para>
 <para>If option <option>USING</option> is specified,
 <emphasis role="italic">expr</emphasis> must be a literal string,
-a constant symbol, an environment symbol, or an expression enclosed in parentheses that
+a constant symbol, or an expression enclosed in parentheses that
 evaluates to a String, a Stem object, an InputStream, a Monitor or a File object,
 or an Array object or any other object that supports a
 <methodname>makeArray</methodname> method (e. g. a RexxQueue object).
@@ -310,7 +310,7 @@ command.
 </para>
 <para>If option <option>STREAM</option> is specified,
 <emphasis role="italic">stream</emphasis> must be a literal string,
-a constant symbol, an environment symbol, or an expression enclosed in parentheses that
+a constant symbol, or an expression enclosed in parentheses that
 evaluates to a string which is used as the stream name.
 Output or error lines from the command are written to the stream with the
 <methodname>lineOut</methodname> method.
@@ -323,7 +323,7 @@ output lines are appended to <emphasis role="italic">stream</emphasis>.
 </para>
 <para>If option <option>USING</option> is specified,
 <emphasis role="italic">expr</emphasis> must be
-a constant symbol, an environment symbol, or an expression enclosed in parentheses that
+a constant symbol, or an expression enclosed in parentheses that
 evaluates to a Stem object, an OutputStream, a Monitor, a RexxQueue,
 a File object, or an OrderedCollection object.
 If the resulting object is a Stem or a File object, output lines are
@@ -1323,14 +1323,14 @@ superclass override.</para>
 <para>If you specify the <option>TO</option> option, the language processor evaluates
 <emphasis role="italic">exprt</emphasis> to produce a new target object
 for the forwarded message. The <emphasis role="italic">exprt</emphasis>
-is a literal string, constant symbol, or expression enclosed in parentheses.
+is a literal string, a constant symbol, or an expression enclosed in parentheses.
 If you do not specify the <option>TO</option> option, the initial value of the Rexx special
 variable SELF is used.</para>
 <para>If you specify the <option>ARGUMENTS</option> option, the language processor
 evaluates <emphasis role="italic">expra</emphasis> to produce an
 array object that supplies the set of arguments for
 the forwarded message. The <emphasis role="italic">expra</emphasis> can be a
-literal string, constant symbol, or expression enclosed in parentheses. The
+literal string, a constant symbol, or an expression enclosed in parentheses. The
 <option>ARGUMENTS</option> value must evaluate to a Rexx array object.</para>
 <para>If you specify the <option>ARRAY</option> option, each
 <emphasis role="italic">expri</emphasis> is an expression (use
@@ -2836,7 +2836,7 @@ which must be a symbol that is taken as a constant.</para>
 <emphasis role="italic">expra</emphasis> to produce an object that supplies
 additional object information associated with the condition. The
 <emphasis role="italic">expra</emphasis> can be a literal string,
-constant symbol, or expression enclosed in parentheses. The ADDITIONAL entry
+a constant symbol, or an expression enclosed in parentheses. The ADDITIONAL entry
 of the condition object and the
 <computeroutput>&quot;A&quot;</computeroutput> option of the CONDITION
 built-in function return this additional object information. For SYNTAX conditions,
@@ -2874,7 +2874,7 @@ the expression <emphasis role="italic">exprr</emphasis> or
 a result object that is passed back to the caller or sender as if it were
 a RETURN or EXIT result. The <emphasis role="italic">expre</emphasis> or
 <emphasis role="italic">exprr</emphasis> is a literal
-string, constant symbol, or expression enclosed in parentheses. If you specify
+string, a constant symbol, or an expression enclosed in parentheses. If you specify
 an expression enclosed in parentheses, the language processor evaluates the
 expression to obtain its character string value. If you do not specify
 <emphasis role="italic">exprr</emphasis> or
