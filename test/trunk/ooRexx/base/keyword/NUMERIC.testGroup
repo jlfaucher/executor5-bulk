@@ -558,6 +558,7 @@ return testResult
    Numeric Form Value 'engineering'
 
 ::method "test_87"
+
    self~expectSyntax(25.11)
    Numeric Form Value 'scientific'
 
@@ -585,18 +586,6 @@ return testResult
    case=form()
    Return case
 
-::method "test_90"
-   str.='ENGINEERING'
-   Numeric Form Value str.
-   self~assertSame(case(), str.)
-   str.='SCIENTIFIC'
-   Numeric Form Value str.
-   self~assertSame(case(), str.)
-   return
-   case:
-   case=form()
-   Return case
-
 ::method "test_91"
    case=''
    str='ENGINEERINGSCIENTIFIC'
@@ -611,4 +600,108 @@ return testResult
    Return case
 
 
-::options novalue error
+::method test_numeric_nosymbol
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(20.905, "numeric")
+
+::method test_numeric_nosymbol_string
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(20.905, "numeric 'DIGITS'")
+
+::method test_numeric_symbol_invalid
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(25.15, "numeric digi")
+
+::method test_numeric_symbol_number
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(25.15, "numeric 9")
+
+::method test_digits_smaller_than_fuzz
+  numeric fuzz 8
+  self~expectSyntax((33.1, 7, 8)) -- Value of NUMERIC DIGITS ("7") must exceed value of NUMERIC FUZZ ("8")
+  numeric digits 7
+
+::method test_digits_equal_to_fuzz
+  numeric fuzz 5
+  self~expectSyntax((33.1, 5, 5)) -- Value of NUMERIC DIGITS ("5") must exceed value of NUMERIC FUZZ ("5")
+  numeric digits 5
+
+::method test_fuzz_larger_than_digits
+  self~expectSyntax((33.1, 9, 10)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("10")
+  numeric fuzz 10
+
+::method test_fuzz_equal_to_digits
+  self~expectSyntax((33.1, 9, 9)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("9")
+  numeric fuzz 9
+
+::method test_digits_default_smaller
+  numeric digits 18
+  numeric fuzz 12
+  self~expectSyntax((33.1, 9, 12)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("12")
+  numeric digits
+
+::method test_fuzz_default_larger
+  -- Value of NUMERIC DIGITS ("5") must exceed value of NUMERIC FUZZ ("5")
+  self~assertSyntaxError(33.1, -
+   "numeric fuzz 0; numeric digits 5; numeric fuzz; ::options fuzz 5")
+
+::method test_digits_fuzz_default
+  -- NUMERIC DIGITS without an expression should reset to package default
+  self~assertSame(10, self~runDynamicSource( -
+   "numeric digits 9; numeric digits; return digits(); ::options digits 10"))
+
+  -- NUMERIC FUZZ without an expression should reset to package default
+  self~assertSame(1, self~runDynamicSource( -
+   "numeric fuzz 2; numeric fuzz; return fuzz(); ::options fuzz 1"))
+
+::method test_fuzz_integer
+  a = 555555555
+  b = a
+  do f = 1 to 8
+    numeric fuzz f
+    self~assertTrue( a  = b, "fuzz" f a "=" b)
+    self~assertTrue( a <= b, "fuzz" f a "<=" b)
+    self~assertTrue( a >= b, "fuzz" f a "<=" b)
+    self~assertFalse(a \= b, "fuzz" f a "\=" b)
+    self~assertFalse(a  < b, "fuzz" f a "<" b)
+    self~assertFalse(a  > b, "fuzz" f a ">" b)
+    a = a % 10
+    b = b % 10 + 1
+  end
+
+::method test_fuzz
+  numeric fuzz 0
+  a = 123456789e2
+  b = 123456785e2
+  do 21
+    a /= 10; b /= 10
+    self~assertFalse(a  = b, "fuzz 0" a "=" b)
+    self~assertFalse(a <= b, "fuzz 0" a "<=" b)
+    self~assertTrue( a >= b, "fuzz 0" a "<=" b)
+    self~assertTrue( a \= b, "fuzz 0" a "\=" b)
+    self~assertFalse(a  < b, "fuzz 0" a "<" b)
+    self~assertTrue( a  > b, "fuzz 0" a ">" b)
+  end
+  do f = 1 to 2
+    numeric fuzz f
+    a = 123456789e2
+    b = 123456785e2
+    do 21
+      a /= 10; b /= 10
+      self~assertTrue( a  = b, "fuzz" f a "=" b)
+      self~assertTrue( a <= b, "fuzz" f a "<=" b)
+      self~assertTrue( a >= b, "fuzz" f a "<=" b)
+      self~assertFalse(a \= b, "fuzz" f a "\=" b)
+      self~assertFalse(a  < b, "fuzz" f a "<" b)
+      self~assertFalse(a  > b, "fuzz" f a ">" b)
+    end
+  end
+
+::method test_form_default
+  -- NUMERIC FORM without an expression should reset to package default
+  self~assertSame("ENGINEERING", self~runDynamicSource( -
+   "numeric form scientific; numeric form; return form(); ::options form engineering"))
+
+
+-- some legacy tests require novalue and lostdigits NOT to be raised
+::options all syntax novalue condition lostdigits condition
