@@ -566,8 +566,8 @@ return testResult
   self~assertSame("READY:", ret)
 
   str = '12345678901234567890'
-  size = 20 * 10 * 1024 * 1024
-  characters = str~copies(10 * 1024 * 1024)
+  size = 20 * 1024 * 1024
+  characters = str~copies(1024 * 1024)
 
   ret = charout(fileName, characters)
   self~assertSame(0, ret)
