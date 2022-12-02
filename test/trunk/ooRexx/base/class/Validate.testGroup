@@ -35,20 +35,15 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Validate.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  group = .TestGroup~new(fileSpec)
-  group~add(.Validate.testGroup)
-
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
+::requires 'ooTest.frm'
 
 ::class "Validate.testGroup" subclass ooTestCase public
 
@@ -68,6 +63,10 @@ return testResult
 ::method test_validate_number_too_many_args_three
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~number("", 1, 9)
+
+::method test_validate_number_fails_nil
+  self~expectSyntax(88.902) -- The .. argument must be a number
+  .Validate~number("", .nil)
 
 ::method test_validate_number_fails_non_numeric
   self~expectSyntax(88.902) -- The .. argument must be a number
@@ -105,6 +104,14 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~numberRange("", 1, 0, 10, , 0)
 
+::method test_validate_number_range_fails_nil
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~numberRange("", .nil, -100, 100)
+
+::method test_validate_number_range_fails_non_numeric
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~numberRange("", "string", -1, 1)
+
 ::method test_validate_number_range_fails
   self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
   .Validate~numberRange("", -1, 0, 10)
@@ -132,6 +139,14 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~nonNegativeNumber("", 1, 9, 0)
 
+::method test_validate_non_negative_number_fails_nil
+  self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
+  .Validate~nonNegativeNumber("", .nil)
+
+::method test_validate_non_negative_number_fails_non_numeric
+  self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
+  .Validate~nonNegativeNumber("", "string")
+
 ::method test_validate_non_negative_number_fails
   self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
   .Validate~nonNegativeNumber("", -0.1)
@@ -155,6 +170,14 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~positiveNumber("", 1, 9, 0)
 
+::method test_validate_positive_number_fails_nil
+  self~expectSyntax(88.926) -- The .. argument must be a positive number
+  .Validate~positiveNumber("", .nil)
+
+::method test_validate_positive_number_fails_non_numeric
+  self~expectSyntax(88.926) -- The .. argument must be a positive number
+  .Validate~positiveNumber("", "string")
+
 ::method test_validate_positive_number_fails
   self~expectSyntax(88.926) -- The .. argument must be a positive number
   .Validate~positiveNumber("", 0)
@@ -177,6 +200,14 @@ return testResult
 ::method test_validate_whole_number_too_many_args_four
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~wholeNumber("", 1, 9, 0)
+
+::method test_validate_whole_number_fails_nil
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", .nil)
+
+::method test_validate_whole_number_fails_non_numeric
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", "string")
 
 ::method test_validate_whole_number_fails_not_whole
   self~expectSyntax(88.903) -- The .. argument must be a whole number
@@ -218,9 +249,25 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~wholeNumberRange("", 1, 0, 10, , 0)
 
+::method test_validate_whole_number_range_fails_nil
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", .nil, 0, 10)
+
+::method test_validate_whole_number_range_fails_non_numeric
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", "string", 0, 10)
+
+::method test_validate_whole_number_range_fails_not_whole
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", 1.5, 0, 10)
+
 ::method test_validate_whole_number_range_fails
   self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
   .Validate~wholeNumberRange("", -1, 0, 10)
+
+::method test_validate_whole_number_range_max_min
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", 5, 10, 0)
 
 ::method test_validate_whole_number_range
   .Validate~wholeNumberRange("", 1, 0, 10)
@@ -244,6 +291,18 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~nonNegativeWholeNumber("", 1, 9, 0)
 
+::method test_validate_non_negative_whole_number_fails_nil
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", .nil)
+
+::method test_validate_non_negative_whole_number_fails_non_numeric
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", "string")
+
+::method test_validate_non_negative_whole_number_fails_not_whole
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", 1.5)
+
 ::method test_validate_non_negative_whole_number_fails
   self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
   .Validate~nonNegativeWholeNumber("", -1)
@@ -266,6 +325,18 @@ return testResult
 ::method test_validate_positive_whole_number_too_many_args_four
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~positiveWholeNumber("", 1, 9, 0)
+
+::method test_validate_postive_whole_number_fails_nil
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", .nil)
+
+::method test_validate_positive_whole_number_fails_non_numeric
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", "string")
+
+::method test_validate_positive_whole_number_fails_not_whole
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", 1.5)
 
 ::method test_validate_positive_whole_number_fails
   self~expectSyntax(88.905) -- The .. argument must be a positive whole number
@@ -384,6 +455,18 @@ return testResult
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .Validate~logical("", .true, 9)
 
+::method test_validate_logical_fails_nil
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", .nil)
+
+::method test_validate_logical_fails_non_numeric
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", "string")
+
+::method test_validate_logical_fails_not_whole
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", 1.0)
+
 ::method test_validate_logical_fails
   self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
   .Validate~logical("", -1)
@@ -418,7 +501,7 @@ return testResult
   self~assertSame("Abc", .Validate~requestClassType("", "Abc", .String))
   self~assertSame("Abc", .Validate~requestClassType("", .MutableBuffer~new("Abc"), .String))
   self~assertSame("Abc", .Validate~requestClassType("", .Array~of("Abc"), .String))
+  self~assertSame(.nil, .Validate~requestClassType("", .nil, .Object))
 
 
-
-::options novalue syntax
+::options all syntax lostdigits condition
