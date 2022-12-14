@@ -1,0 +1,3435 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<section id="sctDataAttributes"><title>Data Attribute Methods</title>
+<indexterm><primary>data attributes</primary></indexterm>
+<indexterm><primary>connecting data attributes</primary></indexterm>
+<indexterm><primary>get and set data methods</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>data attributes</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>get and set data methods</secondary></indexterm>
+
+<section id="sctUnderstandingDataAttributes" xreflabel="attribute"><title>Understanding Data Attributes</title>
+<indexterm><primary>dialog object</primary><secondary>understanding data attributes</secondary></indexterm>
+<para>
+  This section contains methods for working with <emphasis role="bold">data attributes</emphasis>. It contains methods
+  to create a connection between an underlying dialog control and an attribute of the Rexx dialog object, methods for
+  <emphasis role="bold">getting</emphasis> and <emphasis role="bold">setting</emphasis> the <emphasis
+  role="bold">data</emphasis>, and methods to deal with <emphasis role="bold">automatic data detection</emphasis>. These
+  data attributes are used to reflect the <emphasis role="bold">values</emphasis> associated with the underlying dialog
+  controls. For instance, the value of an <xref linkend="clsEdit"/> control could be thought of as the text of
+  the control.
+</para>
+<para>
+  In order to better understand the data attribute methods, it is useful to first discuss this concept in general.
+  During the <link linkend="sctHistory">original</link> development of ooDialog the abstraction used was that there were only
+  two objects.  One was the Rexx dialog object and the other was the <xref linkend="ovvUnderlying"/> system dialog that the user
+  sees on the screen. Dialog controls were not thought of as objects, but rather as the <emphasis
+  role="bold">data</emphasis> of the underlying dialog. In this abstraction, the <emphasis role="bold">value</emphasis> of
+  the data was the <emphasis role="bold">state</emphasis> of the dialog control.
+</para>
+<para>
+  For instance, a radio button can be either checked or not checked. Therefore, its value could be 0 (not checked) or 1
+  (checked.) Thus the data of the radio button would be a 1 or a 0. Using this abstraction of two objects, the Rexx
+  dialog and the underlying on screen dialog, then leads to the idea of exchanging, or transferring, the data between
+  the two objects. Or, typically, getting and setting the data of the underlying dialog. To facilitate this exchange of
+  data, for each <emphasis role="bold">data item</emphasis>, (a dialog control,) in the underlying dialog an attribute
+  is added to the Rexx dialog object. This attribute is then used to transfer data between the Rexx dialog object and
+  the underlying dialog control. The value of each data attribute is a single string which represents the state of the
+  dialog control.
+</para>
+<para>
+  The operation of <emphasis role="bold">connecting</emphasis> a dialog control is the action of creating the attribute
+  (the data attribute) in the Rexx dialog object, and internally mapping the attribute to the specified dialog control
+  in the underlying dialog. The operation of <emphasis role="bold">setting data</emphasis> then becomes the action of
+  setting the state of the underlying dialog control to match the value of the corresponding attribute of the Rexx
+  dialog object. The operation of <emphasis role="bold">getting data</emphasis> becomes the action of setting the value
+  of the attribute in the Rexx dialog object to match the state of the corresponding dialog control in the underlying
+  dialog.
+</para>
+<para id="paraAutomaticDataDetection" xreflabel="automatic data detections">
+  The term <emphasis role="italic">automatic data field detection</emphasis> is used for this process of creating and
+  connecting data attributes. In addition to creating and connecting the data attributes, if automatic data field
+  detection is on, when the underling dialog is created, the state of its controls are automatically set to the values
+  of the data attributes. Likewise, when the dialog is closed, the values of the data attributes in the Rexx dialog are
+  set to the state of their corresponding controls in the underlying dialog.
+</para>
+<para>
+  Automatic data detection is implemented in all three main classes of dialogs, the <xref linkend="clsUserDialog"/>, <xref
+  linkend="clsResDialog"/>, and <xref linkend="clsRcDialog"/>, and of course their subclasses. Automatic data detection can
+  be turned on or off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field
+  detection off for a single dialog is to over-ride the <xref linkend="mthInitAutoDetection"/> method in your subclass. The
+  <xref linkend="dotApplication"/>, an instance of the <xref linkend="clsApplicationManager"/> class, can be used to change
+  the default to <emphasis role="bold">off</emphasis> for the entire program.
+</para>
+<para>
+  Some dialog controls are not considered to be <emphasis role="italic">data</emphasis> and therefore data attributes
+  are not created for those controls. (This is a quirk going back to the original implementation of of ooDialog.) The
+  non-data controls are those, in general, that the user would not change or update in a dialog. Push <link
+  linkend="clsButton">buttons</link>,  <link linkend="clsGroupBox">group</link> box and <link
+  linkend="clsStatic">static</link> controls are all considered non-data controls. There are no data
+  attribute methods for these controls.
+</para>
+<para>
+  When automatic data detection is turned off, the programmer can use the <xref linkend="sctConnectDataMethods"/> methods to
+  manually create and connect the data attribute for any control. However, with automatic detection off, the ooDialog
+  framework will not set the state of the dialog controls to match the values of the connected attributes
+  when the underlying dialog is created. Likewise, when the dialog ends the connected attributes of the Rexx dialog object
+  are not updated to the state of the dialog controls. But, the programmer can use the <xref linkend="mthSetData"/> and
+  <xref linkend="mthGetData"/> methods to do this herself.
+</para>
+<para>
+  The implementation of automatic data detection in the three main classes of dialogs is slightly different in each
+  class due to the differences in the classes:
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">UserDialog:</emphasis></term>
+    <listitem>
+    <para>
+      In a <xref linkend="clsUserDialog"/> the <xref linkend="sctConnectDataMethods"/> methods are called automatically from
+      the <xref linkend="sctCreateMethods"/> methods of the <computeroutput>UserDialog</computeroutput>. Each of the
+      create... methods takes an optional argument that allows the programmer to specify the data attribute name. If that
+      argument is omitted, the attribute name is <link linkend="sctDataAttributeNames">automatically</link> generated. This
+      behavior is only when automatic data detection is on. When it is off, no data connection is made, even if the
+      attribute name is specified.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">RcDialog</emphasis></term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRcDialog"/> is actually a subclass of the
+      <computeroutput>UserDialog</computeroutput>. Therefore, when automatic data detection is on, the connect...
+      attribute methods are invoked automatically during the creation of each dialog control. The difference is that
+      there is no option to specify the attribute name, the name is <emphasis role="bold">always</emphasis> generated
+      automatically.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">ResDialog</emphasis></term>
+    <listitem>
+    <para>
+      With a <xref linkend="clsResDialog"/> the data connections are made after the underlying dialog is
+      created. Internally, the numeric resource ID and text of each control in the dialog is determined. Then, a data
+      attribute for each control is created and connected. Again, there is no way for the programmer to specify the data
+      attribute name, it is always automatically constructed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  Obviously, the data attribute itself can not be accessed until it is created. For each type of class this is at a
+  subtly different point in the life cycle of the dialog.
+</para>
+<para>
+  In summary: When automatic data field detection is on, the ooDialog framework automatically creates an attribute in
+  the dialog object for each dialog control in the underlying dialog. The attribute is connected to the control through
+  an internal mapping maintained by the framework. Once the connection is made, it can be used to get or set the
+  <emphasis role="italic">data</emphasis> of the control.  The data of a control is a string representation of the
+  control's state. When each underlying dialog is created, the state of all its controls is set to the value of its
+  connected data attribute. When the underlying dialog is closed by the user, the process is reversed. Each data
+  attribute is updated to reflect the state of the dialog control when the dialog was closed. For the most part, the
+  name of the data attribute is generated automatically by the framework. When automatic data field detection is off,
+  none of this is done, but there are methods the programmer can use to manually do the same things.
+</para>
+</section>
+
+<section id="sctDataAttributeNames"><title>Data Attribute Names</title>
+<indexterm><primary>data attribute names</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>data attribute names</secondary></indexterm>
+<para>
+  Except when the programmer explicitly names the data attribute in one of the <xref linkend="sctConnectDataMethods"/>
+  methods, or one of the <xref linkend="sctCreateMethods"/> methods of the
+  <computeroutput>UserDialog</computeroutput>, the data attribute names are generated internally. Even when the name is
+  explicitly specified by the programmer, if the name is not a valid method name or is a duplicate method name, the attribute
+  name is generated internally. The rules for how the attribute names are generated can be a little difficult to grasp. The
+  following list is intended to be complete description of the rules in all circumstances.
+
+  <variablelist>
+    <varlistentry id="termConnectAutoNames" xreflabel="generated automatically">
+    <term><emphasis role="bold">connect... data attribute methods:</emphasis></term>
+    <listitem>
+    <para>
+      When the programmer uses one of the <xref linkend="sctConnectDataMethods"/> methods, the attribute name can be
+      omitted, or the name specified could not be valid. For these cases, the internally generated name is created in this
+      way:
+    </para>
+    <para>
+      If the name is omitted, then the name is created by prepending <computeroutput>DATA</computeroutput> with the
+      resource ID argument. Recall that the resource ID argument can possibly be a symbolic ID. Example:
+
+<programlisting>
+<![CDATA[
+  -- The attribute name will be DATA202
+  self~connectEdit(202)
+
+  -- The attribute name will be DATAIDC_EDIT_FNAME
+  self~connectEdit(IDC_EDIT_FNAME)
+]]>
+</programlisting>
+    </para>
+    <para>
+      Whether the attribute name was specified or not, before the attribute is actually added to the dialog object, the
+      name is checked to see that it is a valid method name, that it is not the empty string, and not a duplicate of an
+      already existing method name in the dialog. When the check fails, the name is created by prepending
+      <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of the
+      resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_FNAME] = 344
+
+  -- The attribute name will be DATA202
+  self~connectEdit(202, "COPY")
+
+  -- The attribute name will be DATA344
+  self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
+
+]]>
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry id="termCreateAutoNames"><term><emphasis role="bold">UserDialog create... methods:</emphasis></term>
+    <listitem>
+    <para>
+      In the typical <computeroutput>UserDialog</computeroutput> all controls are added to the dialog by using one of the
+      <xref linkend="sctCreateMethods"/> methods. This is similar to using one of the connect... methods.
+      The attribute name argument can be omitted, or the specified attribute name might not be valid. For these cases,
+      the internally generated name is created in this way:
+    </para>
+    <para>
+      If the name is omitted, and the dialog control is <emphasis role="bold">not</emphasis> a check box or radio
+      button, then the name is created by prepending <computeroutput>DATA</computeroutput> with the numeric value of the
+      resource ID argument. Example:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_FNAME] = 344
+
+  -- The attribute name will be DATA344
+  self~createEdit(344, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE")
+
+  -- The attribute name will be DATA344
+  self~createEdit(IDC_EDIT_FNAME, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE")
+]]>
+</programlisting>
+    </para>
+    <para>
+      If the name is omitted and the dialog control <emphasis role="bold">is</emphasis> a check box or radio button,
+      then the name is created from the text of the <emphasis role="bold">label</emphasis> of the button. First all
+      spaces, ampersands, and colons, if any, are removed from the label. The result is used for the attribute name.
+      Examples:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_CHK_LN] = 200
+  self~constDir[IDC_CHK_MAIL] = 201
+  self~constDir[IDC_CHK_RECEIPT] = 202
+
+  -- The attribute name will be USELASTNAME
+  self~createCheckBox(IDC_CHK_LN, 10, 10, 80, 12, "GROUP", "&Use last name")
+
+  -- The attribute name will be MAILITEM
+  self~createCheckBox(IDC_CHK_MAIL, 10, 27, 80, 12, "RBUTTON RIGHT", "Mail item:")
+
+  -- The attribute name will be RECEIPT
+  self~createCheckBox(IDC_CHK_RECEIPT, 10, 45, 80, 12, , "Receipt")
+]]>
+</programlisting>
+    </para>
+    <para>
+      Whether the attribute name was specified or generated by the framework, the name is always checked to see if it is
+      the empty string, not a valid method name, or a duplicate of an already existing method name in the dialog.  When
+      the check fails, then the name is created by prepending <computeroutput>DATA</computeroutput> with the <emphasis
+      role="bold">numeric</emphasis> value of the resource ID argument. This is true even when the id argument is
+      specified as a symbolic ID. Examples:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_CLASS] = 344
+  self~constDir[IDC_CHK_DEFAULTNAME] = 201
+  self~constDir[IDC_CHK_COPY] = 202
+
+  -- The attribute name will be DATA344 (CLASS is an existing method name.)
+  self~createEdit(IDC_EDIT_CLASS, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE", "Class")
+
+  -- The attribute name will be DATA201 (defaultName is an existing method name.)
+  self~createCheckBox(IDC_CHK_DEFAULTNAME, 10, 27, 80, 12, , "Default Name")
+
+  -- The attribute name will be DATA202
+  self~createCheckBox(IDC_CHK_COPY, 10, 45, 80, 12, , "&Copy")
+
+]]>
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">ResDialog:</emphasis></term>
+    <listitem>
+    <para>
+      For a <computeroutput>ResDialog</computeroutput>, the attribute names are always generated by the ooDialog
+      framework, there is no way for the programmer to specify the name. When the underlying dialog is created, the
+      numeric resource ID and the text of all the dialog controls is collected. For <emphasis
+      role="bold">each</emphasis> control, the data attribute is created using the <emphasis role="bold">text</emphasis>
+      of the control.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> this important detail: every dialog control can have text associated with it
+      when compiled from a resource <xref linkend="defResourceScript"/>. Although for many controls, text is
+      not usually associated with them, it is always possible that they do have text.
+    </para>
+    <para>
+      The text of the control has all spaces, ampersands, and colons removed. The result is checked as usual. If it is
+      the empty string, or not a valid method name, or a duplicate of an existing method name, then the attribute name
+      is changed to <computeroutput>DATA</computeroutput> prepended to the resource ID. The attribute name then follows
+      the pattern(s) already seen. Examples:
+
+<programlisting>
+<![CDATA[
+  -- For an edit control with resource ID 344 and no associated text:
+  DATA344
+
+  -- For a check box with resource ID 400 and a label of "Compile":
+  COMPILE
+
+  -- For a radio button with resource ID 200 and a label of "&Copy":
+  DATA200
+
+  -- For a tree view with resource 320 and text associated of "C: Drive"
+  CDRIVE
+
+  -- Same tree view with no text assoicate, (the usual case):
+  DATA320
+
+  -- etc..
+
+]]>
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">RcDialog:</emphasis></term>
+    <listitem>
+    <para>
+      Although a <computeroutput>RcDialog</computeroutput> is actually a subclass of a
+      <computeroutput>UserDialog</computeroutput> and the dialog controls are added to the dialog <xref
+      linkend="ovvDialogTemplate"/> through the <xref linkend="sctCreateMethods"/> methods,
+      the generated attribute names have a different pattern. If the resource ID of the control in the resource <xref
+      linkend="defResourceScript"/> file is a symbolic ID, then the attribute name will be the
+      symbolic ID. On the other hand, if the resource ID is numeric in the resource script file, then the attribute name
+      will be <computeroutput>DATA</computeroutput> prepended to the numeric ID. Example:
+
+<programlisting>
+<![CDATA[
+  -- For this resource script file:
+
+//
+// Dialog resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DIALOG1 DIALOGEX 0, 0, 237, 131
+STYLE  DS_MODALFRAME | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg 2", 400, 0, 1
+{
+    EDITTEXT        1003, 27, 22, 116, 47, WS_GROUP | ES_AUTOHSCROLL | ES_MULTILINE
+    EDITTEXT        IDC_EDIT2, 27, 84, 116, 12, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Hello There", IDC_CHK_TEST, 27, 109, 52, 10
+    DEFPUSHBUTTON   "OK", IDOK, 125, 107, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 177, 107, 50, 14
+    LTEXT           "Just a test of a static control", IDC_ST_TEST, 163, 28, 54, 24, SS_LEFT
+}
+
+  -- The attribute names will be:
+
+  DATA1003
+  IDC_EDIT2
+  IDC_CHK_TEST
+
+]]>
+</programlisting>
+    </para>
+    <para>
+      However, as always, the attribute name is checked to be a valid method name, not the empty string, and not a
+      duplicate of an existing method name. If the resource script file is valid, it can not be the empty string.
+      Usually, programmers do not name their symbolic IDs in a fashion that would conflict with an existing method name,
+      but there is no reason why they could not. If the check fails, then the attribute name will once again be
+      <computeroutput>DATA</computeroutput> prepended to the <emphasis role="bold">numeric</emphasis> value of the
+      resource ID.  Example:
+
+<programlisting>
+<![CDATA[
+  -- For this resource script file:
+
+#define COPY 1004
+
+//
+// Dialog resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DIALOG1 DIALOGEX 0, 0, 237, 131
+STYLE  DS_MODALFRAME | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg 2", 400, 0, 1
+{
+    EDITTEXT        1003, 27, 22, 116, 47, WS_GROUP | ES_AUTOHSCROLL | ES_MULTILINE
+    EDITTEXT        IDC_EDIT2, 27, 84, 116, 12, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Hello There", COPY, 27, 109, 52, 10
+    DEFPUSHBUTTON   "OK", IDOK, 125, 107, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 177, 107, 50, 14
+    LTEXT           "Just a test of a static control", IDC_ST_TEST, 163, 28, 54, 24, SS_LEFT
+}
+
+  -- The attribute names will be:
+
+  DATA1003
+  IDC_EDIT2
+  DATA1004
+
+]]>
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+</para>
+
+</section>
+
+<section id="sctDataAttributeProblems"><title>Problems with Data Attributes</title>
+<indexterm><primary>data attribute problems</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>data attribute problems</secondary></indexterm>
+<para>
+  In the author's mind, there are a number of problems with the whole data attribute concept. In no particular order,
+  some of them are brought up here.
+</para>
+<para>
+  The abstraction that there are only two objects, the Rexx dialog object and the underlying operating system dialog, is
+  a little outdated. In this abstraction, the state of a dialog control must be transferred back and forth through the
+  dialog object. In addition, the original users of the abstraction believed the <emphasis role="italic">data</emphasis>
+  of a dialog control could only be represented by a single string. The abstraction works somewhat for simple controls
+  like a check box, a radio button, or an edit control. However it quickly starts to break down with more complex
+  controls like tree views and list views. Indeed, when the more complicated controls were added to ooDialog,
+  there were no get and set data methods implemented for them. There is no <emphasis
+  role="italic">getTreeViewData</emphasis> or <emphasis role="italic">setListViewData</emphasis> methods.
+</para>
+<para>
+  A more flexible abstraction is that everything is an object, that all the dialog controls are objects. In this
+  abstraction, the state of a dialog control is set or queried directly through methods of the dialog control object.
+  Current development in ooDialog is done using this abstraction.
+</para>
+<para>
+  Presumably the automatic data field detection was done to make things easier for the Rexx programmer. However, the
+  whole process is actually quite confusing. The data attributes themselves are not visible in the program, which often
+  makes it difficult to read and understand a program. When the attribute names are generated automatically, it is often
+  quite difficult to know exactly what the name is.
+</para>
+<para>
+  With auto detection on, the states of the dialog controls are set to the data (values) of the corresponding data
+  attributes. This is done <emphasis role="bold">after</emphasis> <xref linkend="mthInitDialog"/> is
+  invoked. The consequence of this is that, if the programmer explicitly sets the state of the dialog controls in the
+  <emphasis role="italic">initDialog</emphasis>() method, the ooDialog framwork will then <emphasis
+  role="bold">reset</emphasis> the state of all the dialog controls afterwards. This can be disconcerting to the
+  programmer if automatic data field detection is not understood.
+</para>
+
+</section>
+
+<section id="mthAutoDetection" xreflabel="autoDetection"><title>autoDetection</title>
+<indexterm><primary>autoDetection</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>autoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoDetection--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  When the <emphasis role="italic">autoDetection</emphasis> method is invoked, it switches on
+  <xref linkend="paraAutomaticDataDetection"/>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sctConnectDataMethods" xreflabel="connnect data attriubte"><title>Connect Data Attribute Methods</title>
+<indexterm><primary>connect data attribute methods</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connect data attribute methods</secondary></indexterm>
+<para>
+  The methods in this section are used to manually create and connect a data <link
+  linkend="sctUnderstandingDataAttributes">attribute</link>. Their purpose is to manually do what is
+  done when <link linkend="mthInitAutoDetection">automatic</link> data field detection is on. They should only be used when
+  automatic detection is off.
+</para>
+
+<section id="mthConnectCheckBox" xreflabel="connectCheckBox"><title>connectCheckBox</title>
+<indexterm><primary>connectCheckBox</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectCheckBox</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCheckBox(--id--+-------------------+--)---------------><
+                          +-,--attributeName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectCheckBox</emphasis> method connects a check box in the underlying dialog, through
+  its resource ID, to a newly created data <link linkend="sctUnderstandingDataAttributes">attribute</link> in the Rexx
+  dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the check box control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <link linkend="termConnectAutoNames">automatically</link>/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the check box control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the
+    <xref linkend="mthSetCheckBoxData"/> or <xref linkend="mthGetCheckBoxData"/> methods. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its
+    check state. For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the
+    additional indeterminate state. The value for the indeterminate state is 2.
+  </para>
+  <para>
+    The <emphasis role="italic" >connectCheckBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
+    substitute a check box for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectCheckBox() -->
+
+
+<section id="mthConnectComboBox" xreflabel="connectComboBox"><title>connectComboBox</title>
+<indexterm><primary>connectComboBox</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectComboBox</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectComboBox(--id--+------------------+--)---------------><
+                          +-,-attributeName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectComboBox</emphasis> method creates a data <link
+  linkend="sctUnderstandingDataAttributes">attribute</link> in the Rexx dialog object and connects it to a
+  combo box control in the underlying dialog using its resource id.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the combo box control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <link linkend="termConnectAutoNames">automatically</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the combo box control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetComboBoxData"/> or <xref linkend="mthGetComboBoxData" />) methods. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the
+    text in the selection field or the selected combo box item.
+  </para>
+  <para>
+    The <emphasis role="italic">connectComboBox</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a combo box for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectComboBox() -->
+
+
+<section id="mthConnectDateTimePicker" xreflabel="connectDateTimePicker"><title>connectDateTimePicker</title>
+<indexterm><primary>connectDateTimePicker</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectDateTimePicker</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectDateTimePicker(--id--+------------------+--)---------><
+                                +-,--attributeName-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectDateTimePicker</emphasis> method connects a date time picker control in the
+  underlying dialog, through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
+  in the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the date time picker control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the date time control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer
+    grain of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a date time <xref linkend="clsDateTimePicker"/> is
+    defined to be a <computeroutput>DateTime</computeroutput> object that represents it currently selected date and
+    time.
+  </para>
+  <para>
+    The <emphasis role="italic">connectDateTimePicker</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
+    substitute a date time picker for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectDateTimePicker() -->
+
+
+<section id="mthConnectEdit" xreflabel="connectEdit"><title>connectEdit</title>
+<indexterm><primary>connectEdit</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectEdit</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectEdit(--id--+------------------+--)----><
+                      +-,--attributeName-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectEdit</emphasis> method creates a new data
+  <xref linkend="sctUnderstandingDataAttributes"/> attribute in the Rexx dialog object and connects it to the underlying
+  edit control using its resource id.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the edit control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the edit control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetEditData"/> or <xref linkend="mthGetEditData"/> methods. The <xref linkend="mthSetDataAttribute"/> or
+    <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of an edit control is defined to be the text entered in the control.
+    If there is no text, the data is the empty string.
+  </para>
+  <para>
+    The <emphasis role="italic">connectEdit</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleConnectEdit"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the following example, the edit control with symbolic resource ID IDC_EDIT is connected to the Rexx dialog
+    object's <emphasis role="italic">NAME</emphasis> attribute. The connection process creates the data attribute. The
+    string: <emphasis role="italic">Put your name here</emphasis> is assigned to the newly created data attribute. When
+    the dialog is executed, the underlying edit control is manually synchronized with the attribute. This has the
+    effect of setting the text of the edit control to the value of the attribute, which is the string, Put your name
+    here.
+  </para>
+  <para>
+    When the dialog is closed by the user with an <emphasis role="italic">ok</emphasis> command, the data attribute is
+    manually synchronized with the state of the edit control. The state of an edit control is defined to be the text
+    within the control. This synchronization has the effect of copying whatever text is in the edit control to the data
+    attribute. Then, when the dialog has terminated, the name the user entered is displayed. (Of course the user may not
+    have entered her name. What is displayed is whatever the text in the edit control was when the dialog was closed.)
+
+<programlisting>
+<![CDATA[
+
+  dlg = .NameDlg~new("nameExample.dll", IDD_DIALOG1, , "nameExample.h" )
+
+  if dlg~initCode == 0 then do
+    dlg~noAutoDetection
+    dlg~connectEdit(IDC_EDIT, "NAME")
+    dlg~name = "Put your name here"
+
+    ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+    if ret == 1 then say "The user's name is:" dlg~name
+    else say "The user canceled."
+  end
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'NameDlg' subclass ResDialog
+
+::method initDialog
+  self~setDataAttribute("NAME")
+
+::method ok
+  self~getDataAttribute("NAME")
+  self~ok:super
+
+]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectEdit() -->
+
+
+<section id="mthConnectListBox" xreflabel="connectListBox"><title>connectListBox</title>
+<indexterm><primary>connectListBox</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectListBox</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectListBox(--id--+-------------------+--)---------------><
+                         +-,--attributeName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectListBox</emphasis> method uses the resource ID of the control to connect a list box
+  in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
+  the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the list box manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetListBoxData"/> or the <xref linkend="mthGetListBoxData"/>. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">single-selection</emphasis> <xref
+    linkend="clsListBox"/> is defined to be text of the selected item in the list box.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> <xref
+    linkend="clsListBox"/> is defined to be a string containing the item numbers of its selected items,
+    separated by a blank. For a multi-selection list box the string could contain any number of list items depending
+    on what the user has selected, (for getting data,) or what the programmer is setting to be selected, (for setting
+    data.)
+  </para>
+  <para>
+    The <emphasis role="italic">connectListBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleConnectListBoxSingle"><term><emphasis role="bold">Example Single Selection:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how to use the <emphasis role="italic">connectListBox</emphasis> method with a single-selection
+    list box. It is very similar to the <link linkend="exampleConnectEdit">example</link> for the <emphasis
+    role="italic">connectEdit</emphasis> method. The code can be copied and pasted into the appropriate files to create
+    a working example.
+
+<programlisting>
+<![CDATA[
+
+/* singleSelection.rex */
+
+  dlg = .SingleSelectionDlg~new("singleSelection.rc", IDD_SINGLE_SELECTION_DLG, , "singleSelection.h" )
+  if dlg~initCode == 0 then do
+    dlg~noAutoDetection
+    dlg~connectListBox(IDC_LB_STATES, "LISTBOX")
+    dlg~listBox = "California"
+
+    ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+    if ret == 1 then say "The user's home state is:" dlg~listBox
+    else say "The user canceled."
+  end
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'SingleSelectionDlg' subclass RcDialog
+
+::method initDialog
+
+  states = self~getStateArray
+  listBox = self~newListBox(IDC_LB_STATES)
+
+  do state over states
+    listBox~add(state)
+  end
+
+  self~setDataAttribute("LISTBOX")
+
+::method ok
+  self~getDataAttribute("LISTBOX")
+  self~ok:super
+
+
+::method getStateArray private
+
+  a = .array~of(...)
+  return a
+
+/* End of singleSelection.rex */
+
+
+/* Place this code in a file named "singleSelection.h" */
+
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+#define IDD_SINGLE_SELECTION_DLG                 100
+#define IDC_LB_STATES                           1003
+
+/* Place this code in a file called singleSelection.rc. Two lines will wrap below:
+ * The line that begins "STYLE DS_3DLOOK" is all one line until the line that
+ * begins with "CAPTION" Likewise the "LISTBOX" line is all one line until the
+ * "DEFPUSHBUTTON" line. These lines will need to be fixed after the copy and
+ * paste.
+ */
+
+
+#include <windows.h>
+#include "singleSelection.h"
+
+LANGUAGE 0, SUBLANG_NEUTRAL
+IDD_SINGLE_SELECTION_DLG DIALOG 0, 0, 186, 148
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
+CAPTION "Home State"
+FONT 8, "Ms Shell Dlg 2"
+{
+    CTEXT           "Select Your Home State", IDC_STATIC, 29, 12, 127, 11, SS_CENTER
+    LISTBOX         IDC_LB_STATES, 25, 31, 137, 84, WS_TABSTOP | WS_VSCROLL | LBS_NOINTEGRALHEIGHT | LBS_SORT | LBS_NOTIFY
+    DEFPUSHBUTTON   "OK", IDOK, 71, 124, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 126, 124, 50, 14
+}
+
+/* Use this code to replace the .array~of(...) statement in the Rexx program. */
+  a = .array~of( -
+                "Alabama", -
+                "Alaska", -
+                "American Samoa", -
+                "Arizona", -
+                "Arkansas", -
+                "California", -
+                "Colorado", -
+                "Connecticut", -
+                "Delaware", -
+                "District of Columbia", -
+                "Florida", -
+                "Georgia", -
+                "Guam", -
+                "Hawaii", -
+                "Idaho", -
+                "Illinois", -
+                "Indiana", -
+                "Iowa", -
+                "Kansas", -
+                "Kentucky", -
+                "Louisiana", -
+                "Maine", -
+                "Maryland", -
+                "Massachusetts", -
+                "Michigan", -
+                "Minnesota", -
+                "Mississippi", -
+                "Missouri", -
+                "Montana", -
+                "Nebraska", -
+                "Nevada", -
+                "New Hampshire", -
+                "New Jersey", -
+                "New Mexico", -
+                "New York", -
+                "North Carolina", -
+                "North Dakota", -
+                "Northern Marianas Islands", -
+                "Ohio", -
+                "Oklahoma", -
+                "Oregon", -
+                "Pennsylvania", -
+                "Puerto Rico", -
+                "Rhode Island", -
+                "South Carolina", -
+                "South Dakota", -
+                "Tennessee", -
+                "Texas", -
+                "Utah", -
+                "Vermont", -
+                "Virginia", -
+                "Virgin Islands", -
+                "Washington", -
+                "West Virginia", -
+                "Wisconsin", -
+                "Wyoming")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleConnectListBoxMulti"><term><emphasis role="bold">Example Multi Selection:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how to use the <emphasis role="italic">connectListBox</emphasis> method with a multi-selection
+    list box. It is also very similar to the <link linkend="exampleConnectEdit">example</link> for the <emphasis
+    role="italic">connectEdit</emphasis> method.
+
+<programlisting>
+<![CDATA[
+
+/* multiSelection.rex */
+
+  dlg = .MultiSelectionDlg~new("multiSelection.rc", IDD_MULTI_SELECTION_DLG, , "multiSelection.h" )
+  if dlg~initCode == 0 then do
+    dlg~noAutoDetection
+    dlg~connectListBox(IDC_LB_STATES, "LISTBOX")
+    dlg~listBox = "4 6 7 49"
+
+    ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+    if ret == 1 then do
+      indexes = dlg~listBox~makeArray(" ")
+      states = getStateArray()
+
+      say "The user has visited these states:"
+      do index over indexes
+        say " " states[index]
+      end
+    end
+    else do
+      say "The user canceled."
+    end
+  end
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'MultiSelectionDlg' subclass RcDialog
+
+::method initDialog
+
+  states = getStateArray()
+  listBox = self~newListBox(IDC_LB_STATES)
+
+  do state over states
+    listBox~add(state)
+  end
+
+  self~setDataAttribute("LISTBOX")
+
+::method ok
+  self~getDataAttribute("LISTBOX")
+  self~ok:super
+
+
+::routine getStateArray public
+  a = .array~of(...)
+  return a
+
+/* Place this code in a file called multiSelection.rc. Two lines will wrap below:
+ * The line that begins "STYLE DS_3DLOOK" is all one line until the line that
+ * begins with "CAPTION" Likewise the "LISTBOX" line is all one line until the
+ * "DEFPUSHBUTTON" line. These lines will need to be fixed after the copy and
+ * paste.
+ */
+
+#include <windows.h>
+#include "multiSelection.h"
+
+LANGUAGE 0, SUBLANG_NEUTRAL
+IDD_MULTI_SELECTION_DLG DIALOG 0, 0, 186, 148
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_FIXEDSYS | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
+CAPTION "Visited States"
+FONT 8, "Ms Shell Dlg 2"
+{
+    CTEXT           "Select the states you've visited", IDC_STATIC, 29, 12, 127, 11, SS_CENTER
+    LISTBOX         IDC_LB_STATES, 25, 31, 137, 84, WS_TABSTOP | WS_VSCROLL | LBS_MULTIPLESEL | LBS_NOINTEGRALHEIGHT | LBS_SORT | LBS_NOTIFY
+    DEFPUSHBUTTON   "OK", IDOK, 71, 124, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 126, 124, 50, 14
+}
+
+
+/* Place this code in a file called multiSelection.h */
+
+/* Use this code to replace the .array~of(...) statement in the Rexx program. */
+  a = .array~of( -
+                "Alabama", -
+                "Alaska", -
+                "American Samoa", -
+                "Arizona", -
+                "Arkansas", -
+                "California", -
+                "Colorado", -
+                "Connecticut", -
+                "Delaware", -
+                "District of Columbia", -
+                "Florida", -
+                "Georgia", -
+                "Guam", -
+                "Hawaii", -
+                "Idaho", -
+                "Illinois", -
+                "Indiana", -
+                "Iowa", -
+                "Kansas", -
+                "Kentucky", -
+                "Louisiana", -
+                "Maine", -
+                "Maryland", -
+                "Massachusetts", -
+                "Michigan", -
+                "Minnesota", -
+                "Mississippi", -
+                "Missouri", -
+                "Montana", -
+                "Nebraska", -
+                "Nevada", -
+                "New Hampshire", -
+                "New Jersey", -
+                "New Mexico", -
+                "New York", -
+                "North Carolina", -
+                "North Dakota", -
+                "Northern Marianas Islands", -
+                "Ohio", -
+                "Oklahoma", -
+                "Oregon", -
+                "Pennsylvania", -
+                "Puerto Rico", -
+                "Rhode Island", -
+                "South Carolina", -
+                "South Dakota", -
+                "Tennessee", -
+                "Texas", -
+                "Utah", -
+                "Vermont", -
+                "Virginia", -
+                "Virgin Islands", -
+                "Washington", -
+                "West Virginia", -
+                "Wisconsin", -
+                "Wyoming")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectListBox() -->
+
+<section id="mthConnectListView" xreflabel="connectListView"><title>connectListView</title>
+<indexterm><primary>connectListView</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectListView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectListView(--id--+------------------+--)---------------><
+                          +-,--attributeName-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectListView</emphasis> method connects a list view in the underlying dialog, through
+  its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in the Rexx
+  dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list view control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the list view control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a list <xref linkend="clsListView"/> is defined to be a
+    string containing the blank separated index(es) of its selected item(s).
+  </para>
+  <para>
+    The <emphasis role="italic">connectCheckBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a list view for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectListView() -->
+
+
+<section id="mthConnectMonthCalendar" xreflabel="connectMonthCalendar"><title>connectMonthCalendar</title>
+<indexterm><primary>connectMonthCalendar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectMonthCalendar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectMonthCalendar(--id--+------------------+--)----------><
+                               +-,--attributeName-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectMonthCalendar</emphasis> method connects a month calendar control in the underlying
+  dialog, through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
+  in the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the month calendar control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the month calendar control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsMonthCalendar"/> is defined to be a
+    <computeroutput>DateTime</computeroutput> object that specifies the selected date in the month calendar control.
+  </para>
+  <para>
+    The <emphasis role="italic">connectMonthCalendar</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a month calendar control for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectMonthCalendar() -->
+
+
+<section id="mthConnectRadioButton" xreflabel="connectRadioButton"><title>connectRadioButton</title>
+<indexterm><primary>connectRadioButton</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectRadioButton</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectRadioButton(--id--+-------------------+--)-----------><
+                             +-,--attributeName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectRadioButton</emphasis> method uses the resource id of a radio button control to
+  connect the control in the underlying dialog to a newly created data<xref linkend="sctUnderstandingDataAttributes"/> in
+  the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the radio button control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the radio button control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetRadioButtonData"/> or <xref linkend="mthGetRadioButtonData"/> methods. The
+    <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsRadioButton"/> is defined to be the its check state.
+    This is 0 for not checked and 1 for checked.
+  </para>
+  <para>
+    The <emphasis role="italic">connectRadioButton</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a radio button control for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectRadioButton() -->
+
+
+<section id="mthConnectTab" xreflabel="connectTab"><title>connectTab</title>
+<indexterm><primary>connectTab</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectTab</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectTab(--id--+------------------+--)-----><
+                     +-,--attributeName-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectTab</emphasis> method uses the resource id of a tab control to connect the control
+  in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
+  the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the tab control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the tab control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or<xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to the text
+    of its currently selected tab.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTab</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a tab control for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectTab() -->
+
+
+<section id="mthConnectTrackBar" xreflabel="connectTrackBar"><title>connectTrackBar</title>
+<indexterm><primary>connectTrackBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectTrackBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectTrackBar(--id--+------------------+--)---------------><
+                          +-,--attributeName-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectTrackBar</emphasis> method uses the resource id of a trackbar control to connect
+  the control in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
+  in the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the trackbar control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the trackbar control manually. This can be done globally with the <xref
+    linkend="mthSetData" /> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to be
+    the current logical position of the slider in the trackbar.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTab</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a trackbar control for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectTrackBar() -->
+
+
+<section id="mthConnectTreeView" xreflabel="connectTreeView"><title>connectTreeView</title>
+<indexterm><primary>connectTreeView</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectTreeView(--id--+------------------+--)---------------><
+                          +-,--attributeName-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectTreeView</emphasis> method creates a data <xref
+  linkend="sctUnderstandingDataAttributes"/> in the Rexx dialog object and connects it to a tree view control in the
+  underlying dialog using its resource id.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the tree view control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the tree view control manually. This can be done globally with the <xref
+    linkend="mthSetData" /> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a tree <xref linkend="clsTreeView"/> is defined to be the
+    text of the selected tree view item.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTreeview</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a tree view for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectTreeView() -->
+
+
+<section id="mthConnectUpDown" xreflabel="connectUpDown"><title>connectUpDown</title>
+<indexterm><primary>connectUpDown</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectUpDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectUpDown(--id--+------------------+--)--><
+                        +-,--attributeName-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectUpDown</emphasis> method connects an up down control in the underlying dialog,
+  through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
+  the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the up down control to be connected. Can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
+      <xref linkend="termConnectAutoNames"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return codes are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The data attribute was created but it was not connected. (The data connection table is full.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the up down control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a up <xref linkend="clsUpDown"/> control is defined to be
+    the value of its current position.
+  </para>
+  <para>
+    The <emphasis role="italic">connectUpDown</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    an up down control for the edit control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::connectUpDown() -->
+
+</section>  <!-- End Connect Attribute Methods Section -->
+
+
+<section id="mthGetCheckBoxData" xreflabel="getCheckBoxData"><title>getCheckBoxData</title>
+<indexterm><primary>getCheckBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getCheckBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCheckBoxData(--id--)----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getCheckBoxData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a check box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the check box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a check box is considered to be whether it is checked or not. If the
+    check box is checked the return is 1 and if unchecked the return is 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The check box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it has
+    not, or if the resource ID is not the ID of a check box, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetComboBoxData" xreflabel="getComboBoxData"><title>getComboBoxData</title>
+<indexterm><primary>getComboBoxData</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getComboBoxData(--id--)----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getComboBoxData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the combo box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a combo box is considered to be the text of the selection field in
+    the combo <xref linkend="clsComboBox"/>. The current text in the selection field is returned, which may be
+    the empty string if there is no text in the selection field.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The combo box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it has
+    n0t, or if the resource ID is not the ID of a combo box, the results are unpredictable.
+  </para>
+  <para>
+     For drop down list combo boxes, the text in the selection field is the same as the text of the current selection.
+     The text returned may still be the empty string if there is no current selection.
+  </para>
+  <para>
+     However, for simple and drop down combo boxes things are not so simple. The text in the selection field could be
+     text the user typed in and there may be no current selection. Or, for these types of combo boxes, there might be a
+     current selection, but the user may have edited the text in the selection field so that it no longer matches the
+     text of the current selection.
+  </para>
+  <para>
+     To get the index of the current selection, use the <xref linkend="mthGetCurrentComboIndex"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetControlData" xreflabel="getControlData"><title>getControlData</title>
+<indexterm><primary>getControlData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getControlData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getControlData(--id--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getControlData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a dialog control, regardless of the type of the control. The control
+  <emphasis role="bold">should</emphasis> have been previously connected to a data attribute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return Value:</emphasis></term>
+  <listitem>
+  <para>
+    The return will be the <emphasis role="italic">value</emphasis> of the control data. This is dependent on the type
+    of the control. For an edit control it will be the text entered in the control, for a radio button it will be 0 or
+    1, depending on if the radio button is unchecked or checked, for a tree view it will be the text of the selected
+    item in the tree, etc.. The defined value for the <emphasis role="italic">data</emphasis> of any dialog control is
+    documented in the <xref linkend="sctConnectDataMethods"/> method for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the control has not been previously connected to a data attribute, the implementation of this method assumes the
+    control is an edit control and returns the text of the control. Since all windows have text value, which may be the
+    empty string, this is okay. However this is not the intent of this method. The method is intended to only be used
+    with controls connected to a data attribute.
+  </para>
+  <para>
+    It appears that the original intent of this method was to be used for controls such as tree views, list views, tabs,
+    etc.. When these controls were added to ooDialog, no corresponding getTreeViewData(), getProgressBarData(), etc.,
+    methods were implemented. The generic <emphasis role="italic">getControlData</emphasis>() method works for all
+    connected controls, but it works best if the programmer knows the type of control.
+  </para>
+  <para>
+    A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
+    the <xref linkend="mthData"/> method of the dialog <xref linkend="chpDialogControlObject"/> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created. A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetData" xreflabel="getData"><title>getData</title>
+<indexterm><primary>getData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getData--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getData</emphasis> method sets the Rexx dialog data <xref
+  linkend="sctUnderstandingDataAttributes"/> values to the state of the underlying, connected,
+  dialog controls.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>The following example continues the <xref linkend="mthSetData"/> example:
+
+<programlisting>
+<![CDATA[
+     .
+     .
+     .
+dialog~connectEdit(102, "EDIT_1")
+dialog~connectCheckBox(201, )
+dialog~ConnectListbox(203, "LISTBOX_DAYS")
+     .
+     .
+     .
+/* process the dialog */
+     .
+     .
+     .
+dialog~getData       /* set data attributes to the state of the dialog controls */
+say dialog~EDIT_1
+say dialog~DATA201
+say dialog~LISTBOX_DAYS
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetDataAttribute" xreflabel="getDataAttribute"><title>getDataAttribute</title>
+<indexterm><primary>getDataAttribute</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getDataAttribute</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDataAttribute(--attributeName--)----------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getDataAttribute</emphasis> method transfers the data of a dialog control to the
+  connected data <xref linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>attributeName [required]</term>
+    <listitem>
+    <para>
+      The name of the data attribute that receives the data of the underlying dialog control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The terms <emphasis role="italic">transfers</emphasis> and <emphasis role="italic">receives</emphasis> the data are
+    holdovers from the original documentation and the original data <xref linkend="sctUnderstandingDataAttributes"/>
+    abstraction. What the <emphasis role="italic">getDataAttribute</emphasis> method actually does is to set the value of the
+    connected data attribute to the defined value of the underlying dialog control. The defined value for the <emphasis
+    role="italic">data</emphasis> of any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method
+    for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how to get the data of a dialog control and synchronize its connected data
+    attribute.
+
+<programlisting>
+<![CDATA[
+  self~getDataAttribute("FIRSTNAME")
+  if self~firstName \= "" then ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetDataStem" xreflabel="getDataStem"><title>getDataStem</title>
+<indexterm><primary>getDataStem</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getDataStem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDataStem(--dataStem.--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getDataStem</emphasis> method is the reverse of the <xref linkend="mthSetDataStem"/> method.
+  The method gets the <emphasis role="italic">data</emphasis> of all the dialog controls in the underlying dialog that have
+  been connected to a data <xref linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object. The data of each
+  control is copied to the specified stem.
+</para>
+<para>
+  A stem index for each  connected control is set.  The stem index is the numeric ID for the control.  The value at that
+  index is the data of the matching dialog control.  In addition, if the <xref linkend="atrConstDir"/>
+  directory has a symbolic ID for the numeric ID of the control, a stem index of the symbolic ID is also set.  This of
+  course only works reliably if the Rexx programmer uses unique numeric IDs for all resources.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+    <varlistentry><term>dataStem. [required]</term>
+    <listitem>
+    <para>
+      The name of a stem variable in which the data is returned.  Remember the trailing period.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetEditData" xreflabel="getEditData"><title>getEditData</title>
+<indexterm><primary>getEditData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getEditData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~getEditData(--id--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getEditData</emphasis> method gets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of an edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the edit control. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of an edit control is considered to the text entered in the control.
+    This method returns the text in the edit control, which may be the empty string if the user has not entered any
+    text.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The edit control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    has not, or if the resource ID is not the ID of a edit control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetListBoxData" xreflabel="getListBoxData"><title>getListBoxData</title>
+<indexterm><primary>getListBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getListBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getListBoxData(--id--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getListBoxData</emphasis> method gets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a list box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    For a single-selection list box, the <emphasis role="italic">data</emphasis> of the list box is considered to be the
+    text of the selected item. The text of the selected item is returned, or the empty string if no item is selected.
+  </para>
+  <para>
+    However, for a multi-selection list box, the <emphasis role="italic">data</emphasis> is considered to be the index
+    numbers of the selected items. The selected indexes are returned in a string with the indexes separated by spaces.
+    If no item is selected then the empty string is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it has
+    not, or if the resource ID is not the ID of a list box, the results are unpredictable.
+  </para>
+  <para>
+     For a multi-selection list box, the string is restricted to 1500 indexes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how to handle a multiple-selection list box. It parses the returned string as long as it
+    contains an index.
+
+<programlisting>
+<![CDATA[
+selLines = MyDialog~getListBoxData(555)
+do until selLines = ""
+   parse var selLines aLine selLines
+   say aLine
+end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetRadioButtonData" xreflabel="getRadioButtonData"><title>getRadioButtonData</title>
+<indexterm><primary>getRadioButtonData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getRadioButtonData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRadioButtonData(--id--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getRadioButtonData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a a radio button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the radio button. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a radio button is considered to be whether it is checked or not. If
+    it is checked the return is 1 and if unchecked the return is 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The radio button <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a radio button, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthInitAutoDetection" xreflabel="initAutoDetection"><title>initAutoDetection</title>
+<indexterm><primary>initAutoDetection</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>initAutoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-initAutoDetection---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">initAutoDetection</emphasis> method is invoked automatically by the ooDialog framework
+  when any dialog is first instantiated. The default implementation of <emphasis
+  role="italic">initAutoDetection</emphasis> turns <link linkend="sctUnderstandingDataAttributes">automatic</link> data
+  detection on.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is private. It is meant to be over-ridden by the programmer in her subclass to change the default
+    behavior of turning automatic data field detection on.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example overrides <emphasis role="italic">initAutoDetection</emphasis> method to switch off auto
+    detection:
+
+<programlisting>
+<![CDATA[
+::class 'AddressBookDialog' subclass ResDialog
+::method initAutoDetection
+   self~noAutoDetection
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthNoAutoDetection" xreflabel="noAutoDetection"><title>noAutoDetection</title>
+<indexterm><primary>noAutoDetection</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noAutoDetection------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off <link
+  linkend="paraAutomaticDataDetection">automatic</link> data detection.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetCheckBoxData" xreflabel="setCheckBoxData"><title>setCheckBoxData</title>
+<indexterm><primary>setCheckBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setCheckBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCheckBoxData(--id--,--data--)-------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setCheckBoxData</emphasis> method sets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a check box control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the check box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">data</emphasis> to be assigned to the underlying check box. The <emphasis
+      role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its check state.
+      For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the additional
+      indeterminate state. The value for the indeterminate state is 2.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any check box control, the underlying control does not <emphasis
+    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
+    role="italic">id</emphasis> argument must be the resource ID of a check box control. If it is not, say it is the
+    resource ID of a list view control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetComboBoxData" xreflabel="setComboBoxData"><title>setComboBoxData</title>
+<indexterm><primary>setComboBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setComboBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setComboBoxData(--id--,--data--)-------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setComboBoxData</emphasis> method sets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a combo box control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the combo box control. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">data</emphasis> to be assigned to the underlying combo box control. The <emphasis
+      role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the text in the
+      selection field or the selected combo box item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any combo box control, the underlying control does not <emphasis
+    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
+    role="italic">id</emphasis> argument must be the resource ID of a combo box control. If it is not, say it is the
+    resource ID of an edit control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetControlData" xreflabel="setControlData"><title>setControlData</title>
+<indexterm><primary>setControlData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setControlData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setControlData(--id--,--dataValue--)---------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setControlData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a dialog control. The programmer does not have to know what kind of control it is.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dataValue [required]</term>
+    <listitem>
+    <para>
+      The data that is assigned to the control. The format <emphasis role="bold">should</emphasis> match the type of
+      the control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If
+    the control has not been previously connected to a data attribute, the implementation of this method assumes the
+    control is an edit control and sets the text of the control to <emphasis role="italic">dataValue</emphasis>. Since
+    all windows can have their text set, this may be okay. However the outcome is dependent on the type of control.
+    Setting the text of a check box will change its label, setting the text of a tree view control will do nothing. The
+    method is intended to only be used with controls connected to a data attribute.
+  </para>
+  <para>
+    Likewise, if the format of <emphasis role="italic">dataValue</emphasis> does not match the type of control, the
+    results are unpredictable. It appears that the original intent of this method was to be used for controls such as
+    tree views, list views, tabs, etc.. When these controls were added to ooDialog, no corresponding setTreeViewData(),
+    setTabData(), etc., methods were implemented. The generic <emphasis role="italic">setControlData</emphasis>() method
+    works for all connected controls, but it works best if the programmer knows the type of control.
+  </para>
+  <para>
+    A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
+    the <xref linkend="mthDataEquals"/> method of the dialog <xref linkend="chpDialogControlObject"/> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets dialog control with resource ID of 123 to the (string) data &quot;1 2 3&quot;. This is
+    meaningful if the control is an edit control, or if it is a list box that contains the line &quot;1 2 3&quot;.
+    However, for other controls it is probably meaningless.
+
+<programlisting>
+<![CDATA[
+MyDialog~setControlData(123, "1 2 3")
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetData" xreflabel="setData"><title>setData</title>
+<indexterm><primary>setData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setData--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setData</emphasis> method sets the state of all underlying, connected, dialog controls to
+  the values of the matching dialog object data <xref linkend="sctUnderstandingDataAttributes"/>s.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, otherwise 1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this method sets the state for every connected attribute. This may not
+    always be desirable. For instance the focused node of a tree-view control may be changed. For finely grained control
+    of which dialog controls have their state set, the programmer should use the <xref linkend="mthSetControlData"/> or
+    <xref linkend="mthSetDataAttribute"/> methods. Both of these methods transfer the value of a single object attribute that
+  is specified by the programmer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    Dialog items with ID 102, 201 and 203 are connected to the attributes <computeroutput>EDIT_1</computeroutput>,
+    <computeroutput>DATA201</computeroutput>, and <computeroutput>LISTBOX_DAYS</computeroutput>. Attribute
+    <computeroutput>DATA201</computeroutput> is generated by the connectCheckBox method. Then the attributes are
+    initialized with some values. This does not change the state of the controls in the dialog until the <emphasis
+    role="italic">setData</emphasis> method is invoked.
+
+<programlisting>
+<![CDATA[
+     . .
+     .
+dialog~connectEdit(102, "EDIT_1")
+dialog~connectCheckBox(201,)
+dialog~ConnectListbox(203, "LISTBOX_DAYS")
+     .
+     .
+     .
+dialog~EDIT_1 = "Memorial Day"
+dialog~DATA201 = 1
+dialog~LISTBOX_DAYS = "Monday"
+
+dialog~setData
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetDataAttribute" xreflabel="setDataAttribute"><title>setDataAttribute</title>
+<indexterm><primary>setDataAttribute</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setDataAttribute</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDataAttribute(--attributeName--)----------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setDataAttribute</emphasis> method transfers the value of a connected data <xref
+  linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object to the underlying dialog
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>attributeName [required]</term>
+    <listitem>
+    <para>
+      The name of the data attribute whose value is transferred to the underlying dialog control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The terms <emphasis role="italic">transfers</emphasis> and <emphasis role="italic">receives</emphasis> the data are
+    holdovers from the original documentation and the original data <xref linkend="sctUnderstandingDataAttributes"/>
+    abstraction. What the <emphasis role="italic">setDataAttribute</emphasis> method actually does is to set the state of the
+    underlying dialog control to the value of the connected data attribute. The defined value for the <emphasis
+    role="italic">data</emphasis> of any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method
+    for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets the state the of the connected dialog control to the value of the data attribute DATA101:
+    to
+
+<programlisting>
+<![CDATA[
+  self~setDataAttribute("DATA101")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetDataStem" xreflabel="setDataStem"><title>setDataStem</title>
+<indexterm><primary>setDataStem</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setDataStem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDataStem(--dataStem.--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the <emphasis role="italic">data</emphasis>, (the state,) of a number of Windows dialog controls to the values
+  specified by the stem. Each index of <emphasis role="italic">dataStem.</emphasis> is the resource ID of a dialog
+  control. The control with that ID, within the dialog, has its state set to match the value of the stem variable at
+  that index. The resource ID can be specified using either numeric resource IDs or symbolic resource IDs.
+</para>
+<para>
+  This method only works for controls that have been connected to a <link
+  linkend="sctUnderstandingDataAttributes">data</link> attribute. Either by <xref
+  linkend="paraAutomaticDataDetection"/>, or through one of the
+  <xref linkend="sctConnectDataMethods"/>) methods. Every connected control has its state set when this method is invoked.
+  If the data stem, <emphasis role="italic">data.</emphasis> has no matching index for a connected control, that control's
+  state is set to the empty string. Any indexes in the data stem that do not match the resource ID of a registered control
+  are ignored.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>dataStem. [required]</term>
+    <listitem>
+    <para>
+      A stem variable containing the values used to set a dialog control's state. Remember the trailing period.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example initializes the dialog controls with IDs 21, 22, and 23, provided they have been connected
+    previously:
+<programlisting>
+<![CDATA[
+     .
+     .
+     .
+dlgStem.21="Windows 95"
+dlgStem.22="0"
+dlgStem.23="1 2 3"
+self~setDataStem(dlgStem.)
+]]>
+</programlisting>
+   </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetEditData" xreflabel="setEditData"><title>setEditData</title>
+<indexterm><primary>setEditData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setEditData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setEditData(--id--,--data--)-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setEditData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of an edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the edit control. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">data</emphasis> to be assigned to the underlying edit control. The <emphasis
+      role="italic">data</emphasis> of an edit control is defined to be the text entered in the control. If there is no
+      text, the data is the empty string.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any edit control, the underlying control does not <emphasis role="italic">have</emphasis>
+    to be connected to a data attribute. However, the <emphasis role="italic">id</emphasis> argument must be the
+    resource ID of an edit control. If it is not, say it is the resource ID of a radio button control, the results are
+    unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    Assume that three methods are connected to push buttons. The <emphasis role="italic">setToDefault</emphasis> method
+    sets the text in the underlying edit control with resource ID of 234 to the value <emphasis
+    role="italic">256</emphasis>. But, it does not change the edit control's connected attribute. Using <emphasis
+    role="italic">setEditData</emphasis> has the same effect as the user typing text into the edit control. The
+    connecte attribute in the Rexx dialog object (<computeroutput>DATA234</computeroutput>) still has the original
+    value. Thus it is possible to undo the changes, (using the <emphasis role="italic">unDoChanges</emphasis> method,)
+    or to accept the changes, (using the <emphasis role="italic">acceptValues</emphasis> method.)
+
+  <programlisting>
+  <![CDATA[
+  ::method setToDefault
+     self~setEditData(234, "256")
+
+  ::method acceptValues
+     self~getDataAttribute(DATA234)
+
+  ::method undoChanges
+     self~setDataAttribute(DATA234)
+  ]]>
+  </programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetListBoxData" xreflabel="setListBoxData"><title>setListBoxData</title>
+<indexterm><primary>setListBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setListBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setListBoxData(--id--,--data--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setListBoxData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of the underly list box to the value specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The data that is assigned to the list box. The <emphasis role="italic">data</emphasis> of a <emphasis
+      role="bold">single-selection</emphasis> list <xref linkend="clsListBox"/> is defined to be text of the
+      selected item in the list box.
+    </para>
+    <para>
+      The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> <xref
+      linkend="clsListBox"/> is defined to be a string containing the item numbers of its selected items,
+      separated by a blank. For a multi-selection list box the string could contain any number of list items depending
+      on what the programmer is setting to be selected.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any list box control, the underlying control does not <emphasis
+    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
+    role="italic">id</emphasis> argument must be the resource ID of a list box control. If it is not, say it is the
+    resource ID of a list view control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is for a single-selection list box. It selects the item whose text is &quot;New York&quot;,
+    case insensitive, in the list box with a resource ID of 232:
+
+<programlisting>
+<![CDATA[
+
+  MyBaseDialog~setListBoxData(232, "New York")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example selects items 2, 5, and 6 of the multi-selection list box with a resource ID of 345:
+
+<programlisting>
+<![CDATA[
+  MyDialog~setListBoxData(345, "2 5 6")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetRadioButtonData" xreflabel="setRadioButtonData"><title>setRadioButtonData</title>
+<indexterm><primary>setRadioButtonData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setRadioButtonData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRadioButtonData(--id--,--data--)----------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setRadioData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a radio button control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the radio button. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">data</emphasis> to be assigned to the underlying radio button. The <emphasis
+      role="italic">data</emphasis> of a radio <xref linkend="clsRadioButton"/> is defined to be the its
+      check state. This is 0 for not checked and 1 for checked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any radio button control, the underlying control does not <emphasis
+    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
+    role="italic">id</emphasis> argument must be the resource ID of a radio button control. If it is not, say it is the
+    resource ID of a list view control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+</section>
+

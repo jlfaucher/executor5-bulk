@@ -1,0 +1,129 @@
+Erichs steps for installing Publican on Windows
+
+From: Erich Steinböck <erich.steinboeck@gm...> - 2018-12-25 15:17:34
+Attachments: Message as HTML
+
+I'm building on Windows only, using an ancient, unsupported version of
+publican plus fop for Windows
+
+My old installation notes for publican on Windows are here, but I'm not
+sure how complete these are
+
+~~~
+1. Install Publican
+
+https://fedorahosted.org/releases/p/u/publican/
+Tars and SRPMs: https://fedorahosted.org/releases/p/u/publican/
+
+-> This site is retired, Erich has put the Installer on Sourceforge
+
+I've packed it together with a bunch of my publican-related stuff into a
+ZIP and uploaded to
+https://sourceforge.net/projects/oorexx/files/windows-build-tools/PublicanWindows.zip
+(I just now see that there's also a oorexx-buildutils/ folder .. I haven't
+yet checked if we are keeping redundant files)
+
+The ZIP contains the Publican-Installer-3.0.exe and various helper scripts
+that I wrote
+e. g. a filter to get rid of thousands of fop warnings during build, or a
+fop front-end script, which runs fop-preprocess to remove unwanted
+whitespace.
+The PublicanBuildHere script will run a build with above mentioned
+extensions
+From: Erich Steinböck <erich.steinboeck@gm...> - 2018-12-26 12:50:33
+These are copies of my installed versions that I'm running
+see also the README in the same directory
+
+
+1.5 POs note: Erich mentions Publican was moved and can be found here
+https://sourceware.org/gerrit/#/admin/projects/publican
+It can be downloaded using this command
+git clone https://sourceware.org/gerrit/publican
+
+2. Install FOP
+https://xmlgraphics.apache.org/fop/download.html
+http://www.apache.org/dyn/closer.cgi/xmlgraphics/fop
+http://mirror.cc.columbia.edu/pub/software/apache/xmlgraphics/fop/binaries/fop-1.1-bin.zip
+
+3. add "version: 5.0" to docs/trunk/rexxref/publican.cfg
+
+4. either
+
+  add Publican path to PATH: 
+
+  set path="\Program Files (x86)\Publican;"%PATH%, 
+
+or
+
+  use "\Program Files (x86)\Publican;publican.exe" instead of "publican"
+
+5. either
+
+  add FOP path to PATH: 
+
+  set path=\FOP\fop-1.1;%PATH%, 
+
+or
+
+  create a BAT file (within your PATH) that redirects
+
+publican build --formats=pdf --langs=en-US --common_content=".."
+
+From: Erich Steinböck <erich.steinboeck@gm...> - 2018-12-28 19:00:47
+Attachments: Message as HTML
+
+`call cdsvn docs` changes to the docs trunk, which in my installation is
+%USERPROFILE%\Downloads\ooRexxSVN\docs\trunk
+publicanbuildall.bat is an old piece of code from a time when I started
+working on rexxref but didn't yet have a Visual Studio set up, so I
+couldn't build using the make files
+
+if you want to use the optional tools, then you'd have to adjust the last
+line of fop.bat (one of the optional tools):
+%USERPROFILE%\Downloads\FOP\fop-1.1\fop.bat
+This line calls fop's fop.bat, so you have to adjust the path to it.
+
+
+From: Rick McGuire <object.rexx@gm...> - 2019-01-01 16:59:49
+Attachments: Message as HTML
+
+I found the directory docbook-xsl-1,76.1 in the publican install and copied
+it to c:\ and got past that error. Not sure why it was looking for this in
+c:\. Perhaps I'm missing some environment variable? Now all of the docs are
+build, but each of the pdfs are getting
+named ooRexx_Documentation-5.0-Open_Object_Rexx-en-US.pdf rather than the
+component.pdf.
+
+I didn't need to install a brand. I unzipped all of your stuff, then had to
+play around with your utilities a bit to adjust to my setup. The one extra
+step I had to make was to copy the docbook-xsl-1.76/1 directory to c:\
+because that's where publican seemed to be looking for it.
+
+From: Erich Steinböck <erich.steinboeck@gm...> - 2019-01-13 15:22:12
+Attachments: Message as HTML
+
+Rick, adding the following registry entries fixes all my doc build issues
+(you were better off than me as you ran the - now broken - installer first,
+which at least adds the first of the three registry entries)
+
+The registry entries fix the need to copy docbook-xsl-1.76.1 to the root
+directory and for me it fixes the 5-minute delays before and after DTD
+validation (@P.O. I'm always running with active antivirus software and
+during the years I've been using it, the publican executable has never
+triggered an alert).
+
+This was exported with `reg export HKLM\Software\WOW6432Node\Publican
+Publican.reg` and can be imported with `reg import` or manually.  Of course
+you'll have to set the paths to where it's installed on your machine.  I'd
+also check first, whether HKEY_LOCAL_MACHINE\Software\WOW6432Node\Publican
+and its default entry already exist (the installer should have created
+that).
+
+~~~
+[HKEY_LOCAL_MACHINE\Software\WOW6432Node\Publican]
+@="C:\\Program Files (x86)\\Publican"
+"dtd_path"="C:\\Program Files (x86)\\Publican\\DocBook_DTD"
+"xsl_path"="C:\\Program Files (x86)\\Publican\\docbook-xsl-1.76.1"
+~~~
+
+

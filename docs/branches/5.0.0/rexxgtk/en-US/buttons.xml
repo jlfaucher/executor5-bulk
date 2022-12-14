@@ -1,0 +1,840 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Button Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Buttons</secondary></indexterm>
+
+<para>Buttons are widgets that when clicked cause an event to be signaled. There are a
+number of different button types and classes including push buttons, check boxes,
+radio buttons, spin buttons, and others.</para>
+
+<!-- ******************************* -->
+<!-- ********** GTKButton ********** -->
+<!-- ******************************* -->
+
+<section id="gtkbutton"><title>GTKButton</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-1.png" align="right" scale="70" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKButton class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />). This is a widget which create a
+signal when clicked.</para>
+
+<para>This is the GTK+ system main push button widget. It is usuall in the shape of a
+rectangle. It usually contains a label and sometimes has a mnemonic key associated
+with it.</para>
+
+<section id="gtkbuttonnewwithlabel">
+<title>Method: newwithlabel (class method)</title>
+<indexterm><primary>newwithlabel</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>newwithlabel</secondary></indexterm>
+<para>Create a push button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKButton~newwithlabel(label)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkbuttonnewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create a push button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKButton~newwithmnemonic(label)------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkbuttonnewfromstock">
+<title>Method: newfromstock (class method)</title>
+<indexterm><primary>newfromstock</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>newfromstock</secondary></indexterm>
+<para>Create a push button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKButton~newfromstock(label)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkbuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a push button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKButton~new()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkbuttonsetusestock">
+<title>Method: set_use_stock</title>
+<indexterm><primary>set_use_stock</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>set_use_stock</secondary></indexterm>
+<para>Indicate the label is a stock item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_use_stock(flag)--------------------------------------------------><
+
+>>--use_stock = flag-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The boolean stock flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkbuttonsetlabel">
+<title>Method: set_label</title>
+<indexterm><primary>set_label</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>set_label</secondary></indexterm>
+<para>Set the button label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_label(text)------------------------------------------------------><
+
+>>--label = text---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkbuttongetlabel">
+<title>Method: get_label</title>
+<indexterm><primary>get_label</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>get_label</secondary></indexterm>
+<para>Get the button label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_label()----------------------------------------------------------><
+
+>>--label()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Label text.</para>
+</section>
+
+<section id="gtkbuttonsetrelief">
+<title>Method: set_relief</title>
+<indexterm><primary>set_relief</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>get_label</secondary></indexterm>
+<para>Set the button relief.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_relief(style)----------------------------------------------------><
+
+>>--relief = style-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>style</term>
+      <listitem><para>The button relief style.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkbuttonuseunderline">
+<title>Method: use_underline</title>
+<indexterm><primary>use_underline</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>use_underline</secondary></indexterm>
+<para>Set the button underline flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--use_underline(flag)--------------------------------------------------><
+
+>>--underline =  flag----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The button underline flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkbuttonsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkbuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>pressed</entry>
+   <entry>signal_pressed</entry>
+</row>
+<row>
+   <entry>released</entry>
+   <entry>signal_released</entry>
+</row>
+<row>
+   <entry>clicked</entry>
+   <entry>signal_clicked</entry>
+</row>
+<row>
+   <entry>enter</entry>
+   <entry>signal_enter</entry>
+</row>
+<row>
+   <entry>leave</entry>
+   <entry>signal_leave</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************ -->
+<!-- ********** GTKCheckButton ********** -->
+<!-- ************************************ -->
+
+<section id="gtkcheckbutton"><title>GTKCheckButton</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-3.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKCheckButton class is a subclass of the
+GTKToggleButton class (<xref linkend="gtktogglebutton" />). This widget is a toggle with
+two discrete states.</para>
+
+<para>This button provides a box which can be either checked or unchecked (on or off) with
+some descriptive text describing the alternatives.</para>
+
+<section id="gtkcheckbuttonnewwithlabel">
+<title>Method: newwithlabel (class method)</title>
+<indexterm><primary>newwithlabel</primary></indexterm>
+<indexterm><primary>GTKCheckButton</primary>
+<secondary>newwithlabel</secondary></indexterm>
+<para>Create a check button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCheckButton~newwithlabel(label)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label for the button.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcheckbuttonnewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKCheckButton</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create a check button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCheckButton~newwithmnemonic(label)-------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcheckbuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCheckButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a check button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCheckButton~new()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ************************************ -->
+<!-- ********** GTKRadioButton ********** -->
+<!-- ************************************ -->
+
+<section id="gtkradiobutton"><title>GTKRadioButton</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-4.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKRadioButton class is a subclass of the
+GTKCheckButton class (<xref linkend="gtkcheckbutton" />).</para>
+
+<para>This widget has two discrete states (on or off) and is usually used in a group where
+only one of the buttons can be in the checked state.</para>
+
+<section id="gtkradiobuttonnewwithlabel">
+<title>Method: newwithlabel (class method)</title>
+<indexterm><primary>newwithlabel</primary></indexterm>
+<indexterm><primary>GTKRadioButton</primary>
+<secondary>newwithlabel</secondary></indexterm>
+<para>Create a radio button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKRadioButton~newwithlabel(group, label)---------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>group</term>
+      <listitem><para>The GTKList group (<xref linkend="gslist" />)
+                      for the button.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label for the button.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkradiobuttonnewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKRadioButton</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create a check button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKRadioButton~newwithmnemonic(group, label)------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>group</term>
+      <listitem><para>The GSList group (<xref linkend="gslist" />)
+                      for the button.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkradiobuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKRadioButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a radio button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKRadioButton~new(group--+-----------+--)--------------------------><
+                               +--, label--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>group</term>
+      <listitem><para>The GSList group (<xref linkend="gslist" />)
+                      for the button.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label for the button.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkradiobuttonsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKRadioButton</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkradiobuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKRadioButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKRadioButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>group_changed</entry>
+   <entry>signal_group_changed</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************* -->
+<!-- ********** GTKToggleButton ********** -->
+<!-- ************************************* -->
+
+<section id="gtktogglebutton"><title>GTKToggleButton</title>
+
+<para>The GTKToggleButton class is a subclass of the
+GTKButton class (<xref linkend="gtkbutton" />).</para>
+
+<para>This widget is a toggle which can retain its state.</para>
+
+<section id="gtktogglebuttonnewwithlabel">
+<title>Method: newwithlabel (class method)</title>
+<indexterm><primary>newwithlabel</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>newwithlabel</secondary></indexterm>
+<para>Create a toggle button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToggleButton~newwithlabel(label)---------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label for the button.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktogglebuttonnewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create a toggle button with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToggleButton~newwithmnemonic(label)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktogglebuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a toggle button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToggleButton~new()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktogglebuttongetmode">
+<title>Method: get_mode</title>
+<indexterm><primary>get_mode</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>get_mode</secondary></indexterm>
+<para>Get the display mode of the button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_mode()-----------------------------------------------------------><
+
+>>--mode()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Mode.</para>
+</section>
+
+<section id="gtktogglebuttonsetmode">
+<title>Method: set_mode</title>
+<indexterm><primary>set_mode</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>set_mode</secondary></indexterm>
+<para>Set the display mode of the button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_mode(mode)-------------------------------------------------------><
+
+>>--mode = mode----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>   The button mode.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktogglebuttongetactive">
+<title>Method: get_active</title>
+<indexterm><primary>get_active</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>get_active</secondary></indexterm>
+<para>Get the active state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_active()---------------------------------------------------------><
+
+>>--active()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean.</para>
+</section>
+
+<section id="gtktogglebuttonsetactive">
+<title>Method: set_active</title>
+<indexterm><primary>set_active</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>set_active</secondary></indexterm>
+<para>Set the active state of the button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_active(mode)-----------------------------------------------------><
+
+>>--active = mode--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>   The button state.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktogglebuttongetinconsistent">
+<title>Method: get_inconsistent</title>
+<indexterm><primary>get_inconsistent</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>get_inconsistent</secondary></indexterm>
+<para>Get the inconsistent state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_inconsistent()---------------------------------------------------><
+
+>>--inconsistent()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean.</para>
+</section>
+
+<section id="gtktogglebuttonsetinconsistent">
+<title>Method: set_inconsistent</title>
+<indexterm><primary>set_inconsistent</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>set_inconsistent</secondary></indexterm>
+<para>Set the inconsistent state of the button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_inconsistent(mode)-----------------------------------------------><
+
+>>--inconsistent = mode--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>   The button state.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktogglebuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKToggleButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKToggleButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>set_scroll_adjustments</entry>
+   <entry>signal_set_scroll_adjustments</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

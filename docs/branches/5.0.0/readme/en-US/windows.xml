@@ -1,0 +1,550 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "readme.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Notes XML File
+    #
+    # Copyright (c) 2005-2020, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<section><title>Windows Requirements, Installation and Configuration</title>
+
+<section><title>Hardware Requirements</title>
+<itemizedlist>
+<listitem><para>
+  Approximately 52 MB free disk space is needed for a complete installation.
+</para></listitem>
+<listitem><para>
+  12 MB free disk space for the core interpreter.
+</para></listitem>
+<listitem><para>
+  25 MB free disk space for online documentation.
+</para></listitem>
+<listitem><para>
+  15 MB free disk space for all samples.
+</para></listitem>
+<listitem><para>
+  0.5 MB free disk space for the API headers and libraries.
+</para></listitem>
+<listitem><para>
+  Any hardware capable of running the supported Windows operating systems is sufficient.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Software Requirements</title>
+<para>
+  On Windows, the ooRexx development team is committed to supporting all active versions of Windows. That is, versions of
+  Windows that Microsoft has not declared end of life. For ooRexx version 5.0.0, the officially supported version of Window
+  are Windows Vista through Windows 10. The team will not <emphasis role="italic">purposively</emphasis> make changes to
+  prevent ooRexx from running on versions of Windows that have reached end of life. However, the team is more interested in
+  supporting newer versions of Windows than they are in supporting out of date operating systems. Versions of Windows that
+  are no longer supported by Microsoft, are officially not supported by ooRexx.
+</para>
+<para>
+  The following lists the versions of Windows that ooRexx 5.0.0 has been consistently tested on by the development team:
+</para>
+<itemizedlist>
+<listitem><para>Windows 10</para></listitem>
+</itemizedlist>
+<para>
+  The following lists the version of Windows that the development team is committed to supporting. However, ooRexx 5.0.0 has
+  not been well tested by the development team on these versions of Windows. Testing has been done by committed users of
+  ooRexx.
+</para>
+<itemizedlist>
+<listitem><para>Windows Vista</para></listitem>
+<listitem><para>Windows 7</para></listitem>
+<listitem><para>Windows 8</para></listitem>
+<listitem><para>Windows 8.1</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Installation and Configuration Information</title>
+
+<section id="sectPreInstallation"><title>Windows Pre-Installation Notes</title>
+<para>
+  Open Object Rexx cannot coexist with IBM Object REXX. If IBM Object REXX is installed on the system
+  you must first uninstall it.
+</para>
+<para>
+  If a previous version of ooRexx is installed, you <emphasis role="italic">should</emphasis> uninstall
+  it. If two different versions of ooRexx are installed on the same system, the results are not
+  predictable and the interpreter will <emphasis role="italic">not</emphasis> work correctly. You could
+  install over the top of the existing installation, but that is not recommended and is not supported.
+</para>
+<para>
+  A previous version of ooRexx can be uninstalled (<xref linkend="sectWindowsUninstall" />) before
+  starting the new installation. However, the uninstall does not have to be done as a separate step. When
+  the installation program is started it will detect a previous version of ooRexx and offer to uninstall
+  it at that time.
+</para>
+
+<warning><title>Warning</title>
+<para>
+  If a previous Windows install exists and is not the same addressing mode (32 or 64) as the version of ooRexx about to be
+  installed, there are potential problems when the uninstaller is launched from the installer automatically. In this case it
+  is <emphasis role="bold">strongly</emphasis> advised that the uninstallation program be run first to completely uninstall
+  the current version of ooRexx, and then the new installer be run.
+</para>
+</warning>
+
+<para>
+  ooRexx should be installed by a user with administrator rights. On Vista and later this is a requirement.
+  There are several installation
+  steps that can only be performed with administrator rights. They are:
+</para>
+<orderedlist>
+<listitem><para>
+  The subdirectory that ooRexx is installed into is added to the System PATH environment variable.
+</para></listitem>
+<listitem><para>
+  The environment variable REXX_HOME is set for all users.
+</para></listitem>
+<listitem><para>
+  The file type (ftype) <computeroutput>REXXScript</computeroutput> is defined for the interpreter
+  executable and the file extension <computeroutput>.rex</computeroutput> is associated (assoc) with the
+  <computeroutput>REXXScript</computeroutput> file type.
+</para></listitem>
+<listitem><para>
+  The file extension <computeroutput>.rex</computeroutput> is added to the System PATHEXT environment
+  variable.
+</para></listitem>
+</orderedlist>
+<note><para>
+  On Vista when a user starts the installation program, the user is prompted for an administrator
+  password to continue. It is not necessary to actually be logged in as administrator when the
+  installation is started.
+</para></note>
+<para>
+  It is important that if ooRexx is installed by a user with administrator rights, that ooRexx is
+  uninstalled by a user with administrator rights. Otherwise, the installation steps described above,
+  including removal of rxapi as a service, will not be undone when ooRexx is uninstalled.
+</para>
+<para>
+  ooRexx is compiled both as 32-bit application and as a native 64-bit application. The native 64-bit
+  application can not be installed on a 32-bit version of Windows. Either the 32-bit or the 64-bit ooRexx
+  can be installed on a 64-bit version of Windows. However, to take full advantage of both the operating
+  system and ooRexx, the user should install the 64-bit version of ooRexx on a 64-bit version of Windows.
+  The installation programs for the two types of ooRexx are clearly labelled:
+  <computeroutput>ooRexx-5.0.0.windows.x86_32.exe</computeroutput> and
+  <computeroutput>ooRexx-5.0.0.windows.x86_64.exe</computeroutput>.
+</para>
+</section>
+
+<section><title>Running the Installation Program on Windows</title>
+<para>
+  Before starting the installation, review the pre-installation (<xref
+  linkend="sectPreInstallation" />) notes if you have not already done so.
+</para>
+<para>
+  The ooRexx installation program is a typical Windows installation program. Download the installation
+  program for your operating system. From Windows Explorer double-click the appropriate installation
+  package: <computeroutput>ooRexx-5.0.0.windows.x86_32.exe</computeroutput> or
+  <computeroutput>ooRexx-5.0.0.windows.x86_64.exe</computeroutput>. Follow the prompts in the installation dialog.
+  Naturally, the program can also be run from a console window by typing the executable name at the
+  command prompt.
+</para>
+<note><para>
+  If a previous version of ooRexx is installed and the rxapi process is running, the user will be
+  prompted to halt the process. The process <emphasis role="italic">must</emphasis> be halted to properly
+  install the new version. If necessary, (because a Rexx program is running in the background and you are
+  worried about possible data loss,) cancel the installation and take the appropriate steps to halt
+  the process cleanly.  If, on the other hand, you somehow trick the installation program to continue
+  without halting the rxapi process, you will most likely end up with a corrupt installation of ooRexx.
+</para></note>
+<para>
+  <emphasis role="bold">Unattended installation</emphasis>. The Windows installation program can be run
+  from the command line with no user input. This is done by using the <computeroutput>/S</computeroutput>
+  option. Note that in this mode default values are used for all options other than the installation
+  directory. This mode can be used to script automatic installs or multiple installs on different
+  machines. From a script, or from the command line, enter the installation program name followed by the
+  <computeroutput>/S</computeroutput> parameter, and the <computeroutput>/D</computeroutput> parameter if
+  the default installation directory should be changed:
+</para>
+<variablelist>
+<varlistentry>
+<term>/S : Silent mode</term>
+<listitem><para>
+  This will install ooRexx without any user intervention using default values for all options.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>/D : Default directory</term>
+<listitem><para>
+  The default installation directory, (C:\Program Files\ooRexx), can be changed using this switch. This
+  must be the last parameter used in the command line and must not contain any quotes, even if the path
+  contains spaces. For example:
+<programlisting>
+<![CDATA[
+ooRexx-5.0.0.windows.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
+]]>
+</programlisting>
+</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sectWindowsUninstall"><title>Windows Uninstall Information</title>
+<para>
+  Select "Programs and Features" from the Control Panel, then select "Open Object Rexx" and select "Remove".
+</para>
+<para>
+  Alternatively, the ooRexx installation places a menu item in the program folder that can be used to
+  uninstall. Select "Start->All Programs->Open Object Rexx->Uninstall ooRexx". This is
+  functionally equivalent to using "Add Remove Programs".
+</para>
+</section>
+</section>
+
+<section><title>Running Open Object Rexx as a Child Process of a Service on Windows</title>
+<para>
+  <computeroutput>rxapi</computeroutput> in its role as the memory manager for ooRexx can share out some
+  resources among all the ooRexx processes to enable global functions, system exits, subcommand handlers,
+  and global queues. If you start ooRexx from a service, two or more processes might run under different
+  user accounts. Therefore it is required that the memory manager is not protected and can be accessed by
+  every user. This means that ooRexx global data is system global and unsecured.
+</para>
+<para>
+  Note that starting ooRexx from a service is different than installing
+  <computeroutput>rxapi</computeroutput> as a service.
+</para>
+<para>
+  If you want ooRexx to be started from a service, ooRexx must be installed as a common program or you
+  must modify the system path manually to include the directory where ooRexx has been installed.
+</para>
+<para>
+  If you are writing a service that calls RexxStart(), ensure that the SERVICE_INTERACTIVE_PROCESS flag
+  is set for your service. To prevent access violations, use a NULL security descriptor and assign it to
+  your service process.
+</para>
+</section>
+
+<section><title>Open Object Rexx and Other Rexx Interpreters</title>
+<para>
+  If you have other Rexx interpreters installed, you may have to set the PATH manually because ooRexx and
+  the other Rexx interpreters may both use the name "rexx" for invoking the interpreter.
+  Interpreter error messages that begin with "Rexx:" indicate that another Rexx interpreter
+  was called instead of ooRexx. You can verify which Rexx interpreter is running either by the form of
+  the error messages, by running <computeroutput>rexxtry.rex</computeroutput> and executing SAY VERSION,
+  or by invoking <computeroutput>rexx -v</computeroutput>, which then should display information about
+  the Rexx interpreter that is invoked. If no information is displayed, it is not ooRexx. If you don't
+  want the other Rexx interpreter to be invoked, you should remove it from the PATH, delete it, or rename
+  <computeroutput>rexx.exe</computeroutput> in the installation directory to
+  <computeroutput>orx.exe</computeroutput> and use <computeroutput>orx</computeroutput> to invoke the
+  interpreter.
+</para>
+</section>
+
+<section><title>Exploring Open Object Rexx</title>
+<para>
+  Once you have installed the ooRexx files you can run Rexx scripts by issuing the command
+  <computeroutput>rexx</computeroutput> followed by the name of your Rexx script at the command prompt.
+  In addition, if you installed ooRexx as recommended, a file type has been associated with the
+  <computeroutput>.rex</computeroutput> extension which allows you to just type the name of your script,
+  without the extension, to run it. For example, if your program was named
+  <computeroutput>addressBook.rex</computeroutput>, the file association will allow you to execute the
+  program as follows:
+<programlisting>
+<![CDATA[
+C:\work.ooRexx>addressBook
+]]>
+</programlisting>
+  An execution of the program might look like this:
+<programlisting>
+<![CDATA[
+C:\work.ooRexx>addressBook
+ooRexx Address Lookup, version 1.1.0
+  Look up address for: gatch
+
+Tom Gatch
+3245 Westfield Dr
+Mission Bay CA 92110
+
+  Look up another address? [y/n] n
+
+C:\work.ooRexx>
+]]>
+</programlisting>
+  To interactively try Object Rexx statements, enter <computeroutput>rexx rexxtry.rex</computeroutput> on
+  the command line. Enter <computeroutput>exit</computeroutput> to end the program.
+</para>
+<para>
+  To help you explore programming in Open Object Rexx, the following generic sample programs are
+  provided:
+</para>
+<variablelist>
+<varlistentry>
+<term><varname>ccreply.rex</varname></term>
+<listitem><para>concurrent program using REPLY
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>complex.rex</varname></term>
+<listitem><para>complex number class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>drives.rex</varname></term>
+<listitem><para>demonstrates the usage of Sys functions
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>factor.rex</varname></term>
+<listitem><para>factorial program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>greply.rex</varname></term>
+<listitem><para>concurrent program using WAIT and NOWAIT
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>guess.rex</varname></term>
+<listitem><para>a guessing game
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>ktguard.rex</varname></term>
+<listitem><para>concurrent program using START and GUARD
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>makestring.rex</varname></term>
+<listitem><para>demonstrated the usage of the makestring method
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>month.rex</varname></term>
+<listitem><para>displays a calendar for the month of January
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>philfork.rex</varname></term>
+<listitem><para>program that demonstrates Open Object Rexx concurrency
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>pipe.cls</varname></term>
+<listitem><para>a library of pipeline classes
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>properties.rex</varname></term>
+<listitem><para>shows usage of the .Properties class and some Sys functions
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qdate.rex</varname></term>
+<listitem><para>date query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qtime.rex</varname></term>
+<listitem><para>time query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>rexxcps.rex</varname></term>
+<listitem><para>measures Rexx performance
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>scclient.rex scserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the .Socket class from socket.cls
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>semcls.cls</varname></term>
+<listitem><para>semaphore class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>sfclient.rex sfserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the external rxsock library
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>stack.rex</varname></term>
+<listitem><para>program that uses a stack class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usecomp.cls</varname></term>
+<listitem><para>an implementation of a complex number class (see note below)
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usepipe.rex</varname></term>
+<listitem><para>program that uses the pipeline implementation (see note below)
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<note><para>
+  To run these programs, you must either add the <computeroutput>samples</computeroutput> directory to
+  the PATH or execute them directly from the <computeroutput>samples</computeroutput> directory.
+</para></note>
+
+<para>
+  To help you explore using the Windows <computeroutput>WinSystm.cls</computeroutput>, the following
+  sample programs are provided:
+</para>
+<variablelist>
+<varlistentry>
+<term><varname>deskicon.rex</varname></term>
+<listitem><para>AddDesktopIcon method of the WindowsProgramManager class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>desktop.rex</varname></term>
+<listitem><para>uses the WindowsProgramManager class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>displayAnyMenu.rex</varname></term>
+<listitem><para>
+  Displays the menu hierarchy for a window that the user picks. The example uses a mixture of ooDialog
+  and WinSystm.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>displayWindowTree.rex</varname></term>
+<listitem><para>
+  Allows the user to pick an open top-level window and then displays the window hierarchy for that window.
+  The program uses both ooDialog and WinSystm classes.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>eventlog.rex</varname></term>
+<listitem><para>uses the WindowsEventLog class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>getTheWindow.rex</varname></term>
+<listitem><para>
+  This example shows how to find a window without using the exact window title.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>menuCalc.rex</varname></term>
+<listitem><para>
+  Uses the MenuObject class to display the menu hierarchy of the Windows Calculator application.  The
+  menu hierarchy for both the Calculator's standard view and its scientific view are printed to the
+  console.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>menuNotepad.rex</varname></term>
+<listitem><para>
+  Uses the MenuObject class to displays the hierarchy of the Notepad menu.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>quickCalc.rex</varname></term>
+<listitem><para>
+  Demonstrates how to control an application programmatically using the winsystm classes.  Does some
+  simple calculations using the Windows Calculator application. This program is similar to usewmgr.rex
+  but more simple to better show what is going on.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>quickShowAllMenus.rex</varname></term>
+<listitem><para>
+  Uses the windowsSystem.frm package to print out a menu outline of every open window that has a menu.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>registry.rex</varname></term>
+<listitem><para>uses the WindowsRegistry class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usewmgr.rex</varname></term>
+<listitem><para>program that uses the WindowsManager class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>windowsSystem.frm</varname></term>
+<listitem><para>
+  A collection of public routines and classes to help work with the winsystm.cls package. This is an
+  example of how to extract common function into a package, and then use the package to help in writing
+  similar programs.  A number of the sample programs that use winsystm.cls make use of this framework.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>writeWithNotepad.rex</varname></term>
+<listitem><para>
+  Uses classes in winsystm.cls to automate the Windows Notepad application. This is a subset of the
+  usewmgr.rex program designed to be a little easier to understand.
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<para>
+  The directory <computeroutput>samples\ole\</computeroutput> and its subdirectories contain a number of
+  samples for the ooRexx OLE / ActiveX interface. The sample programs contain comments to help with
+  learning to use the OLEObject class.
+</para>
+<para>
+  The <computeroutput>samples\oodialog</computeroutput> and it subdirectories contain a relatively large
+  number of example programs that demonstrate the use of OODialog. A subset of these examples can be
+  launched from the ooRexx Program folder in the Start Menu. "Start->All Programs->Open Object
+  Rexx->ooRexx Samples->ooDialog"
+</para>
+<para>
+  There are several examples provided to help with programming external function libraries using the
+  ooRexx native API. These samples are located under the <computeroutput>samples\api</computeroutput>
+  directory, along with two read me files:
+<itemizedlist>
+<listitem><para><computeroutput>sample\api\readme.txt</computeroutput></para></listitem>
+<listitem><para><computeroutput>sample\api\callrxnt</computeroutput></para></listitem>
+<listitem><para><computeroutput>sample\api\callrxwn</computeroutput></para></listitem>
+<listitem><para><computeroutput>sample\api\rexxexit</computeroutput></para></listitem>
+<listitem><para><computeroutput>sample\api\wpipe</computeroutput></para></listitem>
+<listitem><para><computeroutput>sample\api\wpipe\readme.txt</computeroutput></para></listitem>
+</itemizedlist>
+</para>
+<para>
+  Several of the API samples can be launched from the ooRexx Program folder in the Start Menu.
+  "Start->All Programs->Open Object Rexx->ooRexx Samples->API"
+</para>
+</section>
+</section>

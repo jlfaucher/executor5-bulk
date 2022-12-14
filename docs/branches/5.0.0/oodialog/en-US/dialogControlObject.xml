@@ -1,0 +1,3217 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chpDialogControlObject" xreflabel="control"><title>The Dialog Control Object</title>
+<indexterm><primary>dialog control object</primary></indexterm>
+<indexterm><primary>dialog control object</primary></indexterm>
+<para>
+  This chapter discusses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the <xref
+  linkend="chpDialogObject"/> object. It lists the methods that are common to all dialog controls. In the
+  graphical user interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
+  Therefore, many of the methods of a dialog control object are the same as the methods of the dialog object. These are
+  the methods that are common to all windows, whether they are dialog windows or dialog control windows.
+</para>
+<para id="paraDialogControlStyles">
+  In the Windows GUI all windows are created with a set of <emphasis role="italic">window styles</emphasis>.  Dialog
+  control windows are created using styles that are common to all windows, (for example the visible style,) and styles
+  specific to the dialog control itself, (for example the multi-line style of the <xref linkend="clsEdit"/>
+  control class.)  In general the styles of a control fall into three categories: Styles that can only be set when the
+  control is created and then can not be changed afterwards. Styles that can be changed after control creation by
+  sending messages to the control. And, styles that can be changed after the control is created by accessing the control
+  window directly.
+</para>
+<para>
+  The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog, either by using a
+  resource editor for dialogs defined with resource scripts or binary compiled resources, or by using the one of the
+  <xref linkend="sctCreateMethods"/> methods for a user dialog. After the dialog control has been
+  created, the individual dialog control classes provide methods to change those styles that can be changed, either by
+  sending the proper message to the control or by accessing the control window directly.
+</para>
+
+<section id="sctMethodsDlgControlObject"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods that all dialog controls have in
+  common:
+
+<table id="tblDialogControlObject" frame="all">
+<title>Dialog Control Object Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Dialog Control Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoFactorX"/></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoFactorY"/></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><xref linkend="atrHDlg"/></entry>
+<entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoHwnd"/></entry>
+<entry>The window handle of the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="atrID"/></entry>
+<entry>Reflects the numeric resource ID for the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoInitCode"/></entry>
+<entry>Meaningless for a dialog control, it is always 0.</entry>
+</row>
+<row>
+<entry><xref linkend="atrODlg"/></entry>
+<entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoPixelCX"/></entry>
+<entry>The width of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoPixelCY"/></entry>
+<entry>The height of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSizeX"/></entry>
+<entry>The width of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSizeY"/></entry>
+<entry>The height of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAssignFocus"/></entry>
+<entry>Sets the input focus to this dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoChildWindowFromPoint"/></entry>
+<entry>Determines which, if any, of the child windows belonging to this dialog control contains the specified point.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoClear"/></entry>
+<entry>Clears the client area of the control by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClearRectClsDialogControl"/></entry>
+<entry>Clears the specified rectangular within the client area of this control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoClient2screen"/></entry>
+<entry>Converts a point or points in client-area coordinates of the control to its screen coordinates.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoClientRect"/></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control's client area in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoClientToScreen"/></entry>
+<entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
+</row>
+<row>
+<entry><xref linkend="mthConnectCharEvent"/></entry>
+<entry>Connects a character event notification sent to the control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthConnectFKeyPressDialogControlObject"/></entry>
+<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthConnectKeyPressDialogControlObject"/></entry>
+<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoCreateBrush"/></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoCreateFont"/></entry>
+<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoCreateFontEx"/></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoCreatePen"/></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthData"/></entry>
+<entry>Retrieves the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDataEquals"/></entry>
+<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDeleteFont"/></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDeleteObject"/></entry>
+<entry>Deletes a graphic object,</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoDisable"/></entry>
+<entry>Disables the control</entry>
+</row>
+<row>
+<entry><xref linkend="mthDisconnectKeyPressDialogControlObject"/></entry>
+<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoDisplay"/></entry>
+<entry>Shows or hides the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoDraw"/></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDrawAngleArc"/></entry>
+<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDrawArc"/></entry>
+<entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDrawLine"/></entry>
+<entry>Draws a line within the device context using the active pen.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDrawPie"/></entry>
+<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoDrawPixel"/></entry>
+<entry>Draws a pixel within the device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoEnable"/></entry>
+<entry>Enables the control</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoFillDrawing"/></entry>
+<entry>Fills in an outline figure within the device context using the active brush.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoFillRect"/></entry>
+<entry>Fills a rectangle using the specified brush within the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoFontColor"/></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoFontToDC"/></entry>
+<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoForegroundWindow"/></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoFreeDC"/></entry>
+<entry>Releases a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetArcDirection"/></entry>
+<entry>Returns the current drawing direction.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetClientRect"/></entry>
+<entry>Returns the dimensions of the control's client area.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetDC"/></entry>
+<entry>Returns the handle to the display device context of a dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetExStyleRaw"/></entry>
+<entry>Retrieves the numeric value of the control's extended style flags.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetFont"/></entry>
+<entry>Returns the font used by the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetID"/></entry>
+<entry>Retrieves the identification number of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetPixel"/></entry>
+<entry>Returns the color number of a pixel within the device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetPos"/></entry>
+<entry>Returns the position of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetRealPos"/></entry>
+<entry>Returns the position of the control in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetRealSize"/></entry>
+<entry>Returns the size of the control in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetRect"/></entry>
+<entry>Returns the dimensions of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetSize"/></entry>
+<entry>Returns the size of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetStyleRaw"/></entry>
+<entry>Retrieves the numeric value of the control's style flags.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetSysBrush"/></entry>
+<entry>Retrieves a handle to a logical brush that corresponds to the specified system color index.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetText"/></entry>
+<entry>Gets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetTextAlign"/></entry>
+<entry>Gets the text alignment setting for the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetTextExtent"/></entry>
+<entry>Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTextSizeDlgClsDialogControl"/></entry>
+<entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetTextSizePx"/></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoGetTextSizeScreen"/></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGroup"/></entry>
+<entry>Adds or removes the <xref linkend="wsgroup"/> style for the control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHasKeyPressConnectionDialogControlObject"/></entry>
+<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoHide"/></entry>
+<entry>Makes the control invisible and repaints it.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoHideFast"/></entry>
+<entry>Marks the control as invisible</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoHScrollPos"/></entry>
+<entry>Returns the position of the horizontal scroll bar in the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoIsEnabled"/></entry>
+<entry>Tests if the control is enabled.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoIsVisible"/></entry>
+<entry>Tests if the control is visible.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoLoadBitmap"/></entry>
+<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoMapWindowPoints"/></entry>
+<entry>Converts, or maps, a set of points from the coordinate space relative to this dialog control to a coordinate space relative to the specified window.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoMove"/></entry>
+<entry>Moves the control to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoMoveTo"/></entry>
+<entry>Moves the control to the position specified in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoMoveWindow"/></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoObjectToDC"/></entry>
+<entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoOpaqueText"/></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoRectangle"/></entry>
+<entry>Draws a rectangle within the given device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoRedraw"/></entry>
+<entry>Redraws the entire control window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoRedrawClient"/></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRedrawRectClsDialogControl"/></entry>
+<entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoRemoveBitmap"/></entry>
+<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoResize"/></entry>
+<entry>Resizes the control to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoResizeTo"/></entry>
+<entry>Resizes the control to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoScreen2client"/></entry>
+<entry>Converts a point or points in screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoScreenToClient"/></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoScrollClsWE"/></entry>
+<entry>Scrolls the contents of the dialog control's client area by the amount specified.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSendMessage"/></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSendMessageHandle"/></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetArcDirection"/></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetColor"/></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetFont"/></entry>
+<entry>Sets a new font to be used by the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetHScrollPos"/></entry>
+<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetParentClsDialogControl"/></entry>
+<entry>Sets a new parent for this dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSetRect"/></entry>
+<entry>Moves and / or resizes the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSetStyleRaw"/></entry>
+<entry>Sets the value of the window's style flags using the numeric value specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetSysColor"/></entry>
+<entry>Sets the background color or foreground color, or both, for this dialog control using the system <link linkend="defSysColor">colors</link></entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSetText"/></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetTextAlign"/></entry>
+<entry>Sets the text alignment option for the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSetTitle"/></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetVScrollPos"/></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSetWindowPos"/></entry>
+<entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetWindowThemeClsDialogControl"/></entry>
+<entry>Changes the visual theme for this dialog control window, causes the window to use a different set of visual style information than its class normally uses.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoShow"/></entry>
+<entry>Makes the control visible if it was hidden and repaints it.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoShowFast"/></entry>
+<entry>Marks the control as visible.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoSizeWindow"/></entry>
+<entry>Changes the size, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthTabStop"/></entry>
+<entry>Add or remove the tab stop style for the control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthTextSize"/></entry>
+<entry>Computes the width and height in pixels of the specified string of text when displayed by this control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoTitle"/></entry>
+<entry>Gets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoTitleEquals"/></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoTransparentText"/></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoUpdate"/></entry>
+<entry>Invalidates the entire client area of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoUpdateWindow"/></entry>
+<entry>Updates the client area of this window by sending a paint message to the window, if the window's update region is not empty.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUseUnicode"/></entry>
+<entry>Sets the format flag telling the control to use, or not use, Unicode.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUseVersion"/></entry>
+<entry>Informs the control that the programmer is expecting a behavior associated with a particular common control library version.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUsingUnicode"/></entry>
+<entry>Determines if the control is using Unicode or not.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUsingVersion"/></entry>
+<entry>Returns the version number for the control that was set by the most recent <emphasis role="italic">useVersion</emphasis>method call.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoVScrollPos"/></entry>
+<entry>Returns the position of the vertical scroll bar in the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="wbdcoWindowRect"/></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoWrite"/></entry>
+<entry>Writes text in a dialog control using the given font, style, and color at the position specified.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoWriteDirect"/></entry>
+<entry>Writes text in a dialog control at the position specified using a device context.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+</section>
+
+
+<section id="sctDialogControlAttributes"><title>Attribute Methods</title>
+<indexterm><primary>dialog control object</primary><secondary>attributes</secondary></indexterm>
+<para>
+  This section describes the attributes of the dialog control object.
+</para>
+
+<section id="wbdcoFactorX" xreflabel="factorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrFactorX"/>
+
+<![CDATA[
+>>--factorX--------------------------------------><
+
+>>--factorX = ratio------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="wbdcoFactorY" xreflabel="factorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrFactorY"/>
+
+<![CDATA[
+>>--factorY--------------------------------------><
+
+>>--factorY = ratio------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+
+<section id="atrHDlg" xreflabel="hDlg"><title>hDlg (Attribute)</title>
+<indexterm><primary>hDlg</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>hDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hDlg-----------------------------------------><
+
+>>--hDlg = varName-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">hDlg</emphasis> attribute reflects the window <xref linkend="defHandle"/> of
+  the <xref linkend="ovvUnderlying"/> Windows dialog that this dialog control belongs to.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hDlg get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the window handle of the underlying dialog that this dialog control belongs to.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hDlg set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the <emphasis role="italic">hDlg</emphasis> attribute. It is set correctly by the
+    ooDialog framework and can not be changed.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::hDlg() [attribute]  -->
+
+
+<section id="wbdcoHwnd" xreflabel="hwnd"><title>hwnd</title>
+<programlisting>
+WindowBase::<xref linkend="atrHwnd"/>
+
+<![CDATA[
+>>--hwnd-----------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="atrID" xreflabel="id"><title>id (Attribute)</title>
+<indexterm><primary>id</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>id</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>id</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id-------------------------------------------><
+
+>>--id = varName---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">id</emphasis> attribute reflects the numeric resource ID for this dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the resource ID of the dialog control. This is always the whole number resource ID, not the <xref
+    linkend="defSymbolicId" />) ID, even if symbolic IDs are used for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the value of this attribute. Its value is the value of the <xref linkend="ovvUnderlying"/>
+    dialog control's ID, which is set when the dialog control is created by the operating system and can not be changed.
+  </para> </listitem></varlistentry>
+</variablelist> </section>  <!-- End DialogControl::id() [attribute]  -->
+
+
+<section id="wbdcoInitCode" xreflabel="initCode"><title>initCode (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrInitCode"/>
+
+<![CDATA[
+>>--initCode-------------------------------------><
+
+>>--initCode = code------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+
+<section id="atrODlg" xreflabel="oDlg"><title>oDlg (Attribute)</title>
+<indexterm><primary>oDlg</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>oDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>oDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--oDlg-----------------------------------------><
+
+>>--oDlg = varName-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">oDlg</emphasis> attribute reflects the Rexx dialog object that this dialog control belongs
+  to.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">oDlg get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the Rexx dialog object to which this dialog control belongs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">oDlg set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the <emphasis role="italic">oDlg</emphasis> attribute. It is set correctly by the
+    ooDialog framework and can not be changed.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::oDlg() [attribute]  -->
+
+
+<section id="wbdcoSizeX" xreflabel="sizeX"><title>sizeX (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrSizeX"/>
+
+<![CDATA[
+>>--sizeX----------------------------------------><
+
+>>--sizeX = dialogUnits--------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdcoSizeY" xreflabel="sizeY"><title>sizeY (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrSizeY"/>
+
+<![CDATA[
+>>--sizeY----------------------------------------><
+
+>>--sizeY = dialogUnits--------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdcoPixelCX" xreflabel="pixelCX"><title>pixelCX (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrPixelCX"/>
+
+<![CDATA[
+>>--pixelCX--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdcoPixelCY" xreflabel="pixelCY"><title>pixelCY (Attribute)</title>
+<programlisting>
+WindowBase::<xref linkend="atrPixelCY"/>
+
+<![CDATA[
+>>--pixelCY--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+</section>  <!-- End Attributes Section -->
+
+
+<!-- <section id="sctWindowBaseDCO"><title>Basic Window Methods</title>  START -->
+<xi:include href="windowBaseDCO.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="sctWindowBaseDCO"><title>Basic Window Methods</title>  END   -->
+
+
+<!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  START -->
+<xi:include href="windowExtensionsDCO.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  END   -->
+
+
+<section id="mthAssignFocus" xreflabel="assignFocus"><title>assignFocus</title>
+<indexterm><primary>assignFocus</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>assignFocus</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>assignFocus</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--assignFocus----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Assigns the input focus to this dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a dialog control is assigned the focus, the operating system does more than just set the input focus to the
+    window. The Windows dialog manager also updates the default push button border, sets the default control identifier,
+    and automatically selects the text of an edit control (if the target window is an edit control).
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::assignFocus() -->
+
+
+<section id="mthClearRectClsDialogControl" xreflabel="clearRect"><title>clearRect</title>
+<indexterm><primary>clearRect</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>clearRect</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>clearRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--clearRect(--rectangle--)---------------------><
+
+
+Form 2:
+
+>>--clearRect(--pt1--,--pt2--)-------------------><
+
+
+Form 3:
+
+>>--clearRect(--x-,--y-,--cx-,--cy--)------------><
+
+
+Generic form:
+
+>>--clearRect(--rectCoordinates--)---------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular within the client area of
+  this control. The rectangle is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush
+  set to the typical background color for dialog boxes and three dimensional elements.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>rectCoordinates [required]</term>
+      <listitem>
+      <para>
+        The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <xref linkend="clsRect"/> object, two
+ <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::clearRect() -->
+
+<section id="mthConnectCharEvent" xreflabel="connectCharEvent"><title>connectCharEvent</title>
+<indexterm><primary>connectCharEvent</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectCharEvent</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectCharEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCharEvent(--+--------------+--)-------><
+                       +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectCharEvent</emphasis> method connects a keyboard <emphasis role="italic">character</emphasis> event notification to
+  this dialog control with a method in the Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the Rexx method to be connected to the character event. If this argument is omitted, the ooDialog
+        framework uses a method name of: <emphasis role="italic">onChar</emphasis>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="rmkConnectCharEvent"><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system translates the numeric <xref linkend="clsVK"/> key code produced by a key down /
+    key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
+    the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards, the
+    <link linkend="evtDialogControlCHAR">CHAR</link> event handler will also receive extended key notifications. The extended
+    keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters to the left of the numeric
+    keypad.
+  </para>
+  <para>
+    There is not a one to one correspondence between the numeric value of a virtual key code and the numeric character
+    code for the same key. For example the character key code for the dash <emphasis role="italic">-</emphasis> is 45,
+    but 45 is the virtual key code for INSERT. I.e., <computeroutput>45 == .VK~INSERT</computeroutput> and
+    <computeroutput>45~d2c == -</computeroutput>.
+  </para>
+  <para>
+    The character codes expected to reach the <xref linkend="evtDialogControlCHAR"/> are in the following table. The
+    explanation for the character event handler describes how to determine which character is received.
+
+    <table id="tblCharacterCode" frame="all"> <title>Numeric Character Code for the Character Event</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>ASCII Characters</entry><entry>Numeric Codes</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>Ctrl-A through Ctrl-Z</entry><entry>1 through 26</entry>
+    </row>
+    <row>
+    <entry>Ctrl-[</entry><entry>27</entry>
+    </row>
+    <row>
+    <entry>Ctrl-]</entry><entry>29</entry>
+    </row>
+    <row>
+    <entry>Normal alphabetic characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Punctuation characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Numeric characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Extended keys use the <xref linkend="clsVK"/> class</entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the Microsoft documentation states that character notifications are only
+    generated for keys that are mapped to ASCII characters by the keyboard driver. This implies that different keyboards
+    may produce different character codes than those listed above. The list was produced through experimentation by the
+    author, using an extended keyboard, and is in general correct. Some specific details may be different for other
+    keyboards.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
+    library.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This is a complete working example. It can be used to experiment with the <emphasis
+    role="italic">connectCharEvent</emphasis> method. As the user types in the edit box, information from the character
+    event are printed to the console. This allows the user to see what key presses reach the application as characters:
+<programlisting>
+<![CDATA[
+
+/* Print characters received */
+
+  .application~setDefaults('O', , .false)
+  .constDir[IDC_EDIT] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+  self~create(30, 30, 250, 200, "CHAR Tester", "CENTER")
+
+::method defineDialog
+
+  self~createEdit(IDC_EDIT, 10, 10, 230, 155, "MULTILINE")
+  self~createPushButton(IDOK, 135, 175, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 190, 175, 50, 14, , "Cancel")
+
+::method initDialog
+
+  self~newEdit(IDC_EDIT)~connectCharEvent(onChar)
+
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, control
+
+  if misc~pos('extended') <> 0 then c = .VK~key2name(char)
+  else c = char~d2c
+
+  say 'Char:' char c 'isShift' isShift 'isCtrl' isCtrl 'isAlt' isAlt 'misc' misc
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="evtDialogControlCHAR" xreflabel="character event handler"><title>Char Event Handler</title>
+<indexterm><primary>dialog control object Event</primary><secondary>CHAR</secondary></indexterm>
+<para>
+  The <xref linkend="ovvEvents"/> handler for the char event is invoked when the dialog control has the
+  keyboard focus and the user types a key or a keyboard combination that the operating system translates to a
+  <link linkend="rmkConnectCharEvent">character</link>.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for this return. Generic information on
+  how to <link linkend="sctCodingEventHandlers">code</link> event handlers is included in the documentation for the <xref
+  linkend="clsEventNotification"/> class.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, controlObj
+
+  return response
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives 6 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>char</term>
+    <listitem>
+    <para>
+      The numeric character code of the key pressed, or on extended keyboards, the virtual key code of an extended key.
+    </para>
+    <para>
+      For enhanced 101-key and 102-key keyboards, the extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and
+      the arrow keys in the clusters to the left of the numeric keypad.
+    </para>
+    <para>
+      To determine the character received use <computeroutput>char~d2c</computeroutput> when <emphasis
+      role="italic">isCtrl</emphasis> is false and <emphasis role="italic">misc</emphasis> does <emphasis
+      role="italic">not</emphasis> contain the word <emphasis role="italic">extended</emphasis>. Use the <xref
+      linkend="clsVK"/> class when <emphasis role="italic">isCtrl</emphasis> is false and <emphasis
+      role="italic">misc</emphasis> contains the word <emphasis role="italic">extended</emphasis>.
+    </para>
+    <para>
+      In addition, the characters Ctrl-A through Ctrl-Z, plus Ctrl-[ and Ctrl-] are received. For this group of
+      characters, the <emphasis role="italic">isCtrl</emphasis> argument will be true and the numeric value of
+      <emphasis role="italic">char</emphasis> will be 1 through 26 for Ctrl-A through Ctrl-Z, 27 for Ctrl-[, and 29 for
+      Ctrl-]
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isShift</term>
+    <listitem>
+    <para>
+      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+      be true if a shift key was down and false if the shift key was not down.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isCtrl</term>
+    <listitem>
+    <para>
+      True if a control key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isAlt</term>
+    <listitem>
+    <para>
+      True if an alt key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extraInfo</term>
+    <listitem>
+    <para>
+      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+      time of a key press event. The string will contain some combination of these keywords
+      <variablelist>
+        <varlistentry><term>extended</term>
+        <listitem>
+        <para>
+          The character event is for one of the extended keys previously mentioned, INS, DEL, HOME, END, PAGE UP, PAGE
+          DOWN, or one of the arrow keys.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOn</term>
+        <listitem>
+        <para>
+          Num Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOff</term>
+        <listitem>
+        <para>
+          Num Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOn</term>
+        <listitem>
+        <para>
+          Caps Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOff</term>
+        <listitem>
+        <para>
+          Caps Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOn</term>
+        <listitem>
+        <para>
+          Scroll Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOff</term>
+        <listitem>
+        <para>
+          Scroll Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lShift</term>
+        <listitem>
+        <para>
+          The left shift key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rShift</term>
+        <listitem>
+        <para>
+          The right shift key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lControl</term>
+        <listitem>
+        <para>
+          The left control key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rControl</term>
+        <listitem>
+        <para>
+          The right control key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lAlt</term>
+        <listitem>
+        <para>
+          The left alt key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rAlt</term>
+        <listitem>
+        <para>
+          The right alt key was down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The dialog control object representing the underlying control that received the keyboard character event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or a
+    numeric character code. Returning <computeroutput>.true</computeroutput> passes the event notification on to the control
+    unchanged. Returning <computeroutput>.false</computeroutput> prevents the character from being sent on to the control.
+    This has the effect of <emphasis role="italic">swallowing</emphasis> the character. The control will not be aware of the
+    character. Passing a numeric character back has the effect of replacing what the character was, with the character passed
+    back.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from some code my nephew wrote. I wrote a typing tutorial for my niece and nephews, they each had
+    their own copy. Each week their typing scores were expected to get better. If their score was worse, they were
+    assigned extra chores for the next week.  My nephew injected the following code into his brother's typing tutorial.
+    He thought it was hilarious, his brother was not amused:
+
+<programlisting>
+<![CDATA[
+
+  self~newEdit(IDC_EDIT_TYPING_WINDOW)~connectCharEvent(onChar)
+
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, control
+
+  if misc~pos('extended') <> 0 then do
+    if char == .VK~END then char = .VK~HOME
+    else if char == .VK~HOME then char = .VK~END
+    else if char == .VK~LEFT then char = .VK~RIGHT
+  end
+  else do
+    if char~d2c == 'a' then char = 'z'~c2d
+    else if char~d2c == 'i' then char = 'k'~c2d
+  end
+
+  return char
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End char Event Handler -->
+
+</section>  <!-- End DialogControl::connectCharEvent() -->
+
+
+<section id="mthConnectFKeyPressDialogControlObject" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
+<indexterm><primary>connectFKeyPress</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectFKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectFKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectFKeyPress(--methodName--)-------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectFKeyPress</emphasis> method connects all F Key key press events to a method in the
+  Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when a F Key key press event happens. The method name can not be
+        the empty string. The method is defined by the programmer in the dialog class that is the parent to the dialog
+        control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The underlying mechanism in the Windows API that is used to capture key events failed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-6</term>
+      <listitem>
+      <para>
+        The maximum number of connections has been reached.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
+        dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">connectFKeyPress</emphasis> method is a convenience method for the <xref
+    linkend="mthConnectKeyPressDialogControlObject"/> method. It is equivalent to using the
+    <emphasis role="italic">connectKeyPress</emphasis> method and supplying the FKEYS keyword for the <emphasis
+    role="italic">keys</emphasis> argument and omitting the <emphasis role="italic">filter</emphasis> argument. The
+    <emphasis role="italic">connectKeyPress</emphasis> method documentation goes into deeper detail in explaining how
+    the <emphasis role="italic">connectKeyPress</emphasis> method, and by extension the <emphasis
+    role="italic">connectFKeyPress</emphasis> method, works.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires CommonControl<xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example connects the F key down events for an edit control. The application determines which F key
+    was pressed and takes appropriate action.  For this application, the F3 key is the search key.
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose editControl lastSearchToken
+
+  editControl = self~newEdit(IDC_EDIT)
+  editControl~connectFKeyPress(onFKey)
+  ...
+  lastSearchToken = ""
+  ...
+
+::method onFKey
+  expose editControl lastSearchToken
+  use arg key
+
+  select
+    when key == .VK~F2 then do
+      ...
+    end
+    when key == .VK~F3 then do
+      description = "What word would you like to search for?"
+      lastSearchToken = inputBox(description, "Search", lastSearchToken)
+
+      if lastSearchToken <> "" then
+        self~findAndHighlight(lastSearchToken, editControl)
+    end
+    when key == .VK~F4 then do
+      ...
+    end
+    ...
+  end
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::connectFKeyPress() -->
+
+
+<section id="mthConnectKeyPressDialogControlObject" xreflabel="connectKeyPress"><title>connectKeyPress</title>
+<indexterm><primary>connectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
+                                           +-,-filter--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press <xref linkend="ovvEvents"/>
+  notification with a method in the Rexx dialog. A single key or multiple keys can be
+  connected to the same method.  Multiple methods can be connected for key press events, but only 1 method can be
+  connected to any single key.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when the key press event happens. The method name can not be the
+        empty string. The method is defined by the programmer in the dialog class that is the parent to the dialog
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>keys [required]</term>
+      <listitem>
+      <para>
+        The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
+        specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
+        keys is denoted by using the dash character &quot;-&quot;.  White space within the <emphasis
+        role="italic">keys</emphasis> argument is ignored. This argument can not be the empty string.
+      </para>
+      <para>
+        The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
+        are 0 through 255. There are some integer values between 0 and 255 that do not have a virtual key assigned to
+        them. For example, 0, 7, 10, 11, and 255 are not used. The <xref linkend="clsVK"/> class contains
+        constants for all of the defined virtual keys.
+      </para>
+      <para>
+        In addition, there are a few keywords that can be used to specify some common key ranges. These keywords are:
+        <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem>
+          <para>
+            All keys.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FKEYS</term>
+          <listitem>
+          <para>
+            All Function keys, other than F1.  (In Windows the F1 key is the help key and the <xref
+            linkend="mthConnectHelp"/> method should be used for F1.)
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHA</term>
+          <listitem>
+          <para>
+            The keys A though Z.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NUMERIC</term>
+          <listitem>
+          <para>
+            The keys 0 through 9.  Note that these are the normal number keys, not the keypad numbers on an enhanced
+            keyboard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHANUMERIC</term>
+          <listitem>
+          <para>
+            The keys A through Z and 0 through 9.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
+        keywords. A keyword not in the list will result in a return of -9. However, if the argument contains other valid
+        key tokens, those keys will be connected to the method.  If there are no other valid key tokens, then no
+        connection is made.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>filter [optional]</term>
+      <listitem>
+      <para>
+        A (simplistic) filter that is applied to the key press event for the key(s) specified.  The filter is a string of
+        keywords separated by blanks. (Case is not significant, neither is the order of the words.  Any words other than
+        the specified keywords are ignored.) The possible keywords are: <computeroutput>SHIFT, CONTROL, ALT, AND, NONE,
+        VIRTUAL.</computeroutput>
+      </para>
+      <para>
+        The VIRTUAL keyword can be abbreviated to VIRT if desired. The VIRTUAL keyword effects how the test for the
+        shift, control, and alt key is performed. By default the physical state of the keyboard is checked to see if the
+        control, alt, or shift key is depressed. However, it is common in Windows to use keystroke programs that inject
+        keystrokes into other application windows. Testing the physical state of the keyboard will not detect
+        combination keystrokes like Ctrl-S, Alt-L, etc., that are inserted by keystroke programs because the physical
+        state of the modifier keys control and alt will not be depressed. If the VIRTUAL keyword is used, the test for
+        the modifier keys being down will be altered in a way that will detect if the virtual state of the key is down.
+        This test will detect key events inserted into the Rexx application by third party keystroke programs.
+      </para>
+      <para>
+        Shift, control, and alt specify that the corresponding key must be down at the time of the key press event. These
+        keywords are combined in a boolean expression.  The default is an OR expression. If the AND keyword is present
+        then the boolean expression is an AND expression. If the NONE keyword is used, it means that none of the shift,
+        control, or alt keys can be down at the time of the key press event.  (When NONE is used, all other words,
+        except VIRTUAL, in the string are ignored.)
+      </para>
+      <para>
+        Some examples may make this more clear:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  editControl = self~newEdit(IDC_EDIT1)
+
+  -- Using the below, the onAltCD method would be invoked when the user types
+  -- Alt-Shift-C or Alt-Shift-D when the edit control has the focus.  But the
+  -- method would not be invoked for Alt-C or Shift-D (or any other key press
+  -- event.)
+
+  keys = .VK~C "," .VK~D
+  editControl~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
+
+  -- The below would invoke the onAltCD method any time a C or a D was typed,
+  -- when the edit control has the focus, with either the Alt or the Control key
+  -- also being down.  This would include Alt-C, Alt-Shift-C, Ctrl-Alt-Shift-C,
+  -- etc..
+
+  editControl~connectKeyPress(onAltCD, keys, "ALT CONTROL")
+
+  -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
+  -- typed.
+
+  editControl~connectKeyPress(onAltCD, keys, "ALT AND")
+
+  -- The below would invoke the onF4 method when the edit control has the focus,
+  -- only when the F4 key was pressed by itself. Alt-F4, Ctrl-F4, etc., would
+  -- not invoke the method.
+
+  editControl~connectKeyPress(onF4, .VK~F4, "NONE")
+]]>
+</programlisting>
+
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The underlying mechanism in the Windows API that is used to capture key events failed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-6</term>
+      <listitem>
+      <para>
+        The maximum number of connections has been reached.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
+        dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-8</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">filter</emphasis> argument is not correct.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-9</term>
+      <listitem>
+      <para>
+        An incorrect format for the <emphasis role="italic">keys</emphasis> argument.  Note that it is possible to get a
+        return of -9 but still have some keys connected. For instance in the following example the C and D keys would be
+        connected and the filter applied. The &quot;"dog&quot;" token would result in -9 being returned:
+
+<programlisting>
+<![CDATA[
+
+  editControl = self~newEdit(IDC_EDIT_ENTRY)
+
+  keys = .VK~C ", dog," .VK~D
+  ret = editControl~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
+  say 'Got a return of:' ret
+  say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
+
+  -- The output would be:
+  Got a return of: -9
+  Have connection to onAltCD? 1
+
+]]>
+</programlisting>
+
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    There is a maximum limit of 63 methods, per dialog, that can be connected to key press events. Connections can be
+    removed using the <xref linkend="mthDisconnectKeyPressDialogControlObject"/> method if there
+    is no longer a need for a notification of a key press.
+  </para>
+  <para>
+    The dialog object also has a <xref linkend="mthConnectKeyPressDialogObject"/> method.  It is
+    important to note this distinction between the two methods. The method of the dialog control object (this method)
+    will capture any key press event when the specific dialog control has the focus. The method of the dialog object will
+    capture all key press events when the dialog is the active window.
+  </para>
+  <para>
+    This includes key presses when a dialog control in the dialog has the focus. This implies that if you connect the
+    same key press event to both the dialog and to a specific dialog control, if the key press event occurs when the
+    dialog control has the focus, you will receive two event notifications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
+    <variablelist>
+      <varlistentry><term>keyCode</term>
+      <listitem>
+      <para>
+        The numeric code of the key pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>shift</term>
+      <listitem>
+      <para>
+        A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+        be true if a shift key was down and false if the shift key was not down.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>control</term>
+      <listitem>
+      <para>
+        True if a control key was down at the time of the key press, false if it was not.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>alt</term>
+      <listitem>
+      <para>
+        True if an alt key was down at the time of the key press, false if it was not.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>extraInfo</term>
+      <listitem>
+      <para>
+        This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+        time of a key press event. The string will contain some combination of these keywords
+        <variablelist>
+          <varlistentry><term>numOn</term>
+          <listitem>
+          <para>
+            Num Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>numOff</term>
+          <listitem>
+          <para>
+            Num Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOn</term>
+          <listitem>
+          <para>
+            Caps Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOff</term>
+          <listitem>
+          <para>
+            Caps Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOn</term>
+          <listitem>
+          <para>
+            Scroll Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOff</term>
+          <listitem>
+          <para>
+            Scroll Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lShift</term>
+          <listitem>
+          <para>
+            The left shift key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rShift</term>
+          <listitem>
+          <para>
+            The right shift key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lControl</term>
+          <listitem>
+          <para>
+            The left control key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rControl</term>
+          <listitem>
+          <para>
+            The right control key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lAlt</term>
+          <listitem>
+          <para>
+            The left alt key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rAlt</term>
+          <listitem>
+          <para>
+            The right alt key was down.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example could be from an application that supplies extended editing abilities for a multi-line edit
+    control.  When the edit control has the focus the user can use Alt-D to delete the current word, Ctrl-D to delete
+    the current line, and Shift-Alt-D delete the current paragraph:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose editControl
+
+  editControl = self~newEdit(IDC_EDIT)
+  ...
+
+  -- Capture the D key press when either the Alt or Control keys are
+  -- also pressed.
+  editControl~connectKeyPress(onDPress, .VK~D, "ALT CONTROL")
+  ...
+
+::method onDPress
+  expose editControl
+  use arg key, shift, control, alt, info
+
+  -- Determine which of the key press combinations this is and take
+  -- appropriate action if it is a combination we are interested in.
+
+  isAltD = \ shift & \ control & alt
+  isCtrlD = \ shift & control & \ alt
+  isShiftAltD = shift & \ control & alt
+
+  if isAltD then self~deleteWord(editControl)
+  if isCtrlD the self~deleteLine(editControl)
+  if isShiftAltD then self~deleteParagraph(editControl)
+
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::connectKeyPress() -->
+
+
+<section id="mthData" xreflabel="data"><title>data</title>
+<indexterm><primary>data method</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>data method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">data</emphasis> method retrieves the current
+  <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The current <emphasis role="italic">data</emphasis> of the dialog control. Exactly what the format of the <emphasis
+    role="italic">data</emphasis> takes is dependent on the type of the control. The Data Attribute Methods
+    <link linkend="sctDataAttributes">section</link> of this reference has a detailed discussion on data attributes and the
+    meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to determine the control's state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example determines if the restart check box is checked, and if so sets a flag that tells the
+    application to restart the computer:
+
+<programlisting>
+<![CDATA[
+
+::method leaving
+  expose restartChk fancyFont logoBmp appCleanUpParams
+
+  if restartChk~data == 1 then do
+    self~deleteFont(fancyFont)
+    logoBmp~release
+
+    appCleanUpParams['NoErrs']  = .true
+    appCleanUpParams['UserOK']  = .true
+    appCleanUpParams['Restart'] = .true
+  end
+  else do
+    ...
+    appCleanUpParams['Restart'] = .false
+  end
+
+]]>
+</programlisting>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+
+::method leaving
+  expose restartChk fancyFont logoBmp appCleanUpParams
+
+  if restartChk~checked then do
+    self~deleteFont(fancyFont)
+    logoBmp~release
+
+    appCleanUpParams['NoErrs']  = .true
+    appCleanUpParams['UserOK']  = .true
+    appCleanUpParams['Restart'] = .true
+  end
+  else do
+    ...
+    appCleanUpParams['Restart'] = .false
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End dialog control object::data() -->
+
+
+<section id="mthDataEquals" xreflabel="data ="><title>data=</title>
+<indexterm><primary>data=</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
+<indexterm><primary>DialogCcontrol class</primary><secondary>data=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data = newData-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>newData [required]</term>
+    <listitem>
+    <para>
+      The value used to set the <emphasis role="italic">data</emphasis> of the dialog control. The exact format of this
+      value is dependent on the type of the control. The Data Attribute Methods <link
+      linkend="sctDataAttributes">section</link> of this reference has a detailed discussion on data attributes and the
+      meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data is restrictive and
+    somewhat out of date. It is more flexible, and often easier, to use the methods of the specific dialog control
+    object to set the control's state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example checks the restart check box and unchecks the verify check box:
+
+<programlisting>
+<![CDATA[
+
+::method setRestart private
+  expose restartChk verifyChk
+
+  restartChk~data = 1
+  verifyChk~data = 0
+
+]]>
+</programlisting>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+
+::method setRestart private
+  expose restartChk verifyChk
+
+  restartChk~check
+  verifyChk~uncheck
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End dialog control object::data= -->
+
+
+<section id="mthDisconnectKeyPressDialogControlObject" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
+<indexterm><primary>disconnectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>disconnectKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl object</primary><secondary>disconnectKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disconnectKeyPress(--+--------------+--)-----><
+                         +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Disconnects a method in the Rexx dialog from a previously connected key press <xref linkend="ovvEvents"/>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The method to be disconnected. If omitted then all key press events are disconnected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        While trying to disconnect the method, the underlying mechanism in the Windows API that is used to capture key
+        events had an error. This is unlikely to happen.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        Either the <emphasis role="italic">methodName</emphasis> method is already disconnected, or there are no methods
+        connected at all.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog object also has a <xref linkend="mthDisconnectKeyPressDialogObject"/> method.
+    The method of the dialog control object (this method) can only disconnect key press events that were set with the
+    dialog control object's versions of <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not
+    disconnect key press events that were set with the dialog object's versions of <xref
+    linkend="mthConnectKeyPressDialogObject"/> and <xref linkend="mthConnectFKeyPressDialogObject"/> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example could come from a dialog where the user can enable or disable the use of hot keys when she is
+    working within an edit control.  When the user presses the disable hot keys button, the dialog disables
+    the hot keys for the edit control by removing the key press connections.
+
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  ...
+  self~createPushButton(IDC_PB_DISABLE, 60, 135, 65, 15, , "Disable Hot Keys", onDisable)
+  ...
+
+method onDisable
+  editControl = self~newEdit(IDC_EDIT)
+  editControl~disconnectKeyPress
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::disconnectKeyPress() -->
+
+
+<section id="mthGetTextSizeDlgClsDialogControl" xreflabel="getTextSizeDlg"><title>getTextSizeDlg</title>
+<indexterm><primary>getTextSizeDlg</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>getTextSizeDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+
+<para>
+  Calculates the size, (width and height,) in <xref linkend="defDialogUnit"/> for a given string.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
+  compatibility with older versions of ooDialog. The recommendation is that the ooDialog programmer not use this method
+  of the dialog control object.
+</para>
+<para>
+  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. In addition, dialog units
+  are tied directly to the actual font used by a specific dialog.  Therefore, the optional arguments do not make much
+  sense. Since the dialog object directly knows which font it is using, and the dialog control does not, it does not
+  make much sense for this method to be a method of a dialog control in the first place.
+</para>
+<para>
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use the <xref
+  linkend="mthGetTextSizeDu"/> method of the <xref linkend="chpDialogObject"/> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string whose size is desired.  If none of the optional arguments are specified then the font of the dialog
+      that owns the control is used to calculate the size.
+    </para>
+    <para>
+      However, there are some exceptions to this if the method is invoked <emphasis role="italic">after</emphasis> the
+      underlying dialog is created.
+      <orderedlist>
+        <listitem>
+        <para>
+          If this method is invoked through a dialog control object, then the size is calculated using the dialog
+          control font.  This usage is deprecated and the ooDialog programmer is <emphasis
+          role="bold">strongly</emphasis> encouraged to not use this method in this manner.
+        </para>
+        </listitem>
+        <listitem>
+        <para>
+          If the fourth, optional, hwnd argument is used, then the font of that window is used to calculate the size.
+          Again, the ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to not use this
+          method in this manner.
+        </para>
+        </listitem>
+      </orderedlist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontName [optional]</term>
+    <listitem>
+    <para>
+      The name of the font to use to calculate the size needed for the string.  Use this argument when the string will
+      be displayed in a font <emphasis role="bold">different</emphasis> than the dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontSize [optional]</term>
+    <listitem>
+    <para>
+      The size of the font named by the fontName argument. If this argument is omitted then the default font size is
+      used. (Currently the default size is 8.) This argument is ignored completely when the fontName argument is
+      omitted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      Optional. A valid window handle. The font of this window is used to calculate the text size. This argument is
+      always ignored when the fontName argument is specified.  As per the notes above the ooDialog programmer is
+      encouraged not to use this argument.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The size needed for the string is returned in a <xref linkend="clsSize"/> object. The size is specified
+    in dialog units.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::getTextSizeDlg() -->
+
+
+<section id="mthGroup" xreflabel="group"><title>group</title>
+<indexterm><primary>group</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>group</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>group</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--group(--+-----------+--)---------------------><
+            +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Adds or removes the <xref linkend="wsgroup"/> style for this control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is
+  <variablelist>
+    <varlistentry><term>wantStyle [optional]</term>
+    <listitem>
+    <para>
+      A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+      default) indicates the control should have the group style and false indicates the control should not have the
+      style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, positive values indicate success.
+  <variablelist>
+    <varlistentry><term>Less than 0</term>
+    <listitem>
+    <para>
+      The value is the negated operating system error code.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Greater than 0</term>
+    <listitem>
+    <para>
+      The window style of the dialog control prior to adding or removing the group style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
+    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
+    navigation depending on the options the user selects.
+  </para>
+  <para>
+    The negative return value from this method is a hold over from a period prior to the introduction of the <xref
+    linkend="dotSystemErrorCode"/>. This method now sets the
+    <computeroutput>.systemErrorCode</computeroutput>, making it easier to use the negative return as a failure
+    indication and use the <computeroutput>.systemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::group() -->
+
+
+<section id="mthHasKeyPressConnectionDialogControlObject" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Queries if a specific method in the Rexx dialog has a connection to a key down event, or if any methods are connected
+  to a key down event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">methodName</emphasis> is specified, then this method checks if there is a key press
+        event connected to that method. When the argument is omitted, then the check is if any methods are connected to
+        key press events.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if a key press event connection exists, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog object also has a <xref linkend="mthHasKeyPressConnectionDialogObject"/>
+    method. The method of the dialog control object (this method) can only check for connections that were set with the
+    dialog control object's versions of <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+    <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not check
+    for connections that were set with the dialog object's versions of <xref linkend="mthConnectKeyPressDialogObject"/> and
+    <xref linkend="mthConnectFKeyPressDialogObject"/> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an application where the user can enable the use of hot keys when an edit control has
+    the focus, or not. The reset push button is used in the application to reset the state of the dialog. One of the
+    things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
+    enabled or not.
+
+  <programlisting>
+  <![CDATA[
+
+  ::method defineDialog
+
+    ...
+    self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
+    ...
+    self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
+    ...
+
+  ::method onReset
+
+    ...
+    editControl = self~newEdit(IDC_EDIT)
+
+    if editControl~hasKeyPressConnection then
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
+    else
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
+    ...
+
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::hasKeyPressConnection() -->
+
+
+<section id="mthRedrawRectClsDialogControl" xreflabel="redrawRect"><title>redrawRect</title>
+<indexterm><primary>redrawRect</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>redrawRect</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>redrawRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--redrawRect(--rectangle--+---------+--)----------------------><
+                            +-,-erase-+
+
+Form 2:
+
+>>--redrawRect(--pt1--,--pt2--+---------+--)--------------------><
+                              +-,-erase-+
+
+Form 3:
+
+>>--redrawRect(--x-,--y-,--x1-,--y1--+---------+--)-------------><
+                                     +-,-erase-+
+
+Generic form:
+
+>>--redrawRect(--rectCoordinates--+---------+--)----------------><
+                                  +-,-erase-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">redrawRect</emphasis> method redraws the specified
+  <link linkend="ovvRectangleCoordinates">bounding</link> rectangle within the client area of this dialog control. Optionally
+  the background of the rectangle can be erased first.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>rectCoordinates [required]</term>
+      <listitem>
+      <para>
+        The coordinates of the rectangle to be redrawn. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <xref linkend="clsRect"/> object, two
+        <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>erase [optional]</term>
+      <listitem>
+      <para>
+        A boolean (<computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>) that specifies
+        whether the background of the rectangle should be redrawn (<computeroutput>.true</computeroutput>) or not
+        <computeroutput>.false</computeroutput>.) The default is <computeroutput>.false</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For the <emphasis role="italic">erase</emphasis> argument, the background is not really erased, but rather the
+    background is specified to be redrawn also. By default the operating system does not redraw the background.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::redrawRect() -->
+
+
+<section id="mthSetColor" xreflabel="setColor"><title>setColor</title>
+<indexterm><primary>setColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setColor(--+------+--+-------+--+---------+--)--------------><
+               +-,-bk-+  +-,-fg--+  +-,-isClr-+
+]]>
+</programlisting>
+
+<para>
+  Sets the background color or foreground color, or both, for this dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [optional]</term>
+      <listitem>
+      <para>
+        Specifies the background color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
+        must be true.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        Specifies the foreground color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
+        must be true. The foreground color is the color that text is written in.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>isClr [optional]</term>
+      <listitem>
+      <para>
+        Specifies if the <emphasis role="italic">bg</emphasis> and <emphasis role="italic">fg</emphasis> arguments are to be
+        interpreted as palette indexes or COLORREF numbers. The default if omitted is false.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">bk</emphasis> and <emphasis role="italic">fg</emphasis> arguments must be specified in the
+    same way. They must both be either palette indexes or both be COLORREF numbers. If the <emphasis
+    role="italic">bk</emphasis> argument is omitted, the ooDialog framework ensures that the operating system paints the
+    background using the same color as the dialog background.
+  </para>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the text color of a static control in the dialog to a bright red using a COLORREF number:
+<programlisting>
+<![CDATA[
+
+::method changeColor
+  expose staticText
+
+  staticText~setColor( , .Image~colorRef(161, 6, 17), .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setColor() -->
+
+<section id="mthSetParentClsDialogControl" xreflabel="setParent"><title>setParent</title>
+<indexterm><primary>setParent</primary><secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setParent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setParent(--parent--)------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets a new parent for this dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>parent</term>
+    <listitem>
+    <para>
+      The dialog control Rexx object that will be set as the parent window of this dialog control
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In Windows, the parent / child window relationship controls a number things, some having to do with how the windows are
+    drawn. A child window is always drawn over the top of the parent, and no part of it can be drawn outside of the parent
+    window. Historically in ooDialog, all dialog controls have be direct children of the dialog window. There are some
+    advanced techniques that can make use of changing the parent of a dialog control to another control in the same dialog.
+    This makes the dialog control the grandchild of the dialog.
+  </para>
+  <para>
+    Doing this causes the dialog control to be drawn over the top the new parent dialog control. Since the operating system
+    handles the drawing automatically, the child dialog control appears as if it is part of the parent dialog control. The
+    effect is much more professional looking than it would be if some other technique with ooDialog was used. The application
+    of this method is of limited use however, and probably should only be used by Rexx programmers that have some knowledge
+    of how Windows works.
+  </para>
+  <para>
+    Several considerations need to be taken into account when using this method. The programmer needs to understand that
+    dialog controls send their event notifications to their parent window. This can not be changed. By setting another dialog
+    control as parent of this dialog control, the programmer changes where this dialog control's notifications are sent. The
+    connect event methods will no longer work with the control, because the notifications are no longer sent to the dialog.
+    However, most all other methods of the dialog control should continue to work unchanged.
+  </para>
+  <para>
+    In order for event notifications from the grandchild dialog control to work, specialized code needs to be added to the
+    ooDialog framework. See for instance the <xref linkend="mthIsGrandchildClsEdit"/> method which sets up some handling
+    for an <computeroutput>Edit</computeroutput> control whose parent window is no longer the dialog. Future
+    enhancements of ooDialog may add other specialized handling for grandchildren dialog controls. especially if
+    ooDialog users request it and can show a generalized use for their request.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the parent of an edit control to be a list-view in the dialog. When the user clicks on a subitem in
+    the list-view, the edit control is position over the subitem and made visible. The user can type in the edit control to
+    change the text of the subitem:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose list edit
+
+  list = self~newListView(IDC_LISTVIEW)
+
+  edit = self~newEdit(IDC_EDIT)
+  edit~setParent(list)
+  edit~isGrandChild
+  ...
+
+::method onClick unguarded
+  expose list edit editVisible lastIdx lastCol
+  use arg id, itemIndex, columnIndex, keyState
+
+  if lastIdx == itemIndex & lastCol == columnIndex then do
+    if columnIndex > 0 then do
+        r = list~getSubitemRect(itemIndex, columnIndex, 'LABEL')
+
+        r~right  -= r~left
+        r~bottom -= r~top
+        flags = "SHOWWINDOW NOZORDERCHANGE"
+
+        edit~setWindowPos(list~hwnd, r, flags)
+
+        editVisible = .true
+        edit~assignFocus
+    end
+  end
+
+  lastIdx = itemIndex; lastCol = columnIndex
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setParent() -->
+
+
+<section id="mthSetSysColor" xreflabel="setSysColor"><title>setSysColor</title>
+<indexterm><primary>setSysColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setSysColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setSysColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setSysColor(--+------+--+-------+--)---------><
+                  +-,-bk-+  +-,-fg--+
+]]>
+</programlisting>
+
+<para>
+  Sets the background color or foreground color, or both, for this dialog control using the system <link
+  linkend="defSysColor">colors</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [optional]</term>
+      <listitem>
+      <para>
+        The system color ID for the background color of the dialog control. This can be either the whole number ID or
+        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        The system color for the foreground color of the dialog control. The foreground color is the color that text is
+        written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
+        Elements <link linkend="tblSysColors">table</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">bk</emphasis> is omitted, the ooDialog framework ensures that the operating system paints
+    the background of the control the same color as the background of the dialog. The <emphasis role="italic">bk</emphasis> and <emphasis role="italic">fg</emphasis> arguments must be specified in the
+    same way. They must both be either palette indexes or both be COLORREF numbers.
+  </para>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the background color of a static text lable in the dialog to the system background color for a
+    menu:
+<programlisting>
+<![CDATA[
+
+::method changeColor
+  expose label
+
+  label~setSysColor('MENU')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setSysColor() -->
+
+<section id="mthSetWindowThemeClsDialogControl" xreflabel="setWindowTheme"><title>setWindowTheme</title>
+<indexterm><primary>setWindowTheme</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setWindowTheme</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setWindowTheme</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setWindowTheme(--themeName--)----------------><
+]]>
+</programlisting>
+
+<para>
+  Changes the visual theme for this dialog control window, causes the window to use a different set of visual style
+  information than its class normally uses.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>themeName [required]</term>
+    <listitem>
+    <para>
+      The application name to use in place of the calling application's name. See the remarks section.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If this method is invoked on a <xref linkend="clsTreeView"/> object with the <emphasis role="italic">themeName</emphasis>
+    of <emphasis role="italic">explorer</emphasis>, the theme for the tree-view is changed. The tree-view will use small
+    triangles in place of the + and - buttons to expand and close the tree-view items. When invoked on a list-view with the
+    <emphasis role="italic">explorer</emphasis> theme name, a change in the appearance of the list-view can be noticed.
+    However, what other theme names are valid, or what other controls may have a change in appearance, is unknown to the
+    ooDialog developers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example updates a tree-view control to use the small triangle images for its expand buttons:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose tv treeData
+
+  tv = self~newTreeView(IDC_TREE)
+  success = tv~setWindowTheme('explorer')
+  if \ success then do
+    say 'Error setting explorer theme.' .DlgUtil~errMsg(.systemErrorCode)
+  end
+
+  ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setWindowTheme() -->
+
+
+<section id="mthTabStop" xreflabel="tabStop"><title>tabStop</title>
+<indexterm><primary>tabStop</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>tabStop</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>tabStop</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tabStop(--+-----------+--)-------------------><
+              +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Add or remove the <xref linkend="wstabstop"/> style for this control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+  <variablelist>
+    <varlistentry><term>wantStyle [optional]</term>
+    <listitem>
+    <para>
+      A boolean (.true or .false) to indicate whether the control should have or not have the tabstop style. True (the
+      default) indicates the control should have the tabstop style and false indicates the control should not have the
+      style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, non-negative values indicate success.
+  <variablelist>
+    <varlistentry><term>-4 or less</term>
+    <listitem><para>
+      The value is the negated Operating System Error code. The absolute value of the return can be used to look up the
+      error reason in the Windows documentation.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-3</term>
+    <listitem>
+    <para>
+      The second argument to the method is not a boolean.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the dialog or the dialog handle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the resource ID of the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0 or greater</term>
+    <listitem>
+    <para>
+      The window style of the dialog control prior to adding or removing the tabstop style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a control has the tabstop style, the user can set the focus to the control by using the tab key.  When a
+    control does not have this style, the tab key will skip over the control.  Adding or removing this style during the
+    execution of a dialog allows the programmer to alter how the user navigates through the dialog controls.
+  </para>
+  <para>
+    The negative return value from this method is a hold over from a period prior to the introduction of the <xref
+    linkend="dotSystemErrorCode"/>. This method now sets the
+    <computeroutput>.systemErrorCode</computeroutput>, making it easier to use the negative return as a failure
+    indication and use the <computeroutput>.systemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::tabStop() -->
+
+<section id="mthTextSize" xreflabel="textSize"><title>textSize</title>
+<indexterm><primary>textSize</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>textSize</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>textSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--textSize(--text--,--size--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Computes the width and height in pixels of the specified string of text when displayed by this control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text whose size is needed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size [required] [in / out]</term>
+      <listitem>
+      <para>
+        A Size <xref linkend="clsSize"/>) object. The computed size is returned in this argument.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, otherwise false. It is unlikely this method will fail.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::textSize() -->
+
+<section id="mthUseUnicode" xreflabel="useUnicode"><title>useUnicode</title>
+<indexterm><primary>useUnicode</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>useUnicode</secondary></indexterm>
+<indexterm><primary>Dialog Control class</primary><secondary>useUnicode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useUnicode(--use--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the Unicode character format flag that tells the dialog control to use, or not use, Unicode.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>use [required]</term>
+      <listitem>
+      <para>
+        If this argument is <computeroutput>.true</computeroutput> the format flag is set to tell the control to use
+        Unicode. If it is <computeroutput>.false</computeroutput> the format flag is set to not use Unicode.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous format flag for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Currently, the ooDialog framework is compiled in ANSI only mode. Therefore this method will have no effect. It is
+    possible that future version of ooDialog may be compiled in a manner that will allow Unicode to be used.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Dialog Control::useUnicode() -->
+
+<section id="mthUseVersion" xreflabel="useVersion"><title>useVersion</title>
+<indexterm><primary>useVersion</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>useVersion</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>useVersion</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useVersion(--versionNumber--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method is used to inform the control that the programmer is expecting a behavior associated with a particular
+  version common control library.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>versionNumber [required]</term>
+      <listitem>
+      <para>
+        The common control version whose behavior this control is requested to use.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the version specified by the previous invocation of the <emphasis role="italic">useVersion</emphasis>
+    method. If <emphasis role="italic">versionNumber</emphasis> is set to a value greater than the current version,
+    returns -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In some cases, a control may behave in a different manner, depending on the version of the common control library.
+    This mostly happens when bugs were fixed in later versions. The <emphasis role="italic">useVersion</emphasis>
+    method allows the programmer to inform the control which behavior is expected. Which version behavior the control
+    has been requested to use can be determined through the <link linkend="mthUsingVersion">usingVersion</link> method.
+  </para>
+  <para>
+    <emphasis role="bold">Note:</emphasis> If common control version 6 is in use, regardless of what value is set using
+    <emphasis role="italic">versionNumber</emphasis>, <emphasis role="italic">useVersion</emphasis> returns version 6.
+    Testing seems to indicate that if common control version 6 is in use, the <emphasis
+    role="italic">useVersion</emphasis> method has no effect. The method is provided because the Microsoft documentation
+    in many places suggests to use it with Custom Draw.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End DialogControl::useVersion() -->
+
+
+<section id="mthUsingUnicode" xreflabel="usingUnicode"><title>usingUnicode</title>
+<indexterm><primary>usingUnicode</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>usingUnicode</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>usingUnicode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--usingUnicode---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the dialog control is using Unicode characters.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is true if the dialog control is using Unicode characters and false if the control is not using Unicode
+    characters.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Currently, the ooDialog framework is compiled in ANSI only mode. Therefore this method will always return false. It
+    is possible that future version of ooDialog may be compiled in a manner that will allow Unicode to be used.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::usingUnicode() -->
+
+<section id="mthUsingVersion" xreflabel="usingVersion"><title>usingVersion</title>
+<indexterm><primary>usingVersion</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>usingVersion</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>usingVersion</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--usingVersion---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the common control version number the control is using, if the <link linkend="mthUseVersion">useVersion</link>
+  method has been invoked by the programmer to set a specific version.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method had no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the version set by the most recent invocation of the <link linkend="mthUseVersion">useVersion</link> method
+    for the control. Returns 0 if the method has never been invoked for the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The Microsoft documentation says, if no specific version has been set using the <emphasis
+    role="italic">useVersion</emphasis> method, the control will return 0. However testing seems to indicate that
+    documentation is incorrect or out of date. The documentation, in the remarks section, for the <link
+    linkend="mthUseVersion">useVersion</link> expands on this a little.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::useVersion() -->
+
+</chapter>

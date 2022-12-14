@@ -1,0 +1,1246 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Window Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Windows</secondary></indexterm>
+
+<para>This set of widgets are main windows for an application.</para>
+
+<!-- ******************************* -->
+<!-- ********** GTKDialog ********** -->
+<!-- ******************************* -->
+
+<section id="gtkdialog"><title>GTKDialog</title>
+<para>The GTKDialog class is a subclass of the
+GTLWindow class (<xref linkend="gtkwindow" />).</para>
+
+<para>It creates popup windows. These windows can be either modal or nonmodal.</para>
+
+<section id="gtkdialoginit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a dialog with buttons.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKDialog~new(title, parent, flags--+--------------------+--)-------><
+                                         | +---------------+  |
+                                         | V               |  |
+                                         +---, btext, bid--+--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The dialog title.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>rxparent</term>
+      <listitem><para>The parent window.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>flags</term>
+      <listitem><para>The flags.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>btext</term>
+      <listitem><para>The id or text (repeating).</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bid</term>
+      <listitem><para>The response id (repeating).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkdialogaddbutton">
+<title>Method: add_button</title>
+<indexterm><primary>add_button</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>add_button</secondary></indexterm>
+<para>Add buttons to a dialog.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--add_button(btext, bid)-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>btext</term>
+      <listitem><para>The button text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bid</term>
+      <listitem><para>The response id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkdialoghasseparator">
+<title>Method: has_separator</title>
+<indexterm><primary>has_separator</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>has_separator</secondary></indexterm>
+<para>Determine if a button separator is visible.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--has_separator()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>1 or zero.</para>
+</section>
+
+<section id="gtkdialogsethasseparator">
+<title>Method: set_has_separator</title>
+<indexterm><primary>set_has_separator</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>set_has_separator</secondary></indexterm>
+<para>Add/remove the button separator.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_has_separator(flag)----------------------------------------------><
+
+>>--has_separator = flag-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The separator flag (1 or zero).</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkdialogsetdefaultresponse">
+<title>Method: set_default_response</title>
+<indexterm><primary>set_default_response</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>set_default_response</secondary></indexterm>
+<para>Set the default response id.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_default_response(rid)--------------------------------------------><
+
+>>--default_response = rid-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>rid</term>
+      <listitem><para>Response id.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkdialogdefaultresponse">
+<title>Method: default_response</title>
+<indexterm><primary>default_response</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>default_response</secondary></indexterm>
+<para>Return thedefault response id.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--default_response()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Response id.</para>
+</section>
+
+<section id="gtkdialogdialogrun">
+<title>Method: dialog_run</title>
+<indexterm><primary>dialog_run</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>dialog_run</secondary></indexterm>
+<para>Run a dialog.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--dialog_run()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Response id</para>
+</section>
+
+<section id="gtkdialogdialogvbox">
+<title>Method: vbox</title>
+<indexterm><primary>vbox</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>vbox</secondary></indexterm>
+<para>Get the dialog window vbox.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--vbox()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>vbox object.</para>
+</section>
+
+<section id="gtkdialogsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkdialogsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKDialog</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKDialog Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>close</entry>
+   <entry>signal_close</entry>
+</row>
+<row>
+   <entry>response</entry>
+   <entry>signal_response</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************** -->
+<!-- ********** GTKMessageDialog ********** -->
+<!-- ************************************** -->
+
+<section id="gtkmessagedialog"><title>GTKMessageDialog</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig5-4.png" align="right" scale="70" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKMessageDialog class is a subclass of the
+GTKDialog class (<xref linkend="gtkdialog" />).</para>
+
+<para>This widget creates convienent message dialogs.
+There are several modes available for this dialog.</para>
+
+<section id="gtkmessagedialoginit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKMessageDialog</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a message dialog.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMessageDialog~new(parent, flags, type, bset, text)---------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>parent</term>
+      <listitem><para>The parent window object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>flags</term>
+      <listitem><para>The flags.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The message type.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bset</term>
+      <listitem><para>The button set.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The message text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ******************************* -->
+<!-- ********** GTKWindow ********** -->
+<!-- ******************************* -->
+
+<section id="gtkwindow"><title>GTKWindow</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig2-1.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKWindow class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This widget creates a toplevel window which
+can contain other widgets.</para>
+
+<section id="gtkwindowinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new Window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKWindow~new(type)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The window type.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkwindowsettitle">
+<title>Method: set_title</title>
+<indexterm><primary>set_title</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>set_title</secondary></indexterm>
+<para>Set the title for a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_title(title)-----------------------------------------------------><
+
+>>--title = title--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The window title string.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkwindowsetmodal">
+<title>Method: set_modal</title>
+<indexterm><primary>set_modal</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>set_modal</secondary></indexterm>
+<para>Set the modal flag for the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_modal(flag)------------------------------------------------------><
+
+>>--modal = flag---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The modal flag</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkwindowaddaccelgroup">
+<title>Method: add_accel_group</title>
+<indexterm><primary>add_accel_group</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>add_accel_group</secondary></indexterm>
+<para>Add an accelerator group to the window,</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--add_accelgroup(group)------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>group</term>
+      <listitem><para> An accel group object.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkwindowsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkwindowsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKWindow</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKWindow Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>activate_default</entry>
+   <entry>signal_activate_default</entry>
+</row>
+<row>
+   <entry>activate_focus</entry>
+   <entry>signal_activate_focus</entry>
+</row>
+<row>
+   <entry>keys_changed</entry>
+   <entry>signal_keys_changed_focus</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************ -->
+<!-- ********** GTKAboutDialog ********** -->
+<!-- ************************************ -->
+
+<section id="gtkaboutdialog"><title>GTKAboutDialog</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig5-5.png" align="right" scale="70" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKAboutDialog class is a subclass of the
+GTKDialog class (<xref linkend="gtkdialog" />).</para>
+
+<para>This widget creates a standard dialog that contains application information.</para>
+
+<section id="gtkaboutdialoginit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an about dialog.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKAboutDialog~new()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkaboutdialogsetname">
+<title>Method: set_name</title>
+<indexterm><primary>set_name</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_name</secondary></indexterm>
+<para>Set the about program name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_name(text)-------------------------------------------------------><
+
+>>--name = text----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The program name.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetversion">
+<title>Method: set_version</title>
+<indexterm><primary>set_version</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_version</secondary></indexterm>
+<para>Set the about program version.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_version(text)----------------------------------------------------><
+
+>>--version = text-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The program version.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetcopyright">
+<title>Method: set_copyright</title>
+<indexterm><primary>set_copyright</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_copyright</secondary></indexterm>
+<para>Set the about program copyright notice.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_copyright(text)--------------------------------------------------><
+
+>>--copyright= text------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The copyright notice.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetcomments">
+<title>Method: set_comments</title>
+<indexterm><primary>set_comments</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_comments</secondary></indexterm>
+<para>Set the about program comments.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_comments(text)---------------------------------------------------><
+
+>>--comments = text------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The comments.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetlicense">
+<title>Method: set_license</title>
+<indexterm><primary>set_license</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_license</secondary></indexterm>
+<para>Set the about program comments.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_license(text)----------------------------------------------------><
+
+>>--license = text-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The license string.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetwraplicense">
+<title>Method: set_wrap_license</title>
+<indexterm><primary>set_wrap_license</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_wrap_license</secondary></indexterm>
+<para>Set the boolean license wrap flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_wrap_license(flag)-----------------------------------------------><
+
+>>--wrap_license = flag--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The wrap boolean flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetwebsite">
+<title>Method: set_website</title>
+<indexterm><primary>set_website</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_website</secondary></indexterm>
+<para>Set the about program website.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_website(text)----------------------------------------------------><
+
+>>--website = text-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The website URL.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetwebsitelabel">
+<title>Method: set_website_label</title>
+<indexterm><primary>set_website_label</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_website_label</secondary></indexterm>
+<para>Set the about program website label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_website_label(text)----------------------------------------------><
+
+>>--website_label = text-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The website label.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkaboutdialogsetauthors">
+<title>Method: set_authors</title>
+<indexterm><primary>set_authors</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_authors</secondary></indexterm>
+<para>Set the about program authors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_authors(author_array)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>author_array</term>
+      <listitem><para>The array of authors.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkaboutdialogsetartists">
+<title>Method: set_artists</title>
+<indexterm><primary>set_artists</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_artists</secondary></indexterm>
+<para>Set the about program artists.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_artists(artist_array)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>artist_array</term>
+      <listitem><para>The array of artists.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkaboutdialogsetdocumentors">
+<title>Method: set_documentors</title>
+<indexterm><primary>set_documentors</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_documentors</secondary></indexterm>
+<para>Set the about program documentors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_documentors(doc_array)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>doc_array</term>
+      <listitem><para>The array of documentors.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkaboutdialogsetlogo">
+<title>Method: set_logo</title>
+<indexterm><primary>set_logo</primary></indexterm>
+<indexterm><primary>GTKAboutDialog</primary>
+<secondary>set_logo</secondary></indexterm>
+<para>Set the about program logo.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_logo(logo)-------------------------------------------------------><
+
+>>--logo - logo----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>logo</term>
+      <listitem><para>The logo filename.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKAssistant ********** -->
+<!-- ********************************** -->
+
+<section id="gtkassistant"><title>GTKAssistant</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig5-11.png" align="right" scale="60" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKAssistant class is a subclass of the
+GTKWindow class (<xref linkend="gtkwindow" />).</para>
+
+<para>This widget creates a standard dialog that guides a user through a multi-step process.
+It is typically used by graphical installation programs.</para>
+
+<section id="gtkassistantinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an assistant.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKAssistant~new()--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkassistantsetcurrentpage">
+<title>Method: set_current_page</title>
+<indexterm><primary>set_current_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_current_page</secondary></indexterm>
+<para>Set the assistant current page number.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_currentpage(pagenum)---------------------------------------------><
+
+>>--currentpage = pagenum------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pagenum</term>
+      <listitem><para>The page number.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkassistantgetcurrentpage">
+<title>Method: get_current_page</title>
+<indexterm><primary>get_current_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>get_current_page</secondary></indexterm>
+<para>Get the assistant current page number.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_currentpage()----------------------------------------------------><
+
+>>--currentpage()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page number</para>
+</section>
+
+<section id="gtkassistantgetnthpage">
+<title>Method: get_nth_page</title>
+<indexterm><primary>get_nth_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>get_nth_page</secondary></indexterm>
+<para>Get the assistant nth page.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_nth_page(pagenum)------------------------------------------------><
+
+>>--nth_page(pagenum)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pagenum</term>
+      <listitem><para>The page number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page</para>
+</section>
+
+<section id="gtkassistantprependpage">
+<title>Method: prepend_page</title>
+<indexterm><primary>prepend_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>prepend_page</secondary></indexterm>
+<para>Prepend a page to the assistant.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_page(page)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page number</para>
+</section>
+
+<section id="gtkassistantappendpage">
+<title>Method: append_page</title>
+<indexterm><primary>append_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>append_page</secondary></indexterm>
+<para>Append a page to the assistant.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_page(page)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page number</para>
+</section>
+
+<section id="gtkassistantinsertpage">
+<title>Method: insert_page</title>
+<indexterm><primary>insert_page</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>insert_page</secondary></indexterm>
+<para>Insert a page to the assistant.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_page(page)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pagenum</term>
+      <listitem><para>The page number</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page number</para>
+</section>
+
+<section id="gtkassistantsetpagetype">
+<title>Method: set_page_type</title>
+<indexterm><primary>set_page_type</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_page_type</secondary></indexterm>
+<para>Set the assistant page type.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_page_type(page, pagenum)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pagenum</term>
+      <listitem><para>The page number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsetpagetitle">
+<title>Method: set_page_title</title>
+<indexterm><primary>set_page_title</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_page_title</secondary></indexterm>
+<para>Set the assistant page title.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_page_title(page, title)------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The page title.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsetpagecomplete">
+<title>Method: set_page_complete</title>
+<indexterm><primary>set_page_complete</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_page_complete</secondary></indexterm>
+<para>Set the assistant page complete.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_page_complete(page, flag)----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The page boolean complete flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsetpageheaderimage">
+<title>Method: set_page_header_image</title>
+<indexterm><primary>set_page_header_image</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_page_header_image</secondary></indexterm>
+<para>Set the assistant page header image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_page_header(page, title)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The header  title.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsetpagesideimage">
+<title>Method: set_page_side_image</title>
+<indexterm><primary>set_page_side_image</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>set_page_side_image</secondary></indexterm>
+<para>Set the assistant page side image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_page_side_image(page, filename)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>The image file name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connext(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkassistantsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKAssistant</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKAssistant Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>apply</entry>
+   <entry>signal_apply</entry>
+</row>
+<row>
+   <entry>cancel</entry>
+   <entry>signal_cancel</entry>
+</row>
+<row>
+   <entry>close</entry>
+   <entry>signal_close</entry>
+</row>
+<row>
+   <entry>prepare</entry>
+   <entry>signal_prepare</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

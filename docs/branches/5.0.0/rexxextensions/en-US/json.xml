@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxExtensions Library XML File
+    #
+    # Copyright (c) 2016-2017, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="clsJson">
+<title>json Class</title>
+<para>
+The <classname>json</classname> class allows to create and process <emphasis role="italic">JSON (JavaScript Object Notation)</emphasis> data. The
+<emphasis role="italic">JSON</emphasis> definition used for this implementation can be found at
+<ulink url="https://www.ietf.org/rfc/rfc4627.txt">https://www.ietf.org/rfc/rfc4627.txt</ulink>.
+</para>
+<note><para>
+This implementation does not transform into or from Unicode escape sequences in the form of &quot;\uXXXX&quot;.
+</para></note>
+
+<para>To use <classname>json</classname> class, you must place the following directive
+in your script:
+<programlisting>
+::requires json.cls
+</programlisting>
+</para>
+
+<!-- method overview section -->
+<section>
+<title>Public Methods of the JSON Class</title>
+<indexterm><primary>JSON</primary><secondary>Methods</secondary></indexterm>
+<para>The <classname>json</classname> class provides the following public methods:
+</para>
+
+<simplelist type="vert" columns="1">
+   <member><methodname>init</methodname></member>
+   <member><methodname>fromJSON</methodname></member>
+   <member><methodname>toJSON</methodname></member>
+</simplelist>
+
+
+<!-- method description: init -->
+<section>
+<title id="mthJsonInit">init Method</title>
+<indexterm><primary>JSON</primary>
+<secondary>init method</secondary></indexterm>
+<indexterm><primary>init method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>init</methodname> method initializes the JSON parser.
+</para>
+</section>
+
+<!-- method description: fromJSON -->
+<section>
+<title id="mthJsonFromJson">fromJSON Method</title>
+<indexterm><primary>JSON</primary>
+<secondary>fromJSON method</secondary></indexterm>
+<indexterm><primary>fromJSON method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_fromJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>fromJSON</methodname> method creates and returns a Rexx object from the
+<emphasis role="italic">JSON</emphasis> encoded <emphasis role="italic">string</emphasis>.
+
+</para>
+</section>
+
+<!-- method description: toJSON -->
+<section>
+<title id="mthJsonToJson">toJSON Method</title>
+<indexterm><primary>JSON</primary>
+<secondary>toJSON method</secondary></indexterm>
+<indexterm><primary>toJSON method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_toJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>toJSON</methodname> method creates and returns a
+<emphasis role="italic">JSON</emphasis> encoded string representing
+<emphasis role="italic">rexxObject</emphasis>.
+</para>
+</section>
+
+
+</section>
+
+</chapter>
+

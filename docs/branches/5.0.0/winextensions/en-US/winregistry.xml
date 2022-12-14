@@ -1,0 +1,905 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWindowsRegistry"><title>The WindowsRegistry Class</title>
+<indexterm><primary>WindowsRegistry class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsProgramManager class</secondary></indexterm>
+<para>
+  The <computeroutput>WindowsRegistry</computeroutput> class allows the programmer to interface with the
+  operating system APIs that are used to access the <emphasis role="italic">registry</emphasis>. The class
+  can be used to query the registry and modify, add, and delete entries.
+</para>
+<para>
+  In the Windows operating systems, the <emphasis role="italic">registry</emphasis> is a system-defined
+  database in which applications and system components store and retrieve configuration data. The data
+  stored in the registry varies according to the version of Microsoft Windows. Applications use the
+  registry APIs to retrieve, modify, or delete registry data.
+</para>
+<para>
+  You should not edit registry data that does not belong to your application unless it is absolutely
+  necessary. If there is an error in the registry, your system may not function properly. If this
+  happens, you can restore the registry to the state it was in when you last started the computer
+  successfully. For more information, see the help for your operating system.
+</para>
+<para>
+  The registry stores data in a tree format. Each node in the tree is called a key. Each key can contain
+  both subkeys and data entries called values. Sometimes, the presence of a key is all the data that an
+  application requires; other times, an application opens a key and uses the values associated with the
+  key. A key can have any number of values, and the values can be in any form.
+</para>
+<para>
+  Each key has a name consisting of one or more printable characters. Key names are not case sensitive.
+  Key names cannot include a backslash (\), but any other printable or unprintable character can be used.
+  The name of each subkey is unique with respect to the key that is immediately above it in the
+  hierarchy. Key names are not localized into other languages, although values may be.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> Windows provides a command line user tool named
+  <computeroutput>regedit</computeroutput> that displays the registry and its tree structure on the local
+  machine. The tool can be very helpful in picturing the layout of the registry.  To use it, merely type
+  <computeroutput>regedit</computeroutput> at the command prompt of a console window, or use the
+  <emphasis role="italic">run</emphasis> option of the <computeroutput>Start</computeroutput> menu.
+</para>
+<para id="wrParaParentKey">
+  Most of the operating system functions that manipulate the registry require the open handle of a parent
+  key. As a convenience to the programmer, the <computeroutput>WindowsRegistry</computeroutput> class
+  usually allows this handle to be omitted as an argument in its methods. The class keeps track of the
+  most recently opened handle and supplies this handle when the programmer omits the parent handle
+  argument in a method. This mechanism is implemented through the current_key (<xref
+  linkend="wrAtrCurrentKey" />) attribute.  When a method has a parent handle argument and
+  the programmer omits the argument, the current key handle is used.
+</para>
+<para>
+  The WindowsRegistry class is not a built-in class; it is defined in the file winSystm.cls.
+</para>
+<para>
+  Use a <computeroutput>::requires</computeroutput> statement to use the class in a program.
+</para>
+<programlisting>
+::requires "winSystm.cls"
+</programlisting>
+<para>
+  A sample program, <computeroutput>registry.rex</computeroutput>, is provided in the
+  <computeroutput>samples\oodialog\winsystem</computeroutput> directory.
+</para>
+<para><emphasis role="bold">Methods the WindowsRegistry Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>new (Class method)</para></listitem>
+<listitem><para>classes_root (Attribute [get])</para></listitem>
+<listitem><para>close</para></listitem>
+<listitem><para>create</para></listitem>
+<listitem><para>current_key (Attribute [get])</para></listitem>
+<listitem><para>current_key= (Attribute [set])</para></listitem>
+<listitem><para>current_user (Attribute [get])</para></listitem>
+<listitem><para>delete</para></listitem>
+<listitem><para>deleteKey</para></listitem>
+<listitem><para>deleteValue</para></listitem>
+<listitem><para>flush</para></listitem>
+<listitem><para>getValue</para></listitem>
+<listitem><para>list</para></listitem>
+<listitem><para>listValues</para></listitem>
+<listitem><para>load</para></listitem>
+<listitem><para>local_machine (Attribute [get])</para></listitem>
+<listitem><para>open</para></listitem>
+<listitem><para>query</para></listitem>
+<listitem><para>replace</para></listitem>
+<listitem><para>restore</para></listitem>
+<listitem><para>save</para></listitem>
+<listitem><para>setValue</para></listitem>
+<listitem><para>unload</para></listitem>
+<listitem><para>users (Attribute [get])</para></listitem>
+</itemizedlist>
+
+<section id="wrMthNew"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Creates an instance of the WindowsRegistry class. The current key is set to HKEY_LOCAL_MACHINE.
+</para>
+</section>
+
+<section id="wrAtrClassesRoot"><title>classes_root (Attribute [get])</title>
+<indexterm><primary>classes_root attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>classes_root attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_classes_root.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the handle of the root key HKEY_CLASSES_ROOT.  This handle is maintained by the operating
+  system, it can not be changed.
+</para>
+</section>
+
+<section id="wrMthClose"><title>close</title>
+<indexterm><primary>close method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>close method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_close.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Closes a previously opened key specified by its handle. Example:</para>
+<programlisting>
+rg~close(objectrexxkey)
+</programlisting>
+<para>It can take several seconds before all data is written to disk. You can
+use FLUSH to empty the cache.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is closed.</para>
+</section>
+
+<section id="wrconn"><title>connect</title>
+<indexterm><primary>connect method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>connect method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_connect.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Opens a key on a remote computer. This is supported only for
+HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
+</section>
+
+<section id="wrMthCreate"><title>create</title>
+<indexterm><primary>create method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>create method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_create.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Adds a new named subkey to the registry and returns its handle. The first argument is the parent key
+  handle. The second argument is the name of the new subkey.
+</para>
+<example id ="ex.WindowsRegistry-create">
+<title>WindowsRegistry class - create method</title>
+<programlisting>
+<![CDATA[
+newKey = rg~create(rg~local_machine, "myOwnKey")
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="wrAtrCurrentKey"><title>current_key (Attribute [get])</title>
+<indexterm><primary>current_key attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>current_key attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_current_key.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the handle of the current key. The current key is set by the new() (<xref linkend="wrMthNew" />)
+  method to <computeroutput>HKEY_LOCAL_MACHINE</computeroutput>. It's value is then updated by every call
+  to create() (<xref linkend="wrMthCreate" />) and open() (<xref linkend="wrMthOpen" />). Therefore
+  its value is always that of the handle of the most recently opened key unless the programmer sets (<xref
+  linkend="wrAtrCurrentKeyEquals" />) it to some other value.
+</para>
+<para>
+  Most registry operations require an open handle to the parent key
+   of the subkey being operated on. In the <computeroutput>WindowsRegistry</computeroutput>
+  class most methods that require the parent key allow the programmer to omit the parent key. When the
+  parent key is
+  omitted, the <computeroutput>current_key</computeroutput> handle is used.
+</para>
+</section>
+
+<section id="wrAtrCurrentKeyEquals"><title>current_key= (Attribute [set])</title>
+<indexterm><primary>current_key= attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>current_key= attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_current_key_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Sets the handle of the current key. The <computeroutput>WindowsRegistry</computeroutput> class maintains (<xref
+  linkend="wrAtrCurrentKey" />) this key, but the programmer can set it to any value at any
+  time.
+</para>
+</section>
+
+<section id="wrAtrCurrentUser"><title>current_user (Attribute [get])</title>
+<indexterm><primary>current_user attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>current_user attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_current_user.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the handle of the root key HKEY_CURRENT_USER. This handle is maintained by the operating system
+  and can not be changed.
+</para>
+</section>
+
+<section id="mthWRDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_delete.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Deletes a subkey and all its descendants. The method will remove the key, all of the key's values, and
+  all of its subkeys from the registry. To delete a key only if the key does not have subkeys values, use
+  the deleteKey() (<xref linkend="mthWRDeleteKey" />) method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">keyHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to an open registry key. The key must have been opened with the DELETE access right.
+            If this argument is omitted then the CURRENT_KEY attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkeyName</emphasis> [required]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be deleted.  The name is case insensitive.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      O on success, otherwise the Windows system error code. A generic description of the error can be
+      obtained by using the Rexx Utility function, <computeroutput>SysGetErrorText()</computeroutput> .
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWRDeleteKey"><title>deleteKey</title>
+<indexterm><primary>deleteKey method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteKey method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_deletekey.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Deletes a subkey and its values from the registry. The subkey to be deleted must not have subkeys. To
+  delete a key and all its subkeys, you need to enumerate the subkeys and delete them individually. To
+  delete keys recursively, use the delete() (<xref linkend="mthWRDelete" />) method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">keyHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to an open registry key. The key must have been opened with the DELETE access right.
+            If this argument is omitted then the CURRENT_KEY attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkeyName</emphasis> [required]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be deleted.  The name is case insensitive.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      O on success, otherwise the Windows system error code. A generic description of the error can be
+      obtained by using the Rexx Utility function, <computeroutput>SysGetErrorText()</computeroutput> .
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wrdeva"><title>deleteValue</title>
+<indexterm><primary>deleteValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_deletevalue.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Deletes the named value for a given key. If
+<emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is used. If <emphasis role="italic">value</emphasis>
+is blank or omitted, the default value is deleted.</para>
+</section>
+
+<section id="wrflus"><title>flush</title>
+<indexterm><primary>flush method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>flush method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_flush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Forces the system to write the cache buffer of a given key to disk. If
+<emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY is
+flushed.</para>
+</section>
+
+<section id="wrgtva"><title>getValue</title>
+<indexterm><primary>getValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_getvalue.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Retrieves the data and type for a named value of a given key. The result is a compound variable with suffixes data and
+  type. If <emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY is used. If named <emphasis
+  role="italic">value</emphasis> is blank or omitted, the default value is retrieved.
+</para>
+<para>
+  On error 0 is returned.  Errors can occur, for instance, if a non-existent key is queried or if the user does not have
+  sufficient privileges to query the key.
+</para>
+
+<para>
+  Example:
+</para>
+<example id ="ex.WindowsRegistry-getValue">
+<title>WindowsRegistry class - getValue method</title>
+<programlisting>
+myval. = rg~getvalue(,"filesystem")        /* current key */
+say "Type is" myval.type
+if myval.type = "NORMAL" then say "Value is" myval.data
+myval. = rg~getvalue(mykey)
+say "my default value is:" myval.data
+myval. = rg~getvalue(mykey,"")
+say "my default value is:" myval.data
+</programlisting>
+</example>
+<para>
+  On success, possible types are: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE, OTHER.
+</para>
+<para>
+  Since errors are possible, it may be best to test that the return is a stem before assigning the return to a stem.
+  Something like this:
+</para>
+<example id ="ex.WindowsRegistry-getValue-errors">
+<title>WindowsRegistry class - getValue errors</title>
+<programlisting>
+
+  retVal = rg~getvalue(,"filesystem")        /* current key */
+  if retVal~isA(.Stem) then do
+    say "Type is" myval.type
+    if myval.type = "NORMAL" then say "Value is" myval.data
+  else do
+    say "Error getting registry value."
+  end
+</programlisting>
+</example>
+</section>
+
+<section id="wrlist"><title>list</title>
+<indexterm><primary>list method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>list method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_list.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Retrieves the list of subkeys for a given key in a stem variable. The name
+of the stem variable must include the period. The keys are returned as stem.1,
+stem.2, and so on.</para>
+<example id ="ex.WindowsRegistry-list">
+<title>WindowsRegistry class - list method</title>
+<programlisting>
+rg~LIST(objectrexxkey,orexxkeys.)
+do i over orexxkeys.
+say orexxkeys.i
+end
+</programlisting>
+</example>
+</section>
+
+<section id="wrliva"><title>listValues</title>
+<indexterm><primary>listValues method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>listValues method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_listvalues.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Retrieves all value entries of a given key into a compound variable. The
+name of the variable must include the period. The suffixes of the compound
+variable are numbered starting with 1, and for each number the three values
+are the name (var.i.name), the data (var.i.data), and the type (var.i.type).
+The type is NORMAL for alphabetic values, EXPAND for expandable strings such
+as a path, NONE for no specified type, MULTI for multiple strings, NUMBER
+for a 4-byte value, and BINARY for any data format.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted, the values
+of CURRENT_KEY are listed.</para>
+<example id ="ex.WindowsRegistry-listValues">
+<title>WindowsRegistry class - listValues method</title>
+<programlisting>
+qstem. = rg~QUERY(objectrexxkey)
+rg~LISTVALUES(objectrexxkey,lv.)
+do i=1 to qstem.values
+say "name of value:" lv.i.name "(type="lv.i.type")"
+if lv.i.type = "NORMAL" then
+say "data of value:" lv.i.data
+end
+</programlisting>
+</example>
+</section>
+
+<section id="wrload"><title>load</title>
+<indexterm><primary>load method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>load method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_load.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Load creates a named subkey under the open key key_handle and loads
+registry data from the file filename (created by
+SAVE (<xref linkend="wrsave" />)) and stores the
+data under the newly created subkey.</para>
+<para>key_handle can only be HKEY_USERS or HKEY_LOCAL_MACHINE.
+Registry information is stored in the form of a hive - a discrete body
+of keys, subkeys, and values that is rooted at the top of the registry
+hierarchy. A hive is backed by a single file.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted, the subkey
+is created under HKEY_LOCAL_MACHINE.</para>
+<para>Use UNLOAD (<xref linkend="wrunld" />) to delete the subkey and to
+unlock the registry data file filename.</para>
+</section>
+
+<section id="wrAtrLocalMachine"><title>local_machine (Attribute [get])</title>
+<indexterm><primary>local_machine attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>local_machine attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_local_machine.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the handle of the root key HKEY_LOCAL_MACHINE. This handle is maintained by the operating
+  system, it can not be changed.
+</para>
+</section>
+
+<section id="wrMthOpen"><title>open</title>
+<indexterm><primary>open method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>open method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_open.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Opens a named subkey with the specified access rights and returns its handle. When the programmer is
+  done with the handle it should be closed using the close () (<xref linkend="wrMthClose" />) method.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The default for the <emphasis role="italic">access</emphasis>
+  argument is ALL access. As Microsoft has tightened up the security in it operating systems, it has made
+  access to the registry more restrictive than it was when the
+  <computeroutput>WindowsRegistry</computeroutput> class was first introduced. Opening a registry key
+  with more access rights than the user running the Rexx program has will result in failure. Best
+  practice is to open a key with the least rights needed for the operation being performed.
+</para>
+<para>
+  For instance, in a Rexx program where the function is to read the values of a single key, the key
+  should be opened with just the INQUIRE right. This is not only less likely to fail if the program user
+  is not an Administrator, but is more secure in every case.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">parentHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to the open parent key. If this argument is
+            omitted then the current_key (<xref linkend="wrAtrCurrentKey" />) attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkey</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be opened. If this argument is omitted or the empty string, a new
+            handle to the key identified by <emphasis role="italic">parentHandle</emphasis> is opened.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkey</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A string consisting of one or more of the following key words. The keywords are not case
+            sensitive.  The default is the ALL keyword.
+          </para>
+          <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem><para>
+            Opens the key with all possible access. Although this is the default, as discussed above some
+            forethought should be given to using this access.
+          </para></listitem></varlistentry>
+          <varlistentry><term>WRITE</term>
+          <listitem><para>
+            Combines the rights to create subkeys, set key values, and to read a key's access rights.
+          </para></listitem></varlistentry>
+          <varlistentry><term>READ</term>
+          <listitem><para>
+            Combines the rights to query key values, enumerate subkeys, read keys access rights, and the
+            notify right. Note that READ access and EXECUTE access are exactly the same.
+          </para></listitem></varlistentry>
+          <varlistentry><term>QUERY</term>
+          <listitem><para>
+            Combines the right to query values of a registry key (specified by the INQUIRE keyword here,)
+            with the right to enumerate subkeys.
+          </para></listitem></varlistentry>
+          <varlistentry><term>INQUIRE</term>
+          <listitem><para>
+            Required to query the values of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>ENUMERATE</term>
+          <listitem><para>
+            Required to enumerate the subkeys of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>SET</term>
+          <listitem><para>
+            Required to create, delete, or set a registry value.
+          </para></listitem></varlistentry>
+          <varlistentry><term>DELETE</term>
+          <listitem><para>
+            Exactly equivalent to SET access. The keyword is a convenience to make programs more
+            readable.
+          </para></listitem></varlistentry>
+          <varlistentry><term>CREATE</term>
+          <listitem><para>
+            Required to create a subkey of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem><para>
+            Required to request change notifications for a registry key or for subkeys of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>EXECUTE</term>
+          <listitem><para>
+            Exactly equivalent to READ access.
+          </para></listitem></varlistentry>
+          <varlistentry><term>LINK</term>
+          <listitem><para>
+            The Microsoft documentation states that this right is reserved for system use. The keyword is
+            listed here simply because it was documented in previous versions of ooRexx and Object Rexx.
+            The programmer is advised not to use it.
+          </para></listitem></varlistentry>
+          </variablelist>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      A handle to the opened key on success, otherwise 0.  If the key was opened correctly, the value of
+      the current_key (<xref linkend="wrAtrCurrentKey" />) attribute is set to this handle. If the
+      method fails, <computeroutput>current_key</computeroutput> is left unchanged.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wrquer"><title>query</title>
+<indexterm><primary>query method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>query method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_query.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Retrieves information about a given key in a compound variable. The
+values returned are <emphasis role="italic">class</emphasis> (class name),
+<emphasis role="italic">subkeys</emphasis> (number of subkeys)
+<emphasis role="italic">values</emphasis> (number of value entries),
+<emphasis role="italic">date</emphasis> and
+<emphasis role="italic">time</emphasis> of
+last modification. If <emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is queried. Example:</para>
+<example id ="ex.WindowsRegistry-query">
+<title>WindowsRegistry class - query method</title>
+<programlisting>
+myquery. = rg~query(objectrexxkey)
+say "class="myquery.class "at" myquery.date
+say "subkeys="myquery.subkeys "values="myquery.values
+</programlisting>
+</example>
+</section>
+
+<section id="wrrepl"><title>replace</title>
+<indexterm><primary>replace method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>replace method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_replace.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Replaces the backup file of a key or subkey with a new file. Key must be
+an immediate descendant of HKEY_LOCAL_MACHINE or HKEY_USERS. If
+<emphasis role="italic">key_handle</emphasis> is omitted, the backup file of
+CURRENT_KEY is replaced. The values in the new file become active when the
+system is restarted. If <emphasis role="italic">subkeyname</emphasis> is
+omitted, the key and all its subkeys will be replaced.</para>
+</section>
+
+<section id="wrrest"><title>restore</title>
+<indexterm><primary>restore method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>restore method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Restores a key from a file. If
+<emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY
+is restored. Example:</para>
+<programlisting>
+rg~restore(objectrexxkey,"\objrexx\orexx")
+</programlisting>
+<para>The VOLATILE keyword creates a new memory-only set of registry
+information that is valid only until the system is restarted.</para>
+</section>
+
+<section id="wrsave"><title>save</title>
+<indexterm><primary>save method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>save method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_save.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Saves the entries of a given key into a file. If
+<emphasis role="italic">key_handle</emphasis> is
+omitted, CURRENT_KEY is saved. Example: </para>
+<programlisting>
+rg~SAVE(objectrexxkey,"\objrexx\orexx")
+</programlisting>
+<para>On a FAT system, do not use a file extension in
+<emphasis role="italic">filename</emphasis>.</para>
+</section>
+
+<section id="wrstva"><title>setValue</title>
+<indexterm><primary>setValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_setvalue.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets a named value of a given key. If
+<emphasis role="italic">name</emphasis> is blank or omitted,
+the default value is set.</para>
+<example id ="ex.WindowsRegistry-setValue">
+<title>WindowsRegistry class - setValue method</title>
+<programlisting>
+rg~SETVALUE(objectrexxkey, ,"My default","NORMAL")
+rg~SETVALUE(objectrexxkey,"Product_Name","Object Rexx")
+rg~SETVALUE(objectrexxkey,"VERSION","1.0")
+</programlisting>
+</example>
+</section>
+
+<section id="wrunld"><title>unload</title>
+<indexterm><primary>unload method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unload method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_unload.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes a named subkey (created with LOAD (<xref linkend="wrload" />))
+and its dependents from the registry, but does not modify the file containing
+the registry information. If <emphasis role="italic">key_handle</emphasis>
+is omitted, the subkey under CURRENT_KEY is unloaded. Unload also unlocks the
+registry information file.</para>
+</section>
+
+<section id="wrAtrUsers"><title>users (Attribute [get])</title>
+<indexterm><primary>users attribute</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>users attribute</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winreg/winreg_users.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the handle of the root key HKEY_USERS. This handle is maintained by the operating system and
+  can not be changed.
+</para>
+</section>
+
+</chapter>
+

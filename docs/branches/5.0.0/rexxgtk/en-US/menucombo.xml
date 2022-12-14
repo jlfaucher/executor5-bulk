@@ -1,0 +1,3522 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Menus, Combo Box, Toolbar Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Menus</secondary></indexterm>
+<indexterm><primary>Classes</primary>
+<secondary>Combo Box</secondary></indexterm>
+<indexterm><primary>Classes</primary>
+<secondary>Toolbar</secondary></indexterm>
+
+<para>This set of classes provides both fixed and popup menu.</para>
+
+<!-- ********************************* -->
+<!-- ********** GTKComboBox ********** -->
+<!-- ********************************* -->
+
+<section id="gtkcombobox"><title>GTKComboBox</title>
+
+<para>The GTKComboBox class is a subclass of the
+GTKWidget class (<xref linkend="gtkwidget" />).</para>
+
+<para>This widget provides a drop down list of menu choices. Once a choice is selected the
+combo box displays that selection.</para>
+
+<section id="gtkcomboboxinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a combobox.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKComboBox~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcomboboxappendtext">
+<title>Method: append_text</title>
+<indexterm><primary>append_text</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>append_text</secondary></indexterm>
+<para>Append text to a combobox.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_text(text)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The text to append.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcomboboxgetactivetext">
+<title>Method: get_active_text</title>
+<indexterm><primary>get_active_text</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>get_active_text</secondary></indexterm>
+<para>Get the active text.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_active_text()----------------------------------------------------><
+
+>>--active_text()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Text.</para>
+</section>
+
+<section id="gtkcomboboxsetactive">
+<title>Method: set_active</title>
+<indexterm><primary>set_active</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>set_active</secondary></indexterm>
+<para>Set the active entry.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_active(active)---------------------------------------------------><
+
+>>--active = active------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>active</term>
+      <listitem><para>The entry to set active.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkcomboboxgetactive">
+<title>Method: get_active</title>
+<indexterm><primary>get_active</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>get_active</secondary></indexterm>
+<para>Get the active entry.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_active()---------------------------------------------------------><
+
+>>--active()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Entry number</para>
+</section>
+
+<section id="gtkcomboboxsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcomboboxsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKComboBox</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKComboBox Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>changed</entry>
+   <entry>signal_changed</entry>
+</row>
+<row>
+   <entry>move_active</entry>
+   <entry>signal_move_active</entry>
+</row>
+<row>
+   <entry>popdown</entry>
+   <entry>signal_popdown</entry>
+</row>
+<row>
+   <entry>popup</entry>
+   <entry>signal_popup</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************* -->
+<!-- ********** GTKComboBoxText ********** -->
+<!-- ************************************* -->
+
+<section id="gtkcomboboxtext"><title>GTKComboBoxText</title>
+<para>The GTKComboBoxText class is a subclass of the
+GTKComboBox class (<xref linkend="gtkcombobox" />).</para>
+
+<section id="gtkcomboboxtextinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKComboBoxText</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a comboboxtext.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKComboBoxText~new()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ***************************** -->
+<!-- ********** GTKMenu ********** -->
+<!-- ***************************** -->
+
+<section id="gtkmenu"><title>GTKMenu</title>
+<para>The GTKMenu class is a subclass of the
+GTKMenuShell class (<xref linkend="gtkmenushell" />).</para>
+
+<para>This is a container for a set of menu items.</para>
+
+<section id="gtkmenuinit">
+<title>init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenu~new()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmenureorderchild">
+<title>reorder_child</title>
+<indexterm><primary>reorder_child</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>reorder_child</secondary></indexterm>
+<para>Reorder a child menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--reorder_child(child, pos)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child widget.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>Position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuattach">
+<title>attach</title>
+<indexterm><primary>attach</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>attach</secondary></indexterm>
+<para>Attach a new menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--attach(child, left, right, top, bottom)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child widget.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>left</term>
+      <listitem><para>Left column number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>right</term>
+      <listitem><para>Right column number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>top</term>
+      <listitem><para>Top row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bottom</term>
+      <listitem><para>Bottom row number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenupopup">
+<title>popup</title>
+<indexterm><primary>popup</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>popup</secondary></indexterm>
+<para>Popup a menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--popup()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenusetaccelgroup">
+<title>set_accel_group</title>
+<indexterm><primary>set_accel_group</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>set_accel_group</secondary></indexterm>
+<para>Set the accelerator group.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_accel_group(accel)-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>accel</term>
+      <listitem><para>The accelerator group.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenugetaccelgroup">
+<title>get_accel_group</title>
+<indexterm><primary>get_accel_group</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>get_accel_group</secondary></indexterm>
+<para>Get the accelerator group.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_accel_group(accel)-----------------------------------------------><
+
+>>--accel_group = accel--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+</section>
+
+<section id="gtkmenusetaccelpath">
+<title>set_accel_path</title>
+<indexterm><primary>set_accel_path</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>set_accel_path</secondary></indexterm>
+<para>Set the accelerator path.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_accel_path(path)-------------------------------------------------><
+
+>>--accel_path = path----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>path</term>
+      <listitem><para>The accelerator path.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenusettitle">
+<title>set_title</title>
+<indexterm><primary>set_title</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>set_title</secondary></indexterm>
+<para>Set the title.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_title(title)-----------------------------------------------------><
+
+>>--title = title--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The title.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenugettitle">
+<title>get_title</title>
+<indexterm><primary>get_title</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>get_title</secondary></indexterm>
+<para>Get the title.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_title()----------------------------------------------------------><
+
+>>--title()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenusettearoffstate">
+<title>set_tearoff_state</title>
+<indexterm><primary>set_tearoff_state</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>set_tearoff_state</secondary></indexterm>
+<para>Set the tearoff state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tearoff_state(state)---------------------------------------------><
+
+>>--tearoff_state = state------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>state</term>
+      <listitem><para>The state.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenugettearoffstate">
+<title>get_tearoff_state</title>
+<indexterm><primary>get_tearoff_state</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>get_tearoff_state</secondary></indexterm>
+<para>Get the tearoff state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_tearoff_state()--------------------------------------------------><
+
+>>--tearoff_state()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>State boolean</para>
+</section>
+
+<section id="gtkmenupopdown">
+<title>popdown</title>
+<indexterm><primary>popdown</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>popdown</secondary></indexterm>
+<para>Popdown the menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--popdown()------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenureposition">
+<title>reposition</title>
+<indexterm><primary>reposition</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>reposition</secondary></indexterm>
+<para>Reposition the menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--reposition()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenugetactive">
+<title>get_active</title>
+<indexterm><primary>get_active</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>get_active</secondary></indexterm>
+<para>Get the active menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_active()---------------------------------------------------------><
+
+>>--active()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Menu item</para>
+</section>
+
+<section id="gtkmenusetactive">
+<title>set_active</title>
+<indexterm><primary>set_active</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>set_active</secondary></indexterm>
+<para>Set a menu item active.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_active(item)-----------------------------------------------------><
+
+>>--active = item--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item index.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenuattachtowidget">
+<title>attach_to_widget</title>
+<indexterm><primary>attach_to_widget</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>attach_to_widget</secondary></indexterm>
+<para>Attach a menu to a widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--attach_to_widget(target)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>target</term>
+      <listitem><para>The target widget.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenudetach">
+<title>detach</title>
+<indexterm><primary>detach</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>detach</secondary></indexterm>
+<para>Detach a menu from a widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--detach()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenugetattachwidget">
+<title>get_attach_widget</title>
+<indexterm><primary>get_attach_widget</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>get_attach_widget</secondary></indexterm>
+<para>Get the attach widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_attach_widget()--------------------------------------------------><
+
+>>--attach_widget()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Menu item</para>
+</section>
+
+<section id="gtkmenusignalconnect">
+<title>signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenusignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKMenu</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKMenu Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>move_scroll</entry>
+   <entry>signal_move_scroll</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ******************************** -->
+<!-- ********** GTKMenuBar ********** -->
+<!-- ******************************** -->
+
+<section id="gtkmenubar"><title>GTKMenuBar</title>
+<para>The GTKMenuBar class is a subclass of the
+GTKMenuShell class (<xref linkend="gtkmenushell" />).</para>
+
+<para>This a menu bar widget which contains menu objects.</para>
+
+<section id="gtkmenubarinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a menu bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuBar~new()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmenubarappend">
+<title>Method: append</title>
+<indexterm><primary>append</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>append</secondary></indexterm>
+<para>Append a menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append(child)--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child menu.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenubarprepend">
+<title>Method: prepend</title>
+<indexterm><primary>prepend</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>prepend</secondary></indexterm>
+<para>Prepend a menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend(child)-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child menu.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenubarinsert">
+<title>Method: insert</title>
+<indexterm><primary>insert</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>insert</secondary></indexterm>
+<para>Insert a menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert(child, pos)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child menu.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenubarsetpackdirection">
+<title>Method: set_pack_direction</title>
+<indexterm><primary>set_pack_direction</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>set_pack_direction</secondary></indexterm>
+<para>Set the packing direction.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_pack_direction(dir)----------------------------------------------><
+
+>>--pack_direction = dir-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>dir</term>
+      <listitem><para>The direction.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenubargetpackdirection">
+<title>Method: get_pack_direction</title>
+<indexterm><primary>get_pack_direction</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>get_pack_direction</secondary></indexterm>
+<para>Get the packing direction.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_pack_direction()-------------------------------------------------><
+
+>>--pack_direction()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Direction</para>
+</section>
+
+<section id="gtkmenubarsetchildpackdirection">
+<title>Method: set_child_pack_direction</title>
+<indexterm><primary>set_child_pack_direction</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>set_child_pack_direction</secondary></indexterm>
+<para>Set the child packing direction.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_child_pack_direction(dir)----------------------------------------><
+
+>>--child_pack_direction = dir-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>dir</term>
+      <listitem><para>The direction.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenubargetchildpackdirection">
+<title>Method: get_child_pack_direction</title>
+<indexterm><primary>get_child_pack_direction</primary></indexterm>
+<indexterm><primary>GTKMenuBar</primary>
+<secondary>get_child_pack_direction</secondary></indexterm>
+<para>Get the child packing direction.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_child_pack_direction()-------------------------------------------><
+
+>>--child_pack_direction()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Direction</para>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKMenuItem ********** -->
+<!-- ********************************* -->
+
+<section id="gtkmenuitem"><title>GTKMenuItem</title>
+<para>The GTKMenuItem class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This is a single menu choice widget.</para>
+
+<section id="gtkmenuitemnewwithlabel">
+<title>Method: newwithlabel (class method)</title>
+<indexterm><primary>newwithlabel</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>newwithlabel</secondary></indexterm>
+<para>Create a menu item with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuItem~newwithlabel(label)-------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The menu item label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmenuitemnewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create a menu item with a label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuItem~newwithmnemonic(label)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The menu item label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmenuiteminit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuItem~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmenuitemsetrightjustified">
+<title>Method: set_right_justified</title>
+<indexterm><primary>set_right_justified</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>set_right_justified</secondary></indexterm>
+<para>Set the right justification flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_right_justified(state)-------------------------------------------><
+
+>>--right_justified = state----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>state</term>
+      <listitem><para>The right justification state.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenuitemgetrightjustified">
+<title>Method: get_right_justified</title>
+<indexterm><primary>get_right_justified</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>get_right_justified</secondary></indexterm>
+<para>Get the right justification flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_right_justified()------------------------------------------------><
+
+>>--right_justified()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuitemsetsubmenu">
+<title>Method: set_submenu</title>
+<indexterm><primary>set_submenu</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>set_submenu</secondary></indexterm>
+<para>Set a submenu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_submenu(subm)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>subm</term>
+      <listitem><para>The submenu.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenuitemremovesubmenu">
+<title>Method: remove_submenu</title>
+<indexterm><primary>remove_submenu</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>remove_submenu</secondary></indexterm>
+<para>Remove a submenu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--remove_submenu()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuitemsetaccelpath">
+<title>Method: set_accel_path</title>
+<indexterm><primary>set_accel_path</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>set_accel_path</secondary></indexterm>
+<para>Set the accelerator path.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_accel_path(path)-------------------------------------------------><
+
+>>--accel_path = path----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>path</term>
+      <listitem><para>The accel path.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenuitemselect">
+<title>Method: select</title>
+<indexterm><primary>select</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>select</secondary></indexterm>
+<para>Select the menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--select()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuitemdeselect">
+<title>Method: deselect</title>
+<indexterm><primary>deselect</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>deselect</secondary></indexterm>
+<para>Deselect the menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--deselect()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuitemsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenuitemsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKMenuItem</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKMenuItem Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>activate</entry>
+   <entry>signal_activate</entry>
+</row>
+<row>
+   <entry>activate_item</entry>
+   <entry>signal_activate_item</entry>
+</row>
+<row>
+   <entry>toggle_size_allocate</entry>
+   <entry>signal_toggle_size_allocate</entry>
+</row>
+<row>
+   <entry>toggle_size_request</entry>
+   <entry>signal_toggle_size_request</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************** -->
+<!-- ********** GTKImageMenuItem ********** -->
+<!-- ************************************** -->
+
+<section id="gtkimagemenuitem"><title>GTKImageMenuItem</title>
+<para>The GTKImageMenuItem class is a subclass of the
+GTKMenuItem class (<xref linkend="gtkmenuitem" />).</para>
+
+<para>This is a single menu choice widget which contains an image.</para>
+
+<section id="gtkimagemenuitemnewfromstock">
+<title>Method: newfromstock (class method)</title>
+<indexterm><primary>newfromstock</primary></indexterm>
+<indexterm><primary>GTKImageMenuItem</primary>
+<secondary>newfromstock</secondary></indexterm>
+<para>Create a menu item from stock.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImageMenuItem~newfromstock(label)--------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The stock item label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagemenuitemnewwithmnemonic">
+<title>Method: newwithmnomonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKImageMenuItem</primary>
+<secondary>newwithmnomic</secondary></indexterm>
+<para>Create a menu item with a mnemonic.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImageMenuItem~newwithmnemonic(label)-----------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagemenuiteminit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKImageMenuItem</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImageMenuItem~new(label, flag)-----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The label.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The mnemonic flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ****************************************** -->
+<!-- ********** GTKSeparatorMenuItem ********** -->
+<!-- ****************************************** -->
+
+<section id="gtkseparatormenuitem"><title>GTKSeparatorMenuItem</title>
+<para>The GTKSeparatorMenuItem class is a subclass of the
+GTKMenuItem class (<xref linkend="gtkmenuitem" />).</para>
+
+<para>This widget provide a separator bar to go between menu items.</para>
+
+<section id="gtkseparatormenuiteminit">
+<title>init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKSeparatorMenuItem</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a seperator menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKSeparatorMenuItem~new()------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ******************************** -->
+<!-- ********** GTKToolBar ********** -->
+<!-- ******************************** -->
+
+<section id="gtktoolbar"><title>GTKToolBar</title>
+<para>The GTKToolBar class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This a toolbar widget which contains tool items.</para>
+
+<section id="gtktoolbarinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tool bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolBar~new()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktoolbarinsert">
+<title>Method: insert</title>
+<indexterm><primary>insert</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert</secondary></indexterm>
+<para>Insert a tool item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert(child, pos)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child item.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbargetitemindex">
+<title>Method: get_item_index</title>
+<indexterm><primary>get_item_index</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_item_index</secondary></indexterm>
+<para>Get an item index.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_item_index(child)------------------------------------------------><
+
+>>--item_index(child)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child item.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Index</para>
+</section>
+
+<section id="gtktoolbargetnitems">
+<title>Method: get_n_items</title>
+<indexterm><primary>get_n_items</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_n_items</secondary></indexterm>
+<para>Get the number of items.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_n_items()--------------------------------------------------------><
+
+>>--n_items()------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Items</para>
+</section>
+
+<section id="gtktoolbargetnthitem">
+<title>Method: get_nth_item</title>
+<indexterm><primary>get_nth_item</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_nth_item</secondary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_nth_item(pos)----------------------------------------------------><
+
+>>--nth_item(pos)--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Get the nth item.</para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Items</para>
+</section>
+
+<section id="gtktoolbargetdropindex">
+<title>Method: get_drop_index</title>
+<indexterm><primary>get_drop_index</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_drop_index</secondary></indexterm>
+<para>Get drop index..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_drop_index(x, y)-------------------------------------------------><
+
+>>--drop_index(x, y)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>The x coordinate on the toolbar.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>The y coordinate on the toolbar.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Index</para>
+</section>
+
+<section id="gtktoolbarsetdrophighlightitem">
+<title>Method: set_drop_highlight_item</title>
+<indexterm><primary>set_drop_highlight_item</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_drop_highlight_item</secondary></indexterm>
+<para>Insert a tool item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_drop_highlight_item(child, idex)---------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child item.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>idx</term>
+      <listitem><para>The index.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarsetshowarrow">
+<title>Method: set_show_arrow</title>
+<indexterm><primary>set_show_arrow</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_show_arrow</secondary></indexterm>
+<para>Set to show an overflow menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_show_arrow(flag)-------------------------------------------------><
+
+>>--show_arrow = flag----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>Boolean flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbarsetorientation">
+<title>Method: set_orientation</title>
+<indexterm><primary>set_orientation</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_orientation</secondary></indexterm>
+<para>Set the orientation.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_orientation(orient)----------------------------------------------><
+
+>>--orientation = orient-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>orient</term>
+      <listitem><para> Orientation.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbarsettooltips">
+<title>Method: set_tooltips</title>
+<indexterm><primary>set_tooltips</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_tooltips</secondary></indexterm>
+<para>Set to show tooltips.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tooltips(flag)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>Boolean flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarunseticonsize">
+<title>Method: unset_icon_size</title>
+<indexterm><primary>unset_icon_size</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>unset_icon_size</secondary></indexterm>
+<para>Unset the icon size.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--unset_icon_size()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbargetshowarrow">
+<title>Method: get_show_arrow</title>
+<indexterm><primary>get_show_arrow</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_show_arrow</secondary></indexterm>
+<para>Get to show an overflow menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_show_arrow()-----------------------------------------------------><
+
+>>--show_arrow()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtktoolbargetorientation">
+<title>Method: get_orientation</title>
+<indexterm><primary>get_orientation</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_orientation</secondary></indexterm>
+<para>Get the orientation.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_orientation()----------------------------------------------------><
+
+>>--orientation()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Orientation</para>
+</section>
+
+<section id="gtktoolbargetstyle">
+<title>Method: get_style</title>
+<indexterm><primary>get_style</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_style</secondary></indexterm>
+<para>Get the style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_style()----------------------------------------------------------><
+
+>>--style()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbargeticonsize">
+<title>Method: get_icon_size</title>
+<indexterm><primary>get_icon_size</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_icon_size</secondary></indexterm>
+<para>Get the icon size.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_icon_size()------------------------------------------------------><
+
+>>--icon_size()----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Size</para>
+</section>
+
+<section id="gtktoolbargettooltips">
+<title>Method: get_tooltips</title>
+<indexterm><primary>get_tooltips</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_tooltips</secondary></indexterm>
+<para>Get to show tooltips.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_tooltips()-------------------------------------------------------><
+
+>>--tooltips()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtktoolbargetreliefstyle">
+<title>Method: get_relief_style</title>
+<indexterm><primary>get_relief_style</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>get_releif_style</secondary></indexterm>
+<para>Get the relief style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_relief_stype()---------------------------------------------------><
+
+>>--relief_style()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarappenditem">
+<title>Method: append_item</title>
+<indexterm><primary>append_item</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>append_item</secondary></indexterm>
+<para>Append a tool item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_item(text, ttext, tptext, icon, method)-----------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarprependitem">
+<title>Method: prepend_item</title>
+<indexterm><primary>prepend_item</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>prepend_item</secondary></indexterm>
+<para>Prepend a tool item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_item(text, ttext, tptext, icon, method)----------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarinsertitem">
+<title>Method: insert_item</title>
+<indexterm><primary>insert_item</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert_item</secondary></indexterm>
+<para>Insert a tool item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_item(text, ttext, tptext, icon, method, pos)------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarappendspace">
+<title>Method: append_space</title>
+<indexterm><primary>append_space</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>append_space</secondary></indexterm>
+<para>Append a space.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_space()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarprependspace">
+<title>Method: prepend_space</title>
+<indexterm><primary>prepend_space</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>prepend_space</secondary></indexterm>
+<para>Prepend a space.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_space()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarinsertspace">
+<title>Method: insert_space</title>
+<indexterm><primary>insert_space</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert_space</secondary></indexterm>
+<para>Insert a space.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_space(pos)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarappendelement">
+<title>Method: append_element</title>
+<indexterm><primary>append_element</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>append_element</secondary></indexterm>
+<para>Append an element.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_element(type, text, ttext, tptext, icon, method)--------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>Toolbar child type.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarprependelement">
+<title>Method: prepend_element</title>
+<indexterm><primary>prepend_element</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>prepend_element</secondary></indexterm>
+<para>Prepend an element.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_element(type, text, ttext, tptext, icon, method)-------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>Toolbar child type.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarinsertelement">
+<title>Method: insert_element</title>
+<indexterm><primary>insert_element</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert_element</secondary></indexterm>
+<para>Insert an element.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_element(type, text, ttext, tptext, icon, method, pos)---------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>Toolbar child type.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Button label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>Widget icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>The ooRexx method name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolbarappendwidget">
+<title>Method: append_widget</title>
+<indexterm><primary>append_widget</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>append_widget</secondary></indexterm>
+<para>Append a widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_widget(tool, ttext, tptext)-----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tool</term>
+      <listitem><para>Widget.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarprependwidget">
+<title>Method: prepend_widget</title>
+<indexterm><primary>prepend_widget</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>prepend_widget</secondary></indexterm>
+<para>Prepend a widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_widget(tool, ttext, tptext)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tool</term>
+      <listitem><para>Widget.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarinsertwidget">
+<title>Method: insert_widget</title>
+<indexterm><primary>insert_widget</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert_widget</secondary></indexterm>
+<para>Insert a widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_widget(tool, ttext, tptext, pos)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tool</term>
+      <listitem><para>Widget.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>Position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarsetstyle">
+<title>Method: set_style</title>
+<indexterm><primary>set_style</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_style</secondary></indexterm>
+<para>Set the toolbar style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_style(style)-----------------------------------------------------><
+
+>>--style = style--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>style</term>
+      <listitem><para>Toolbar style.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbarinsertstock">
+<title>Method: insert_stock</title>
+<indexterm><primary>insert_stock</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>insert_stock</secondary></indexterm>
+<para>Insert a stock item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_stock(id, ttext, tptext, method, pos)-------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>id</term>
+      <listitem><para>Stock id.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ttext</term>
+      <listitem><para>Tooltips text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tptext</term>
+      <listitem><para>Tooltips private text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>method</term>
+      <listitem><para>Method name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>Position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarseticonsize">
+<title>Method: set_icon_size</title>
+<indexterm><primary>set_icon_size</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>set_icon_size</secondary></indexterm>
+<para>Set the toolbar icon size.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_icon_size(size)--------------------------------------------------><
+
+>>--icon_size = size-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>size</term>
+      <listitem><para>Toolbar icon size.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbarremovespace">
+<title>Method: remove_space</title>
+<indexterm><primary>remove_space</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>remove_space</secondary></indexterm>
+<para>Remove a space.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--remove_stock(pos)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>Position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarunsetstyle">
+<title>Method: unset_style</title>
+<indexterm><primary>unset_style</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>unset_style</secondary></indexterm>
+<para>Unset the toolbar style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--unset_style()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbarsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKToolBar</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKToolBar Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>orientation_changed</entry>
+   <entry>signal_orientation_changed</entry>
+</row>
+<row>
+   <entry>popup_context_menu</entry>
+   <entry>signal_popup_context_menu</entry>
+</row>
+<row>
+   <entry>style_changed</entry>
+   <entry>signal_style_changed</entry>
+</row>
+</tbody>
+
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKToolItem ********** -->
+<!-- ********************************* -->
+
+<section id="gtktoolitem"><title>GTKToolItem</title>
+<para>The GTKToolBar class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This a widget which provides tool actions, similar to a menu item.</para>
+
+<section id="gtktoolitemnewfromstock">
+<title>Method: newfromstock (class method)</title>
+<indexterm><primary>newfromstock</primary></indexterm>
+<para>Create an tool item from stock.</para>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>newfromstock</secondary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolItem~newfromstock(sid)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>sid</term>
+      <listitem><para>The stock id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktooliteminit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<para>Create an tool item.</para>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>init</secondary></indexterm>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolItem~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktoolitemsethomogeneous">
+<title>Method: set_homogeneous</title>
+<indexterm><primary>set_homogeneous</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_homogeneous</secondary></indexterm>
+<para>Set the item homogeneous.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_homogeneous(homo)------------------------------------------------><
+
+>>--homogeneous = homo---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>homo</term>
+      <listitem><para>The homogeneous boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgethomogeneous">
+<title>Method: get_homogeneous</title>
+<indexterm><primary>get_homogeneous</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_homogeneous</secondary></indexterm>
+<para>Get the item homogeneous.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_homogeneous()----------------------------------------------------><
+
+>>--homogeneous()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Homogeneous boolean</para>
+</section>
+
+<section id="gtktoolitemsetexpand">
+<title>Method: set_expand</title>
+<indexterm><primary>set_expand</primary></indexterm>
+<para>Set the item expand flag.</para>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_expand</secondary></indexterm>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_expand(expand)---------------------------------------------------><
+
+>>--expand = expand------------------------------------------------------><
+]]>
+</programlisting>
+<variablelist>
+   <varlistentry>
+      <term>expand</term>
+      <listitem><para>The expand boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgetexpand">
+<title>Method: get_expand</title>
+<indexterm><primary>get_expand</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_expand</secondary></indexterm>
+<para>Get the item expand.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_expand()---------------------------------------------------------><
+
+>>--expand()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Expand boolean</para>
+</section>
+
+<section id="gtktoolitemsettooltip">
+<title>Method: set_tooltip</title>
+<indexterm><primary>set_tooltip</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_tooltip</secondary></indexterm>
+<para>Set an item tooltip.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tooltip(tooltip, text, ptext)------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tooltip</term>
+      <listitem><para>The tooltip.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The tooltip text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ptext</term>
+      <listitem><para>The tooltip private text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemsetusedragwindow">
+<title>Method: set_use_drag_window</title>
+<indexterm><primary>set_use_drag_window</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_use_drag_window</secondary></indexterm>
+<para>Set the item use drag window flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_use_drag_window(drag)--------------------------------------------><
+
+>>--use_drag_window = drag-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>drag</term>
+      <listitem><para>The drag boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgetusedragwindow">
+<title>Method: get_use_drag_window</title>
+<indexterm><primary>get_use_drag_window</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_use_drag_window</secondary></indexterm>
+<para>Get the item use drag window flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_use_drag_window()------------------------------------------------><
+
+>>--use_drag_window()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtktoolitemsetvisiblehorizontal">
+<title>Method: set_visible_horizontal</title>
+<indexterm><primary>set_visible_horizontal</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_visible_horizontal</secondary></indexterm>
+<para>Set the item visible horizontal flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_visible_horizontal(visible)--------------------------------------><
+
+>>--visible_horizontal = visible-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>visible</term>
+      <listitem><para>The visible boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgetvisiblehorizontal">
+<title>Method: get_visible_horizontal</title>
+<indexterm><primary>get_visible_horizontal</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_visible_horizontal</secondary></indexterm>
+<para>Get the item visible horizontal flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_visible_horizontal()---------------------------------------------><
+
+>>--visible_horizontal()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemsetvisiblevertical">
+<title>Method: set_visible_vertical</title>
+<indexterm><primary>set_visible_vertical</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_visible_vertical</secondary></indexterm>
+<para>Set the item visible vertical flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_visible_vertical(visible)----------------------------------------><
+
+>>--visible_vertical = visible-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>visible</term>
+      <listitem><para>The visible boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgetvisiblevertical">
+<title>Method: get_visible_vertical</title>
+<indexterm><primary>get_visible_vertical</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_visible_vertical</secondary></indexterm>
+<para>Get the item visible vertical flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_visible_vertical()-----------------------------------------------><
+
+>>--visible_vertical()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemsetisimportant">
+<title>Method: set_is_important</title>
+<indexterm><primary>set_is_important</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_is_important</secondary></indexterm>
+<para>Set the item is important flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_is_important(import)---------------------------------------------><
+
+>>--is_important = import------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>import</term>
+      <listitem><para>The import boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolitemgetisimportant">
+<title>Method: get_is_important</title>
+<indexterm><primary>get_is_important</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_is_important</secondary></indexterm>
+<para>Get the item is important flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_is_important()---------------------------------------------------><
+
+>>--is_important()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtktoolitemgeticonsize">
+<title>Method: get_icon_size</title>
+<indexterm><primary>get_icon_size</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_icon_size</secondary></indexterm>
+<para>Get the item icon size.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_icon_size()------------------------------------------------------><
+
+>>--icon_size()----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Size</para>
+</section>
+
+<section id="gtktoolitemgetorientation">
+<title>Method: get_orientation</title>
+<indexterm><primary>get_orientation</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_orientation</secondary></indexterm>
+<para>Get the item orientation.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_orientation()----------------------------------------------------><
+
+>>--orientation()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Orientation</para>
+</section>
+
+<section id="gtktoolitemgettoolbarstyle">
+<title>Method: get_toolbar_style</title>
+<indexterm><primary>get_toolbar_style</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_toolbar_style</secondary></indexterm>
+<para>Get the item toolbar style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_toolbar_style()--------------------------------------------------><
+
+>>--toolbar_style()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolitemgetreliefstyle">
+<title>Method: get_relief_style</title>
+<indexterm><primary>get_relief_style</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_relief_style</secondary></indexterm>
+<para>Get the item relief style.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_relief_style()---------------------------------------------------><
+
+>>--relief_style()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Style</para>
+</section>
+
+<section id="gtktoolitemretrieveproxymenuitem">
+<title>Method: retrieve_proxy_menu_item</title>
+<indexterm><primary>retrieve_proxy_menu_item</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>retrieve_proxy_menu_item</secondary></indexterm>
+<para>Get the item proxy menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--retrieve_proxy_menu_item()-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Iteme</para>
+</section>
+
+<section id="gtktoolitemgetproxymenuitem">
+<title>Method: get_proxy_menu_item</title>
+<indexterm><primary>get_proxy_menu_item</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>get_proxy_menu_item</secondary></indexterm>
+<para>Get the item proxy menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_proxy_menu_item()------------------------------------------------><
+
+>>--proxy_menu_item()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Iteme</para>
+</section>
+
+<section id="gtktoolitemsetproxymenutem">
+<title>Method: set_proxy_menu_item</title>
+<indexterm><primary>set_proxy_menu_item</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>set_proxy_menu_item</secondary></indexterm>
+<para>Set the item proxy menu item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_proxy_menu_item(id, menu))---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>id</term>
+      <listitem><para>The object id.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>menu</term>
+      <listitem><para>The proxy menu item.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemrebuildmenu">
+<title>Method: rebuild_menu</title>
+<indexterm><primary>rebuild_menu</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>rebuild_menu</secondary></indexterm>
+<para>Rebuild the menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--rebuild_menu()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolitemsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKToolItem</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKToolItem Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>create_menu_proxy</entry>
+   <entry>signal_create_menu_proxy</entry>
+</row>
+<row>
+   <entry>set_tooltip</entry>
+   <entry>signal_set_tooltip</entry>
+</row>
+<row>
+   <entry>toolbar_reconfigured</entry>
+   <entry>signal_toolbar_reconfigured</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ****************************************** -->
+<!-- ********** GTKSeparatorToolItem ********** -->
+<!-- ****************************************** -->
+
+<section id="gtkseparatortoolitem"><title>GTKSeparatorToolItem</title>
+<para>The GTKSeparatorToolBar class is a subclass of the
+GTKToolItem class (<xref linkend="gtktoolitem" />).</para>
+
+<para>This widget provide a separator bar to go between tool items.</para>
+
+<section id="gtkseparatortooliteminit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKSeparatorToolItem</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tool button separator.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKSeparatorToolItem~new()------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkseparatortoolitemsetdraw">
+<title>Method: set_draw</title>
+<indexterm><primary>set_draw</primary></indexterm>
+<indexterm><primary>GTKSeparatorToolItem</primary>
+<secondary>set_draw</secondary></indexterm>
+<para>Sets the draw flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_draw(flag)-------------------------------------------------------><
+
+>>--draw = flag----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>   The draw boolean</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkseparatortoolitemgetdraw">
+<title>Method: get_draw</title>
+<indexterm><primary>get_draw</primary></indexterm>
+<indexterm><primary>GTKSeparatorToolItem</primary>
+<secondary>get_draw</secondary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_draw()-----------------------------------------------------------><
+
+>>--draw()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para>Gets the draw flag.</para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Draw boolean</para>
+</section>
+</section>
+
+<!-- *********************************** -->
+<!-- ********** GTKToolButton ********** -->
+<!-- *********************************** -->
+
+<section id="gtktoolbutton"><title>GTKToolButton</title>
+<para>The GTKToolButton class is a subclass of the
+GTKToolItem class (<xref linkend="gtktoolitem" />).</para>
+
+<para>This widget is similar to a tool item but in button form.</para>
+
+<section id="gtktoolbuttonnewfromstock">
+<title>Method: newfromstock (class method)</title>
+<indexterm><primary>newfromstock</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>newfromstock</secondary></indexterm>
+<para>Create an tool button from stock.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolButton~newfromstock(icon, label)-----------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>The button icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The button label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktoolbuttoninit2">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tool button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolButton~new(icon, label)--------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>icon</term>
+      <listitem><para>The button icon.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The button label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktoolbuttoninit1">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tool button from stock.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKToolButton~new(label)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The button stock id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktoolbuttonsetlabel">
+<title>Method: set_label</title>
+<indexterm><primary>set_label</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_label</secondary></indexterm>
+<para>Sets the button label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_label(label)-----------------------------------------------------><
+
+>>--label = label--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The button label.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongetlabel">
+<title>Method: get_label</title>
+<indexterm><primary>get_label</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_label</secondary></indexterm>
+<para>Gets the button label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_label()----------------------------------------------------------><
+
+>>--label()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Label</para>
+</section>
+
+<section id="gtktoolbuttonsetuseunderline">
+<title>Method: set_use_underline</title>
+<indexterm><primary>set_use_underline</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_use_underline</secondary></indexterm>
+<para>Sets the accelerator key..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_use_underline(flag)----------------------------------------------><
+
+>>--use_underline = flag-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The use underline boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongetuseunderline">
+<title>Method: get_use_underline</title>
+<indexterm><primary>get_use_underline</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_use_underline</secondary></indexterm>
+<para>Gets the use underline boolean.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_use_underline()--------------------------------------------------><
+
+>>--use_underline()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtktoolbuttonsetstockid">
+<title>Method: set_stock_id</title>
+<indexterm><primary>set_stock_id</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_stock_id</secondary></indexterm>
+<para>Sets the stock id.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_stock_id(id)-----------------------------------------------------><
+
+>>--stock_id = id--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>id</term>
+      <listitem><para>The stock id.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongetstockid">
+<title>Method: get_stock_id</title>
+<indexterm><primary>get_stock_id</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_stock_id</secondary></indexterm>
+<para>Gets the stock_id</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_stock_id()-------------------------------------------------------><
+
+>>--stock_id()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>StockID string</para>
+</section>
+
+<section id="gtktoolbuttonseticonname">
+<title>Method: set_icon_name</title>
+<indexterm><primary>set_icon_name</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_icon_name</secondary></indexterm>
+<para>Sets the icon name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_icon_name(name)--------------------------------------------------><
+
+>>--icon_name = name-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The icon name.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongeticonname">
+<title>Method: get_icon_name</title>
+<indexterm><primary>get_icon_name</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_icon_name</secondary></indexterm>
+<para>Gets the icon name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_icon_name()------------------------------------------------------><
+
+>>--icon_name()----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Icon name</para>
+</section>
+
+<section id="gtktoolbuttonseticonwidget">
+<title>Method: set_icon_widget</title>
+<indexterm><primary>set_icon_widget</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_icon_widget</secondary></indexterm>
+<para>Sets the icon widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_icon_widget(name)------------------------------------------------><
+
+>>--icon_widget = name---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The icon widget.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongeticonwidget">
+<title>Method: get_icon_widget</title>
+<indexterm><primary>get_icon_widget</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_icon_widget</secondary></indexterm>
+<para>Gets the icon widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_icon_widget()----------------------------------------------------><
+
+>>--icon_widget()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Icon widget</para>
+</section>
+
+<section id="gtktoolbuttonsetlabelwidget">
+<title>Method: set_label_widget</title>
+<indexterm><primary>set_label_widget</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>set_label_widget</secondary></indexterm>
+<para>Sets the label widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_label_widget(name)-----------------------------------------------><
+
+>>--label_widget = name--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The label widget.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktoolbuttongetlabelwidget">
+<title>Method: get_label_widget</title>
+<indexterm><primary>get_label_widget</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>get_label_widget</secondary></indexterm>
+<para>Gets the label widget.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_label_widget()---------------------------------------------------><
+
+>>--label_widget()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Label widget</para>
+</section>
+
+<section id="gtktoolbuttonsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktoolbuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKToolButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKToolButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>clicked</entry>
+   <entry>signal_clicked</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- *************************************** -->
+<!-- ********** GTKMenuToolButton ********** -->
+<!-- *************************************** -->
+
+<section id="gtkmenutoolbutton"><title>GTKMenuToolButton</title>
+<para>The GTKMenuToolButton class is a subclass of the
+GTKToolButton class (<xref linkend="gtktoolbutton" />).</para>
+
+<para>This widget is similar to a tool item but in button form.</para>
+
+<section id="gtkmenutoolbuttonnewfromstock">
+<title>Method: new_from_stock (class method)</title>
+<indexterm><primary>new_from_stock</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>new_from_stock</secondary></indexterm>
+<para>Create an tool button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuToolButton~new_from_stock(id)--------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>id</term>
+      <listitem><para>The stock id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A new menu tool button.</para>
+</section>
+
+<section id="gtkmenutoolbuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tool button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKMenuToolButton~new(label)----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The button label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A new menu tool button.</para>
+</section>
+
+<section id="gtkmenutoolbuttonsetmenu">
+<title>Method: set_menu</title>
+<indexterm><primary>set_menu</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>set_menu</secondary></indexterm>
+<para>Sets the menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_menu(menu)-------------------------------------------------------><
+
+>>--menu = menu----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>menu</term>
+      <listitem><para>The menu object.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkmenutoolbuttongetmenu">
+<title>Method: get_menu</title>
+<indexterm><primary>get_menu</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>get_menu</secondary></indexterm>
+<para>Gets the menu.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_menu()-----------------------------------------------------------><
+
+>>--menu()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Icon widget</para>
+</section>
+
+<section id="gtkmenutoolbuttonsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkmenutoolbuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKMenuToolButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKMenuToolButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>show_menu</entry>
+   <entry>signal_show_menu</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

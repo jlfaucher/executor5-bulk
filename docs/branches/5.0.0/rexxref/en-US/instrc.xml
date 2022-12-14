@@ -1,0 +1,4103 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="instrc"><title>Keyword Instructions</title>
+<indexterm><primary>keyword</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>general concepts</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>keyword</secondary>
+<tertiary>description</tertiary></indexterm>
+<para>A <emphasis>keyword instruction</emphasis> is one or more clauses, the
+first of which starts with a keyword that identifies the instruction.  Some
+keyword instructions affect the flow of control, while others provide services
+to the programmer.  Some keyword instructions, like DO, can include nested
+instructions.</para>
+<para>In the syntax diagrams on the following pages, symbols (words) in capitals
+denote keywords or subkeywords. Other words, such as
+<emphasis role="italic">expression</emphasis>,
+denote a collection of tokens as defined previously. Note, however, that the
+<indexterm><primary>keyword</primary>
+<secondary>mixed case</secondary></indexterm>
+keywords and subkeywords are not case-dependent. The symbols
+<computeroutput>if</computeroutput>, <computeroutput>If</computeroutput>,
+and <computeroutput>iF</computeroutput> all have the same effect.
+A clause requires a semicolon (<computeroutput>;</computeroutput>) as a terminating delimiter
+<indexterm><primary>semicolons</primary>
+<secondary>omission of</secondary></indexterm>
+unless the end of a line implies it.</para>
+<indexterm><primary>ELSE</primary>
+<secondary>as free standing clause</secondary></indexterm>
+<indexterm><primary>END</primary>
+<secondary>as free standing clause</secondary></indexterm>
+<indexterm><primary>OTHERWISE</primary>
+<secondary>as free standing clause</secondary></indexterm>
+<indexterm><primary>THEN</primary>
+<secondary>as free standing clause</secondary></indexterm>
+<indexterm><primary>WHEN</primary>
+<secondary>as free standing clause</secondary></indexterm>
+<para>A keyword instruction is recognized <emphasis>only</emphasis> if its
+keyword is the first token in a clause and if the second token does not start
+with an equal (=) character (implying an assignment) or a colon (implying
+a label).  The keywords ELSE, END, OTHERWISE, THEN, and WHEN are treated in
+the same way. Note that any clause that starts with a keyword defined by Rexx
+cannot be a command. Therefore, </para>
+<programlisting>
+arg(fred) rest
+</programlisting>
+<para>is an ARG keyword
+instruction, not a command that starts with a call to the ARG built-in function.
+A syntax error results if the keywords are not in their correct positions
+in a DO, IF, or SELECT instruction. The keyword THEN is also recognized in
+the body of an IF or WHEN clause.  In other contexts, keywords are not reserved
+and can be used as labels or as the names of variables (though this is generally
+not recommended).</para>
+<para><emphasis>Subkeywords</emphasis> are reserved within the clauses of
+individual instructions. For example, the symbols VALUE and WITH are subkeywords
+in the ADDRESS and PARSE instructions, respectively. For details, see the
+description of each instruction.</para>
+<para>Whitespace characters (blanks or horizontal tabs) adjacent to keywords
+separate the keyword from the subsequent token. One or more whitespace
+characters following VALUE are required to separate the
+<emphasis role="italic">expression</emphasis> from the subkeyword in the example following:</para>
+<programlisting> ADDRESS VALUE expression
+</programlisting>
+<para>However, no whitespace character is required after the VALUE subkeyword in
+the following example, although it would improve readability:
+</para>
+<programlisting>
+ADDRESS VALUE"ENVIR"||number
+</programlisting>
+
+<section id="keyAddress" revisionflag="changed"><title>&changed50;ADDRESS</title>
+<indexterm><primary>ADDRESS instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>command</primary>
+<secondary>destination of</secondary></indexterm>
+<indexterm><primary>ADDRESS instruction</primary>
+<secondary>issuing commands to</secondary></indexterm>
+<indexterm><primary>changing destination of commands</primary></indexterm>
+<indexterm><primary>name, definition</primary></indexterm>
+<indexterm><primary>environment</primary></indexterm>
+<indexterm><primary>temporary change of</primary></indexterm>
+<indexterm><primary>permanent command destination change</primary></indexterm>
+<indexterm><primary>presumed command destinations</primary></indexterm>
+<indexterm><primary>temporary command destination change</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>ADDRESS</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in an ADDRESS instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/address.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">WITH:</emphasis>
+<indexterm><primary>APPEND subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>ERROR subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>INPUT subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>NORMAL subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>OUTPUT subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>REPLACE subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>STEM subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>STREAM subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>USING subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/address_with.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>ADDRESS permanently changes the destination or I/O redirection of
+commands, or temporarily changes the destination and sends a command with
+optional I/O redirection of standard input, standard output, and standard
+error from or to Rexx objects.
+</para>
+<para>Commands are strings sent to an external environment.
+You can send commands by specifying clauses consisting of only an expression
+or by using the ADDRESS instruction.
+(See <xref linkend="cmdhost" />.)
+</para>
+<para>To send a single command to a specified environment, code an
+<emphasis role="italic">environment</emphasis>,
+<indexterm><primary>environment</primary>
+<secondary>addressing of</secondary></indexterm>
+a literal string or a single symbol, which is taken to be a constant,
+followed by an <emphasis role="italic">expression</emphasis>.
+The environment name is the name of an external procedure
+or process that can process commands. The
+<emphasis role="italic">expression</emphasis> is evaluated
+to produce a character string value, and this string is routed to the
+<emphasis role="italic">environment</emphasis>
+to be processed as a command.
+After execution
+of the command, <emphasis role="italic">environment</emphasis>
+is set back to its original state, thus
+temporarily changing the destination for a single command. The special variable
+RC and the environment symbol .RS are set and errors and failures in commands
+processed in this way are trapped or traced.
+</para>
+<para>The following evironments are available in ooRexx:
+<variablelist>
+  <varlistentry>
+    <term><literal>sh</literal> (Unix only)</term>
+    <listitem><para>This is the default environment on Unix systems.
+      It uses <literal>sh</literal> as a shell program to execute the command.
+      All shell features such as redirection or piping can be used.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+      <literal>ksh</literal>, <literal>tcsh</literal>, <literal>zsh</literal>
+      (Unix only)</term>
+    <listitem><para>These environments use alternate Unix shells
+      <literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+      <literal>ksh</literal>, <literal>tcsh</literal>, or <literal>zsh</literal>
+      to execute the command.
+      If the appropriate shell is not installed on the system, executing a
+      command in any of these enviroments will raise a failure.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>cmd</literal> (Windows only)</term>
+    <listitem><para>This is the default environment on Windows systems.
+      It uses <literal>cmd.exe</literal> as a command interpreter to
+      execute the command.
+      Command interpreter features such as internal commands, redirection or
+      piping can be used.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>command</literal>, <literal>system</literal>, <literal>""</literal></term>
+    <listitem><para>These environment names are synonyms for the default environments
+      <literal>sh</literal> on Unix and <literal>cmd</literal> on Windows.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>path</literal></term>
+    <listitem><para>This environment executes commands directly,
+      without using an intermediate command interpreter or shell program.
+      It searches the environment variable PATH to locate the command to execute.
+      No shell features such as internal commands, redirection, piping or
+      environment variable substitution are available.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+</para>
+<para>The <option>WITH</option> subkeyword sets a command's I/O redirection.
+STDIN input can be redirected from a Rexx object to the command, and
+STDOUT and STDERR output from the command can be redirected to a Rexx object.
+</para>
+<para>I/O redirection is permanent when specified on an ADDRESS instruction
+without a command, and temporary if a command is specified.
+Any permanent I/O redirection is associated with the environment name and
+will be saved and restored across function and subroutine calls.
+For permanent I/O redirections, any redirection objects or expressions are
+not evaluated at the time the ADDRESS instruction is processed.
+Each time a command is sent to this environment, these objects and
+expressions will be evaluated in the then current variable context.
+</para>
+<para><variablelist>
+<varlistentry><term><option>WITH INPUT</option></term>
+<listitem><para>redirects data from a stem, a stream, or other Rexx
+object to the command's input.
+</para>
+<para>If option <option>NORMAL</option> is specified, the command's
+standard input will be used.
+</para>
+<para>If option <option>STEM</option> is specified,
+<emphasis role="italic">stem</emphasis> must be a stem variable, where
+<emphasis role="italic">stem</emphasis><literal>.0</literal> specifies
+the number of input lines, and each
+<emphasis role="italic">stem.i</emphasis>
+(with <emphasis role="italic">i</emphasis> from <literal>1</literal>
+through <emphasis role="italic">stem</emphasis><literal>.0</literal>)
+specifies an input line.
+</para>
+<para>If option <option>STREAM</option> is specified,
+<emphasis role="italic">stream</emphasis> must be a literal string,
+a constant symbol, or an expression enclosed in parentheses that
+evaluates to a string which is used as the stream name.
+Input lines for the command are read from
+<emphasis role="italic">stream</emphasis> using the
+<methodname>lineIn</methodname> method.
+</para>
+<para>If option <option>USING</option> is specified,
+<emphasis role="italic">expr</emphasis> must be a literal string,
+a constant symbol, or an expression enclosed in parentheses that
+evaluates to a String, a Stem object, an InputStream, a Monitor or a File object,
+or an Array object or any other object that supports a
+<methodname>makeArray</methodname> method (e. g. a RexxQueue object).
+If the resulting object is a String, the command will receive a single input line,
+if it is a Stem, an InputStream, a Monitor, or a File object, input is redirected
+as described for options <option>STEM</option> and <option>STREAM</option>.
+If the resulting object is an Array object, all Array items are converted to
+strings and are sent to the command as input lines.
+Empty array items are ignored.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><option>WITH OUTPUT</option> and <option>WITH ERROR</option></term>
+<listitem><para>redirect a command's standard output or error output to
+a stem, a stream, or other Rexx objects.
+</para>
+<para>If option <option>NORMAL</option> is specified,
+the command's default output destination, or default error destination is used.
+</para>
+<para>If option <option>STEM</option> is specified,
+<emphasis role="italic">stem</emphasis> must be a stem variable.
+If <option>REPLACE</option> is specified together with <option>STEM</option>,
+the number of output lines is stored in
+<emphasis role="italic">stem</emphasis><literal>.0</literal> and individual
+lines are stored as <emphasis role="italic">stem.i</emphasis>,
+with <emphasis role="italic">i</emphasis> running from <literal>1</literal>
+through <emphasis role="italic">stem</emphasis><literal>.0</literal>.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified with <option>STEM</option>,
+individual lines are stored as <emphasis role="italic">stem.i</emphasis>,
+with <emphasis role="italic">i</emphasis> starting at the value of the
+existing <emphasis role="italic">stem</emphasis><literal>.0</literal>
+plus <literal>1</literal>.
+The initial <emphasis role="italic">stem</emphasis><literal>.0</literal>
+value is then incremented by the total number of output lines for the
+command.
+</para>
+<para>If option <option>STREAM</option> is specified,
+<emphasis role="italic">stream</emphasis> must be a literal string,
+a constant symbol, or an expression enclosed in parentheses that
+evaluates to a string which is used as the stream name.
+Output or error lines from the command are written to the stream with the
+<methodname>lineOut</methodname> method.
+If <option>REPLACE</option> is specified with <option>STREAM</option>,
+<emphasis role="italic">stream</emphasis> is truncated  to zero length
+before any output lines are written.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified with <option>STREAM</option>,
+output lines are appended to <emphasis role="italic">stream</emphasis>.
+</para>
+<para>If option <option>USING</option> is specified,
+<emphasis role="italic">expr</emphasis> must be
+a constant symbol, or an expression enclosed in parentheses that
+evaluates to a Stem object, an OutputStream, a Monitor, a RexxQueue,
+a File object, or an OrderedCollection object.
+If the resulting object is a Stem or a File object, output lines are
+written as described for options <option>STEM</option> and
+<option>STREAM</option>.
+If it is an OutputStream or a Monitor object, output lines are always
+appended to the stream; neither <option>REPLACE</option> nor
+<option>APPEND</option> can be specified in this case.
+If the object is a RexxQueue, method <methodname>queue</methodname>
+is used for each output line.
+Neither <option>REPLACE</option> nor <option>APPEND</option> can be
+specified for a RexxQueue.
+If the resulting object is an OrderedCollection object and
+<option>REPLACE</option> is specified, the collection is emptied using
+method <methodname>emtpy</methodname> before any output lines are added
+to the collection using method <methodname>append</methodname>.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified, output lines are appended to
+the existing collection using method <methodname>append</methodname>.
+</para>
+</listitem></varlistentry>
+</variablelist>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Specifying one of the <option>INPUT</option>,
+<option>OUTPUT</option>, or <option>ERROR</option> subkeywords more than once
+is an error.</para></listitem>
+<listitem><para>If an input source object and an output or error target object
+is the same, Rexx uses appropriate read and write buffering to make sure results
+are correct.
+</para></listitem>
+<listitem><para>If the standard output target and the standard error target object
+is the same object, Rexx will send interleaved output and error lines to the target.
+</para></listitem>
+<!--@@ Do we want any of these documented?
+<listitem><para>All environments currently supplied by ooRexx buffer (copy)
+any input redirection target before running the command.
+It is not possible to continue feeding input to a command that is already
+running.
+</para></listitem>
+<listitem><para>All Windows environments currently supplied by ooRexx
+buffer any redirected output so that it will only become available until
+after the command has finished.
+On Linux, redirected output (but not error output) is made available while
+the command is still running.
+These implementation details may change in the future.
+</para></listitem>
+<listitem><para>If a sparse Stem object is used for input redirection, any missing
+stems are converted to null lines.
+If a sparse Array object is used for input redirection, any missing
+items are ignored.
+</para></listitem>
+@@-->
+</orderedlist>
+
+<para>
+<indexterm><primary>ADDRESS instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>CMD command environment</primary></indexterm>
+<indexterm><primary>sh command environment</primary></indexterm>
+<example>
+<title>Instructions &mdash; ADDRESS</title>
+<programlisting>
+ADDRESS "CMD" 'dir "\Program Files"'            -- Windows
+ADDRESS "sh" "ls /usr/bin"                      -- Unix
+
+address "" "cat" with input using "single line" -- Unix: "single line"
+address "" "ver" with output stem v.; say v.2   -- "Microsoft Windows ..."
+
+address "" with input using (a) output using (a)
+a = 4, 2, 3, 1
+"sort"
+say a~toString(, " ")                           -- 1 2 3 4
+</programlisting>
+</example>
+</para>
+
+<para>If you specify only <emphasis role="italic">environment</emphasis>, a
+lasting change of destination occurs: all commands (see
+<xref linkend="commnds" />) that follow are routed to
+the specified command environment, until the next ADDRESS instruction is
+processed. The previously selected environment is saved.</para>
+<para>Assume that the environment for a Windows text editor is
+registered by the name <computeroutput>EDIT</computeroutput>:
+<example>
+<title>Instructions &mdash; ADDRESS environments</title>
+<programlisting>
+address CMD
+"DIR C:\AUTOEXEC.BAT"
+if rc=0 then "COPY C:\AUTOEXEC.BAT C:\*.TMP"
+address EDIT
+</programlisting>
+</example>
+</para>
+<para>Subsequent commands are passed to the editor until the next ADDRESS
+instruction.</para>
+<para>Similarly, you can use the VALUE form to make a lasting change to the
+environment. Here <emphasis role="italic">env_expression</emphasis>, which can be a
+variable name, is evaluated, and
+the resulting character string value forms the name of the environment. You
+can omit the subkeyword VALUE if <emphasis role="italic">env_expression</emphasis>
+does not begin with
+a literal string or symbol, that is, if it starts with a special character
+such as an operator character or parenthesis.
+<example>
+<title>Instructions &mdash; ADDRESS environments</title>
+<programlisting>
+ADDRESS ("ENVIR"||number)  /* Same as ADDRESS VALUE "ENVIR"||number */
+</programlisting>
+</example>
+</para>
+<para>With no arguments, commands are routed back to the environment that was
+selected before the previous change of the environment, and the current environment
+name is saved. After changing the environment, repeated execution of ADDRESS
+alone, therefore, switches the command destination between two environments.
+Using a null string for the environment name (&quot;&quot;) is the same as using
+the default environment.</para>
+<para>The two environment names are automatically saved across internal and external
+subroutine and function calls.
+See the <xref linkend="keyCall" xrefstyle="select:title"/> instruction for more details.
+</para>
+<para>The address setting is the currently
+<indexterm><primary>address setting</primary></indexterm>
+<indexterm><primary>environment</primary>
+<secondary>default</secondary></indexterm>
+selected environment name. You can retrieve the current address setting by
+using the <xref linkend="bifAddress" xrefstyle="template:ADDRESS"/> built-in function.
+The <citetitle pubwork="book">Open Object Rexx: Application Programming Interfaces</citetitle>
+describes the creation of alternative subcommand environments.</para>
+</section>
+
+<section id="keyArg"><title>ARG</title>
+<indexterm><primary>ARG instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>arguments</primary>
+<secondary>retrieving with ARG instruction</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>ARG</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>templates</secondary>
+<tertiary>in ARG instruction</tertiary></indexterm>
+<indexterm><primary>programs</primary>
+<secondary>arguments to</secondary></indexterm>
+<indexterm><primary>retrieving</primary>
+<secondary>argument strings with ARG</secondary></indexterm>
+<indexterm><primary>template</primary>
+<secondary>list</secondary>
+<tertiary>ARG instruction</tertiary></indexterm>
+<indexterm><primary>UPPER subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>ARG subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/arg.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<indexterm><primary>arguments</primary>
+<secondary>of functions</secondary></indexterm>
+<indexterm><primary>arguments</primary>
+<secondary>of programs</secondary></indexterm>
+<indexterm><primary>arguments</primary>
+<secondary>of subroutines</secondary></indexterm>
+<indexterm><primary>uppercase translation</primary>
+<secondary>during ARG instruction</secondary></indexterm>
+<para>ARG retrieves the argument strings provided to a program, internal
+routine, or method and assigns them to variables.  It is a short form of the
+instruction:</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse_upper_arg.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The <emphasis role="italic">template_list</emphasis> can be a single
+template or list of templates separated by commas.
+Each template consists of one or more symbols separated by whitespace
+characters, patterns, or both.
+</para>
+<para>The objects passed to the program, routine, or method
+are converted to string values
+and parsed into variables according to the rules described in
+<xref linkend="parsingch" />.</para>
+<para>The language processor converts the objects to strings and translates the
+strings to uppercase (that is, lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> to
+uppercase <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>)
+before processing them. Use the
+PARSE ARG instruction if you do not want uppercase translation.</para>
+<para>You can use the ARG and PARSE ARG instructions repeatedly on the same source
+objects (typically with different templates). The source objects do not change.
+<indexterm><primary>ARG instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>ARG instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; ARG</title>
+<programlisting>
+/* String passed is "Easy Rider"  */
+Arg adjective noun .
+
+/* Now:  ADJECTIVE  contains "EASY"           */
+/*       NOUN       contains "RIDER"          */
+</programlisting>
+</example>
+</para>
+<para>If you expect more than one object to be available to the program or
+routine, you can use a comma
+<indexterm><primary>, (comma)</primary>
+<secondary>in parsing template list</secondary></indexterm>
+<indexterm><primary>comma</primary>
+<secondary>in parsing template list</secondary></indexterm>
+in the parsing <emphasis role="italic">template_list</emphasis> so each template
+is selected in turn.
+<example>
+<title>Instructions &mdash; ARG</title>
+<programlisting>
+/* Function is called by  FRED("data X",1,5)    */
+Fred:  Arg string, num1, num2
+
+/* Now:   STRING  contains "DATA X"             */
+/*        NUM1    contains "1"                  */
+/*        NUM2    contains "5"                  */
+</programlisting>
+</example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The <xref linkend="bifArg" xrefstyle="template:ARG"/> built-in function
+can also retrieve or check the arguments.</para></listitem>
+<listitem><para>The <xref linkend="keyUse" xrefstyle="template:USE ARG"/> instruction
+is an alternative way of retrieving arguments.
+USE ARG performs a direct, one-to-one assignment
+of argument objects to Rexx variables. You should use this when your program
+needs a direct reference to the argument object, without string conversion
+or parsing.
+ARG and PARSE ARG produce string values from the argument objects, and the
+language processor then parses the string values.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyCall"><title>CALL</title>
+<indexterm><primary>CALL instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with CALL and RETURN construct</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>CALL</secondary></indexterm>
+<indexterm><primary>internal</primary>
+<secondary>routine</secondary></indexterm>
+<indexterm><primary>label</primary>
+<secondary>as target of CALL</secondary></indexterm>
+<indexterm><primary>invoking</primary>
+<secondary>built-in functions</secondary></indexterm>
+<indexterm><primary>invoking</primary>
+<secondary>routines</secondary></indexterm>
+<indexterm><primary>names</primary>
+<secondary>of subroutines</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>as name of subroutine</secondary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>calling of</secondary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>naming of</secondary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>use of labels</secondary></indexterm>
+<indexterm><primary>OFF subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>ANY subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>ERROR subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>FAILURE subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>HALT subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>NOTREADY subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>USER subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>ON subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+<indexterm><primary>NAME subkeyword</primary>
+<secondary>in a CALL instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call_on.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call_off.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>CALL calls a routine (if you specify
+<emphasis role="italic">name</emphasis>) or controls the trapping
+of certain conditions (if you specify ON or OFF).</para>
+<para>To control trapping, you specify OFF or ON and the condition you want to
+trap. OFF turns off the specified condition trap. ON turns on the specified
+condition trap.
+The <emphasis role="italic">usercondition</emphasis> is a single
+symbol that is taken as a constant.
+The <emphasis role="italic">trapname</emphasis> is a symbol or string
+taken as a constant.
+All information on condition traps is contained in
+<xref linkend="condtra" />.</para>
+<para>To call a routine, specify <emphasis role="italic">name</emphasis>,
+which must be a literal string or symbol that is taken as a constant.
+The routine called can be: </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">An internal routine</emphasis></term>
+<listitem><para>A subroutine that is in the same program as the CALL
+instruction or function call that calls it.  Internal routines are located
+using label instructions.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">A built-in routine</emphasis>
+<indexterm><primary>built-in functions</primary>
+<secondary>calling</secondary></indexterm>
+<indexterm><primary>built-in functions</primary>
+<secondary>definition</secondary></indexterm>
+</term>
+<listitem><para>A function that is defined as part of the
+Rexx language.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">An external routine</emphasis>
+<indexterm><primary>external routine</primary></indexterm>
+</term>
+<listitem><para>A subroutine that is neither built-in nor a label
+within the same same program as the CALL instruction call that invokes it.
+See <xref linkend="xsearcho" /> for details on the different
+types of external routines.
+</para></listitem></varlistentry>
+</variablelist>
+<indexterm><primary>subroutines</primary>
+<secondary>forcing built-in or external reference</secondary></indexterm>
+<para>If <emphasis role="italic">name</emphasis> is a literal string
+(that is, specified in quotation marks), the search for internal routines is bypassed,
+and only a built-in function or an external routine is called. Note that
+built-in function names are in uppercase. Therefore, a literal string call
+to a built-in function must also use uppercase characters.</para>
+<para>You can also specify (<emphasis role="italic">expr</emphasis>),
+any valid expression enclosed in
+parentheses. The expression is evaluated before any of the argument expressions,
+and the value is the target of the CALL instruction. The language processor
+does not translate the expression value into uppercase, so the evaluated name
+must exactly match any label name or built-in function name. See
+<xref linkend="labels" /> for a description of label names.</para>
+<para>The called routine can optionally return a result. In this case, the CALL
+instruction is functionally identical with the clause:</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/funct_call.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>You can use any number of <emphasis role="italic">expression</emphasis>s,
+separated by
+<indexterm><primary>, (comma)</primary>
+<secondary>in CALL instruction</secondary></indexterm>
+<indexterm><primary>, (comma)</primary>
+<secondary>separator of arguments</secondary></indexterm>
+<indexterm><primary>comma</primary>
+<secondary>separator of arguments</secondary></indexterm>
+<indexterm><primary>comma</primary>
+<secondary>in CALL instruction</secondary></indexterm>
+commas. The expressions are evaluated from left to right and form the arguments
+during execution of the routine. Any ARG, PARSE ARG, or USE ARG instruction
+or ARG built-in function in the called routine accesses these objects while
+the called routine is running. You can omit expressions, if appropriate, by
+including extra commas.</para>
+<para>The CALL then branches to the routine called
+<emphasis role="italic">name</emphasis>, using exactly
+the same mechanism as function calls. See
+<xref linkend="funct" />. The search
+order is as follows: </para>
+<indexterm><primary>search order</primary>
+<secondary>for subroutines</secondary></indexterm>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Internal routines</emphasis></term>
+<listitem><para>These are sequences of instructions inside the same program,
+starting at the label that matches
+<emphasis role="italic">name</emphasis> in the CALL instruction. If you specify
+the routine name in quotation marks, then an internal routine is not considered
+for that search order. The RETURN instruction completes the execution of an
+internal routine.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Built-in routines</emphasis></term>
+<listitem><para>These are routines built into the language processor for
+providing various functions.  They always return an object that is the result
+of the routine. See <xref linkend="xbuiltin" />.</para>
+
+<note><title>Note</title>
+<para>You can call any built-in function
+as a subroutine. Any result is stored in RESULT. Simply specify
+<computeroutput>CALL</computeroutput>, the function name (with
+<emphasis>no parenthesis</emphasis>)
+and any arguments, for example:
+<programlisting>
+call length "string"   /* Same as length("string") */
+say result             /* Produces: 6              */
+</programlisting>
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">External routines</emphasis></term>
+<listitem><para>Users can write or use routines that are external to the
+language processor and the calling program. You can code an external routine
+in Rexx or in any language that supports the system-dependent interfaces.
+If the CALL instruction calls an external routine written in Rexx as a
+subroutine, you can retrieve any argument strings with the ARG, PARSE ARG, or
+USE ARG instructions or the ARG built-in function.
+</para></listitem></varlistentry>
+</variablelist>
+<para>For more information on the search order, see
+<xref linkend="xsearcho" />.</para>
+<para>During execution of an internal routine, all variables previously known
+are generally accessible. However, the PROCEDURE instruction can set up a
+local variables environment to protect the subroutine and caller from each
+other. The EXPOSE option on the PROCEDURE instruction can expose selected
+variables to a routine.</para>
+<para>Calling an external program or routine defined with a ::ROUTINE directive
+is similar to calling an internal
+routine. The external routine, however, is an implicit PROCEDURE in that all
+the caller's variables are always hidden. The status of internal values, for
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>settings saved during subroutine calls</secondary></indexterm>
+example NUMERIC settings, start with their defaults (rather than inheriting
+those of the caller). In addition, you can use EXIT to return from the routine.</para>
+<para>When
+control reaches an internal routine,
+the line number of the CALL instruction is available in the variable
+SIGL (in the caller's variable environment). This can be used as a debug aid
+because it is possible to find out how control reached a routine. Note that
+if the internal routine uses the PROCEDURE instruction, it needs to EXPOSE
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>SIGL</tertiary></indexterm>
+<indexterm><primary>SIGL</primary>
+<secondary>in CALL instruction</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>special</secondary>
+<tertiary>SIGL</tertiary></indexterm>
+SIGL to get access to the line number of the CALL.</para>
+<para>After the subroutine processed
+the RETURN instruction, control returns to the clause following the original
+CALL. If the RETURN instruction specified an expression, the variable RESULT
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>RESULT</tertiary></indexterm>
+<indexterm><primary>RESULT special variable</primary>
+<secondary>set by RETURN instruction</secondary></indexterm>
+is set to the value of that expression. Otherwise, the variable RESULT is
+dropped (becomes uninitialized).</para>
+<para>An internal routine can include calls to other internal routines,
+as well as recursive calls to itself.
+<indexterm><primary>recursive call</primary></indexterm>
+<indexterm><primary>call, recursive</primary></indexterm>
+<indexterm><primary>CALL instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>CALL instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; CALL</title>
+<programlisting>
+/* Recursive subroutine execution... */
+arg z
+call factorial z
+say z"! =" result
+exit
+factorial: procedure     /* Calculate factorial by  */
+  arg n                  /*  recursive invocation.  */
+  if n=0 then return 1
+  call factorial n-1
+  return  result * n
+</programlisting>
+</example>
+</para>
+<para>During
+internal subroutine (and function) execution, all important pieces of
+information are automatically saved and then restored upon return from the
+routine. These are:
+<indexterm><primary>tracing</primary>
+<secondary>action saved during subroutine calls</secondary></indexterm>
+<indexterm><primary>exception conditions saved during subroutine calls
+</primary></indexterm>
+</para>
+<itemizedlist>
+<listitem><para><emphasis role="bold">The status of loops and other
+structures:</emphasis>  Executing
+a SIGNAL within a subroutine is safe because loops and other structures
+that were active when the subroutine was called are not ended. However, those
+currently active within the subroutine are ended.</para></listitem>
+<listitem><para><emphasis role="bold">Trace action:</emphasis>  After a
+subroutine is debugged, you
+can insert a TRACE Off at the beginning of it without affecting the tracing
+of the caller. If you want to debug a subroutine, you can insert a TRACE Results
+at the start and tracing is automatically restored to the conditions at entry
+(for example, Off) upon return. Similarly, <computeroutput>?</computeroutput>
+(interactive debug) is saved across routines.</para></listitem>
+<listitem><para><emphasis role="bold"><xref linkend="keyNumeric" xrefstyle="select:title"/> settings:</emphasis>
+The DIGITS, FUZZ, and FORM of arithmetic operations are saved and then restored
+on return. A subroutine can, therefore, set the precision, for example, that
+it needs to use without affecting the caller.</para></listitem>
+<listitem><para><emphasis role="bold"><xref linkend="keyAddress" xrefstyle="select:title"/> settings:
+<indexterm><primary>ADDRESS instruction</primary>
+<secondary>settings saved during subroutine calls</secondary></indexterm>
+<indexterm><primary>address setting</primary></indexterm>
+</emphasis>The current and previous destinations for commands,
+including any associated I/O redirection configurations,
+are saved and then restored on return.</para></listitem>
+<listitem><para>
+<indexterm><primary>SIGNAL instruction</primary>
+<secondary>execution of in subroutines</secondary></indexterm>
+<emphasis role="bold">Condition traps:</emphasis> CALL ON and SIGNAL ON are
+saved and then restored on return. This means that CALL ON, CALL OFF, SIGNAL ON,
+and SIGNAL OFF can be used in a subroutine without affecting the conditions
+the caller set up.</para></listitem>
+<listitem><para><emphasis role="bold">Condition information:</emphasis> This
+information describes
+<indexterm><primary>condition</primary>
+<secondary>saved during subroutine calls</secondary></indexterm>
+<indexterm><primary>condition</primary>
+<secondary>information</secondary></indexterm>
+<indexterm><primary>condition</primary>
+<secondary>saved</secondary></indexterm>
+the state and origin of the current trapped condition.
+The <xref linkend="bifCondition" xrefstyle="template:CONDITION"/> built-in function
+returns this information.
+</para></listitem>
+<listitem><para><emphasis role="bold">.RS value:</emphasis> The value of
+the <xref linkend="rs" xrefstyle="template:.RS environment symbol"/>.
+</para></listitem>
+<listitem><para><emphasis role="bold">Elapsed-time clocks:</emphasis>
+<indexterm><primary>elapsed-time clock</primary>
+<secondary>saved during subroutine calls</secondary></indexterm>
+A subroutine inherits the elapsed-time
+clock (see <xref linkend="bifTime" />) from its caller, but because the
+time clock is saved across routine calls, a subroutine or internal function
+can independently restart and use the clock without affecting its caller.
+For the same reason, a clock started within an internal routine is not
+available to the caller.</para></listitem>
+</itemizedlist>
+</section>
+
+<section id="keyDo" revisionflag="changed"><title>&changed50;DO</title>
+<indexterm><primary>DO instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with DO construct</secondary></indexterm>
+<indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
+<indexterm><primary>infinite loops</primary></indexterm>
+<indexterm><primary>instructions</primary><secondary>DO</secondary></indexterm>
+<indexterm><primary>LABEL subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>COUNTER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>BY subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>FOR subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>FOREVER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>WHILE subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>UNTIL subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_start.svg" scale="55" />
+</imageobject></mediaobject>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_instruction.svg" scale="55" />
+</imageobject></mediaobject>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_end.svg" scale="55" />
+</imageobject></mediaobject>
+
+<para><emphasis role="bold">REPETITOR:</emphasis>
+<indexterm><primary>= (equal sign)</primary>
+<secondary>in DO instruction</secondary></indexterm>
+<indexterm><primary>conditional</primary>
+<secondary>loops</secondary></indexterm>
+<indexterm><primary>FOREVER phrase of DO instruction</primary></indexterm>
+<indexterm><primary>OVER phrase of DO instruction</primary></indexterm>
+<indexterm><primary>WITH phrase of DO instruction</primary></indexterm>
+<indexterm><primary>INDEX phrase of DO instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of DO instruction</primary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_repetitor.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para><emphasis role="bold">CONDITIONAL:</emphasis>
+<indexterm><primary>UNTIL phrase of DO instruction</primary></indexterm>
+<indexterm><primary>WHILE phrase of DO instruction</primary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_conditional.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para>DO groups instructions and optionally processes them repetitively. During
+repetitive execution, control variables
+(<emphasis role="italic">control1</emphasis>,
+<emphasis role="italic">control2</emphasis>,
+<emphasis role="italic">index</emphasis>, or
+<emphasis role="italic">item</emphasis>) can be stepped through some
+range of values.</para>
+<para>LOOP groups instructions and processes them repetitively.
+LOOP behaves identically to DO, except for the simple LOOP ... END
+case, which is equivalent to DO FOREVER ... END.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The LABEL and COUNTER phrases can be in any order, if used.
+They must precede any repetitor or conditional fragment.
+</para></listitem>
+<listitem><para>The COUNTER phrase is only valid with a repetitive or
+conditional DO, it cannot be used on a simple DO group.
+</para></listitem>
+<listitem><para>
+<emphasis role="italic">control1</emphasis>,
+<emphasis role="italic">control2</emphasis>,
+<emphasis role="italic">index</emphasis>,
+<emphasis role="italic">item</emphasis>, and
+<emphasis role="italic">ctr</emphasis>
+must be symbols that are valid variable names.
+</para></listitem>
+<listitem><para>The <emphasis role="italic">exprr</emphasis>,
+<emphasis role="italic">expri</emphasis>,
+<emphasis role="italic">exprb</emphasis>,
+<emphasis role="italic">exprt</emphasis>, and
+<emphasis role="italic">exprf</emphasis> options, if present,
+are any expressions that evaluate to a number.
+<indexterm><primary>numbers</primary>
+<secondary>in DO instruction</secondary></indexterm>
+The <emphasis role="italic">exprr</emphasis> and
+<emphasis role="italic">exprf</emphasis> options are further restricted
+to result in a positive whole number or zero. If necessary, the numbers are
+rounded according to the setting of NUMERIC DIGITS.</para></listitem>
+<listitem><para>The <emphasis role="italic">exprw</emphasis> or
+<emphasis role="italic">expru</emphasis> options, if present, can be any
+expression that evaluates to <computeroutput>1</computeroutput> or
+<computeroutput>0</computeroutput>.  This includes the list form of a conditional
+expression, which is
+a list of expressions separated by ",".
+The list of expressions is evaluated left-to-right.
+Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.
+</para></listitem>
+<listitem><para>The TO, BY, and FOR phrases can be in any order, if used, and
+are evaluated in the order in which they are written.
+<indexterm><primary>BY phrase of DO instruction</primary></indexterm>
+<indexterm><primary>TO phrase of DO instruction</primary></indexterm>
+<indexterm><primary>FOR phrase of DO instruction</primary></indexterm>
+</para></listitem>
+<listitem><para>The INDEX and ITEM phrases can be in any order, if used.
+They cannot be used more than once.
+<indexterm><primary>INDEX phrase of DO instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of DO instruction</primary></indexterm>
+</para></listitem>
+<listitem><para>The <emphasis role="italic">instruction</emphasis>
+can be any instruction, including assignments,
+commands, message instructions, and keyword instructions (including any of
+the more complex constructs such as IF, SELECT, and the DO or LOOP instruction itself).
+</para></listitem>
+<listitem><para>The subkeywords WHILE, UNTIL, OVER, WITH, INDEX, and ITEM are reserved within a DO or LOOP
+instruction in that they act as expression terminators for other keywords.  Thus they
+cannot be used as symbols in any of the expressions.
+Similarly, TO, BY, and FOR cannot be used in
+<emphasis role="italic">expri</emphasis>,
+<emphasis role="italic">exprt</emphasis>,
+<emphasis role="italic">exprb</emphasis>, or
+<emphasis role="italic">exprf</emphasis>.
+<indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
+FOREVER is also reserved, but only if it immediately
+follows the keyword DO or LOOP and is not followed by an equal sign.
+However, parentheses around or within an expression can prevent these keywords from terminating an expression. For example,
+<example><title>Instructions &mdash; DO variable without parenthesis</title>
+<programlisting>
+do i = 1 while i &lt; until
+   say i
+end
+</programlisting>
+</example>
+</para>
+<para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
+around the expression allows the variable UNTIL to be used:
+<example><title>Instructions &mdash; DO variable with parenthesis</title>
+<programlisting>
+do i = 1 while (i &lt; until)
+   say i
+end
+</programlisting>
+</example>
+</para>
+</listitem>
+<listitem><para>The <emphasis role="italic">exprb</emphasis>
+option defaults to <computeroutput>1</computeroutput>,
+if relevant.</para></listitem>
+<listitem><para>The <emphasis role="italic">collection</emphasis>
+can be any expression that evaluates to an object
+that supports a <methodname>makeArray</methodname> method.
+Array and List items return an array with the items in the appropriate order,
+as do Streams. Tables, Stems, Directories, etc. are not ordered so the items
+get placed in the array in no particular order.
+</para></listitem>
+<listitem><para>The <emphasis role="italic">supplier</emphasis>
+can be any expression that evaluates to an object
+that supports a <methodname>supplier</methodname> method.
+</para></listitem>
+</orderedlist>
+<para>For more information, refer to
+<xref linkend="dokey" />.</para>
+</section>
+
+<section id="keyDrop"><title>DROP</title>
+<indexterm><primary>DROP instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>DROP</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>dropping of</secondary></indexterm>
+<indexterm><primary>unassigning variables</primary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>resetting of</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/drop.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>DROP &quot;unassigns&quot; variables, that is, restores them to their
+original uninitialized state. If <emphasis role="italic">name</emphasis>
+is not enclosed in parentheses, it identifies
+a variable you want to drop and must be a symbol that is a valid variable
+name, separated from any other <emphasis role="italic">name</emphasis>
+by one or more whitespace characters or comments.</para>
+<para>If parentheses enclose a single
+<emphasis role="italic">name</emphasis>, then its value is used as a
+<indexterm><primary>subsidiary list</primary></indexterm>
+subsidiary list of variables to drop. Whitespace characters are not necessary
+inside or outside the parentheses, but you can add them if desired. This
+subsidiary list must follow the same rules as the original list, that is, be
+valid character strings separated by whitespace, except that no parentheses are
+allowed. The list need not contain any names&mdash;that is, it can be empty.
+</para>
+<para>Variables are dropped from left to right. It is not an error to specify
+a name more than once or to drop a variable that is not known. If an exposed
+variable is named (see <xref linkend="keyExpose" />
+and <xref linkend="keyProcedure" />), then
+the original variable is dropped.
+<indexterm><primary>DROP instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>DROP instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; DROP</title>
+<programlisting>
+j=4
+Drop  a z.3 z.j
+/* Drops the variables: A, Z.3, and Z.4              */
+/* so that reference to them returns their names.    */
+</programlisting>
+</example>
+</para>
+<para>Here, a variable name in parentheses is used as a subsidiary list.
+<example>
+<title>Instructions &mdash; DROP</title>
+<programlisting>
+mylist="c d e"
+drop (mylist) f
+/* Drops the variables C, D, E, and F          */
+/* Does not drop MYLIST                        */
+</programlisting>
+</example>
+</para>
+<para>Specifying a stem
+<indexterm><primary>stem of a variable</primary>
+<secondary>used in DROP instruction</secondary></indexterm>
+(that is, a symbol that contains only one period as the last character) assigns
+the stem variable to a new, empty stem object.</para>
+<para><emphasis role="bold">Example:</emphasis>
+<programlisting>
+Drop  z.
+/* Assigns stem variable z. to a new empty stem object */
+</programlisting>
+</para>
+</section>
+
+<section id="keyExit"><title>EXIT</title>
+<indexterm><primary>EXIT instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>EXIT</secondary></indexterm>
+<indexterm><primary>leaving your program</primary></indexterm>
+<indexterm><primary>return</primary>
+<secondary>code</secondary>
+<tertiary>setting on exit</tertiary></indexterm>
+<indexterm><primary>return</primary>
+<secondary>string</secondary>
+<tertiary>setting on exit</tertiary></indexterm>
+<indexterm><primary>unconditionally leaving your program</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/exit.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<indexterm><primary>leaving your program</primary></indexterm>
+<para>EXIT leaves a program unconditionally. Optionally, EXIT returns a
+result object to the caller. The program is stopped immediately, even
+if an internal routine is being run.  If no internal routine is active,
+<xref linkend="keyReturn" xrefstyle="select:title"/> and EXIT are identical in their
+effect on the program running.</para>
+<para>If you specify <emphasis role="italic">expression</emphasis>,
+it is evaluated and the object resulting from the evaluation is passed back
+to the caller when the program stops.
+<indexterm><primary>EXIT instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>EXIT instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; EXIT</title>
+<programlisting>
+j=3
+Exit j*4
+/* Would exit with the string "12" */
+</programlisting>
+</example>
+</para>
+<para>If you do not specify <emphasis role="italic">expression</emphasis>,
+no data is passed back to the
+caller. If the program was called as a function, this is detected
+as an error.
+</para>
+<para>You can also use EXIT within a method. The method is stopped immediately,
+and the result object, if specified, is returned to the sender. If the method
+has previously issued a <xref linkend="keyReply" xrefstyle="select:title"/> instruction,
+the EXIT instruction must not include a result expression.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>If the program was called through a command interface,
+an attempt is made
+to convert the returned value to a return code acceptable by the underlying
+operating system. The returned string must be a whole number
+in the range -32768 to 32767.
+If the conversion fails, no error is raised, and a return code of 0 is returned.
+</para></listitem>
+<listitem><para>If you do not specify EXIT, EXIT is implied at the end of the program,
+but no result
+value is returned.
+<indexterm><primary>bottom of program reached during execution
+</primary></indexterm>
+</para></listitem>
+<listitem><para>On Unix/Linux systems the returned value is limited to a
+numerical value between 0 and 255.
+</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyExpose"><title>EXPOSE</title>
+<indexterm><primary>EXPOSE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>EXPOSE</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/expose.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>EXPOSE causes the object
+variables identified in <emphasis role="italic">name</emphasis>
+to be exposed to a method. References to exposed variables, including assigning
+and dropping, access variables in the current object's variable pool.
+<indexterm><primary>object variable pool</primary></indexterm>
+(An object variable pool is a collection
+of variables that is associated with an object rather than with any individual
+method.) Therefore, the values of existing variables are accessible, and any
+changes are persistent even after RETURN or EXIT from the method.</para>
+<para>Any changes a method makes to an object variable pool are immediately
+visible to any other methods that share the same object variable scope. All
+other variables that a method uses are local to the method and are dropped on
+RETURN or EXIT. If an EXPOSE instruction is included, it must be the first
+instruction of the method.</para>
+<para>If parentheses enclose a single <emphasis role="italic">name</emphasis>,
+then, after the variable <emphasis role="italic">name</emphasis> is exposed,
+the character string value of <emphasis role="italic">name</emphasis> is
+immediately used as a subsidiary list of variables. Whitespace characters are
+not necessary inside or outside the parentheses, but you can add them if
+desired.
+<indexterm><primary>subsidiary list</primary></indexterm> This subsidiary list
+must follow the same rules as the original list, that is, valid variable names
+separated by whitespace characters, except that no parentheses are
+allowed.</para>
+<para>Variables are exposed in sequence from left to right. It is not an error
+to specify a name more than once, or to specify a name that has not been used
+as a variable.
+<indexterm><primary>EXPOSE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>EXPOSE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; EXPOSE</title>
+<programlisting>
+/* Example of exposing object variables */
+myobj = .myclass~new
+myobj~c
+myobj~d         /* Would display "Z is: 120"                 */
+
+::class myclass /* The <xref linkend="clasdi" xrefstyle="select:title"/> directive                     */
+::method c      /* The <xref linkend="methd" xrefstyle="select:title"/> directive                    */
+  expose z
+  z = 100       /* Would assign 100 to the object variable z */
+  return
+
+::method d
+  expose z
+  z=z+20        /* Would add 20 to the same object variable z */
+  say "Z is:" z
+  return
+</programlisting>
+</example>
+</para>
+<para>You can expose an entire collection of
+<xref linkend="compsym" xrefstyle="template:compound variables"/>
+by specifying their stem in the variable list or a subsidiary list.
+The variables are exposed for all operations.
+<example>
+<title>Instructions &mdash; EXPOSE</title>
+<programlisting>
+expose j k  c. d.
+/*  This exposes "J", "K", and all variables whose            */
+/*  name starts with "C." or "D."                             */
+c.1="7."        /*  This sets "C.1" in the object             */
+                /*  variable pool, even if it did not         */
+                /*  previously exist.                         */
+</programlisting>
+</example>
+</para>
+</section>
+
+<section id="keyForward"><title>FORWARD</title>
+<indexterm><primary>FORWARD instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>FORWARD</secondary></indexterm>
+<indexterm><primary>CONTINUE subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+<indexterm><primary>ARGUMENTS subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+<indexterm><primary>ARRAY subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+<indexterm><primary>MESSAGE subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary>
+<secondary>in a FORWARD instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/forward.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+
+<note><title>Note</title>
+<para>You can specify the options in any order.</para></note>
+<para>FORWARD forwards the message that caused the currently active method to
+begin running. The FORWARD instruction can change parts of the forwarded
+message, such as the target object, the message name, the arguments, and the
+superclass override.</para>
+<para>If you specify the <option>TO</option> option, the language processor evaluates
+<emphasis role="italic">exprt</emphasis> to produce a new target object
+for the forwarded message. The <emphasis role="italic">exprt</emphasis>
+is a literal string, a constant symbol, or an expression enclosed in parentheses.
+If you do not specify the <option>TO</option> option, the initial value of the Rexx special
+variable SELF is used.</para>
+<para>If you specify the <option>ARGUMENTS</option> option, the language processor
+evaluates <emphasis role="italic">expra</emphasis> to produce an
+array object that supplies the set of arguments for
+the forwarded message. The <emphasis role="italic">expra</emphasis> can be a
+literal string, a constant symbol, or an expression enclosed in parentheses. The
+<option>ARGUMENTS</option> value must evaluate to a Rexx array object.</para>
+<para>If you specify the <option>ARRAY</option> option, each
+<emphasis role="italic">expri</emphasis> is an expression (use
+commas to separate the expressions). The language processor evaluates the
+expression list to produce a set of arguments for the forwarded message. It
+is an error to use both the <option>ARRAY</option> and the <option>ARGUMENTS</option> options on the same FORWARD
+instruction.</para>
+<para>If you specify neither <option>ARGUMENTS</option> nor <option>ARRAY,</option> the language processor uses
+the same arguments specified on the original method call.</para>
+<para>If you specify the <option>MESSAGE</option> option, the
+<emphasis role="italic">exprm</emphasis> is a literal string,
+a constant symbol, or an expression enclosed in parentheses. If you specify
+an expression enclosed in parentheses, the language processor evaluates the
+expression to obtain its value. The uppercase character string value of the
+<option>MESSAGE</option> option is the name of the message that the FORWARD instruction issues.
+</para>
+<para>If you do not specify <option>MESSAGE</option>, FORWARD uses the message name used to call
+the currently active method.</para>
+<para>If you specify the <option>CLASS</option> option, the
+<emphasis role="italic">exprs</emphasis> is a literal string,
+a constant symbol, or an expression enclosed in parentheses. This is the class
+object used as a superclass specifier on the forwarded message.</para>
+<para>If you do not specify CLASS, the message is forwarded without a superclass
+override.</para>
+<para>If you do not specify the <option>CONTINUE</option> option,
+the language processor immediately
+exits the current method before forwarding the message. Results returned from
+the forwarded message are the return value from the original message that
+called the active method (the caller of the method that issued the FORWARD
+instruction). Any conditions the forwarded message raises are raised in the
+calling program (without raising a condition in the method issuing the FORWARD
+instruction).</para>
+<para>If you specify the <option>CONTINUE</option> option, the current method does not exit and
+continues with the next instruction when the forwarded message completes.
+If the forwarded message returns a result, the language processor assigns
+it to the special variable RESULT. If the message does not return a result,
+the language processor drops (uninitializes) the variable RESULT.</para>
+<para>The FORWARD instruction passes all or part
+of an existing message invocation
+to another method. For example, the FORWARD instruction can forward a message
+to a different target object, using the same message name and arguments.
+<indexterm><primary>FORWARD instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>FORWARD instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; FORWARD</title>
+<programlisting>
+::method substr
+  forward to (self~string)       /* Forward to the string value */
+</programlisting>
+</example>
+</para>
+<para>You can use FORWARD in an UNKNOWN method to reissue to another object the
+message that the UNKNOWN method traps.
+<example>
+<title>Instructions &mdash; FORWARD</title>
+<programlisting>
+::method unknown
+  use arg msg, args
+  /* Forward to the string value */
+  /* passing along the arguments */
+  forward to (self~string) message (msg) arguments (args)
+</programlisting>
+</example>
+</para>
+<para>You can use FORWARD in a method to forward a message to a superclass's
+methods, passing the same arguments. This is very common usage in object INIT
+methods.
+<example>
+<title>Instructions &mdash; FORWARD</title>
+<programlisting>
+::class  savings subclass account
+::method init
+  expose type penalty
+  forward class (super) continue       /* Send to the superclass      */
+  type = "Savings"                     /* Now complete initialization */
+  penalty = "1% for balance under 500"
+</programlisting>
+</example>
+</para>
+<para>In the preceding example, the <option>CONTINUE</option> option causes the FORWARD message
+to continue with the next instruction, rather than exiting the Savings class
+INIT method.</para>
+</section>
+
+<section id="keyGuard" revisionflag="changed"><title>&changed50;GUARD</title>
+<indexterm><primary>GUARD instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>concurrency</primary>
+<secondary>GUARD instruction</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>GUARD</secondary></indexterm>
+<indexterm><primary>ON subkeyword</primary>
+<secondary>in an GUARD instruction</secondary></indexterm>
+<indexterm><primary>OFF subkeyword</primary>
+<secondary>in an GUARD instruction</secondary></indexterm>
+<indexterm><primary>WHEN subkeyword</primary>
+<secondary>in an GUARD instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/guard.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>GUARD controls a method's exclusive access to an object.</para>
+<para>GUARD ON acquires for an active method exclusive use of
+its object variable
+pool. This prevents other methods that also require exclusive use of the same
+variable pool from running on the same object. If another method has already
+acquired exclusive access, the GUARD instruction causes the issuing method
+to wait until the variable pool is available.</para>
+<para>GUARD OFF releases exclusive use of the object variable pool.
+Other methods
+that require exclusive use of the same variable pool can begin running.</para>
+<para>If you specify WHEN, the method delays running until the
+<emphasis role="italic">expression</emphasis> evaluates to
+&true;. If the
+<emphasis role="italic">expression</emphasis> evaluates
+to &false;,
+GUARD waits until another method assigns or drops
+an object variable (that is, a variable named on an EXPOSE instruction) used
+in the WHEN <emphasis role="italic">expression</emphasis>.
+When an object variable changes, GUARD reevaluates
+the WHEN <emphasis role="italic">expression</emphasis>. If the
+<emphasis role="italic">expression</emphasis> evaluates to &true;,
+the method resumes running. If the
+<emphasis role="italic">expression</emphasis> evaluates to &false;,
+GUARD resumes waiting.
+</para>
+<para>The condition <emphasis role="italic">expression</emphasis> after a WHEN
+can also be a list of <emphasis role="italic">expression</emphasis>s which is
+evaluated left-to-right.
+Each <emphasis role="italic">expression</emphasis> must evaluate to either
+&false; or &true;.
+Evaluation will stop with the first &false; result and &false; will be
+returned as the condition result.
+If all of the <emphasis role="italic">expression</emphasis>s evaluate
+to &true;, then the condition result is also &true;.
+<indexterm><primary>GUARD instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>GUARD instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; GUARD</title>
+<programlisting>
+<![CDATA[
+::method c
+  expose y
+  if y>0 then
+    return 1
+  else
+    return 0
+::method d
+  expose z
+  guard on when z>0
+  self~c    /* Reevaluated when Z changes  */
+  say "Method D"
+]]>
+</programlisting>
+</example>
+</para>
+<para>If you specify WHEN and the method has exclusive access to the object's
+variable pool, then the exclusive access is released while GUARD is waiting
+for an object variable to change. Exclusive access is reacquired before the
+WHEN <emphasis role="italic">expression</emphasis> is evaluated. Once the
+WHEN <emphasis role="italic">expression</emphasis> evaluates
+to &true;, exclusive access is either
+retained (for GUARD ON
+WHEN) or released (for GUARD OFF WHEN), and the method resumes running.</para>
+
+<note><title>Note</title>
+<para>If the condition expression cannot be met, GUARD ON WHEN puts the
+program in a continuous wait condition. This can occur in particular when
+several activities run concurrently. See
+<xref linkend="guamet" /> for more information.
+</para></note>
+</section>
+
+<section id="keyIf"><title>IF</title>
+<indexterm><primary>IF instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with IF construct</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>IF</secondary></indexterm>
+<indexterm><primary>THEN</primary>
+<secondary>following IF clause</secondary></indexterm>
+<indexterm><primary>THEN subkeyword</primary>
+<secondary>in an IF instruction</secondary></indexterm>
+<indexterm><primary>ELSE subkeyword</primary>
+<secondary>in an IF instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/if.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>IF conditionally processes an instruction or group of instructions
+depending on the evaluation of the <emphasis role="italic">expression</emphasis>.
+The <emphasis role="italic">expression</emphasis> is evaluated
+and must result in <computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput>.</para>
+<para>The instruction after the THEN is processed only if the result is
+&true;. If you specify an ELSE, the
+instruction after ELSE is processed only if the result of the evaluation is
+&false;.</para>
+<para><emphasis role="bold">Example:</emphasis>
+<indexterm><primary>IF instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>IF instruction</secondary></indexterm>
+<programlisting>
+if answer="YES" then say "OK!"
+else say "Why not?"
+</programlisting>
+</para>
+<para>Remember that if the ELSE clause is on the same line as the last clause
+of the THEN part, you need a semicolon before ELSE.</para>
+<para><emphasis role="bold">Example:</emphasis>
+<programlisting>
+if answer="YES" then say "OK!";  else say "Why not?"
+</programlisting>
+</para>
+<para>ELSE binds to the nearest IF at the same level. You can use the NOP
+instruction to eliminate errors and possible confusion when IF constructs
+are nested, as in the following example.
+<example>
+<title>Instructions &mdash; IF</title>
+<programlisting>
+If answer = "YES" Then
+  If name = "FRED" Then
+    say "OK, Fred."
+  Else
+    nop
+Else
+  say "Why not?"
+</programlisting>
+</example>
+</para>
+
+<para>The <emphasis role="italic">expression</emphasis> may also be
+a list of expressions separated by ",".
+The list of expressions is evaluated left-to-right.
+Each subexpression must evaluate to
+either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
+Evaluation will stop with
+the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
+will be returned as the condition result.  If all of the subexpressions evaluate
+to <computeroutput>1</computeroutput>, then the condition result is also
+<computeroutput>1</computeroutput>.
+<example>
+<title>Instructions &mdash; IF</title>
+<programlisting>
+If answer~datatype('w'), answer//2 = 0 Then
+  say answer "is even"
+Else
+  say answer "is odd"
+</programlisting>
+</example>
+</para>
+
+<para>The example above is not the same as using the following
+
+<example>
+<title>Instructions &mdash; IF</title>
+<programlisting>
+If answer~datatype('w') &amp; answer//2 = 0 Then
+  say answer "is even"
+Else
+  say answer "is odd"
+</programlisting>
+</example>
+</para>
+<para>The logical &amp; operator will evaluate both terms of the operation, so the
+term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
+list conditional form, evaluation will stop with the first &false; result, so the
+"answer//2" term will not be evaluated if the datatype test returns <computeroutput>0</computeroutput>.
+</para>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The <emphasis role="italic">instruction</emphasis>
+can be any assignment, message instruction, command, or keyword instruction,
+including any of the more complex constructs
+such as DO, LOOP, SELECT, or the IF instruction itself. A null clause is not an
+instruction, so putting an extra semicolon (or label) after THEN or ELSE is
+not equivalent to putting a dummy instruction (as it would be in C). The
+NOP instruction is provided for this purpose.</para></listitem>
+<listitem><para>The symbol THEN cannot be used within
+<emphasis role="italic">expression</emphasis>, because the
+keyword THEN is treated differently in that it need not start a clause. This
+allows the expression on the IF clause to be ended by THEN, without a semicolon
+(;) being required.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyInterpret"><title>INTERPRET</title>
+<indexterm><primary>INTERPRET instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>execution</primary>
+<secondary>of data</secondary></indexterm>
+<indexterm><primary>interpretive execution of data</primary></indexterm>
+<indexterm><primary>indirect evaluation of data</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>INTERPRET</secondary></indexterm>
+<indexterm><primary>label</primary>
+<secondary>in INTERPRET instruction</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>interpretation of</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/interpret.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>INTERPRET processes instructions that have been built dynamically by
+evaluating <emphasis role="italic">expression</emphasis>.</para>
+<para>The <emphasis role="italic">expression</emphasis>
+is evaluated to produce a character string, and
+is then processed (interpreted) just as though the resulting string were a
+line inserted into the program and bracketed by a DO; and an END;.</para>
+<para>Any instructions (including INTERPRET instructions) are allowed, but note
+that constructions such as DO...END and SELECT...END must be complete.
+For example, a string of instructions being interpreted cannot contain a LEAVE
+or ITERATE instruction (valid only within a repetitive loop) unless it
+also contains the whole repetitive DO...END or LOOP...END construct.</para>
+<para>A semicolon is implied at the end of the expression during execution, if
+one was not supplied.
+<indexterm><primary>INTERPRET instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>INTERPRET instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; INTERPRET</title>
+<programlisting>
+/* INTERPRET example */
+data="FRED"
+interpret data "= 4"
+/* Builds the string  "FRED = 4" and        */
+/* Processes:  FRED = 4;                    */
+/* Thus the variable FRED is set to "4"     */
+</programlisting>
+<programlisting>
+/* Another INTERPRET example */
+data="do 3; say "Hello there!"; end"
+interpret data        /* Displays:          */
+                      /*  Hello there!      */
+                      /*  Hello there!      */
+                      /*  Hello there!      */
+</programlisting>
+</example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>
+Labels within the interpreted string are not permanent and
+are, therefore, an error.</para></listitem>
+<listitem><para>Executing the INTERPRET instruction with
+<computeroutput>TRACE R</computeroutput> or
+<computeroutput>TRACE I</computeroutput>
+can be helpful in interpreting the results you get.
+
+<indexterm><primary>INTERPRET instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>INTERPRET instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; INTERPRET</title>
+<programlisting>
+/* Here is a small Rexx program. */
+Trace Int
+name="Kitty"
+indirect="name"
+interpret &apos;say "Hello"&apos; indirect&apos;"!"&apos;
+</programlisting>
+<para>When this is
+run, you get the following trace: </para>
+<programlisting>
+     3 *-* name="Kitty"
+       >L>   "Kitty"
+       >>>   "Kitty"
+     4 *-* indirect="name"
+       >L>   "name"
+       >>>   "name"
+     5 *-* interpret 'say "Hello"' indirect'"!"'
+       >L>   "say "Hello""
+       >V>   INDIRECT => "name"
+       >O>   " " => "say "Hello" name"
+       >L>   ""!""
+       >O>   "" => "say "Hello" name"!""
+       >>>   "say "Hello" name"!""
+     5 *-* say "Hello" name"!"
+       >L>   "Hello"
+       >V>   NAME => "Kitty"
+       >O>   " " => "Hello Kitty"
+       >L>   "!"
+       >O>   "" => "Hello Kitty!"
+       >>>   "Hello Kitty!"
+Hello Kitty!
+</programlisting>
+</example>
+</para>
+<para>Lines 3 and 4 set the variables used in line 5. Execution
+of line 5 then proceeds in two stages. First the string to be interpreted
+is built up, using a literal string, a variable
+(<computeroutput>INDIRECT</computeroutput>), and
+another literal string. The resulting pure character string is then interpreted,
+just as though it were actually part of the original program. Because it is
+a new clause, it is traced as such (the second
+<computeroutput>*-*</computeroutput> trace flag under
+line 5) and is then processed. Again a literal string is concatenated to the
+value of a variable (<computeroutput>NAME</computeroutput>) and another literal,
+and the final result (<computeroutput>Hello Kitty!</computeroutput>) is then
+displayed.</para></listitem>
+<listitem><para>For many purposes, you can use the
+<xref linkend="bifValue" xrefstyle="select:title"/> function
+instead of the INTERPRET instruction. The following line could, therefore,
+have replaced line 5 in the previous example:
+<example>
+<title>Instructions &mdash; INTERPRET</title>
+<programlisting>
+say "Hello" value(indirect)"!"
+</programlisting>
+</example>
+</para>
+<para>INTERPRET is usually required only in special cases, such as when
+two or more statements are to be interpreted together, or when an expression
+is to be evaluated dynamically.</para></listitem>
+<listitem><para>You cannot use a <xref linkend="dire" xrefstyle="template:directive"/>
+within an INTERPRET instruction.
+</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyIterate"><title>ITERATE</title>
+<indexterm><primary>ITERATE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>ITERATE</secondary></indexterm>
+<indexterm><primary>loops</primary>
+<secondary>modification of</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/iterate.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<indexterm><primary>altering</primary>
+<secondary>flow within a repetitive loop</secondary></indexterm>
+<para>ITERATE alters the flow within a repetitive loop (that is, any DO
+construct other than that with a simple DO or a LOOP instruction).</para>
+<para>Execution of the group of instructions stops, and control is passed to
+the DO or LOOP instruction just as though the END clause had been encountered. The
+control variable, if any, is incremented and tested, as usual, and the group
+of instructions is processed again, unless the DO or LOOP instruction ends the loop.
+</para>
+<para>The <emphasis role="italic">name</emphasis> is a symbol, taken as a
+constant. If <emphasis role="italic">name</emphasis> is
+not specified, ITERATE continues with the current repetitive loop.
+If <emphasis role="italic">name</emphasis> is specified, it must be the
+name of the control variable or the LABEL name of a currently
+active loop, which can be the innermost, and this is the loop that is stepped.
+Any active loops inside the one selected for iteration are ended (as though
+by a LEAVE instruction).
+<indexterm><primary>ITERATE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>ITERATE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; ITERATE</title>
+<programlisting>
+loop label MyLabelName i=1 to 4 /* label set to 'MYLABELNAME' */
+  if i=2 then iterate
+  say i
+end myLabelName
+/* Displays the numbers:
+  1
+  3
+  4
+*/
+</programlisting>
+</example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>If specified, <emphasis role="italic">name</emphasis>
+must match the symbol naming the control variable or LABEL name
+in the DO or LOOP clause in all respects except the case. No substitution for compound
+variables is carried out when the comparison is made.</para></listitem>
+<listitem><para>A loop is active if it is currently being processed.
+If a subroutine is called, or an INTERPRET instruction is processed, during
+the execution of a loop, the loop becomes inactive until the subroutine has
+returned or the INTERPRET instruction has completed. ITERATE cannot be used
+to continue with an inactive loop.</para></listitem>
+<listitem><para>
+<indexterm><primary>loops</primary>
+<secondary>active</secondary></indexterm>
+If more than one active loop uses the same name, ITERATE selects
+the innermost loop.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyLeave"><title>LEAVE</title>
+<indexterm><primary>LEAVE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>LEAVE</secondary></indexterm>
+<indexterm><primary>loops</primary>
+<secondary>termination of</secondary></indexterm>
+<indexterm><primary>repetitive loops</primary>
+<secondary>altering flow</secondary></indexterm>
+<indexterm><primary>repetitive loops</primary>
+<secondary>exiting</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/leave.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>LEAVE causes an immediate exit from one or more repetitive loops or block instruction
+(simple DO or SELECT).
+</para>
+<para>Processing of the group of instructions is ended, and control is passed
+to the instruction following the END clause, just as though the END clause
+had been encountered and the termination condition had been met. However,
+on exit, the control variable, if any, contains the value it had when the
+LEAVE instruction was processed.</para>
+<para>The <emphasis role="italic">name</emphasis> is
+a symbol, taken as a constant. If
+<emphasis role="italic">name</emphasis> is not specified, LEAVE ends
+the innermost active repetitive loop. If
+<emphasis role="italic">name</emphasis> is specified, it must
+be the name of the control variable or LABEL name of a currently active LOOP, DO, or SELECT, which can
+be the innermost, and that block, and any active block
+<indexterm><primary>active blocks</primary></indexterm>
+inside it, are then
+ended. Control then passes to the clause following the END that matches the
+instruction of the selected block.
+<indexterm><primary>LEAVE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>LEAVE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; LEAVE</title>
+<programlisting>
+max=5
+do label myDoBlock /* define a label 'MYDOBLOCK' */
+  loop i=1 to max /* label defaults to control variable 'I' */
+    if i = 2 then iterate i
+    if i = 4 then leave myDoBlock
+    say i
+  end i
+end myDoBlock
+say 'after looping' i 'times'
+/* Displays the following
+  1
+  3
+  after looping 4 times
+*/
+</programlisting>
+</example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>If specified, <emphasis role="italic">name</emphasis>
+must match the symbol naming the control variable or LABEL name
+in the DO, LOOP, or SELECT clause in all respects except the case. No substitution for compound
+variables is carried out when the comparison is made.</para></listitem>
+<listitem><para>A loop is active if it is currently being processed.  If a
+subroutine is called, or an INTERPRET instruction is processed, during
+execution of a loop, the loop becomes inactive until the subroutine has
+returned or the INTERPRET instruction has completed. LEAVE cannot be used to
+end an inactive block.</para></listitem>
+<listitem><para>If more than one active block uses the same control variable,
+LEAVE selects the innermost block.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keyLoop"><title>LOOP</title>
+<indexterm><primary>LOOP instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with LOOP construct</secondary></indexterm>
+<indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
+<indexterm><primary>infinite loops</primary></indexterm>
+<indexterm><primary>instructions</primary><secondary>LOOP</secondary></indexterm>
+<indexterm><primary>LABEL subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>COUNTER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>BY subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOR subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOREVER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>WHILE subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>UNTIL subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_start.svg" scale="55" />
+</imageobject></mediaobject>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_instruction.svg" scale="55" />
+</imageobject></mediaobject>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_end.svg" scale="55" />
+</imageobject></mediaobject>
+
+<para><emphasis role="bold">REPETITOR:</emphasis>
+<indexterm><primary>= (equal sign)</primary>
+<secondary>in LOOP instruction</secondary></indexterm>
+<indexterm><primary>conditional</primary>
+<secondary>loops</secondary></indexterm>
+<indexterm><primary>FOREVER phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>OVER phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>WITH phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>INDEX phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of LOOP instruction</primary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_repetitor.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para><emphasis role="bold">CONDITIONAL:</emphasis>
+<indexterm><primary>UNTIL phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>WHILE phrase of LOOP instruction</primary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/keywords/do_conditional.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para>LOOP groups instructions and processes them repetitively.</para>
+<para>LOOP behaves identically to DO, except for the simple LOOP ... END
+case, which is equivalent to DO FOREVER ... END.</para>
+<para>For details refer to <xref linkend="keyDo" />.</para>
+</section>
+
+<section id="keyNop"><title>NOP</title>
+<indexterm><primary>NOP instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>NOP</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/nop.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>NOP is a dummy instruction that has no effect.  It can be useful as the
+target of a THEN or ELSE clause.
+<indexterm><primary>NOP instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>NOP instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; NOP</title>
+<programlisting>
+Select
+  when a=c then nop           /* Do nothing */
+  when a>c then say "A > C"
+  otherwise     say "A &lt; C"
+end
+</programlisting>
+</example>
+</para>
+
+<note><title>Note</title>
+<para>Putting an extra semicolon instead of the NOP would
+merely insert a null clause, which would be ignored. The second WHEN clause
+would be seen as the first instruction expected after the THEN, and would,
+therefore, be treated as a syntax error. NOP is a true instruction, however,
+and is, therefore, a valid target for the THEN clause.</para></note>
+</section>
+
+<section id="keyNumeric"><title>NUMERIC</title>
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>arithmetic</primary>
+<secondary>NUMERIC setting</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>NUMERIC</secondary></indexterm>
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>DIGITS subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<indexterm><primary>FORM subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<indexterm><primary>FUZZ subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<indexterm><primary>SCIENTIFIC subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<indexterm><primary>ENGINEERING subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/numeric.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>NUMERIC changes the way in which a program carries out arithmetic
+operations. The options of this instruction are described in detail in
+<xref linkend="numarit" />.</para>
+<variablelist>
+
+<varlistentry><term id="keyNumericDigits" xreflabel="NUMERIC DIGITS"><emphasis role="bold">NUMERIC DIGITS</emphasis>
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>DIGITS option</secondary></indexterm>
+</term>
+<listitem><para>controls the precision to which arithmetic operations and
+built-in functions are evaluated. If you omit
+<emphasis role="italic">expression1</emphasis>, the precision defaults to
+9 digits, but can be overridden on a source-file basis using the
+<xref linkend="optionsd" xrefstyle="select:title"/> directive.
+Otherwise, the character string value result of
+<emphasis role="italic">expression1</emphasis> must evaluate to a positive whole
+number and must be larger than the current NUMERIC FUZZ setting.</para>
+<para>There is no limit to the value for DIGITS
+(except the amount of storage available), but high precisions are likely to
+require a great amount of processing time. It is recommended that you use
+the default value whenever possible.</para>
+<para>You can retrieve the current NUMERIC DIGITS setting with the
+<xref linkend="bifDigits" xrefstyle="select:title"/> built-in function.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyNumericForm" xreflabel="NUMERIC FORM"><emphasis role="bold">NUMERIC FORM</emphasis>
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>FORM option</secondary></indexterm>
+<indexterm><primary>FORM option of NUMERIC instruction</primary></indexterm>
+</term>
+<listitem><para>controls the form of exponential notation
+for the result of arithmetic
+operations and built-in functions. This can be either SCIENTIFIC (in which
+case only one, nonzero digit appears before the decimal point) or ENGINEERING
+(in which case the power of 10 is always a multiple of 3). The default is
+SCIENTIFIC, but can be overridden on a source-file basis using the
+<xref linkend="optionsd" xrefstyle="select:title"/> directive.
+The subkeywords SCIENTIFIC or ENGINEERING set the FORM directly,
+or it is taken from the character string result of evaluating the expression
+(<emphasis role="italic">expression2</emphasis>) that follows VALUE. The result
+in this case must be either <computeroutput>SCIENTIFIC</computeroutput> or
+<computeroutput>ENGINEERING</computeroutput>. You can omit the subkeyword
+VALUE if <emphasis role="italic">expression2</emphasis> does not begin with a
+symbol or a literal string,
+that is, if it starts with a special character, such as an operator character
+or parenthesis.</para>
+<para>You can retrieve the current NUMERIC FORM setting with the
+<xref linkend="bifForm" xrefstyle="select:title"/> built-in function.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyNumericFuzz" xreflabel="NUMERIC FUZZ"><emphasis role="bold">NUMERIC FUZZ</emphasis>
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>FUZZ option</secondary></indexterm>
+<indexterm><primary>FUZZ option of NUMERIC instruction</primary></indexterm>
+</term>
+<listitem><para>controls how many digits, at full precision, are ignored during
+a <xref linkend="numcom" xrefstyle="template:numeric comparison"/> operation.
+If you omit <emphasis role="italic">expression3</emphasis>,
+the default is 0 digits, but can be overridden on a source-file basis using the
+<xref linkend="optionsd" xrefstyle="select:title"/> directive.
+Otherwise, the character string value result
+of <emphasis role="italic">expression3</emphasis> must evaluate
+to 0 or a positive whole number rounded,
+if necessary, according to the current NUMERIC DIGITS setting, and must be
+smaller than the current NUMERIC DIGITS setting.</para>
+<para>NUMERIC FUZZ temporarily
+reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
+numeric comparison. The numbers are subtracted under a precision of DIGITS
+minus FUZZ digits during the comparison and are then compared with 0.</para>
+<para>You can retrieve the current NUMERIC FUZZ setting with the
+<xref linkend="bifFuzz" xrefstyle="select:title"/> built-in function.
+</para>
+</listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>The three numeric settings are automatically saved across
+internal subroutine and function calls. See the
+<xref linkend="keyCall" xrefstyle="select:title"/> instruction for more details.
+</para></note>
+</section>
+
+<section id="keyOptions"><title>OPTIONS</title>
+<indexterm><primary>OPTIONS instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>OPTIONS</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/options.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The OPTIONS instruction is used to pass special requests to the
+language processor.</para>
+<para>The
+<emphasis role="italic">expression</emphasis> is evaluated, and individual words
+in the result that are meaningful to the language processor will be obeyed.
+Options might control how the interpreter optimizes code, enforces standards,
+enables implementation-dependent features, etc.   Unrecognized words in the
+result are ignored, since they are assumed to be instructions for a different
+language processor.</para>
+<para>Open Object Rexx does not recognize any option keywords.</para>
+</section>
+
+<section id="keyParse"><title>PARSE</title>
+<indexterm><primary>PARSE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>PARSE</secondary></indexterm>
+<indexterm><primary>template</primary>
+<secondary>list</secondary>
+<tertiary>PARSE instruction</tertiary></indexterm>
+<indexterm><primary>UPPER subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>LOWER subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>CASELESS subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>ARG subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>LINEIN subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>PULL subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>SOURCE subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VAR subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VERSION subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+
+<note><title>Note</title>
+<para>You can specify UPPER and CASELESS or LOWER and CASELESS in
+either order.</para></note>
+<indexterm><primary>assigning data to variables</primary></indexterm>
+<para>PARSE assigns data from various sources to one or more variables according
+to the rules of parsing. (See <xref linkend="parsingch" />.)</para>
+<para>
+<indexterm><primary>uppercase translation</primary>
+<secondary>with PARSE UPPER</secondary></indexterm>
+<indexterm><primary>lowercase translation</primary>
+<secondary>with PARSE LOWER</secondary></indexterm>
+If you specify UPPER, the strings to be parsed are translated to uppercase before
+parsing. If you specify LOWER, the strings are translated to lowercase. Otherwise
+no translation takes place.
+</para>
+<para>If you
+specify CASELESS, character string matches during parsing are made independent
+of the case. This means a letter in uppercase is equal to the same letter
+in lowercase.</para>
+<indexterm><primary>parsing</primary>
+<secondary>templates</secondary>
+<tertiary>in PARSE instruction</tertiary></indexterm>
+<para>The <emphasis role="italic">template_list</emphasis> can be a
+single template or list of templates separated by commas. Each
+template consists of one or more symbols separated by whitespace, patterns, or
+both.</para>
+<para>Each template is applied to a single source string. Specifying several
+templates is not a syntax error, but only the PARSE ARG variant can supply
+more than one non-null source string. See
+<xref linkend="parsmul" /> for information
+on parsing several source strings.</para>
+<para>If you do not specify a template, no variables are set but the data is
+prepared for parsing, if necessary. Thus for PARSE PULL, a data string is
+removed from the current data queue, for PARSE LINEIN (and PARSE PULL if the
+queue is empty), a line is taken from the default input stream, and for PARSE
+VALUE, <emphasis role="italic">expression</emphasis> is evaluated.
+For PARSE VAR, the specified variable is accessed.  If it does not have
+a value, the NOVALUE condition is raised, if it is enabled.</para>
+<para>The following list describes the data for each variant of the PARSE
+instruction.</para>
+<variablelist>
+
+<varlistentry><term id="keyParseArg" xreflabel="PARSE ARG"><emphasis role="bold">PARSE ARG</emphasis>
+<indexterm><primary>ARG option of PARSE instruction</primary></indexterm>
+<indexterm><primary>arguments</primary>
+<secondary>retrieving with PARSE ARG instruction</secondary></indexterm>
+</term>
+<listitem><para>parses the strings passed to a program, routine, or method as
+input arguments.
+See the <xref linkend="keyArg" xrefstyle="template:ARG instruction"/>
+for details and examples.
+<note><title>Note</title>
+<para>Parsing uses the string values of the argument objects. The
+USE ARG instruction provides direct access to argument objects.
+You can also retrieve or check the argument objects to a Rexx program, routine, or
+method with the <xref linkend="bifArg" xrefstyle="template:ARG"/>  built-in function.
+</para></note>
+</para></listitem></varlistentry>
+
+<varlistentry><term id="keyParseLinein" xreflabel="PARSE LINEIN"><emphasis role="bold">PARSE LINEIN</emphasis>
+<indexterm><primary>LINEIN option of PARSE instruction</primary></indexterm>
+<indexterm><primary>lines</primary>
+<secondary>from stream</secondary></indexterm>
+</term>
+<listitem><para>
+parses the next line of the default input stream.
+(See <xref linkend="iostrms" /> for a discussion
+of Rexx input and output.) PARSE LINEIN
+is a shorter form of the following instruction:
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse_value.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+<para>If no line is available, program execution usually pauses
+until a line is complete. Use PARSE LINEIN only when direct access to the
+character input stream is necessary. Use the PULL or PARSE PULL instructions
+for the usual line-by-line dialog with the user to maintain generality.
+PARSE LINEIN will not pull lines from the external data queue.
+</para>
+<para>To check if any lines are available in the default input stream, use the
+<xref linkend="bifLines" xrefstyle="template:LINES"/> built-in function.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyParsePull" xreflabel="PARSE PULL"><emphasis role="bold">PARSE PULL</emphasis>
+<indexterm><primary>PULL option of PARSE instruction</primary></indexterm>
+</term>
+<listitem><para>parses the next string of the external data queue. If the
+external data
+queue is empty, PARSE PULL reads a line of the default input stream (the user's
+terminal), and the program pauses, if necessary, until a line is complete.
+You can add data to the head or tail of the queue by using the
+<xref linkend="keyPush" xrefstyle="select:title"/> and
+<xref linkend="keyQueue" xrefstyle="select:title"/>
+instructions, respectively. You can find the number of lines currently in
+the queue with the <xref linkend="bifQueued" xrefstyle="select:title"/> built-in function.
+The queue remains active as long as the language processor is active. Other
+programs in the system can alter the queue and use it to communicate with
+programs written in Rexx.
+See also the <xref linkend="keyPull" xrefstyle="select:title"/> instruction.
+</para>
+<note><title>Note</title>
+<para>PULL and PARSE PULL read the current data queue. If the queue is
+empty, they read the default input stream, .INPUT (typically, the keyboard).
+</para></note>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyParseSource" xreflabel="PARSE SOURCE"><emphasis role="bold">PARSE SOURCE</emphasis>
+<indexterm><primary>SOURCE option of PARSE instruction</primary></indexterm>
+<indexterm><primary>file name, extension, path of program</primary></indexterm>
+<indexterm><primary>names</primary>
+<secondary>of programs</secondary></indexterm>
+<indexterm><primary>programs</primary>
+<secondary>retrieving name of</secondary></indexterm>
+<indexterm><primary>source</primary>
+<secondary>of program and retrieval of information</secondary></indexterm>
+</term>
+<listitem><para>parses data describing the source of the program running.
+The language processor returns a string that does not change while the
+program is running.</para>
+<para>The source string contains operating system name,
+followed by either <computeroutput>COMMAND</computeroutput>,
+<computeroutput>FUNCTION</computeroutput>,
+<computeroutput>SUBROUTINE</computeroutput>, or
+<computeroutput>METHOD</computeroutput>, or
+<computeroutput>REQUIRES</computeroutput>, depending on
+whether the program was called as a host command, or from a function call in
+an expression, or using the CALL instruction, or as a method of an object,
+or from a ::REQUIRES directive to run the prolog code.
+These two tokens are followed by the complete path specification of the program
+file.</para>
+<para>The string parsed might, therefore, look like this:
+<programlisting>WindowsNT COMMAND C:\MYDIR\RexxTRY.CMD</programlisting>
+or
+<programlisting>LINUX COMMAND /opt/orexx/bin/rexxtry.cmd</programlisting>
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyParseValue" xreflabel="PARSE VALUE"><emphasis role="bold">PARSE VALUE</emphasis>
+<indexterm><primary>VALUE option of PARSE instruction</primary></indexterm>
+<indexterm><primary>expressions</primary>
+<secondary>parsing of</secondary></indexterm>
+</term>
+<listitem><para>parses the data, a character string, that is the result of
+evaluating <emphasis role="italic">expression</emphasis>.
+If you specify no <emphasis role="italic">expression</emphasis>, the null string is
+used. Note that WITH is a subkeyword in this context and cannot be used as
+a symbol within <emphasis role="italic">expression</emphasis>.</para>
+<para>Thus, for example:
+<indexterm><primary>PARSE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>PARSE instruction</secondary></indexterm>
+<programlisting>
+PARSE VALUE time() WITH  hours ":" mins ":" secs
+</programlisting>
+gets the current time and splits it into its constituent parts.</para>
+</listitem></varlistentry>
+
+<varlistentry><term id="keyParseVar" xreflabel="PARSE VAR"><emphasis role="bold">PARSE VAR</emphasis> <emphasis role="italic">name</emphasis>
+<indexterm><primary>VAR option of PARSE instruction</primary></indexterm>
+<indexterm><primary>variable</primary><secondary>parsing of</secondary></indexterm>
+</term>
+<listitem><para>parses the character string value of the variable
+<emphasis role="italic">name</emphasis>. The
+<emphasis role="italic">name</emphasis> must be a symbol
+that is valid as a variable name, which means it
+cannot start with a period or a digit.  Note that the variable
+<emphasis role="italic">name</emphasis> is
+not changed unless it appears in the template, so that, for example:</para>
+<programlisting>
+PARSE VAR string word1 string
+</programlisting>
+<para>removes the first word from <emphasis role="italic">string</emphasis>,
+puts it in the variable <emphasis role="italic">word1</emphasis>,
+and assigns the remainder back to
+<emphasis role="italic">string</emphasis>. </para>
+<programlisting>
+PARSE UPPER VAR string word1 string
+</programlisting>
+<para>also translates the data from <emphasis role="italic">string</emphasis>
+to uppercase before it is parsed.</para>
+</listitem></varlistentry>
+
+
+<varlistentry><term id="keyParseVersion" xreflabel="PARSE VERSION"><emphasis role="bold">PARSE VERSION</emphasis>
+<indexterm><primary>VERSION option of PARSE instruction</primary></indexterm>
+<indexterm><primary>date and version of the language processor</primary></indexterm>
+<indexterm><primary>language</primary><secondary>processor date and version</secondary></indexterm>
+</term>
+<listitem>
+<para>
+  parses information describing the language level and the date of the language processor. This information consists of
+  five blank-delimited words:
+<itemizedlist>
+<listitem><para>The string <computeroutput>REXX-ooRexx_5.0.0(MT)_64-bit</computeroutput>,
+if using the ooRexx interpreter at version 5, release 0, modification 0, and
+compiled for 64-bit addressing mode.
+</para></listitem>
+<listitem><para>
+  The language level description, for example
+  <computeroutput>6.05</computeroutput> for ooRexx 5.0, or
+  <computeroutput>6.04</computeroutput> for ooRexx 4.2.
+</para></listitem>
+<listitem><para>
+  Three tokens that describe the language processor release date in the same format as the default for the
+  <xref linkend="bifDate" xrefstyle="select:title"/> built-in function,
+  for example, <literal>"1 Sep 2016"</literal>.
+</para></listitem>
+</itemizedlist>
+</para>
+</listitem></varlistentry>
+
+</variablelist>
+</section>
+
+<section id="keyProcedure"><title>PROCEDURE</title>
+<indexterm><primary>PROCEDURE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>variables in</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>PROCEDURE</secondary></indexterm>
+<indexterm><primary>internal</primary>
+<secondary>functions</secondary>
+<tertiary>variables in</tertiary></indexterm>
+<indexterm><primary>protecting variables</primary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>variables in</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>exposing to caller</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>in internal functions</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>in subroutines</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>new level of</secondary></indexterm>
+<indexterm><primary>EXPOSE subkeyword</primary>
+<secondary>in a PROCEDURE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/procedure.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>PROCEDURE, within an internal
+routine (subroutine or function), protects the caller's variables by making
+them unknown to the instructions that follow it. After a RETURN instruction
+is processed, the original variable environment is restored and any variables
+used in the routine (that were not exposed) are dropped. (An exposed variable
+is one belonging the caller of a routine that the PROCEDURE instruction has
+exposed. When the routine refers to, or alters, the variable, the original
+(caller's) copy of the variable is used.) An internal routine need not
+include a PROCEDURE instruction. In this case the variables it is manipulating
+are those the caller owns. If the PROCEDURE instruction is used, it must be
+the first instruction processed after the CALL or function invocation; that
+is, it must be the first instruction following the label.</para>
+<indexterm><primary>EXPOSE option of PROCEDURE instruction</primary></indexterm>
+<indexterm><primary>exposed variable</primary></indexterm>
+<para>If you use the EXPOSE option, any variable specified by the
+<emphasis role="italic">name</emphasis> is
+exposed.  Any reference to it (including setting and dropping) is made to
+the variables environment the caller owns. Hence, the values of existing
+variables are accessible, and any changes are persistent even on RETURN from
+the routine. If the <emphasis role="italic">name</emphasis> is not enclosed
+in parentheses, it identifies a variable
+you want to expose and must be a symbol that is a valid variable name, separated
+from any other <emphasis role="italic">name</emphasis> with one or more
+whitespace characters.
+</para>
+<para>If parentheses enclose a single <emphasis role="italic">name</emphasis>,
+then, after the variable <emphasis role="italic">name</emphasis> is exposed,
+the character string value of <emphasis role="italic">name</emphasis> is
+immediately used as a subsidiary list of variables. Whitespace characters are
+not necessary inside or outside the parentheses, but you can add them if
+desired.
+<indexterm><primary>subsidiary list</primary></indexterm>
+This subsidiary list must follow the same rules
+as the original list, that is, valid variable names separated by whitespace
+characters, except that no parentheses are allowed.
+</para>
+<para>Variables are exposed from left to right. It is not an error to specify
+a name more than once, or to specify a name that the caller has not used as
+a variable.</para>
+<para>Any variables in the main program that are not exposed are still protected.
+Therefore, some of the caller's variables can be made accessible and can
+be changed, or new variables can be created.  All these changes are visible
+to the caller upon RETURN from the routine.
+<indexterm><primary>PROCEDURE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>PROCEDURE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; PROCEDURE</title>
+<programlisting>
+/* This is the main Rexx program */
+j=1; z.1="a"
+call toft
+say j k m       /* Displays "1 7 M"          */
+exit
+
+/* This is a subroutine     */
+toft: procedure expose j k z.j
+  say j k z.j   /* Displays "1 K a"          */
+  k=7; m=3      /* Note: M is not exposed    */
+  return
+</programlisting>
+</example>
+</para>
+<para>Note that if <computeroutput>Z.J</computeroutput> in the
+EXPOSE list is placed before <computeroutput>J</computeroutput>,
+the caller's value of <computeroutput>J</computeroutput> is not visible,
+so <computeroutput>Z.1</computeroutput> is not exposed.</para>
+<para>The variables in a subsidiary list are also exposed from left to right.
+<example>
+<title>Instructions &mdash; PROCEDURE</title>
+<programlisting>
+/* This is the main Rexx program */
+j=1;k=6;m=9
+a ="j k m"
+call test
+exit
+
+/* This is a subroutine     */
+test: procedure expose (a)   /* Exposes A, J, K, and M     */
+  say a j k m                /* Displays "j k m 1 6 9"     */
+  return
+</programlisting>
+</example>
+</para>
+<para>You can use subsidiary lists to more easily expose a number of variables
+at a time or, with the VALUE built-in function, to manipulate dynamically
+named variables.
+<example>
+<title>Instructions &mdash; PROCEDURE</title>
+<programlisting>
+/* This is the main Rexx program */
+c=11; d=12; e=13
+Showlist="c d"     /* but not E              */
+call Playvars
+say c d e f        /* Displays "11 New 13 9" */
+exit
+
+/* This is a subroutine     */
+Playvars: procedure expose (showlist) f
+  say word(showlist,2)              /* Displays "d"                     */
+  say value(word(showlist,2),"New") /* Displays "12" and sets new value */
+  say value(word(showlist,2))       /* Displays "New"                   */
+  e=8                               /* E is not exposed                 */
+  f=9                               /* F was explicitly exposed         */
+  return
+</programlisting>
+</example>
+</para>
+<para>Specifying a stem as <emphasis role="italic">name</emphasis>
+exposes this stem and all possible compound
+variables whose names begin with that stem.
+<indexterm><primary>stem of a variable</primary>
+<secondary>used in PROCEDURE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; PROCEDURE</title>
+<programlisting>
+/* This is the main Rexx program */
+a.=11; i=13; j=15
+i = i + 1
+C.5 = "FRED"
+call lucky7
+say a. a.1 i j c. c.5
+say "You should see 11 7 14 15 C. FRED"
+exit
+
+lucky7:Procedure Expose i j a. c.
+  /* This exposes I, J, and all variables whose     */
+  /* names start with A. or C.                      */
+  A.1="7"  /* This sets A.1 in the caller-&apos;s         */
+           /* environment, even if it did not       */
+           /* previously exist.                     */
+  return
+</programlisting>
+</example>
+</para>
+
+<note><title>Note</title>
+<para>Variables can be exposed through several generations
+of routines if they are included in all intermediate PROCEDURE instructions.
+</para></note>
+<para>See the <xref linkend="keyCall" xrefstyle="select:title"/> instruction and
+<xref linkend="funct" />
+for details and examples of how routines are called.</para>
+</section>
+
+<section id="keyPull"><title>PULL</title>
+<indexterm><primary>PULL instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>console</primary>
+<secondary>reading from with PULL</secondary></indexterm>
+<indexterm><primary>external data queue</primary>
+<secondary>reading from with PULL</secondary></indexterm>
+<indexterm><primary>input to PULL from STDIN</primary></indexterm>
+<indexterm><primary>input to PULL from the keyboard</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>PULL</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>templates</secondary>
+<tertiary>in PULL instruction</tertiary></indexterm>
+<indexterm><primary>template</primary>
+<secondary>list</secondary>
+<tertiary>PULL instruction</tertiary></indexterm>
+<indexterm><primary>terminal</primary>
+<secondary>reading from with PULL</secondary></indexterm>
+<indexterm><primary>UPPER subkeyword</primary>
+<secondary>in an PARSE instruction</secondary></indexterm>
+<indexterm><primary>PULL subkeyword</primary>
+<secondary>in an PARSE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/pull.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>PULL reads a string from the head of the external data queue or, if
+the external data queue is empty, from the standard input stream (typically the keyboard).
+(See <xref linkend="iostrms" /> for a discussion of Rexx input and output.)
+It is a short form of the following
+<indexterm><primary>uppercase translation</primary>
+<secondary>during PULL instruction</secondary></indexterm>
+instruction:
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse_upper_pull.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>The current head
+of the queue is read as one string.  Without a
+<emphasis role="italic">template_list</emphasis> specified,
+no further action is taken and the string is thus effectively discarded.
+The <emphasis role="italic">template_list</emphasis> can be a single
+template or list of templates separated
+by commas, but PULL parses only one source string. Each template consists
+of one or more symbols separated by whitespace, patterns, or both.</para>
+<para>If you specify several comma-separated templates, variables in templates
+other than the first one are assigned the null string. The string is translated
+to uppercase (that is, lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>)
+and then parsed into variables according to the
+rules described in <xref linkend="parsingch" />. Use the PARSE PULL
+instruction if you do not desire uppercase translation. </para>
+
+<note><title>Note</title>
+<para>If the current
+data queue is empty, PULL reads from the standard input (typically, the
+keyboard). If there is a PULL from the standard input, the program waits for
+keyboard input with no prompt.
+</para></note>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>PULL instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>PULL instruction</secondary></indexterm>
+<programlisting>
+Say "Do you want to erase the file?  Answer Yes or No:"
+Pull answer .
+if answer="NO" then say "The file will not be erased."
+</programlisting>
+<para>Here the dummy placeholder, a period
+(<computeroutput>.</computeroutput>), is used in the template
+to isolate the first word the user enters.</para>
+<para>If the external data queue is empty, a line is read from the default input
+stream and the program pauses, if necessary, until a line is complete. (This
+is as though PARSE UPPER LINEIN had been processed.
+For details see <xref linkend="keyParseLinein"/><!-- @@xreflabel --></para>
+<para>The
+<xref linkend="bifQueued" xrefstyle="select:title"/> built-in function
+returns the number of lines currently in the external data queue.
+</para>
+</section>
+
+<section id="keyPush"><title>PUSH</title>
+<indexterm><primary>PUSH instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>external data queue</primary>
+<secondary>writing to with PUSH</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>PUSH</secondary></indexterm>
+<indexterm><primary>LIFO (last-in, first-out) stacking</primary></indexterm>
+<indexterm><primary>writing to external data queue</primary>
+<secondary>with PUSH</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/push.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>PUSH stacks the string resulting from the evaluation of
+<emphasis role="italic">expression</emphasis> LIFO (Last In, First Out)
+into the external data queue. (See
+<xref linkend="iostrms" /> for
+a discussion of Rexx input and output.)</para>
+<para>If you do not specify <emphasis role="italic">expression</emphasis>,
+a null string is stacked.
+<indexterm><primary>PUSH instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>PUSH instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; PUSH</title>
+<programlisting>
+a="Fred"
+push       /* Puts a null line onto the queue */
+push a 2   /* Puts "Fred 2"    onto the queue */
+</programlisting>
+</example>
+</para>
+<para>The
+<xref linkend="bifQueued" xrefstyle="select:title"/> built-in function
+returns the number of lines currently in the external data queue.
+</para>
+</section>
+
+<section id="keyQueue"><title>QUEUE</title>
+<indexterm><primary>QUEUE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>external data queue</primary>
+<secondary>writing to with QUEUE</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>QUEUE</secondary></indexterm>
+<indexterm><primary>writing to external data queue</primary>
+<secondary>with QUEUE</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/queue.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>QUEUE appends the string resulting from
+<emphasis role="italic">expression</emphasis> to the tail
+of the external data queue. That is, it is added FIFO (First In, First Out).
+<indexterm><primary>FIFO (first-in/first-out) stacking</primary></indexterm>
+(See <xref linkend="iostrms" />
+for a discussion of Rexx input and output.)</para>
+<para>If you do not specify <emphasis role="italic">expression</emphasis>,
+a null string is queued.
+<indexterm><primary>QUEUE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>QUEUE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; QUEUE</title>
+<programlisting>
+a="Toft"
+queue a 2  /* Enqueues "Toft 2" */
+queue      /* Enqueues a null line behind the last */
+</programlisting>
+</example>
+</para>
+<para>The <xref linkend="bifQueued" xrefstyle="select:title"/> built-in
+function returns the number
+of lines currently in the external data queue.</para>
+</section>
+
+<section id="keyRaise"><title>RAISE</title>
+<indexterm><primary>RAISE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>conditions</primary>
+<secondary>raising of</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>RAISE</secondary></indexterm>
+<indexterm><primary>ERROR subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>FAILURE subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>SYNTAX subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>USER subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>PROPAGATE subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>ADDITIONAL subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>DESCRIPTION subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>ARRAY subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>EXIT subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+<indexterm><primary>RETURN subkeyword</primary>
+<secondary>in a RAISE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/raise.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">OPTIONS:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/raise_options.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<note><title>Note</title>
+<para>You can specify the options <option>ADDITIONAL</option>, <option>ARRAY</option>, <option>DESCRIPTION</option>,
+<option>RETURN</option>, and <option>EXIT</option> in any order. However, if you specify <option>EXIT</option> without
+<emphasis role="italic">expre</emphasis> or <option>RETURN</option> without
+<emphasis role="italic">exprr</emphasis>, it must appear last.</para></note>
+<para>RAISE returns or exits from the currently running routine or method and
+raises a condition in the caller (for a routine) or sender (for a method).
+See <xref linkend="condtra" />
+for details of the actions taken when conditions
+are raised. The RAISE instruction can raise all conditions that can be trapped.
+</para>
+<para>If the ERROR or FAILURE condition is raised, you must supply the
+associated return code as <emphasis role="italic">errorcode</emphasis> or
+<emphasis role="italic">failurecode</emphasis>, respectively. These
+can be literal strings, constant symbols, or expressions enclosed in parentheses.
+If you specify an expression enclosed in parentheses, a subexpression, the
+language processor evaluates the expression to obtain its character string
+value.</para>
+<para>If the SYNTAX condition is raised, you must supply the associated Rexx
+error number as <emphasis role="italic">number</emphasis>. This error
+<emphasis role="italic">number</emphasis> can be either
+a Rexx major error code or a Rexx detailed error code in the form
+<emphasis role="italic">nn.nnn</emphasis>. The
+<emphasis role="italic">number</emphasis> can be a literal string, a constant
+symbol, or an expression enclosed in parentheses. If you specify an
+expression enclosed in parentheses, the language processor evaluates the
+expression to obtain its character string value.</para>
+<para>If a USER condition is raised, you must supply the associated user
+condition name as <emphasis role="italic">usercondition</emphasis>,
+which must be a symbol that is taken as a constant.</para>
+<para>If you specify the <option>ADDITIONAL</option> option, the language processor evaluates
+<emphasis role="italic">expra</emphasis> to produce an object that supplies
+additional object information associated with the condition. The
+<emphasis role="italic">expra</emphasis> can be a literal string,
+a constant symbol, or an expression enclosed in parentheses. The ADDITIONAL entry
+of the condition object and the
+<computeroutput>&quot;A&quot;</computeroutput> option of the CONDITION
+built-in function return this additional object information. For SYNTAX conditions,
+the ADDITIONAL value must evaluate to a &singledimarray;.</para>
+<para>If you specify the <option>ARRAY</option> option, each
+<emphasis role="italic">expri</emphasis> is an expression (use
+commas to separate the expressions). The language processor evaluates the
+expression list to produce an array object that supplies additional object
+information associated with the condition. The ADDITIONAL entry of the condition
+object and the <computeroutput>&quot;A&quot;</computeroutput> option of
+the CONDITION built-in function
+return this additional object information as an array of values. It is an
+error to use both the <option>ARRAY</option> option and the <option>ADDITIONAL</option> option on the same RAISE
+instruction.</para>
+<para>The content of <emphasis role="italic">expra</emphasis> or
+<emphasis role="italic">expri</emphasis> is used as the contents
+of the secondary error message produced for a
+<emphasis role="italic">condition</emphasis>.</para>
+<para>If you specify neither ADDITIONAL nor ARRAY, there is no additional object
+information associated with the condition.</para>
+<para>If you specify the <option>DESCRIPTION</option> option, the
+<emphasis role="italic">exprd</emphasis> can be a literal
+string, a constant symbol, or an expression enclosed in parentheses. If you
+specify an expression enclosed in parentheses, the language processor evaluates
+the expression to obtain its character string value. This is the description
+associated with the condition. The
+<computeroutput>&quot;D&quot;</computeroutput> option of the CONDITION
+built-in function and the DESCRIPTION entry of the condition object return
+this string.</para>
+<para>If you do not specify DESCRIPTION, the language processor uses a null
+string as the descriptive string.</para>
+<para>If you specify the <option>RETURN</option> or <option>EXIT</option> option, the language processor evaluates
+the expression <emphasis role="italic">exprr</emphasis> or
+<emphasis role="italic">expre</emphasis>, respectively, to produce
+a result object that is passed back to the caller or sender as if it were
+a RETURN or EXIT result. The <emphasis role="italic">expre</emphasis> or
+<emphasis role="italic">exprr</emphasis> is a literal
+string, a constant symbol, or an expression enclosed in parentheses. If you specify
+an expression enclosed in parentheses, the language processor evaluates the
+expression to obtain its character string value. If you do not specify
+<emphasis role="italic">exprr</emphasis> or
+<emphasis role="italic">expre</emphasis>, no result is passed back to the
+caller or sender. In either case, the effect is the same as that of the
+<xref linkend="keyReturn" xrefstyle="select:title"/> or
+<xref linkend="keyExit" xrefstyle="select:title"/> instruction.
+The <option>EXIT</option> option is the default.
+Following the return or exit, the appropriate action is taken in the caller
+or sender (see
+<xref linkend="atwcnt" />).
+If specified, the result value can be obtained from the RESULT entry of the
+condition object.
+<indexterm><primary>RAISE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>RAISE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; RAISE</title>
+<programlisting>
+raise syntax 40                      /* Raises syntax error 40                */
+raise syntax 40.12 array (1, number) /* Raises syntax error 40, subcode 12    */
+                                     /* Passing two substitution values       */
+raise syntax (errnum)                /* Uses the value of the variable ERRNUM */
+                                     /* as the syntax error number            */
+raise user badvalue                  /* Raises user condition BADVALUE        */
+</programlisting>
+</example>
+</para>
+<para>If you specify PROPAGATE, and there is a currently trapped condition, this
+condition is raised again in the caller (for a routine) or sender (for a method).
+Any ADDITIONAL, DESCRIPTION, ARRAY, RETURN, or EXIT information specified
+on the RAISE instruction replaces the corresponding values for the currently
+trapped condition. A SYNTAX error occurs if no condition is currently trapped.
+<example>
+<title>Instructions &mdash; RAISE</title>
+<programlisting>
+signal on syntax
+a = "xyz"
+c = a+2                /* Raises the SYNTAX condition             */
+.
+.
+.
+exit
+syntax:
+  raise propagate      /* Propagates SYNTAX information to caller */
+</programlisting>
+</example>
+</para>
+</section>
+
+<section id="keyReply"><title>REPLY</title>
+<indexterm><primary>REPLY instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>early reply</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>REPLY</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/reply.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>REPLY sends an early
+reply from a method to its caller. The method issuing REPLY returns control,
+and possibly a result, to its caller to the point from which the message was
+sent; meanwhile, the method issuing REPLY continues running on a newly created thread.</para>
+<para>If you specify <emphasis role="italic">expression</emphasis>,
+it is evaluated and the object resulting from the evaluation is passed back.
+If you omit <emphasis role="italic">expression</emphasis>, no object
+is passed back.</para>
+<para>Unlike RETURN or EXIT, the method issuing REPLY continues to run after
+the REPLY until it issues an EXIT or RETURN instruction. The EXIT or RETURN
+must not specify a result expression.
+<indexterm><primary>REPLY instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>REPLY instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; REPLY</title>
+<programlisting>
+reply 42           /* Returns control and a result    */
+call tidyup        /* Can run in parallel with sender */
+return
+</programlisting>
+</example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can use REPLY only in a method.</para></listitem>
+<listitem><para>A method can execute only one REPLY instruction.</para>
+</listitem>
+<listitem><para>When the method issuing the REPLY instruction is the only
+active method on the
+current thread with exclusive access to the object's variable pool,
+the method retains exclusive access on the new thread.  When other methods
+on the thread also have access, the method issuing the REPLY releases its access
+and reacquires the access on the new thread. This might force the method
+to wait until the original activity has released its access.</para></listitem>
+</orderedlist>
+<para>See <xref linkend="xconcur" /> for a complete
+description of concurrency.</para>
+</section>
+
+<section id="keyReturn"><title>RETURN</title>
+<indexterm><primary>RETURN instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>return from</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>RETURN</secondary></indexterm>
+<indexterm><primary>internal</primary>
+<secondary>functions</secondary>
+<tertiary>return from</tertiary></indexterm>
+<indexterm><primary>returning control from Rexx program</primary></indexterm>
+<indexterm><primary>running off the end of a program</primary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>return from</secondary></indexterm>
+<indexterm><primary>subroutines</primary>
+<secondary>passing back values from</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/return.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>RETURN returns control, and possibly a result, from a Rexx program,
+method, or routine to the point of its invocation.</para>
+<para>If no internal routine (subroutine or function) is active, RETURN and
+<xref linkend="keyExit" xrefstyle="select:title"/>
+are identical in their effect on the program that is run.
+</para>
+<para>If called as a routine, <emphasis role="italic">expression</emphasis>
+(if any) is evaluated, control is passed back to the caller, and the Rexx
+special variable
+<indexterm><primary>RESULT special variable</primary>
+<secondary>set by RETURN instruction</secondary></indexterm>
+RESULT is set to the value of <emphasis role="italic">expression</emphasis>.
+If you omit <emphasis role="italic">expression</emphasis>,
+the special variable RESULT is dropped (becomes uninitialized).
+The various settings saved at the time of the
+<xref linkend="keyCall" xrefstyle="select:title"/>
+(for example, tracing and addresses) are also restored.
+</para>
+<para>If a function call is active, the action taken is identical, except that
+<emphasis role="italic">expression</emphasis> must be specified on the
+RETURN instruction. The result of <emphasis role="italic">expression</emphasis>
+is then used in the original expression at the point where the function
+was called.
+See <xref linkend="funct" /> for more details.
+</para>
+<para>If a method is processed, the language processor evaluates
+<emphasis role="italic">expression</emphasis> (if any) and returns control to
+the point from which the method's activating message was sent.
+If called as a term of an expression,
+<emphasis role="italic">expression</emphasis> is required. If called as a
+message instruction, <emphasis role="italic">expression</emphasis> is
+optional and is assigned to the Rexx special variable
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>RESULT</tertiary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>RESULT</tertiary></indexterm>
+RESULT if a return <emphasis role="italic">expression</emphasis> is specified.
+If the method has previously issued a REPLY instruction, the RETURN instruction
+must not include a result <emphasis role="italic">expression</emphasis>.</para>
+<para>If a PROCEDURE instruction was processed within an internal subroutine
+or internal function, all variables of the current generation are dropped
+(and those of the previous generation are exposed) after
+<emphasis role="italic">expression</emphasis> is
+evaluated and before the result is used or assigned to RESULT.</para>
+<note><para>If the RETURN statement causes the program to return to the operating
+system on a Unix/Linux system the value returned is limited to a numerical
+value between 0 and 255 (an unsigned byte). If no
+<emphasis role="italic">expression</emphasis> is supplied then the default value
+returned to the operating system is zero.
+</para></note>
+</section>
+
+<section id="keySay"><title>SAY</title>
+<indexterm><primary>SAY instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>SAY instruction</primary>
+<secondary>displaying data</secondary></indexterm>
+<indexterm><primary>console</primary>
+<secondary>writing to with SAY</secondary></indexterm>
+<indexterm><primary>continuation</primary>
+<secondary>of data for display</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>SAY</secondary></indexterm>
+<indexterm><primary>terminal</primary>
+<secondary>writing to with SAY</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/say.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>SAY writes a line to the default output stream, which displays it to the
+user. However, the output destination can depend on the implementation. See
+<xref linkend="iostrms" /> for a discussion of
+Rexx input and output. The string value of the
+<emphasis role="italic">expression</emphasis> result is written to the default
+character output stream. The resulting string can be of any length. If
+you omit <emphasis role="italic">expression</emphasis>,
+the null string is written.</para>
+<para>The SAY instruction is a shorter form of the following instruction:
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call_lineout.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>except that:
+<itemizedlist>
+<listitem><para>SAY does not affect the special variable RESULT.</para>
+</listitem>
+<listitem><para>If you use SAY and omit
+<emphasis role="italic">expression</emphasis>, a null string is used.</para>
+</listitem>
+<listitem><para>CALL <xref linkend="bifLineout" xrefstyle="template:LINEOUT"/>
+can raise NOTREADY; SAY will not.</para>
+</listitem>
+</itemizedlist>
+</para>
+<indexterm><primary>SAY instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>SAY instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; SAY</title>
+<programlisting>
+<![CDATA[
+data=100
+Say data "divided by 4 =>" data/4
+/* Displays: "100 divided by 4 => 25"  */
+]]>
+</programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Data from the SAY instruction is sent to the default output
+stream (.OUTPUT). However, the standard rules for redirecting output apply
+to the SAY output.
+</para></listitem>
+<listitem><para>The SAY instruction does not format data; the operating system
+and the hardware handle line wrapping. However, formatting is accomplished,
+the output data remains a single logical line.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keySelect" revisionflag="changed"><title>&changed50;SELECT</title>
+<para>
+<indexterm><primary>SELECT instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>flow of control</primary>
+<secondary>with SELECT construct</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>SELECT</secondary></indexterm>
+<indexterm><primary>THEN</primary>
+<secondary>following WHEN clause</secondary></indexterm>
+<indexterm><primary>CASE subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
+<indexterm><primary>WHEN subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
+<indexterm><primary>THEN subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
+<indexterm><primary>OTHERWISE subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select2.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select3.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select4.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>SELECT conditionally calls one of several alternative instructions.</para>
+<para>
+Evaluation of the <emphasis role="italic">expression</emphasis> list
+after a WHEN is as follows:
+<variablelist>
+ <varlistentry>
+  <term><emphasis role="bold">SELECT without CASE</emphasis></term>
+  <listitem>
+   <para>The list of <emphasis role="italic">expression</emphasis>s
+   after a WHEN is evaluated left-to-right.
+   Each <emphasis role="italic">expression</emphasis> must evaluate to either
+   &false; or &true;.
+   Evaluation will stop with the first &false;
+   result and &false; will be returned as the
+   condition result.</para>
+   <para>
+   If all of the <emphasis role="italic">expression</emphasis>s evaluate
+   to &true;, then the condition result is also
+   &true;.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><emphasis role="bold">SELECT CASE</emphasis></term>
+  <listitem>
+   <para>The <emphasis role="italic">case_expression</emphasis> is
+   evaluated only once, before the first WHEN instruction is processed.
+   The list of <emphasis role="italic">expression</emphasis>s
+   after a WHEN is evaluated left-to-right.
+   Each <emphasis role="italic">expression</emphasis> is compared to
+   the result of <emphasis role="italic">case_expression</emphasis> using "==".
+   Evaluation will stop with the first &true;
+   result and &true; will be returned as the
+   condition result.</para>
+   <para>
+   If all comparisons evaluate to &false;,
+   then the condition result is also &false;.
+   </para>
+  </listitem>
+ </varlistentry>
+</variablelist>
+If the result from above is &true;,
+the instruction following the associated THEN (which can be a complex
+instruction such as IF, DO, LOOP, or SELECT) is processed and control is
+then passed to the END.
+If the result is &false;, control is
+passed to the next WHEN clause.
+</para>
+<para>If none of the WHEN results are &true;,
+control is passed to the instructions, if any, after OTHERWISE.
+In this situation, the absence of an OTHERWISE produces an error, however,
+you can omit the instruction list that follows OTHERWISE.
+</para>
+
+<para>
+<example>
+<title>Instructions &mdash; SELECT</title>
+<indexterm><primary>SELECT instruction</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>SELECT instruction</secondary></indexterm>
+<programlisting><![CDATA[balance=100
+check=50
+balance = balance - check
+Select
+  when balance > 0 then
+    say "Congratulations! You still have" balance "dollars left."
+  when balance = 0 then do
+    say "Warning, Balance is now zero!  STOP all spending."
+    say "You cut it close this month! Hope you do not have any"
+    say "checks left outstanding."
+    end
+  Otherwise do
+    say "You have just overdrawn your account."
+    say "Your balance now shows" balance "dollars."
+    say "Oops!  Hope the bank does not close your account."
+    end
+end  /* Select */
+]]></programlisting></example>
+</para>
+
+<example>
+<title>Instructions &mdash; SELECT</title>
+<programlisting><![CDATA[select
+  when answer~datatype('w'), answer//2 = 0 Then
+     say answer "is even"
+  when answer~datatype('w'), answer//2 = 1 Then
+     say answer "is odd"
+  otherwise
+     say answer "is not a number"
+end
+]]></programlisting>
+
+<para>The example above is not the same as using the following</para>
+<programlisting><![CDATA[select
+  when answer~datatype('w') & answer//2 = 0 Then
+     say answer "is even"
+  when answer~datatype('w') & answer//2 = 1 Then
+     say answer "is odd"
+  otherwise
+     say answer "is not a number"
+end
+]]></programlisting></example>
+<para>The logical "&amp;" operator will evaluate both terms of the operation, so the
+term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
+list conditional form, evaluation will stop with the first &false; result, so the
+"answer//2" term will not be evaluated if the datatype test returns
+&false;.
+
+<example>
+<title>Instructions &mdash; SELECT CASE</title>
+<programlisting><![CDATA[select case random(6)
+  when 1 then say "bad luck!"
+  when 5, 6 then say "great!"
+  otherwise say "try again"
+end
+]]></programlisting></example>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>The <emphasis role="italic">instruction</emphasis>
+can be any assignment, command, message instruction,
+or keyword instruction, including any of the more complex constructs, such
+as DO, LOOP, IF, or the SELECT instruction itself.</para></listitem>
+<listitem><para>A null clause is not an instruction, so putting an extra
+semicolon (or
+label) after a THEN clause is not equivalent to putting a dummy instruction.
+The NOP instruction is provided for this purpose.</para></listitem>
+<listitem><para>The symbol THEN cannot be used within
+<emphasis role="italic">expression</emphasis>, because the
+keyword THEN is treated differently in that it need not start a clause. This
+allows the expression on the WHEN clause to be ended by the THEN without a
+semicolon (;).</para></listitem>
+</orderedlist>
+</section>
+
+<section id="keySignal"><title>SIGNAL</title>
+<indexterm><primary>SIGNAL instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>SIGNAL</secondary></indexterm>
+<indexterm><primary>label</primary>
+<secondary>as target of SIGNAL</secondary></indexterm>
+<indexterm><primary>label</primary>
+<secondary>search algorithm</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>OFF subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>ON subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>ANY subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>ERROR subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>FAILURE subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>HALT subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>LOSTDIGITS subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>NOMETHOD subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>NOSTRING subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>NOTREADY subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>NOVALUE subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>SYNTAX subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>USER subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+<indexterm><primary>NAME subkeyword</primary>
+<secondary>in a SIGNAL instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal_on.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal_off.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>SIGNAL causes an unusual change in the flow of control (if you specify
+<emphasis role="italic">labelname</emphasis> or VALUE
+<emphasis role="italic">expression</emphasis>), or controls the trapping of
+certain conditions (if you specify ON or OFF).</para>
+<para>To control trapping, you specify OFF or ON and the condition you want to
+trap. OFF turns off the specified condition trap. ON turns on the specified
+condition trap. All information on condition traps is contained in
+<xref linkend="condtra" />.</para>
+<para>To change the flow of control, a label
+name is derived from <emphasis role="italic">labelname</emphasis> or taken
+from the character string result of evaluating the
+<emphasis role="italic">expression</emphasis> after VALUE. The
+<emphasis role="italic">labelname</emphasis> you specify must be a literal
+string or symbol that is taken as a constant. If you specify a symbol for
+<emphasis role="italic">labelname</emphasis>, the search looks for a label
+with uppercase characters. If you specify a literal string, the search uses
+the literal string directly. You can locate label names with lowercase letters
+only if you specify the label as a literal string with the same case. Similarly,
+for SIGNAL VALUE, the lettercase of
+<emphasis role="italic">labelname</emphasis> must match exactly.
+You can omit the subkeyword VALUE if
+<emphasis role="italic">expression</emphasis> does not begin with
+a symbol or literal string, that is, if it starts with a special character,
+such as an operator character or parenthesis. All active pending DO, IF, SELECT,
+and INTERPRET instructions in the current routine are then ended and cannot
+be resumed. Control is then passed to the first label in the program that
+matches the given name, as though the search had started at the beginning
+of the program.</para>
+<para>The <emphasis role="italic">labelname</emphasis>
+<indexterm><primary>label</primary>
+<secondary>duplicate</secondary></indexterm>
+and <emphasis role="italic">usercondition</emphasis> are single symbols, which
+are taken as constants. The <emphasis role="italic">trapname</emphasis> is a
+string or symbol taken as a constant.
+<indexterm><primary>SIGNAL instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>SIGNAL instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; SIGNAL</title>
+<programlisting>
+Signal fred;  /* Transfer control to label FRED below */
+....
+....
+Fred: say "Hi!"
+</programlisting>
+</example>
+</para>
+<para>If there are duplicates,
+control is always passed to the first occurrence of the label in the program.
+</para>
+<para>When control
+reaches the specified label, the line number of the SIGNAL instruction is
+assigned to the special variable
+<indexterm><primary>SIGL</primary>
+<secondary>in SIGNAL instruction</secondary></indexterm>
+SIGL. This can aid debugging because you
+can use SIGL to determine the source of a transfer of control to a label.</para>
+</section>
+
+<section id="keyTrace"><title>TRACE</title>
+<indexterm><primary>TRACE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>debug interactive</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>TRACE</secondary></indexterm>
+<indexterm><primary>interactive debug</primary></indexterm>
+<indexterm><primary>operations</primary>
+<secondary>tracing results</secondary></indexterm>
+<indexterm><primary>TRACE setting</primary>
+<secondary>altering with TRACE instruction</secondary></indexterm>
+<indexterm><primary>tracing</primary>
+<secondary>execution of programs</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in a TRACE instruction</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/trace.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>TRACE controls the tracing action (that is, how much is displayed to the
+user) during the processing of a Rexx program. Tracing describes some or all
+of the clauses in a program, producing descriptions of clauses as they are
+processed. TRACE is mainly used for debugging. Its syntax is more concise
+than that of other Rexx instructions because TRACE is usually entered manually
+during interactive debugging. (This is a form of tracing in which the user
+can interact with the language processor while the program is running.)</para>
+
+<note><title>Note</title>
+<para>TRACE cannot be used in the Rexx macrospace.
+</para></note>
+<para>If specified, the <emphasis role="italic">number</emphasis>
+must be a whole number.</para>
+<para>The <emphasis role="italic">string</emphasis> or
+<emphasis role="italic">expression</emphasis> evaluates to: </para>
+<itemizedlist>
+<listitem><para>A numeric option</para></listitem>
+<listitem><para>One of the valid
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
+</para>
+</listitem>
+<listitem><para>Null</para></listitem></itemizedlist>
+<para>The <emphasis role="italic">symbol</emphasis> is taken as a constant
+and is therefore:</para>
+<itemizedlist>
+<listitem><para>A numeric option</para></listitem>
+<listitem><para>One of the valid
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
+</para>
+</listitem></itemizedlist>
+<para>The option that follows TRACE or the character string that is the result
+of evaluating <emphasis role="italic">expression</emphasis> determines the
+tracing action. You can omit
+the subkeyword VALUE if <emphasis role="italic">expression</emphasis>
+does not begin with a symbol or
+a literal string, that is, if it starts with a special character, such as
+an operator or parenthesis.</para>
+
+<section id="alphaco"><title>Trace Alphabetic Character (Word) Options</title>
+<indexterm><primary>TRACE instruction</primary>
+<secondary>alphabetical character word options</secondary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>alphabetical character options in TRACE</secondary></indexterm>
+<indexterm><primary>alphabetical character word options in TRACE</primary>
+</indexterm>
+<indexterm><primary>options</primary>
+<secondary>alphabetical character word options</secondary></indexterm>
+<para>Although you can enter the word in full, only the first capitalized letter
+is needed; all following characters are ignored. That is why these are referred
+to as alphabetic character options.</para>
+<para>TRACE actions correspond to the alphabetic character options as follows:
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold"><option>All</option></emphasis></term>
+<listitem><para>Traces (that is, displays) all clauses before execution.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Commands</option></term>
+<listitem><para>Traces all <xref linkend="commnds" xrefstyle="template:commands"/>
+before execution.
+If the command results in an error or failure,
+tracing also displays the return code from the command.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Error</option>
+<indexterm><primary>error</primary>
+<secondary>traceback after</secondary></indexterm>
+</term>
+<listitem><para>Traces any <xref linkend="commnds" xrefstyle="template:command"/>
+resulting in an error or failure after execution, together with the
+return code from the command.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Failure</option></term>
+<listitem><para>Traces any <xref linkend="commnds" xrefstyle="template:command"/>
+resulting in a failure after execution, together with the return
+code from the command.
+This is the same as the <computeroutput>Normal</computeroutput> option.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Intermediates</option></term>
+<listitem><para>Traces all clauses before execution. Also traces intermediate
+results during the evaluation of expressions and substituted names.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Labels</option></term>
+<listitem><para>Traces method and routine invocations, internal subroutine calls,
+transfers of control because of the SIGNAL instruction, and labels passed during
+program execution.
+This is especially useful with debug mode, when the language processor pauses
+after each invocation or call.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Normal</option></term>
+<listitem><para>Traces any failing command after execution, together with the
+return code from the command. This is the default setting, if not overridden
+using the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
+</para>
+<para>For the default Windows command processor, an attempt
+to enter an unknown command raises a FAILURE condition. The CMD return code
+for an unknown command is 1. An attempt to enter a command in an unknown command
+environment also raises a FAILURE condition; in such a case, the variable
+RC is set to 30.</para>
+</listitem></varlistentry>
+<varlistentry><term><option>Off</option></term>
+<listitem><para>Traces nothing and resets the special prefix option
+(described later) to OFF.
+</para></listitem></varlistentry>
+<varlistentry><term><option>Results</option>
+<indexterm><primary>expressions</primary>
+<secondary>tracing results of</secondary></indexterm>
+</term>
+<listitem><para>Traces all clauses before execution. Displays the final results
+(in contrast with <computeroutput>Intermediates</computeroutput> option) of the
+expression evaluation.
+Also displays values assigned during PULL, ARG, PARSE, and USE instructions.
+This setting is recommended for general debugging.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="xpreop"><title>Prefix Option</title>
+<indexterm><primary>? prefix on TRACE option</primary></indexterm>
+<para>The prefix <computeroutput>?</computeroutput> is valid alone or with
+one of the alphabetic character options. You can specify the prefix more
+than once, if desired.  Each occurrence
+of a prefix on an instruction reverses the action of the previous prefix.
+ The prefix must immediately precede the option (no intervening
+ whitespace).</para>
+<para>The prefix <computeroutput>?</computeroutput>
+controls interactive debugging.  During normal execution, a TRACE option
+with a prefix of <computeroutput>?</computeroutput>
+causes interactive debugging to be switched
+on. (See <xref linkend="xintdeb" />
+for full details of this facility.) When interactive
+debugging is on, interpretation pauses after most clauses that are traced.
+For example, the instruction <computeroutput>TRACE ?E</computeroutput>
+makes the language processor
+pause for input after executing any command that returns an error, that is,
+a nonzero return code or explicit setting of the error condition by the command
+handler.</para>
+<para>Any TRACE instructions in the program being traced are ignored to ensure
+that you are not taken out of interactive debugging unexpectedly.</para>
+<para>You can switch off interactive debugging in several ways: </para>
+<itemizedlist>
+<listitem><para>Entering <computeroutput>TRACE O</computeroutput>
+turns off all tracing.</para></listitem>
+<listitem><para>Entering <computeroutput>TRACE</computeroutput>
+with no options restores the defaults&mdash;it
+turns off interactive debugging but continues tracing with TRACE Normal (which
+traces any failing command after execution).</para></listitem>
+<listitem><para>Entering <computeroutput>TRACE ?</computeroutput> turns off
+interactive debugging and continues tracing with the current option.</para>
+</listitem>
+<listitem><para>Entering a TRACE instruction with a
+<computeroutput>?</computeroutput> prefix before the option
+turns off interactive debugging and continues tracing with the new option.
+</para></listitem></itemizedlist>
+<para> Using the <computeroutput>?</computeroutput> prefix, therefore, switches
+you in or out of
+interactive debugging. Because the language processor ignores any further
+TRACE statements in your program after you are in interactive debug mode,
+use <computeroutput>CALL TRACE "?"</computeroutput> to turn off interactive
+debugging.</para>
+</section>
+
+<section id="numopt"><title>Numeric Options</title>
+<indexterm><primary>numeric</primary>
+<secondary>options in TRACE</secondary></indexterm>
+<indexterm><primary>options</primary>
+<secondary>numeric in TRACE</secondary></indexterm>
+<para>If interactive debugging is active and the option specified is a positive
+whole number (or an expression that evaluates to a positive whole number),
+that number indicates the number of debug pauses to be skipped.
+(See <xref linkend="xintdeb" /> for further information.)
+However, if the option is a negative
+whole number (or an expression that evaluates to a negative whole number),
+all tracing, including debug pauses, is temporarily inhibited for the specified
+number of clauses. For example, <computeroutput>TRACE -100</computeroutput>
+means that the next 100 clauses that would usually be traced are not displayed.
+After that, tracing resumes as before.</para>
+</section>
+
+<section id="trnotes"><title>Tracing Tips</title>
+<indexterm><primary>tracing</primary>
+<secondary>tips</secondary></indexterm>
+<indexterm><primary>tips, tracing</primary></indexterm>
+<itemizedlist>
+<listitem><para>When a loop is traced, the DO clause itself is traced on
+every iteration of the loop.</para></listitem>
+<listitem><para>You can retrieve the trace actions currently in effect by
+using the <xref linkend="bifTrace" xrefstyle="select:title"/> built-in function.
+</para></listitem>
+<listitem><para>The trace output of commands traced before execution always
+contains the final value of the command, that is, the
+string passed to the environment, and the clause generating it.</para>
+</listitem>
+<listitem><para>Trace actions are automatically saved across subroutine,
+function, and method calls. See
+<xref linkend="keyCall" /> for more details.
+</para></listitem></itemizedlist>
+
+<indexterm><primary>TRACE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>TRACE instruction</secondary></indexterm>
+<para>One of the most common traces you will use is:
+<example>
+<title>Instructions &mdash; TRACE</title>
+<programlisting>
+TRACE ?R
+/* Interactive debugging is switched on if it was off, */
+/* and tracing results of expressions begins.          */
+</programlisting>
+</example>
+</para>
+</section>
+
+<section id="tracfor"><title>The Format of Trace Output</title>
+<indexterm><primary>formatting</primary>
+<secondary>of output during tracing</secondary></indexterm>
+<para>Every clause traced appears with automatic
+<indexterm><primary>indentation during tracing</primary></indexterm>
+formatting (indentation) according to its logical depth of nesting, for example.
+Results, if requested, are indented by two extra spaces and are enclosed in
+double quotation marks so that leading and trailing whitespace characters are
+apparent. Any control codes in the data encoding (ASCII values less than "20"x)
+are replaced by a question mark (?) to avoid screen interference. Results other
+than strings appear in the string representation obtained by sending them a
+<computeroutput>STRING</computeroutput> message. The resulting string is
+enclosed in parentheses. The line number in the program precedes the first
+clause traced on any line. All lines displayed during tracing have a
+three-character prefix to identify the type of data being traced.  These can be:
+</para>
+<indexterm><primary>tracing</primary>
+<secondary>data identifiers</secondary></indexterm>
+<variablelist>
+<varlistentry><term><computeroutput>*-*</computeroutput>
+<indexterm><primary>*-* tracing flag</primary></indexterm>
+<indexterm><primary>flag, tracing</primary>
+<secondary>*-*</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>*-*</secondary></indexterm>
+</term>
+<listitem><para>Identifies the source of a single clause, that is, the data
+actually in the program.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>+++</computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>+++</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>+++</secondary></indexterm>
+<indexterm><primary>+++ tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies a trace message.  This can be the nonzero return
+code from a command, the prompt message when interactive debugging is entered,
+an indication of a syntax error when in interactive debugging.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>I></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>I></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>I></secondary></indexterm>
+<indexterm><primary>>I> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies an entry to a routine or method.  This
+trace entry will only appear if tracing is enabled using the ::OPTIONS
+directive using TRACE A, TRACE R, TRACE I or TRACE L.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>K></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>K></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>K></secondary></indexterm>
+<indexterm><primary>>K> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies the result of a subkeyword value in a keyword
+instruction, like the TO subkeyword of a DO or LOOP instruction, or the
+DIGITS subkeyword in a NUMERIC instruction.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>>></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>>></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>>></secondary></indexterm>
+<indexterm><primary>>>> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies the result of an expression
+(for <computeroutput>TRACE R</computeroutput>) or the
+value returned from a
+subroutine call, or a value evaluated by execution of a DO loop.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>=></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>=></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=>></secondary></indexterm>
+<indexterm><primary>>=> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies a variable assignment or a message assignment result.
+The trace message includes both the name of the assignment target and the
+assigned value.  Assignment trace lines are displayed by assignment instructions,
+variable assigned via PARSE, ARG, PULL, or USE ARG, as well as control variable
+updates for DO and LOOP instructions.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>.></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>.></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>.></secondary></indexterm>
+<indexterm><primary>>.> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies the value assigned to a placeholder during parsing
+(see <xref linkend="placeh" />).
+</para></listitem></varlistentry>
+</variablelist><para> The following prefixes are used only if
+<computeroutput>TRACE Intermediates</computeroutput> is in effect:</para>
+<variablelist>
+<varlistentry><term><computeroutput>>A></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>A></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>A></secondary></indexterm>
+<indexterm><primary>>A> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies a value used as a function, subroutine, or message argument.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>C></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>C></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>C></secondary></indexterm>
+<indexterm><primary>>C> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the original name of the compound variable and
+the name of a compound variable,
+after the name has
+been replaced by the value of the variable but before the variable is used.
+If no value was assigned to the variable, the trace shows the variable in
+uppercase characters.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>E></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>E></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>E></secondary></indexterm>
+<indexterm><primary>>E> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and value of an environment symbol.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>F></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>F></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>F></secondary></indexterm>
+<indexterm><primary>>F> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and result of a function call.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>L></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>L></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>L></secondary></indexterm>
+<indexterm><primary>>L> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is a literal (string, uninitialized variable,
+or constant symbol).
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>M></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>M></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>M></secondary></indexterm>
+<indexterm><primary>>M> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and result of an object message.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>N></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>N></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>N></secondary></indexterm>
+<indexterm><primary>>N> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and result of a namespace-prefixed symbol.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>O></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>O></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>O></secondary></indexterm>
+<indexterm><primary>>O> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and result of an operation on two terms.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>P></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>P></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>P></secondary></indexterm>
+<indexterm><primary>>P> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and result of a prefix operation.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>V></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>V></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>>V></secondary></indexterm>
+<indexterm><primary>>V> tracing flag</primary></indexterm>
+</term>
+<listitem><para>The data traced is the name and contents of a variable.
+</para></listitem></varlistentry>
+</variablelist>
+<note><para>The characters <computeroutput>=></computeroutput> indicate the
+value of a variable or the result of an operation.</para>
+<para>The characters <computeroutput>&lt;=</computeroutput> indicate a value assignment.
+The name to the left of the marker is the assignment topic.  The data to the right
+of the marker is the assigned value.</para>
+<para>The character <computeroutput>?</computeroutput> could indicate a
+non-printable character in the output.</para>
+</note>
+<para>If no option is specified on a TRACE instruction, or if the result of
+evaluating the expression is null, the default tracing actions are restored.
+The defaults are TRACE N and interactive debugging
+(<computeroutput>?</computeroutput>) off.</para>
+<indexterm><primary>syntax</primary>
+<secondary>error</secondary>
+<tertiary>traceback after</tertiary></indexterm>
+<indexterm><primary>traceback, on syntax error</primary></indexterm>
+<para>Following a syntax error that SIGNAL ON SYNTAX does not trap, the clause
+in error is always traced.</para>
+</section>
+</section>
+
+<section id="keyUse" revisionflag="changed"><title>&changed50;USE</title>
+<para>
+<indexterm><primary>USE instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>USE</secondary></indexterm>
+<indexterm><primary>ARG subkeyword</primary>
+<secondary>in a USE instruction</secondary></indexterm>
+<indexterm><primary>STRICT subkeyword</primary>
+<secondary>in a USE instruction</secondary></indexterm>
+The USE instruction can be used to
+<itemizedlist spacing="compact">
+  <listitem>
+    <para>retrieve the argument objects by using
+    <xref linkend="keyUseArg" xrefstyle="template:USE ARG or USE STRICT ARG"/>,
+    or to</para></listitem>
+  <listitem>
+    <para>define local variables in a method by using
+    <xref linkend="keyUseLocal" xrefstyle="template:USE LOCAL"/>.</para></listitem>
+</itemizedlist>
+</para>
+
+<section id="keyUseArg" revisionflag="changed"><title>&changed50;USE ARG, USE STRICT ARG</title>
+<para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/use_arg.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>USE ARG retrieves the argument objects provided in a program, routine,
+function, or method and assigns them to variables,
+<xref linkend="varrefterm" xrefstyle="template:variable references"/>, or
+<xref linkend="mssg" xrefstyle="template:message term assignments"/>.
+</para>
+<para>Each <emphasis role="italic">name</emphasis> must be a valid variable
+name, a variable reference term, or an assignment message term.
+The <emphasis role="italic">name</emphasis>s are
+assigned from left to right. For each <emphasis role="italic">name</emphasis>
+you specify, the language processor assigns it a corresponding argument from
+the program, routine, function, or method call. If there is no corresponding
+argument, <emphasis role="italic">name</emphasis> is assigned the value
+of <emphasis role="italic">expr</emphasis>.
+If <literal>=</literal> <emphasis role="italic">expr</emphasis> is not specified for
+the given argument, the variable <emphasis role="italic">name</emphasis> is dropped.
+If the assignment target is a variable reference term, the corresponding argument
+must never be omitted.
+If the assignment target is a message term, no action is taken for omitted arguments.
+</para>
+<para>A USE ARG instruction can be processed repeatedly and it always accesses
+the same current argument data.</para>
+<para>If <literal>=</literal> <emphasis role="italic">expr</emphasis> is specified
+for an argument, the expression is evaluated to provide a default value for an
+argument when the corresponding argument does not exist.
+The default <emphasis role="italic">expr</emphasis> must be a literal string,
+a constant symbol, or an expression enclosed in parentheses.
+No default value is allowed for variable reference terms.
+</para>
+<para>The <option>STRICT</option> option imposes additional constraints on argument processing.
+The number of arguments must match the number of
+<emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
+is considered optional if <emphasis role="italic">expr</emphasis> has been
+specified for the argument.</para>
+<para>An ellipsis (<literal>...</literal>) can be specified after the last
+variable in a USE STRICT ARG statement to indicate that more arguments may follow.
+This allows defining a minimum number of arguments that must be supplied or for which
+there are default values defined, which may optionally be followed by any additional
+arguments.
+<indexterm><primary>USE instruction</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>USE instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; USE</title>
+<programlisting>
+/* USE Example                       */
+/* FRED("Ogof X",1,5) calls function */
+Fred: use arg string, num1, num2
+
+/* Now: STRING contains "Ogof X"     */
+/*      NUM1 contains "1"            */
+/*      NUM2 contains "5"            */
+</programlisting>
+<programlisting>
+/* Another example, shows how to pass non-string arguments with USE ARG */
+/* Pass a stem and an array to a routine to modify one element of each  */
+stem.1 = "Value"
+array = .array~of("Item")
+say "Before subroutine:" stem.1 array[1]  /* Shows "Value Item"         */
+Call Change_First stem. , array
+say "After subroutine:" stem.1 array[1]   /* Shows "NewValue NewItem"   */
+Exit
+
+Change_First: Procedure
+  Use Arg substem., subarray
+  substem.1 = "NewValue"
+  subarray[1] = "NewItem"
+  Return
+</programlisting>
+<programlisting>
+/* USE STRICT Example                */
+/* FRED("Ogof X",1) calls function  */
+Fred: use strict arg string, num1, num2=4
+
+/* Now: STRING contains "Ogof X"     */
+/*      NUM1 contains "1"            */
+/*      NUM2 contains "4"            */
+</programlisting>
+</example>
+</para>
+<para>In the above example, a call to the function FRED may have either 2 or 3 arguments.  The
+STRICT keyword on the USE instruction will raise a syntax error for any other combination of
+arguments.
+<example>
+<title>Instructions &mdash; USE</title>
+<programlisting>
+call test "one"
+call test "one", "two"
+call test "one", "two", "three"
+call test "one", , "three", "four", "five"
+exit
+
+test: procedure /* a minimum of one argument must be supplied */
+  use strict arg v1, v2="zwei", ...
+  say "There are ["arg()"] argument(s); v1,v2=["v1","v2"]"
+  do i=3 to arg()
+    say " arg #" i"=["arg(i)"]"
+  end
+  say "--"
+  return
+</programlisting>
+</example>
+</para>
+<para><emphasis role="bold">Output:</emphasis>
+<programlisting>
+There are [1] argument(s); v1,v2=[one,zwei]
+--
+There are [2] argument(s); v1,v2=[one,two]
+--
+There are [3] argument(s); v1,v2=[one,two]
+ arg # 3=[three]
+--
+There are [5] argument(s); v1,v2=[one,zwei]
+ arg # 3=[three]
+ arg # 4=[four]
+ arg # 5=[five]
+--
+</programlisting>
+</para>
+<para>The assignment targets may be any term that can be on the left side of
+an assignment statement.
+<example>
+<title>Instructions &mdash; USE</title>
+<programlisting>
+expose myArray myDirectory
+use arg myArray[1], myDirectory~name
+</programlisting>
+</example>
+</para>
+<para>would be equivalent to
+<programlisting>
+myArray[1] = arg(1)
+myDirectory~name = arg(2)
+</programlisting>
+</para>
+<para>You can retrieve or check the arguments by using the
+<xref linkend="bifArg" xrefstyle="template:ARG"/> built-in function.
+The ARG and PARSE ARG instructions are alternative
+ways of retrieving arguments. ARG and PARSE ARG access the string values of
+arguments. USE ARG performs a direct, one-to-one assignment of arguments.
+This is preferable when you need direct access to an argument,
+without translation or parsing. USE ARG also allows access to both string
+and non-string argument objects; ARG and PARSE ARG convert the arguments to string values
+before parsing.</para>
+</section>
+
+<section id="keyUseLocal" revisionflag="added"><title>&added50;USE LOCAL</title>
+<indexterm><primary>LOCAL subkeyword</primary><secondary>in a USE instruction</secondary></indexterm>
+
+<para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/use_local.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
+<para>USE LOCAL defines local variables in a method.</para>
+<para>Generally object variables must be specified in a method using EXPOSE,
+while all other variables used in the method will become local variables.
+In contrast to this, USE LOCAL allows to explicitly declare local variables,
+while all other variables not listed on the USE LOCAL instruction will
+automatically become object variables.</para>
+<para>Each <emphasis role="italic">name</emphasis> must be a valid variable
+name.
+if no <emphasis role="italic">name</emphasis> is specified, all variables
+will become object variables.
+</para>
+<para>If a USE LOCAL instruction is present, it must be the
+first instruction of the method.
+</para>
+<para>Note that USE LOCAL will always keep Rexx special variables
+RC, RESULT, SIGL, SELF, and SUPER as local variables.
+<indexterm><primary>USE LOCAL instruction</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>USE LOCAL instruction</secondary></indexterm>
+<example>
+<title>Instructions &mdash; USE LOCAL</title>
+<programlisting>::method init
+USE LOCAL x y z   -- only x, y, and z are local
+                  -- all other become object variables
+
+::method init
+use local         -- any variable is an object variable
+</programlisting>
+</example>
+</para>
+</section>
+</section>
+
+</chapter>

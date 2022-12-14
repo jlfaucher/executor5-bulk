@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2013-2022 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<section id="clsKeyboard" xreflabel="Keyboard"><title>Keyboard Class</title>
+<indexterm><primary>Keyboard class</primary></indexterm>
+<para>
+  The <computeroutput>Keyboard</computeroutput> class has methods and attributes to address the functionality of receiving
+  and processing keyboard input as supplied by the Windows operating system.
+</para>
+<para>
+  Currently the <computeroutput>Keyboard</computeroutput> class has few methods. It is anticipated that the class will be
+  enhanced in future versions of ooDialog.
+</para>
+
+<section id="sctMethodsKeyboard"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Keyboard</computeroutput> class:
+
+<table id="tblMethodsKeyboard" frame="all"> <title>Keyboard Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetAsyncKeyState"/> </entry>
+<entry>Determines whether a key is up or down at the time this method is invoked. Optionally, determines whether the key was pressed after a previous invocation of the <emphasis role="italic">getAsyncKeyState</emphasis> method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthGetAsyncKeyState" xreflabel="getAsyncKeyState"><title>getAsyncKeyState (Class Method)</title>
+<indexterm><primary>getAsyncKeyState</primary></indexterm>
+<indexterm><primary>Keyboard class</primary><secondary>getAsyncKeyState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getAsyncKeyState(--vKey--+---------+--)------><
+                             +-,-info--+
+]]>
+</programlisting>
+
+<para>
+  Determines whether a key is up or down at the time this method is invoked. Optionally, determines whether the key was
+  pressed after a previous invocation of the <emphasis role="italic">getAsyncKeyState</emphasis> method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>vKey [required]</term>
+    <listitem>
+    <para>
+      The virtual key code of the key being queried. It makes the most sense to us the <xref linkend="clsVK"/> class to
+      supply the key code, however, all that is needed is the correct numeric value of the virtual key.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>info [optional in / out]</term>
+    <listitem>
+    <para>
+      A <computeroutput>Directory</computeroutput> object whose indexes will, on return, contain the key state information.
+      On return the <computeroutput>Directory</computeroutput> will contain the following indexes:
+    </para>
+    <variablelist>
+      <varlistentry><term>WASDOWN</term>
+      <listitem>
+      <para>
+        This index will be true if the key was down and false if the key was not down. The value of this index is exactly the
+        same as the return from the <emphasis role="italic">getAsyncKeyState</emphasis> method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>WASPRESSED</term>
+      <listitem>
+      <para>
+        This index reflects the state of the operating system's <emphasis role="italic">was pressed</emphasis> flag. That
+        flag is true if the key was pressed since the last time the async key state was queried. The <emphasis
+        role="italic">WASPRESSED</emphasis> index will be true if the flag for the specified key was true and false if the
+        flag is false. Microsoft cautions that this is not reliable, see the remarks.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the specified virtual key was down and false if it was not down.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Microsoft cautions that the <emphasis role="italic">was pressed</emphasis> state is not reliable. The reason is this, the
+    state is a system wide state. Since modern versions of Windows use pre-emptive multitasking, if another application
+    queries the async state, it could receive the <emphasis role="italic">was pressed</emphasis> state rather than the
+    application currently querying the state. Microsoft maintains the state flag for compatibility with early versions of
+    Windows which were not pre-emptive. ooDialog allows the optional querying of the <emphasis role="italic">was
+    pressed</emphasis> state for completeness, and the idea that presumably the programmer knows what she is doing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from an application that has a user interface that does one thing if the user clicks a column header
+    of a list-view, and another thing if the column click was done with the control key held down:
+<programlisting>
+<![CDATA[
+
+::method onColumnClick unguarded
+  use arg id, colIndex, listView
+
+  if colIndex == 2 & .Keyboard~getAsyncKeyState(.VK~CONTROL) then do
+    self~commitLastNames
+    return 0
+  end
+
+  ...
+
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Keyboard::getAsyncKeyState() -->
+
+</section> <!-- End Keyboard Class -->
+

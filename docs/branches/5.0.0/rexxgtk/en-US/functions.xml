@@ -1,0 +1,350 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>RexxGTK Function Reference</title>
+<indexterm><primary>Functions</primary></indexterm>
+
+<para>There are a small number of routines available in the RexxGTK package.
+These routines are divided into two groups. The first group is used to control the
+GTK+ system message looping mechanism and provide GTK+ initialization. The second group
+of routines are general and provide useful information or access to operating system
+functions.</para>
+
+<section id="gtkinit">
+<title>gtk_init</title>
+<indexterm><primary>gtk_init</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_init</secondary></indexterm>
+<para>Initializes the library. You only need to call this routine one time.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_init()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkeventspending">
+<title>gtk_events_pending</title>
+<indexterm><primary>gtk_events_pending</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_events_pending</secondary></indexterm>
+<para>Return a boolean value of 1 if there are pending events, otherwise return 0.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_events_pending()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>1 or zero.</para>
+</section>
+
+<section id="gtkmain">
+<title>gtk_main</title>
+<indexterm><primary>gtk_main</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_main</secondary></indexterm>
+<para>Executes the GTK main loop.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_main()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmainquit">
+<title>gtk_main_quit</title>
+<indexterm><primary>gtk_main_quit</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_main_quit</secondary></indexterm>
+<para>Exits the GTK main loop.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_main_quit()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmainiteration">
+<title>gtk_main_iteration</title>
+<indexterm><primary>gtk_main_iteration</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_main_iteration</secondary></indexterm>
+<para>Executes one iteration of the GTK main loop.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_main_iteration()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkmessage">
+<title>gtk_message</title>
+<indexterm><primary>gtk_message</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_message</secondary></indexterm>
+<para>Log a message.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_message(msg)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>msg</term>
+      <listitem><para>The message.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkwarning">
+<title>gtk_warning</title>
+<indexterm><primary>gtk_warning</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_warning</secondary></indexterm>
+<para>Log a warning message.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_warning(msg)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>msg</term>
+      <listitem><para>The message.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcritical">
+<title>gtk_critical</title>
+<indexterm><primary>gtk_critical</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_critical</secondary></indexterm>
+<para>Log a critical message.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_critical(msg)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>msg</term>
+      <listitem><para>The message.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkerror">
+<title>gtk_error</title>
+<indexterm><primary>gtk_error</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_error</secondary></indexterm>
+<para>Log an error message.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_error(msg)-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>msg</term>
+      <listitem><para>The message.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkdebug">
+<title>gtk_debug</title>
+<indexterm><primary>gtk_debug</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_debug</secondary></indexterm>
+<para>Log a debug message.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--gtk_debug(msg)-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>msg</term>
+      <listitem><para>The message.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="GrxVersion">
+<title>GrxVersion</title>
+<indexterm><primary>GrxVersion</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtk_version</secondary></indexterm>
+<para>Return the version number of the RexxGTK library in the form n.n.n.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--GrxVersion()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Version number.</para>
+</section>
+
+<section id="GrxGetUserName">
+<title>GrxGetUserName</title>
+<indexterm><primary>GrxGetUserName</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtkgetusername</secondary></indexterm>
+<para>Get the current user name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--GrxGetUserName()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>User name</para>
+</section>
+
+<section id="GrxGetRealName">
+<title>GrxGetRealName</title>
+<indexterm><primary>GrxGetRealName</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtkgetrealname</secondary></indexterm>
+<para>Get the current real name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--GrxGetRealName()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Real name</para>
+</section>
+
+<section id="GrxGetHomeDir">
+<title>GrxGetHomeDir</title>
+<indexterm><primary>GrxGetHomeDir</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtkgethomedir</secondary></indexterm>
+<para>Get the user's home directory.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--GrxGetHomeDir()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Home directory</para>
+</section>
+
+<section id="GrxGetHostName">
+<title>GrxGetHostName</title>
+<indexterm><primary>GrxGetHostName</primary></indexterm>
+<indexterm><primary>GTK Functions</primary>
+<secondary>gtkgethostname</secondary></indexterm>
+<para>Get the machine host name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--GrxGetHostName()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Host name</para>
+</section>
+
+</chapter>
