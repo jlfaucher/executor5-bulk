@@ -1,0 +1,426 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.POS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "POS.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~assertSame('0', pos('',''))
+
+::method 'test002'
+    self~assertSame('0', pos('','a'))
+
+::method 'test003'
+    self~assertSame('0', pos('','123233'x))
+
+::method 'test004'
+    a = 'abcd'
+    self~assertSame('0', pos('',a))
+
+::method 'test005'
+    a. = 'efgh'
+    self~assertSame('0', pos('',a.))
+
+::method 'test006'
+    a. = 'efgh'
+    i = 3
+    self~assertSame('0', pos('',a.i))
+
+::method 'test007'
+    self~assertSame(0, pos('',nov.))
+
+::method 'test008'
+    self~assertSame('0', pos('',nov))
+
+::method 'test009'
+    self~assertSame('0', pos('',nov.))
+
+::method 'test010'
+    self~assertSame('0', pos('',nov.3))
+
+::method 'test011'
+    self~assertSame('0', pos('',a.nov))
+
+::method 'test012'
+    self~assertSame('0', pos('','abcde' 'fghij'))
+
+::method 'test013'
+    self~assertSame('0', pos('','111'||'222'))
+
+::method 'test014'
+    self~assertSame('0', pos('',111+12))
+
+::method 'test015'
+    self~assertSame('0', pos('a',''))
+
+::method 'test016'
+    self~assertSame('1', pos('a','a'))
+
+::method 'test017'
+    self~assertSame('2', pos('2','123233'x))
+
+::method 'test018'
+    a = 'abcd'
+    self~assertSame('1', pos('a',a))
+
+::method 'test019'
+    a. = 'efgh'
+    self~assertSame('2', pos('f',a.))
+
+::method 'test020'
+    a.3 = '333333'
+    i = 3
+    self~assertSame('1', pos('3',a.i))
+
+::method 'test021'
+    self~assertSame(0, pos('4',nov.))
+
+::method 'test022'
+    self~assertSame('0', pos('o',nov))
+
+::method 'test023'
+    self~assertSame('0', pos('n',nov.))
+
+::method 'test024'
+    self~assertSame('5', pos('3',nov.3))
+
+::method 'test025'
+    self~assertSame('0', pos('a',a.nov))
+
+::method 'test026'
+    self~assertSame('5', pos('e','abcde' 'fghij'))
+
+::method 'test027'
+    self~assertSame('4', pos('2','111'||'222'))
+
+::method 'test028'
+    self~assertSame('2', pos('2',111+12))
+
+::method 'test029'
+    self~assertSame('0', pos('1',''))
+
+::method 'test030'
+    self~assertSame('0', pos('1','a'))
+
+::method 'test031'
+    self~assertSame('0', pos('1','123233'x))
+
+::method 'test032'
+    a = 'abcd'
+    self~assertSame('0', pos('z',a))
+
+::method 'test033'
+    a. = 'efgh'
+    self~assertSame('0', pos('z',a.))
+
+::method 'test034'
+    a.3 = '333333'
+    i = 3
+    self~assertSame('0', pos('z',a.i))
+
+::method 'test035'
+    self~assertSame('0', pos('z',nov))
+
+::method 'test036'
+    self~assertSame('0', pos('z',nov.))
+
+::method 'test037'
+    self~assertSame('0', pos('z',nov.3))
+
+::method 'test038'
+    self~assertSame('0', pos('z',a.nov))
+
+::method 'test039'
+    self~assertSame('0', pos('z','abcde' 'fghij'))
+
+::method 'test040'
+    self~assertSame('0', pos('z','111'||'222'))
+
+::method 'test041'
+    self~assertSame('0', pos('z',111+12))
+
+::method 'test042'
+    .local~h = reverse('abcdefghijklmnopqrstuvwxyz')
+    .local~h = copies(.h,1000)||'*'||copies(.h,100)||'.'
+
+::method 'test043'
+    self~assertSame('0', pos('ef',.h))
+
+::method 'test044'
+    self~assertSame('0', pos('z*',.h))
+
+::method 'test045'
+    self~assertSame('0', pos('z.',.h))
+
+::method 'test046'
+    self~assertSame('28602', pos('.',.h))
+
+::method 'test047'
+    self~assertSame('0', pos('. ',.h))
+
+::method 'test048'
+    numeric digits 2
+    self~assertSame('28602', pos('.',.h))
+
+::method 'test049'
+    self~assertSame('0', pos('ef',.h,1))
+
+::method 'test050'
+    self~assertSame('0', pos('z*',.h,1))
+
+::method 'test051'
+    self~assertSame('0', pos('z.',.h,1))
+
+::method 'test052'
+    self~assertSame('28602', pos('.',.h,1))
+
+::method 'test053'
+    self~assertSame('0', pos('. ',.h,1))
+
+::method 'test054'
+    numeric digits 2
+    self~assertSame('28602', pos('.',.h,1))
+
+::method 'test055'
+    self~assertSame('0', pos('ef',.h,1000))
+
+::method 'test056'
+    self~assertSame('0', pos('z*',.h,1000))
+
+::method 'test057'
+    self~assertSame('0', pos('z.',.h,1000))
+
+::method 'test058'
+    self~assertSame('28602', pos('.',.h,1000))
+
+::method 'test059'
+    self~assertSame('0', pos('. ',.h,1000))
+
+::method 'test060'
+    numeric digits 2
+    self~assertSame('28602', pos('.',.h,1000))
+
+::method 'test061'
+    self~assertSame('0', pos('ef',.h,1.e5))
+
+::method 'test062'
+    self~assertSame('0', pos('z*',.h,1.e5))
+
+::method 'test063'
+    self~assertSame('0', pos('z.',.h,1.e5))
+
+::method 'test064'
+    self~assertSame('0', pos('.',.h,1.e5))
+
+::method 'test065'
+    self~assertSame('0', pos('. ',.h,1.e5))
+
+::method 'test066'
+    numeric digits 2
+    self~assertSame('0', pos('.',.h,1.e5))
+
+::method 'test067'
+    .local~remove(h)
+    .local~s0 = ''
+    .local~s1 = 'a'
+    .local~s30 = copies('6',30)||'...'
+    .local~s255 = copies('*',255)||'1234e+3'
+    .local~s32768 = copies('ab',16383)||'abcde'
+    .local~s500000 = copies('.',500000)||'zzzzzzz'
+
+::method 'test068'
+    self~assertSame(0, pos('a',.s))
+
+::method 'test069'
+    self~assertSame(1, pos('a',.s1))
+
+::method 'test070'
+    self~assertSame(30, pos('6.',.s30))
+
+::method 'test071'
+    self~assertSame(255, pos('*1',.s255))
+
+::method 'test072'
+    self~assertSame(32767, pos('abc',.s32768))
+
+::method 'test073'
+    self~assertSame(32768, pos('bc',.s32768))
+
+::method 'test074'
+    self~assertSame(32769, pos('cde',.s32768))
+
+::method 'test075'
+    self~assertSame(500001, pos('zzzz',.s500000))
+
+::method 'test076'
+    .local~remove(s0)
+    .local~remove(s1)
+    .local~remove(s30)
+    .local~remove(s255)
+    .local~remove(s32768)
+    .local~remove(s500000)
+
+::method 'test077'
+    self~expectSyntax(40.12)
+    xre = pos('34','123456789',nov)
+
+::method 'test078'
+    .local~start1 = 5
+    .local~start2 = 5.00
+    .local~start3 = 5.00+0
+    .local~start4 = 4+1
+    .local~s = 1
+
+::method 'test079'
+    self~assertSame('3', pos('34','123456789',2))
+
+::method 'test080'
+    self~assertSame('3', pos('34','123456789',0.02e+2))
+
+::method 'test081'
+    self~assertSame('8', pos('89','123456789',.2*30))
+
+::method 'test082'
+    self~assertSame('8', pos('89','123456789',.start1))
+
+::method 'test083'
+    self~assertSame('8', pos('89','123456789',.start2))
+
+::method 'test084'
+    self~assertSame('8', pos('89','123456789',.start3))
+
+::method 'test085'
+    self~assertSame('8', pos('89','123456789',.start4))
+
+::method 'test086'
+    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",.s))
+
+::method 'test087'
+    s. = 12
+    self~assertSame('12', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.))
+
+::method 'test088'
+    s.3 = 13
+    self~assertSame('15', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.3))
+
+::method 'test089'
+    s.s.s.s = 1
+    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.s.s.s))
+
+::method 'test090'
+    s.s.s.s = 1
+    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.s.s.s + .s + 1))
+
+::method 'test091'
+    .local~remove(start1)
+    .local~remove(start2)
+    .local~remove(start3)
+    .local~remove(start4)
+    .local~remove(s)
+
+::method 'test092'
+    self~expectSyntax(93.924)
+    xre=pos('-','--------',0)
+
+::method 'test093'
+    self~expectSyntax(93.924)
+    xre=pos('-','--------',-12)
+
+::method 'test094'
+    self~expectSyntax(40.12)
+    xre=pos('-','--------',0.5)
+
+::method 'test095'
+    self~assertSame('0', pos('-','--------',0.0000001e12))
+
+::method 'test096'
+    self~expectSyntax(40.12)
+    xre = pos('-','--------',.abc)
+
+::method 'test097'
+    self~expectSyntax(40.12)
+    xre = pos('-','--------','a')
+
+::method 'test098'
+    a = xrange('a','z')
+    b = xrange('i','s')
+    c = 6
+    self~assertSame('9', pos(b,a,c))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_POS"
+    self~assertEquals(6, POS('day','Saturday'))
+    self~assertEquals(0, POS('x','abc def ghi'))
+    self~assertEquals(4, POS(' ','abc def ghi'))
+    self~assertEquals(8, POS(' ','abc def ghi',5))
+
+   -- new test
+    self~assertEquals(0, POS('','abc def ghi',5))
+
+::method testRange01
+    self~assertSame('0', pos('','',,100))
+    self~assertSame('0', pos('','',,0))
+    self~assertSame('0', pos('e','abcdeeeeef',,4))
+    self~assertSame('0', pos('e','abcdeeeeef',1,4))
+    self~assertSame('5', pos('e','abcdeeeeef',2,4))
+    self~assertSame('0', pos('eee','abcdeeeeef',5,2))
+
+::method testRange02
+    self~expectSyntax(40.12)
+    xre = pos('34','123456789',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = pos('-','--------',1,-12)
+
+::method testRange04
+    self~expectSyntax(40.12)
+    xre = pos('-','--------',1,0.5)
+

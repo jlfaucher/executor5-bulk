@@ -1,0 +1,228 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Note: Since the socket class completely encapsulates the rxsock functions  */
+/*       the rxsock function can be completely tested using the sockets       */
+/*       class. Thus there is no need for a test group for the rxsock         */
+/*       functions.                                                           */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SocketClass.testGroup)
+if group~isAutomatedTest then return group
+suite = group~suite
+testResult = suite~execute
+testResult~print
+return testResult
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.  You must require the ooTest framework file
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'socket.cls'
+
+/* class: SocketClass.testGroup - - - - - - - - - - - - - - - - - - - - - - - *\
+     The test case class must subclass ooTestCase.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "SocketClass.testGroup" public subclass ooTestCase
+
+::constant host '127.0.0.1'
+::constant port 8083
+
+::method test_001
+   -- can we obtain a socket?
+   s = .socket~new()
+   self~assertNotEquals(-1, s)
+   retc = s~close()
+   self~assertNotEquals(-1, retc)
+   return
+
+::method test_002
+   -- can we obtain an internet address?
+   addr = .inetaddress~new(self~host, self~port)
+   self~assertTrue(addr~isA(.inetaddress))
+   self~assertSame(self~host, addr~address)
+   self~assertSame(self~port, addr~port)
+   return
+
+::method test_003
+   -- can we set a socket option?
+   s = .socket~new()
+   s~setoption('SO_REUSEADDR', 1)
+   addr = .inetaddress~new(self~host, self~port)
+   retc = s~bind(addr)
+   self~assertNotEquals(-1, retc)
+   s~close()
+   return
+
+::method test_options_timeout
+   s = .socket~new()
+
+   milliseconds = 300
+   self~assertSame(0, s~setOption("SO_RCVTIMEO", milliseconds))
+   -- there seems to some rounding/adjusting going on on Linux
+   -- we accept a delta of up to 10 ms
+   ms = s~getOption("SO_RCVTIMEO")
+   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_RCVTIMEO set to" milliseconds", get returns" ms)
+
+   milliseconds = 9876
+   self~assertSame(0, s~setOption("SO_SNDTIMEO", milliseconds))
+   -- there seems to some rounding/adjusting going on on Linux
+   -- we accept a delta of up to 10 ms
+   ms = s~getOption("SO_SNDTIMEO")
+   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
+   s~close
+
+::method test_004
+   -- can we bind a socket?
+   s = .socket~new()
+   retc = s~setoption('SO_REUSEADDR', 1)
+   self~assertNotEquals(-1, retc)
+   s~close()
+   return
+
+::method test_005
+   -- test client and server
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+   return
+
+::method test_006
+   -- test client and server (small message)
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'This is test 006'
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+   return
+
+::method test_007
+   -- test client and server (large message)
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'This is test 007 '~copies(1000)
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+   return
+
+
+-- the client routine
+
+::routine client
+   use strict arg self, host, port, message
+   -- get a new socket
+   s = .socket~new()
+   self~assertNotEquals(-1, s)
+   -- set the server address/port to connection information
+   addr = .inetaddress~new(host, port)
+   -- connect to the server
+   retc = s~connect(addr)
+   self~assertEquals(0, retc)
+   -- send the command
+   retc = s~send(message)
+   self~assertNotEquals(-1, retc)
+   -- receive the command back
+   buf = s~recv(4096)
+   self~assertNotSame(.nil, buf)
+   -- close the socket
+   s~close()
+   self~assertNotEquals(-1, retc)
+   return
+
+
+-- the socket server class
+
+::class server
+::method init
+   use strict arg cself, host, port
+   -- get a new socket
+   s = .socket~new()
+   cself~assertNotEquals(-1, s)
+   -- set the socket to reuse the addresses assigned to it
+   retc = s~setoption('SO_REUSEADDR', 1)
+   -- bind the socket to an address/port
+   addr = .inetaddress~new(host, port)
+   retc = s~bind(addr)
+   cself~assertNotEquals(-1, retc)
+   -- mark it as a listening socket
+   retc = s~listen(3)
+   cself~assertNotEquals(-1, retc)
+   reply
+   stop = .false
+   do while \stop
+      -- accept a client connection socket
+      cs = s~accept()
+      cself~assertNotEquals(-1, cs)
+      -- receive the command from the client
+      cmd = cs~recv(4096)
+      cself~assertNotEquals(0, cmd~length())
+      -- if there's more to receive, wait before sending back
+      if cmd~length = 4096 then
+        call syssleep 1
+      -- echo the command back to the client
+      retc = cs~send(cmd)
+      cself~assertNotEquals(-1, retc)
+      -- close the client connection socket
+      retc = cs~close()
+      cself~assertNotEquals(-1, retc)
+      -- if the command was stop then stop the server
+      if cmd~upper() = 'STOP' then do
+         stop = .true
+         end
+      end
+   -- close the socket
+   retc = s~close()
+   cself~assertNotEquals(-1, retc)
+   return
+
+
+::options all syntax

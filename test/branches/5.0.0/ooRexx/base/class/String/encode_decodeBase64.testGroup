@@ -1,0 +1,250 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Encode_DecodeBase64.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Encode_DecodeBase64.testGroup" subclass ooTestCase public
+
+::method "test_EncodeBase64_DecodeBase64"
+   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+   do i=1 to allChars~length
+      a=allChars~left(i)         -- create a string from the left
+      self~assertSame(a, a~encodeBase64~decodeBase64)  -- test whether same value
+      -- self~assertEquals(a, a1~encodeBase64~decodeBase64)  -- test whether same value
+
+      b=allChars~right(i)        -- create a string from the right
+      self~assertSame(b, b~encodeBase64~decodeBase64)  -- test whether same value
+   end
+
+   a="Hello world"
+   a1=a~encodeBase64          -- encode the string with ooRexx
+      -- "Hello world" encoded value from Perl, Ruby, etc. according to Salvador's article
+   a2="SGVsbG8gd29ybGQ="
+
+   self~assertSame(a, a2~decodeBase64)
+   self~assertSame(a, a1~decodeBase64)
+
+
+::method test_encode_no_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  ""~encodeBase64(1)
+
+::method test_decode_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  ""~decodeBase64(1)
+
+::method test_decode_invalid_length_one
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "a"~decodeBase64
+
+::method test_decode_invalid_length_two
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "ab"~decodeBase64
+
+::method test_decode_invalid_length_three
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "abc"~decodeBase64
+
+::method test_decode_invalid_three_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "A==="~decodeBase64
+
+::method test_decode_invalid_four_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "===="~decodeBase64
+
+::method test_decode_invalid_interleaved
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "a=b="~decodeBase64
+
+::method test_decode_invalid_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "aa=a"~decodeBase64
+
+::method test_decode_invalid_char_00
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  ("AAAA" || '00'x || "AAA")~decodeBase64
+
+::method test_decode_invalid_char_80
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  ("AAAA" || '80'x || "AAA")~decodeBase64
+
+::method test_decode_invalid_char_minus
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "AA-A"~copies(4)~decodeBase64
+
+::method test_encode_null_string
+  self~assertSame("", ""~encodeBase64)
+
+::method test_decode_null_string
+  self~assertSame("", ""~encodeBase64)
+
+::method test_encode_one_char
+  do c over xrange('00'x, 'ff'x)~makeArray("")
+    b64 = c~encodeBase64
+    self~assertSame(self~encodeBase64(c), b64)
+    self~assertSame(c, b64~decodeBase64)
+  end
+
+::method test_encode_two_chars
+  call random , , 123
+  do 200
+    s = random(0, 256 ** 2 -1)~d2c(2)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+::method test_encode_three_chars
+  call random , , 123
+  do 200
+    s = random(0, 256 ** 3 -1)~d2c(3)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+::method test_encode_strings
+  do set over "alnum", "alpha", "blank", "cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper", "xdigit"
+    s = xrange(set)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+  do s over xrange('00'x, 'ff'x), self~base64, " ", " "~copies(64)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+::method test_encode_string_long
+  call random , , 123
+  long = 20000
+  m = .MutableBuffer~new(, long)
+  do long % 2
+    m~append(random(0, 256 ** 2 -1)~d2c(2))
+  end
+  s = m~string
+  b64 = s~encodeBase64
+  self~assertSame(self~encodeBase64(s), b64)
+  self~assertSame(s, b64~decodeBase64)
+
+::method test_decode_two_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "A=="
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_three_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "AA="
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_four_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "AAA"
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_string_long
+  call random , , 123
+  long = 20000
+  m = .MutableBuffer~new(, long)
+  do long
+    m~append(random(0, 63)~d2c)
+  end
+  b64 = m~translate(self~base64, xrange('00'x, '3f'x))~string
+  string = b64~decodeBase64
+  self~assertSame(self~decodeBase64(b64), string)
+  self~assertSame(b64, string~encodeBase64)
+
+
+::constant base64 (xrange("alpha", "digit") || "+/")
+
+-- Convert string to base64 encoded string (RFC 2045)
+::method encodeBase64 public
+  use strict arg string
+
+  new = (string~length + 2) % 3
+  tail = (3 - string~length // 3) // 3                -- 0 -> 0, 1 -> 2, 2 -> 1
+
+  return -
+    string~left(new * 3, '00'x) -                     -- make length a multiple of 3
+    ~c2x~x2b -                                        -- convert to binary string
+    ~changeStr("0", "0000")~changeStr("1", "0001") -  -- change bits to nibbles
+    ~bitAnd( -                                        -- mark unwanted bits
+      'FFFF00FF000000FF000000FF000000FF000000FF000000FF'x~copies(new * 4)) -                                            -- mark unwanted bits
+    ~changeStr('00'x, "") -                           -- remove unwanted bits
+    ~b2x~x2c -                                        -- now 3 bytes are 4
+    ~translate(self~base64, xrange('00'x, '3F'x)) -   -- convert to base-64
+    ~overlay("==", new * 4 - tail + 1, tail)          -- fix tail of "=" pads
+
+
+-- Convert string from base64 encoded string (RFC 2045)
+::method decodeBase64 public
+  use strict arg string
+
+  return -
+    string~translate( -                               -- convert base-64 to hex
+      xrange('00'x, '3F'x) || '00'x, self~base64 || "=") -
+    ~c2x~x2b -                                        -- convert to binary string
+    ~bitAnd( -                                        -- mark unwanted bits
+      '0000 FFFFFFFFFFFF'x~copies(string~length)) -
+    ~changeStr('00'x, "") -                           -- remove unwanted bits
+    ~b2x~x2c -                                        -- 4 bytes are back to 3
+    ~left(string~length / 4 * 3 - string~countStr("=")) -- fix final string length
+
+
+::options novalue error

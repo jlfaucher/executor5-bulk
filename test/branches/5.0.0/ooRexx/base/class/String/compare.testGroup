@@ -1,0 +1,658 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_compareMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_compareMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   vnull=''
+   self~assertFalse(vnull~compare(''))
+
+::method "test_2"
+   vx00='00'x
+   self~assertTrue(vx00~compare(''))
+
+::method "test_3"
+   vblank=' '
+   self~assertFalse(vblank~compare(' '))
+
+::method "test_4"
+   self~assertFalse(' '~compare('20'x))
+
+::method "test_5"
+   v9c='123456789'
+   self~assertFalse(v9c~compare('123456789'))
+
+::method "test_6"
+   self~assertFalse('123456789'~compare('313233343536373839'x))
+
+::method "test_7"
+   v10c='1234567890'
+   self~assertFalse(v10c~compare('1234567890'))
+
+::method "test_8"
+   self~assertFalse('1234567890'~compare('31323334353637383930'x))
+
+::method "test_9"
+   v11cu='ABCDEFGHIJK'
+   self~assertFalse(v11cu~compare('ABCDEFGHIJK'))
+
+::method "test_10"
+   self~assertFalse('ABCDEFGHIJK'~compare('4142434445464748494a4b'x))
+
+::method "test_11"
+   v11cl='abcdefghijk'
+   self~assertFalse(v11cl~compare('abcdefghijk'))
+
+::method "test_12"
+   self~assertFalse('abcdefghijk'~compare('6162636465666768696a6b'x))
+
+::method "test_13"
+   v11cl='abcdefghijk'
+   self~assertTrue(v11cl~compare('ABCDEFGHIJK'))
+
+::method "test_14"
+   self~assertTrue('abcdefghijk'~compare('4142434445464748494a4b'x))
+
+::method "test_15"
+   v256=COPIES('.',256)
+   self~assertFalse(v256~compare(COPIES('.',256)))
+
+::method "test_16"
+   v256=COPIES('.',256)
+   self~assertFalse(COPIES('.',256)~compare(v256))
+
+::method "test_17"
+   v32768=COPIES('+',32768)
+   self~assertFalse(v32768~compare(COPIES('+',32768)))
+
+::method "test_18"
+   v32768=COPIES('+',32768)
+   self~assertFalse(COPIES('+',32768)~compare(v32768))
+
+::method "test_19"
+   v10000=COPIES('=',10000)
+   self~assertFalse(v10000~compare(COPIES('=',10000)))
+
+::method "test_20"
+   v10000=COPIES('=',10000)
+   self~assertFalse(COPIES('=',10000)~compare(v10000))
+
+::method "test_21"
+   v9c='123456789'
+   self~assertFalse(v9c~compare('123456789'||' '))
+
+::method "test_22"
+   self~assertFalse('123456789'~compare('313233343536373839'x||'20'x))
+
+::method "test_23"
+   v10c='1234567890'
+   self~assertFalse(v10c~compare('1234567890'||' '))
+
+::method "test_24"
+   self~assertFalse('1234567890'~compare('31323334353637383930'x||'20'x))
+
+::method "test_25"
+   vblank=' '
+   v11cu='ABCDEFGHIJK'
+   self~assertFalse(v11cu~compare('ABCDEFGHIJK'||vblank))
+
+::method "test_26"
+   vblank=' '
+   self~assertFalse('ABCDEFGHIJK'~compare('4142434445464748494a4b'x||vblank))
+
+::method "test_27"
+   v11cl='abcdefghijk'
+   self~assertFalse(v11cl~compare('abcdefghijk'||' '))
+
+::method "test_28"
+   vblank=' '
+   self~assertFalse('abcdefghijk'~compare('6162636465666768696a6b'x||vblank))
+
+::method "test_29"
+   v256=COPIES('.',256)
+   self~assertFalse(v256~compare(COPIES('.',256)||' '))
+
+::method "test_30"
+   v256=COPIES('.',256)
+   self~assertFalse(COPIES('.',256)~compare(v256||'20'x))
+
+::method "test_31"
+   v32768=COPIES('+',32768)
+   self~assertFalse(v32768~compare(COPIES('+',32768)||' '))
+
+::method "test_32"
+   v32768=COPIES('+',32768)
+   self~assertFalse(COPIES('+',32768)~compare(v32768||'20'x))
+
+::method "test_33"
+   v10000=COPIES('=',10000)
+   self~assertFalse(v10000~compare(COPIES('=',10000)||' '))
+
+::method "test_34"
+   v10000=COPIES('=',10000)
+   self~assertFalse(COPIES('=',10000)~compare(v10000||'20'x))
+
+::method "test_35"
+   v9c='123456789'
+   self~assertSame(v9c~compare('123456789'||'*'), '10')
+
+::method "test_36"
+   self~assertSame('123456789'~compare('313233343536373839'x||'5C'x), '10')
+
+::method "test_37"
+   v10c='1234567890'
+   self~assertSame(v10c~compare('1234567890'||vstarc), '11')
+
+::method "test_38"
+   self~assertSame('1234567890'~compare('31323334353637383930'x||'5C'x), '11')
+
+::method "test_39"
+   vstarc='*'
+   v11cu='ABCDEFGHIJK'
+   self~assertSame(v11cu~compare('ABCDEFGHIJK'||vstarc), '12')
+
+::method "test_40"
+   vstarc='*'
+   self~assertSame('ABCDEFGHIJK'~compare('4142434445464748494a4b'x||vstarc), '12')
+
+::method "test_41"
+   vstarc='*'
+   v11cl='abcdefghijk'
+   self~assertSame(v11cl~compare('abcdefghijk'||vstarc), '12')
+
+::method "test_42"
+   vstarc='*'
+   self~assertSame('abcdefghijk'~compare('6162636465666768696a6b'x||vstarc), '12')
+
+::method "test_43"
+   v256=COPIES('.',256)
+   self~assertSame(v256~compare(COPIES('.',256)||'*'), '257')
+
+::method "test_44"
+   v256=COPIES('.',256)
+   self~assertSame(COPIES('.',256)~compare(v256||'5C'x), '257')
+
+::method "test_45"
+   v32768=COPIES('+',32768)
+   self~assertSame(v32768~compare(COPIES('+',32768)||'*'), '32769')
+
+::method "test_46"
+   v32768=COPIES('+',32768)
+   self~assertSame(COPIES('+',32768)~compare(v32768||'5C'x), '32769')
+
+::method "test_47"
+   v10000=COPIES('=',10000)
+   self~assertSame(v10000~compare(COPIES('=',10000)||'*'), '10001')
+
+::method "test_48"
+   v10000=COPIES('=',10000)
+   self~assertSame(COPIES('=',10000)~compare(v10000||'5C'x), '10001')
+
+::method "test_49"
+   v32768=COPIES('+',32768)
+   v10000=COPIES('=',10000)
+   self~assertSame(v32768~compare(v10000), '1')
+
+::method "test_50"
+   self~assertSame(nv~compare('NV'), '0')
+
+::method "test_51"
+   self~assertSame(nv.10~compare('NV.10'), '0')
+
+::method "test_52"
+   self~assertSame('NV'~compare(nv), '0')
+
+::method "test_53"
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   var =  'NV.'~compare(nv.)
+
+::method "test_54"
+   self~assertSame('NV.10'~compare(nv.10), '0')
+
+::method "test_55"
+   self~assertSame(novala~compare(novalb), '6')
+
+::method "test_56"
+   self~assertSame(nv.10~compare('NV.10'), '0')
+
+::method "test_57"
+   self~assertSame((21*2)~compare(42), '0')
+
+::method "test_58"
+   self~assertSame((21+21)~compare(21*2), '0')
+
+::method "test_59"
+   self~assertSame(42~compare((7*3)*2), '0')
+
+::method "test_60"
+   v2n='2'
+   v21n='21'
+   v42n='42'
+   self~assertSame((v21n*v2n)~compare(v42n), '0')
+
+::method "test_61"
+   v2n='2'
+   v21n='21'
+   self~assertSame((v21n+v21n)~compare(v21n*v2n), '0')
+
+::method "test_62"
+   v2n='2'
+   v3n='3'
+   v7n='7'
+   v42n='42'
+   self~assertSame(v42n~compare((v7n*v3n)*v2n), '0')
+
+::method "test_63"
+   self~assertSame((21*2)~compare('42'), '0')
+
+::method "test_64"
+   self~assertSame((21*2)~compare(+0042), '0')
+
+::method "test_65"
+   self~assertSame((21*2)~compare(0042), '1')
+
+::method "test_66"
+   self~assertSame('42'~compare((7*3)*2), '0')
+
+::method "test_67"
+   self~assertSame((+0042)~compare((7*3)*2), '0')
+
+::method "test_68"
+   self~assertSame(0042~compare((7*3)*2), '1')
+
+::method "test_69"
+   NUMERIC DIGITS 1
+   self~assertSame((21*2)~compare(+42), '0')
+
+::method "test_70"
+   NUMERIC DIGITS 1
+   self~assertSame((21+21)~compare(21*2), '0')
+
+::method "test_71"
+   NUMERIC DIGITS 1
+   self~assertSame((+42)~compare((7*3)*2), '0')
+
+::method "test_72"
+   NUMERIC DIGITS 1
+   self~assertSame((21*2)~compare('42'), '2')
+
+::method "test_73"
+   NUMERIC DIGITS 1
+   self~assertSame((21*2)~compare(+0042), '0')
+
+::method "test_74"
+   NUMERIC DIGITS 1
+   self~assertSame((21*2)~compare(0042), '1')
+
+::method "test_75"
+   NUMERIC DIGITS 1
+   self~assertSame('42'~compare((7*3)*2), '2')
+
+::method "test_76"
+   NUMERIC DIGITS 1
+   self~assertSame((+0042)~compare((7*3)*2), '0')
+
+::method "test_77"
+   NUMERIC DIGITS 1
+   self~assertSame(0042~compare((7*3)*2), '1')
+
+::method "test_78"
+   self~assertSame(SUBSTR('John Robert Buckley',6)~compare('Robert Buckley     '), '0')
+
+::method "test_79"
+   self~assertSame(CENTER('John R. Buckley',1000)~compare(RIGHT('John R. Buckley',1000)), '493')
+
+::method "test_80"
+   self~assertSame(DATATYPE(6)~compare(DATATYPE(7)), '0')
+
+::method "test_81"
+   self~assertSame(C2D('JR')~compare(19026), '0')
+
+::method "test_82"
+   self~assertSame(D2C(19026)~compare('JR'), '0')
+
+::method "test_83"
+   self~assertSame(WORD('JOHN ROBERT BUCKLEY',2)~compare(WORD('BUCKLEY JOHN ROBERT',3)), '0')
+
+::method "test_84"
+   self~assertSame(' 1'~compare('1')~compare('2'~compare(' 2')), '0')
+
+::method "test_85"
+   self~assertSame('abc def'~compare(copies('abc ghi',2)), '5')
+
+::method "test_86"
+   self~assertSame(copies('aaa aaa ',2)~compare('aaa aaa aaa aaa'), '0')
+
+::method "test_87"
+   self~assertSame('aa'~compare(copies('a',2)), '0')
+
+::method "test_88"
+   v9c='123456789'
+   self~assertSame(v9c~compare('123456789'||' ',' '), '0')
+
+::method "test_89"
+   v9c='123456789'
+   self~assertSame('123456789'~compare('313233343536373839'x||'20'x,'20'x), '0')
+
+::method "test_90"
+   v10c='1234567890'
+   self~assertSame(v10c~compare('1234567890'||' ',' '), '0')
+
+::method "test_91"
+   self~assertSame('1234567890'~compare('31323334353637383930'x||'20'x,'20'x), '0')
+
+::method "test_92"
+   vblankx='20'x
+   v11cu='ABCDEFGHIJK'
+   self~assertSame(v11cu~compare('ABCDEFGHIJK'||vblankx,vblankx), '0')
+
+::method "test_93"
+   vblankx='20'x
+   self~assertSame('ABCDEFGHIJK'~compare('4142434445464748494a4b'x||vblankx,vblankx), '0')
+
+::method "test_94"
+   v11cl='abcdefghijk'
+   self~assertSame(v11cl~compare('abcdefghijk'||' ',' '), '0')
+
+::method "test_95"
+   vblankx='20'x
+   self~assertSame('abcdefghijk'~compare('6162636465666768696a6b'x||vblankx,vblankx), '0')
+
+::method "test_96"
+   v256=COPIES('.',256)
+   self~assertSame(v256~compare(COPIES('.',256)||' ',' '), '0')
+
+::method "test_97"
+   self~assertSame(COPIES('.',256)~compare(COPIES('2E'x,256)||'20'x,'20'x), '0')
+
+::method "test_98"
+   v32768=COPIES('+',32768)
+   self~assertSame(v32768~compare(COPIES('+',32768)||' ',' '), '0')
+
+::method "test_99"
+   self~assertSame(COPIES('+',32768)~compare(COPIES('2B'x,32768)||'20'x,'20'x), '0')
+
+::method "test_100"
+   v10000=COPIES('=',10000)
+   self~assertSame(v10000~compare(COPIES('=',10000)||' ',' '), '0')
+
+::method "test_101"
+   self~assertSame(COPIES('=',10000)~compare(COPIES('3D'x,10000)||'20'x,'20'x), '0')
+
+::method "test_102"
+   v9c='123456789'
+   self~assertSame(v9c~compare('123456789'||'*','*'), '0')
+
+::method "test_103"
+   self~assertSame('123456789'~compare('313233343536373839'x||'5C'x,'5C'x), '0')
+
+::method "test_104"
+   vstarc='*'
+   v10c='1234567890'
+   self~assertSame(v10c~compare('1234567890'||vstarc,vstarc), '0')
+
+::method "test_105"
+   self~assertSame('1234567890'~compare('31323334353637383930'x||'5C'x,'5C'x), '0')
+
+::method "test_106"
+   vstarc='*'
+   v11cu='ABCDEFGHIJK'
+   self~assertSame(v11cu~compare('ABCDEFGHIJK'||vstarc,vstarc), '0')
+
+::method "test_107"
+   vstarc='*'
+   self~assertSame('ABCDEFGHIJK'~compare('4142434445464748494a4b'x||vstarc,vstarc), '0')
+
+::method "test_108"
+   vstarc='*'
+   v11cl='abcdefghijk'
+   self~assertSame(v11cl~compare('abcdefghijk'||vstarc,vstarc), '0')
+
+::method "test_109"
+   vstarc='*'
+   self~assertSame('abcdefghijk'~compare('6162636465666768696a6b'x||vstarc,vstarc), '0')
+
+::method "test_110"
+   v256=COPIES('.',256)
+   self~assertSame(v256~compare(COPIES('.',256)||'*','*'), '0')
+
+::method "test_111"
+   self~assertSame(COPIES('.',256)~compare(COPIES('2E'x,256)||'5C'x,'5C'x), '0')
+
+::method "test_112"
+   v32768=COPIES('+',32768)
+   self~assertSame(v32768~compare(COPIES('+',32768)||'*','*'), '0')
+
+::method "test_113"
+   self~assertSame(COPIES('+',32768)~compare(COPIES('2B'x,32768)||'5C'x,'5C'x), '0')
+
+::method "test_114"
+   v10000=COPIES('=',10000)
+   self~assertSame(v10000~compare(COPIES('=',10000)||'*','*'), '0')
+
+::method "test_115"
+   self~assertSame(COPIES('=',10000)~compare(COPIES('3D'x,10000)||'5C'x,'5C'x), '0')
+
+::method "test_116"
+   v32768=COPIES('+',32768)
+   v10000=COPIES('=',10000)
+   self~assertSame(v32768~compare(v10000,'*'), '1')
+
+::method "test_117"
+   self~assertSame(nv~compare('NV*','*'), '0')
+
+::method "test_118"
+   self~assertSame(nv.~compare('NV.*','*'), '0')
+
+::method "test_119"
+   self~assertSame(nv.10~compare('NV.10*','*'), '0')
+
+::method "test_120"
+   self~assertSame('NV*'~compare(nv,'*'), '0')
+
+::method "test_121"
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   var = 'NV.*'~compare(nv.,'*')
+
+::method "test_122"
+   self~assertSame('NV.10*'~compare(nv.10,'*'), '0')
+
+::method "test_123"
+   self~expectSyntax(93.922)
+   self~assertSame('nv'~compare('NV*',nv), '0')
+
+::method "test_124"
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   self~assertSame('nv.'~compare('NV.*',nv.), '0')
+
+::method "test_125"
+   self~expectSyntax(93.922)
+   self~assertSame('nv.10'~compare('NV.10*',nv.10), '0')
+
+::method "test_126"
+   self~expectSyntax(93.922)
+   self~assertSame(novala~compare(novalb,novalc), '0')
+
+::method "test_127"
+   self~assertSame(nv~compare('NV*','*'), '0')
+
+::method "test_128"
+   self~assertSame(nv.10~compare('NV.10*','*'), '0')
+
+::method "test_129"
+   self~assertSame('NV*'~compare(nv,'*'), '0')
+
+::method "test_130"
+   self~assertSame('NV.10*'~compare(nv.10,'*'), '0')
+
+::method "test_131"
+   self~expectSyntax(93.922)
+   self~assertSame('nv'~compare('NV*',nv), '0')
+
+::method "test_132"
+   self~expectSyntax(93.922)
+   self~assertSame('nv.10'~compare('NV.10*',nv.10), '0')
+
+::method "test_133"
+   self~expectSyntax(93.922)
+   self~assertSame(novala~compare(novalb,novalc), '0')
+
+::method "test_134"
+   self~assertSame((4*5)~compare('20',1-1), '0')
+
+::method "test_135"
+   self~assertSame((7+9)~compare('1',3*2), '0')
+
+::method "test_136"
+   self~expectSyntax(93.922)
+   self~assertSame((7+9)~compare('1','3*2'), '0')
+
+::method "test_137"
+   self~assertSame((+42)~compare('4',50-48), '0')
+
+::method "test_138"
+   self~assertSame((+4200)~compare(21*2,0*42), '0')
+
+::method "test_139"
+   self~assertSame((+0042)~compare(2+2,1*2), '0')
+
+::method "test_140"
+   self~assertSame(0042~compare(2+2,1*2), '1')
+
+::method "test_141"
+   self~expectSyntax(93.922)
+   self~assertSame('0042'~compare(42,5*4), '0')
+
+::method "test_142"
+   NUMERIC DIGITS 1
+   self~assertSame((4*5)~compare('20',1-1), '2')
+
+::method "test_143"
+   NUMERIC DIGITS 1
+   self~assertSame((7+9)~compare('1',3*2), '1')
+
+::method "test_144"
+   self~expectSyntax(93.922)
+   NUMERIC DIGITS 1
+   self~assertSame((7+9)~compare('1','3*2'), '1')
+
+::method "test_145"
+   NUMERIC DIGITS 1
+   self~assertSame((+42)~compare('4',50-48), '2')
+
+::method "test_146"
+   NUMERIC DIGITS 1
+   self~assertSame((+4200)~compare(21*2,0*42), '4')
+
+::method "test_147"
+   NUMERIC DIGITS 1
+   self~assertSame((+0042)~compare(2+2,1*2), '2')
+
+::method "test_148"
+   self~expectSyntax(93.922)
+   NUMERIC DIGITS 1
+   self~assertSame('0042'~compare(42,5*4), '0')
+
+::method "test_149"
+   self~assertSame(SUBSTR('John Robert',6)~compare(WORD('J Robert11111 B',2),DATATYPE('1','N')), '0')
+
+::method "test_150"
+   self~assertSame((SUBSTR(TIME(),1,2)||'N')~compare(RIGHT(TIME('H'),2,'0'),SUBSTR(DATATYPE(6),1,1)), '0')
+
+::method "test_151"
+   self~assertSame((DATATYPE(6)||'Y')~compare(DATATYPE(7),SUBSTR('X Y Z',3,1)), '0')
+
+::method "test_152"
+   self~assertSame((COMPARE(' 1','1')||'0')~compare(COMPARE('2',' 2'),COMPARE('J','J')), '0')
+
+::method "test_153"
+   self~assertSame((copies('aaa aaa ',2)||'bbbbb')~compare('aaa aaa aaa aaa ','b'), '0')
+
+::method "test_154"
+   self~assertSame('aa'~compare(copies('a',2),'a'), '0')
+
+::method "test_155"
+   self~assertSame('aa'~compare(copies('aa',2),'a'), '0')
+
+::method "test_156"
+   self~expectSyntax(93.922)
+   self~assertSame('aa'~compare(copies('aa',2),copies('a',2)), '0')
+
+::method "test_157"
+    self~assertSame(0, ''~compare(''  ,'-'))
+
+::method "test_158"
+    self~assertSame(2, ' '~compare('  ','-'))
+
+::method "test_159"
+    self~assertSame(2, '  '~compare(' ' ,'-'))
+
+::method "test_160"
+    self~assertSame(0, ' '~compare(' ' ,'-'))
+
+-- rexxref documentation tests
+
+::method "test_201"
+    self~assertSame(0, 'abc'~compare('abc'))
+
+::method "test_202"
+    self~assertSame(2, 'abc'~compare('ak'))
+
+::method "test_203"
+    self~assertSame(0, 'ab '~compare('ab'))
+
+::method "test_204"
+    self~assertSame(0, 'ab '~compare('ab',' '))
+
+::method "test_205"
+    self~assertSame(3, 'ab '~compare('ab','x'))
+
+::method "test_206"
+    self~assertSame(5, 'ab-- '~compare('ab','-'))
+

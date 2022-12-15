@@ -1,0 +1,628 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.REXXQUEUE.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class RexxQueue.testGroup public subclass ooTestCase
+
+::constant STORAGE  1 -- RXQUEUE_STORAGE
+::constant BADQNAME 5 -- RXQUEUE_BADQNAME
+::constant NOTREG   9 -- RXQUEUE_NOTREG
+::constant ACCESS  10 -- RXQUEUE_ACCESS
+
+
+-- create
+
+::method test_create_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~create("", "")
+
+::method test_create_invalid
+  -- bad queue name
+  self~assertSame("", .RexxQueue~create(""))
+  self~assertSame("", .RexxQueue~create("*"))
+  self~assertSame("", .RexxQueue~create("SESSION"))
+  self~assertSame("", .RexxQueue~create("a~copies(300)"))
+
+::method test_create
+  name = "test_create"
+  .RexxQueue~delete(name)
+  -- if name doesn't exist, returns name
+  self~assertSame(name, .RexxQueue~create(name))
+
+  -- if name already exists, returns unique, system-generated name
+  unique = .RexxQueue~create(name)
+  self~assertUnique(unique)
+
+  -- create without name argument returns unique, system-generated name
+  unique2 = .RexxQueue~create
+  self~assertUnique(unique2)
+
+  self~assertNotSame(unique, unique2)
+  self~assertSame(0, .RexxQueue~delete(unique))
+  self~assertSame(0, .RexxQueue~delete(unique2))
+
+
+-- delete (both class and instance method)
+
+::method test_delete_class_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~delete
+
+::method test_delete_class_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~delete("", "")
+
+::method test_delete_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .RexxQueue~new~delete("")
+
+::method test_delete
+  name = "test_delete"
+  q = .RexxQueue~new
+
+  -- cannot delete non-existing, SESSION, or invalid name
+  self~assertSame(self~NOTREG, .RexxQueue~delete(name)) -- class delete
+  self~assertSame(self~NOTREG, q~~set(name)~delete) -- instance delete
+  do bad over "SESSION", "", "*", "a"~copies(300)
+    self~assertSame(self~BADQNAME, .RexxQueue~delete(bad)) -- class delete
+    self~assertSame(self~BADQNAME, q~~set(bad)~delete, "set("bad")") -- instance delete
+  end
+
+  -- can delete existing queue (no queued items)
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertSame(0, .RexxQueue~delete(name))
+  self~assertSame(self~NOTREG, .RexxQueue~delete(name)) -- cannot delete twice
+
+  -- can delete existing queue (with queued items)
+  q = .RexxQueue~new(name)
+  self~assertSame(0, q~queue("queue"))
+  self~assertSame(0, q~push("push"))
+  self~assertSame(0, q~lineOut)
+  self~assertSame(3, q~queued)
+  self~assertSame(0, q~delete)
+  self~assertFalse(.RexxQueue~exists(q~get))
+  self~assertSame(0, q~queued) -- queued works even for deleted queues
+
+-- cannot delete queue while lineIn waits
+::method test_delete_while_linein
+  q = .RexxQueue~new(.nil) -- unique queue
+  self~delayedDelete(q, "delete")
+  self~assertSame("delete", q~lineIn) -- waits
+  self~assertSame(0, q~delete) -- clean up
+
+  -- waits, and then tries to delete queue
+  ::method delayedDelete unguarded
+    use strict arg q, line
+    reply
+    call SysSleep 0.1
+    self~assertSame(self~ACCESS, .RexxQueue~delete(q~get)) -- class delete
+    self~assertSame(self~ACCESS, q~delete) -- instance delete
+    q~lineOut(line)
+
+
+-- exists
+
+::method test_exists_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~exists
+
+::method test_exists_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~exists("", "")
+
+::method test_exists
+  self~assertTrue(.RexxQueue~exists("SESSION"))
+
+  -- bad queue names
+  self~assertFalse(.RexxQueue~exists(""))
+  self~assertFalse(.RexxQueue~exists("*"))
+  self~assertFalse(.RexxQueue~exists("a"~copies(300)))
+  name = "test_exists"
+
+  .RexxQueue~delete(name) -- just to make sure
+  self~assertFalse(.RexxQueue~exists(name))
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertTrue(.RexxQueue~exists(name))
+  self~assertTrue(.RexxQueue~exists(name~upper))
+  self~assertFalse(.RexxQueue~exists(name || " "))
+  .RexxQueue~delete(name) -- clean up
+
+
+-- open
+
+::method test_open_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  .RexxQueue~open
+
+::method test_open_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~open("", "")
+
+::method test_open
+  -- can always open SESSION, but never invalid queue names
+  self~assertSame(0, .RexxQueue~open("SESSION"))
+  self~assertSame(self~BADQNAME, .RexxQueue~open(""))
+  self~assertSame(self~BADQNAME, .RexxQueue~open("a"~copies(300)))
+
+  name = "test_open"
+  .RexxQueue~delete(name) -- make sure it doesn't exist
+
+  -- can open a non-existing queue
+  self~assertFalse(.RexxQueue~exists(name))
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertTrue(.RexxQueue~exists(name))
+
+  -- can open an existing queue
+  self~assertSame(0, .RexxQueue~open(name))
+  self~assertTrue(.RexxQueue~exists(name))
+
+  .RexxQueue~delete(name) -- clean up
+
+
+-- new
+
+::method test_new_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .RexxQueue~new("", "")
+
+::method test_new
+  -- omitted argument means SESSION queue
+  self~assertSame("SESSION", .RexxQueue~new~get)
+  self~assertTrue(.RexxQueue~exists("SESSION"))
+
+  -- SESSION
+  self~assertSame("SESSION", .RexxQueue~new("session")~get)
+
+  -- .nil argument creates a unique queue
+  q1 = .RexxQueue~new(.nil)~get
+  q2 = .RexxQueue~new(.nil)~get
+  self~assertUnique(q1)
+  self~assertUnique(q2)
+  self~assertNotSame(q1, q2)
+  self~assertTrue(.RexxQueue~exists(q1))
+  self~assertTrue(.RexxQueue~exists(q2))
+  self~assertSame(0, .RexxQueue~delete(q1))
+  self~assertSame(0, .RexxQueue~delete(q2))
+
+  -- valid queue name
+  name = "test_new"
+  q = .RexxQueue~new(name)
+  self~assertSame(name~upper, q~get)
+  self~assertTrue(.RexxQueue~exists(name))
+  -- can create another RexxQueue instance for the same external queue
+  q2 = .RexxQueue~new(name)
+  self~assertSame(name~upper, q2~get)
+
+  -- invalid queue name
+  do name over "", "*", "a"~copies(300)
+    self~assertSame(name~upper, .RexxQueue~new(name)~get)
+    self~assertFalse(.RexxQueue~exists(name))
+  end
+
+-- lineIn waits until data becomes available, pull doesn't
+::method test_linein_waits_pull_doesnt
+  name = "test_reads_wait"
+  .RexxQueue~delete(name)
+  q = .RexxQueue~new(name)
+  self~delayedWrite(q, "lineIn")
+  self~assertSame(0, q~queued)
+  self~assertSame(.nil, q~pull) -- doesn't wait
+  self~assertSame("lineIn", q~lineIn) -- waits
+  self~assertSame(0, q~delete) -- clean up
+
+  -- waits, and then writes to queue
+  ::method delayedWrite unguarded
+    use strict arg q, line
+    reply
+    call SysSleep 0.1
+    q~lineOut(line)
+
+
+-- empty
+
+::method test_empty_one_arg
+  self~expectSyntax((88.922, 0)) -- Too many arguments in invocation; 0 expected
+  q = .RexxQueue~new~empty("")
+
+::method test_empty
+  q = .RexxQueue~new
+  self~assertSame(0, q~empty)
+
+  -- invalid queue names
+  q = .RexxQueue~new
+  do bad over "", "*", "a"~copies(300)
+    self~assertSame(self~BADQNAME, q~~set(bad)~empty)
+  end
+
+  -- empty doesn't create external queue
+  name = "test_empty"
+  .RexxQueue~delete(name) -- just to make sure
+  self~assertSame(self~NOTREG, q~~set(name)~empty)
+  self~assertFalse(.RexxQueue~exists(name))
+
+  q = .RexxQueue~new(name)
+  self~assertSame(0, q~empty)
+  self~assertSame(0, q~queued)
+
+  q~push
+  self~assertSame(1, q~queued)
+  self~assertSame(0, q~empty)
+  self~assertSame(0, q~queued)
+
+  q~lineOut("")
+  q~queue("line")
+  self~assertSame(2, q~queued)
+  self~assertSame(0, q~empty)
+  self~assertSame(0, q~queued)
+
+  do 256
+    q~say("line")
+  end
+  self~assertSame(256, q~queued)
+  self~assertSame(0, q~empty)
+  self~assertSame(0, q~queued)
+
+  self~assertSame(0, q~delete) -- clean up
+
+
+-- get, string
+-- RexxQueue has no string method, but sets objectName to queue name
+-- in uppercase, so string will pick it up
+
+::method test_get_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .RexxQueue~new~get("")
+
+::method test_string_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .RexxQueue~new~string("")
+
+::method test_get
+  self~assertSame("SESSION", .RexxQueue~new~get)
+
+  -- SESSION or invalid queues should still return same get/string
+  do name over "session", "", "*", "a"~copies(300)
+    self~assertSame(name~upper, .RexxQueue~new(name)~get)
+    self~assertSame(name~upper, .RexxQueue~new(name)~string)
+  end
+
+  name = "test_get"
+  qLower = .RexxQueue~new(name)
+  qLower~empty -- just to make sure
+  self~assertSame(name~upper, qLower~get)
+  self~assertSame(qLower~get, qLower~string)
+
+  qUpper = .RexxQueue~new(name~upper)
+  self~assertSame(name~upper, qUpper~get)
+  self~assertSame(qUpper~get, qUpper~string)
+
+  -- both qLower and qUpper refer to the same external data queue
+  self~assertSame(0, qLower~queued)
+  self~assertSame(0, qUpper~queued)
+  qLower~lineOut("line")
+  self~assertSame(1, qLower~queued)
+  self~assertSame(1, qUpper~queued)
+  self~assertSame(0, .RexxQueue~delete(name)) -- clean up
+
+
+-- set
+
+::method test_set_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .RexxQueue~new~set("", "")
+
+::method test_set
+  q = .RexxQueue~new
+  old = q~get
+  -- will happily set to any (including invalid) name
+  do name over "session", "", "*", "test_set"
+    self~assertSame(old, q~set(name)) -- returns old name
+    self~assertSame(name~upper, q~get) -- new name
+    old = name~upper
+  end
+  -- set doesn't create external queue
+  self~assertFalse(.RexxQueue~exists(name))
+
+  -- change an instance to another external queue
+  q1 = .RexxQueue~new(name)
+  q2 = .RexxQueue~new("")
+  q1~lineOut("line")
+  q2~set(name)
+  self~assertEquals("line", q2~pull)
+  self~assertSame(0, q1~delete)
+
+
+-- queued
+
+::method test_queued_one_arg
+  self~expectSyntax((88.922, 0)) -- Too many arguments in invocation; 0 expected
+  .RexxQueue~new~queued("")
+
+::method test_queued
+  -- invalid queue names return 0
+  do name over "", "*", "a"~copies(300)
+    self~assertSame(0, .RexxQueue~new(name)~queued)
+  end
+
+  -- SESSION and valid named queue
+  do name over "session", "test_queued"
+    q = .RexxQueue~new(name)
+    q~empty
+    self~assertSame(0, q~queued)
+    q~push
+    self~assertSame(1, q~queued)
+    q~pull
+    self~assertSame(0, q~queued)
+    q~queue
+    q~lineout("line")
+    self~assertSame(2, q~queued)
+    do i = 1 to 99
+      q~say(i)
+    end
+    self~assertSame(2 + 99, q~queued)
+    self~assertSame(0, q~empty)
+    self~assertSame(0, q~queued)
+  end
+  self~assertSame(0, q~delete) -- clean up
+
+
+-- push, queue, and queue aliases lineOut, say
+
+::method test_push_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~new~push("", "")
+
+::method test_queue_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~new~queue("", "")
+
+::method test_lineOut_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~new~lineOut("", "")
+
+::method test_say_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  .RexxQueue~new~say("", "")
+
+-- Instead of returning a RexxQueue interface error code RXQUEUE_*, rexxref
+-- states: "Calling the lineOut, pull, push, or queue method of a RexxQueue
+-- instance with a deleted external data queue will result in an error.
+::method test_push_failure_badqname
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_BADQNAME)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_BADQNAME)
+  .RexxQueue~new("")~push
+
+::method test_queue_failure_badqname
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_BADQNAME)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_BADQNAME)
+  .RexxQueue~new("*")~queue
+
+::method test_lineOut_failure_badqname
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_BADQNAME)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_BADQNAME)
+  .RexxQueue~new("a"~copies(300))~lineOut
+
+::method test_say_failure_badqname
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_BADQNAME)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_BADQNAME)
+  .RexxQueue~new(";")~say
+
+::method test_push_failure_notreg
+  q = .RexxQueue~new(.nil) -- unique queue
+  q~push("line")
+  q~delete
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_NOTREG)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_NOTREG)
+  q~push("line")
+
+::method test_queue_failure_notreg
+  q = .RexxQueue~new("test_queue_failure_notreg")
+  q~queue("line")
+  q~delete
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_NOTREG)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_NOTREG)
+  q~queue("line")
+
+::method test_lineOut_failure_notreg
+  q = .RexxQueue~new("test_lineOut_failure_notreg")
+  q~lineOut
+  q~delete
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_NOTREG)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_NOTREG)
+  q~lineOut
+
+::method test_say_failure_notreg
+  q = .RexxQueue~new("test_say_failure_notreg")
+  q~say
+  q~delete
+  self~expectSyntax((48.1, "SYSTEM QUEUE (RXQUEUE_NOTREG)")) -- Failure in system service: SYSTEM QUEUE (RXQUEUE_NOTREG)
+  q~say
+
+::method test_push_et_al
+  q = .RexxQueue~new("test_push")
+  q~empty -- just to make sure
+  do method over "push", "queue", "lineOut", "say"
+    -- omitted argument
+    self~assertSame(0, q~send(method), method)
+    self~assertSame(1, q~queued, method)
+    self~assertSame("", q~lineIn, method)
+
+    -- arguments null string, NUL char, full xrange, and 10.000 blanks
+    do arg over "", '00'x, xrange('00'x, 'ff'x), " "~copies(10000)
+      self~assertSame(0, q~send(method, arg ), method arg~length "bytes")
+      self~assertSame(1, q~queued, method arg~length "bytes")
+      self~assertSame(arg, q~pull, method arg~length "bytes")
+    end
+  end
+  q~delete -- clean up
+
+::method test_fifo_lifo
+  q = .RexxQueue~new("test_fifo_lifo")
+
+  -- FIFO: push
+  q~empty
+  self~assertSame(0, q~say("first"))
+  self~assertSame(0, q~push("fifo"))
+  self~assertSame("fifo", q~pull)
+
+  -- LIFO: queue, lineOut, say
+  q~empty
+  self~assertSame(0, q~say("first"))
+  self~assertSame(0, q~queue("lifo"))
+  self~assertSame("first", q~lineIn)
+  q~empty
+  self~assertSame(0, q~say("first"))
+  self~assertSame(0, q~lineOut("lifo"))
+  self~assertSame("first", q~pull)
+  q~empty
+  self~assertSame(0, q~say("first"))
+  self~assertSame(0, q~say("lifo"))
+  self~assertSame("first", q~lineIn)
+
+  q~delete -- clean up
+
+
+-- pull, lineIn
+
+::method test_pull_one_arg
+  self~expectSyntax((88.922, 0)) -- Too many arguments in invocation; 0 expected
+  .RexxQueue~new~pull("")
+
+::method test_lineIn_one_arg
+  self~expectSyntax((88.922, 0)) -- Too many arguments in invocation; 0 expected
+  .RexxQueue~new~lineIn("")
+
+::method test_pull_nil
+  -- both pull and lineIn return .nil for an invalid queue
+  do bad over "", "*", "a"~copies(300)
+    self~assertSame(.nil, .RexxQueue~new(bad)~pull)
+    self~assertSame(.nil, .RexxQueue~new(bad)~lineIn)
+  end
+
+  -- pull won't wait if a valid queue is empty (lineIn will)
+  q = .RexxQueue~new("test_pull_nil")~~empty
+  self~assertSame(.nil, q~pull)
+  self~assertSame(.nil, q~pull)
+
+  -- when a valid queue is deleted, both pull and lineIn return .nil
+  self~assertSame(0, q~delete)
+  self~assertSame(.nil, q~pull)
+  self~assertSame(.nil, q~lineIn)
+
+-- makeArray
+
+::method test_makeArray_one_arg
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .RexxQueue~new~makeArray("")
+
+::method test_makeArray
+  q = .RexxQueue~new("test_makeArray")~~empty
+  array = q~makeArray
+  self~assertSame(0, q~queued) -- makeArray empties the queue
+  self~assertIsA(array, .Array)
+  self~assertSame(0, array~items)
+
+  do n over 1, 2, 64, 1000
+    a = .Array~new(n)~fill(0)~allIndexes
+    a[1] = "" -- let's have some null strings
+    a[n] = ""
+    q~empty
+    do line over a
+      q~say(line)
+    end
+    array = q~makeArray
+    self~assertSame(0, q~queued)
+    self~assertIsA(array, .Array)
+    self~assertSameList(a, array, n"-item array")
+  end
+  q~delete -- clean up
+
+
+-- misc tests
+
+-- named queues work across Rexx programs
+::method test_external
+  name = "test_external"
+  .RexxQueue~delete(name) -- just to make sure
+  self~assertFalse(.RexxQueue~exists(name))
+
+  -- create the named queue in a different Rexx program
+  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')"'
+  self~assertTrue(.RexxQueue~exists(name~upper))
+  q = .RexxQueue~new(name)
+  q~say("say")
+
+  -- queue an item in a different Rexx program
+  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')~queue(''external'')"'
+  self~assertSame(2, q~queued)
+  self~assertSame("say", q~pull)
+  self~assertSame("external", q~pull)
+
+  -- queue an item with the RXQUEUE filter
+  address "" "echo RXQUEUE| rxqueue" name "/LIFO"
+  self~assertSame(1, q~queued)
+  self~assertSame("RXQUEUE", q~pull)
+
+  -- delete queue in a different Rexx program
+  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')~delete"'
+  self~assertFalse(.RexxQueue~exists(name~upper))
+
+-- external queue used by PUSH/QUEUE and PULL/PARSE PULL instructions
+::method test_stdque
+  self~assertIsA(.Stdque, .RexxQueue)
+  self~assertSame("SESSION", .Stdque~get)
+
+
+-- assert this is a system-generated, unique queue name
+::method assertUnique
+  use strict arg name
+  self~assertTrue(name~startsWith("S") & name~length >= 8, "system-generated unique queue name expected; found '" || name || "'")
+
+
+-- https://sourceforge.net/p/oorexx/bugs/1379/
+::method test_bug_1379
+  self~expectSyntax(98.901) -- Object "a C" was not correctly initialized
+  say .c~new~queued
+
+  ::class c subclass RexxQueue
+  ::method init
+
+
+::options all syntax

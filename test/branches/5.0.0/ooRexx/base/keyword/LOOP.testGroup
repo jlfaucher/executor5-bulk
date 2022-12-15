@@ -1,0 +1,362 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Loop.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Loop.testGroup" subclass ooTestCase public
+
+::method "test_LOOP"
+  i=0
+  loop
+     i=i+1
+     if i>3 then leave
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_4"
+  i=0
+  loop 4
+     i+=1
+  end
+  self~assertEquals(4, i)
+
+::method "test_LOOP_a=4"
+  i=0
+  a=4
+  loop a
+     i+=1
+  end
+  self~assertEquals(a, i)
+
+
+::method "test_LOOP_WHILE_i<4"
+  i=0
+  loop while i<4
+     i+=1
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_WHILE_.true, .true, i<4"
+  i=0
+  loop while .true, .true, i<4
+     i+=1
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_UNTIL_i>3"
+  i=0
+  loop until i>3
+     i+=1
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_UNTIL_.true, .true, i>3"
+  i=0
+  loop until .true, .true, i>3
+     i+=1
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_i=1"
+  loop i=1
+     if i=4 then leave
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_i=1_to_3"
+  loop i=1 to 3
+     nop
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_i=0_to_3_by_2"
+  loop i=0 to 3 by 2
+     nop
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_i=0_by_2"
+  loop i=0 by 2
+     if i>=4 then leave
+  end
+  self~assertEquals(4, i)
+
+
+::method "test_LOOP_i=-4.04 by 1.01"
+  loop i=-4.04 by 1.01
+     if i>=4 then leave
+  end
+  self~assertEquals(4.04, i)
+
+
+::method "test_LOOP_i=4.04 by -1.01"
+  loop i=4.04 by -1.01
+     if i<=-4 then leave
+  end
+  self~assertEquals(-4.04, i)
+
+
+
+::method "test_LOOP_LABEL"
+      -- test 1
+   i=0
+   LOOP label aha1
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on LOOP known")
+      i=i+1
+      loop label aha2
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on LOOP known")
+         leave aha2
+         self~fail("subtest_03: 'leave aha2' did not work!")
+      end
+      i=i+1
+      leave aha1
+   END aha1
+
+   self~assertEquals(2, i, "subtest_04: leaving 'aha2'!")
+
+      -- test 2
+   i=0
+   LOOP label aha1
+      self~assertTrue(.true, "subtest_05: LABEL subkeyword on LOOP known")
+      i=i+1
+      loop label aha2
+         self~assertTrue(.true, "subtest_06: LABEL subkeyword on LOOP known")
+         leave aha1
+         self~fail("subtest_07: 'leave aha2' did not work!")
+      end aha2
+      i=i+1
+   END aha1
+
+   self~assertEquals(1, i, "subtest_08: leaving 'aha1'!")
+
+      -- test 3
+   i=0
+   LOOP label aha1
+      self~assertTrue(.true, "subtest_09: LABEL subkeyword on LOOP known")
+      i=i+1
+      loop i=1 to 15
+         self~assertTrue(.true, "subtest_10: LABEL subkeyword on LOOP known")
+         leave aha1
+         self~fail("subtest_11: 'leave aha2' did not work!")
+      end i
+      i=i+1
+      leave
+   END aha1
+
+   self~assertEquals(1, i, "subtest_12: leaving 'aha1'!")
+
+
+::method 'test_LOOP_LABEL_with_interpret'
+
+   str="i=0                                                                    ;" -
+   "LOOP label aha1                                                              ;" -
+   "   i=i+1                                                                   ;" -
+   "   loop label aha2                                                           ;" -
+   "      leave aha2                                                           ;" -
+   "      i = 10                                                               ;" -
+   "   end                                                                     ;" -
+   "   i=i+1                                                                   ;" -
+   "   leave                                                                   ;" -
+   "END aha1                                                                   ;" -
+
+   interpret str
+   self~assertNotEquals(0, i, "i must be incremented")
+   self~assertNotEquals(11, i, "Leave aha2 must work")
+   self~assertEquals(2, i, "Loop with label must leave i == 2")
+
+
+::method "test_LOOP_LABEL_error 10.2"
+
+   str="i=0                                                                    ;" -
+   "LOOP label aha1                                                              ;" -
+   "   i=i+1                                                                   ;" -
+   "   do label aha2                                                           ;" -
+   "      leave aha2                                                           ;" -
+   "      i = 22                                                               ;" -
+   "      i = 23                                                               ;" -
+   "   end                                                                     ;" -
+   "   i=i+1                                                                   ;" -
+   "   leave                                                                   ;" -
+   "END nixi                                                                   ;" -
+
+   self~expectSyntax( 10.2 )
+   interpret str
+
+::method "test_LOOP_FOR"
+    stg = 0
+    Loop Y=0.3 to 4.3 by 0.7 for 3
+        stg += Y
+    end
+    self~assertEquals(3.0, stg, 'sub_test05')
+
+::method test_LOOP_counter
+
+  loop counter i k = 1 to 3
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(4, k)
+
+  loop counter i k = 3 to 1
+  end
+
+  self~assertEquals(0, i)
+  self~assertEquals(3, k)
+
+  loop label abc counter i k = 1 to 3
+  end abc
+
+  self~assertEquals(3, i)
+  self~assertEquals(4, k)
+
+  loop counter i label abc k = 3 to 1
+  end abc
+
+  self~assertEquals(0, i)
+  self~assertEquals(3, k)
+
+  loop counter = 1 to 3
+  end
+
+  self~assertEquals(4, counter)
+
+  -- uses the counter variable in the condition
+  loop counter i while i < 3
+  end
+
+  self~assertEquals(3, i)
+
+  -- uses the counter variable in the condition
+  loop counter i until i > 3
+  end
+
+  self~assertEquals(4, i)
+
+  -- uses the counter variable in the condition
+  loop counter i while .false
+  end
+
+  self~assertEquals(0, i)
+
+  -- uses the counter variable in the condition
+  loop counter i until .true
+  end
+
+  self~assertEquals(1, i)
+
+  loop counter i 3
+  end
+
+  self~assertEquals(3, i)
+
+  loop counter i item over (1,2,3)
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(3, item)
+
+  loop counter i with item item index index over (4,5,6)
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(3, index)
+  self~assertEquals(6, item)
+
+  loop counter i forever while i < 3
+  end
+
+  self~assertEquals(3, i)
+
+  loop counter i forever until i > 3
+  end
+
+  self~assertEquals(4, i)
+
+  loop counter i forever while .false
+  end
+
+  self~assertEquals(0, i)
+
+  loop counter i forever until .true
+  end
+
+  self~assertEquals(1, i)
+
+  -- a simple loop is the same as DO FOREVER
+  loop counter i
+     if i == 3 then leave
+  end
+
+  self~assertEquals(3, i)
+
+::method test_multiple_counter
+  -- turn off novalue handling for this error
+  signal off novalue
+  -- this gets parsed as FOR count loop, with an invalid
+  -- count for the second occurrence.
+  self~expectSyntax(26.2)
+  interpret "loop counter x counter y while .true; end"
+
+::method test_no_end
+   -- DO or LOOP instruction on line .. requires matching END
+   self~assertSyntaxError(14.5, ("loop"))
+
+::method test_no_end_counter
+   self~assertSyntaxError(14.5, ("loop counter i"))
+
+
+::options novalue error

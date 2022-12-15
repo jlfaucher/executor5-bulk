@@ -1,0 +1,113 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2021-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysTextScreenRead.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysTextScreenRead.testgroup subclass ooTestCase public
+
+-- if stdout is redirected, we have no console
+::method noConsole
+  return SysCurPos()~length = 0
+
+::method test_screenread_args_none
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysTextScreenRead
+
+::method test_screenread_args_one
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysTextScreenRead 0
+
+::method test_screenread_args_too_many
+  self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
+  call SysTextScreenRead 0, 0, 0, 0
+
+::method test_screenread_row_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(-1, 0))    -- row
+
+::method test_screenread_col_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(0, -1))    -- col
+
+::method test_screenread_len_invalid
+  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
+  self~assertSame("", SysTextScreenRead(0, 0, -1)) -- len
+
+::method test_screenread_null
+  if self~noConsole -- the following tests require a console
+    then return
+  self~assertSame("", SysTextScreenRead(0, 0, 0))  -- zero length
+  parse value SystextScreenSize() with rows cols
+  self~assertSame("", SysTextScreenRead(rows - 1, cols))
+  self~assertSame("", SysTextScreenRead(rows, 0))
+  self~assertSame("", SysTextScreenRead(0, cols))
+  self~assertSame("", SysTextScreenRead(rows, cols))
+
+::method test_screenread
+  if self~noConsole -- the following tests require a console
+    then return
+  parse value SystextScreenSize() with rows cols
+  lastRow = rows - 1
+  lastCol = cols - 1
+  -- no length specified
+  self~assertSame(1, SysTextScreenRead(lastRow, lastCol)~length)
+  self~assertSame(2, SysTextScreenRead(lastRow, lastCol - 1)~length)
+  self~assertSame(11, SysTextScreenRead(lastRow, lastCol - 10)~length)
+  self~assertSame(cols, SysTextScreenRead(lastRow, 0)~length)
+  self~assertSame(cols - 1, SysTextScreenRead(lastRow, 1)~length)
+  self~assertSame(cols + 1, SysTextScreenRead(lastRow - 1, lastCol)~length)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0)~length)
+  self~assertSame(rows * cols - 3 * cols - 5, SysTextScreenRead(3, 5)~length)
+
+  -- length specified
+  self~assertSame(1, SysTextScreenRead(0, 0, 1)~length)
+  self~assertSame(10, SysTextScreenRead(0, 0, 10)~length)
+  self~assertSame(100, SysTextScreenRead(9, 9, 100)~length)
+  self~assertSame(rows * cols - 1, SysTextScreenRead(0, 0, rows * cols - 1)~length)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0, rows * cols)~length)
+
+
+::options all syntax

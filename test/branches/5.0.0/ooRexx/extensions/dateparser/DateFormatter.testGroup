@@ -1,0 +1,393 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.DateFormatter.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'dateparser.cls'
+
+::class "DateFormatter.testGroup" subclass ooTestCase public
+
+-- test the different methods of formatting year information.
+::method "TestYearElements"
+
+  self~assertSame("2019", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyy"))
+  self~assertSame("19", .DateFormatter~format(.DateTime~fromStandardDate(00190731), "yyy"))
+  self~assertSame("2019", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy"))
+  self~assertSame("0019", .DateFormatter~format(.DateTime~fromStandardDate(00190731), "yyyy"))
+  self~assertSame("2019", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy"))
+
+  self~assertSame("19", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "y"))
+  self~assertSame("9", .DateFormatter~format(.DateTime~fromStandardDate(20090731), "y"))
+  self~assertSame("9", .DateFormatter~format(.DateTime~fromStandardDate(00090731), "y"))
+  self~assertSame("19", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yy"))
+  self~assertSame("09", .DateFormatter~format(.DateTime~fromStandardDate(20090731), "yy"))
+  self~assertSame("09", .DateFormatter~format(.DateTime~fromStandardDate(00090731), "yy"))
+
+
+-- test the different ways of formatting Month elements
+::method "TestMonthElements"
+
+  self~assertSame("07", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "MM"))
+  self~assertSame("7", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "M"))
+  self~assertSame("11", .DateFormatter~format(.DateTime~fromStandardDate(20191130), "MM"))
+  self~assertSame("11", .DateFormatter~format(.DateTime~fromStandardDate(20191130), "M"))
+
+  self~assertSame("Jan", .DateFormatter~format(.DateTime~fromStandardDate(20190111), "MMM"))
+  self~assertSame("Feb", .DateFormatter~format(.DateTime~fromStandardDate(20190211), "MMM"))
+  self~assertSame("Mar", .DateFormatter~format(.DateTime~fromStandardDate(20190311), "MMM"))
+  self~assertSame("Apr", .DateFormatter~format(.DateTime~fromStandardDate(20190411), "MMM"))
+  self~assertSame("May", .DateFormatter~format(.DateTime~fromStandardDate(20190511), "MMM"))
+  self~assertSame("Jun", .DateFormatter~format(.DateTime~fromStandardDate(20190611), "MMM"))
+  self~assertSame("Jul", .DateFormatter~format(.DateTime~fromStandardDate(20190711), "MMM"))
+  self~assertSame("Aug", .DateFormatter~format(.DateTime~fromStandardDate(20190811), "MMM"))
+  self~assertSame("Sep", .DateFormatter~format(.DateTime~fromStandardDate(20190911), "MMM"))
+  self~assertSame("Oct", .DateFormatter~format(.DateTime~fromStandardDate(20191011), "MMM"))
+  self~assertSame("Nov", .DateFormatter~format(.DateTime~fromStandardDate(20191111), "MMM"))
+  self~assertSame("Dec", .DateFormatter~format(.DateTime~fromStandardDate(20191211), "MMM"))
+
+  self~assertSame("January",   .DateFormatter~format(.DateTime~fromStandardDate(20190111), "MMMM"))
+  self~assertSame("February",  .DateFormatter~format(.DateTime~fromStandardDate(20190211), "MMMM"))
+  self~assertSame("March",     .DateFormatter~format(.DateTime~fromStandardDate(20190311), "MMMM"))
+  self~assertSame("April",     .DateFormatter~format(.DateTime~fromStandardDate(20190411), "MMMM"))
+  self~assertSame("May",       .DateFormatter~format(.DateTime~fromStandardDate(20190511), "MMMM"))
+  self~assertSame("June",      .DateFormatter~format(.DateTime~fromStandardDate(20190611), "MMMM"))
+  self~assertSame("July",      .DateFormatter~format(.DateTime~fromStandardDate(20190711), "MMMM"))
+  self~assertSame("August",    .DateFormatter~format(.DateTime~fromStandardDate(20190811), "MMMM"))
+  self~assertSame("September", .DateFormatter~format(.DateTime~fromStandardDate(20190911), "MMMM"))
+  self~assertSame("October",   .DateFormatter~format(.DateTime~fromStandardDate(20191011), "MMMM"))
+  self~assertSame("November",  .DateFormatter~format(.DateTime~fromStandardDate(20191111), "MMMM"))
+  self~assertSame("December",  .DateFormatter~format(.DateTime~fromStandardDate(20191211), "MMMM"))
+
+::method "TestDayElements"
+
+  self~assertSame("1", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "d"))
+  self~assertSame("11", .DateFormatter~format(.DateTime~fromStandardDate(20190111), "d"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "dd"))
+  self~assertSame("11", .DateFormatter~format(.DateTime~fromStandardDate(20190111), "dd"))
+
+  self~assertSame("1", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "ddd"))
+  self~assertSame("001", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "dddd"))
+
+  self~assertSame("365", .DateFormatter~format(.DateTime~fromStandardDate(20191231), "ddd"))
+  self~assertSame("365", .DateFormatter~format(.DateTime~fromStandardDate(20191231), "dddd"))
+
+  self~assertSame("366", .DateFormatter~format(.DateTime~fromStandardDate(20201231), "ddd"))
+  self~assertSame("366", .DateFormatter~format(.DateTime~fromStandardDate(20201231), "dddd"))
+
+  self~assertSame("1st", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "ddddd"))
+  self~assertSame("2nd", .DateFormatter~format(.DateTime~fromStandardDate(20190102), "ddddd"))
+  self~assertSame("3rd", .DateFormatter~format(.DateTime~fromStandardDate(20190103), "ddddd"))
+  self~assertSame("4th", .DateFormatter~format(.DateTime~fromStandardDate(20190104), "ddddd"))
+  self~assertSame("5th", .DateFormatter~format(.DateTime~fromStandardDate(20190105), "ddddd"))
+  self~assertSame("6th", .DateFormatter~format(.DateTime~fromStandardDate(20190106), "ddddd"))
+  self~assertSame("7th", .DateFormatter~format(.DateTime~fromStandardDate(20190107), "ddddd"))
+  self~assertSame("8th", .DateFormatter~format(.DateTime~fromStandardDate(20190108), "ddddd"))
+  self~assertSame("9th", .DateFormatter~format(.DateTime~fromStandardDate(20190109), "ddddd"))
+  self~assertSame("10th", .DateFormatter~format(.DateTime~fromStandardDate(20190110), "ddddd"))
+  self~assertSame("11th", .DateFormatter~format(.DateTime~fromStandardDate(20190111), "ddddd"))
+  self~assertSame("12th", .DateFormatter~format(.DateTime~fromStandardDate(20190112), "ddddd"))
+  self~assertSame("13th", .DateFormatter~format(.DateTime~fromStandardDate(20190113), "ddddd"))
+  self~assertSame("14th", .DateFormatter~format(.DateTime~fromStandardDate(20190114), "ddddd"))
+  self~assertSame("15th", .DateFormatter~format(.DateTime~fromStandardDate(20190115), "ddddd"))
+  self~assertSame("16th", .DateFormatter~format(.DateTime~fromStandardDate(20190116), "ddddd"))
+  self~assertSame("17th", .DateFormatter~format(.DateTime~fromStandardDate(20190117), "ddddd"))
+  self~assertSame("18th", .DateFormatter~format(.DateTime~fromStandardDate(20190118), "ddddd"))
+  self~assertSame("19th", .DateFormatter~format(.DateTime~fromStandardDate(20190119), "ddddd"))
+  self~assertSame("20th", .DateFormatter~format(.DateTime~fromStandardDate(20190120), "ddddd"))
+  self~assertSame("21st", .DateFormatter~format(.DateTime~fromStandardDate(20190121), "ddddd"))
+  self~assertSame("22nd", .DateFormatter~format(.DateTime~fromStandardDate(20190122), "ddddd"))
+  self~assertSame("23rd", .DateFormatter~format(.DateTime~fromStandardDate(20190123), "ddddd"))
+  self~assertSame("24th", .DateFormatter~format(.DateTime~fromStandardDate(20190124), "ddddd"))
+  self~assertSame("25th", .DateFormatter~format(.DateTime~fromStandardDate(20190125), "ddddd"))
+  self~assertSame("26th", .DateFormatter~format(.DateTime~fromStandardDate(20190126), "ddddd"))
+  self~assertSame("27th", .DateFormatter~format(.DateTime~fromStandardDate(20190127), "ddddd"))
+  self~assertSame("28th", .DateFormatter~format(.DateTime~fromStandardDate(20190128), "ddddd"))
+  self~assertSame("29th", .DateFormatter~format(.DateTime~fromStandardDate(20190129), "ddddd"))
+  self~assertSame("30th", .DateFormatter~format(.DateTime~fromStandardDate(20190130), "ddddd"))
+  self~assertSame("31st", .DateFormatter~format(.DateTime~fromStandardDate(20190131), "ddddd"))
+
+
+::method "TestHourElements"
+  self~assertSame("1", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), "h"))
+  self~assertSame("12", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), "h"))
+
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), "H"))
+  self~assertSame("12", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), "H"))
+
+  self~assertSame("0" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), "hh"))
+  self~assertSame("1" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), "hh"))
+  self~assertSame("12", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T12:00:00.000000"), "hh"))
+  self~assertSame("13", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T13:00:00.000000"), "hh"))
+  self~assertSame("23", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T23:00:00.000000"), "hh"))
+
+  self~assertSame("00", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), "HH"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), "HH"))
+  self~assertSame("12", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T12:00:00.000000"), "HH"))
+  self~assertSame("13", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T13:00:00.000000"), "HH"))
+  self~assertSame("23", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T23:00:00.000000"), "HH"))
+
+
+::method "TestMinuteElements"
+
+  self~assertSame("1" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:01:00.000000"), "m"))
+  self~assertSame("59", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:59:00.000000"), "m"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:01:00.000000"), "mm"))
+  self~assertSame("59", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:59:00.000000"), "mm"))
+
+
+::method "TestSecondElements"
+
+  self~assertSame("1" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:01.000000"), "s"))
+  self~assertSame("59", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), "s"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:01.000000"), "ss"))
+  self~assertSame("59", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), "ss"))
+
+
+::method "TestFractionElements"
+
+  self~assertSame("1"     , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.100000"), "f"))
+  self~assertSame("23"    , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.230000"), "ff"))
+  self~assertSame("345"   , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.345000"), "fff"))
+  self~assertSame("4567"  , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.456700"), "ffff"))
+  self~assertSame("56789" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.567890"), "fffff"))
+  self~assertSame("678901", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.678901"), "ffffff"))
+
+  self~assertSame("1"     , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.100000"), "f"))
+  self~assertSame("01"    , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.010000"), "ff"))
+  self~assertSame("001"   , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.001000"), "fff"))
+  self~assertSame("0001"  , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000100"), "ffff"))
+  self~assertSame("00001" , .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000010"), "fffff"))
+  self~assertSame("000001", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:00.000001"), "ffffff"))
+
+
+::method "TestCivilTime"
+
+  self~assertSame("am", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), "tt"))
+  self~assertSame("pm", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), "tt"))
+
+  self~assertSame("a", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), "t"))
+  self~assertSame("p", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), "t"))
+
+::method "TestWeekNumber"
+
+  self~assertSame("1" , .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "w"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "ww"))
+  self~assertSame("1" , .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "w"))
+  self~assertSame("01", .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "ww"))
+
+::method "TestOffset"
+  self~assertSame("+04:00" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), "zzzz"))
+  self~assertSame("-04:00" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), "zzzz"))
+  self~assertSame("+04:30" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "zzzz"))
+  self~assertSame("+04:30" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "zzzz"))
+  self~assertSame("Z", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), "zzzz"))
+
+  self~assertSame("+0400" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), "zzz"))
+  self~assertSame("-0400" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), "zzz"))
+  self~assertSame("+0430" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "zzz"))
+  self~assertSame("+0430" , .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "zzz"))
+  self~assertSame("Z", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), "zzz"))
+
+  self~assertSame("+04", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), "zz"))
+  self~assertSame("-04", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), "zz"))
+  self~assertSame("-04", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:30"), "zz"))
+  self~assertSame("+04", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "zz"))
+  self~assertSame("Z", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), "zz"))
+
+  self~assertSame("+4", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), "z"))
+  self~assertSame("+4", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), "z"))
+  self~assertSame("-4", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), "z"))
+  self~assertSame("-4", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:30"), "z"))
+  self~assertSame("Z", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), "z"))
+
+::method "TestPredefined"
+  self~assertSame("3 Aug 2019", .DateFormatter~format(.DateTime~fromNormalDate("3 Aug 2019"), .Dateformats~NormalDate))
+  self~assertSame("2019-08-02T00:00:59.000000", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), .Dateformats~ISODate))
+  self~assertSame("2019-08-02T00:00:59.000000+04:00", .DateFormatter~format(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .Dateformats~UTCISODate))
+  self~assertSame("08/03/19", .DateFormatter~format(.DateTime~fromEuropeanDate("08/03/19"), .Dateformats~EuropeanDate))
+  self~assertSame("03/08/19", .DateFormatter~format(.DateTime~fromUsaDate("03/08/19"), .Dateformats~USADate))
+  self~assertSame("08/03/2019", .DateFormatter~format(.DateTime~fromStandardDate("20190803"), .Dateformats~LongUsaDate))
+  self~assertSame("03/08/2019", .DateFormatter~format(.DateTime~fromStandardDate("20190803"), .Dateformats~LongEuropeanDate))
+  self~assertSame("19/08/03", .DateFormatter~format(.DateTime~fromStandardDate("20190803"), .Dateformats~OrderedDate))
+  self~assertSame("2019/08/03", .DateFormatter~format(.DateTime~fromStandardDate("20190803"), .Dateformats~LongOrderedDate))
+  self~assertSame("2019/08/03", .DateFormatter~format(.DateTime~fromStandardDate("20190803"), .Dateformats~StandardDate))
+  self~assertSame("2019-250", .DateFormatter~format(.DateTime~fromOrdinalDate("2019-250"), .Dateformats~OrdinalDate))
+  self~assertSame("2019-W25-1", .DateFormatter~format(.DateTime~fromWeekNumberDate("2019-W25-1"), .Dateformats~WeekNumberDate))
+
+
+  self~assertSame("1:24am", .DateFormatter~format(.DateTime~fromCivilTime("1:24am"), .Dateformats~CivilTime))
+  self~assertSame("1:24pm", .DateFormatter~format(.DateTime~fromCivilTime("1:24pm"), .Dateformats~CivilTime))
+  self~assertSame("13:24:00", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), .Dateformats~NormalTime))
+  self~assertSame("1:24:00", .DateFormatter~format(.DateTime~fromNormalTime("01:24:00"), .Dateformats~NormalTime))
+  self~assertSame("13:24:00.123456", .DateFormatter~format(.DateTime~fromLongTime("13:24:00.123456"), .Dateformats~LongTime))
+  self~assertSame("01:24:00.123456", .DateFormatter~format(.DateTime~fromLongTime("01:24:00.123456"), .Dateformats~LongTime))
+
+::method "TestDateSeperator"
+
+  formats = .DateFormats~new
+  formats~dateSeparator = "-"
+  self~assertSame("2019-07-31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy/MM/dd", formats))
+  formats~dateSeparator = " "
+  self~assertSame("2019 07 31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy/MM/dd", formats))
+  formats~dateSeparator = ""
+  self~assertSame("20190731", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy/MM/dd", formats))
+  formats~dateSeparator = "<>"
+  self~assertSame("2019<>07<>31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "yyyy/MM/dd", formats))
+
+
+::method "TestTimeSeperator"
+
+  formats = .DateFormats~new
+  formats~timeSeparator = ":"
+  self~assertSame("13:24:00", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), "hh:mm:ss", formats))
+  formats~timeSeparator = ";"
+  self~assertSame("13;24;00", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), "hh:mm:ss", formats))
+  formats~timeSeparator = " "
+  self~assertSame("13 24 00", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), "hh:mm:ss", formats))
+  formats~timeSeparator = ""
+  self~assertSame("132400", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), "hh:mm:ss", formats))
+  formats~timeSeparator = "<>"
+  self~assertSame("13<>24<>00", .DateFormatter~format(.DateTime~fromNormalTime("13:24:00"), "hh:mm:ss", formats))
+
+
+::method "TestDateTimeSymbols"
+
+  formats = .DateFormats~new
+
+  formats~dayNames = ("lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")
+  self~assertSame("2019 1 martes", .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "yyyy w DDD", formats))
+
+  formats~dayAbbreviations = ("lu", "ma", "mi", "ju", "vi", "sa", "do")
+  self~assertSame("2019 1 ma", .DateFormatter~format(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), "yyyy w DD", formats))
+
+  formats~monthAbbreviations = ("ene", "feb", "mar", "abr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dic")
+  self~assertSame("abr 11, 2019", .DateFormatter~format(.DateTime~fromStandardDate(20190411), "MMM dd, yyyy", formats))
+
+  formats~monthNames = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agusto", "septiembre", "octubre", "noviembre", "diciembre")
+  self~assertSame("abril 11, 2019", .DateFormatter~format(.DateTime~fromStandardDate(20190411), "MMMM dd, yyyy", formats))
+
+  formats~civilLabels = ("ax", "px")
+  self~assertSame("2019/08/02 12:30px", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), "yyyy/MM/dd h:mmtt", formats))
+
+  formats~civilShortLabels = ("m", "n")
+  self~assertSame("2019/08/02 12:30m", .DateFormatter~format(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), "yyyy/MM/dd h:mmt", formats))
+
+  formats~ordinalSuffixes = ("er", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  self~assertSame("1er", .DateFormatter~format(.DateTime~fromStandardDate(20190101), "ddddd", formats))
+  self~assertSame("2e", .DateFormatter~format(.DateTime~fromStandardDate(20190102), "ddddd", formats))
+
+::method "TestLiteralStrings"
+  self~assertSame("Day 2019/07/31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "'Day 'yyy/MM/dd"))
+  self~assertSame("Day 2019/07/31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), '"Day "yyy/MM/dd'))
+  self~assertSame("'Day' 2019/07/31", .DateFormatter~format(.DateTime~fromStandardDate(20190731), "'''Day'' 'yyy/MM/dd"))
+  self~assertSame('"Day" 2019/07/31', .DateFormatter~format(.DateTime~fromStandardDate(20190731), '"""Day"" "yyy/MM/dd'))
+
+
+::method testError1
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "'Day yyy/MM/dd")
+
+::method testError2
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, '"Day yyy/MM/dd')
+
+::method testError3
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, '"Day"" yyy/MM/dd')
+
+::method testError4
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "'Day'' yyy/MM/dd")
+
+::method testError5
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-dddddd")
+
+::method testError6
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-DDDD")
+
+::method testError7
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-fffffff")
+
+::method testError8
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-hhh")
+
+::method testError9
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-HHH")
+
+::method testError10
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-mmm")
+
+::method testError11
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-MMMMM")
+
+::method testError12
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-sss")
+
+::method testError13
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-ttt")
+
+::method testError14
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-www")
+
+::method testError15
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyyy-dd")
+
+::method testError16
+  self~expectSyntax(88.932)
+  .DateFormatter~format(.datetime~new, "yyyy-zzzzz")

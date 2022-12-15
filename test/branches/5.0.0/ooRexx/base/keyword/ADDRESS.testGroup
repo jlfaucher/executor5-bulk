@@ -1,0 +1,1520 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.ADDRESS.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "ADDRESS.testGroup" subclass ooTestCase public
+
+::constant temporaryFilename "address-with.tmp"
+
+-- make sure our temporary file gets removed
+::method activate class
+   expose temporaryFile
+   temporaryFile = .TemporaryTestFile~new(self, self~temporaryFilename)
+
+
+::method "test_1"
+   defenv=address()
+   Address ''                        /* use null string                */
+   self~assertSame(address(), '')
+   Address                           /* toggle back                    */
+   self~assertSame(address(), defenv)
+
+-- "exit" should return 0 for both Unix and Windows shells
+::constant command_exists "exit"
+
+-- "exit 2" should return 2 for both Unix and Windows shells
+::constant command_exists_rc_2 "exit 2"
+
+-- non-existent command (with shell messages suppressed for Windows and Unix)
+::attribute command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return "command_not_exists 2>nul"
+  else
+    return "command_not_exists 2>/dev/null"
+
+-- shell-internal command
+::attribute command_shell_only get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return ":"
+  else
+    return "#"
+
+-- a no-shell command that returns 0
+::attribute command_noshell get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return address() '/c ""'
+  else
+    return address() '-c ""'
+
+::attribute rc_command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 1 -- CMD return code for an unknown command is 1
+  else
+    return 127 -- Unix shell return code for an unknown command is 127
+
+
+::method test_environment_symbol
+   address not_exists
+   self~assertSame("NOT_EXISTS", address())
+
+::method test_environment_string
+   address "not_exists"
+   self~assertSame("not_exists", address())
+
+::method test_environment_string_value
+   address "value"
+   self~assertSame("value", address())
+
+::method test_environment_value_missing
+  -- Missing expression following VALUE keyword of an ADDRESS instruction
+  self~assertSyntaxError(35.914, "address value")
+
+::method test_environment_value
+   environment = "not_exists"
+   address value environment
+   self~assertSame(environment, address())
+
+-- ADDRESS VALUE expression "command" isn't allowed
+::method test_environment_value_extra
+   environment = "not_exists"
+   address value environment "extra"
+   self~assertSame(environment "extra", address())
+
+-- ADDRESS (expression) "command" isn't allowed
+::method test_environment_expression_extra
+   environment = "not_exists"
+   address (environment) "extra"
+   self~assertSame(environment "extra", address())
+
+-- ADDRESS VALUE expression WITH should work
+::method test_environment_value_with
+   environment = "not_exists"
+   address value environment with input normal
+   self~assertSame(environment, address())
+
+-- ADDRESS (expression) WITH should work
+::method test_environment_expression_with
+   environment = "not_exists"
+   address (environment) with output normal error normal
+   self~assertSame(environment, address())
+
+-- commands with zero return code should raise neither ERROR nor FAILURE
+::method test_environment_command_exists
+   signal on error
+   signal on failure
+
+   -- we have three aliases for the default environment:
+   -- "", "command", and "system"
+   -- we should be able to run a default command in each
+   do environment over address(), "", "command", "system"
+     address value environment
+     (self~command_exists)
+     self~assertSame(0, rc, address() self~command_exists)
+     self~assertSame(0, .rs)
+     self~assertSame(environment, address())
+   end
+   return
+
+   error: failure:
+   self~assertFail("command '"self~command_exists"' shouldn't have raised" condition("condition"))
+
+-- commands with non-zero return code should raise ERROR (but not FAILURE)
+::method test_command_exists_rc_2
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   address "" self~command_exists_rc_2
+   self~assertFail("command '"self~command_exists_rc_2"' should have raised ERROR")
+
+   error:
+   self~assertSame(2, rc)
+   self~assertSame(1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   failure:
+   self~assertFail("command '"self~command_exists_rc_2"' shouldn't have raised FAILURE")
+
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- on Windows, although rexxref says: "For the default Windows command processor,
+-- an attempt to enter an unknown command raises a FAILURE condition", this doesn't
+-- work.  See [bugs:#1490] Windows Command doesn't raise FAILURE
+-- As this doesn't seem to be easily fixed, we'll run this as "known bug"
+::method test_command_not_exists
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   address "" self~command_not_exists
+   self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
+
+   failure:
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("tracker bug #1490 Windows Command doesn't raise FAILURE")
+
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- same test as above, but for the no-shell environment "path"
+::method test_path_command_not_exists
+   signal on error
+   signal on failure
+   address "path"
+   (self~command_not_exists)
+   self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
+
+   failure:
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame("path", address())
+   return
+
+   error:
+   self~assertFail("an invalid command should raise FAILURE, not ERROR")
+
+-- the "path" environment should only search PATH, and neither any
+-- system directory nor the directory of the current executable
+::method test_path_command
+   -- we should be unable to locate sh/CMD or rexx
+   do command over self~command_noshell, .RexxInfo~executable~name
+     -- note that on Unix there is a difference between an empty PATH
+     -- environment variable and a missing PATH.  The former works as we
+     -- expect, while the latter will search e. g. /usr/bin
+     path = value("PATH", "", "environment") -- clear PATH
+     -- with no PATH set, we should be unable to locate sh or cmd.exe
+     address "path" (command)
+     -- restore PATH immediately, otherwise it'll break a lot of things
+     call value "PATH", path, "environment" -- restore PATH
+     -- doesn't work on Windows, see [bugs:#1710]
+     self~assertSame(self~rc_command_not_exists, rc, "tracker bug #1710 ADDRESS 'PATH' doesn't just search PATH")
+     self~assertSame(-1, .rs)
+   end
+
+-- an invalid environment should raise FAILURE
+-- rexxref says: "An attempt to enter a command in an unknown command environment
+-- also raises a FAILURE condition; in such a case, the variable RC is set to 30."
+::method test_environment_not_exists_command
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   address "environment_not_exists" self~command_exists
+   self~assertFail("an invalid environment should have raised FAILURE")
+
+   failure:
+   self~assertSame(30, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("an invalid environment shouldn't raise ERROR")
+
+::method test_environment_max_length
+   environment = "x"~copies(250)
+   address value environment
+   self~assertSame(environment, address())
+
+::method test_environment_too_long
+   self~expectSyntax(29.1) -- Environment name exceeds 250 characters
+   address value "x"~copies(251)
+
+
+-- the initial environment should be "sh" on Unix and "cmd" on Windows
+::method test_environment_initial
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    self~assertSame("cmd", address()~lower) -- both CMD and cmd are acceptable
+  else
+    self~assertSame("sh", address())
+
+-- test shell-based environments
+::method test_environment_shell
+  do environment over address(), "", "command", "system"
+    address (environment)
+    (self~command_exists)
+    self~assertSame(0, rc)
+    self~assertSame(0, .rs)
+    (self~command_shell_only)
+    self~assertSame(0, rc)
+    self~assertSame(0, .rs)
+    self~assertSame(environment, address())
+  end
+
+-- test no-shell environment
+::method test_environment_noshell
+  -- sh -c "" and cmd /c "" should return 0
+  address path self~command_noshell
+  self~assertSame(0, rc)
+  self~assertSame(0, .rs)
+
+::method test_environment_unix
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return
+
+  -- on a Unix platform Rexx defines a bunch of environments
+  -- we check if these environments call the appropriate shell (if installed)
+  -- if the shell for a given environment isn't installed, we expect a FAILURE
+  -- if the shell is available, we expect "echo $0" to return the shell name
+  -- (we don't test 'csh' and 'path', as they don't support "echo $0")
+  environments = "1::" || address(), "1:sh", -
+    "0:bsh", "0:bash", "0:ksh", "0:tcsh", "0:zsh", "1:command:sh", "1:system:sh"
+
+  do env over environments
+    parse var env required ":" shell ":" echo
+    if echo = "" then
+      echo = shell
+    if shell == address() then
+      required = .true
+    failed = .false
+    address value shell with output stem out.
+    "echo $0"
+    failed = .rs == -1
+
+    -- we do not expect all environments to find their shell actually installed
+    -- address(), "", "sh", "command" and "path" should work at all times,
+    -- all others (if not installed) will raise FAILURE, which is a valid outcome
+    if failed, \required then
+      iterate                          -- FAILURE is ok, shell not installed
+
+    -- environments deemed as required, should always work
+    if failed then
+      self~assertFalse(failed, "environment '"shell"' failed")
+
+    -- echo $0 output should end with the shell name, e.g. /bin/sh
+    self~assertTrue(out.1~endsWith("/" || echo), "environment '"shell"' expected to return ../" || echo "for echo $0")
+  end
+
+-- tests for "address-with" forms
+/*
+
+ADDRESS (environment command | VALUE env_expression) WITH - fragment
+
+WITH - fragment allows up to three INPUT/OUTPUT/ERROR combinations of:
+  WITH INPUT                       NORMAL
+  WITH INPUT                       STEM stem / STREAM stream / USING ( object )
+  WITH OUTPUT/ERROR                NORMAL
+  WITH OUTPUT/ERROR                STEM stem / STREAM stream / USING ( object )
+  WITH OUTPUT/ERROR REPLACE/APPEND STEM stem / STREAM stream / USING ( object )
+
+address ::= 'ADDRESS' (  |
+                         ( environment expression? |
+                           'VALUE'? env_expression ) ( WITH - fragment )? )
+address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' stream | 'USING' expr ) |
+                             ( 'OUTPUT' | 'ERROR' ) ( 'NORMAL' |
+                                                    ( | 'REPLACE' | 'APPEND' ) ( 'STEM' stem | 'STREAM' stream | 'USING' expr ) ) )+
+
+*/
+-- creates a file by writing a few lines
+::method createFile
+  use strict arg file
+  stream = .Stream~new(file)
+  stream~open("write replace shared")
+  do 3
+    stream~lineOut("line")
+  end
+  stream~close
+  return stream
+
+::method test_with_no_redirection
+  -- Symbol expected after WITH keyword
+  self~assertSyntaxError(20.933, "address '' '' with")
+
+::method test_with_invalid_redirection
+  -- WITH must be followed by one of the keywords INPUT, OUTPUT, or ERROR
+  self~assertSyntaxError(25.934, "address '' '' with invalid stem s.")
+
+::method test_with_invalid_redirection_subkeyword
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with input array .Array~new")
+
+
+-- WITH INPUT
+
+::method test_with_duplicate_input_consecutive
+  -- Duplicate INPUT keyword found
+  self~assertSyntaxError(25.930, "address '' '' with input normal input normal")
+
+::method test_with_duplicate_input
+  -- Duplicate INPUT keyword found
+  self~assertSyntaxError(25.930, "address '' '' with input normal output normal input normal")
+
+::method test_with_input_invalid_io
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with input replace stem s.")
+
+::method test_with_input_stem_stem_object
+  stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.932, "address '' '' with input stem stemObject")
+
+::method test_with_input_stem_nullstring
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.932, "address '' '' with input stem ''")
+
+::method test_with_input_stream_nullstring
+  self~expectSyntax(98.999) -- Unable to open file .. for reading
+  address '' '' with input stream ''
+
+::method test_with_input_using_nil
+  self~expectSyntax(98.924) -- Object .. is not a valid ADDRESS WITH INPUT source
+  address '' '' with input using .nil
+
+::method test_with_input_using_supplier
+  self~expectSyntax(98.924) -- Object .. is not a valid ADDRESS WITH INPUT source
+  address '' '' with input using ( .Object~methods )
+
+::method test_with_input
+  line = "line"
+  stem. = line
+  stem.0 = 2
+  stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
+  fileName = self~temporaryFilename
+  file = .File~new(filename)
+  stream = self~createFile(file)
+  address "" "" with input normal
+  address "" "" with input stem stem.
+  address "" "" with input stream ( fileName )
+  address "" "" with input using ""
+  address "" "" with input using "line"
+  address "" "" with input using ( line )
+  address "" "" with input using ( stem.1 )
+  address "" "" with input using ( stem. )
+  address "" "" with input using ( stemObject )
+  address "" "" with input using ( file )
+  address "" "" with input using ( stream )
+  address "" "" with input using ( .Array~of(line, line) )
+  address "" "" with input using ( ("line", "line") )
+  address "" "" with input using .local
+  stream~close
+
+::method test_with_null_command_with_large_input
+  -- A null command (or any command that ignores stdin) may well finish before
+  -- some large input has been piped to the spawned command.  In this scenario,
+  -- the input pipe native function may return an error which we don't want to
+  -- see surfacing here.
+  address "" "" with input using (.Array~new(2000)~~fill("-"~copies(100)))
+
+
+-- WITH OUTPUT
+
+::method test_with_output_invalid_io
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with output invalid stem s.")
+
+::method test_with_output_duplicate_consecutive
+  -- Duplicate OUTPUT keyword found
+  self~assertSyntaxError(25.931, "address '' '' with output normal output stem s.")
+
+::method test_with_output_duplicate
+  -- Duplicate OUTPUT keyword found
+  self~assertSyntaxError(25.931, "address '' '' with output normal input normal output normal")
+
+::method test_with_output_stem_stem_object
+  stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.932, "address '' '' with output stem stemObject")
+
+::method test_with_output_stream_nullstring
+  self~expectSyntax(98.920) -- Unable to open file .. for writing
+  address '' '' with output stream ''
+
+::method test_with_output_using_nullstring
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  address '' '' with output using ''
+
+::method test_with_output_using_literal_string
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  address '' '' with output using 'line'
+
+::method test_with_output_using_string_variable
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  string = ""
+  address '' '' with output using ( string )
+
+::method test_with_output_using_directory
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  directory = .Directory~new
+  address '' '' with output using ( directory )
+
+-- that APPEND USING ( stream_object ) doesn't work is an awkward exception
+-- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
+::method test_with_output_using_append_stream
+  stream = .Stream~new(self~temporaryFilename)
+  self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
+  address '' '' with output append using ( stream )
+
+-- that REPLACE USING ( stream_object ) doesn't work is an awkward exception
+-- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
+::method test_with_output_using_replace_stream
+  stream = .Stream~new(self~temporaryFilename)
+  self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
+  address '' '' with output replace using ( stream )
+
+
+::method test_with_output
+  line = "line"
+  stem. = line
+  stem.0 = 2
+  stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
+  fileName = self~temporaryFilename
+  file = .File~new(filename)
+  stream = .Stream~new(file)
+  array = .Array~new
+  address "" "" with output normal
+  address "" "" with output stem stem.
+  address "" "" with output replace stem stem.
+  address "" "" with output append stem stem.
+  address "" "" with output stream ( fileName )
+  address "" "" with output replace stream ( fileName )
+  address "" "" with output append stream ( fileName )
+  address "" "" with output using ( stem. )
+  address "" "" with output append using ( stem. )
+  address "" "" with output replace using ( stem. )
+  address "" "" with output using ( stemObject )
+  address "" "" with output replace using ( stemObject )
+  address "" "" with output append using ( stemObject )
+  address "" "" with output using ( file )
+  address "" "" with output replace using ( file )
+  address "" "" with output append using ( file )
+  address "" "" with output using ( stream )
+  address "" "" with output using ( array )
+  address "" "" with output append using ( array )
+  address "" "" with output replace using ( array )
+
+  -- these tests work, but really make no sense
+  address "" "" with output using ( .Array~of(line, line) )
+  address "" "" with output using ( ("line", "line") )
+
+  stream~close
+
+::method test_with_output_data_lengths
+  out = .Array~new
+
+  -- no data
+  address "" self~inputToOutput with input using "" output replace using (out)
+  self~assertSame(0, out~toString(, "")~length)
+
+  -- one byte
+  address "" self~inputToOutput with input using "-" output replace using (out)
+  self~assertSame(1, out~toString(, "")~length)
+
+  -- around 4K
+  -- The raw data (including the line-end character) flowing through the
+  -- redirection pipe should be exactly 4K - 1, 4K, and 4K + 1 characters.
+  do length = 4095 - .endofline~length for 3
+    address "" self~inputToOutput with input using ("-"~copies(length)) output replace using (out)
+    self~assertSame(length, out~toString(, "")~length)
+  end
+
+  -- around 64K
+  -- We're filling an array of lines such that the raw data (which includes
+  -- line-end characters after each line) flowing through the redirection
+  -- pipe, will be exactly 64K - 1, 64K, and 64K + 1 characters.
+  eol = .endofline~length
+  in = .Array~new(655)~~fill("-"~copies(100 - eol)) -- 655 lines by 100 is 65500 chars
+  in~append("-"~copies(35 - eol)) -- 65535 chars
+  do length = 65535 to 65537
+    address "" self~inputToOutput with input using (in) output replace using (out)
+    self~assertSame(length, out~toString(, "")~length + out~items * eol)
+    in[in~last] ||= "x" -- add a single char to last line
+  end
+
+
+-- WITH ERROR
+
+::method test_with_error_invalid_io
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with error invalid stem s.")
+
+::method test_with_duplicate_redirection_different_
+  -- Duplicate ERROR keyword found
+  self~assertSyntaxError(25.932, "address '' '' with error normal output normal error stem s.")
+
+::method test_with_error_stem_stem_object
+  stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.932, "address '' '' with error stem stemObject")
+
+::method test_with_error_stream_nullstring
+  self~expectSyntax(98.920) -- Unable to open file .. for writing
+  address '' '' with error stream ''
+
+::method test_with_error_using_nullstring
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  address '' '' with error using ''
+
+::method test_with_error_using_literal_string
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  address '' '' with error using 'line'
+
+::method test_with_error_using_string_variable
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  string = ""
+  address '' '' with error using ( string )
+
+::method test_with_error_using_directory
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
+  directory = .Directory~new
+  address '' '' with error using ( directory )
+
+-- that APPEND USING ( stream_object ) doesn't work is an awkward exception
+-- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
+::method test_with_error_using_append_stream
+  stream = .Stream~new(self~temporaryFilename)
+  self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
+  address '' '' with error append using ( stream )
+
+-- that REPLACE USING ( stream_object ) doesn't work is an awkward exception
+-- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
+::method test_with_error_using_replace_stream
+  stream = .Stream~new(self~temporaryFilename)
+  self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
+  address '' '' with error replace using ( stream )
+
+
+::method test_with_error
+  line = "line"
+  stem. = line
+  stem.0 = 2
+  stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
+  fileName = self~temporaryFilename
+  file = .File~new(filename)
+  stream = .Stream~new(file)
+  array = .Array~new
+  address "" "" with error normal
+  address "" "" with error stem stem.
+  address "" "" with error replace stem stem.
+  address "" "" with error append stem stem.
+  address "" "" with error stream ( fileName )
+  address "" "" with error replace stream ( fileName )
+  address "" "" with error append stream ( fileName )
+  address "" "" with error using ( stem. )
+  address "" "" with error append using ( stem. )
+  address "" "" with error replace using ( stem. )
+  address "" "" with error using ( stemObject )
+  address "" "" with error replace using ( stemObject )
+  address "" "" with error append using ( stemObject )
+  address "" "" with error using ( file )
+  address "" "" with error replace using ( file )
+  address "" "" with error append using ( file )
+  address "" "" with error using ( stream )
+  address "" "" with error using ( array )
+  address "" "" with error append using ( array )
+  address "" "" with error replace using ( array )
+
+  -- these tests work, but really make no sense
+  address "" "" with error using ( .Array~of(line, line) )
+  address "" "" with error using ( ("line", "line") )
+
+  stream~close
+
+::method test_with_error_data_lengths
+  error = .Array~new
+
+  -- no data
+  address "" self~inputToError with input using "" error replace using (error )
+  self~assertSame(0, error~toString(, "")~length)
+
+  -- one byte
+  address "" self~inputToError with input using "-" error replace using (error )
+  self~assertSame(1, error~toString(, "")~length)
+
+  -- around 4K
+  eol = .endofline~length
+  around4K = "-"~copies(4095 - eol).endOfline"--" -- 4097 bytes
+  do length = 4095 to 4097
+    address "" self~inputToError with input using (around4K~left(length)) error replace using (error )
+    self~assertSame(length, error~toString~length)
+  end
+
+  -- around 64K
+  -- We're filling an array of lines such that the raw data (which includes
+  -- line-end characters after each line) flowing through the redirection
+  -- pipe, will be exactly 64K - 1, 64K, and 64K + 1 characters.
+  in = .Array~new(655)~~fill("-"~copies(100 - eol)) -- 655 lines by 100 is 65500 chars
+  in~append("-"~copies(35 - eol)) -- 65535 chars
+  do length = 65535 to 65537
+    address "" self~inputToError with input using (in) error replace using (error)
+    self~assertSame(length, error~toString(, "")~length + error~items * eol)
+    in[in~last] ||= "x" -- add a single char to last line
+  end
+
+
+-- ADDRESS PATH
+
+::method test_environment_path_null
+  address "path" ""
+  self~assertSame(.rs, -1, "address PATH null command is expected to fail")
+
+::method test_environment_path_cat
+  address "path" self~inputToOutput with input using "line" output stem out.
+  self~assertSame(1, out.0, "address PATH" self~inputToOutput "line should return 'line'")
+  self~assertSame("line", out.1, "address PATH" self~inputToOutput "line should return 'line'")
+
+
+-- OS-specific commands
+
+-- copy stdin to stdout
+::attribute inputToOutput get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 'find /v ""'
+  else
+    return "cat"
+
+-- copy stdin to stdout ignoring blank lines
+::attribute inputToOutputNoBlanks get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 'findstr "."'
+  else
+    return "grep ."
+
+-- copy stdin to stderr
+::attribute inputToError get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 'find /v "" 1>&2'
+  else
+    return "cat 1>&2"
+
+
+-- test cases from Rick's AddressWith re-written for "live" environment
+
+::method test_simple_with
+-- this will write a single line to the output...should not crash
+address "" "" with input using "This is a test"
+
+address "" "" with input using "This is a test"
+
+-- using an uninitialized stem variable
+address "" self~inputToOutput with input using "This is a test" output stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+
+-- default is replace
+address "" self~inputToOutput with input using "This is another test" output stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is another test", a.1)
+
+-- explicit replace
+address "" self~inputToOutput with input using "This is a third test" output replace stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is a third test", a.1)
+
+-- and finally append
+address "" self~inputToOutput with input using "This is a fourth test" output append stem a.
+self~assertSame(2, a.0)
+self~assertSame("This is a third test", a.1)
+self~assertSame("This is a fourth test", a.2)
+
+-- and finally append with an uninitialized stem
+address "" self~inputToOutput with input using "This is a fourth test" output append stem b.
+self~assertSame(1, b.0)
+self~assertSame("This is a fourth test", b.1)
+
+-- same tests using ERROR
+address "" self~inputToError with input using "This is a test" error stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+
+-- default is replace
+address "" self~inputToError with input using "This is another test" error stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is another test", a.1)
+
+-- explicit replace
+address "" self~inputToError with input using "This is a third test" error replace stem a.
+self~assertSame(1, a.0)
+self~assertSame("This is a third test", a.1)
+
+-- and finally append
+address "" self~inputToError with input using "This is a fourth test" error append stem a.
+self~assertSame(2, a.0)
+self~assertSame("This is a third test", a.1)
+self~assertSame("This is a fourth test", a.2)
+
+in.0 = 1
+in.1 = "This is a test"
+
+array = .array~new
+
+address "" self~inputToOutput with input stem in. output using (array)
+
+self~assertSame(1, array~items)
+self~assertSame("This is a test", array[1])
+
+in.1 = "This is another test"
+
+address "" self~inputToOutput with input stem in. output append using (array)
+
+self~assertSame(2, array~items)
+self~assertSame("This is a test", array[1])
+self~assertSame("This is another test", array[2])
+
+::method test_file_input
+
+temp = .TemporaryTestFile~new(self, 'testinput')
+temp~create(("Line1","","Line3"))
+
+array = .array~new
+address "" self~inputToOutput with input stream (temp~fullName) output using (array)
+self~assertSame(3, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("", array[2])
+self~assertSame("Line3", array[3])
+
+temp~delete
+
+-- test non-destructive buffering when source and target are the same
+::method test_buffering
+
+array = "Line1","","Line3","","Line5"
+temp = .TemporaryTestFile~new(self, 'testinput')
+temp~create(array)
+
+-- this tests buffering on output when the same stream is used as both
+address "" self~inputToOutputNoBlanks with input stream (temp~fullName) output stream(temp~fullName)
+
+-- this should write 3 lines to the file, replacing the file
+--array = temp~arrayIn  -- no arrayIn method for this class!
+-- need to create a stream object in order to do arrayin
+tempStream = .stream~new(temp~fullName)
+array = tempStream~arrayin
+tempStream~close
+self~assertSame(3, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line3", array[2])
+self~assertSame("Line5", array[3])
+
+-- now again, with append specified
+address "" self~inputToOutputNoBlanks with input stream (temp~fullName) output append stream (temp~fullName)
+array = tempStream~arrayIn
+tempStream~close
+
+self~assertSame(6, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line3", array[2])
+self~assertSame("Line5", array[3])
+self~assertSame("Line1", array[4])
+self~assertSame("Line3", array[5])
+self~assertSame("Line5", array[6])
+
+temp~delete
+
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address "" self~inputToOutputNoBlanks with input stem a. output stem a.
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address "" self~inputToOutputNoBlanks with input stem a. output append stem a.
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+
+-- now using a stem, but with the USING keyword
+drop a.
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address "" self~inputToOutputNoBlanks with input using (a.) output using (a.)
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address "" self~inputToOutputNoBlanks with input using (a.) output append using (a.)
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+
+-- once more, but mixing up the variantes
+drop a.
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address "" self~inputToOutputNoBlanks with input using (a.) output stem a.
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address "" self~inputToOutputNoBlanks with input stem a. output append using (a.)
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+::method test_input_output_stream
+
+instream = .ArrayInputStream~new(("Line1", "Line2"))
+outstream = .ArrayOutputStream~new
+
+address "" self~inputToOutput with input using (instream) output using(outstream)
+
+array = outstream~array
+
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+
+-- some RexxQueue tests
+::method test_rexxqueue
+
+queue = .rexxqueue~new("ADDRESS.testGroup")
+queue~empty
+
+address "" self~inputToOutput with input using 'This is a test' output using(queue)
+self~assertSame(1, queue~queued)
+self~assertSame("This is a test", queue~pull)
+
+queue~queue('Line1')
+array = .array~new
+
+address "" self~inputToOutput with input using(queue) output using(array)
+self~assertSame(0, queue~queued)
+self~assertSame("Line1", array[1])
+
+-- and the overwrite protection
+queue~queue('Line1')
+queue~queue('')
+queue~queue('Line3')
+
+address "" self~inputToOutputNoBlanks with input using(queue) output using(queue)
+self~assertSame(2, queue~queued)
+self~assertSame("Line1", queue~pull)
+self~assertSame("Line3", queue~pull)
+
+queue~delete
+
+
+::method test_global_setting
+
+-- The base mechanisms have been tested above, here we're going to test
+-- that the global settings are used with commands and can be overridden on a base-by-case
+-- basis.
+
+signal off novalue
+
+address "" with input using "This is a test" output stem a. error stem b.
+-- this will use the redirects
+address "" self~inputToOutput
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+-- a command issued to this environment without using ADDRESS will also pick this up
+"" || self~inputToError
+
+self~assertSame(1, b.0)
+self~assertSame("This is a test", b.1)
+self~assertSame(0, a.0)
+
+drop a. b.
+
+-- override the INPUT source...this will use the global output ane error settings
+address "" self~inputToOutput with input using 'This is another test'
+self~assertSame(1, a.0)
+self~assertSame("This is another test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+-- now override OUTPUT and ERROR similarly
+address "" self~inputToOutput with output stem c.
+self~assertSame(1, c.0)
+self~assertSame("This is a test", c.1)
+self~assertSame(0, b.0)
+self~assertSame('A.0', a.0)      -- should be unchanged
+
+drop a. b. c.
+
+address "" self~inputToOutput with output stem c.
+self~assertSame(1, c.0)
+self~assertSame("This is a test", c.1)
+self~assertSame('A.0', a.0)
+self~assertSame(0, b.0)      -- should be unchanged
+
+drop a. b. c.
+
+-- now test NORMAL overrides
+
+address "" "" with input NORMAL
+-- this has nothing to read, but the output and error stems should reflect nothing written
+self~assertSame(0, a.0)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+address "" "" with output NORMAL
+-- a. should be unchanged
+self~assertSame('A.0', a.0)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+address "" self~inputToOutput with error NORMAL
+-- b. should be unchanged
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame('B.0', b.0)
+
+-- test the address toggle maintains the settings
+address command
+address
+
+drop a. b.
+
+-- this will use the redirects
+"" || self~inputToOutput
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+-- explicit switch back by name...still keeps the settings
+address command
+address ""
+
+drop a. b.
+
+"" || self~inputToOutput
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+-- the address toggle only remembers two settings, but the override
+-- information should still be maintained as long as the context
+-- remains active.
+address xedit
+address command
+address ""
+
+drop a. b.
+
+"" || self~inputToOutput
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+-- test that settings are saved on internal call return
+call subroutine
+self~assertSame('A.0', a.0)
+self~assertSame('B.0', b.0)
+
+-- this should have been restored to the original settings
+"" || self~inputToOutput
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+return
+
+subroutine:
+
+
+address "" with input using "This is another test" output stem c. error stem d.
+-- this will use the new redirects
+"" || self~inputToOutput
+self~assertSame(1, c.0)
+self~assertSame("This is another test", c.1)
+self~assertSame(0, d.0)
+return
+
+::method test_write_buffer
+
+array = .array~new
+crlf = '0d0a'x
+lf = '0a'x
+cr = '0d'x
+
+
+
+::method test_stem_input
+
+-- now using a stem, but with the USING keyword
+drop a.
+a. = ""
+a.0 = 3
+a.1 = "Line1"
+a.3 = "Line3"
+
+-- now same variants using a stem
+address "" self~inputToOutput with input using (a.) output using (b.)
+self~assertSame(3, b.0)
+self~assertSame("Line1", b.1)
+self~assertSame("", b.2)
+self~assertSame("Line3", b.3)
+
+::method test_input_input_stream_error
+self~expectSyntax(42.3)
+
+instream = .ErrorInputStream~new(("Line1", "Line2"))
+outstream = .ArrayOutputStream~new
+
+address "" self~inputToOutput with input using (instream) output using(outstream)
+
+::method test_input_output_stream_error
+self~expectSyntax(42.3)
+
+instream = .ArrayInputStream~new(("Line1", "Line2"))
+outstream = .ErrorOutputStream~new
+
+address "" self~inputToOutput with input using (instream) output using(outstream)
+
+
+-- permanent I/O redirection tests
+
+
+::method test_configuration_constant
+  -- set a permanent I/O configuration for the current environment
+  address value address() with input using 123 output stem s.
+
+  -- switch away from the current environment, and back again
+  address ""
+  address
+
+  -- this should honour the permanent I/O configuration
+  (self~inputToOutput)
+  self~assertSame(1, s.0)
+  self~assertSame(123, s.1)
+
+  call p
+  self~assertSame(1, s.0) -- must be unchanged
+  self~assertSame(123, s.1) -- must be unchanged
+
+  return
+
+  p: procedure expose self
+    -- we have inherited our permanent I/O configuration
+    -- constant input should still work, output should go to a local stem
+    (self~inputToOutput)
+    self~assertSame(1, s.0)
+    self~assertSame(123, s.1)
+    drop s.
+    return
+
+::method test_configuration_object
+  in = (1, 2, 3)
+  out = (4, 5)
+  -- set a permanent I/O configuration
+  address "" with input using (in) output using (out)
+  self~assertSame("1,2,3", in~toString(, ",")) -- must be unchanged
+  self~assertSame("4,5", out~toString(, ",")) -- must be unchanged
+
+  -- switch away from the current environment, and back again
+  address COMMAND
+  address
+
+  -- this should honour the permanent I/O configuration
+  (self~inputToOutput)
+  self~assertSame("1,2,3", in~toString(, ",")) -- still unchanged
+  self~assertSame("1,2,3", out~toString(, ",")) -- copied from input
+
+  -- now we override a part of our permanent I/O configuration
+  address "" self~inputToOutput with output stem s.
+  self~assertSame("1,2,3", in~toString(, ",")) -- still unchanged
+  self~assertSame("1,2,3", out~toString(, ",")) -- unchanged
+  self~assertSame(3, s.0) -- output override
+  self~assertSame(1, s.1)
+  self~assertSame(2, s.2)
+  self~assertSame(3, s.3)
+
+  -- our override was only temporary, we should be back to 'in' and 'out'
+  -- we change out from an Array to a Stem
+  in = .Stem~of( (0, 2), (1, "abc"), (2, "def") )
+  out = .Array~new
+  (self~inputToOutput)
+  self~assertSame("abc,def", out~toString(, ","))
+
+::method test_configuration_expression
+  defaultEnvironment = address()
+
+  -- set a permanent I/O configuration
+  address (defaultEnvironment) with input using (in~delete(n)) output append using (out)
+  self~assertFalse(var("n"))
+  self~assertFalse(var("in"))
+  self~assertFalse(var("out"))
+
+  -- switch away from the current environment, and back again
+  address "nonexisting"
+  address (defaultEnvironment)
+
+  in = "abcdef"~makeArray("")
+  out = .Array~new
+  do n = 1 to 3
+    (self~inputToOutput)
+    self~assertSame(6 - n, in~items)
+    self~assertSame(n, out~items)
+  end
+  self~assertSame("a,c,e", out~makeString(, ","))
+
+-- [bugs:#1578] ADDRESS WITH issues
+-- I/O configurations are associated with each environment
+-- environment name case shouldn't matter
+::method test_configuration_nocase
+  output = .Array~new
+  address "command" with input using "command" output using (output)
+  address command with input using "COMMAND" output using (output)
+  address "" with input using "" output using (output)
+
+  do env over "command", "Command", "COMMAND", ""
+    address (env)
+    (self~inputToOutput)
+    self~assertSame(1, output~items, "address" env":" output~items "items")
+    self~assertSame(env~upper, output[1], "address" env":" output[1])
+  end
+
+::method test_pprexxref_example
+  address "" with input using (a) output using (a)
+  a = 4, 2, 3, 1
+  "sort"
+  self~assertSame("1,2,3,4", a~toString(, ","), "sort result 1,2,3,4 expected")
+
+
+-- command handler tests
+
+::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
+
+::method set
+  use strict arg command, variable = (command~translate(" ", "=")~word(2))
+  (command)
+  return value(variable, , "environment")
+
+-- the command handler should handle Windows "SET" and Unix "export"
+-- commands in the same process
+::method test_command_set
+  if self~isWindows then do
+    -- the environment variable should still be there after the command
+    self~assertSame("set", self~set("set test_command_set=set"))
+
+    -- both the command and the environment variable are caseless on Windows
+    self~assertSame("caseless", self~set("SET TEST_command_set=caseless"))
+
+    -- SET should support simple environment variable expansion
+    -- NOTE: the same-process SET handling uses ExpandEnvironmentStrings()
+    -- which does not support
+    -- * dynamic (hidden) environment variables like CD, DATE, TIME, RANDOM, or ERRORLEVEL
+    -- * the special expansion syntax %name:str1=str2% or %name:~offset,length%
+    -- * SET switches /A or /P
+    self~assertSame("caseless expanded", self~set("Set test_command_set=%test_command_set% expanded"))
+
+    -- remove environment variable
+    self~assertSame("", self~set("SET TEST_COMMAND_SET="))
+  end
+  -- Unix/Linux
+  else do
+    -- the environment variable should still be there after the command
+    self~assertSame("set", self~set("export test_command_set=set"))
+
+    -- on Unix-based systems the environment variables names are case-sensitive
+    self~set("export test_command_SET=SET")
+    self~assertSame("set", value("test_command_set", , "environment"))
+    self~assertSame("SET", value("test_command_SET", , "environment"))
+
+    -- export should support simple environment variable expansion
+    /*@@BUG: doesn't work
+    self~assertSame("set expanded", self~set('export test_command_set="$test_command_set expanded"'))
+    */
+  end
+
+-- a Windows "d:" command should be handled in the same process
+::method test_command_drive_windows_only
+  if \self~isWindows then
+    return
+  -- this assumes we have a C: drive, but as we can't be sure there's
+  -- also a second drive available, we use a UNC path instead
+  currentDrive = filespec("drive", directory())
+  call directory "\\localhost\C$\"
+  self~assertSame("", filespec("drive", directory()))
+  (currentDrive) -- this d: command should run same-process
+  self~assertSame(currentDrive, filespec("drive", directory()))
+
+-- cd/chdir commands should be handled in the same process
+::method test_command_cd
+  dirNoBlanks = "test_command_cd"
+  dirWithBlanks = "test_command cd"
+  pathNoBlanks = .TemporaryTestDirectory~new(self, dirNoBlanks)~create
+  pathWithBlanks = .TemporaryTestDirectory~new(self, dirWithBlanks)~create
+  original = directory()
+  -- to also test relative cd commands we change to this test case's
+  -- directory, where we find above temp directories
+  current = directory(filespec("location", self~class~package~name))
+
+  -- @@BUGS:
+  --   on Unix leading/trailing blanks don't work: " cd .", 'cd "dir" '
+  --   on Windows chdir doesn't work
+  -- other issues:
+  --   on Windows cd /d isn't supported
+  --   on Windows "cd .. " should also work with a trailing blank, but doesn't
+  --   returns zero, but does nothing, which is strange,
+  --   similar "cmd /c cd .. ." also returns 0 and does nothing
+
+  -- for Windows we test cd, Cd, ChDir, on Unix just cd
+  do cd over self~isWindows~?(("cd", "Cd" /*@@BUG: "ChDir"*/), "cd")
+    -- cd with a relative path, no blanks, unquoted
+    call directory current
+    cd dirNoBlanks -- should be handled within same process
+    self~assertSame(0, rc, cd dirNoBlanks "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd no blanks, quoted
+    call directory current
+    cd '"' || dirNoBlanks || '"'
+    self~assertSame(0, rc, " " cd '"' || dirNoBlanks || '"' "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd with blanks, quoted
+    call directory current
+    cd '"' || dirWithBlanks || '"'
+    self~assertSame(0, rc, cd '"' || dirWithBlanks || '"  ' "returns" SysgetErrorText(rc))
+    self~assertSame(pathWithBlanks~absolutePath, directory())
+
+    -- cd with a full path
+    call directory current
+    cd pathNoBlanks~absolutePath
+    self~assertSame(0, rc, cd pathNoBlanks~absolutePath "returns" SysgetErrorText(rc))
+    self~assertSame(pathNoBlanks~absolutePath, directory())
+
+    -- cd with a full quoted path with blanks
+    call directory current
+    cd '"' || pathWithBlanks~absolutePath || '"'
+    self~assertSame(0, rc, cd '"' || pathWithBlanks~absolutePath || '"' "returns" SysgetErrorText(rc))
+    self~assertSame(pathWithBlanks~absolutePath, directory())
+
+    -- parent directory
+    cd ".."
+    self~assertSame(0, rc, cd ".." "returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+
+    -- same directory
+    cd "."
+    self~assertSame(0, rc, cd "." "returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+
+    -- cd with invalid path
+    "cd non-existing"
+    self~assertSame(2, rc, "cd non-existing should return 2 (The system cannot find the file specified) but returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+  end
+
+  -- specials
+
+  -- leading/in-between/trailing blanks
+--@@BUG: doesn't work on Linux
+if self~isWindows then do
+  call directory current
+  " " cd ' "' || dirNoBlanks || '" '
+  self~assertSame(0, rc, " " cd ' "' || dirNoBlanks || '" ' "returns" SysgetErrorText(rc))
+  self~assertSame(pathNoBlanks~absolutePath, directory())
+end
+
+  -- Windows-only: leading "quiet "@"
+  if self~isWindows then do
+    "@CD .."
+    self~assertSame(0, rc, "@CD .. returns" SysgetErrorText(rc))
+    self~assertSame(current, directory())
+  end
+
+  -- Unix-only: tilde
+  if \self~isWindows then do
+    "cd ~"
+    self~assertSame(0, rc, "cd ~ returns" SysgetErrorText(rc))
+    -- we may find (e. g. on FreeBSD) user home directories to be soft links
+    -- /home -> /usr/home which gives a mismatch as directory() returns the
+    -- resolved path /usr/home/.. while HOME is /home/..
+    -- as Rexx doesn't seem to provide a function to convert a path to a path
+    -- with resolved soft links, we just accept both $HOME and /usr/$HOME (a hack)
+    home = value("HOME", , "environment")
+    homeUsr = "/usr" || home
+    self~assertOneOrAnother(home, homeUsr, directory())
+
+    call directory current
+    "cd ~" || userid()
+    self~assertSame(0, rc, "cd ~" || userid() "returns" SysgetErrorText(rc))
+    self~assertOneOrAnother(home, homeUsr, directory())
+  end
+
+  call directory original
+
+::class ArrayInputStream public inherit InputStream
+::method init
+  expose currentLine lines
+  use strict arg lines
+
+  -- we want a copy of the array so that the content is
+  -- isolated from changes. This also allows lists, queues, etc. to be
+  -- converted to a stream
+  lines = lines~makearray
+  currentLine = 1
+
+-- open will reset to the beginning
+::method open
+  expose currentLine
+  use strict arg
+
+  currentLine = 1
+
+-- close will also reset to the beginning
+::method close
+  forward message('OPEN')
+
+-- character methods not supported
+::method charin
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+::method linein
+  expose lines currentLine
+  -- we allow a line number to be specified.
+  use strict arg lineNumber = (currentLine)
+
+  -- are we trying to read beyond the end of the
+  -- array? This is a notready condition with a null
+  -- string return
+  if lineNumber > lines~items then do
+     raise notready additional(self) return("")
+  end
+
+  -- the next read is one line down
+  currentLine = lineNumber + 1
+  -- and complete the read
+  return lines[lineNumber]
+
+::method lines
+  expose lines currentLine
+  use strict arg  -- no arguments allowed
+
+  -- calculate the default number of lines
+  count = lines~items - currentLine + 1
+
+  -- everything has been read, so lines is zero
+  if count < 1 then do
+      return 0
+  end
+
+  return count
+
+::class ArrayOutputStream public inherit OutputStream
+-- the default initial array size
+::constant defaultArraySize 50
+-- we can create a default output array or can accept an existing array
+-- if given an array, we append any new items to the end.
+::method init
+  expose currentLine lines
+  use strict arg lines = (.array~new(self~defaultArraySize))
+
+  -- write this out following the last existing item
+  currentLine = lines~items + 1
+
+-- character operations not supported
+::method charout
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+-- write a line to the next sequetial position
+::method lineout
+  expose currentLine lines
+
+  -- the line is optional, which is just a close operation
+  if arg() == 0 then do
+     return 0    -- this is a zero residual count
+  end
+
+  -- now get the line and do a full arg count check
+  use strict arg line
+
+  lines[currentLine] = line
+  currentLine += 1
+  return 0               -- the residual is always 0
+
+-- retrieve the output array from the steam
+::method array
+  expose lines
+  use strict arg
+
+  return lines
+
+
+::class ErrorInputStream public subclass ArrayInputStream
+-- line the base class, but raises a syntax error after the lines are read
+::method linein
+  if self~lines = 0 then
+     return 1/0   -- rasies a syntax error
+  -- do the real operation
+  return self~linein:super
+
+::class ErrorOutputStream public subclass ArrayOutputStream
+-- the default initial array size
+
+-- write a line to the next sequetial position
+::method lineout
+  return 1/0
+
+
+::options novalue syntax
+::options trace off -- we never want to see FAILURE trace output

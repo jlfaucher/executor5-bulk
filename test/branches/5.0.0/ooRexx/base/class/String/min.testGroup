@@ -1,0 +1,100 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_minMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_minMethod.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~assertSame('1.00', 1.00~min(1))
+
+::method 'test002'
+    self~assertSame('1', 1~min(1.00))
+
+::method 'test003'
+    numeric digits 9
+    self~assertSame('12345678.0', 12345678.00~min( 12345678))
+    numeric digits 18
+    self~assertSame('12345679999999998.0', 12345679999999998.00~min( 12345679999999998))
+
+::method 'test004'
+    self~assertSame('12345678', 12345678~min( 12345678.00))
+
+::method 'test005'
+    numeric digits 9
+    self~assertSame(12345679, 12345679~min( 12345678.96))
+    numeric digits 18
+    self~assertSame(12345679999999999, 12345679999999999~min( 12345679999999998.96))
+
+::method 'test006'
+    numeric digits 9
+    self~assertSame('-12345678.0', '-12345678.00'~min( -12345678))
+    numeric digits 18
+    self~assertSame('-12345679999999998.0', '-12345679999999998.00'~min( -12345679999999998))
+
+::method 'test007'
+    self~assertSame('-12345678', (-12345678)~min( '-12345678.00'))
+
+::method 'test008'
+    numeric digits 9
+    self~assertSame(-12345679.0, '-12345678.96'~min( -12345679))
+    numeric digits 18
+    self~assertSame(-12345679999999999.0, '-12345679999999998.96'~min( -12345679999999999))
+
+::method 'test009'
+   self~assertSame(1.23456789, 1.23456789123456789~min)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_MIN"
+    self~assertEquals(6, 12~min(6,7,9))
+    self~assertEquals(17.03, 17.3~min(19,17.03))
+    self~assertEquals(-7, (-7)~min(-3,-4.3))
+    self~assertEquals(1, 21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1))
+
+
+::options novalue error

@@ -1,0 +1,1241 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CHAROUT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "CHAROUT.testGroup" subclass ooTestCase public
+
+::attribute charOutTestingFile
+
+::method setup
+  self~charOutTestingFile = .nil
+
+::method tearDown
+  fileName = self~charOutTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = stream(fileName, 'C', "close")
+    j = deleteFile(fileName)
+  end
+
+-- Basic does it work test
+::method test_simple
+  fileName = 'delMe_charoutSimple'
+  self~charOutTestingFile = fileName
+
+  characters = .array~new
+  do i = 97 to 122
+    characters~append(i~d2c)
+  end
+
+  do c over characters
+    ret = charout(fileName, c)
+    self~assertSame(0, ret)
+  end
+
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  do i = 1 to 26
+    ch = charin(fileName)
+    self~assertSame(characters[i], ch)
+  end
+
+
+-- Regression test for bug  2761373
+::method test_charOut_emptyString_2761373
+
+  fileName='tsmp.txt'
+  self~charOutTestingFile = fileName
+
+  call charout fileName, ''
+  self~assertSame(0, result)
+
+-- Tests reported position after charout null or charout chars
+::method test_pos
+  fileName = 'delMe_charoutPos'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  pos = stream(fileName, 'C', "query position write char")
+  self~assertSame(1, pos)
+
+  -- charout of null string should not move the write position
+  do i = 1 to 5000
+    ret = charout(fileName, "")
+  end
+
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- charout of a single char 5,000 times should move the write position to
+  -- 5,000 + 1
+  do i = 1 to 5000
+    ret = charout(fileName, "A")
+    pos += 1
+  end
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- size should equal the number of chars written.
+  ret = stream(fileName, 'C', "query size")
+  self~assertSame(pos - 1, ret)
+
+
+-- Tests outputting a large amount of chars.
+::method test_many_chars
+  fileName = 'delMe_many_chars'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  str = '12345678901234567890'
+  size = 20 * 1024 * 1024
+  characters = str~copies(1024 * 1024)
+
+  ret = charout(fileName, characters)
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(size, ret)
+
+-- Tests charout to stdout. However, a Rexx program is run in a separate process,
+-- (by execRexxPrg()) and the output of that program is redirected into a file.
+-- This test is really only valid to catch what is output, not the return code.
+-- The next test, test_stdout_ret2() is needed to check the return.
+::method test_stdout_ret
+
+  src = .array~new
+  src[1] = 'ret = charout( , "HELLO")'
+  --src[2] = 'say "ret:" ret'
+  src[2] = 'return ret'
+  fileName = createRexxPrgFile(src, "delMe.test_charin_stdout")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  output = .array~new
+  ret = execRexxPrg(fileName, output)
+
+  -- assert that exactly HELLO was output
+  self~assertSame(1, output~items)
+  self~assertSame("HELLO", output[1])
+  self~assertSame(0, ret)
+
+-- Tests the return from charout() to the console.
+::method test_stdout_ret2
+  ret = charout( , "     ")
+  self~assertSame(0, ret)
+
+-- Tests incorrect use of start position with transient stream
+::method test_stdout_start
+  self~expectSyntax(93.958)
+  ret = charout( , "     ", 15)
+  self~assertSame(0, ret)
+
+-- Tests simple positioning before writing.
+::method test_positioning_1
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning1")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = charout(fileName, "X", 2)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 4)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 6)
+  self~assertSame(0, ret)
+
+  -- Close the file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = linein(fileName)
+  self~assertSame('1X3X5X7890', ret)
+
+  -- tearDown() deletes the file.
+
+-- Test writing at a position past the end of the file.
+::method test_positioning_pastEnd
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_charout_postioning2")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  nulStr = 0~d2c~copies(10)
+  len = str~length + .endOfLine~length + nulStr~length
+  pos = len + 1
+  ret = charout(fileName, "X", pos)
+  self~assertSame(0, ret)
+
+  -- We added an X, so len needs to increment (could also use pos)
+  len +=1
+
+  -- close file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName, , len)
+  self~assertSame(str || .endOfLine || nulStr || "X", ret)
+
+-- Tests negative value for position
+::method test_positioning_negative
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning3")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", -2)
+  self~assertSame(0, ret)
+
+-- Tests writing at 0
+::method test_positioning_zero
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningA")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", 0)
+  self~assertSame(0, ret)
+
+-- Tests writing at 1
+::method test_positioning_one
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningB")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  -- File size shouldn't change because we are going to overwrite a character.
+  len = '1234567890'~length + .endOfLine~length
+
+  ret = charout(fileName, "X", 1)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName)
+  self~assertSame("X", ret)
+
+
+-- Tests trying to write when stream is read only
+::method test_positioning_readOnly
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning4")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open read")
+  self~assertSame("READY:", ret)
+
+  -- Try to write 10 characters, should get a return of 10 because none will be
+  -- written.
+  ret = charout(fileName, "1234567890")
+  self~assertSame(10, ret)
+
+
+-- Tests repeated writes using different character counts
+::method test_write_char_strings
+
+  fileName = "delMe.test_charout_writingA"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w)
+      self~assertSame(0, ret, 'iteration' i)
+    end
+  end
+
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      len = w~length
+      strX = charin(fileName, , len)
+      self~assertSame(len, strX~length, 'iteration' i)
+      self~assertSame(w, strX, 'iteration' i)
+    end
+  end
+
+-- Tests repeated writes mixed with position changes
+::method test_write_mixed_char_strings
+
+  fileName = "delMe.test_charout_writingB"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  strX = 'X'~copies(10)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  pos = 1
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w, pos)
+      self~assertSame(0, ret, 'iteration' i)
+      pos += w~length
+
+      if i > 1 then do
+        p = ((i - 1) * 512) - 5 + 1
+        ret = charout(fileName, strX, p)
+        self~assertSame(0, ret, 'iteration' i 'X')
+      end
+    end
+  end
+
+  -- Reposition to start of file.
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  expected = strA~overlay("XXXXX", 508)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
+  ret = charin(fileName, , 1024)
+  self~assertSame(expected, ret)
+
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+
+-- Tests repeated writes mixed with position changes.  This is exactly the same
+-- tests as test_write_mixed_char_strings2, but after the writes, the file is
+-- closed, then reopened to do the reads
+::method test_write_mixed_char_strings2
+
+  fileName = "delMe.test_charout_writingC"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  strX = 'X'~copies(10)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  pos = 1
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w, pos)
+      self~assertSame(0, ret, 'iteration' i)
+      pos += w~length
+
+      if i > 1 then do
+        p = ((i - 1) * 512) - 5 + 1
+        ret = charout(fileName, strX, p)
+        self~assertSame(0, ret, 'iteration' i 'X')
+      end
+    end
+  end
+
+  -- Close and reopen the files
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  expected = strA~overlay("XXXXX", 508)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
+  ret = charin(fileName, , 1024)
+  self~assertSame(expected, ret)
+
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+
+/*----------------------------------------------------------------------------*\
+  charout() using non-buffered mode.  Basically the same set of tests, but
+  in non-buffered write mode
+\*----------------------------------------------------------------------------*/
+
+-- Basic does it work test
+::method test_simple_nb
+  fileName = 'delMe_charoutSimpleA'
+  self~charOutTestingFile = fileName
+
+  characters = .array~new
+  do i = 97 to 122
+    characters~append(i~d2c)
+  end
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  do c over characters
+    ret = charout(fileName, c)
+    self~assertSame(0, ret)
+  end
+
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  do i = 1 to 26
+    ch = charin(fileName)
+    self~assertSame(characters[i], ch)
+  end
+
+-- Tests reported position after charout null or charout chars
+::method test_pos_nb
+  fileName = 'delMe_charoutPosB'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  pos = stream(fileName, 'C', "query position write char")
+  self~assertSame(1, pos)
+
+  -- charout of null string should not move the write position
+  do i = 1 to 5000
+    ret = charout(fileName, "")
+  end
+
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- charout of a single char 5,000 times should move the write position to
+  -- 5,000 + 1
+  do i = 1 to 5000
+    ret = charout(fileName, "A")
+    pos += 1
+  end
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- size should equal the number of chars written.
+  ret = stream(fileName, 'C', "query size")
+  self~assertSame(pos - 1, ret)
+
+
+-- Tests outputting a large amount of chars.
+::method test_many_chars_nb
+  fileName = 'delMe_many_charsC'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  str = '12345678901234567890'
+  size = 20 * 1024 * 1024
+  characters = str~copies(1024 * 1024)
+
+  ret = charout(fileName, characters)
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(size, ret)
+
+-- Tests simple positioning before writing.
+::method test_positioning_1_nb
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning1")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  ret = charout(fileName, "X", 2)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 4)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 6)
+  self~assertSame(0, ret)
+
+  -- Close the file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  ret = linein(fileName)
+  self~assertSame('1X3X5X7890', ret)
+
+  -- tearDown() deletes the file.
+
+-- Test writing at a position past the end of the file.
+::method test_positioning_pastEnd_nb
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_charout_postioning2")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  nulStr = 0~d2c~copies(10)
+  len = str~length + .endOfLine~length + nulStr~length
+  pos = len + 1
+  ret = charout(fileName, "X", pos)
+  self~assertSame(0, ret)
+
+  -- We added an X, so len needs to increment (could also use pos)
+  len +=1
+
+  -- close file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName, , len)
+  self~assertSame(str || .endOfLine || nulStr || "X", ret)
+
+-- Tests negative value for position
+::method test_positioning_negative_nb
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning3")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", -2)
+  self~assertSame(0, ret)
+
+-- Tests writing at 0
+::method test_positioning_zero_nb
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningA")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", 0)
+  self~assertSame(0, ret)
+
+-- Tests writing at 1
+::method test_positioning_one_nb
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningB")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  -- File size shouldn't change because we are going to overwrite a character.
+  len = '1234567890'~length + .endOfLine~length
+
+  ret = charout(fileName, "X", 1)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName)
+  self~assertSame("X", ret)
+
+
+-- Tests trying to write when stream is read only
+::method test_positioning_readOnly_nb
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning4")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open read nobuffer")
+  self~assertSame("READY:", ret)
+
+  -- Try to write 10 characters, should get a return of 10 because none will be
+  -- written.
+  ret = charout(fileName, "1234567890")
+  self~assertSame(10, ret)
+
+
+-- Tests repeated writes using different character counts
+::method test_write_char_strings_nb
+
+  fileName = "delMe.test_charout_writingD"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w)
+      self~assertSame(0, ret, 'iteration' i)
+    end
+  end
+
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      len = w~length
+      strX = charin(fileName, , len)
+      self~assertSame(len, strX~length, 'iteration' i)
+      self~assertSame(w, strX, 'iteration' i)
+    end
+  end
+
+-- Tests repeated writes mixed with position changes, with a non-buffered stream
+::method test_write_mixed_char_strings_nb
+
+  fileName = "delMe.test_charout_writingE"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  strX = 'X'~copies(10)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  pos = 1
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w, pos)
+      self~assertSame(0, ret, 'iteration' i)
+      pos += w~length
+
+      if i > 1 then do
+        p = ((i - 1) * 512) - 5 + 1
+        ret = charout(fileName, strX, p)
+        self~assertSame(0, ret, 'iteration' i 'X')
+      end
+    end
+  end
+
+  -- Reposition to start of file.
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  expected = strA~overlay("XXXXX", 508)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
+  ret = charin(fileName, , 1024)
+  self~assertSame(expected, ret)
+
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+
+-- This is the same test as test_write_mixed_char_strings_nb above, but when the
+-- writes are finished, the file is closed then reopened.
+::method test_write_mixed_char_strings_nb2
+
+  fileName = "delMe.test_charout_writingF"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  strX = 'X'~copies(10)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  pos = 1
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w, pos)
+      self~assertSame(0, ret, 'iteration' i)
+      pos += w~length
+
+      if i > 1 then do
+        p = ((i - 1) * 512) - 5 + 1
+        ret = charout(fileName, strX, p)
+        self~assertSame(0, ret, 'iteration' i 'X')
+      end
+    end
+  end
+
+  -- Close and reopen the files
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  expected = strA~overlay("XXXXX", 508)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
+  ret = charin(fileName, , 1024)
+  self~assertSame(expected, ret)
+
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+
+/*----------------------------------------------------------------------------*\
+  charout() using binary mode.  Basically the same set of tests, but in binary
+  write mode.  charout() is basically binary anyway, so not much in the way of
+  new bugs is expected.
+\*----------------------------------------------------------------------------*/
+
+-- Basic does it work test
+::method test_simple_bin
+  fileName = 'delMe_charoutSimpleG'
+  self~charOutTestingFile = fileName
+
+  characters = .array~new
+  do i = 97 to 122
+    characters~append(i~d2c)
+  end
+
+  ret = stream(fileName, 'C', "open binary reclength 8")
+  self~assertSame("READY:", ret)
+
+  do c over characters
+    ret = charout(fileName, c)
+    self~assertSame(0, ret)
+  end
+
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  do i = 1 to 26
+    ch = charin(fileName)
+    self~assertSame(characters[i], ch)
+  end
+
+-- Tests reported position after charout null or charout chars
+::method test_pos_bin
+  fileName = 'delMe_charoutPosH'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary reclength 23")
+  self~assertSame("READY:", ret)
+
+  pos = stream(fileName, 'C', "query position write char")
+  self~assertSame(1, pos)
+
+  -- charout of null string should not move the write position
+  do i = 1 to 5000
+    ret = charout(fileName, "")
+  end
+
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- charout of a single char 5,000 times should move the write position to
+  -- 5,000 + 1
+  do i = 1 to 5000
+    ret = charout(fileName, "A")
+    pos += 1
+  end
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- size should equal the number of chars written.
+  ret = stream(fileName, 'C', "query size")
+  self~assertSame(pos - 1, ret)
+
+
+-- Tests outputting a large amount of chars.
+::method test_many_chars_bin
+  fileName = 'delMe_many_charsI'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary reclength 3")
+  self~assertSame("READY:", ret)
+
+  str = '12345678901234567890'
+  size = 20 * 1024 * 1024
+  characters = str~copies(1024 * 1024)
+
+  ret = charout(fileName, characters)
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(size, ret)
+
+-- Tests simple positioning before writing.
+::method test_positioning_1_bin
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning1")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  ret = charout(fileName, "X", 2)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 4)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 6)
+  self~assertSame(0, ret)
+
+  -- Close the file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  content = '1X3X5X7890' || .endOfLine
+  len = content~length
+  ret = linein(fileName)
+  self~assertSame(len, ret~length)
+  self~assertSame(content, ret)
+
+  -- tearDown() deletes the file.
+
+-- Test writing at a position past the end of the file.
+::method test_positioning_pastEnd_bin
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_charout_postioning2")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  nulStr = 0~d2c~copies(10)
+  len = str~length + .endOfLine~length + nulStr~length
+  pos = len + 1
+  ret = charout(fileName, "X", pos)
+  self~assertSame(0, ret)
+
+  -- We added an X, so len needs to increment (could also use pos)
+  len +=1
+
+  -- close file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName, , len)
+  self~assertSame(str || .endOfLine || nulStr || "X", ret)
+
+-- Tests negative value for position
+::method test_positioning_negative_bin
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning3")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", -2)
+  self~assertSame(0, ret)
+
+-- Tests writing at 0
+::method test_positioning_zero_bin
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningA")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", 0)
+  self~assertSame(0, ret)
+
+-- Tests writing at 1
+::method test_positioning_one_bin
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningB")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+  -- File size shouldn't change because we are going to overwrite a character.
+  len = '1234567890'~length + .endOfLine~length
+
+  ret = charout(fileName, "X", 1)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName)
+  self~assertSame("X", ret)
+
+
+-- Tests trying to write when stream is read only
+::method test_positioning_readOnly_bin
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning4")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open read nobuffer")
+  self~assertSame("READY:", ret)
+
+  -- Try to write 10 characters, should get a return of 10 because none will be
+  -- written.
+  ret = charout(fileName, "1234567890")
+  self~assertSame(10, ret)
+
+
+-- Tests repeated writes using different character counts
+::method test_write_char_strings_bin
+
+  fileName = "delMe.test_charout_writingG"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary reclength 19")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w)
+      self~assertSame(0, ret, 'iteration' i)
+    end
+  end
+
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      len = w~length
+      strX = charin(fileName, , len)
+      self~assertSame(len, strX~length, 'iteration' i)
+      self~assertSame(w, strX, 'iteration' i)
+    end
+  end
+
+
+-- Tests repeated writes mixed with position changes, with a binary stream
+::method test_write_mixed_char_strings_bin
+
+  fileName = "delMe.test_charout_writingH"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open binary reclength 37")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  strX = 'X'~copies(10)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  pos = 1
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w, pos)
+      self~assertSame(0, ret, 'iteration' i)
+      pos += w~length
+
+      if i > 1 then do
+        p = ((i - 1) * 512) - 5 + 1
+        ret = charout(fileName, strX, p)
+        self~assertSame(0, ret, 'iteration' i 'X')
+      end
+    end
+  end
+
+  -- Reposition to start of file.
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  expected = strA~overlay("XXXXX", 508)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
+  ret = charin(fileName, , 1024)
+  self~assertSame(expected, ret)
+
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
+  ret = charin(fileName, , 512)
+  self~assertSame(expected, ret)
+
+
+::options novalue error

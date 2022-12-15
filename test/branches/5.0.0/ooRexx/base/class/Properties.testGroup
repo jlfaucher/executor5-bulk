@@ -1,0 +1,483 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Properties.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class Properties.testGroup subclass ooTestCase public
+
+-- new class method
+
+::method test_new_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new(0, 0)
+
+::method test_new_invalid
+  self~expectSyntax((93.923, -10)) -- Invalid length argument specified; found "-10"
+  .Properties~new(-10)
+
+::method test_new
+  .Properties~new
+  .Properties~new(0)
+  .Properties~new(256)
+
+
+-- load class method
+
+::method test_load_class_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~load
+
+::method test_load_class_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~load("", "")
+
+::method test_load_class
+  p = .Properties~load(.ArrayStream~new(.resources~p))
+  self~assertIsA(p, .Properties)
+  self~assertTrue(p~getLogical("f"))
+  self~assertFalse(p~bool)
+  self~assertNull(p["bool"]) -- names are case-sensitive
+  self~assertSame(" blank", p~getProperty("leading-blank"))
+  self~assertSame(42, p~getWhole("number"))
+
+
+
+-- put method
+
+::method test_put_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~put
+
+::method test_put_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~put("")
+
+::method test_put_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~put(, "a")
+
+::method test_put_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~put("", "", "")
+
+::method test_put_no_string_value
+  self~expectSyntax((93.938, 1)) -- Method argument 1 must have a string value
+  .Properties~new~put(.nil, "nil") -- must have a String value
+
+::method test_put
+  p = .Properties~new
+  p~put("value", "")
+  p~put("", "index")
+  p~put(1, 0)
+  p~put(.File~new("."), "f")
+  self~assertSame("value", p[""])
+  self~assertSame("", p["index"])
+  self~assertSame(1, p[0])
+  self~assertIsA(p["f"], .String) -- Property values must be Strings
+
+
+-- HashCollection []= method is an alias of put
+
+::method test_bracketEquals_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~"[]="
+
+::method test_bracketEquals_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~"[]="("")
+
+::method test_bracketEquals_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~"[]="(, "a")
+
+::method test_bracketEquals_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~"[]="("", "", "")
+
+::method test_bracketEquals_no_string_value
+  self~expectSyntax((93.938, 1)) -- Method argument 1 must have a string value
+  p = .Properties~new
+  p["nil"] = .nil -- must have a String value
+
+::method test_bracketEquals
+  p = .Properties~new
+  p[""] = "value"
+  p["index"] = ""
+  p[0] = 1
+  p["f"] = .File~new(".")
+  self~assertSame("value", p[""])
+  self~assertSame("", p["index"])
+  self~assertSame(1, p[0])
+  self~assertIsA(p["f"], .String) -- Property values must be Strings
+
+
+-- getLogical
+
+::method test_getLogical_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getLogical
+
+::method test_getLogical_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getLogical(, "a")
+
+::method test_getLogical_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getLogical("", "", "")
+
+::method test_getLogical_missing_no_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  .Properties~new~getLogical("")
+
+::method test_getLogical_missing_invalid_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  .Properties~new~getLogical("", -1)
+
+::method test_getLogical_exists_invalid
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  p = .Properties~new
+  p["not boolean"] = 2
+  p~getLogical("not boolean")
+
+::method test_getLogical_exists_invalid_with_default
+  self~expectSyntax(34.904) -- Property logical value must be exactly "0", "1" ..
+  p = .Properties~new
+  p["no-bool"] = -1
+  p~getLogical("no-bool", .true)
+
+::method test_getLogical
+  p = .Properties~new
+  p[".false"] = .false
+  p[".true"] = .true
+  p["false"] = "false" -- will be interpreted as .false
+  p["true"] = "true" -- will be interpreted as .true
+  self~assertFalse(p~getLogical("none", 0)) -- doesn't exist, uses default
+  self~assertTrue(p~getLogical("none", 1)) -- doesn't exist, uses default
+  self~assertFalse(p~getLogical(".false"))
+  self~assertFalse(p~getLogical(".false", 0))
+  self~assertFalse(p~getLogical(".false", 1))
+  self~assertTrue(p~getLogical(".true"))
+  self~assertFalse(p~getLogical("false"))
+  self~assertTrue(p~getLogical("true"))
+
+
+-- getWhole
+
+::method test_getWhole_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getWhole
+
+::method test_getWhole_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getWhole(, "a")
+
+::method test_getWhole_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getWhole("", "", "")
+
+::method test_getWhole_missing_no_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  .Properties~new~getWhole("")
+
+::method test_getWhole_missing_invalid_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  .Properties~new~getWhole("", 3.14)
+
+::method test_getWhole_exists_invalid
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  p = .Properties~new
+  p["float"] = 3.14
+  p~getWhole("float")
+
+::method test_getWhole_exists_invalid_with_default
+  self~expectSyntax(26.901) -- Result of a method call did not result in a whole number
+  p = .Properties~new
+  p["float"] = 3.14
+  p~getWhole("float", 42)
+
+::method test_getWhole
+  p = .Properties~new
+  p["whole"] = 42
+  p["whole.zero"] = 555.0
+  p["minus"] = -1
+  self~assertSame(99, p~getWhole("none", 99)) -- doesn't exist
+  self~assertSame(42, p~getWhole("whole"))
+  self~assertSame(42, p~getWhole("whole", 0))
+  self~assertSame(42, p~getWhole("whole", ""))
+  self~assertSame(555.0, p~getWhole("whole.zero"))
+  self~assertSame(555.0, p~getWhole("whole.zero", 0))
+  self~assertSame(555.0, p~getWhole("whole.zero", ""))
+  self~assertSame(-1, p~getWhole("minus"))
+  self~assertSame(-1, p~getWhole("minus", 0))
+  self~assertSame(-1, p~getWhole("minus", ""))
+
+
+-- getProperty, []
+
+::method test_getProperty_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~getProperty
+
+::method test_getProperty_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~getProperty(, "a")
+
+::method test_getProperty_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~getProperty("", "", "")
+
+::method test_getProperty
+  p = .Properties~new
+  p[""] = "nullstring"
+  p[".false"] = .false -- will become "false" String
+  p[".true"] = .true -- will become "true" String
+  p["f"] = "false"
+  p["t"] = "true"
+  p["Repunit"] = 1~copies(20)
+  p["spaced"] = " - "
+  self~assertSame(.nil, p~getProperty("doesnt-exist"))
+  self~assertSame(.nil, p~getProperty("doesnt-exist", .nil))
+  self~assertSame("", p~getProperty("doesnt-exist", ""))
+  self~assertSame(555, p~getProperty("doesnt-exist", 555))
+  self~assertSame("nullstring", p~getProperty(""))
+  self~assertSame("nullstring", p~getProperty("", 333))
+  self~assertSame(0, p~getProperty(".false"))
+  self~assertSame(1, p~getProperty(".true"))
+  self~assertSame("false", p~getProperty("f")) -- "false" String
+  self~assertSame("true", p~getProperty("t")) -- "true" String
+  self~assertSame(.nil, p["repunit"]) -- names are case-sensitive
+  self~assertSame(1~copies(20), p["Repunit"])
+  self~assertSame("", p~getProperty("REPUNIT", "")) -- names are case-sensitive
+  self~assertSame(" - ", p~getProperty("spaced"))
+
+
+-- setLogical
+
+::method test_setLogical_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setLogical
+
+::method test_setLogical_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setLogical("")
+
+::method test_setLogical_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setLogical(, 0)
+
+::method test_setLogical_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setLogical("", "", "")
+
+::method test_setLogical_invalid
+  self~expectSyntax((34.901, "value")) -- Logical value must be exactly "0" or "1"; found "value"
+  .Properties~new~setLogical("f", "value")
+
+::method test_setLogical
+  p = .Properties~new
+  p~setLogical("flag", .true)
+  self~assertSame("true", p["flag"]) -- "true" String
+  self~assertSame("true", p~getProperty("flag")) -- "true" String
+  self~assertSame(.true, p~getLogical("flag")) -- .true value
+
+
+-- setWhole
+
+::method test_setWhole_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setWhole
+
+::method test_setWhole_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setWhole("")
+
+::method test_setWhole_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setWhole(, 0)
+
+::method test_setWhole_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setWhole("", "", "")
+
+::method test_setWhole_invalid
+  self~expectSyntax((93.905, 2, 3.14)) -- Method argument 2 must be a whole number; found "3.14"
+  .Properties~new~setWhole("f", 3.14)
+
+::method test_setWhole
+  p = .Properties~new
+  p~setWhole("one", .true)
+  p~setWhole("-", -42)
+  self~assertSame(1, p["one"])
+  self~assertSame(-42, p["-"])
+
+
+-- setProperty
+
+::method test_setProperty_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setProperty
+
+::method test_setProperty_one_arg
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Properties~new~setProperty("")
+
+::method test_setProperty_two_args_one_missing
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Properties~new~setProperty(, 0)
+
+::method test_setProperty_three_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Properties~new~setProperty("", "", "")
+
+::method test_setProperty_invalid
+  self~expectSyntax((93.938, 2)) -- Method argument 2 must have a string value
+  .Properties~new~setProperty("", .nil)
+
+::method test_setProperty
+  p = .Properties~new
+  p~setProperty("ONE", .true)
+  p~setProperty("-", -42)
+  p~setProperty("b", " ")
+  p~setProperty("f", .File~new("."))
+  self~assertSame(1, p~one) -- use our unknown() method
+  self~assertSame(-42, p["-"])
+  self~assertSame(" ", p["b"])
+  self~assertIsA(p["f"], .String)
+
+
+-- load, save
+
+::method test_load_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~load
+
+::method test_load_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new~load("", "")
+
+::method test_save_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Properties~new~save
+
+::method test_save_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Properties~new~save("", "")
+
+::method test_load
+  p = .Properties~new
+  p~load(.ArrayStream~new(.resources~p))
+  self~assertTrue(p~getLogical("f"))
+  self~assertFalse(p~bool)
+  self~assertNull(p["bool"]) -- names are case-sensitive
+  self~assertSame(" blank", p~getProperty("leading-blank"))
+  self~assertSame(42, p~getWhole("number"))
+
+::method test_save
+  p = .Properties~new
+
+  p~setLogical("flag", .true)
+  lines = .Array~new
+  p~save(.ArrayStream~new(lines))
+  self~assertSame(1, lines~items)
+  self~assertSame("flag=true", lines[1])
+
+  p~empty
+  p~load(.ArrayStream~new(lines))
+  self~assertSame("true", p~getProperty("flag"))
+
+  p~empty
+  p~setProperty("string", " leading & trailing space ")
+  lines~empty
+  p~save(.ArrayStream~new(lines))
+  self~assertSame(1, lines~items)
+  self~assertSame("string= leading & trailing space ", lines[1])
+
+
+-- methods inherited from Directory
+
+::method test_inherited
+  p = .Properties~new
+  p~setLogical("one", .true)
+  p~setWhole("-", -42)
+  p~setProperty("s", "String")
+  self~assertSameList(("one", "-", "s"), p~allIndexes)
+  self~assertSameList(("true", -42, "String"), p~allItems)
+  self~assertSame(-42, p~at("-"))
+  self~assertTrue(p~hasIndex("one"))
+  self~assertTrue(p~hasItem("String"))
+  self~assertSame("-", p~index(-42))
+  self~assertFalse(p~isEmpty)
+  self~assertSame(3, p~items)
+  p~empty
+  self~assertSame(0, p~items)
+
+
+::class ArrayStream subclass Stream
+::method init
+  expose lines i
+  use strict arg lines
+  i = 0
+::method lineOut
+  expose lines
+  lines~append(arg(1))
+::method lineIn
+  expose lines i
+  i += 1
+  if i > lines~size then
+    raise notready
+  return lines[i]
+
+-- a test Properties "file"
+::resource p
+-- property data
+f=true
+BOOL=0
+
+leading-blank= blank
+number=42
+::END
+
+
+::options all syntax

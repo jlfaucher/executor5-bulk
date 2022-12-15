@@ -1,0 +1,133 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.ReplaceAt.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "ReplaceAt.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~expectSyntax(88.901)
+    xre = .mutablebuffer~new('')~replaceAt()
+
+--::method 'test002'
+--    self~expectSyntax(40.3)
+--    xre = .mutablebuffer~new("ABC")~replaceAt('ABC',)
+
+::method 'test003'
+    self~expectSyntax(88.901)
+    xre = .mutablebuffer~new('ABC')~replaceAt(,1)
+
+::method 'test003b'
+    self~expectSyntax(88.901)
+    xre = .mutablebuffer~new('ABC')~replaceAt("abc",,2)
+
+::method 'test003c'
+    self~expectSyntax(88.910)
+    xre = .mutablebuffer~new('ABC')~replaceAt("abc",1,2, "  ")
+
+::method 'test004'
+    self~assertSame('bcdef', .mutablebuffer~new('abcdef')~replaceAt("", 1, 1)~string)
+    self~assertSame('bcdef', .mutablebuffer~new('abcdef')~replaceAt("", 1, 1, '*')~string)
+
+::method 'test005'
+    self~assertSame('abef', .mutablebuffer~new('abcdef')~replaceAt("", 3, 2)~string)
+    self~assertSame('abef', .mutablebuffer~new('abcdef')~replaceAt("", 3, 2, "*")~string)
+
+::method 'test006'
+    self~assertSame('abcdef', .mutablebuffer~new('abcdef')~replaceAt("", 3)~string)
+    self~assertSame('abcdef', .mutablebuffer~new('abcdef')~replaceAt("", 3,, "*")~string)
+    self~assertSame('abcdef', .mutablebuffer~new('abcdef')~replaceAt("", 3, 0)~string)
+    self~assertSame('abcdef', .mutablebuffer~new('abcdef')~replaceAt("", 3, 0, "*")~string)
+
+::method 'test007'
+    self~assertSame('abcdef  ', .mutablebuffer~new('abcdef')~replaceAt("", 9)~string)
+    self~assertSame('abcdef**', .mutablebuffer~new('abcdef')~replaceAt("", 9,, "*")~string)
+
+::method 'test008'
+    self~assertSame('xxxbcdef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 1, 1)~string)
+    self~assertSame('xxxbcdef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 1, 1, '*')~string)
+
+::method 'test009'
+    self~assertSame('abxxxef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3, 2)~string)
+    self~assertSame('abxxxef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3, 2, "*")~string)
+
+::method 'test010'
+    self~assertSame('abxxxf', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3)~string)
+    self~assertSame('abxxxf', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3,, "*")~string)
+    self~assertSame('abxxxcdef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3, 0)~string)
+    self~assertSame('abxxxcdef', .mutablebuffer~new('abcdef')~replaceAt("xxx", 3, 0, "*")~string)
+
+::method 'test011'
+    self~assertSame('abcdef  xxx', .mutablebuffer~new('abcdef')~replaceAt("xxx", 9)~string)
+    self~assertSame('abcdef**xxx', .mutablebuffer~new('abcdef')~replaceAt("xxx", 9,, "*")~string)
+
+::method 'test012'
+    self~assertSame('xxx', .mutablebuffer~new('')~replaceAt("xxx", 1, 1)~string)
+    self~assertSame('xxx', .mutablebuffer~new('')~replaceAt("xxx", 1, 1, '*')~string)
+
+::method 'test013'
+    self~assertSame('  xxx', .mutablebuffer~new('')~replaceAt("xxx", 3, 2)~string)
+    self~assertSame('**xxx', .mutablebuffer~new('')~replaceAt("xxx", 3, 2, "*")~string)
+
+::method 'test014'
+    self~assertSame('  xxx', .mutablebuffer~new('')~replaceAt("xxx", 3)~string)
+    self~assertSame('**xxx', .mutablebuffer~new('')~replaceAt("xxx", 3,, "*")~string)
+
+::method 'test015'
+    self~assertSame('xyyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 2, )~string)
+    self~assertSame('xyyyyx', .mutablebuffer~new('xxx')~replaceAt("yyyy", 2, 1)~string)
+    self~assertSame('xxx*yyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 5, , '*')~string)
+    self~assertSame('xxx*yyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 5, 9, '*')~string)
+    self~assertSame('xxx', .mutablebuffer~new('xyyyyx')~replaceAt("x", 2, 4)~string)
+
+::method 'test016'
+    self~assertSame('ab def', .mutablebuffer~new('abcdef')~replaceAt(" ", 3, 1)~string)
+    self~assertSame('ab f', .mutablebuffer~new('abcdef')~replaceAt(" ", 3, 3)~string)
+    self~assertSame('abc+123', .mutablebuffer~new('abc')~replaceAt("123", 5, 6, "+")~string)
+
+
+::options novalue error

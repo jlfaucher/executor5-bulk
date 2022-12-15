@@ -1,0 +1,524 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2006-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.RAISE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "RAISE.testGroup" subclass ooTestCase public
+
+
+-- ANY ERROR FAILURE HALT LOSTDIGITS NOMETHOD NOMETHOD
+-- NOSTRING NOTREADY NOVALUE SYNTAX USER...
+
+-- error 25.906 lists the following valid conditions to be raisable by RAISE
+-- ERROR, FAILURE, HALT, LOSTDIGITS, NOMETHOD, NOSTRING, NOTREADY, NOVALUE, SYNTAX
+::method "test_RAISE_ERROR"
+  self~expectCondition("ERROR")
+  raise error 123
+
+::method "test_RAISE_FAILURE"
+  self~expectCondition("FAILURE")
+  raise failure 123
+
+::method "test_RAISE_HALT"
+  self~expectCondition("HALT")
+  raise halt
+
+::method "test_RAISE_LOSTDIGITS"
+  self~expectCondition("LOSTDIGITS")
+  raise lostdigits
+
+::method "test_RAISE_NOSTRING"
+  self~expectCondition("NOSTRING")
+  raise NOSTRING
+
+::method "test_RAISE_NOTREADY"
+  self~expectCondition("NOTREADY")
+  raise NOTREADY
+
+::method "test_RAISE_NOVALUE"
+  self~expectCondition("NOVALUE")
+  raise NOVALUE
+
+::method "test_RAISE_SYNTAX_01"
+  self~expectSyntax(40)
+  raise SYNTAX 40
+
+::method "test_RAISE_SYNTAX_02"
+  self~expectSyntax(40.12)
+  raise SYNTAX 40.12
+
+::method "test_RAISE_SYNTAX_03"
+  num=40.12
+  self~expectSyntax(num)
+  raise SYNTAX (num)
+
+::method "test_RAISE_SYNTAX_ARRAY"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+  raise SYNTAX 40.12 ARRAY (a.1, a.2, a.3)
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNull(co~result)
+
+  self~assertNull(co~source)
+
+
+::method "test_RAISE_SYNTAX_ADDITIONAL"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+
+  a=.array~of(a.1, a.2, a.3)
+
+  raise SYNTAX 40.12 additional (a)
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNull(co~result)
+
+  self~assertNull(co~source)
+
+
+
+::method "test_RAISE_SYNTAX_EXIT_01"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+
+  a=.array~of(a.1, a.2, a.3)
+
+  raise SYNTAX 40.12 additional (a) exit
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNull(co~result)
+
+  self~assertNull(co~source)
+
+
+
+
+::method "test_RAISE_SYNTAX_EXIT_02"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+
+  a=.array~of(a.1, a.2, a.3)
+
+  str="abc"
+
+  raise SYNTAX 40.12 additional (a) EXIT (str)
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
+
+  self~assertNull(co~source)
+
+
+::method "test_RAISE_SYNTAX_RETURN_01"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+
+  a=.array~of(a.1, a.2, a.3)
+
+  raise SYNTAX 40.12 additional (a) return
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNull(co~result)
+
+  self~assertNull(co~source)
+
+
+
+
+::method "test_RAISE_SYNTAX_RETURN_02"
+  signal on syntax            -- intercept syntax error
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+
+  a=.array~of(a.1, a.2, a.3)
+
+  str="abc"
+
+  raise SYNTAX 40.12 additional (a) return (str)
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertFalse(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
+
+  self~assertNull(co~source)
+
+
+
+
+::method "test_RAISE_PROPAGATE"
+  signal on syntax            -- intercept syntax error
+
+  call do_it_in_a_routine
+  return
+
+
+syntax:
+  co=condition("Object")      -- get condition object
+  rgf_Sigl=SIGL               -- save signal line number
+
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+  str="abc"
+
+  -- call dumpCO co  -- dump content of condition object (a directory)
+
+  self~assertNotNull(co~additional)
+
+  a=co~additional    -- get additional array
+  self~assertEquals(a.1, a[1])
+  self~assertEquals(a.2, a[2])
+  self~assertEquals(a.3, a[3])
+
+  self~assertEquals(40.12, co~code)
+
+  self~assertEquals("SYNTAX", co~condition)
+
+  self~assertEquals("", co~description)
+
+  self~assertEquals("Incorrect call to routine.", co~errortext)
+
+  self~assertEquals("SIGNAL", co~instruction)
+
+  self~assertEquals(a.1" argument "a.2" must be a whole number; found "||'"'a.3||'".', co~message)
+
+  self~assertEquals(rgf_Sigl, co~position)
+
+  parse source . . full_path
+  self~assertEquals(full_path, co~program)
+
+  self~assertTrue(co~propagated)
+
+  self~assertEquals(40, co~rc)
+
+  self~assertNotNull(co~result)
+  self~assertEquals(str, co~result)
+
+  self~assertNull(co~source)
+  exit
+
+
+
+::method "test_RAISE_SYNTAX_ERROR_01"
+  self~expectSyntax(25.906)
+  interpret "raise exit novalue"    -- otherwise scanner throws up before running the program
+
+
+::method "test_RAISE_SYNTAX_ERROR_02"
+  self~expectSyntax(35.1)
+  interpret "raise novalue exit return"
+
+
+::method "test_RAISE_SYNTAX_ERROR_03"
+  self~expectSyntax(25.909)
+  a=.array~new
+  interpret "raise novalue additional (a) array (one, two, three)"
+
+
+::method "test_RAISE_USER"
+  self~expectCondition("USER RGF")
+  raise UseR rGf
+
+
+
+::routine do_it_in_a_routine        -- this routine is needed to test propagation of conditions
+  signal on syntax
+  a.1="1"
+  a.2="'anImportantValue'"
+  a.3="3B"
+  a.0=3
+  a=.array~of(a.1, a.2, a.3)
+
+  str="abc"
+
+  raise SYNTAX 40.12 additional (a) return (str)
+
+syntax:
+
+  RAISE PROPAGATE
+  return
+
+
+
+::routine dumpCO
+  use arg co
+
+  say "co # entries:" co~items
+  do idx over co
+     o1=co~at(idx)
+     say pp(idx)~left(15)":" pp(o1)
+     if o1~hasmethod("items") then
+     do
+        say "   " "# entries:" o1~items
+        do idx2 over o1
+           say "   " pp(idx2)
+        end
+     end
+  end
+
+
+::options novalue error

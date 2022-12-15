@@ -1,0 +1,133 @@
+                            ooTest  Snapshot 06
+                            ===================
+
+ooTest is the framework used by the ooRexx project to test the interpreter
+and auxiliary's packaged in the ooRexx distribution.  ooTest sits on top of
+the ooRexxUnit framework, which is an ooRexx implementation of junit,
+originally designed and implemented by Prof. Rony G. Flatscher, and
+released to the Rexx Language Association under the Common Public License
+v1.0 as part of the ooRexx project.
+
+ooRexxUnit is a testing framework that can be used by anyone to test their
+ooRexx programs.  ooTest is designed specifically for use by ooRexx project
+team to test the ooRexx interpreter.
+
+NOTE:
+==============================================================================
+
+The information below was written for the ooTest-4.0.0-snapshot04 and is no
+longer exactly correct.  It is left in this document because reading it will
+give you some general information concerning ooTest.
+
+PLEASE read the file "ReadMe.first" in the root directory of this release for
+information that is updated for the 06 release.
+
+In particular, there are no pre-built binaries for this release.
+
+==============================================================================
+
+
+NOTE: The ooTest suite now contains some native API tests that require
+external executables to run.  This snapshot has some packages with the
+external executables pre-built.  Please pick the package appropriate for
+your system and level of expertise.
+
+ooTest-4.0.0-snapshot04_windows.x86_64.zip * pre-built binaries Windows 64-bit
+ooTest-4.0.0-snapshot04_windows.i386.zip   * pre-built binaries Windows 32-bit
+ooTest-4.0.0-snapshot04_linux.x86_64.tgz   * pre-built binaries Linux 64-bit
+ooTest-4.0.0-snapshot04_linux.i386.tgz     * pre-built binaries Linux 32-bit
+
+ooTest-4.0.0-snapshot04.zip          * source only, Windows file types.
+ooTest-4.0.0-snapshot04.tgz          * source only, Unix file types.
+
+The packages with the pre-built executables will be easiest to start with.
+
+Note that this release contains a quick start document, ooTestQuick.pdf, in
+the doc subdirectory of the ooTest directory tree. This document contains
+some tips to help get started in writing test cases.
+
+ooTest Snapshot 04 is a group of related packages released by the ooRexx
+team that contains both the testing framework and the set of tests used in
+testing the ooRexx interpreter.
+
+This snapshot contains only the 4.0.0 package.  As the name implies, it is a
+snapshot of ooTest at this point in time.  (June 17 2009 around a svn
+revision level of 4810.) This snapshot contains all the currently available
+test groups written to test the 4.0.0 interpreter.  These test groups are
+also an excellent source of techniques for using ooRexxUnit.
+
+As the ooRexx interpreter evolves, the ooTest and ooRexxUnit frameworks
+evolve to take advantage of new features introduced in the interpreter.  In
+addition, there are test cases for testing features that are only present in
+the 4.0.0 interpreter.  For these reasons, the ooTest-4.0.0-snapshot04
+package is specific to ooRexx version 4.0.0.
+
+With the eminent release of ooRexx 4.0.0, it does not make sense to release
+a 3.2.0 snapshot, the 3.2.0 branch has not changed (or has changed very
+little) since the last snapshot.
+
+An ooRexxUnit 4.0.0 version of the framework is guaranteed to work with the
+4.0.0 release of the interpreter.  It may not run on a prior version of
+ooRexx.  A similar thing applies to the 3.2.0 version of ooRexxUnit.  While
+it may run under a 4.0.0 interpreter, it may not.  People wishing only to
+get the ooRexxUnit framework for their own testing should pick the
+ooRexxUnit package designed for the interpreter version they are running /
+planning to test on.
+
+The primary purpose of releasing this snapshot version of ooTest is to
+encourage individuals and organizations to contribute test cases to test
+ooRexx.
+
+Writing test groups to test the interpreter requires nothing other than an
+installed ooRexx and this framework package.  If an individual has limited
+knowledge of ooRexx programming, then writing test cases will be a excellent
+way to learn the language.
+
+It can not be stressed enough how valuable a contribution to the ooRexx
+project test units are.
+
+Individuals wishing to contribute to ooRexx through writing test units can
+get advice and help by joining the oorexx-devel list.  The list is free and
+open to anyone.  Go to:
+
+  https://sourceforge.net/mail/?group_id=119701
+
+to join the list.
+
+In addition the RexxLA mailing list is also a good place to seek advice or
+help in writing test units.  If not already a member of RexxLA, more
+information on the group can be found at:
+
+  http://www.rexxla.org/
+
+The test units included in this package serve as examples of using the
+framework.
+
+Install
+-------
+
+Unzip or untar the package in a convenient location.  The root of the
+package directory will be as follows, where the x.x.x is replaced by the
+version number of the package used:
+
+ooTest.x.x.x
+   |
+   *------*framework
+   |          |
+   |          *-----<subdirectories>
+   |
+   *------*misc
+   |         |
+   |         *-----<subdirectories>
+   |
+   *------*ooRexx
+             |
+             *-----<subdirectories>
+
+The framework directory and subdirectories contain additional documentation
+and examples.
+
+The ooRexx directory and subdirectories contain tests implemented using the
+ooTest framework, a framework that sits on top of the ooRexxUnit framework.
+This directory contains the tests used in testing the ooRexx interpreter.
+

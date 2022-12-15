@@ -1,0 +1,314 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.RexxStart.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('INVOCATIONTester.cls')
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "RexxStart.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+::method TestCallReturn
+  tester = .InvocationTester~new
+  self~assertEquals(0, tester~callRexxStart(self~resolveTestProgram('tests/callReturn.rex'), .array~new(0)))
+  self~assertEquals(5, tester~callRexxStart(self~resolveTestProgram('tests/callReturn.rex'), .array~of(1,2)))
+  args = .array~new(3)
+  args[1] = 1
+  args[3] = 3
+  self~assertEquals(7, tester~callRexxStart(self~resolveTestProgram('tests/callReturn.rex'), args))
+
+::method TestCallType
+  tester = .InvocationTester~new
+  self~assertEquals("COMMAND", tester~callRexxStart(self~resolveTestProgram('tests/callType.rex'), .array~new(0)))
+
+::method TestInitialAddress
+  tester = .InvocationTester~new
+  self~assertEquals(address(), tester~callRexxStart(self~resolveTestProgram('tests/initialAddress.rex'), .array~new(0)))
+  tester~initialAddress = "TESTING"
+  self~assertEquals("TESTING", tester~callRexxStart(self~resolveTestProgram('tests/initialAddress.rex'), .array~new(0)))
+
+::method TestClassicSubcomHandler
+  tester = .InvocationTester~new
+  self~assertEquals("SUCCESS 0", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "FAILURE")))
+  self~assertEquals("SUCCESS Hello World", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+  self~assertEquals("SUCCESS Hello World", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+
+::method TestSyntaxError
+  tester = .InvocationTester~new
+  tester~callRexxStart(self~resolveTestProgram('tests/syntaxError.rex'), .array~new(0))
+  self~assertEquals(42, tester~RC)
+
+::method TestInitExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~initExit = "SKIP"
+  self~assertEquals("TEST1", tester~callRexxStart(self~resolveTestProgram('tests/initExit.rex'), .array~new(0)))
+  tester~initExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callRexxStart(self~resolveTestProgram('tests/initExit.rex'), .array~new(0)))
+  tester~initExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/initExit.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestTermExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~termExit = "SKIP"
+  tester~callRexxStart(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("BAD"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "HANDLE"
+  tester~callRexxStart(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("Hello World"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/terminationExit.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestCommandExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~commandExit = "SKIP"
+  self~assertEquals("FAILURE 30", tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  tester~commandExit = "HANDLE"
+  self~assertEquals("SUCCESS -1", tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  self~assertEquals("SUCCESS 0", tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "ERROR")))
+  self~assertEquals("FAILURE -2", tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "FAILURE")))
+  tester~commandExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO"))
+  self~assertEquals(48, tester~RC)
+
+::method TestFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~functionExit = "SKIP"
+  self~assertEquals("1", tester~callRexxStart(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~functionExit = "HANDLE"
+  self~assertEquals('FUNCTION', tester~callRexxStart(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()")))
+  tester~callRexxStart(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  tester~callRexxStart(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  tester~functionExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+
+::method TestQueueExitPush
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callRexxStart(self~resolveTestProgram('tests/queueExitPush.rex'), .array~new(0)))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callRexxStart(self~resolveTestProgram('tests/queueExitPush.rex'), .array~new(0)))
+
+  tester~queueExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/queueExitPush.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestQueueExitQueue
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callRexxStart(self~resolveTestProgram('tests/queueExitQueue.rex'), .array~new(0)))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callRexxStart(self~resolveTestProgram('tests/queueExitQueue.rex'), .array~new(0)))
+
+  tester~queueExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/queueExitQueue.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestQueueExitSize
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("0", tester~callRexxStart(self~resolveTestProgram('tests/queueExitSize.rex'), .array~new(0)))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("999999", tester~callRexxStart(self~resolveTestProgram('tests/queueExitSize.rex'), .array~new(0)))
+
+  tester~queueExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/queueExitSize.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestQueueExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("Bonjour", tester~callRexxStart(self~resolveTestProgram('tests/queueExitPull.rex'), .array~new(0)))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callRexxStart(self~resolveTestProgram('tests/queueExitPull.rex'), .array~new(0)))
+
+  tester~queueExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/queueExitPull.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+  .stdque~empty -- safety measure to clear out the queue
+
+::method TestQueueExitSet
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  self~assertEquals("SESSION YADAYADA", tester~callRexxStart(self~resolveTestProgram('tests/queueExitSet.rex'), .array~new(0)))
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  tester~queueExit = "HANDLE"
+  self~assertEquals("SESSION FOOBAR", tester~callRexxStart(self~resolveTestProgram('tests/queueExitSet.rex'), .array~new(0)))
+
+  tester~queueExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/queueExitSet.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestIOExitSay
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("HELLO", tester~callRexxStart(self~resolveTestProgram('tests/ioExitSay.rex'), .array~new(0)))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("NOT RECEIVED", tester~callRexxStart(self~resolveTestProgram('tests/ioExitSay.rex'), .array~new(0)))
+
+  tester~ioExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/ioExitSay.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+
+::method TestIOExitTrace
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("    47 *-* call trace OFF", tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0)))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT RECEIVED", tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0)))
+
+  tester~ioExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestIOExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("Goodnight moon", tester~callRexxStart(self~resolveTestProgram('tests/ioExitPull.rex'), .array~new(0)))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("Hello World", tester~callRexxStart(self~resolveTestProgram('tests/ioExitPull.rex'), .array~new(0)))
+
+  tester~ioExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/ioExitPull.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestIOExitDebug
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("CALLED", tester~callRexxStart(self~resolveTestProgram('tests/ioExitDebug.rex'), .array~new(0)))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT CALLED", tester~callRexxStart(self~resolveTestProgram('tests/ioExitDebug.rex'), .array~new(0)))
+
+  tester~ioExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/ioExitDebug.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestHaltExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~haltExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callRexxStart(self~resolveTestProgram('tests/haltExit.rex'), .array~new(0)))
+
+  tester~haltExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/haltExit.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method TestTraceExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~traceExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callRexxStart(self~resolveTestProgram('tests/traceExit.rex'), .array~new(0)))
+
+  tester~traceExit = "ERROR"
+  tester~callRexxStart(self~resolveTestProgram('tests/traceExit.rex'), .array~new(0))
+  self~assertEquals(48, tester~RC)
+
+::method resolveTestProgram
+  use arg name
+  parse source . . me
+  currentOS = .ooRexxUnit.OSName
+  -- change the path separator if running on windows
+  if currentOS == 'WINDOWS' then
+     name = name~changeStr('/', '\')
+  return filespec('Location', me)||name
+
+
+::options novalue error

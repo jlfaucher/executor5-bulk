@@ -1,0 +1,255 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2016-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.hostemu.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires "hostemu" LIBRARY
+
+::requires 'ooTest.frm'
+::class 'hostemu.testgroup' subclass ooTestCase public
+
+::method activate class
+  expose diskrFile diskrLines diskwFile
+  -- define DISKW test file name
+  parse source . . sourcefile
+  -- we need to quote file names containing slashes, so let's always quote
+  diskrFile = '"'sourcefile'"'
+  diskr = .Stream~new(sourcefile)
+  diskr~open("read shared")
+  diskrLines = diskr~arrayIn
+  diskr~close
+  diskwFile = '"'filespec("location", sourcefile) || "diskw.tmp" || '"'
+
+::attribute diskrFile get class
+::attribute diskrLines get class
+::attribute diskwFile get class
+
+::attribute diskrFile get
+  return self~class~diskrFile
+
+::attribute diskrLines get
+  return self~class~diskrLines
+
+::attribute diskwFile get
+  return self~class~diskwFile
+
+::method diskwFileDelete
+  .File~new(self~class~diskwFile~strip(, '"'))~delete
+
+-- get access to SESSION queue
+::constant session (.RexxQueue~new)
+
+-- also test empty lines for [bugs:#1786] RexxPullFromQueue() returning invalid data for a null
+::constant fileLines ("line 1", "", " ", "fourth line", "last line")
+
+::method toArray
+  use strict arg stem
+  size = stem[0]
+  array = .Array~new(size)
+  do i = 1 to size
+    array~append(stem[i])
+  end
+  return array
+
+::method toStem
+  use strict arg array
+  stem = .Stem~new
+  stem[0] = array~items
+  do i = 1 to array~items
+    stem[i] = array[i]
+  end
+  return stem
+
+
+-- EXECIO "immediate command" tests
+
+::method test_hi
+  address "hostemu"
+  self~expectCondition("HALT")
+  signal on halt
+  "hi"
+  self~assertFail("address 'hostemu' 'hi' should trigger halt")
+
+  halt:
+  self~assertEquals(0, rc)
+  raise propagate
+
+::method test_te
+  address "hostemu"
+  "te"
+  self~assertEquals(0, rc)
+
+
+-- EXECIO DISKR tests
+
+-- read file into SESSION queue, fifo is default
+::method test_execio_diskr_default
+  address "hostemu"
+  self~session~empty
+  "execio * diskr" self~diskrFile "(finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines, self~session~makeArray)
+
+-- read file into SESSION queue, fifo
+::method test_execio_diskr_fifo
+  address "hostemu"
+  self~session~empty
+  "EXECIO * DISKR" self~diskrFile "(FINIS FIFO"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines, self~session~makeArray)
+
+-- read file into SESSION queue, lifo
+::method test_execio_diskr_lifo
+  address "hostemu"
+  self~session~empty
+  "execio * diskr" self~diskrFile "(finis lifo"
+  self~assertEquals(0, rc)
+  diskrReversed = .CircularQueue~new(self~diskrLines~items)~appendAll(self~diskrLines)~makeArray("lifo")
+  self~assertSameList(diskrReversed, self~session~makeArray)
+
+-- read file into stem
+::method test_execio_diskr_stem
+  address "hostemu"
+  "execio * diskr" self~diskrFile "(finis stem STEM."
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines, self~toArray(stem.))
+
+-- read first two lines of file into queue
+::method test_execio_diskr_two_lines_fifo
+  address "hostemu"
+  self~session~empty
+  "execio 2 diskr" self~diskrFile "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(1, 2), self~session~makeArray)
+
+-- read first two lines of file into stem
+::method test_execio_diskr_two_lines_stem
+  address "hostemu"
+  "execio 2 diskr" self~diskrFile "(stem STEM. finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(1, 2), self~toArray(stem.))
+
+-- read file, starting with second line, into queue
+::method test_execio_diskr_start_at_two_fifo
+  address "hostemu"
+  self~session~empty
+  "execio * diskr" self~diskrFile 2 "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(2), self~session~makeArray)
+
+-- read file, starting with second line, into stem
+::method test_execio_diskr_start_at_two_stem
+  address "hostemu"
+  "execio * diskr" self~diskrFile 2 "(stem stem. finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(2), self~toArray(stem.))
+
+-- read four lines of file, starting with third line, into queue
+::method test_execio_diskr_start_at_three_read_four_fifo
+  address "hostemu"
+  self~session~empty
+  "execio 4 diskr" self~diskrFile 3 "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(3, 4), self~session~makeArray)
+
+-- read four lines of file, starting with third line, into stem
+::method test_execio_diskr_start_at_three_read_four_stem
+  address "hostemu"
+  "execio 4 diskr" self~diskrFile 3 "(stem stem. finis"
+  self~assertEquals(0, rc)
+  self~assertSameList(self~diskrLines~section(3, 4), self~toArray(stem.))
+
+-- EXECIO SKIP should ignore STEM
+::method test_execio_diskr_stem_skip
+  address "hostemu"
+  "execio * diskr" self~diskrFile "(finis skip stem STEM."
+  self~assertEquals(0, rc)
+  self~assertFalse(var('stem.0'), "with EXECIO option SKIP, stem.0 shouldn't have been set")
+
+-- skip lines, then read remaining file into stem
+::method test_execio_diskr_skip_then_stem
+  address "hostemu"
+  skip = 5
+  "execio" skip "diskr" self~diskrFile "(skip"
+  self~assertEquals(0, rc)
+  "execio * diskr" self~diskrFile "(finis stem STEM."
+  self~assertSameList(self~diskrLines~section(6), self~toArray(stem.))
+
+
+-- EXECIO DISKW tests
+
+-- write file from SESSION queue, read in again and compare
+::method test_execio_diskw_default
+  address "hostemu"
+  self~session~empty
+  do line over self~fileLines
+    -- need to QUEUE, not PUSH
+    queue line
+  end
+  -- EXECIO DISKW will append, so remove temporary file
+  self~diskwFileDelete
+  "execio * diskw" self~diskwFile "(finis"
+  self~assertEquals(0, rc)
+  "execio * diskr" self~diskwFile "(finis stem diskr."
+  self~assertEquals(0, rc)
+  self~assertSameList(self~fileLines, self~toArray(diskr.))
+  self~diskwFileDelete
+
+-- write file from stem, read in again and compare
+::method test_execio_diskw_stem
+  address "hostemu"
+  -- create stem with more items than what we'll write out
+  diskw. = self~toStem(self~fileLines)
+  lines = diskw.0 - 1
+  -- EXECIO DISKW will append, so remove temporary file
+  self~diskwFileDelete
+  "execio" lines "diskw" self~diskwFile "(finis stem diskw."
+  self~assertEquals(0, rc)
+  "execio * diskr" self~diskwFile "(finis stem diskr."
+  self~assertEquals(0, rc)
+  self~assertSameList(self~fileLines~section(1, lines), self~toArray(diskr.))
+  self~diskwFileDelete
+
+
+::options all syntax

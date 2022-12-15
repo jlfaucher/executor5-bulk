@@ -1,0 +1,237 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.SysWin_xxx_Printer.testGroup)
+  group~restrictOS("WINDOWS")
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: SysWin_xxx_Printer.testGroup - - - - - - - - - - - - - - - - - - - -*\
+
+    This test group is for the 3 related RexxUtil functions having to do with
+    Windows printers:
+
+      SysWinGetPrinters()
+      SysWinGetDefaultPrinter()
+      SysWinSetDefaultPrinter()
+
+    Since there are not a lot of tests that can be done when one does not know
+    ahead of time what the printers on the system are, the tests for the 3
+    functions are combined into 1 test group.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "SysWin_xxx_Printer.testGroup" public subclass ooTestCase
+
+::method test_GetPrinters_rc
+  ret = SysWinGetPrinters(printers.)
+  self~assertSame(0, ret, "SysWinGetPrinters should succeed with a return of 0")
+
+::method  test_GetPrinters_count
+  ret = SysWinGetPrinters(printers.)
+  self~assertTrue(printers.0~isA(.string), "SysWinGetPrinters stem.0 must be a string")
+  self~assertTrue(printers.0~datatype("W"), "SysWinGetPrinters stem.0 must be a whole number")
+
+::method  test_GetPrinters_reasonable_stem
+  ret = SysWinGetPrinters(printers.)
+
+  -- If there are no printers, at least test something, then return
+  if printers.0 == 0 then do
+    self~assertSame("PRINTERS.1", printers.1)
+    return
+  end
+
+  -- Docs say returned printer strings have the form: "Printername,Drivername,Portname"
+  do i = 1 to printers.0
+    self~assertSame(2, printers.i~countStr(","), "Returned printer value must have 2 commas")
+  end
+
+::method test_GetPrinters_stem
+  ret = SysWinGetPrinters(printers.)
+
+  -- If there are no printers, at least test something, then return
+  if printers.0 == 0 then do
+    self~assertSame("PRINTERS.1", printers.1)
+    return
+  end
+
+  -- An actual bug that was encountered.  1 of the stem indexes was set
+  -- correctly, but the other 3 were not set.
+  do i = 1 to printers.0
+    self~assertNotSame("PRINTERS." || i, printers.i, "All stem indexes must be set")
+  end
+
+-- SysWinGetPrinters can also return its data as an Array
+::method test_GetPrinters_array
+  printers = .Array~new
+  self~assertSame(0, SysWinGetPrinters(printers))
+  self~assertIsA(printers, .Array)
+  do printer over printers
+    self~assertTrue(printer~length > 0, "no empty line expected in list of printers" printers)
+  end
+
+::method test_GetPrinters_syntx2
+
+  -- Test too few args
+  self~expectSyntax(88.901)
+  ret = SysWinGetPrinters()
+
+::method test_GetPrinters_syntx3
+
+  -- Test too many args
+  self~expectSyntax(88.922)
+  ret = SysWinGetPrinters(printers., 'D')
+
+::method test_GetDefaultPrinter_ret
+  printer = SysWinGetDefaultPrinter()
+
+  self~assertTrue(printer~isA(.string), "SysWinGetDefaultPrinter should return a string")
+  self~assertSame(2, printer~countStr(","), "Returned printer value must have 2 commas")
+
+
+::method test_GetDefaultPrinter_syntax1
+
+  -- Should not allow a stem for an arg
+  self~expectSyntax(88.922)
+  printer = SysWinGetDefaultPrinter(printer.)
+
+
+::method test_GetDefaultPrinter_syntax2
+
+  -- Should not allow any arg
+  self~expectSyntax(88.922)
+  printer = SysWinGetDefaultPrinter("DEFAULT")
+
+
+::method test_GetDefaultPrinter_syntax3
+
+  -- What if it does not allow 1 arg, but does allow 3?
+  self~expectSyntax(88.922)
+  printer = SysWinGetDefaultPrinter("NAME", "PORT", 4)
+
+
+::method test_SetDefaultPrinter_ret_old_style
+
+  -- First be reasonably sure we have the default printer.  Then test.
+  printer = SysWinGetDefaultPrinter()
+
+  -- The format for the returned printer, should have 2 commas in it.  This could
+  -- always change in newer versions of Windows.
+  self~assertTrue(printer~isA(.string))
+  self~assertSame(2, printer~countStr(","))
+
+  -- Now set the default printer to be what it already is.  That way this test
+  -- should not mess up anyones system.
+  --
+  -- Note that sometimes the return code is 1460, which is an operating system
+  -- error code:
+  --  ERROR_TIMEOUT This operation returned because the timeout period expired
+  --  This is perfectly acceptable and shows the routine is handling errors ok.
+
+  ret = SysWinSetDefaultPrinter(printer)
+  isGoodReturnCode = (ret == 0 | ret == 1460)
+  self~assertTrue(isGoodReturnCode, "SysWinSetDefaultPrinter should succeed with a return of 0 or fail with 1460")
+
+  -- Now getting the default printer should match the old default
+  printerNew = SysWinGetDefaultPrinter()
+  self~assertSame(printer, printerNew, "Old default printer should match new default printer")
+
+
+::method test_SetDefaultPrinter_ret_new_style
+
+  printer = SysWinGetDefaultPrinter()
+
+  self~assertTrue(printer~isA(.string))
+  self~assertSame(2, printer~countStr(","))
+
+  parse var printer oldName ',' driver ',' port
+
+  ret = SysWinSetDefaultPrinter(oldName)
+  self~assertSame(0, ret, "SysWinSetDefaultPrinter should succeed with a return of 0")
+
+  -- Now getting the default printer should match the old default
+  printer = SysWinGetDefaultPrinter()
+  parse var printer newName ',' driver ',' port
+  self~assertSame(oldName, newName, "Old default printer should match new default printer")
+
+::method test_SetDefaultPrinter_syntax1
+
+  -- No args not allowed
+  self~expectSyntax(88.901)
+  printer = SysWinSetDefaultPrinter()
+
+::method test_SetDefaultPrinter_syntax2
+
+  printer = SysWinGetDefaultPrinter()
+
+  self~assertTrue(printer~isA(.string))
+  self~assertSame(2, printer~countStr(","))
+
+  -- More than 1 arg not allowed
+  self~expectSyntax(88.922)
+  printer = SysWinSetDefaultPrinter(printer, "DEFAULT")
+
+::method test_SetDefaultPrinter_syntax3
+
+  -- If there are commas in the string, the format must be
+  -- "Printername,Drivername,Portname"
+  self~expectSyntax(40.1)
+  printer = SysWinSetDefaultPrinter("PDFCreator,PDFCreator,PDFCreater,DEFAULT")
+
+::method test_SetDefaultPrinter_syntax4
+
+  -- If there are commas in the string, the format must be
+  -- "Printername,Drivername,Portname"
+  self~expectSyntax(40.1)
+  printer = SysWinSetDefaultPrinter("PDFCreator,PDFCreator")
+
+-- End of class: SysWin_xxx_Printer.testGroup
+
+
+::options novalue syntax

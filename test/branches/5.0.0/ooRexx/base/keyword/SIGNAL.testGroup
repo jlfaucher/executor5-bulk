@@ -1,0 +1,260 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SIGNAL.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "SIGNAL.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   signal on syntax
+   a = 10101k
+   self~assertTrue(0)
+   return
+
+   syntax:
+   self~assertSame(condition('cs'), 'SYNTAX')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+::method "test_2"
+   signal on syntax
+   raise syntax 41.1
+   self~assertTrue(0)
+   return
+
+   syntax:
+   self~assertSame(condition('cs'), 'SYNTAX')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+::method "test_3"
+   signal on novalue
+   a = z
+   self~assertTrue(0)
+   return
+
+   novalue:
+   self~assertSame(condition('cs'), 'NOVALUE')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+::method "test_4"
+   signal on novalue
+   call myproc
+   self~assertTrue(0)
+   return
+
+   novalue:
+   self~assertSame(condition('cs'), 'NOVALUE')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+   myproc:
+   raise novalue return
+   return
+
+::method "test_5"
+   signal on error
+   trace off -- we don't want ERROR trace output
+
+   -- a non-existing command should always raise ERROR
+   address "" "non-existing-command" with error using (.Array~new)
+   self~assertFail("'non-existing-command' should have raised ERROR")
+   return
+
+   error:
+   self~assertSame(condition('cs'), 'ERROR')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+::method "test_6"
+   signal on error
+   call myproc
+   self~assertTrue(0)
+   return
+
+   error:
+   self~assertSame(condition('cs'), 'ERROR')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+   myproc: procedure
+   raise error 44.1 return
+   return
+
+::method "test_7"
+   signal on user badvalue
+   call myproc
+   self~assertTrue(0)
+   return
+
+   badvalue:
+   self~assertSame(condition('cs'), 'USER BADVALUE')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+   myproc: procedure
+   raise user badvalue return
+   return
+
+::method "test_8"
+   signal on failure
+   trace off
+
+   address xyzzy 'grue'  -- this is a deliberate unknown command
+   self~assertTrue(0)
+   return
+
+   failure:
+   self~assertSame(condition('cs'), 'FAILURE')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+::method "test_9"
+   signal on failure
+   call myproc
+   self~assertTrue(0)
+   return
+
+   failure:
+   self~assertSame(condition('cs'), 'FAILURE')
+   self~assertSame(condition('i'), 'SIGNAL')
+   self~assertSame(condition('s'), 'OFF')
+   return
+
+   myproc: procedure
+   raise failure 44.1 return
+   return
+
+
+-- testcases added for [bugs:#1361] SIGNAL ON ANY doesn't trigger on NOVALUE
+::method test_signal_any_condition_error
+  self~expectCondition("ERROR")
+  signal on any
+  "exit 1"                   -- raises ERROR (Windows/Linux)
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_failure
+  self~expectCondition("FAILURE")
+  signal on any
+  trace off                  -- avoid trace output from FAILURE
+  address a_failure ""       -- raises FAILURE
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_halt
+  self~expectCondition("HALT")
+  signal on any
+  address "hostemu" "HI"     -- raises HALT
+  return
+  any: raise propagate
+  ::requires "hostemu" LIBRARY
+
+::method test_signal_any_condition_lostdigits
+  self~expectCondition("LOSTDIGITS")
+  signal on any
+  a = 1 / 9999999999         -- raises LOSTDIGITS
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_nomethod
+  self~expectCondition("NOMETHOD")
+  signal on any
+  ""~no_method               -- raises NOMETHOD
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_nostring
+  self~expectCondition("NOSTRING")
+  signal on any
+  call datatype .nil         -- raises NOSTRING
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_notready
+  self~expectCondition("NOTREADY")
+  signal on any
+  call charin "/"            -- raises NOTREADY
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_novalue
+  self~expectCondition("NOVALUE")
+  signal on any
+  call datatype no_value     -- raises NOVALUE
+  return
+  any: raise propagate
+
+::method test_signal_any_condition_syntax
+  self~expectSyntax(43.1)
+  signal on any
+  call no_target             -- raises SYNTAX
+  return
+  any: raise propagate
+
+-- [bugs:#1664] OPTIONS NOVALUE becomes disabled unexpectedly
+::method test_bug_1664
+  -- none of these should raise NOVALUE
+  self~runDynamicSource(("signal off novalue; return a; ::options novalue syntax"))
+  self~runDynamicSource(("signal off novalue; return a; ::options all syntax"))
+
+  -- but these two should raise Error 98.986:  Reference to unassigned variable
+  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options novalue syntax"))
+  self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options all syntax"))
+
+

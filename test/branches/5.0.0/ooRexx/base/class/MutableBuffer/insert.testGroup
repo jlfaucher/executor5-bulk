@@ -1,0 +1,1312 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.insert.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print('The Mutable Buffer class.  MutableBuffer::insert method test.', 3)
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "insert.testGroup" subclass ooTestCase public
+
+::method 'test001'   -- load .local variables
+    .local~vblank = ' '
+    .local~v1 = '2A'x
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('5F'x,10000)
+    .local~vres1 = 'A'||copies(':',255)||'1'
+    .local~vres2 = 'A'||copies('*',9999)||'\\\\\\\\\'
+
+::method 'test002'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame('A ', mb~insert('A')~string)
+
+::method 'test003'
+    mb = .mutablebuffer~new('')
+    self~assertSame('A', mb~insert('A')~string)
+
+::method 'test004'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame('A ', mb~insert('A')~string)
+
+::method 'test005'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame('A*', mb~insert('A')~string)
+
+::method 'test006'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('Aabcdefghijklmnopqrstuvwxyz1234', mb~insert('A')~string)
+
+::method 'test007'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('A'||.v256, mb~insert('A')~string)
+
+::method 'test008'
+    mb = .mutablebuffer~new(copies('5F'x,10000))
+    self~assertSame('A'||.v10000, mb~insert('A')~string)
+
+::method 'test009'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame('A1234567890', mb~insert('A')~string)
+
+::method 'test010'
+    xre = 'Ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+    mb = .mutablebuffer~new('6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
+    self~assertSame(xre, mb~insert('A')~string)
+
+::method 'test011'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234', mb~insert(.v30)~string)
+
+::method 'test012'
+    mb = .mutablebuffer~new('AbCdEfG')
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234AbCdEfG', mb~insert(.v30)~string)
+
+::method 'test013'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('Ahasdghj', mb~insert('A')~string)
+
+::method 'test014'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('A'||.v10000, mb~insert('A')~string)
+
+::method 'test015'
+    mb = .mutablebuffer~new(0)
+    self~assertSame(' 0', mb~insert(.vblank)~string)
+
+::method 'test016'
+    mb = .mutablebuffer~new(1)
+    self~assertSame('1', mb~insert('')~string)
+
+::method 'test017'
+    mb = .mutablebuffer~new('31'x)
+    self~assertSame(' 1', mb~insert(.vblank)~string)
+
+::method 'test018'
+    mb = .mutablebuffer~new(0002)
+    self~assertSame('*0002', mb~insert('2A'x)~string)
+
+::method 'test019'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234A', mb~insert('A','00030')~string)
+
+::method 'test020'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame(substr(.v256,1,250)||'A'||substr(.v256,251), mb~insert('A',2.5E+2)~string)
+
+::method 'test021'
+    mb = .mutablebuffer~new(copies('5F'x,10000))
+    self~assertSame(substr(.v10000,1,50000,' ')||'A', mb~insert('A','5E+4')~string)
+
+::method 'test022'
+    mb = .mutablebuffer~new(copies('5F'x,10000))
+    self~expectSyntax(93.906)
+    xre = mb~insert('A','5E+9999')
+
+::method 'test023'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new( XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame('1A234567890', mb~insert('A',1)~string)
+
+::method 'test024'
+    xre = 'hAhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+    mb = .mutablebuffer~new( '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
+    self~assertSame(xre, mb~insert('A',1)~string)
+
+::method 'test025'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('Aabcdefghijklmnopqrstuvwxyz1234', mb~insert('A',0)~string)
+
+::method 'test026'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('aABbcdefghijklmnopqrstuvwxyz1234', mb~insert('AB',1)~string)
+
+::method 'test027'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abABCcdefghijklmnopqrstuvwxyz1234', mb~insert('ABC',2)~string)
+
+::method 'test028'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123ABCD4', mb~insert('ABCD',29)~string)
+
+::method 'test029'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234'||'00'X, mb~insert('00'X,30)~string)
+
+::method 'test030'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234 '||'00011AAB'X, mb~insert('0011aAb'X,31)~string)
+
+::method 'test031'
+    mb = .mutablebuffer~new('AbCdEfG')
+    self~assertSame('AbCdEfG    abcdefghijklmnopqrstuvwxyz1234', mb~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000)~string)
+
+::method 'test032'
+    mb = .mutablebuffer~new(.v30)
+    self~expectSyntax(93.906)
+    xre = mb~insert('A',1.2)
+
+::method 'test033'
+    mb = .mutablebuffer~new(.v30)
+    self~expectSyntax(93.906)
+    xre = mb~insert('A','-31')
+
+::method 'test034'
+    mb = .mutablebuffer~new('hasdghj')
+    self~expectSyntax(93.906)
+    if .ooRexxUnit.architecture == 32 then
+        xre = mb~insert('A',1E10)
+    else
+        xre = mb~insert('A',1E19)
+
+::method 'test035'
+    mb = .mutablebuffer~new('hasdghj')
+    self~expectSyntax(93.906)
+    xre = mb~insert('A','cc'x)
+
+::method 'test036'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('hasAdghj', mb~insert('A',000000000000000000000000000000000000000000003)~string)
+
+::method 'test037'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('hA  asdghj', mb~insert('A',1,000000000000000000000000000000000000000000003)~string)
+
+::method 'test038'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('hA33333333asdghj', mb~insert('A',1,9,+000000000000000000000000000000000000000000003)~string)
+
+::method 'test039'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('__'||'A'||substr(.v10000,3), mb~insert('A',2)~string)
+
+::method 'test040'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('_'||'A'||substr(.v10000,2), mb~insert('A',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)~string)
+
+::method 'test041'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A', mb~insert('',2-1,0)~string)
+
+::method 'test042'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A ', mb~insert('',2-1,1)~string)
+
+::method 'test043'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A  ', mb~insert('',2-1,2)~string)
+
+::method 'test044'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(' A', mb~insert(.vblank,0,'31'x)~string)
+
+::method 'test045'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A*', mb~insert('2A'x,'31'x,0001)~string)
+
+::method 'test046'
+    xre = 'A'||'2A'x
+    mb = .mutablebuffer~new('A')
+    self~assertSame(xre, mb~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x)~string, 'subText01')
+
+::method 'test047'
+    xre = 'A* '
+    mb = .mutablebuffer~new('A')
+    self~assertSame(xre, mb~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x)~string)
+
+::method 'test048'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A                                  abcdefghi', mb~insert('abcdefghijklmnopqrstuvwxyz1234',0035,'9')~string)
+
+::method 'test049'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A                         abcdefghi', mb~insert('abcdefghijklmnopqrstuvwxyz1234',0026,'9')~string)
+
+::method 'test050'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||copies(' ',9999)||'1234567812', mb~insert(.v256,'10000','0010')~string)
+
+::method 'test051'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A___________', mb~insert(copies('5F'x,10000),'000001',1.1E+1)~string)
+
+::method 'test052'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A12345', mb~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,5)~string)
+
+::method 'test053'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A__', mb~insert(.v10000,1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
+
+::method 'test054'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||copies(' ',9997)||'__', mb~insert(.v10000,9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
+
+::method 'test055'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||copies(' ',1006)||'__', mb~insert(.v10000,1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
+
+::method 'test056'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||copies('2',9997)||'________________', mb~insert(.v10000,9998,16,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string)
+
+::method 'test057'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||'||||'||''||copies('|',255), mb~insert('',(2*3)-1,'2.55E+2','|')~string)
+
+::method 'test058'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||' '||copies('@',255), mb~insert(.vblank,1,200+50+6,'@')~string)
+
+::method 'test059'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A'||'2A'x||copies('7',32767), mb~insert('2A'x,'31'x,32768,4+3)~string)
+
+::method 'test060'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A))))))))))))))', mb~insert('abcdefghijklmnopqrstuvwxyz1234',00015,'30'x,')')~string)
+
+::method 'test061'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(.vres1, mb~insert(copies('3132333435363738'x,32),'256',1,':')~string)
+
+::method 'test062'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(.vres2, mb~insert(copies('\',10000),'00010000','39'x,'2A'x)~string)
+
+::method 'test063'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A1234567890************', mb~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,22,'*')~string)
+
+::method 'test064'
+    mb = .mutablebuffer~new('A')
+    self~expectSyntax(93.922)
+    xre = mb~insert(.v30,1,40,'11')~string
+
+::method 'test065'
+    mb = .mutablebuffer~new('A')
+    self~expectSyntax(93.922)
+    xre = mb~insert(.v30,1,04,'11')~string
+
+::method 'test066'
+    mb = .mutablebuffer~new('A')
+    self~expectSyntax(93.922)
+    xre = mb~insert(.v30,1,04,'012'X)~string
+
+::method 'test067'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('Aabcd', mb~insert(.v30,1,04,)~string)
+
+::method 'test068'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A14 42 21 1', mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*2,2*2)~string)
+
+::method 'test069'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A2*7 7+7+7+', mb~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2)~string)
+
+::method 'test070'
+    mb = .mutablebuffer~new('A')
+    self~expectSyntax(93.906)
+    xre = mb~insert('2*7 7+7+7+7+7+7 84/4 700-699','699-698',5*2)~string
+
+::method 'test071'
+    mb = .mutablebuffer~new('A')
+    self~expectSyntax(93.922)
+    xre = mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,21*2)~string
+
+::method 'test072'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A14 42 21 144444', mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,2*2)~string)
+
+::method 'test073'
+    numeric digits 1
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A1E+1 5E+1 ', mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,6.99-6.00,5*2,2*2)~string)
+
+::method 'test074'
+    numeric digits 1
+    mb = .mutablebuffer~new('A')
+    self~assertSame('A2*7 7+7+7+', mb~insert('2*7 7+7+7+7+7+7 84/4 700-699',6.99-6.00,5*2,2*2)~string)
+
+::method 'test075'
+    mb = .mutablebuffer~new('A')
+    self~assertSame('ANV*', mb~insert(nv,1,3,'*')~string)
+
+::method 'test076'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('NA**V.', mb~insert('A',1,3,'*')~string)
+
+::method 'test077'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.906)
+    xre = mb~insert('A',nv.10,3,'*')~string
+
+::method 'test078'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.923)
+    xre = mb~insert('A',1,nv,'*')~string
+
+::method 'test079'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.922)
+    xre = mb~insert('A',1,3,nval)~string
+
+::method 'test080'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.906)
+    xre = mb~insert(noval1,noval3,noval4,noval5)~string
+
+::method 'test082'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('NA**V.', mb~insert('A',1,3,'*')~string)
+
+::method 'test083'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.906)
+    xre = mb~insert('A',nv.10,3,'*')~string
+
+::method 'test084'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.923)
+    xre = mb~insert('A',1,nv,'*')~string
+
+::method 'test085'
+    mb = .mutablebuffer~new('B')
+    self~expectSyntax(93.922)
+    xre = mb~insert('A',1,3,nval)~string
+
+::method 'test086'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.906)
+    xre = mb~insert(noval1,noval3,noval4,noval5)~string
+
+::method 'test087'
+    var1 = 'John R. Buckley'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new(delword(var1,2,1))
+    self~assertSame('John R. Buckley', mb~insert(subword(var1,2,1),POS('l',word(var1,3)),X2D(03))~string)
+
+::method 'test088'
+    mb = .mutablebuffer~new(center('\\\\',8))
+    self~assertSame('  \*****kkkkk\\\  ', mb~insert(copies('*',5),C2D(''),X2D('A'),D2C(107))~string)
+
+::method 'test089'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new((word(var2,1)' 'word(var2,3)))
+    self~assertSame('One Two Three', mb~insert(word(var2,2),C2D(D2C(4)),C2D(D2C(5))-1)~string)
+
+::method 'test090'
+    var1 = 'John R. Buckley'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new(translate(var2))
+    self~assertSame('ONE TWO yelkcuB .R nhoJ THREE', mb~insert(reverse(var1),lastPos('O','OOOOOOOO'),X2D(10))~string)
+
+::method 'test091'
+    mb = .mutablebuffer~new(' ')
+    self~assertSame('JR BUCKLEY ', mb~insert('BUCKLEY')~insert('R'~insert('J'),''~insert('0'),''~insert('3'))~string)
+
+::method 'test092'
+    mb = .mutablebuffer~new('BUCKLEY')
+    self~assertSame('JR%BUCKLEY', mb~insert('JR',,3,'%'~insert(''))~string)
+
+::method 'test093'
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(vres1)
+    .local~remove(vres2)
+
+    .local~vblank = ' '
+    .local~v1 = '*'
+    .local~v30 = '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x
+    .local~v255 = copies('40'x,255)
+    .local~v256 = copies('5F'x,256)
+    .local~v32768 = copies('40'x,32768)
+    .local~v10000 = copies('5C'x,10000)
+    .local~vres1 = substr(.v256,1,10)||.v255||substr(.v256,11)
+    .local~vres2 = substr(.v10000,1,16)||substr(.v30,1,10000)||substr(.v10000,17)
+    .local~vres3 = substr(.v10000,1,30)||substr(.v32768,1,9)||substr(.v10000,31)
+    .local~vres4 = substr(.v10000,1,30)||substr(.v32768,1,9)||substr(.v10000,31)
+    .local~vres5 = '2A'x||copies('31'x,255)||copies('40'x,255)
+    .local~vn2 = 2
+    .local~vn4 = 4
+    .local~vn5 = 5
+    .local~vn6 = 6
+    .local~vn9 = 9
+    .local~vn10 = 10
+    .local~vn21 = 21
+    .local~vn42 = 42
+    .local~vn66 = 66
+    .local~vn100 = 100
+    .local~vn999 = 999
+
+::method 'test094'
+    mb = .mutablebuffer~new(' ')
+    self~assertSame(' ', mb~insert('')~string)
+
+::method 'test095'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(' *', mb~insert(' ')~string)
+
+::method 'test096'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('*abcdefghijklmnopqrstuvwxyz1234', mb~insert(.v1)~string)
+
+::method 'test097'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(.v30||.v255, mb~insert('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X)~string)
+
+::method 'test098'
+    mb = .mutablebuffer~new(copies('$',256))
+    self~assertSame(copies('ª',255)||copies('$',256), mb~insert(copies('ª',255))~string)
+
+::method 'test099'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(.v32768||.v10000, mb~insert(.v32768)~string)
+
+::method 'test100'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(.v32768||.v10000, mb~insert(copies('@',32768),'30'x)~string)
+
+::method 'test101'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame(.v1||.vblank, mb~insert(.vblank,00000000001)~string)
+
+::method 'test102'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X)
+    self~assertSame('abcdefghi*jklmnopqrstuvwxyz1234', mb~insert('2A'x,'     9     ')~string)
+
+::method 'test103'
+    mb = .mutablebuffer~new(copies('_',256))
+    self~assertSame(.vres1, mb~insert(copies('@',255),'00010')~string)
+
+::method 'test104'
+    mb = .mutablebuffer~new(.v32768)
+    self~assertSame(substr(.v32768,1,255)||.v10000||substr(.v32768,256), mb~insert(.v10000,255)~string)
+
+::method 'test105'
+    mb = .mutablebuffer~new(copies('5F'x,256))
+    self~assertSame(.v256||.v255, mb~insert(copies('40'x,255),'323536'x)~string)
+
+::method 'test106'
+    mb = .mutablebuffer~new(copies('40'x,32768))
+    self~assertSame(.v32768||.v1, mb~insert('2A'x,'32768')~string)
+
+::method 'test107'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame(.v1||copies(' ',32767)||.v32768, mb~insert(copies('40'x,32768),.32768E+5)~string)
+
+::method 'test108'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame(.v1||copies(' ',9999)||.v10000, mb~insert(.v10000,0000000000000000010000)~string)
+
+::method 'test109'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('*', mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0)~string)
+
+::method 'test110'
+    mb = .mutablebuffer~new(.v255)
+    self~assertSame(substr(.v255,1,11)||substr(.v256,1,1)||substr(.v255,12), mb~insert(.v256,11,1)~string)
+
+::method 'test111'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(.vres3, mb~insert(copies('@',32768),'3330'x,'39'x)~string)
+
+::method 'test112'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(.v255||substr(.v256,1,30), mb~insert(copies('5F'x,256),'255',30)~string)
+
+::method 'test113'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('*'||copies(' ',255)||copies('@',255), mb~insert(copies('@',32768),256,'255')~string)
+
+::method 'test114'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(substr(.v10000,1,32768)||substr(.v1,1,256), mb~insert(.v1,32768,2||5||6)~string)
+
+::method 'test115'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(.vres2, mb~insert(.v30,'1.6E+1','1.0E+4')~string)
+
+::method 'test116'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('*', mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string)
+
+::method 'test117'
+    mb = .mutablebuffer~new(.v255)
+    self~expectSyntax(93.922)
+    xre = mb~insert(.v256,11,1,'**')~string
+
+::method 'test118'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(.vres4, mb~insert(copies('@',32768),30,9,+000000000000000000003)~string)
+
+::method 'test119'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(.v255||.v256||'2A'x, mb~insert(copies('5F'x,256),255,257,'2A'x)~string)
+
+::method 'test120'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(.vres5, mb~insert(copies('@',32768),256,255,10-9)~string)
+
+::method 'test121'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(substr(.v10000,1,32768)||.v1||copies(' ',255), mb~insert(.v1,32768,256)~string)
+
+::method 'test123'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('NV.', mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string)
+
+::method 'test124'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(93.906)
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')~string
+
+::method 'test125'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(93.923)
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,nv,'x')~string
+
+::method 'test126'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.906)
+    xre = mb~insert(noval1,noval3,noval4,noval5)~string
+
+::method 'test127'
+    mb = .mutablebuffer~new('*')
+    self~assertSame('*', mb~insert(nv,1,0,'x')~string)
+
+::method 'test128'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('NV.', mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string)
+
+::method 'test129'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(93.906)
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')~string
+
+::method 'test130'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(93.923)
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,nv,'x')~string
+
+::method 'test131'
+    mb = .mutablebuffer~new('*')
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,nv.)~string
+
+::method 'test132'
+    mb = .mutablebuffer~new(noval2)
+    self~expectSyntax(93.906)
+    xre = mb~insert(noval1,noval3,noval4,noval5)~string
+
+::method 'test133'
+    mb = .mutablebuffer~new(+0000042)
+    self~assertSame('42999999999999999999999999999999999942999999999999999999', mb~insert(21*2,6*6,100/5,5+4)~string)
+
+::method 'test134'
+    mb = .mutablebuffer~new((9*100)+(9*10)+6)
+    self~assertSame('9960669000000000000000000000000000000000000000000000000000000000000000000000', mb~insert(66||9,6-2,(6*6)*2,999-999)~string)
+
+::method 'test135'
+    mb = .mutablebuffer~new(.vn42)
+    self~assertSame('42999999999999999999999999999999999942999999999999999999', mb~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4)~string)
+
+::method 'test136'
+    mb = .mutablebuffer~new((.vn9*.vn100)+(.vn9*.vn10)+.vn6)
+    self~assertSame('9960669000000000000000000000000000000000000000000000000000000000000000000000', mb~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999)~string)
+
+::method 'test137'
+    numeric digits 1
+    mb = .mutablebuffer~new(+0000042)
+    self~assertSame('4E+19999999999999999999999999999999999994E+19999999999999999', mb~insert(21*2,6*6,100/5,5+4)~string)
+
+::method 'test138'
+    numeric digits 1
+    mb = .mutablebuffer~new((9*100)+(9*10)+6)
+    self~assertSame('1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000', mb~insert(66||9,6-2,(6*6)*2,999-999)~string)
+
+::method 'test139'
+    numeric digits 1
+    mb = .mutablebuffer~new(.vn42)
+    self~assertSame('42999999999999999999999999999999999999994E+19999999999999999', mb~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4)~string)
+
+::method 'test140'
+    numeric digits 1
+    mb = .mutablebuffer~new((.vn9*.vn100)+(.vn9*.vn10)+.vn6)
+    self~assertSame('1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000', mb~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999)~string)
+
+::method 'test141'
+    mb = .mutablebuffer~new(datatype('A'))
+    self~assertSame('CHNUM55AR', mb~insert(datatype(6),word('0 1 2',3),center('4 5 6',1),max(3,4,5))~string)
+
+::method 'test142'
+    mb = .mutablebuffer~new(max(5,8,9,3,4,2,0))
+    self~assertSame('92222222222022222222', mb~insert(min(5,8,9,3,4,2,0),min(11,22,33),max(9,8,7),min(9,2))~string)
+
+::method 'test143'
+    mb = .mutablebuffer~new('JR')
+    self~assertSame('BuJR@@ckJRBuck', mb~insert('Buck',2,4,'@')~insert('Buck'~insert('JR',2,4,'@'))~string)
+
+::method 'test144'
+    mb = .mutablebuffer~new('Buck')
+    self~assertSame('Buck@@@@@@@@@@@@@@@@JR@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', mb~insert('JR','0'~insert('2'),'0'~insert('4'),''~insert('@'))~string)
+
+::method 'test145'
+-- clean up .local
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(v32768)
+    .local~remove(v10000)
+    .local~remove(vres1)
+    .local~remove(vres2)
+    .local~remove(vres3)
+    .local~remove(vres4)
+    .local~remove(vres5)
+    .local~remove(vn2)
+    .local~remove(vn4)
+    .local~remove(vn5)
+    .local~remove(vn6)
+    .local~remove(vn9)
+    .local~remove(vn10)
+    .local~remove(vn21)
+    .local~remove(vn42)
+    .local~remove(vn66)
+    .local~remove(vn100)
+    .local~remove(vn999)
+
+-- Test that ~insert to mutablebuffer produces same result as to string
+-- These have to be seperate such that the mutable buffer is recreated
+::method 'test201'   -- load .local variables
+    .local~vblank = ' '
+    .local~v1 = '2A'x
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('5F'x,10000)
+    .local~vres1 = 'A'||copies(':',255)||'1'
+    .local~vres2 = 'A'||copies('*',9999)||'\\\\\\\\\'
+
+::method 'test202'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame(mb~insert('A')~string, .vblank~insert('A'))
+
+::method 'test203'
+    mb = .mutablebuffer~new('')
+    self~assertSame(mb~insert('A')~string, ''~insert('A'))
+
+::method 'test204'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame(mb~insert('A')~string, .vblank~insert('A'))
+
+::method 'test205'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame(mb~insert('A')~string, '2A'x~insert('A'))
+
+::method 'test206'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame(mb~insert('A')~string, 'abcdefghijklmnopqrstuvwxyz1234'~insert('A'))
+
+::method 'test207'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame(mb~insert('A')~string, .v256~insert('A'))
+
+::method 'test208'
+    mb = .mutablebuffer~new(copies('5F'x,10000))
+    self~assertSame(mb~insert('A')~string, copies('5F'x,10000)~insert('A'))
+
+::method 'test209'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame(mb~insert('A')~string, XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A'))
+
+::method 'test210'
+    xre = 'Ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+    mb = .mutablebuffer~new('6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
+    self~assertSame(mb~insert('A')~string, '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A'))
+
+::method 'test211'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert(.v30)~string, .v30~insert(.v30))
+
+::method 'test212'
+    mb = .mutablebuffer~new('AbCdEfG')
+    self~assertSame(mb~insert(.v30)~string, 'AbCdEfG'~insert(.v30))
+
+::method 'test213'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame(mb~insert('A')~string, 'hasdghj'~insert('A'))
+
+::method 'test214'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert('A')~string, .v10000~insert('A'))
+
+::method 'test215'
+    mb = .mutablebuffer~new(0)
+    self~assertSame(mb~insert(.vblank)~string, 0~insert(.vblank))
+
+::method 'test216'
+    mb = .mutablebuffer~new(1)
+    self~assertSame(mb~insert('')~string, 1~insert(''))
+
+::method 'test217'
+    mb = .mutablebuffer~new('31'x)
+    self~assertSame(mb~insert(.vblank)~string, '31'x~insert(.vblank))
+
+::method 'test218'
+    mb = .mutablebuffer~new(0002)
+    self~assertSame(mb~insert('2A'x)~string, insert('2A'x,0002))
+
+::method 'test219'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame(mb~insert('A','00030')~string, 'abcdefghijklmnopqrstuvwxyz1234'~insert('A','00030'))
+
+::method 'test220'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame(mb~insert('A',2.5E+2)~string, .v256~insert('A',2.5E+2))
+
+::method 'test221'
+    mb = .mutablebuffer~new(copies('5F'x,10000))
+    self~assertSame(mb~insert('A','5E+4')~string, copies('5F'x,10000)~insert('A','5E+4'))
+
+::method 'test223'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new( XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame(mb~insert('A',1)~string, XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A',1))
+
+::method 'test224'
+    xre = 'hAhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+    mb = .mutablebuffer~new( '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
+    self~assertSame(mb~insert('A',1)~string, '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A',1))
+
+::method 'test225'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('A',0)~string, .v30~insert('A',0))
+
+::method 'test226'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('AB',1)~string, .v30~insert('AB',1))
+
+::method 'test227'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('ABC',2)~string, .v30~insert('ABC',2))
+
+::method 'test228'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('ABCD',29)~string, .v30~insert('ABCD',29))
+
+::method 'test229'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('00'X,30)~string, .v30~insert('00'X,30))
+
+::method 'test230'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert('0011aAb'X,31)~string, .v30~insert('0011aAb'X,31))
+
+::method 'test231'
+    mb = .mutablebuffer~new('AbCdEfG')
+    self~assertSame(mb~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000)~string, 'AbCdEfG'~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+
+::method 'test236'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame(mb~insert('A',000000000000000000000000000000000000000000003)~string, 'hasdghj'~insert('A',000000000000000000000000000000000000000000003))
+
+::method 'test237'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame(mb~insert('A',1,000000000000000000000000000000000000000000003)~string, 'hasdghj'~insert('A',1,000000000000000000000000000000000000000000003))
+
+::method 'test238'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame(mb~insert('A',1,9,+000000000000000000000000000000000000000000003)~string, 'hasdghj'~insert('A',1,9,+000000000000000000000000000000000000000000003))
+
+::method 'test239'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert('A',2)~string, .v10000~insert('A',2))
+
+::method 'test240'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert('A',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)~string, .v10000~insert('A',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test241'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('',2-1,0)~string, 'A'~insert('',2-1,0))
+
+::method 'test242'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('',2-1,1)~string, 'A'~insert('',2-1,1))
+
+::method 'test243'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('',2-1,2)~string, 'A'~insert('',2-1,2))
+
+::method 'test244'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.vblank,0,'31'x)~string, 'A'~insert(.vblank,0,'31'x))
+
+::method 'test245'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2A'x,'31'x,0001)~string, 'A'~insert('2A'x,'31'x,0001))
+
+::method 'test246'
+    xre = 'A'||'2A'x
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x)~string, insert('2A'x,'A','31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x), 'subText01')
+
+::method 'test247'
+    xre = 'A* '
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x)~string, 'A'~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x))
+
+::method 'test248'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',0035,'9')~string, 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0035,'9'))
+
+::method 'test249'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',0026,'9')~string, 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0026,'9'))
+
+::method 'test250'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v256,'10000','0010')~string, 'A'~insert(.v256,'10000','0010'))
+
+::method 'test251'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(copies('5F'x,10000),'000001',1.1E+1)~string, 'A'~insert(copies('5F'x,10000),'000001',1.1E+1))
+
+::method 'test252'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,5)~string, 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,5))
+
+::method 'test253'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v10000,1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string, 'A'~insert(.v10000,1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test254'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v10000,9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string, 'A'~insert(.v10000,9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test255'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v10000,1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string, 'A'~insert(.v10000,1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test256'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v10000,9998,16,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002)~string, 'A'~insert(.v10000,9998,16,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test257'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('',(2*3)-1,'2.55E+2','|')~string, 'A'~insert('',(2*3)-1,'2.55E+2','|'))
+
+::method 'test258'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.vblank,1,200+50+6,'@')~string, 'A'~insert(.vblank,1,200+50+6,'@'))
+
+::method 'test259'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2A'x,'31'x,32768,4+3)~string, 'A'~insert('2A'x,'31'x,32768,4+3))
+
+::method 'test260'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',00015,'30'x,')')~string, 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',00015,'30'x,')'))
+
+::method 'test261'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(copies('3132333435363738'x,32),'256',1,':')~string, 'A'~insert(copies('3132333435363738'x,32),'256',1,':'))
+
+::method 'test262'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(copies('\',10000),'00010000','39'x,'2A'x)~string, 'A'~insert(copies('\',10000),'00010000','39'x,'2A'x))
+
+::method 'test263'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,22,'*')~string, 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,22,'*'))
+
+::method 'test267'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(.v30,1,04,)~string, 'A'~insert(.v30,1,04,))
+
+::method 'test268'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*2,2*2)~string, 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*2,2*2))
+
+::method 'test269'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2)~string, 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2))
+
+::method 'test272'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,2*2)~string, 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,2*2))
+
+::method 'test273'
+    numeric digits 1
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(2*7 7+7+7+7+7+7 84/4 700-699,6.99-6.00,5*2,2*2)~string, 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,6.99-6.00,5*2,2*2))
+
+::method 'test274'
+    numeric digits 1
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert('2*7 7+7+7+7+7+7 84/4 700-699',6.99-6.00,5*2,2*2)~string, 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',6.99-6.00,5*2,2*2))
+
+::method 'test275'
+    mb = .mutablebuffer~new('A')
+    self~assertSame(mb~insert(nv,1,3,'*')~string, 'A'~insert(nv,1,3,'*'))
+
+::method 'test276'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame(mb~insert('A',1,3,'*')~string, nv.~insert('A',1,3,'*'))
+
+::method 'test282'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame(mb~insert('A',1,3,'*')~string, nv.~insert('A',1,3,'*'))
+
+::method 'test287'
+    var1 = 'John R. Buckley'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new(delword(var1,2,1))
+    self~assertSame(mb~insert(subword(var1,2,1),POS('l',word(var1,3)),X2D(03))~string, delword(var1,2,1)~insert(subword(var1,2,1),POS('l',word(var1,3)),X2D(03)))
+
+::method 'test288'
+    mb = .mutablebuffer~new(center('\\\\',8))
+    self~assertSame(mb~insert(copies('*',5),C2D(''),X2D('A'),D2C(107))~string, center('\\\\',8)~insert(copies('*',5),C2D(''),X2D('A'),D2C(107)))
+
+::method 'test289'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new((word(var2,1)' 'word(var2,3)))
+    self~assertSame(mb~insert(word(var2,2),C2D(D2C(4)),C2D(D2C(5))-1)~string, (word(var2,1)' 'word(var2,3))~insert(word(var2,2),C2D(D2C(4)),C2D(D2C(5))-1))
+
+::method 'test290'
+    var1 = 'John R. Buckley'
+    var2 = 'One Two Three'
+    mb = .mutablebuffer~new(translate(var2))
+    self~assertSame(mb~insert(reverse(var1),lastPos('O','OOOOOOOO'),X2D(10))~string, translate(var2)~insert(reverse(var1),lastPos('O','OOOOOOOO'),X2D(10)))
+
+::method 'test291'
+    mb = .mutablebuffer~new(' ')
+    self~assertSame(mb~insert('BUCKLEY')~insert('R'~insert('J'),''~insert('0'),''~insert('3'))~string, ' '~insert('BUCKLEY')~insert('R'~insert('J'),''~insert('0'),''~insert('3')))
+
+::method 'test292'
+    mb = .mutablebuffer~new('BUCKLEY')
+    self~assertSame(mb~insert('JR',,3,'%'~insert(''))~string, 'BUCKLEY'~insert('JR',,3,'%'~insert('')))
+
+::method 'test293'
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(vres1)
+    .local~remove(vres2)
+
+    .local~vblank = ' '
+    .local~v1 = '*'
+    .local~v30 = '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x
+    .local~v255 = copies('40'x,255)
+    .local~v256 = copies('5F'x,256)
+    .local~v32768 = copies('40'x,32768)
+    .local~v10000 = copies('5C'x,10000)
+    .local~vres1 = substr(.v256,1,10)||.v255||substr(.v256,11)
+    .local~vres2 = substr(.v10000,1,16)||substr(.v30,1,10000)||substr(.v10000,17)
+    .local~vres3 = substr(.v10000,1,30)||substr(.v32768,1,9)||substr(.v10000,31)
+    .local~vres4 = substr(.v10000,1,30)||substr(.v32768,1,9)||substr(.v10000,31)
+    .local~vres5 = '2A'x||copies('31'x,255)||copies('40'x,255)
+    .local~vn2 = 2
+    .local~vn4 = 4
+    .local~vn5 = 5
+    .local~vn6 = 6
+    .local~vn9 = 9
+    .local~vn10 = 10
+    .local~vn21 = 21
+    .local~vn42 = 42
+    .local~vn66 = 66
+    .local~vn100 = 100
+    .local~vn999 = 999
+
+::method 'test294'
+    mb = .mutablebuffer~new(' ')
+    self~assertSame(mb~insert('')~string, ' '~insert(''))
+
+::method 'test295'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert(' ')~string, '*'~insert(' '))
+
+::method 'test296'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame(mb~insert(.v1)~string, .v30~insert(.v1))
+
+::method 'test297'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(mb~insert('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X)~string, copies('40'x,255)~insert('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X))
+
+::method 'test298'
+    mb = .mutablebuffer~new(copies('$',256))
+    self~assertSame(mb~insert(copies('ª',255))~string, copies('$',256)~insert(copies('ª',255)))
+
+::method 'test299'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert(.v32768)~string, .v10000~insert(.v32768))
+
+::method 'test300'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(mb~insert(copies('@',32768),'30'x)~string, copies('\',10000)~insert(copies('@',32768),'30'x))
+
+::method 'test301'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame(mb~insert(.vblank,00000000001)~string, .v1~insert(.vblank,00000000001))
+
+::method 'test302'
+    mb = .mutablebuffer~new('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X)
+    self~assertSame(mb~insert('2A'x,'     9     ')~string, '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X~insert('2A'x,'     9     '))
+
+::method 'test303'
+    mb = .mutablebuffer~new(copies('_',256))
+    self~assertSame(mb~insert(copies('@',255),'00010')~string, copies('_',256)~insert(copies('@',255),'00010'))
+
+::method 'test304'
+    mb = .mutablebuffer~new(.v32768)
+    self~assertSame(mb~insert(.v10000,255)~string, .v32768~insert(.v10000,255))
+
+::method 'test305'
+    mb = .mutablebuffer~new(copies('5F'x,256))
+    self~assertSame(mb~insert(copies('40'x,255),'323536'x)~string, copies('5F'x,256)~insert(copies('40'x,255),'323536'x))
+
+::method 'test306'
+    mb = .mutablebuffer~new(copies('40'x,32768))
+    self~assertSame(mb~insert('2A'x,'32768')~string, copies('40'x,32768)~insert('2A'x,'32768'))
+
+::method 'test307'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame(mb~insert(copies('40'x,32768),.32768E+5)~string, '2A'x~insert(copies('40'x,32768),.32768E+5))
+
+::method 'test308'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame(mb~insert(.v10000,0000000000000000010000)~string, .v1~insert(.v10000,0000000000000000010000))
+
+::method 'test309'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0)~string, '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0))
+
+::method 'test310'
+    mb = .mutablebuffer~new(.v255)
+    self~assertSame(mb~insert(.v256,11,1)~string, .v255~insert(.v256,11,1))
+
+::method 'test311'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(mb~insert(copies('@',32768),'3330'x,'39'x)~string, copies('\',10000)~insert(copies('@',32768),'3330'x,'39'x))
+
+::method 'test312'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(mb~insert(copies('5F'x,256),'255',30)~string, copies('40'x,255)~insert(copies('5F'x,256),'255',30))
+
+::method 'test313'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert(copies('@',32768),256,'255')~string, '*'~insert(copies('@',32768),256,'255'))
+
+::method 'test314'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert(.v1,32768,2||5||6)~string, .v10000~insert(.v1,32768,2||5||6))
+
+::method 'test315'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert(.v30,'1.6E+1','1.0E+4')~string, .v10000~insert(.v30,'1.6E+1','1.0E+4'))
+
+::method 'test316'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string, '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+
+::method 'test318'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame(mb~insert(copies('@',32768),30,9,+000000000000000000003)~string, copies('\',10000)~insert(copies('@',32768),30,9,+000000000000000000003))
+
+::method 'test319'
+    mb = .mutablebuffer~new(copies('40'x,255))
+    self~assertSame(mb~insert(copies('5F'x,256),255,257,'2A'x)~string, copies('40'x,255)~insert(copies('5F'x,256),255,257,'2A'x))
+
+::method 'test320'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert(copies('@',32768),256,255,10-9)~string, '*'~insert(copies('@',32768),256,255,10-9))
+
+::method 'test321'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(mb~insert(.v1,32768,256)~string, .v10000~insert(.v1,32768,256))
+
+::method 'test323'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string, nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+
+::method 'test327'
+    mb = .mutablebuffer~new('*')
+    self~assertSame(mb~insert(nv,1,0,'x')~string, '*'~insert(nv,1,0,'x'))
+
+::method 'test328'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame(mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x')~string, nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+
+::method 'test333'
+    mb = .mutablebuffer~new(+0000042)
+    self~assertSame(mb~insert(21*2,6*6,100/5,5+4)~string, (+0000042)~insert(21*2,6*6,100/5,5+4))
+
+::method 'test334'
+    mb = .mutablebuffer~new((9*100)+(9*10)+6)
+    self~assertSame(mb~insert(66||9,6-2,(6*6)*2,999-999)~string, ((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
+
+::method 'test335'
+    mb = .mutablebuffer~new(.vn42)
+    self~assertSame(mb~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4)~string, .vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
+
+::method 'test336'
+    mb = .mutablebuffer~new((.vn9*.vn100)+(.vn9*.vn10)+.vn6)
+    self~assertSame(mb~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999)~string, ((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
+
+::method 'test337'
+    numeric digits 1
+    mb = .mutablebuffer~new(+0000042)
+    self~assertSame(mb~insert(21*2,6*6,100/5,5+4)~string, (+0000042)~insert(21*2,6*6,100/5,5+4))
+
+::method 'test338'
+    numeric digits 1
+    mb = .mutablebuffer~new((9*100)+(9*10)+6)
+    self~assertSame(mb~insert(66||9,6-2,(6*6)*2,999-999)~string, ((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
+
+::method 'test339'
+    numeric digits 1
+    mb = .mutablebuffer~new(.vn42)
+    self~assertSame(mb~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4)~string, .vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
+
+::method 'test340'
+    numeric digits 1
+    mb = .mutablebuffer~new((.vn9*.vn100)+(.vn9*.vn10)+.vn6)
+    self~assertSame(mb~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999)~string, ((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
+
+::method 'test341'
+    mb = .mutablebuffer~new(datatype('A'))
+    self~assertSame(mb~insert(datatype(6),word('0 1 2',3),center('4 5 6',1),max(3,4,5))~string, datatype('A')~insert(datatype(6),word('0 1 2',3),center('4 5 6',1),max(3,4,5)))
+
+::method 'test342'
+    mb = .mutablebuffer~new(max(5,8,9,3,4,2,0))
+    self~assertSame(mb~insert(min(5,8,9,3,4,2,0),min(11,22,33),max(9,8,7),min(9,2))~string, max(5,8,9,3,4,2,0)~insert(min(5,8,9,3,4,2,0),min(11,22,33),max(9,8,7),min(9,2)))
+
+::method 'test343'
+    mb = .mutablebuffer~new('JR')
+    self~assertSame(mb~insert('Buck',2,4,'@')~insert('Buck'~insert('JR',2,4,'@'))~string, 'JR'~insert('Buck',2,4,'@')~insert('Buck'~insert('JR',2,4,'@')))
+
+::method 'test344'
+    mb = .mutablebuffer~new('Buck')
+    self~assertSame(mb~insert('JR','0'~insert('2'),'0'~insert('4'),''~insert('@'))~string, 'Buck'~insert('JR','0'~insert('2'),'0'~insert('4'),''~insert('@')))
+
+::method 'test345'
+-- clean up .local
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(v32768)
+    .local~remove(v10000)
+    .local~remove(vres1)
+    .local~remove(vres2)
+    .local~remove(vres3)
+    .local~remove(vres4)
+    .local~remove(vres5)
+    .local~remove(vn2)
+    .local~remove(vn4)
+    .local~remove(vn5)
+    .local~remove(vn6)
+    .local~remove(vn9)
+    .local~remove(vn10)
+    .local~remove(vn21)
+    .local~remove(vn42)
+    .local~remove(vn66)
+    .local~remove(vn100)
+    .local~remove(vn999)
+----
+
+::METHOD "testInsert"
+   b = .mutableBuffer~new("123456")
+   b~insert("abc")
+   self~AssertEquals("abc123456", b~string, "Append failed 1")
+   b~insert("abc",7,,"+")
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 2")
+   b~insert("abc",1,0,"+")
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 3")
+
+::METHOD "testInsertSyntax1"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.903)
+   b~insert()
+::METHOD "testInsertSyntax2"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.906)
+   b~insert("",-1)
+::METHOD "testInsertSyntax3"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   b~insert(.nil)
+::METHOD "testInsertSyntax4"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   b~insert("",,,.nil)
+::METHOD "testInsertSyntax5"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.906)
+   b~insert("",.nil,.nil,.nil)
+::METHOD "testInsertSyntax6"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.923)
+   b~insert("",0,-1,0)
+::METHOD "testInsertSyntax7"
+   b = .mutableBuffer~new("123456")
+   self~expectSyntax(93.922)
+   b~insert("",0,11,"  ")
+
+

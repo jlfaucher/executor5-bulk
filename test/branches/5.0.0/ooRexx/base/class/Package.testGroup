@@ -1,0 +1,819 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Package.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires "FileUtils.cls"
+
+::method TstFloatMethod -- test method, used with test_new_context_floatingmethod
+
+::class "Package.testGroup" subclass ooTestCase public
+
+::method "test_New01"
+  -- just load an empty package file
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "testPackage1.rex")
+  -- this is just an empty file
+  file~create("")
+
+  package = .package~new(file~fullName)
+
+  self~assertTrue(package~isA(.package))
+  self~assertEquals(file~fullName, package~name)
+  self~assertSame(0, package~classes~items)
+  self~assertSame(0, package~publicClasses~items)
+  self~assertSame(0, package~routines~items)
+  self~assertSame(0, package~publicRoutines~items)
+  self~assertSame(0, package~definedmethods~items)
+  self~assertSame(0, package~importedClasses~items)
+  self~assertSame(0, package~importedRoutines~items)
+  self~assertSame(0, package~importedPackages~items)
+  self~assertSame(0, package~resources~items)
+  self~assertSame(0, package~namespaces~items)
+  self~assertSame(0, package~annotations~items)
+  -- package settings are extensively tested in the ::options tests,
+  -- but this is a good place to test the defaults
+  self~assertSame(.rexxinfo~digits, package~digits)
+  self~assertSame(.rexxinfo~fuzz, package~fuzz)
+  self~assertSame(.rexxinfo~form, package~form)
+  -- some source tests
+  self~assertSame(0, package~sourceSize)
+
+  self~assertSame('N', package~trace)
+
+  -- only the annotations return value is updateable.  Try
+  -- adding to each of these directories and then verify that
+  -- the original remains empty
+  package~classes~temp = .array
+  self~assertSame(0, package~classes~items)
+  package~publicclasses~temp = .array
+  self~assertSame(0, package~publicClasses~items)
+  package~routines~temp = .array
+  self~assertSame(0, package~routines~items)
+  package~publicroutines~temp = .array
+  self~assertSame(0, package~publicRoutines~items)
+  package~definedMethods~temp = .array
+  self~assertSame(0, package~definedmethods~items)
+  package~importedClasses~temp = .array
+  self~assertSame(0, package~importedClasses~items)
+  package~importedRoutines~temp = .array
+  self~assertSame(0, package~importedRoutines~items)
+  package~importedPackages~append(.array)
+  self~assertSame(0, package~importedPackages~items)
+  package~resources~temp = .array
+  self~assertSame(0, package~resources~items)
+  package~namespaces~temp = .array
+  self~assertSame(0, package~namespaces~items)
+  -- this one does update the original stringtable
+  package~annotations~temp = "Hi"
+  self~assertSame(1, package~annotations~items)
+
+
+  file = .TemporaryTestFile~new(self, "testPackage2.rex")
+  file~create(".local['TESTING'] = 1")
+
+  -- make sure this entry is cleared
+  .local~removeEntry('TESTING')
+
+  -- verify the prolog runs when loaded from a file
+  package = .package~new(file~fullname)
+  self~assertSame(1, .local['TESTING'])
+
+  -- remove the entry again. Then run some code that requires this
+  -- file.  It should not get updated this time.
+  .local~removeEntry('TESTING')
+
+  res = self~runDynamicSource(("return 123", "::requires 'testPackage2.rex'"))
+
+  self~assertFalse(.local~hasEntry('TESTING'))
+
+  -- this creates an in-memory package.  It is not available for ::requires usage
+  package = .package~new("ROUTINETEST1", ("::routine test1 public", "return 1", "::method method1", "return 2"))
+
+  -- however, we can use it in creating other executables as a parent package
+  routine = .routine~new("testing", "return test1()", package)
+  self~assertSame(1, routine~call)
+
+  -- this also works using a method or a routine as the third argument
+  routine = .routine~new("testing", "return test1()", package~routines~test1)
+  self~assertSame(1, routine~call)
+
+  routine = .routine~new("testing", "return test1()", package~definedMethods~method1)
+  self~assertSame(1, routine~call)
+
+  -- and a final test to show that the in-memory version is not in the
+  -- package table
+
+  self~assertSyntaxError(43.901, ("return test1()", "::requires 'ROUTINETEST1'"))
+
+-- test memory retention of loaded package files
+::method testReclaim01
+
+  file = .TemporaryTestFile~new(self, "reclaimPackage.cls")
+  file~create(("::routine test1 public", "  return 1"))
+
+  -- this loads the package from a file and adds to the cache
+  package = .package~new(file~fullname)
+
+  -- delete the file now so this can no longer be loaded from the file
+  file~delete
+
+  -- now create some code that references this...should be located in the cache
+  routine = .routine~new("testing", ("return test1()", "::requires '"file~fullname"'"), self~class~package)
+
+  self~assertSame(1, routine~call)
+
+  -- wrap the orginal package in a weak reference
+  package = .weakreference~new(package)
+  -- drop the referencing routine
+  drop routine
+
+  -- now allocate a lot of storage in an attempt to force
+  -- a garbage collection event
+  i = 1
+  loop until package~value == .nil
+     loop 100
+        x = copies('x', 1000000)
+     end
+     i += 1
+  end
+
+  self~expectSyntax('43.901')
+  -- now create some more code that references the file...this should fail.
+  routine = .routine~new("testing", ("return test1()", "::requires 'reclaimPackage.cls'"))
+  routine~call
+
+-- test creation of classes within a package
+::method testClasses01
+
+  package = .package~new("CLASSTEST1", ("::class class1", "::class class2 public"))
+
+  classes = package~classes
+  publicClasses = package~publicClasses
+  self~assertSame(2, classes~items)
+  self~assertTrue(classes['CLASS1']~isA(.class))
+  self~assertTrue(classes['CLASS2']~isA(.class))
+  self~assertSame(1, publicClasses~items, "Public classes")
+  self~assertTrue(publicClasses['CLASS2']~isA(.class))
+  self~assertSame(0, package~importedClasses~items)
+
+-- test routines within a package
+::method testRoutines01
+  package = .package~new("ROUTINETEST2", ("::routine routine1", "::routine routine2 public"))
+
+  routines = package~routines
+  publicRoutines = package~publicRoutines
+  self~assertSame(2, routines~items)
+  self~assertTrue(routines['ROUTINE1']~isA(.routine))
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+  self~assertSame(1, publicRoutines~items, "Public routines")
+  self~assertTrue(publicRoutines['ROUTINE2']~isA(.routine))
+
+  self~assertSame(0, package~importedRoutines~items)
+
+::method testMethods01
+
+  package = .package~new("METHODTEST1", ("::method method1", "::method method2", "::class test1", "::method method3"))
+
+  methods = package~definedMethods
+  self~assertSame(2, methods~items)
+  self~assertTrue(methods['METHOD1']~isA(.method))
+  self~assertTrue(methods['METHOD2']~isA(.method))
+
+
+::method testImportedClasses01
+  file = .TemporaryTestFile~new(self, "ImportedClassTest1.cls")
+  file~create(("::class class1", "::class class2 public"))
+
+  -- load this package from the file
+  package = .package~new(file~fullName)
+
+  package2 = .package~new("importedtesting1", ("return 12", "::requires '"file~fullName"'"))
+
+  classes = package2~importedclasses
+  self~assertSame(1, classes~items)
+  self~assertTrue(classes['CLASS2']~isA(.class))
+
+  -- add the orginal package to this created one and test the imports
+  package2 = .package~new("importedtesting3", "return 12")
+  package2~addPackage(package)
+
+  classes = package2~importedclasses
+  self~assertSame(1, classes~items)
+  self~assertTrue(classes['CLASS2']~isA(.class))
+
+  self~assertSame(package, package2~importedPackages[1])
+
+  -- now a package with no public classes
+  file = .TemporaryTestFile~new(self, "ImportedClassTest2.cls")
+  file~create(("::class class1", "::class class2"))
+
+  -- load this package from the file
+  package = .package~new(file~fullname)
+
+  package2 = .package~new("importedtesting2", ("return 12", "::requires '"file~fullname"'"))
+  classes = package2~importedclasses
+  self~assertSame(0, classes~items)
+
+::method testImportedRoutines01
+  file = .TemporaryTestFile~new(self, "ImportedRoutineTest1.cls")
+  file~create(("::routine routine1", "::routine routine2 public"))
+
+  -- load this package from the file
+  package = .package~new(file~fullname)
+
+  package2 = .package~new("importedtesting1x", ("return 12", "::requires '"file~fullname"'"))
+
+  routines = package~publicRoutines
+
+  self~assertSame(1, routines~items)
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+
+  package2 = .package~new("importedtesting3", "return 12")
+  package2~addPackage(package)
+
+  routines = package2~importedroutines
+  self~assertSame(1, routines~items)
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+
+  -- now a package with no public routines
+  file = .TemporaryTestFile~new(self, "ImportedRoutineTest2.cls")
+  file~create(("::routine routine1" , "::routine routine2"))
+  package = .package~new(file~fullname)
+
+  package2 = .package~new("importedtesting2x", ("return 12", "::requires '"file~fullname"'"))
+  routines = package2~importedroutines
+  self~assertSame(0, routines~items)
+
+  self~assertSame(package, package2~importedPackages[1])
+
+::method TestSource01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "::routine routine2 public"
+
+  package = .package~new("SOURCETEST1", src)
+
+  self~assertSame(2, package~sourceSize)
+  self~assertSame(src[1], package~sourceLine(1))
+  self~assertSame(src[2], package~sourceLine(2))
+  self~assertSame("", package~sourceLine(3))
+  self~assertEquals(src, package~source)
+
+::method TestAddRoutine01
+
+  package = .package~new("ADDROUTINETEST1", ("::routine routine1", "  return routine2()"))
+
+  routine = .routine~new("TestingAddRoutine", "return 123")
+
+  package~addRoutine("ROUTINE2", routine)
+  package~addPublicRoutine("ROUTINE3", routine)
+
+  routines = package~routines
+  self~assertSame(3, routines~items)
+  self~assertSame(123, routines["ROUTINE2"]~call)
+  self~assertSame(routine, package~findroutine("ROUTINE2"))
+
+  publicroutines = package~publicroutines
+  self~assertSame(1, publicroutines~items)
+  self~assertSame(123, publicroutines["ROUTINE3"]~call)
+  self~assertSame(routine, package~findpublicroutine("ROUTINE3"))
+
+::method TestAddRoutine02
+
+  package = .package~new("ADDROUTINETEST2", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addRoutine
+
+::method TestAddRoutine03
+
+  package = .package~new("ADDROUTINETEST3", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addRoutine("TESTING")
+
+::method TestAddRoutine04
+
+  package = .package~new("ADDROUTINETEST4", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.914')
+  package~addRoutine("TESTING", .array)
+
+::method TestAddPublicRoutine01
+
+  package = .package~new("ADDPUBLICROUTINETEST1", ("::routine routine1", "  return routine2()"))
+
+  routine = .routine~new("TestingAddPublicRoutine", "return 123")
+
+  package~addPublicRoutine("ROUTINE2", routine)
+
+  routines = package~routines
+  self~assertSame(2, routines~items)
+  publicRoutines = package~publicRoutines
+  self~assertSame(1, publicRoutines~items)
+  self~assertSame(123, routines["ROUTINE1"]~call)
+  self~assertSame(routine, package~findroutine("ROUTINE2"))
+  self~assertSame(routine, package~findpublicroutine("ROUTINE2"))
+
+::method TestAddPublicRoutine02
+  src = .array~new()
+
+  package = .package~new("ADDPUBLICROUTINETEST2", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addPublicRoutine
+
+::method TestAddPublicRoutine03
+
+  package = .package~new("ADDPUBLICROUTINETEST3", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addPublicRoutine("TESTING")
+
+::method TestAddPublicRoutine04
+
+  package = .package~new("ADDPUBLICROUTINETEST4", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.914')
+  package~addPublicRoutine("TESTING", .array)
+
+::method TestAddClass01
+  src = .array~new()
+  src[1] = "::class class1"
+
+  package = .package~new("ADDCLASSTEST1", src)
+
+  class = .object~subclass("TEST2")
+
+  package~addClass("TEST2", class)
+
+  classes = package~classes
+  self~assertSame(2, classes~items)
+  self~assertSame(class, classes["TEST2"])
+  self~assertSame(0, package~publicClasses~items)
+  self~assertSame(class, package~findClass("TEST2"))
+  -- should not be found as a public class
+  self~assertSame(.nil, package~findPublicClass("TEST2"))
+  -- test that find also locates the REXX-defined classes
+  self~assertSame(.array, package~findClass("ARRAY"))
+  self~assertSame(.array, package~findPublicClass("ARRAY"))
+
+  -- now add a public class
+  class = .object~subclass("TEST3")
+  package~addPublicClass("TEST3", class)
+
+  self~assertSame(class, package~findClass("TEST3"))
+  -- should be found as a public class
+  self~assertSame(class, package~findPublicClass("TEST3"))
+
+
+::method TestAddClass02
+
+  package = .package~new("ADDCLASSTEST2", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addClass
+
+::method TestAddClass03
+
+  package = .package~new("ADDCLASSEST3", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addClass("TESTING")
+
+::method TestAddClass04
+
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.914')
+  package~addClass("TESTING", "xyz")
+
+::method TestAddPublicClass01
+
+  package = .package~new("ADDPUBLICCLASSTEST1", "::class class1")
+
+  class = .object~subclass("TEST2")
+
+  package~addPublicClass("TEST2", class)
+
+  classes = package~classes
+  publicclasses = package~publicclasses
+
+  self~assertSame(2, classes~items)
+  self~assertSame(class, classes["TEST2"])
+  self~assertSame(1, publicclasses~items)
+  self~assertSame(class, publicclasses["TEST2"])
+  self~assertSame(class, package~findClass("TEST2"))
+  self~assertSame(class, package~findPublicClass("TEST2"))
+
+::method TestAddPublicClass02
+
+  package = .package~new("ADDPUBLICCLASSTEST2", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addPublicClass
+
+::method TestAddPublicClass03
+
+  package = .package~new("ADDPUBLICCLASSEST3", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.901')
+  package~addPublicClass("TESTING")
+
+::method TestAddPublicClass04
+
+  package = .package~new("ADDPUBLICCLASSTEST4", ("::routine routine1", "  return routine2()"))
+
+  self~expectSyntax('88.914')
+  package~addPublicClass("TESTING", "xyz")
+
+::method TestLoadLibrary01
+  package = .context~package
+  self~assertTrue(package~loadLibrary("rxmath"))
+  self~assertSame(2, rxcalcsqrt(4))
+  self~assertFalse(package~loadLibrary("invalid_library_name"))
+
+::method TestLoadLibrary02
+  self~expectSyntax('88.901')
+  package = .context~package
+  package~loadLibrary
+
+::method TestLoadLibrary03
+  self~expectSyntax('93.902')
+  package = .context~package
+  package~loadLibrary("a", "b")
+
+::method TestAddPackageNoArgs
+  self~expectSyntax('88.901')
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
+  package~addPackage
+
+::method TestAddPackageNonePackage
+  self~expectSyntax('88.914')
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
+  package~addPackage(.routine~new('test', "return 1"))
+
+::method TestAddNamespacePackage
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  package~addPackage(package2, 'mynamespace')
+  self~assertSame(package2, package~namespaces~mynamespace)
+
+::method TestAddPackageTooManyArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  self~expectSyntax('93.902')
+  package~addPackage(package2, 'mynamespace', 1)
+
+::method TestAddPackageBadNamespaceName
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  self~expectSyntax('88.909')
+  package~addPackage(package2, .nil)
+
+::method TestSourceLineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.903')
+  package~sourceLine
+
+::method TestSourceLineBadLineNumber
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.924')
+  package~sourceLine('A')
+
+::method TestSourceLineZeroLineNumber
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.924')
+  package~sourceLine(0)
+
+::method TestSourceLineOutOfRange
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~assertSame("", package~sourceLine(3))
+
+::method TestFindClassNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findClass
+
+::method TestFindClassNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findClass(.nil)
+
+::method TestFindClassTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findClass("foo", "bar")
+
+::method TestFindPublicClassNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findPublicClass
+
+::method TestFindPublicClassNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findPublicClass(.nil)
+
+::method TestFindPublicClassTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findPublicClass("foo", "bar")
+
+::method TestFindRoutineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findRoutine
+
+::method TestFindRoutineNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findRoutine(.nil)
+
+::method TestFindRoutineTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findRoutine("foo", "bar")
+
+::method TestFindPublicRoutineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findPublicRoutine
+
+::method TestFindPublicRoutineNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findPublicRoutine(.nil)
+
+::method TestFindPublicRoutineTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findPublicRoutine("foo", "bar")
+
+::method TestAnnotationNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~annotation
+
+::method TestAnnotationNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~annotation(.nil)
+
+::method TestAnnotationTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~annotation("foo", "bar")
+
+::method test_sparse_array_source
+  self~expectSyntax(93.952)
+  r = .package~new("test", ("x = something",,"return 123"))
+
+::method test_non_string_array_value
+  self~expectSyntax(93.952)
+  r = .package~new("test", ("x = something",.nil,"return 123"))
+
+::method test_new_hashbang
+  -- should be ok if code starts with a hashbang line
+  .Package~new("", .resources~hashBang)
+
+-- hashbang sorce code
+::resource hashBang
+#!/usr/bin/rexx
+return
+::END
+
+::method test_prolog
+  self~assertSame(.nil, .object~package~prolog)
+  package = .package~new("test", ("return 123", "::class test"))
+  prolog = package~prolog
+  self~assertEquals(123, prolog[])
+
+  package = .method~new("test", "return 123")~package
+  self~assertSame(.nil, package~prolog)
+
+  package = .routine~new("test", "return 123")~package
+  self~assertSame(.nil, package~prolog)
+
+-- we don't allow .endofline in a source line
+::method test_new_source_no_endofline
+  self~expectSyntax(13.1)              -- Incorrect character in program
+  .Package~new("", "nop" .endofline "nop")
+
+-- as above, but array version
+::method test_new_source_no_endofline_array
+  self~expectSyntax(13.1)              -- Incorrect character in program
+  .Package~new("", ("nop", "nop" .endofline))
+
+-- but we do allow semicolons separating clauses
+::method test_new_source_semicolon
+  s = "nop; nop"
+  p = .Package~new("", s)
+  self~assertSame(s, p~source~makeString(, " "))
+
+-- as above, but array version
+::method test_new_source_semicolon_array
+  s = ("nop;", ";nop")
+  p = .Package~new("", s)
+  self~assertSame(s~makeString(, " "), p~source~makeString(, " "))
+
+-- context .nil not allowed
+::method test_new_context_nil
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", .nil)
+
+-- context null string not allowed
+::method test_new_context_null
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", "")
+
+-- context "PROGRAMSCOPE" not allowed
+::method test_new_context_PROGRAMSCOPE
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", "PROGRAMSCOPE")
+
+-- context is REXX package
+::method test_new_context_rexxpackage
+  -- within scope "REXX" no local classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .rexxcontext~package)
+  self~assertEquals("", p~routines~tstDefined~call)
+
+-- context is an imported package
+::method test_new_context_importedpackage
+  -- within the scope of an imported package (here 'ooTest.frm' or 'FileUtils.cls')
+  --  no local classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .context~package~importedPackages[1])
+  -- when run stand-alone, no local classes/routines are visible, but
+  -- when run via testOORexx.rex, the TstClassPublic and TstRoutinePublic are visible
+  -- not sure why - until decided, we'll just accept both outcomes
+  self~assertOneOrAnother("", "ClassPublic RoutinePublic", p~Routines~tstDefined~call, .context~package~importedPackages[1]~name)
+
+-- context is this package
+::method test_new_context_thispackage
+  -- within scope .context~package local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .context~package)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is a method of a public class in this package
+::method test_new_context_methodpublic
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClassPublic~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is an inherited method of a public class in this package
+::method test_new_context_methodpublicinherited
+  -- within the scope of an inherited method no local public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  p = .Package~new("", .resources~tstDefined, method)
+  self~assertEquals("", p~Routines~tstDefined~call)
+
+-- context is a method in this package
+::method test_new_context_method
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClass~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is an inherited method in this package
+::method test_new_context_methodinherited
+  -- within the scope of an inherited method local no public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  p = .Package~new("", .resources~tstDefined, method)
+  self~assertEquals("", p~Routines~tstDefined~call)
+
+-- context is a floating method in this package
+::method test_new_context_floatingmethod
+  -- within the scope of a floating method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .methods["TSTFLOATMETHOD"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is  a routine in this package
+::method test_new_context_routine
+  -- within the scope of a local routine our local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .routines["TSTROUTINE"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- method 'findProgram' with no args
+::method test_package_findProgram_no_arg
+  self~expectSyntax(88.901) -- Missing argument; the name argument is required
+  .rexxcontext~package~findprogram
+
+-- method 'findProgram' with non-string arg
+::method test_package_findProgram_arg_nostring
+  self~expectSyntax(88.909) -- Argument name must have a string value
+  .rexxcontext~package~findprogram(.nil)
+
+-- method 'findProgram' with two args
+::method test_package_findProgram_two_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .rexxcontext~package~findprogram(1, 1)
+
+-- method 'findProgram' with null string
+::method test_package_findProgram_nullstring
+  self~assertSame(.nil, .rexxcontext~package~findprogram(""))
+  self~assertSame(.nil, .context~package~findprogram(""))
+
+::method test_package_findProgram_rexxtry
+  -- mime.cls should always be available
+  program = "mime.cls"
+  p = .rexxcontext~package~findprogram(program)
+  self~assertNotSame(.nil, p, "findProgram() cannot locate '"program"'")
+  self~assertSame(program, .File~new(p)~name, "findProgram() located" .File~new(p)~name)
+
+::method test_package_local_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .context~package~local(1)
+
+::method test_package_local_get_empty
+  self~assertIsA(.context~package~local, .Directory)
+  self~assertSame(0, .context~package~local~items)
+
+::method test_package_local_set
+  .context~package~local~packageTest = "DEF"
+  self~assertSame("DEF", .context~package~local~packageTest)
+
+::method test_package_local
+  .local~packageTest = "ABC"
+  package = .package~new("TESTPACKAGELOCAL", (".context~package~local~packageTest = 'DEF'", "::routine routine1", "  return .packageTest"))
+
+  self~assertSame("DEF", package~routines["ROUTINE1"]~call)
+  self~assertSame("DEF", package~local~packageTest)
+
+-- source code of our context test routine
+::resource "tstDefined"
+
+::routine tstDefined public
+  defined = ""
+  if .context~package~findPublicClass("TSTCLASSPUBLIC") \= .nil then
+    defined = defined .TstClassPublic~TstMethod
+  if .context~package~findPublicRoutine("TSTROUTINEPUBLIC") \= .nil then
+    defined = defined TstRoutinePublic()
+  if .context~package~findClass("TSTCLASS") \= .nil then
+    defined = defined .TstClass~TstMethod
+  if .context~package~findRoutine("TSTROUTINE") \= .nil then
+    defined = defined TstRoutine()
+  return defined~strip("L")
+
+::END
+
+::class TstClassPublic public
+  ::constant TstMethod "ClassPublic"
+
+::routine TstRoutinePublic public
+  return "RoutinePublic"
+
+::class TstClass
+  ::constant TstMethod "Class"
+
+::routine TstRoutine
+  return "Routine"
+
+
+::options all syntax

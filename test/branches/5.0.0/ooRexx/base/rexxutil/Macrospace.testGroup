@@ -1,0 +1,364 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2012-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Macrospace.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class "Macrospace.testGroup" public subclass ooTestCase
+
+/* Rexx macrospace functions
+   SysAddRexxMacro
+   SysClearRexxMacroSpace
+   SysDropRexxMacro
+   SysLoadRexxMacroSpace
+   SysQueryRexxMacro
+   SysReorderRexxMacro
+   SysSaveRexxMacroSpace
+*/
+
+-- we have two test programs in the same directory as our package
+-- Macrospace.rex (valid Rexx), and Macrospace.norex (invalid Rexx)
+::constant macroName "Macrospace.rex"
+::constant macroPath (.File~new(self~macroName, .File~new(.context~package~name)~parent))
+::constant macroRc 99                            -- "Macrospace.rex" will return this rc
+
+-- full path to our invalid Rexx program
+::constant noMacroPath (.File~new("Macrospace.norex", .File~new(.context~package~name)~parent))
+
+::constant macroSpacePath "Macrospace.img"       -- a macrospace we will save (and load from)
+::constant noMacroSpacePath "Macrospace.noimg"   -- a macrospace that doesn't exist
+::constant default "B"                           -- default 'option' value
+
+/*
+#define RXMACRO_OK                 0  /* Macro interface completed   */
+#define RXMACRO_NO_STORAGE         1  /* Not Enough Storage Available*/
+#define RXMACRO_NOT_FOUND          2  /* Requested function not found*/
+#define RXMACRO_EXTENSION_REQUIRED 3  /* File ext required for save  */
+#define RXMACRO_ALREADY_EXISTS     4  /* Macro functions exist       */
+#define RXMACRO_FILE_ERROR         5  /* File I/O error in save/load */
+#define RXMACRO_SIGNATURE_ERROR    6  /* Incorrect format for load   */
+#define RXMACRO_SOURCE_NOT_FOUND   7  /* Requested cannot be found   */
+#define RXMACRO_INVALID_POSITION   8  /* Invalid search order pos    */
+#define RXMACRO_NOT_INIT           9  /* API not initialized         */
+*/
+::constant OK 0
+::constant notFound 2
+::constant alreadyExists 4
+::constant fileError 5
+::constant signatureError 6
+::constant sourceNotFound 7
+
+
+-- test availability of rexxutil Macrospace functions
+::method test_functions
+  do action over "Add" , "Drop" , "Query" , "Reorder"
+    function = "Sys"||action||"RexxMacro"
+    self~assertFalse(rxfuncquery(function), function "must be available")
+  end
+  do action over "Clear" , "Load" , "Save"
+    function = "Sys"||action||"RexxMacroSpace"
+    self~assertFalse(rxfuncquery(function), function "must be available")
+  end
+  -- our two Rexx test files should exist
+  self~assertTrue(SysFileExists(self~macroPath), self~macroPath "should exist")
+  self~assertTrue(SysFileExists(self~noMacroPath), self~noMacroPath "should exist")
+
+
+-- SysAddRexxMacro() tests
+::method test_add_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysAddRexxMacro
+
+::method test_add_one_arg_too_few
+  self~expectSyntax(88.901)
+  call SysAddRexxMacro ""
+
+::method test_add_four_args_too_many
+  self~expectSyntax(88.922)
+  call SysAddRexxMacro "", "", "", ""
+
+::method test_add_arg_path_null
+  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_null", ""))
+  self~assertEquals("", SysQueryRexxMacro("test_add_null"))
+
+::method test_add_arg_path_invalid
+  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_invalid", "/"), "b")
+  self~assertEquals("", SysQueryRexxMacro("test_add_null"))
+
+::method test_add_arg_path_no_valid_rexx
+  self~assertTrue(SysFileExists(self~noMacroPath))
+  self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_norexx", self~noMacroPath, "B"))
+  self~assertEquals("", SysQueryRexxMacro("test_add_nopath"))
+
+::method test_add_arg_option_illegal
+  self~expectSyntax(40.920)
+  call SysAddRexxMacro "name", "path", "illegal-option"
+
+::method test_add_two_args_default
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_add_def", self~macroPath))
+  self~assertEquals(self~default, SysQueryRexxMacro("test_add_def"))
+  self~assertEquals(self~macroRc, test_add_def())          -- run added macro
+
+::method test_add_three_args_option
+  do option over "a", "b", "A", "B"
+    self~assertEquals(self~OK, SysClearRexxMacroSpace())
+    self~assertEquals(self~OK, SysAddRexxMacro("test_add", self~macroPath, option))
+    self~assertEquals(option~upper, SysQueryRexxMacro("test_add"))
+    self~assertEquals(self~macroRc, test_add())
+  end
+
+::method test_add_three_args_option_before
+  -- check macro search order by adding a macro named "SysUtilVersion"
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro, not the rexxutil version should run")
+
+::method test_add_three_args_option_after
+  -- check macro search order by adding a macro named "SysUtilVersion"
+  version = SysUtilVersion()
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "a"))
+  self~assertEquals(version, SysUtilVersion(), "the rexxutil version should run, not the macro")
+
+::method test_add_three_args_option_replace
+  -- when adding a macro, an existing macro with the same name should be replaced
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_add_before", self~macroPath, "b"))
+  self~assertEquals("B", SysQueryRexxMacro("test_add_before"))
+  self~assertEquals(self~OK, SysAddRexxMacro("test_add_before", self~macroPath, "a"))
+  self~assertEquals("A", SysQueryRexxMacro("test_add_before"))
+
+::method test_add_other_interpreter
+  -- macros should be available to another Rexx interpreter
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_other", self~macroPath))
+  .RexxInfo~executable '-e "return test_other()"'
+  self~assertRc(self~macroRc, rc, "the test_other macro should be available")
+
+
+-- SysDropRexxMacro() tests
+::method test_drop_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysDropRexxMacro
+
+::method test_reorder_two_args_too_many
+  self~expectSyntax(88.922)
+  call SysDropRexxMacro "", "", ""
+
+::method test_drop
+  -- add a macro, test it, drop it, test again, and try to drop a second time
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~notFound, SysDropRexxMacro("test_drop_def"))
+  self~assertEquals(self~OK, SysAddRexxMacro("test_drop_def", self~macroPath))
+  self~assertEquals(self~default, SysQueryRexxMacro("test_drop_def"))
+  self~assertEquals(self~OK, SysDropRexxMacro("test_drop_def"))
+  self~assertEquals("", SysQueryRexxMacro("test_drop_def"))
+  self~assertEquals(self~notFound, SysDropRexxMacro("test_drop_def"))
+
+
+-- SysQueryRexxMacro() tests
+::method test_query_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysQueryRexxMacro
+
+::method test_query_two_args_too_many
+  self~expectSyntax(88.922)
+  call SysQueryRexxMacro "", "", ""
+
+::method test_query
+  -- add two macros, test for both, drop one, test for both again, drop the other, and repeat
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_query_after", self~macroPath, "a"))
+  self~assertEquals(self~OK, SysAddRexxMacro("test_query_before", self~macroPath, "b"))
+  self~assertEquals("A", SysQueryRexxMacro("test_query_after"))
+  self~assertEquals("B", SysQueryRexxMacro("test_query_before"))
+  self~assertEquals(self~OK, SysDropRexxMacro("test_query_before"))
+  self~assertEquals("A", SysQueryRexxMacro("test_query_after"))
+  self~assertEquals("", SysQueryRexxMacro("test_query_before"))
+  self~assertEquals(self~OK, SysDropRexxMacro("test_query_after"))
+  self~assertEquals("", SysQueryRexxMacro("test_query_after"))
+  self~assertEquals("", SysQueryRexxMacro("test_query_before"))
+
+
+-- SysReorderRexxMacro() tests
+::method test_reorder_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysReorderRexxMacro
+
+::method test_reorder_one_arg_too_few
+  self~expectSyntax(88.901)
+  call SysReorderRexxMacro ""
+
+::method test_reorder_three_args_too_many
+  self~expectSyntax(88.922)
+  call SysReorderRexxMacro "", "", ""
+
+::method test_reorder_arg_option_illegal
+  self~expectSyntax(40.920)
+  call SysReorderRexxMacro "name", "illegal-option"
+
+::method test_reorder
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_reorder", self~macroPath, "a"))
+  self~assertEquals("A", SysQueryRexxMacro("test_reorder"))
+  do option over "a", "b", "A", "B"
+    self~assertEquals(self~OK, SysReorderRexxMacro("test_reorder", option))
+    self~assertEquals(option~upper, SysQueryRexxMacro("test_reorder"))
+  end
+
+
+-- SysClearRexxMacroSpace() tests
+::method test_clear_args_too_many
+  self~expectSyntax(88.922)
+  call SysClearRexxMacroSpace ""
+
+::method test_clear
+  -- add a macro, query it, clear macrospace, and query again
+  self~assertEquals(self~OK, SysAddRexxMacro("test_clear_def", self~macroPath))
+  self~assertEquals(self~default, SysQueryRexxMacro("test_clear_def"))
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals("", SysQueryRexxMacro("test_clear_def"))
+  self~assertEquals(self~OK, SysClearRexxMacroSpace(), "clearing empty macrospace should work")
+
+
+-- SysLoadRexxMacroSpace() tests
+::method test_load_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysLoadRexxMacroSpace
+
+::method test_load_two_args_too_many
+  self~expectSyntax(88.922)
+  call SysLoadRexxMacroSpace "", ""
+
+::method test_load_file_null
+  self~assertEquals(self~fileError, SysLoadRexxMacroSpace(""))
+
+::method test_load_file_not_existing
+  self~assertEquals(self~fileError, SysLoadRexxMacroSpace(self~noMacroSpacePath))
+
+::method test_load_file_invalid
+  parse source . . path
+  self~assertEquals(self~signatureError, SysLoadRexxMacroSpace(path))
+
+::method test_load
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+
+  -- add two macros, save, run, and clear
+  self~assertEquals(self~OK, SysAddRexxMacro("test_load_def", self~macroPath))
+  self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
+  self~assertEquals(self~OK, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertEquals(self~macroRc, test_load_def())
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+
+  -- add a macro, then load (load is like add, not wipe & add)
+  self~assertEquals(self~OK, SysAddRexxMacro("test_load_after", self~macroPath, "a"))
+  self~assertEquals(self~macroRc, test_load_after())
+  self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
+
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
+
+  -- assert that all three macros are there, and run
+  self~assertEquals("A", SysQueryRexxMacro("test_load_after"), "macro 'test_load_after' should have survived load()")
+  self~assertEquals(self~default, SysQueryRexxMacro("test_load_def"))
+  self~assertEquals("B", SysQueryRexxMacro("SysUtilVersion"))
+  self~assertEquals(self~macroRc, test_load_after())
+  self~assertEquals(self~macroRc, test_load_def())
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")
+
+
+-- SysSaveRexxMacroSpace() tests
+::method test_save_no_arg_too_few
+  self~expectSyntax(88.901)
+  call SysSaveRexxMacroSpace
+
+::method test_save_two_args_too_many
+  self~expectSyntax(88.922)
+  call SysSaveRexxMacroSpace "", ""
+
+::method test_save_file_null
+  self~assertEquals(self~OK, SysAddRexxMacro("test_file_null", self~macroPath))
+  -- cannot save to an invalid file name
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(""))
+
+::method test_save_empty
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  -- cannot save an empty macrospace
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertFalse(SysFileExists(self~macroSpacePath))
+
+::method test_save
+  self~assertEquals(self~OK, SysAddRexxMacro("test_save", self~macroPath))
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertTrue(SysFileExists(self~macroSpacePath))
+  -- macro still available after a save
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save"))
+
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  self~assertEquals(self~OK, SysAddRexxMacro("test_save_overwrite", self~macroPath))
+  -- save overwrites an existing macrospace file
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertTrue(SysFileExists(self~macroSpacePath))
+  self~assertEquals("", SysQueryRexxMacro("test_save"))
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save_overwrite"))
+
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
+
+::method test_save_many
+  self~assertEquals(self~OK, SysClearRexxMacroSpace())
+  parse source . . path
+  do i = 1 to 100
+    self~assertEquals(self~OK, SysAddRexxMacro("test_save_" || i, path))
+  end
+  self~assertEquals(self~default, SysQueryRexxMacro("test_save_42"))
+
+  -- save/reload large macrospace file
+  self~assertEquals(self~Ok, SysSaveRexxMacroSpace(self~macroSpacePath))
+  self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
+
+  self~assertSame(0, SysFileDelete(self~macroSpacePath))
+
+
+::options all syntax error condition

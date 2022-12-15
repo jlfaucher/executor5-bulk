@@ -1,0 +1,191 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~restrictOS("WINDOWS")
+
+  -- Use an ordered collection to add the tests.
+  methodNames = .array~of("test_000_Exists", "test_001_Executes", "test_002_ExpectedCompletion")
+  group~addWithCollection(.drives.testGroup, methodNames)
+
+  -- This is a test of a sample shipped with the release ooRexx.  We require
+  -- that ooRexx be installed normally, or that it is possible to locate the
+  -- sample in some other manner.  The framework (in FileUtils.cls) provides a
+  -- public routine that will locate the sample.  The routine returns .nil if
+  -- the sample is not locatable and the full path name to the sample if it can
+  -- be located.  The routine is used here to check that the sample can be
+  -- found.  If it can not be found, we mark this test group as not having any
+  -- executable tests.
+
+  if group~machineOS == "WINDOWS" then do
+    if locateSamplePrg("drives.rex") == .nil then
+        group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
+  end
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
+
+/* class: drives.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  The main purpose of this test group is to execute the sample program to assert
+  that the sample: 1.) runs 2.) completes normally.  It is not the purpose to
+  prove that SysDriveMap(), etc. are operating correctly.  The proper place for
+  that would be in a RexxUtil test group.
+
+  The test group is broken down into 3 tests.  1. ooRexx is working and the
+  sample program exists.  2. The sample program executes.  3. It completes as
+  expected.
+
+  Note that each of these tests is dependent on the preceding test passing.
+  This is *not* the usual case for unit tests, where normally each unit test
+  is independent of the others.  Because of the dependence of each phase of the
+  test group on the preceding phase, a control is used to check that the
+  preceding phase passed.  And, the test methods are added to the test group
+  by using a collection.  The test group then ensures that test case methods are
+  executed in the same order as they are in the collection.
+
+  Also, state information is stored in class attributes of the test group.
+  Again, this is not the usual case for unit tests.  It arises from the fact
+  that this test group is not really a collection of unit tests; it is a quality
+  assurance test.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'drives.testGroup' public subclass ooTestCase
+
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~SAMPLE_TEST
+
+    self~prgPath = ""
+    self~prgOutput = .array~new
+    self~stop = .false
+
+  ::method test_000_Exists
+    self~class~stop = .true
+
+    prgPathName = locateSamplePrg("drives.rex")
+
+    self~assertNotNull(prgPathName)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "drives.rex must exist")
+
+    self~class~prgPath = prgPathName
+    self~class~stop = .false
+
+  ::method  test_001_Executes
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    -- Execute the sample program synchronously.
+    --
+    -- execRexxPrg() is a public routine in FileUtils.cls.  It handles executing
+    -- a Rexx program, waiting for the program to finish, capturing the return
+    -- code produced by executing the program, and capturing the output produced
+    -- by the program.  The first arg to the routine is the Rexx program name.
+    -- The second arg is an Array object.
+    --
+    -- The return code from execRexxPrg() is the return code from attempting to
+    -- execute the program.  Note that this could be, for example, an OS error
+    -- code if the program could not be executed.  It also could be 9999 which
+    -- indicates an internal error.
+    --
+    -- The output produced by executing the program is returned in the array,
+    -- each element of the array being one line of the output.  The array does
+    -- not have to be empty, but of course if you only want to see what the
+    -- output is, it should be empty.
+
+    ret = execRexxPrg(self~class~prgPath, self~class~prgOutput)
+
+    -- Check that there is not an internal error.
+    self~assertNotSame(9999, ret, 'execRexxPrg() must be called correctly')
+
+    -- Check that some output was produced.
+    self~assertTrue(self~class~prgOutput~items > 0, 'drives.rex must produce some output')
+
+    -- Check that we got a 0 rc, which is what drives.rex returns on completion.
+    self~assertSame(0, ret, 'drives.rex should run and return 0')
+
+    -- All okay, keep going.
+    self~class~stop = .false
+
+  ::method test_002_ExpectedCompletion
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    -- The output of the executing drives.rex is in the class
+    -- attribute: prgOutput
+
+    -- An array of the start of the expected output lines, in reverse order
+    expected = .array~new
+    expected[1] = "Drive letters not used"
+    expected[2] = "Remote drives"
+    expected[3] = "RAM drives"
+    expected[4] = "Local drives"
+    expected[5] = "Used drives"
+    expected[6] = "Bootdrive"
+    expected[7] = "Operating System Version"
+
+    out = self~class~prgOutput
+    j = out~items
+
+    -- Match the last lines of output with the exepected.  We just check the
+    -- start of the line, because the actual value of the whole line will vary
+    -- from computer to computer.
+    do i = 1 to 7
+      self~assertTrue(out[j]~abbrev(expected[i]), 'Line' j 'must start with:' expected[i])
+      j -= 1
+    end
+
+    -- All okay, keep going.  This is the last test.  This is just here so that
+    -- tests could be added.
+    self~class~stop = .false
+
+  -- The class attributes used as control and state information.
+  ::method prgPath      attribute class
+  ::method stop         attribute class
+  ::method prgOutput    attribute class
+
+-- End of class: drives.testGroup

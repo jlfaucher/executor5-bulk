@@ -1,0 +1,186 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.RexxInfo.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+::class "RexxInfo.testGroup" subclass ooTestCase public
+
+  /*
+  architecture              64
+  casesensitivefiles        1
+  date                      14 Mar 2021
+  digits                    9
+  directoryseparator        /
+  endOfLine                 '0A'x
+  executable                /usr/local/bin/rexx
+  form                      SCIENTIFIC
+  fuzz                      0
+  internaldigits            18
+  internalmaxnumber         999999999999999999
+  internalminnumber         -999999999999999999
+  languagelevel             6.05
+  librarypath               /usr/local/lib/
+  majorversion              5
+  maxarraysize              99999999999999999
+  maxexponent               999999999
+  maxpathlength             4096
+  minexponent               -999999999
+  modification              0
+  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 14 Mar 2021
+  package                   The REXX Package
+  pathseparator             :
+  platform                  LINUX
+  release                   0
+  revision                  12194
+  version                   5.0.0
+  */
+
+::method test_rexxInfo_package
+  self~assertIsA(.RexxInfo~package, .Package, ".RexxInfo~package should return a .Package instance")
+  self~assertSame("The REXX Package", .RexxInfo~package, ".RexxInfo~package should be The REXX Package")
+  self~assertSame("REXX", .RexxInfo~package~name, ".RexxInfo~package~name should REXX")
+
+::method test_rexxInfo_digits
+  self~assertEquals(9, .RexxInfo~digits, ".RexxInfo~digits should always bei 9")
+
+::method test_rexxInfo_fuzz
+  self~assertEquals("NUM", .RexxInfo~fuzz~dataType, ".RexxInfo~fuzz should return a numeric value")
+  self~assertEquals(fuzz(), .RexxInfo~fuzz, ".RexxInfo~fuzz should be current fuzz()")
+
+::method test_rexxInfo_form
+  self~assertTrue('ENGINEERING SCIENTIFIC'~wordPos(.RexxInfo~form) > 0, ".RexxInfo~form should return either 'ENGINEERING' or 'SCIENTIFIC'")
+  self~assertEquals(form(), .RexxInfo~form, ".RexxInfo~form should be current form()")
+
+::method test_rexxInfo_internal
+  self~assertOneOrAnother(9, 18, .RexxInfo~internalDigits, ".RexxInfo~internalDigits expected to be 9 or 18")
+  digits = "9"~copies(.RexxInfo~internalDigits)
+  self~assertEquals(digits, .RexxInfo~internalMaxNumber)
+  self~assertEquals(-digits, .RexxInfo~internalMinNumber)
+
+::method test_rexxInfo_maxArraySize
+  self~assertSame(.RexxInfo~internalMaxNumber % 10 + 1, .RexxInfo~maxArraySize)
+
+::method test_rexxInfo_exponent
+  self~assertEquals("NUM", .RexxInfo~maxExponent~dataType)
+  self~assertEquals("NUM", .RexxInfo~minExponent~dataType)
+  self~assertTrue(.RexxInfo~minExponent < .RexxInfo~maxExponent, "minExponent should be smaller than maxExponent")
+
+::method test_rexxInfo_maxPathLength
+  self~assertEquals("NUM", .RexxInfo~maxPathLength~dataType)
+
+::method test_rexxInfo_name
+  self~assertTrue(.RexxInfo~name~length > 0, ".RexxInfo~name should return a non-null string")
+  parse version version
+  self~assertEquals(version, .RexxInfo~name, ".RexxInfo~name should be equal to parse version")
+
+::method test_rexxInfo_languageLevel
+  self~assertTrue(.RexxInfo~languageLevel~length > 0, ".RexxInfo~languageLevel should return a non-null string")
+
+::method test_rexxInfo_majorVersion_release_modification_version
+  self~assertEquals(.RexxInfo~version, .RexxInfo~majorVersion||"."||.RexxInfo~release||"."||.RexxInfo~modification, ".RexxInfo~version should be equal to .RexxInfo~majorVersion . .RexxInfo~release . .RexxInfo~revision")
+
+::method test_rexxInfo_revision
+  self~assertEquals("NUM", .RexxInfo~revision~dataType, ".RexxInfo~revision should be a number")
+
+::method test_rexxInfo_date
+  self~assertTrue(.RexxInfo~date~length > 0, ".RexxInfo~date should return a non-null string")
+  self~assertEquals(.RexxInfo~name~right(.RexxInfo~date~length), .RexxInfo~date, ".RexxInfo~date should be equal to the last tokens of .RexxInfo~name")
+
+::method test_rexxInfo_platform
+  self~assertTrue(.RexxInfo~platform~length > 0, ".RexxInfo~platform should return a non-null string")
+  parse source platform .
+  self~assertEquals(platform, .RexxInfo~platform, ".RexxInfo~platform should be equal to parse source first token")
+  -- on Linux, .RexxInfo~platform returns "LINUX", but SysVersion returns "Linux .."
+  -- on Windows, .RexxInfo~platform returns "WindowsNT", but SysVersion returns "Windows .."
+  parse value SysVersion() with platform .
+  self~assertTrue(platform~length > 0, "SysVersion() should return a non-null string")
+  if platform~caselessStartsWith("Windows") then
+    self~assertTrue(.RexxInfo~platform~caselessStartsWith(platform), ".RexxInfo~platform should match SysVersion() first token")
+  else
+    self~assertEquals(platform~upper, .RexxInfo~platform~upper, ".RexxInfo~platform should be equal to SysVersion() first token")
+
+::method test_rexxInfo_architecture
+  self~assertTrue(.RexxInfo~architecture~length > 0, ".RexxInfo~architecture should return a non-null string")
+
+::method test_rexxInfo_endofline
+  self~assertEquals(.endofline, .RexxInfo~endofline, ".RexxInfo~endofline should be equal to .endofline")
+
+::method test_rexxInfo_pathSeparator
+  self~assertEquals(.File~pathSeparator, .rexxinfo~pathSeparator, ".RexxInfo~pathSeparator should be equal to .File~pathSeparator")
+
+::method test_rexxInfo_directorySeparator
+  self~assertEquals(.File~separator, .rexxinfo~directorySeparator, ".RexxInfo~directorySeparator should be equal to be .File~separator")
+
+::method test_rexxInfo_caseSensitiveFiles
+  self~assertTrue("0 1"~wordPos(.RexxInfo~caseSensitiveFiles) > 0, ".RexxInfo~caseSensitiveFiles should return .true or .false")
+  self~assertEquals(.File~isCaseSensitive, .RexxInfo~caseSensitiveFiles, ".RexxInfo~caseSensitiveFiles should be equal to .File~isCaseSensitive")
+
+::method test_rexxInfo_executable
+  -- in the wild .RexxInfo~executable may be .nil or may not point to rexx(.exe)
+  -- but for a typical test scenario this should not happen, so we really want
+  -- to know if this happens
+  -- on Unix-based systems the exectuable's name may be rexx-oorexx
+  -- instead of rexx if a build for update-alternatives was done
+  self~assertIsA(.RexxInfo~executable, .File, ".RexxInfo~executable expected to be a File instance")
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    self~assertSame("rexx.exe", .RexxInfo~executable~name, ".RexxInfo~executable '" .RexxInfo~executable "' name expected to be 'rexx.exe'")
+  else
+    self~assertOneOrAnother("rexx", "rexx-oorexx", .RexxInfo~executable~name, ".RexxInfo~executable '" .RexxInfo~executable "' name expected to be 'rexx' or 'rexx-oorexx'")
+  self~assertTrue(.RexxInfo~executable~isFile, ".RexxInfo~executable '" .RexxInfo~executable "' should be an existing file")
+
+::method test_rexxInfo_libraryPath
+  -- in rare cases .RexxInfo~libraryPath may be .nil because it couldn't be determined
+  -- but for a typical test scenario this should not happen, so we really want
+  -- know when and why this happens
+  self~assertIsA(.RexxInfo~libraryPath, .File, ".RexxInfo~libraryPath expected to be a File instance")
+  self~assertTrue(.RexxInfo~libraryPath~isDirectory, ".RexxInfo~libraryPath '" .RexxInfo~executable "' should be an existing directory")
+
+
+::options digits 18 all syntax

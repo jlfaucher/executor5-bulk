@@ -1,0 +1,260 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.RIGHT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "RIGHT.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v1 = '*'
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('\',10000)
+    .local~vn256 = 256
+    .local~vn2 = 2
+    .local~vn3 = 3
+    .local~vn4 = 4
+    .local~vn6 = 6
+    .local~vn21 = 21
+    .local~vn25 = 25
+
+::method 'test001'
+    self~expectSyntax(40.3)
+    xre = right(,)
+
+::method 'test002'
+    self~expectSyntax(40.5)
+    xre = right(,1)
+
+::method 'test003'
+    self~expectSyntax(40.3)
+    xre = right('ABCDEFG',)
+
+::method 'test004'
+    self~assertSame('', right('',0))
+
+::method 'test005'
+    self~assertSame(copies(' ',9999)||'*', right(.v1,00010000))
+
+::method 'test006'
+    self~assertSame('4', right('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x,.01E2))
+
+::method 'test007'
+    self~assertSame(copies(' ',32512)||.v256, right(copies('12345678',32),' 32768 '))
+
+::method 'test008'
+    self~assertSame('\\\\\\\\\', right(.v10000,'39'x))
+
+::method 'test009'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame(copies(' ',246)'1234567890', right(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,.vn256))
+
+::method 'test010'
+    self~assertSame('8888888888', right('88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',5*2))
+
+::method 'test011'
+    self~assertSame('p', right('A B C D E F G h i j l k m n o p',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test0012'
+    xre = '\'
+    self~assertSame(.true, right(.v10000,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
+
+::method 'test0013'
+    xre = '34'
+    self~assertSame(.true, right('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+
+::method 'test014'
+    self~expectSyntax(40.23)
+    xre = right('',0,'xx')
+
+::method 'test015'
+    self~assertSame(copies(' ',9999)||'*', right(.v1,00010000,' '))
+
+::method 'test016'
+    self~assertSame(copies('X',32512)||.v256, right(copies('12345678',32),' 32768 ','X'))
+
+::method 'test017'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame(copies('*',246)||'1234567890', right(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,.vn256,.v1))
+
+::method 'test018'
+    self~assertSame('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888', right('88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',50*2,3+4))
+
+::method 'test019'
+    self~expectSyntax(40.12)
+    xre = right('nv',nv,'*')
+
+::method 'test020'
+    self~expectSyntax(40.12)
+    xre = right('nv.',nv.,'*')
+
+::method 'test021'
+    self~expectSyntax(40.12)
+    xre = right('nv.10',nv.10,'*')
+
+::method 'test022'
+    self~expectSyntax(40.23)
+    xre = right('nv',5,nv)
+
+::method 'test023'
+    self~expectSyntax(40.23)
+    xre = right('nv.',5,nv.)
+
+::method 'test024'
+    self~expectSyntax(40.23)
+    xre = right('nv.10',5,nv.10)
+
+::method 'test025'
+    self~expectSyntax(40.12)
+    xre = right(noval1,noval2,noval3)
+
+::method 'test026'
+    self~assertSame('***NV', right(nv,5,'*'))
+
+::method 'test027'
+    self~assertSame('**NV.', right(nv.,5,'*'))
+
+::method 'test028'
+    self~assertSame('NV.10', right(nv.10,5,'*'))
+
+::method 'test029'
+    self~expectSyntax(40.12)
+    xre = right('nv',nv,'*')
+
+::method 'test030'
+    self~expectSyntax(40.12)
+    xre = right('nv.',nv.,'*')
+
+::method 'test031'
+    self~expectSyntax(40.12)
+    xre = right('nv.10',nv.10,'*')
+
+::method 'test032'
+    self~expectSyntax(40.23)
+    xre = right('nv',5,nv)
+
+::method 'test033'
+    self~expectSyntax(40.23)
+    xre = right('nv.',5,nv.)
+
+::method 'test034'
+    self~expectSyntax(40.23)
+    xre = right('nv.10',5,nv.10)
+
+::method 'test035'
+    self~expectSyntax(40.12)
+    xre = right(noval1,noval2,noval3)
+
+::method 'test036'
+    numeric digits 1
+    self~assertSame('93E+1', right(25+4,2+3,3*3))
+
+::method 'test037'
+    numeric digits 1
+    self~assertSame('4444444444444444444444444444444444444E+1', right(21*2,21+21,6-2))
+
+::method 'test038'
+    numeric digits 1
+    self~assertSame('93E+1', right(.vn25+.vn4,.vn2+.vn3,.vn3*.vn3))
+
+::method 'test039'
+    numeric digits 1
+    self~assertSame('4444444444444444444444444444444444444E+1', right(.vn21*.vn2,.vn21+.vn21,.vn6-.vn2))
+
+::method 'test040'
+    self~assertSame('99929', right(25+4,2+3,3*3))
+
+::method 'test041'
+    self~assertSame('444444444444444444444444444444444444444442', right(21*2,21+21,6-2))
+
+::method 'test042'
+    self~assertSame('99929', right(.vn25+.vn4,.vn2+.vn3,.vn3*.vn3))
+
+::method 'test043'
+    self~assertSame('444444444444444444444444444444444444444442', right(.vn21*.vn2,.vn21+.vn21,.vn6-.vn2))
+
+::method 'test044'
+    self~assertSame('', right(left('JOHN',10,'*'),left('0000000012',2),center('---+---',1)))
+
+::method 'test045'
+    self~assertSame('11111hn Ro', right(subStr('John Robert',3,5),datatype(6,'N')||'0',datatype(7,'N')))
+
+::method 'test046'
+    self~assertSame('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&J   R   B', right(space('J R B',3),c2d('J'),strip('     &     ')))
+
+::method 'test047'
+    self~assertSame('4321John', right(right(right(right('John',5,'1'),6,'2'),7,'3'),8,'4'))
+
+::method 'test048'
+    self~assertSame('ZZZZZ*John', right(right('John',5,'*'),right('9876543210',2),right('XYZ',1)))
+
+::method 'test049'
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(vn256)
+    .local~remove(vn2)
+    .local~remove(vn3)
+    .local~remove(vn4)
+    .local~remove(vn6)
+    .local~remove(vn21)
+    .local~remove(vn25)
+
+-- from bif.testgroup
+-- test the BIF, using examples from the documentation
+::method "test_RIGHT"
+    self~assertSame('  abc  d', RIGHT('abc  d',8))
+    self~assertSame('c def', RIGHT('abc def',5))
+    self~assertSame('00012', RIGHT('12',5,'0'))
+
+   -- new tests
+    self~assertSame('   ', RIGHT('', 3))
+    self~assertSame('', RIGHT('', 0))
+    self~assertSame('', RIGHT('123', 0))
+

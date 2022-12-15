@@ -1,0 +1,308 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.GUARD.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "GUARD.testGroup" subclass ooTestCase public
+
+::method test_no_option
+  -- GUARD must be followed by the keyword ON or OFF
+  self~assertSyntaxError(25.913, "guard")
+
+::method test_invalid_option_onoff
+  -- GUARD must be followed by the keyword ON or OFF
+  self~assertSyntaxError(25.913, "guard default")
+
+::method test_invalid_option_onoff_when
+  -- GUARD must be followed by the keyword ON or OFF
+  self~assertSyntaxError(25.913, "guard when .true")
+
+::method test_invalid_option_when
+  -- GUARD ON or GUARD OFF must be followed by the keyword WHEN; found "ON"
+  self~assertSyntaxError(25.912, "guard on otherwise")
+
+::method test_when_expression_constant
+  -- GUARD instruction did not include references to exposed variables
+  self~assertSyntaxError(99.913, "guard on when .true")
+
+::method test_when_expression_self
+  -- GUARD instruction did not include references to exposed variables
+  self~assertSyntaxError(99.913, "guard on when self \= .nil")
+
+::method test_when_expression_compound
+  -- GUARD instruction did not include references to exposed variables
+  expose stem.1
+  self~assertSyntaxError(99.913, "guard on when stem.1 \= .nil")
+
+::method test_when_novalue
+  expose var
+  signal on novalue
+  guard on when var
+  self~assertFail("GUARD ON WHEN VAR should raise NOVALUE")
+  novalue:
+
+::method test_when_not_boolean
+  expose var
+  var = 2
+  self~expectSyntax(34.902) -- Value of expression following GUARD keyword must be exactly "0" or "1"
+  guard on when var
+
+-- consecutive GUARD ON/OFF clauses are allowed
+::method test_on_off_consecutive
+  guard on
+  guard on
+  do 3
+    guard off
+  end
+
+-- A group of five GUARD ON/GUARD OFF tests to confirm concurrent
+-- activities run in the expected order.
+::method test_on_default
+  expose var
+  var = "first"
+  self~waiter_on
+  -- Even without a GUARD ON we should have exclusive access to our
+  -- object variables.  Prove that this works by sleeping a bit.
+  call SysSleep 0.015
+  self~assertSame("first", var)
+
+-- as above but with an explicit GUARD ON
+::method test_on
+  expose var
+  guard on
+  var = "first"
+  self~waiter_on
+  call SysSleep 0.015
+  self~assertSame("first", var)
+
+-- now with an explicit GUARD OFF, so the waiter should run first
+::method test_off
+  expose var
+  guard off
+  var = "first"
+  self~waiter_on
+  call SysSleep 0.015
+  self~assertSame("second", var)
+
+-- now with a waiter that runs GUARD OFF and thus runs first
+::method test_unguarded
+  expose var
+  var = "first"
+  self~waiter_off
+  call SysSleep 0.015
+  self~assertSame("second", var)
+
+-- now with an unguarded waiter that again runs first
+::method test_on_off
+  expose var
+  guard on
+  var = "first"
+  self~waiter_unguarded
+  call SysSleep 0.015
+  self~assertSame("second", var)
+
+::method waiter_on
+  expose var
+  guard on
+  reply
+  -- this clause should be suspended
+  var = "second"
+
+::method waiter_off
+  expose var
+  guard off
+  reply
+  -- with GUARD OFF this clause should not be suspended
+  var = "second"
+
+::method waiter_unguarded unguarded
+  expose var
+  reply
+  -- in an unguarded method this clause should not be suspended
+  var = "second"
+
+
+::method test_when_single_no_wait
+  expose var stem.
+  var = "value"
+  stem. = 1
+  guard on when var == var
+  guard off when .nil \== var | var == var
+  guard on when stem.
+  -- compound variables really aren't supposed to work
+  -- this may be a quirk or a bug
+  guard off when stem.var
+
+::method test_when_single_uninitialized_no_wait
+  expose var stem.
+  signal off novalue
+  guard on when var == var
+  guard off when .nil \== var | var == var
+
+::method test_when_multiple_no_wait
+  expose a b
+  a = 1
+  b = 2
+  local = 3
+  guard on when a <= b
+  guard off when a == 2 | b == 2
+  guard on when self \== .nil | a == b
+  guard off when .true & b < local
+  -- now the condition expression in list form
+  guard on when a + b = local, .true
+  guard off when .true, b < local
+
+
+-- Test that GUARD ON WHEN only triggers when its expression is met.
+-- Although synchronized when starting, waiter_simple_trigger must run
+-- unguarded, because it sets VAR to values that should *not* trigger.
+-- That means there is a slight chance that valid values are missed.
+::method test_wait_simple_trigger
+  expose var
+  var = 0
+  vars = ""
+  self~waiter_simple_trigger
+
+  do while var < 5
+    var = 0
+    guard on when var > 0
+    vars = vars var
+  end
+  -- assertEquals ignores the leading space
+  self~assertEquals("1 2 3 4 5", vars, "GUARD ON WHEN must only trigger for positive numbers, but in very rare cases might miss a valid one")
+
+::method waiter_simple_trigger
+  expose var
+  reply
+  -- this clause is suspended until GUARD ON WHEN runs
+  guard off
+  do v = -20 to 5
+    var = v
+    -- pausing 25 ms should be sufficient even for a slow Raspberry Pi
+    call SysSleep 0.025
+  end
+
+
+-- as both test_wait_simple and waiter_simple are guarded, they require
+-- a lock on their method variables to be able to run.
+-- waiter_simple will run up to the REPLY clause because this is still
+-- the same activity, but is suspended from then on until the clause
+-- GUARD ON WHEN releases the lock while waiting for VAR to change.
+::method test_wait_simple
+  expose var
+  var = 0
+  self~waiter_simple
+  -- we still have the lock, VAR must still be zero
+  -- prove that this works by sleeping a bit
+  call SysSleep 0.015
+  self~assertSame(0, var)
+  guard on when var = 1
+  self~assertSame(1, var)
+
+::method waiter_simple
+  expose var
+  reply
+  -- this clause is suspended until GUARD ON WHEN runs
+  var = 1
+
+
+-- Same as above, but with multiple method variables.  Again, both
+-- methods require a lock, so they have to cooperate giving the lock
+-- back and forth
+::method test_wait_multiple
+  expose var1 var2
+  var1 = 0
+  var2 = 0
+  local = ""
+  self~waiter_multiple
+
+  -- we still have the lock, VAR1/VAR2 must still be zero
+  -- prove that this works by sleeping a bit
+  call SysSleep 0.015
+  self~assertSame(0, var1)
+  self~assertSame(0, var2)
+  -- we not only test multiple method variables on the WHEN expression,
+  -- but also that a local variable can take part (here the local
+  -- expression always evaluates to .false)
+  guard on when local = 0 | var1 == 1, var2 = 0
+
+  -- we again have the lock, VAR2 must still be zero
+  -- prove that this works by sleeping a bit
+  call SysSleep 0.015
+  self~assertSame(1, var1)
+  self~assertSame(0, var2)
+  var1 = 0
+  var2 = 0
+  guard on when var1 == 0 & var2 = 2 | .false
+
+  self~assertSame(0, var1)
+  self~assertSame(2, var2)
+  var1 = 0
+  var2 = 0
+  -- turn off NOVALUE as we wait for a DROP trigger
+  signal off novalue
+  guard on when var1 \== 0 | var2 \== 0
+
+::method waiter_multiple
+  expose var1 var2
+  reply
+  -- this clause is suspended until the first GUARD ON WHEN runs
+  var1 = 1
+
+  -- we give up our lock and wait
+  guard on when var1 == 0 & var2 = 0
+  -- this clause is suspended until the second GUARD ON WHEN runs
+  self~assertSame(0, var1)
+  self~assertSame(0, var2)
+  var2 = 2
+
+  -- we again give up our lock and wait
+  guard on when var1 == 0, var2 = 0
+  -- DROP should also trigger GUARD ON WHEN
+  drop var2
+
+
+
+::options novalue syntax

@@ -1,0 +1,421 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.SysStemSort.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: SysStemSort.testGroup  - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "SysStemSort.testGroup" public subclass ooTestCase
+
+::method test_already_sorted
+
+  -- Set up the stem with already sorted values.  Recall that 10 sorts before
+  -- 2.
+  s.0 = 9
+  do i = 1 to 9
+    s.i = i
+  end
+
+  -- Do the sort.
+  ret = SysStemSort(s.)
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in order 1 through 9
+  do i = 1 to 9
+    self~assertEquals(i, s.i)
+  end
+
+::method test_simple_letters
+
+  -- Set up out expected values
+  e.1 = 'a'
+  e.2 = 'b'
+  e.3 = 'c'
+  e.4 = 'd'
+  e.5 = 'e'
+  e.6 = 'f'
+
+  -- Set up the values to sort
+  s.1 = 'c'
+  s.2 = 'b'
+  s.3 = 'a'
+  s.4 = 'f'
+  s.5 = 'd'
+  s.6 = 'e'
+  s.0 = 6
+
+  -- Do the sort.
+  ret = SysStemSort(s.)
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.0
+    self~assertEquals(e.i, s.i)
+  end
+
+::method test_bad_direction_arg
+
+  e.1 = 'a'
+  e.2 = 'b'
+
+  s.0 = 2
+  s.1 = 'b'
+  s.2 = 'a'
+
+  self~expectSyntax(40.920)
+
+  ret = SysStemSort(s., 'F')
+  self~assertTrue(ret == 0)
+
+::method test_too_many
+
+  s.0 = 4
+  s.1 = 'b'
+  s.2 = 'a'
+
+  self~expectSyntax(40.924)
+  ret = SysStemSort(s., 'A')
+  self~assertTrue(ret == 0)
+
+::method test_descending_simple
+
+  -- Expected values
+  e.1 = 'f'
+  e.2 = 'e'
+  e.3 = 'd'
+  e.4 = 'c'
+  e.5 = 'b'
+  e.6 = 'a'
+
+  -- Values to sort
+  s.1 = 'c'
+  s.2 = 'b'
+  s.3 = 'e'
+  s.4 = 'a'
+  s.5 = 'd'
+  s.6 = 'f'
+  s.0 = 6
+
+  ret = SysStemSort(s., 'D')
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.0
+    self~assertEquals(e.i, s.i)
+  end
+
+::method "test_sort"
+
+  self~of(a.)
+  self~of(a1.)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 1)
+  self~of(a1., 1)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 1,2)
+  self~of(a1., 1,2)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 1,2,3)
+  self~of(a1., 1,2,3)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 2,1,3)
+  self~of(a1., 1,2,3)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 2,1,3,2)
+  self~of(a1., 1,2,2,3)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  self~of(a., 2,1)
+  self~of(a1., 1,2)
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  self~of(a., 'y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  self~of(a1., 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+  self~assertEquals(0, SysStemSort('a.'))
+  self~verifySeq(a., a1.)
+
+  return
+
+::method "test_invalid_order"
+  self~expectSyntax("40.920")
+
+  source.0 = 3;
+  source.1 = 2
+  source.2 = 1
+  source.3 = 3
+
+  r = SysStemSort('source.', "F")
+
+::method "test_invalid_first_last"
+
+  source.0 = 3;
+  source.1 = 2
+  source.2 = 1
+  source.3 = 3
+
+  self~expectSyntax("40.921")
+  r = SysStemSort('source.',,, 4, 3)
+
+::method "test_invalid_firstCol_lastCol"
+
+  source.0 = 3;
+  source.1 = 2
+  source.2 = 1
+  source.3 = 3
+
+  self~expectSyntax("40.921")
+  r = SysStemSort('source.',,,,, 4, 3)
+
+::method "test_invalid_stem"
+  self~expectSyntax("40.919")
+  r = SysStemSort("*")
+
+
+::method test_compound_name
+
+  -- Set up out expected values
+  e.1 = 'a'
+  e.2 = 'b'
+  e.3 = 'c'
+  e.4 = 'd'
+  e.5 = 'e'
+  e.6 = 'f'
+
+  -- Set up the values to sort
+  s.foo.1 = 'c'
+  s.foo.2 = 'b'
+  s.foo.3 = 'a'
+  s.foo.4 = 'f'
+  s.foo.5 = 'd'
+  s.foo.6 = 'e'
+  s.foo.0 = 6
+
+  -- Do the sort.
+  ret = SysStemSort('s.foo')
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.foo.0
+    self~assertEquals(e.i, s.foo.i)
+  end
+
+::method test_case_sensitivity
+
+  -- Set up out expected values
+  e.1 = 'B'
+  e.2 = 'D'
+  e.3 = 'F'
+  e.4 = 'a'
+  e.5 = 'c'
+  e.6 = 'e'
+
+  -- Set up the values to sort
+  s.1 = 'c'
+  s.2 = 'B'
+  s.3 = 'a'
+  s.4 = 'F'
+  s.5 = 'D'
+  s.6 = 'e'
+  s.0 = 6
+
+  -- Do the sort.
+  ret = SysStemSort(s.,,'c')
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.0
+    self~assertEquals(e.i, s.i)
+  end
+
+
+  -- Set up out expected values
+  e.1 = 'a'
+  e.2 = 'B'
+  e.3 = 'c'
+  e.4 = 'D'
+  e.5 = 'e'
+  e.6 = 'F'
+
+  -- Set up the values to sort
+  s.1 = 'c'
+  s.2 = 'B'
+  s.3 = 'a'
+  s.4 = 'F'
+  s.5 = 'D'
+  s.6 = 'e'
+  s.0 = 6
+
+  -- Do the sort.
+  ret = SysStemSort(s.,,'i')
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.0
+    self~assertEquals(e.i, s.i)
+  end
+
+
+::method 'testSortRange'
+
+  self~of(a., 'c', 'b', 'a', 'f', 'd', 'e')
+  self~of(e., 'c', 'b', 'a', 'd', 'e', 'f', )
+  self~assertEquals(0, SysStemSort('a.',,,3))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'c', 'b', 'a', 'f', 'd', 'e')
+  self~of(e., 'c', 'b', 'a', 'd', 'f', 'e', )
+  self~assertEquals(0, SysStemSort('a.',,,3, 5))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'c', 'b', 'a', 'f', 'd', 'e')
+  self~of(e., 'a', 'b', 'c', 'f', 'd', 'e', )
+  self~assertEquals(0, SysStemSort('a.',,,,3))
+  self~verifySeq(a., e.)
+
+::method 'test_sort_cols'
+
+  self~of(a., 'eca', 'abe', 'fad', 'bfc', 'cdb', 'def')
+  self~of(e., 'fad', 'abe', 'eca', 'cdb', 'def', 'bfc', )
+  self~assertEquals(0, SysStemSort('a.',,,,,2,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'ec2', 'aa1', 'fb2', 'bc1', 'cb1', 'da2')
+  self~of(e., 'aa1', 'da2', 'cb1', 'fb2', 'bc1', 'ec2', )
+  self~assertEquals(0, SysStemSort('a.',,,,,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'c2e', 'a1a', 'b2f', 'c1b', 'b1c', 'a2d')
+  self~of(e., 'a1a', 'a2d', 'b1c', 'b2f', 'c1b', 'c2e', )
+  self~assertEquals(0, SysStemSort('a.',,,,,,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'eca', 'aBe', 'fad', 'bFc', 'cDb', 'def')
+  self~of(e., 'bFc', 'def', 'cDb', 'eca', 'aBe', 'fad', )
+  self~assertEquals(0, SysStemSort('a.','d','i',,,2,2))
+  self~verifySeq(a., e.)
+
+::method test_unset_count
+  a.1 = 'a'
+  self~expectSyntax("40.922")
+  rv = SysStemSort(a.)
+
+::method test_bad_count
+  a.0 = '*'
+  a.1 = 'a'
+  self~expectSyntax("40.922")
+  rv = SysStemSort(a.)
+
+::method test_out_of_range
+  self~of(a., 'a', 'b', 'c', 'f', 'd', 'e', )
+  self~expectSyntax("40.923")
+  rv = SysStemSort('a.',,,,7)
+
+::method test_sparse_array
+  self~of(a., 'c', 'b', 'a', 'f', 'd', 'e')
+  drop a.2
+  self~expectSyntax("40.924")
+  rv = SysStemSort('a.')
+
+::method verifySeq
+  use arg source., result.
+
+  do i=0 to result.0
+     self~assertEquals(source.i, result.i)
+  end
+
+::method of
+  use arg target.
+  values = arg(2, 'a')
+
+  target.0 = values~items
+  do i = 1 to target.0
+      target.i = values[i]
+  end
+
+::method dumpstem
+  use arg a.
+  say "size is" a.0
+
+  do i = 1 to a.0
+      say "Item" i "is" a.i
+  end
+
+-- End of class: SysStemSort.testGroup
+
+
+::options novalue error

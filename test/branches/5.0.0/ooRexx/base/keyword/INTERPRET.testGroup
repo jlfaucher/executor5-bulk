@@ -1,0 +1,122 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.INTERPRET.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "INTERPRET.testGroup" subclass ooTestCase public
+
+::method test_simple
+   x = 12
+   interpret "x += 1"
+   self~assertSame(x, 13)
+
+   interpret "interpret 'x += 1'"
+   self~assertSame(x, 14)
+
+::method test_interpret_label
+   self~expectSyntax(47.1) -- INTERPRET data must not contain labels
+   interpret "call intproc; return; intproc: x=1; return;"
+
+::method test_interpret_call
+  interpret "x = p(12)"
+  self~assertSame(x, 13)
+  return
+  p: return arg(1) + 1
+
+::method test_interpret_no_expression
+  -- Missing expression following INTERPRET keyword
+  self~assertSyntaxError(35.912, "interpret")
+
+::method test_interpret_null
+  interpret ""
+  interpret "--"
+  interpret ";"
+  interpret "interpret ''"
+
+::method test_interpret_return
+  interpret "return"
+  self~assertFail("return expected")
+
+::method test_interpret_raise
+  interpret "signal on nostring; call datatype .nil" -- raises NOSTRING
+  self~assertFail("nostring expected")
+  nostring:
+
+-- INTERPRET allows no directives
+::method test_interpret_directive
+  -- these should still work
+  interpret "-- ::options digits 16"
+  interpret "/* ; ::options digits 16 */"
+
+  -- but this should fail
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "::options digits 16"
+
+::method test_interpret_code_directive_options
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "a = 123; ::options digits 16"
+
+::method test_interpret_code_directive_routine
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "nop; ::routine r"
+
+-- [bugs:#1750] INTERPRET .context~digits different from digits()
+::method test_interpret_settings
+  -- changes must propagate back to the parent, even if nested
+  interpret "interpret 'numeric digits 11; digits = digits() .context~digits'"
+  self~assertSame("11 11 11 11", digits digits() .context~digits)
+
+  interpret "interpret 'numeric fuzz 2; fuzz = fuzz() .context~fuzz'"
+  self~assertSame("2 2 2 2", fuzz fuzz() .context~fuzz)
+
+  interpret "interpret 'numeric form engineering; form = form() .context~form'"
+  self~assertSame("ENGINEERING ENGINEERING ENGINEERING ENGINEERING", form form() .context~form)
+
+
+::options all syntax

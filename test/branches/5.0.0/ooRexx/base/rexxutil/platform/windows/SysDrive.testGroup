@@ -1,0 +1,156 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysDrive.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysDrive.testgroup subclass ooTestCase public
+
+-- test SysDriveInfo, SysVolumeLabel, SysFileSystemType
+
+::method test_driveinfo_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysDriveInfo "c:", ""
+
+::method test_volumelabel_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysVolumeLabel "c:", ""
+
+::method test_filesystemtype_args_too_many
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysFileSystemType "c:", ""
+
+-- the current drive should be the default if no argument is given
+::method test_no_args
+  cd = directory()
+  do d over "C:", "\\localhost\c$"
+    call directory d
+    self~assertAlmostSameInfo(SysDriveInfo(d), SysDriveInfo(), "SysDriveInfo() test expected to sometimes fail with a small free space delta")
+    self~assertSame(SysVolumeLabel(d), SysVolumeLabel())
+    self~assertSame(SysFileSystemType(d), SysFileSystemType())
+  end
+  call directory cd
+
+-- null string should be returned for invalid or unused drive
+::method test_no_drive
+  do d over "", SysDriveMap(, "free")~word(1)
+    self~assertSame("", SysDriveInfo(d), "SysDriveInfo" d)
+    self~assertSame("", SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame("", SysFileSystemType(d), "SysFileSystemType" d)
+  end
+
+-- there are a bunch of ways to specify a drive (i. e. volume)
+::method test_volume_specifications
+  -- https://docs.microsoft.com/en-us/previous-versions/windows/desktop/vdswmi/win32-volume
+  -- Win32_Volume may be deprecated, but it gives us what we need: the Volume GUID
+  disk = self~wmi('SELECT * FROM Win32_Volume WHERE DriveLetter = "C:"')
+  self~assertSame("OLEObject", disk~class~id, disk)
+
+  -- this test requires that drive C: actually has a label set
+  info = disk~FreeSpace disk~Capacity disk~Label -- drive free total label
+  do volume over "c", "c:", "c:\", "\\?\c:", "\\.\c:", disk~DeviceId, -
+    "\\localhost\c$", "\\127.0.0.1\c$", "\\" || value("COMPUTERNAME", , "environment") || "\c$", -
+    "\\.\UNC\localhost\c$"
+    -- c is returned as c:, any trailing backslash is removed
+    vol = volume~startsWith("c")~?("c:", volume)~strip("t", "\")
+    self~assertAlmostSameInfo(vol info, SysDriveInfo(volume), "SysDriveInfo("volume") test expected to sometimes fail with a small free space delta")
+    self~assertSame(disk~Label, SysVolumeLabel(volume), "SysVolumeLabel" volume)
+    self~assertSame(disk~FileSystem, SysFileSystemType(volume), "SysFileSystemType" volume)
+  end
+
+-- test returned values for all drives in use
+::method test_drives
+  -- to avoid this test failing on empty CD-ROM drives, we'll skip all CD-ROMs
+  do d over SysDriveMap()~subWords~difference(SysDriveMap(, "cdrom")~subWords)
+    info = SysDriveInfo(d)
+    parse var info drive free size label
+
+    -- https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-logicaldisk
+    disk = self~wmi('SELECT * FROM Win32_LogicalDisk WHERE DeviceID = "' || d || '"')
+    self~assertSame("OLEObject", disk~class~id, disk)
+
+    -- for inaccessible drives SysDriveInfo returns the null string, no device id
+    self~assertOneOrAnother("", disk~DeviceID, drive, "SysDriveInfo" d info)
+    self~assertAlmostSame(disk~FreeSpace~string, free, "SysDriveInfo" d info"; test expected to sometimes fail with a small free space delta")
+    self~assertSame(disk~Size~string, size, "SysDriveInfo" d info)
+    self~assertSame(disk~VolumeName~string, label, "SysDriveInfo" d info)
+
+    self~assertSame(disk~VolumeName~string, SysVolumeLabel(d), "SysVolumeLabel" d)
+    self~assertSame(disk~FileSystem~string, SysFileSystemType(d), "SysFileSystemType" d)
+  end
+
+
+-- like assertSame, but a small free space delta is accepted
+::method assertAlmostSame
+  use strict arg expected, actual, description
+  if expected~dataType("n"), actual~dataType("n") then
+    -- volume free space can change rapidly, allow some fuzz
+    self~assertTrue((expected - actual)~abs <= 512 * 1024, expected"," actual"," description)
+  else
+    self~assertSame(expected, actual, description)
+
+-- SysDriveInfo string assertSame, but allow a small free space delta (second token)
+-- volume free space can change rapidly, allow some fuzz, e. g.
+-- C: 9123733504 254721126400 Windows
+-- C: 9123729408 254721126400 Windows
+::method assertAlmostSameInfo
+  use strict arg expected, actual, description
+  parse var expected drive free size label
+  parse var actual . actualFree .
+  if (free - actualFree)~abs <= 512 * 1024 then
+    expected = drive actualFree size label
+  self~assertSame(expected, actual, description)
+
+-- retrieve WMI information
+::method wmi
+  use strict arg query
+  info = query -- if the query fails, we return the query string
+  -- this should always return a set of a single object only
+  do info over .OLEObject~GetObject("winmgmts:")~ExecQuery(query)
+  end
+  return info
+
+
+::options digits 18 all syntax
