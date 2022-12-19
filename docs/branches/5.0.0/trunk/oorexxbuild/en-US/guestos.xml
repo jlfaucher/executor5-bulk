@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "ooRexxBuild.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Build Machine Document XML File
+    #
+    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>KVM Guest Operating Systems</title>
+
+<section><title>Windows XP Professional w/SP2</title>
+
+<para>The following are the virtual machine configuration settings for
+Windows XP Professional.
+</para>
+
+<itemizedlist>
+<listitem><para>Typical device settings
+</para></listitem>
+<listitem><para>Guest operating system - Microsoft Windows XP Professional
+</para></listitem>
+<listitem><para>Name - Windows XP Professional
+</para></listitem>
+<listitem><para>Network configuration - Bridged networking
+</para></listitem>
+<listitem><para>Disk size - 10GiB, do not pre-allocate space, use the QCOW2 type
+</para></listitem>
+<listitem><para>Memory - 512MiB
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the settings used during the installation of
+Windows XP Professional.
+</para>
+
+<itemizedlist>
+<listitem><para>Format the disk using NTFS
+</para></listitem>
+<listitem><para>Computer name - ORXWINXP
+</para></listitem>
+<listitem><para>Workgroup - OOREXX
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the post installation steps and settings for
+Windows XP Professional.
+</para>
+
+<itemizedlist>
+<listitem><para>Create the buildorx account and make it an administrator
+</para></listitem>
+<listitem><para>Map drive letter (P:) to host PUBLIC share
+</para></listitem>
+<listitem><para>Install Putty and pscp
+</para></listitem>
+<listitem><para>Install Subversion
+</para></listitem>
+<listitem><para>Install Visual Studio .NET (Visual C++ 7.0)
+</para></listitem>
+<listitem><para>Update the system PATH to point to the Xerces
+shared location (P: drive)
+</para></listitem>
+<listitem><para>Update the system PATH to point to the Xalan
+shared location (P: drive)
+</para></listitem>
+</itemizedlist>
+
+</section>
+
+<section><title>Fedora 17</title>
+
+<para>The following are the virtual machine configuration settings for
+Fedora.
+</para>
+
+<itemizedlist>
+<listitem><para>Typical device settings
+</para></listitem>
+<listitem><para>Guest operating system - Fedora
+</para></listitem>
+<listitem><para>Name - fedora17-i386
+</para></listitem>
+<listitem><para>Network configuration - Bridged networking
+</para></listitem>
+<listitem><para>Disk size - 10GB, do not pre-allocate space, use the QCOW2 type
+</para></listitem>
+<listitem><para>Memory - 512MiB
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the settings used during the installation of
+Fedora.
+</para>
+
+<itemizedlist>
+<listitem><para>Create a standard disk layout
+</para></listitem>
+<listitem><para>Install all the development and Publishing tools
+</para></listitem>
+<listitem><para>Disable the firewall
+</para></listitem>
+<listitem><para>Disable SELinux
+</para></listitem>
+<listitem><para>Create the buildorx account
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the post installation steps and settings for
+Fedora.
+</para>
+
+<itemizedlist>
+<listitem><para>Download and install the Fedora security updates.
+</para></listitem>
+<listitem><para>Next we need to generate the SSH public/private keys for the
+server.</para>
+<programlisting>
+# ssh-keygen
+</programlisting>
+<para>Be sure to just hit return for the passphrase prompt (we do NOT want
+a passphrase). Otherwise we cannot get true automation from our scripts.
+</para>
+<para>Copy the host's public key into our authorized keys file.</para>
+<programlisting>
+# scp buildorx@build.oorexx.org:/home/buildorx/.ssh/id_rsa.pub .ssh/authorized_keys
+</programlisting>
+<para>Now copy our public key to the host.</para>
+<programlisting>
+# scp .ssh/id_rsa.pub buildorx@build.oorexx.org:/home/buildorx/xxx
+</programlisting>
+<para>Now on the host (NOT the KVM guest!) copy that key to the authorized
+keys file.</para>
+<programlisting>
+# cat xxx >> .ssh/authorized_keys
+# rm xxx
+</programlisting>
+</listitem>
+</itemizedlist>
+
+</section>
+
+<section><title>Ubuntu 10.10</title>
+
+<para>The following are the virtual machine configuration settings for
+Ubuntu.
+</para>
+
+<itemizedlist>
+<listitem><para>Typical device settings
+</para></listitem>
+<listitem><para>Guest operating system - Ubuntu
+</para></listitem>
+<listitem><para>Name - ubuntu1010-i386
+</para></listitem>
+<listitem><para>Version - Ubuntu 10.10
+</para></listitem>
+<listitem><para>Network configuration - Bridged networking
+</para></listitem>
+<listitem><para>Disk size - 10GiB, do not pre-allocate space, use the QCOW2 type
+</para></listitem>
+<listitem><para>Memory - 512MiB
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the settings used during the installation of
+Ubuntu.
+</para>
+
+<itemizedlist>
+<listitem><para>Create the buildorx account
+</para></listitem>
+<listitem><para>Create a standard disk layout
+</para></listitem>
+</itemizedlist>
+
+<para>The following are the post installation steps and settings for
+Ubuntu 10.10.
+</para>
+
+<itemizedlist>
+<listitem><para>Download and install the Ubuntu security updates.
+</para></listitem>
+<listitem><para>Next we need to generate the SSH public/private keys for the
+server.</para>
+<programlisting>
+# ssh-keygen
+</programlisting>
+<para>Be sure to just hit return for the passphrase prompt (we do NOT want
+a passphrase). Otherwise we cannot get true automation from our scripts.
+</para>
+<para>Copy the host's public key into our authorized keys file.</para>
+<programlisting>
+# scp buildorx@build.oorexx.org:/home/buildorx/.ssh/id_rsa.pub .ssh/authorized_keys
+</programlisting>
+<para>Now copy our public key to the host.</para>
+<programlisting>
+# scp .ssh/id_rsa.pub buildorx@build.oorexx.org:/home/buildorx/xxx
+</programlisting>
+<para>Now on the host (NOT the VMware guest!) copy that key to the authorized
+keys file.</para>
+<programlisting>
+# cat xxx >> .ssh/authorized_keys
+# rm xxx
+</programlisting>
+</listitem>
+<listitem><para>Use apt-get to install some additional tools.</para>
+<programlisting>
+# sudo apt-get install g++ gcc subversion autoconf automake1.9 debhelper \
+  fakeroot libtool sendmail mailutils bison
+</programlisting>
+</listitem>
+</itemizedlist>
+
+</section>
+
+</chapter>
+

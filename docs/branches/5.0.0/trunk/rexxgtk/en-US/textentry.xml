@@ -1,0 +1,794 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Numeric/Text Data Entry Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Numeric/Text Data Entry</secondary></indexterm>
+
+<para>These widgets provide a set of text and data entry objects.</para>
+
+<!-- ****************************** -->
+<!-- ********** GTKEntry ********** -->
+<!-- ****************************** -->
+
+<section id="gtkentry"><title>GTKEntry</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-5.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKEntry class is a subclass of the
+GTKWindow class (<xref linkend="gtkwindow" />).</para>
+
+<para>A widget for entering a small to medium amount of text.</para>
+
+<section id="gtkentryinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKEntry~new()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkentrysetmaxlength">
+<title>Method: set_max_length</title>
+<indexterm><primary>set_max_length</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>set_max_length</secondary></indexterm>
+<para>Set the maximum length of text in the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_max_length(maxlen)-----------------------------------------------><
+
+>>--max_length = maxlen--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>maxlen</term>
+      <listitem><para>The max text length.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkentrygetmaxlength">
+<title>Method: get_max_length</title>
+<indexterm><primary>get_max_length</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>get_max_length</secondary></indexterm>
+<para>Get the maximum length of text in the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_max_length()-----------------------------------------------------><
+
+>>--max_length()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Max length</para>
+</section>
+
+<section id="gtkentrysettext">
+<title>Method: set_text</title>
+<indexterm><primary>set_text</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>set_text</secondary></indexterm>
+<para>Set the text in the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_text(text)-------------------------------------------------------><
+
+>>--text = text----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The text string.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkentrygettext">
+<title>Method: get_text</title>
+<indexterm><primary>get_text</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>get_text</secondary></indexterm>
+<para>Get the text in the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_text()-----------------------------------------------------------><
+
+>>--text()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Text</para>
+</section>
+
+<section id="gtkentrysetwidthchars">
+<title>Method: set_width_chars</title>
+<indexterm><primary>set_width_chars</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>set_width_chars</secondary></indexterm>
+<para>Set the width (in characters) of the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_width_chars(width)-----------------------------------------------><
+
+>>--width_chars = width--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>width</term>
+      <listitem><para>The width.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkentrygetvisibility">
+<title>Method: get_visibility</title>
+<indexterm><primary>get_visibility</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>get_visibility</secondary></indexterm>
+<para>Get the text visibility flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_visibility()-----------------------------------------------------><
+
+>>--visibility()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtkentrysetvisibility">
+<title>Method: set_visibility</title>
+<indexterm><primary>set_visibility</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>set_visibility</secondary></indexterm>
+<para>Set the visibility of the text in the entry box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_visibility(flag)-------------------------------------------------><
+
+>>--visibility = flag----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The visibility boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkentrygetinvisiblechar">
+<title>Method: get_invisible_char</title>
+<indexterm><primary>get_invisible_char</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>get_visibility_char</secondary></indexterm>
+<para>Get the text invisible char.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_visibility_char()------------------------------------------------><
+
+>>--visibility_char()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Flag</para>
+</section>
+
+<section id="gtkentrysetinvisibilechar">
+<title>Method: set_invisibile_char</title>
+<indexterm><primary>set_invisibile_char</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>set_visibility_char</secondary></indexterm>
+<para>Set the invisible character.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_visibility_char(ichar)-------------------------------------------><
+
+>>--visibility_char = ichar----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ichar</term>
+      <listitem><para>The invisible character.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkentrysignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkentrysignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKEntry</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKEntry Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>activate</entry>
+   <entry>signal_activate</entry>
+</row>
+<row>
+   <entry>backspace</entry>
+   <entry>signal_backspace</entry>
+</row>
+<row>
+   <entry>changed</entry>
+   <entry>signal_changed</entry>
+</row>
+<row>
+   <entry>copy_clipboard</entry>
+   <entry>signal_copy_clipboard</entry>
+</row>
+<row>
+   <entry>cut_clipboard</entry>
+   <entry>signal_cut_clipboard</entry>
+</row>
+<row>
+   <entry>delete_from_cursor</entry>
+   <entry>signal_delete_from_cursor</entry>
+</row>
+<row>
+   <entry>insert_at_cursor</entry>
+   <entry>signal_insert_at_cursor</entry>
+</row>
+<row>
+   <entry>move_cursor</entry>
+   <entry>signal_move_cursor</entry>
+</row>
+<row>
+   <entry>paste_clipboard</entry>
+   <entry>signal_paste_clipboard</entry>
+</row>
+<row>
+   <entry>populate_popup</entry>
+   <entry>signal_populate_popup</entry>
+</row>
+<row>
+   <entry>toggle_overwrite</entry>
+   <entry>signal_toggle_overwrite</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ****************************** -->
+<!-- ********** GTKHScale********** -->
+<!-- ****************************** -->
+
+<section id="gtkhscale"><title>GTKHScale</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-7.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKHScale class is a subclass of the
+GTKScale class (<xref linkend="gtkscale" />).</para>
+
+<para>A wiget that displays an adjustable scale.</para>
+
+<section id="gtkhscalenewwithrange">
+<title>Method: newwithrange (class method)</title>
+<indexterm><primary>newwithrange</primary></indexterm>
+<indexterm><primary>GTKHScale</primary>
+<secondary>newwithrange</secondary></indexterm>
+<para>Create a new HScale with a range.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHScale~newwithrange(min, max, step)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>min</term>
+      <listitem><para>The minimum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>max</term>
+      <listitem><para>The maximum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkhscaleinit6">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKHScale</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new HScale.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHScale~new(value, lower, upper, step, page, pagesz)--------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>value</term>
+      <listitem><para>The initial value.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>lower</term>
+      <listitem><para>The lower limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>upper</term>
+      <listitem><para>The upper limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pagesz</term>
+      <listitem><para>The page size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkhscaleinit3">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKHScale</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new HScale with a range.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHScale~new(min, max, step)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>min</term>
+      <listitem><para>The minimum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>max</term>
+      <listitem><para>The maximum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ****************************** -->
+<!-- ********** GTKVScale********** -->
+<!-- ****************************** -->
+
+<section id="gtkvscale"><title>GTKVScale</title>
+
+<para>The GTKVScale class is a subclass of the
+GTKScale class (<xref linkend="gtkscale" />).</para>
+
+<para>A widget that displays an adjustable scale.</para>
+
+<section id="gtkvscalenewwithrange">
+<title>Method: newwithrange (class method)</title>
+<indexterm><primary>newwithrange</primary></indexterm>
+<indexterm><primary>GTKVScale</primary>
+<secondary>newwithrange</secondary></indexterm>
+<para>Create a new VScale with a range.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKVScale~newwithrange(min, max, step)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>min</term>
+      <listitem><para>The minimum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>max</term>
+      <listitem><para>The maximum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkvscaleinit6">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKVScale</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new VScale.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKVScale~new(value, lower, upper, step, page, pagesz)--------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>value</term>
+      <listitem><para>The initial value.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>lower</term>
+      <listitem><para>The lower limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>upper</term>
+      <listitem><para>The upper limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pagesz</term>
+      <listitem><para>The page size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkvscaleinit3">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKVScale</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new VScale with a range.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKVScale~new(min, max, step)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>min</term>
+      <listitem><para>The minimum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>max</term>
+      <listitem><para>The maximum.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKSpinButton********** -->
+<!-- ********************************** -->
+
+<section id="gtkspinbutton"><title>GTKSpinButton</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/fig4-6.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKSpinButton class is a subclass of the
+GTKEntry class (<xref linkend="gtkentry" />).</para>
+
+<para>This widget retrieves an integer or floating-point number from the user.</para>
+
+<section id="gtkspinbuttonnewwithrange">
+<title>Method: newwithrange</title>
+<indexterm><primary>newwithrange</primary></indexterm>
+<indexterm><primary>GTKSpinButton</primary>
+<secondary>newwithrange</secondary></indexterm>
+<para>Create a new spin button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKSpinButton~newwithrange(rxadj, crate, digits)--------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>rxadj</term>
+      <listitem><para>The GTKAdjustment object (<xref linkend="gtkadjustment" />).
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>crate</term>
+      <listitem><para>The climb rate.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>digits</term>
+      <listitem><para>The digits.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkspinbuttoninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKSpinButton</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new spin button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKSpinButton~new(lower, upper, step)-------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>lower</term>
+      <listitem><para>The lower limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>upper</term>
+      <listitem><para>The upper limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkspinbuttonsetdigits">
+<title>Method: set_digits</title>
+<indexterm><primary>set_digits</primary></indexterm>
+<indexterm><primary>GTKSpinButton</primary>
+<secondary>set_digits</secondary></indexterm>
+<para>Set the digits.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_digits(digits)---------------------------------------------------><
+
+>>--digits = digits------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>digits</term>
+      <listitem><para>The number of digits.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkspinbuttonsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKSpinButton</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkspinbuttonsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKSpinButton</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKSpinButton Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>change_value</entry>
+   <entry>signal_change_value</entry>
+</row>
+<row>
+   <entry>value_changed</entry>
+   <entry>signal_value_changed</entry>
+</row>
+<row>
+   <entry>wrapped</entry>
+   <entry>signal_wrapped</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

@@ -1,0 +1,454 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxpg.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Programming Guide XML file.
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="concept"><title>Into the Object World</title>
+<para>Open Object Rexx includes features typical of an object-oriented language&mdash;features
+like data encapsulation, inheritance and polymorphism. Open Object Rexx is an
+extension of the traditional Rexx language, which has
+been expanded to include objects, classes and methods. These extensions do
+not replace traditional Rexx functions, or preclude the development or running
+of traditional Rexx programs. You can program as before, program with objects,
+or mix objects with regular Rexx instructions. The Rexx programming concepts
+that support the object-oriented features are described in this chapter.</para>
+
+<section id="object"><title>What Is Object-Oriented Programming?</title>
+<indexterm><primary>object-oriented programming</primary></indexterm>
+
+<para>Object-oriented
+programming is a way to write computer programs by focusing not on the
+instructions and operations a program uses to manipulate data, but on the data
+itself. First, the program simulates, or models, objects in the physical world
+as closely as possible. Then the objects interact with each other to produce
+the desired result.</para>
+<para>Real-world objects, such as a company's employees, money in a bank
+account, or a report, are stored as data so the computer can act upon it. For
+example, when you print a report, print is the action
+and report is the object acted upon. Often several actions apply; you could
+also send or erase the report.</para>
+</section>
+
+<section id="module"><title>Modularizing Data</title>
+<indexterm><primary>modularizing data</primary></indexterm>
+<indexterm><primary>data</primary>
+<secondary>modularizing</secondary></indexterm>
+
+<para> In conventional, structured programming, actions like print
+are often isolated from the data by placing them in subroutines or modules.
+A module typically contains an operation for implementing one simple action.
+You might have a PRINT module, a
+SEND module, an ERASE module. These actions
+are independent of the data they operate on.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/Modules.svg" align="center" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>But with object-oriented programming, it is the data that is modularized.
+And each data module includes its own operations for performing actions directly
+related to its data.</para>
+
+<figure><title>Modular Data&mdash;a Report Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ReportObject.svg" align="center" scale="75" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>In the case of report, the report object would contain its own built-in
+PRINT, SEND,
+ERASE, and FILE operations.</para>
+<para>Object-oriented programming lets you model real-world objects&mdash;even
+very complex ones&mdash;precisely and elegantly. As a result, object manipulation
+becomes easier and computer instructions become simpler and can be modified
+later with minimal effort.</para>
+<para>Object-oriented programming hides any information
+that is not important for acting on an object, thereby concealing the object's
+complexities. Complex tasks can then be initiated simply, at a very high level.</para>
+</section>
+
+<section id="objects"><title>Modeling Objects</title>
+<indexterm><primary>objects</primary>
+<secondary>definition</secondary></indexterm>
+<indexterm><primary>objects</primary>
+<secondary>kinds of</secondary></indexterm>
+
+<para>In object-oriented programming, objects are modeled to real-world objects.
+A real-world object has actions related to it and characteristics of its own.</para>
+<para>Take a ball, for example. A ball can be acted on&mdash;rolled, tossed,
+thrown, bounced, caught. But it also has its own physical characteristics&mdash;size,
+shape, composition, weight, color, speed, position. An accurate data model
+of a real ball would define not only the physical characteristics but all
+related actions and characteristics in one package:</para>
+
+<figure><title>A Ball Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/BallObject.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>In object-oriented programming,
+objects are the basic building blocks&mdash;the fundamental units of data.</para>
+<para>There are many kinds of objects; for example, character
+strings, collections, and input and output streams. An object&mdash;such as
+a character string&mdash;always consists of two parts: the  possible actions
+or operations related to it, and its characteristics or variables. A variable
+has a variable name, and an associated data value
+that can change over time. These actions and characteristics are so closely
+associated that they cannot be separated:</para>
+
+<figure><title>Ball Object with Variable Names and Values</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/BallObjectData.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>To access an object's data, you must always specify an
+action. For example, suppose the object is the number
+<computeroutput>5</computeroutput>. Its actions
+might include addition, subtraction, multiplication, and division. Each of
+these actions is an interface to the object's data.
+<indexterm><primary>encapsulation of data</primary></indexterm>
+<indexterm><primary>information hiding</primary></indexterm>
+<indexterm><primary>data</primary>
+<secondary>encapsulation</secondary></indexterm>
+The data is said to be
+encapsulated because the only way to access it
+is through one of these surrounding actions. The encapsulated internal
+characteristics of an object are its variables. Variables are associated
+with an object and exist for the lifetime of that object:</para>
+
+<figure><title>Encapsulated 5 Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/EncapsulatedObject.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<section id="interac"><title>How Objects Interact</title>
+<para>The actions defined by an object
+are its only interface to other objects. Actions form a kind of &quot;wall&quot; that
+encapsulates the object, and shields its internal information from outside
+objects. This shielding is called information hiding.
+Information hiding protects an object's data from corruption by outside
+objects, and also protects outside objects from relying on another object's
+private data, which can change without warning.</para>
+<para>One object can act upon another (or
+cause it to act) only by calling that object's actions.  Actions are invoked
+by sending messages.
+<indexterm><primary>methods</primary></indexterm>
+Objects respond to these messages by invoking
+methods (<xref linkend="methods" />)
+that perform an action, return data, or both. A message to an object must specify:</para>
+
+<itemizedlist>
+<listitem><para>A receiving object</para></listitem>
+<listitem><para>The &quot;message send&quot; operator <code>~</code>, which is called the
+<emphasis role="italic">twiddle</emphasis>
+<indexterm><primary>~ (tilde, or twiddle)</primary></indexterm>
+<indexterm><primary>tilde (~)</primary></indexterm>
+<indexterm><primary>twiddle (~)</primary></indexterm>
+<indexterm><primary>message-send operator (~)</primary></indexterm>
+</para></listitem>
+<listitem><para>The name of the action and, optionally in parentheses, any parameters
+required</para></listitem></itemizedlist>
+<para>So the message format looks like this:</para>
+
+<programlisting>
+object~action(parameters)
+</programlisting>
+
+<para>Assume that the object is the string
+<computeroutput>!iH.</computeroutput> Sending it a message
+to use its REVERSE action: </para>
+
+<programlisting>
+<![CDATA[
+"!iH"~reverse
+]]>
+</programlisting>
+
+<para>returns the string object <computeroutput>Hi!.</computeroutput></para>
+</section>
+
+<section id="methods"><title>Methods</title>
+<indexterm><primary>methods</primary>
+<secondary>definition</secondary></indexterm>
+
+<para>Sending a message to
+an object results in performing some action; that is, it results in running
+some underlying code. The action-generating code is called a method. When you
+send a message to an object, you specify its method
+name in the message. Method names are character strings like REVERSE. In the
+preceding example, sending the reverse
+message to the <computeroutput>!iH</computeroutput> object causes
+it to run the REVERSE method. Most objects are capable
+of more than one action, and so have a number of available methods.</para>
+<para>The classes Rexx provides include their own predefined methods. The Message
+class, for example, has the COMPLETED, INIT,
+NOTIFY, RESULT,
+SEND, and START
+methods. When you create your own classes, you can write new methods for them
+in Rexx code. Much of the object programming in Rexx is writing the code for
+the methods you create.</para>
+</section>
+
+<section id="xpolym"><title>Polymorphism</title>
+<indexterm><primary>polymorphism</primary></indexterm>
+
+<para>Rexx lets you send the same message to objects that are different: </para>
+<programlisting>
+<![CDATA[
+"!iH"~reverse   /* Reverses the characters "!iH" to form "Hi!"  */
+pen~reverse     /* Reverses the direction of a plotter pen      */
+ball~reverse    /* Reverses the direction of a moving ball      */
+]]>
+</programlisting>
+
+<para>As long as each object has its own REVERSE method, REVERSE runs
+even if the programming implementation is different for each object. This
+ability to hide different functions behind a common interface is
+called polymorphism.  As a result of information
+hiding, each object in the previous example knows only its own version of
+REVERSE. And even though the objects are different, each reverses itself as
+dictated by its own code.</para>
+<para>Although the <computeroutput>!iH</computeroutput> object's
+REVERSE code is different from
+the plotter pen's, the method name can be the same because Rexx keeps
+track of the methods each object owns. The ability to reuse the same method
+name so that one message can initiate more than one function is another feature
+of polymorphism. You do not need to have several message names like REVERSE_STRING,
+REVERSE_PEN, REVERSE_BALL. This keeps method-naming schemes simple and makes
+complex programs easy to follow and modify.</para>
+<para>The ability to hide the various implementations of a method while leaving
+the interface the same illustrates polymorphism at its lowest level. On a
+higher level, polymorphism permits extensive code reuse.</para>
+<para>Polymorphism involves a form of contract between two objects.
+One object will send a message to another object expecting a particular result.
+Different types of objects can implement different versions of this message as
+long as it fulfills the expectations of the invoking object.  For example,
+the LOOP instruction has a form called OVER.  Loop OVER will iterate over a number of
+elements provided by an object.  For example,</para>
+<example>
+
+<title>LOOP OVER</title>
+<programlisting>
+myarray = .array~of("Rick", "David", "Mark")
+loop name over myarray
+   say name
+end
+</programlisting>
+</example>
+
+<para>Will display the strings <literal>"Rick"</literal>, <literal>"David"</literal>, and <literal>"Mark"</literal>, in that sequence.  The
+LOOP OVER instruction will work with Array,
+List, Stem, Streams variables, etc.
+
+The LOOP instruction itself does not know anything about Arrays or Lists or Stems or Streams.
+The LOOP instruction specifies a contract.  LOOP will send the target object the message
+MAKEARRAY and expects the target object to return an Array object that is used for
+the LOOP iteration.  Any object can participate in LOOP iteration by implementing this contract.
+Objects that do implement the MAKEARRAY contract are polymorphic with the LOOP instruction.
+</para>
+</section>
+
+<section id="xclass"><title>Classes and Instances</title>
+<indexterm><primary>classes</primary>
+<secondary>definition</secondary></indexterm>
+
+<para>In Rexx, objects are
+organized into classes. Classes are like templates;
+they define the methods and variables that a group of similar objects have
+in common and store them in one place.</para>
+<para>If you write a program to manipulate some screen icons, for example, you
+might create an Icon class. All Icon objects will share the actions and characteristics
+defined by the class:</para>
+
+<figure><title>A Simple Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/SimpleClass.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>All the icon objects will use common methods like DRAW or ERASE. They
+will have common variables like position, color, or size. What makes each
+icon object different from one another is the data assigned to its variables.
+For the Windows System icon, it might be
+<computeroutput>position="20,20"</computeroutput> while for the Shredder it is
+<computeroutput>"20,30"</computeroutput> and for Information it is
+<computeroutput>"20,40"</computeroutput></para>
+
+<figure><title>Icon Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/IconClass.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>
+<indexterm><primary>methods</primary>
+<secondary>instance</secondary></indexterm>
+<indexterm><primary>acquisition</primary></indexterm>
+<indexterm><primary>instances methods</primary></indexterm>
+<indexterm><primary>variables</primary>
+<secondary>acquiring</secondary></indexterm>
+<indexterm><primary>variables</primary>
+<secondary>in objects</secondary></indexterm>
+Objects that belong to a class are called
+instances of that class.  As instances of the Icon class,
+the Windows System icon, Shredder icon, and
+Information icon acquire the methods and variables
+of the class. Instances behave as if they each had their own methods and
+variables of the same name. All instances, however, have their own unique
+properties&mdash;the data associated with the variables.
+Everything else can be stored at the class level.</para>
+
+<figure><title>Instances of the Icon Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/IconClassInstances.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>If you must update or change a particular method, you
+only have to change it at one place, at the class level. This single update
+is then acquired by every new instance that uses the method.</para>
+<para>A class that can create instances
+of an object is called an object class. The Icon class
+is an object class you can use to create other objects with similar properties,
+such as an application icon or a drives icon.</para>
+<indexterm><primary>object classes</primary></indexterm>
+<para>An object class is like a factory for producing instances of the objects.
+</para>
+</section>
+
+<section id="abstrac"><title>Data Abstraction</title>
+<indexterm><primary>data</primary>
+<secondary>abstraction</secondary></indexterm>
+
+<para>The ability to create
+new, high-level data types and organize them into a meaningful class structure
+is called data abstraction. Data abstraction is at
+the core of object-oriented programming. Once you model objects with real-world
+properties from the basic data types, you can continue creating, assembling,
+and combining them into increasingly complex objects. Then you can use these
+objects as if they were part of the original programming language.</para>
+</section>
+
+<section id="sub"><title>Subclasses, Superclasses, and Inheritance</title>
+<indexterm><primary>classes</primary>
+<secondary>subclasses</secondary></indexterm>
+<indexterm><primary>classes</primary>
+<secondary>superclasses</secondary></indexterm>
+<indexterm><primary>instances</primary>
+<secondary>definition</secondary></indexterm>
+<indexterm><primary>inheritance</primary></indexterm>
+<indexterm><primary>multiple inheritance</primary></indexterm>
+<indexterm><primary>superclasses</primary></indexterm>
+<indexterm><primary>subclasses</primary></indexterm>
+
+<para> When you write your first object-oriented program, you do not have to
+begin your real-world modeling from scratch. Rexx provides predefined classes
+and methods. From there you can create additional classes of your
+own, according to your needs.</para>
+
+<para>Rexx classes are hierarchical. The original class
+is called a base class or a superclass. The derived class is called
+a subclass. Subclasses
+inherit methods and data from one or more superclasses. A subclass can introduce
+new methods and data, and can override methods from the superclass.</para>
+
+<figure><title>Superclass and Subclasses</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/Subclasses.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>You can add a class to an existing superclass. For example, you might add
+the Icon class to the Screen-Object superclass:</para>
+
+<figure><title>The Screen-Object Superclass</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ScreenObject.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>
+<indexterm><primary>variables</primary>
+<secondary>acquiring</secondary></indexterm>
+<indexterm><primary>variables</primary>
+<secondary>in objects</secondary></indexterm>
+In this way, the subclass inherits additional methods
+from the superclass. A class can have more than one superclass, for example,
+subclass Bitmap might have the superclasses Screen-Object and Art-Object.
+Acquiring methods and variables from more than one superclass  is known as
+multiple inheritance:</para>
+
+<figure><title>Multiple Inheritance</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/MultipleInheritance.svg" align="center" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+</section>
+
+</chapter>

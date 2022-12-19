@@ -1,0 +1,4233 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="clsTreeView" xreflabel="TreeView"><title>Tree View Controls</title>
+<indexterm><primary>TreeView class</primary></indexterm>
+<para>
+  The tree-view control is a dialog control that displays a hierarchical list of items, such as the headings in a
+  document, the entries in an index, or the files and directories on a disk. Each item consists of a label and an
+  optional image bitmap, and can have a list of subitems associated with it. By clicking on an item, the user can expand
+  and collapse the associated list of subitems.
+</para>
+
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with tree-view controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="mthNewTreeView"/> method of the <xref linkend="chpDialogObject"/> object to retrieve a
+    tree-view object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a tree-view in the dialog template of a <xref linkend="clsUserDialog"/> use
+    the <xref linkend="mthCreateTreeView"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying tree-view control to a
+    method in the Rexx dialog object use the <xref linkend="mthConnectTreeViewEvent"/>
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsTreeView"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with tree-view objects, including the pertinent methods from other classes:
+</para>
+
+<table id="tblTreeViewMethods" frame="all">
+<title>TreeView Instance Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="tmthNewTreeView"/></entry>
+<entry>Returns a <computeroutput>TreeView</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateTreeView"/></entry>
+<entry>Creates a tree-view control in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthConnectTreeViewEvent"/></entry>
+<entry>Connects tree-view event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddClsTreeView"/></entry>
+<entry>Adds a new item to the tree-view.</entry>
+</row>
+<row>
+<entry><xref linkend="child"/></entry>
+<entry>Child</entry>
+</row>
+<row>
+<entry><xref linkend="collapse"/></entry>
+<entry>Collapse</entry>
+</row>
+<row>
+<entry><xref linkend="collapseandreset"/></entry>
+<entry>CollapseAndReset</entry>
+</row>
+<row>
+<entry><xref linkend="deletetrc"/></entry>
+<entry>delete</entry>
+</row>
+<row>
+<entry><xref linkend="deletealltrc"/></entry>
+<entry>deleteAll</entry>
+</row>
+<row>
+<entry><xref linkend="drophighlight"/></entry>
+<entry>DropHighlight</entry>
+</row>
+<row>
+<entry><xref linkend="drophighlightedtrc"/></entry>
+<entry>dropHighlighted</entry>
+</row>
+<row>
+<entry><xref linkend="mthEditClsTreeview"/></entry>
+<entry>Edit</entry>
+</row>
+<row>
+<entry><xref linkend="mthEndEditClsTreeView"/></entry>
+<entry>endEdit</entry>
+</row>
+<row>
+<entry><xref linkend="mthEnsureVisibleClsTreeView"/></entry>
+<entry>ensureVisible</entry>
+</row>
+<row>
+<entry><xref linkend="expand"/></entry>
+<entry>Expand</entry>
+</row>
+<row>
+<entry><xref linkend="mthFind"/></entry>
+<entry>Finds the first tree-view item whose label matches the text specified. The search is case insensitive.</entry>
+</row>
+<row>
+<entry><xref linkend="firstvisibletrc"/></entry>
+<entry>firstVisible</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetImageListClsTreeView"/></entry>
+<entry>Retrieves the tree-view's image list for the type specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemDataClsTreeView"/></entry>
+<entry>Gets the item data associated with the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemItemClsTreeView"/></entry>
+<entry>Gets the height the tree-view control used for each of items items.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemRectClsTreeView"/></entry>
+<entry>Retrieves the bounding rectangle for a tree-view item and indicates whether the item is visible.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetStateImage"/></entry>
+<entry>Returns the index in the image list of the state image for the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetToolTipsClsTreeView"/></entry>
+<entry>Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.</entry>
+</row>
+<row>
+<entry><xref linkend="mthItemTextClsTreeView"/></entry>
+<entry>Gets the text, the label, of the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHitTestInfoClsTreeView"/></entry>
+<entry>Determines the location of a point relative to the tree-view control.</entry>
+</row>
+<row>
+<entry><xref linkend="indent"/></entry>
+<entry>Indent</entry>
+</row>
+<row>
+<entry><xref linkend="indentnew"/></entry>
+<entry>Indent=</entry>
+</row>
+<row>
+<entry><xref linkend="mthInsertClsTreeView"/></entry>
+<entry>Inserts a new item into the tree-view control.</entry>
+</row>
+<row>
+<entry><xref linkend="isancestor"/></entry>
+<entry>IsAncestor</entry>
+</row>
+<row>
+<entry><xref linkend="mthItemInfoClsTreeView"/></entry>
+<entry>The <emphasis role="italic">itemInfo</emphasis> method returns the attributes of the specified item as a stem.</entry>
+</row>
+<row>
+<entry><xref linkend="itemstrc"/></entry>
+<entry>items</entry>
+</row>
+<row>
+<entry><xref linkend="makefirstvisibletrc"/></entry>
+<entry>MakeFirstVisible</entry>
+</row>
+<row>
+<entry><xref linkend="mthModifyClsTreeView"/></entry>
+<entry>Modifies some or all of an item's attributes.</entry>
+</row>
+<row>
+<entry><xref linkend="moveitem"/></entry>
+<entry>moveItem</entry>
+</row>
+<row>
+<entry><xref linkend="nexttrc"/></entry>
+<entry>next</entry>
+</row>
+<row>
+<entry><xref linkend="nextvisible"/></entry>
+<entry>NextVisible</entry>
+</row>
+<row>
+<entry><xref linkend="parent"/></entry>
+<entry>Parent</entry>
+</row>
+<row>
+<entry><xref linkend="previoustrc"/></entry>
+<entry>previous</entry>
+</row>
+<row>
+<entry><xref linkend="previousvisible"/></entry>
+<entry>PreviousVisible</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveItemDataClsTreeView"/></entry>
+<entry>Removes and returns the item data associated with the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRoot"/></entry>
+<entry>Root</entry>
+</row>
+<row>
+<entry><xref linkend="selecttrc"/></entry>
+<entry>select</entry>
+</row>
+<row>
+<entry><xref linkend="selectedtrc"/></entry>
+<entry>selected</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetImageListClsTreeView"/></entry>
+<entry>Assigns, or removes, an image list for the tree-view control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemDataClsTreeView"/></entry>
+<entry>Sets the item data associated with the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemHeightClsTreeView"/></entry>
+<entry>Sets the height of the tree-view items.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetStateImage"/></entry>
+<entry>Assigns the index in the image list of the state image for the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetToolTipsClsTreeView"/></entry>
+<entry>Sets the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.</entry>
+</row>
+<row>
+<entry><xref linkend="sortchildren"/></entry>
+<entry>SortChildren</entry>
+</row>
+<row>
+<entry><xref linkend="mthSortChildrenCB"/></entry>
+<entry>Has the tree-view sort the children of the specified item by invoking a custom comparsion method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="toggle"/></entry>
+<entry>Toggle</entry>
+</row>
+<row>
+<entry><xref linkend="visibleitems"/></entry>
+<entry>VisibleItems</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+<section id="tmthNewTreeView" xreflabel="newTreeView"><title>newTreeView (dialog object method)</title>
+<para>
+  Tree-view objects can not be instantiated by the programmer from Rexx code. Rather a tree-view object is obtained by
+  using the <xref linkend="mthNewTreeView"/> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
+
+<programlisting>
+<![CDATA[
+>>--newTreeView(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newTreeView() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateTreeView" xreflabel="createTreeView"><title>createTreeView (UserDialog method)</title>
+<para>
+  A tree-view object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
+  dialog through the <xref linkend="mthCreateTreeView"/> method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createTreeView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createTreeView() [UserDialog method] -->
+
+
+<section id="tmthConnectTreeViewEvent" xreflabel="connectTreeViewEvent"><title>connectTreeViewEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a tree-view object use the <xref linkend="mthConnectTreeViewEvent"/> method of the
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>--connectTreeViewEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectTreeViewEvent() [EventNotification method] -->
+
+<section id="mthAddClsTreeView" xreflabel="add"><title>add</title>
+<indexterm><primary>add</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>add</secondary></indexterm>
+<programlisting>
+<![CDATA[
+          +---+
+          V   |
+>>--add(--+---+-+-------+-+-------+-+----------+-+-------+-+---------+-+-------+--)---><
+          +-,-+ +-,-txt-+ +-,-img-+ +-,-selImg-+ +-,-opt-+ +-,-child-+ +-,-usr-+
+]]>
+</programlisting>
+
+<para>
+  Adds an item with all its attributes to a tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>, [optional]</term>
+      <listitem>
+      <para>
+        The number of commas specifies at which parent the item is to be inserted. If you omit this argument, the item is
+        inserted as a root item. Each additional comma inserts the item one level deeper than the item inserted
+        <emphasis role="italic">previously</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the item. If this arugment is omitted then the empty string is used as the text.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>img [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list for the icon
+        image to use when the item is in the nonselected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selImg [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list for the icon
+        image to use when the item is in the selected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opt [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted the item state will be normal, not expanded:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BOLD    </member>
+          <member>EXPANDED</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BOLD</term>
+          <listitem>
+          <para>
+            The item is shown bolded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDED</term>
+          <listitem>
+          <para>
+            The item's list of child items is currently expanded, that is, the child items are visible. Only parent items can
+            have this state.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>children [optional]</term>
+      <listitem>
+      <para>
+        Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
+        1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
+        linkend="styTreeViewBUTTONS"/> style, see the remarks section. When this argument is omitted or less than 1, it is
+        in effect ignored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>usr [optional]</term>
+      <listitem>
+      <para>
+        Associates the specified value with the tree-view item being added. This value is commonly referred to as the
+        <emphasis role="italic">item data</emphasis> for the item. This can be any Rexx object that the programmer wants to
+        use. The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to retrieve this value. The
+        <link linkend="mthSetItemDataClsTreeView">setItemData</link> method, and several other methods, can also be used to
+        set the item data for a tree-view item.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the handle of the newly added item on success, or zero on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a tree-view controls has the BUTTONS style, it displays plus and minus buttons next to <emphasis
+    role="italic">parent</emphasis> items. It does not display the buttons for any item that has no children. However, it is
+    sometimes useful to dynamically insert child items when the button is clicked. Specifying 1 for the <emphasis
+    role="italic">children</emphasis> argument forces the tree-view control to use a plus button for the item, even if the
+    item has no children.
+  </para>
+  <para>
+    Associating a item data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
+    role="italic">itemData</emphasis> argument allows the programmer to assoicate the value at the time the item in added to
+    the tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time. The
+    <link linkend="mthModifyClsTreeView">modify</link> method can be used to change an item's attributes, including the user
+    data of the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    To get the following tree view:
+  </para>
+  <itemizedlist>
+    <listitem><para>Peter</para>
+    <itemizedlist>
+      <listitem><para>Mike</para>
+      <itemizedlist>
+        <listitem><para>George</para></listitem>
+        <listitem><para>Monique</para>
+        <itemizedlist>
+          <listitem><para>John</para></listitem>
+        </itemizedlist>
+        </listitem>
+        <listitem><para>Chris</para></listitem>
+      </itemizedlist>
+      </listitem>
+      <listitem><para>Maud</para></listitem>
+      <listitem><para>Ringo</para></listitem>
+    </itemizedlist>
+    </listitem>
+    <listitem><para>Paul</para>
+    <itemizedlist>
+      <listitem><para>Dave</para></listitem>
+      <listitem><para>Sam</para></listitem>
+      <listitem><para>Jeff</para></listitem>
+    </itemizedlist>
+    </listitem>
+    <listitem><para>Mary</para>
+    <itemizedlist>
+      <listitem><para>Helen</para></listitem>
+      <listitem><para>Michelle</para></listitem>
+      <listitem><para>Diana</para></listitem>
+    </itemizedlist>
+    </listitem>
+  </itemizedlist>
+  <para>
+    The program code should look similar to this:
+  </para>
+<programlisting>
+<![CDATA[
+::method initDialog
+  treeView = self~newTreeView("IDC_TV_INLAWS")
+
+  treeView~add("Peter", , ,"BOLD EXPANDED")
+  treeView~add(,"Mike", , ,"EXPANDED")
+  treeView~add(, ,"George")
+  treeView~add(, ,"Monique")
+  treeView~add(, , ,"John")
+  treeView~add(, ,"Chris")
+  treeView~add(,"Maud")
+  treeView~add(,"Ringo")
+  treeView~add("Paul", , ,"BOLD EXPANDED")
+  treeView~add(,"Dave")
+  treeView~add(,"Sam")
+  treeView~add(,"Jeff")
+  treeView~add("Mary", , ,"BOLD EXPANDED")
+  treeView~add(,"Helen")
+  treeView~add(,"Michelle")
+  treeView~add(,"Diana")
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::add() -->
+
+
+<section id="child" xreflabel="child"><title>Child</title>
+<indexterm><primary>Child</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--child(--hItem--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Child method retrieves the first child item
+of <emphasis role="italic">hItem</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item of which the first child is to be
+retrieved.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the first child item, or -1 if you omitted
+<emphasis role="italic">hItem</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the name of parent of the selected item:
+<programlisting>
+<![CDATA[
+::method Child
+  curTree = self~newTreeView("IDC_TREE")
+  itemInfo. = curTree~itemInfo(curTree~Child(curTree~selected))
+  say ItemInfo.!Text
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="collapse" xreflabel="collapse"><title>Collapse</title>
+<indexterm><primary>Collapse</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--collapse(--hItem--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Collapse method collapses the list of child
+items associated with the specified parent item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the parent item to collapse.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The list of child items has collapsed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example collapses the selected item:
+<programlisting>
+<![CDATA[
+::method CollapseSelected
+  curTree = self~newTreeView("IDC_TREE")
+  curTree~Collapse(curTree~selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="collapseandreset" xreflabel="collapseAndReset"><title>CollapseAndReset</title>
+<indexterm><primary>CollapseAndReset</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--collapseAndReset(--hItem--)------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CollapseAndReset method collapses the list
+of child items associated with the specified parent item and removes the child
+items.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the parent item to collapse.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The list of child items has collapsed and the child items have been
+removed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example collapses the selected item and removes
+all its child items:
+<programlisting>
+<![CDATA[
+::method CollapseSelectedAndReset
+  curTree = self~newTreeView("IDC_TREE")
+  curTree~CollapseAndReset(curTree~selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletetrc" xreflabel="delete"><title>delete</title>
+<indexterm><primary>delete</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--delete(--hItem--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The delete method removes an item from a tree-view
+control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be deleted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was deleted.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>An error occurred.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is 0 or is not a
+valid value.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example deletes the selected item and all its children,
+if any:
+<programlisting>
+<![CDATA[
+::method IDC_PB_DELETE
+  curTree = self~newTreeView("IDC_TREE")
+  curTree~delete(curTree~selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletealltrc" xreflabel="deleteAll"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deleteAll------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The deleteAll method removes all items from a tree
+view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items were removed.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="drophighlight" xreflabel="dropHighlight"><title>DropHighlight</title>
+<indexterm><primary>DropHighlight</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dropHighlight(--hItem--)---------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DropHighlight method redraws <emphasis role="italic">hItem</emphasis>
+in the style used to indicate the target of a drag-and-drop operation.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle of the item to be redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was redrawn.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis>
+was not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="drophighlightedtrc" xreflabel="dropHighlighted"><title>dropHighlighted</title>
+<indexterm><primary>dropHighlighted</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dropHighlighted------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The dropHighlighted method retrieves the item that
+is the target of a drag-and-drop operation.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the item, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEditClsTreeview" xreflabel="edit"><title>edit</title>
+<indexterm><primary>edit</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--edit(--hItem--)------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">edit</emphasis> method starts editing the text of the specified item by replacing the text with
+  a single-line edit control containing this text. It implicitly selects and focuses the specified item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+  <variablelist>
+    <varlistentry><term>hItem</term>
+    <listitem><para>The handle to the item to be edited.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the handle to the edit control used to edit the item text. On error, -1 if <emphasis
+    role="italic">hItem</emphasis> is 0, or 0 for all other errors.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEndEditClsTreeView" xreflabel="endEdit"><title>endEdit</title>
+<indexterm><primary>endEdit</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--endEdit(--+--------+--)----------------------><
+              +-cancel-+
+
+
+]]>
+</programlisting>
+
+<para>The endEdit method ends the editing of the item
+label of the tree view.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>cancel</term>
+<listitem><para>Indicates whether editing is canceled without being saved to the label.
+If you specify &quot;1&quot; or &quot;YES&quot;, editing is canceled. Otherwise,
+the changes are saved to the label, which is the default.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Editing has ended successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEnsureVisibleClsTreeView" xreflabel="ensureVisible"><title>ensureVisible</title>
+<indexterm><primary>ensureVisible</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ensureVisible(--hItem--)---------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ensureVisible method ensures that a tree-view
+item is visible, expanding the parent item or scrolling the tree-view control,
+if necessary.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be visible.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The items in the tree-view control were scrolled to ensure that the
+specified item is visible.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="expand" xreflabel="expand"><title>Expand</title>
+<indexterm><primary>Expand</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--expand(--hItem--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Expand method expands the list of child items
+associated with the specified parent item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the parent item to be expanded.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The parent item was expanded.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example expands the selected item:
+<programlisting>
+<![CDATA[
+::method ExpandSelected
+  curTree = self~newTreeView("IDC_TREE")
+  curTree~Expand(curTree~selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthFind" xreflabel="find"><title>find</title>
+<indexterm><primary>find</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>find</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--find(--text--+-------------+--+----------+--)---------------><
+                 +-,-startItem-+  +-,-abbrev-+
+]]>
+</programlisting>
+
+<para>
+  Finds the first tree-view item whose label matches the text specified.  The search is case insensitive.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        Specifies the label, the text, of item to search for. If the <emphasis role="italic">abbrev</emphasis> arugment is
+        omitted or false, the search is case insensitive, but is otherwise exact. I.e., <emphasis role="italic">Coffee
+        Product</emphasis> will not match <emphasis role="italic">Coffee Products</emphasis>, but will match <emphasis
+        role="italic">coffee product</emphasis> or <emphasis role="italic">coffee PRODUCT</emphasis>
+      </para> </listitem></varlistentry>
+      <varlistentry><term>startItem [optiona]</term>
+      <listitem>
+      <para>
+        The tree-view item to begin the search at. If omitted, the search begins at the root of the tree.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>abbrev [optiona]</term>
+      <listitem>
+      <para>
+        True to match any item whose label begins with <emphasis role="italic">text</emphasis>. False to exactly match
+        <emphasis role="italic">text</emphasis>. The default is false.
+      </para>
+      <para>
+        If <emphasis role="italic">abbrev</emphasis> is true and <emphasis role="italic">text</emphasis> is <emphasis
+        role="italic">Coffee product</emphasis>, then the labels <emphasis role="italic">coffee product</emphasis>, <emphasis
+        role="italic">COFFEE products</emphasis>, and <emphasis role="italic">coffee production</emphasis> will all match.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the <link linkend="defHandle">handle</link> of the first item found that matches the search specifications, or 0
+    if no item is found.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The search starts at the tree-view item specified, the root item by default, and recursively searches all children and
+    grandchildren of the start point. There is only one root item in a tree-view control. Microsoft defines the root in a
+    tree-view to be the first item added.  It is possible, but unusual, to add a <emphasis role="italic">parent</emphasis>
+    tree-view item at the same level as the root item that is not a child of the root. It is important to note that the
+    search is not a search of <emphasis role="italic">every</emphasis> item in the tree-view, it is a search of every child
+    and grandchild of the start point.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example searches for the first tree-view item whose label is <emphasis role="italic">Computers</emphasis>, and
+    if found, selects that item.
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeView(IDC_TV_PRODUCTS)
+
+  hItem = tv~find('Computers')
+  if hItem \== 0 then tv~select(hItem)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::find() -->
+
+<section id="firstvisibletrc" xreflabel="firstVisible"><title>firstVisible</title>
+<indexterm><primary>firstVisible</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--firstVisible---------------------------------><
+]]>
+</programlisting>
+
+<para>The firstVisible method retrieves the first visible
+item in the client window of a tree-view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the first visible item, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the name of the first visible item:
+<programlisting>
+<![CDATA[
+::method FirstVisibleName
+  curTree = self~newTreeView("IDC_TREE")
+  itemInfo. = curTree~itemInfo(curTree~firstVisible)
+  say ItemInfo.!Text
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetImageListClsTreeView" xreflabel="getImageList"><title>getImageList</title>
+<indexterm><primary>getImageList</primary><secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageList(--+--------+--)-----------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current image list for the type specified. The default is to retrieve the tree-view's normal image list.  See
+  the <xref linkend="mthSetImageListClsTreeView"/> method for infomation on assigning an image list to a tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single optional argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      Specifies which image list, the NORMAL or STATE image list, to retrieve the image list for. The operating system uses
+      these 2 flags to specify the 2 types of image lists.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      TVSIL_NORMAL: Numeric value == 0. Use the NORMAL keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_NORMAL to get the correct numeric value.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      TVSIL_STATE: Numeric value == 2. Use the STATE keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_STATE to get the correct numeric value.
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      If this argument is omitted, the default is TVSIL_NORMAL.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the current image <xref linkend="clsImageList"/>, if there is one. The
+    <computeroutput>.nil</computeroutput> object is returned if there is no current image list of the type specified.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example releases the tree-view's image lists, if they exist, when the dialog ends.
+<programlisting>
+<![CDATA[
+::method ok
+  self~doImageLists return self~ok:super
+
+::method cancel
+  self~doImageLists
+  return self~cancel:super
+
+::method doImageLists
+  expose treeView
+
+  types = .array~of('NORMAL', 'STATE')
+
+  do type over types
+    il = treeView~getImageList(type)
+    if il \== .nil then il~release
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getImageList() -->
+
+
+<section id="mthGetItemDataClsTreeView" xreflabel="getItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemData(--hItem--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the item data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the item data from.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
+    there is no data associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value is set using the <xref
+    linkend="mthSetItemDataClsTreeView"/> method. If needed the data value can be removed from a tree-view item through the
+    <xref linkend="mthRemoveItemDataClsTreeView"/> method. Storing a user value for each item can be useful in any number of
+    ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemData() -->
+
+<section id="mthGetItemItemClsTreeView" xreflabel="getItemHeight"><title>getItemHeight</title>
+<indexterm><primary>getItemHeight</primary><secondary>TreeViewClass</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemHeight---------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the current height of the tree-view items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current height of the tree-view items in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view uses the value returned for the height of all items. The value itself is the height of a single item.  See
+    the <link linkend="mthSetItemHeightClsTreeView">setItemHeight</link> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemHeight() -->
+
+<section id="mthGetItemRectClsTreeView" xreflabel="getItemRect"><title>getItemRect</title>
+<indexterm><primary>getItemRect</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemRect(--hItem--,--rect--+-------------+--)------------><
+                                  +-,-textOnly--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the bounding rectangle for a tree-view item and indicates whether the item is visible.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the bounding rectangle for.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rect [required in / out]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">Rect</link> object used to return the bounding rectangle coordinates. Coordinates are in
+        pixels expressed as <link linkend="defClientArea">client</link> area coordinates.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>textOnly [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">textOnly</emphasis> is true, the bounding rectangle returned is for the text portion only
+        of the item.  If false, the rectangle includes the entire line the item occupies in the tree-view control.  If the
+        argument is omitted, the default is true.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the item specified is visible and the bounding rectangle is filled in. Returns false if the item is not
+    visible and the bounding rectangle is not filled in.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The coordinates of the bounding rectangle are only filled in if the item is visible.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the event handler for a tool tip used for a tree-view. When the tool tip is about to be shown, the
+    bounding rectangle for the text only portion of the item is used to reposition the tool tip so that it is in line with
+    the item and to the right of the item:
+<programlisting>
+<![CDATA[
+
+::method onShow unguarded
+  expose currentItem
+  use arg toolTip, treeView
+
+  pos = toolTip~getRealPos
+
+  r = .Rect~new
+  if treeView~getItemRect(currentItem, r) then do
+    treeView~client2screen(r)
+
+    pos~x = r~right + 5
+    pos~y = r~top
+    toolTip~moveTo(pos)
+    return .true
+  end
+
+  return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemRect() -->
+
+<section id="mthGetStateImage" xreflabel="getStateImage"><title>getStateImage</title>
+<indexterm><primary>getStateImage</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getStateImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStateImage(--hItem--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the index in the image list of the state image for the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>hItem [required]</term>
+    <listitem>
+    <para>
+       The handle of the tree-view item whose state image index is being queried.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns -1 on error, otherwise returns the index for the state image. A value of 0 is used by the operating system to
+    indicate there is no state image assigned for a tree-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    State images ares displayed next to an item's icon, immediately to the left. They are used to indicate an application
+    defined state for the item. The state image list is set using the <xref linkend="mthSetImageListClsTreeView"/> method. A
+    value of 0 indicates there is no state image. Only 15 state images can be assigned, indexes 1 through 15.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getStateImage() -->
+
+
+<section id="mthGetToolTipsClsTreeView" xreflabel="getToolTips"><title>getToolTips</title>
+<indexterm><primary>getToolTips</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getToolTips</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getToolTips----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the Rexx <link linkend="clsToolTip">ToolTip</link> object that represents the ToolTip control of the tree-view,
+    or the <computeroutput>.nil</computeroutput> object if the tree-view does not currently have a ToolTip.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getToolTips() -->
+
+<section id="mthHitTestInfoClsTreeView" xreflabel="hitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary><secondary>TreeViewClass</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>hitTestInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--hitTestInfo(--pt--)--------------------------><
+
+Form 2:
+
+>>--hitTestInfo(--x,--y--)-----------------------><
+
+
+Generic form:
+
+>>--hitTestInfo(--pointToTest--)-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the location of a point relative to the <xref linkend="defClientArea"/> of the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The argument(s) specify the coordinates of the point to test. These coordinates can be specified using either a
+ <xref linkend="clsPoint"/> object, or by the x and y coordinate of the point:
+    <variablelist>
+      <varlistentry><term>pointToTest [required]</term>
+      <listitem>
+      <para>
+        The x, y coordinates of the point to test. As noted either a <computeroutput>Point</computeroutput> object or
+        the whole number x and y coordinates can be used to specify the point. If a
+        <computeroutput>Point</computeroutput> is not used, both <emphasis role="italic">x</emphasis> and <emphasis
+        role="italic">y</emphasis> are required.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a <computeroutput>Directory</computeroutput> object whose indexes contain the result of the hit test.
+    On return, the <computeroutput>Directory</computeroutput> object will have the following indexes with the
+    corresponding information:
+  </para>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">hItem</emphasis></term>
+      <listitem>
+      <para>
+        The <xref linkend="defHandle"/> of the tree-view item under the point specified, if there is one. If
+        the point does not hit an item, the value will be 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">location</emphasis></term>
+      <listitem>
+      <para>
+        A string of blank separated keywords describing the location of the point.  For instance, the string might
+        be "ONITEM ONLABEL" if the point hits an item, on the item's label. Or it could be "ABOVE TORIGHT" if the point
+        is not on the client area of the tree-view at all. The possible descriptive words are as follows.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABOVE      </member>
+          <member>BELOW      </member>
+          <member>NOWHERE    </member>
+          <member>ONITEM     </member>
+          <member>ONBUTTON   </member>
+          <member>ONICON     </member>
+          <member>ONINDENT   </member>
+          <member>ONLABEL    </member>
+          <member>ONRIGHT    </member>
+          <member>ONSTATEICON</member>
+          <member>TOLEFT     </member>
+          <member>TORIGHT    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABOVE</term>
+          <listitem>
+          <para>
+            Above the client area.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BELOW</term>
+          <listitem>
+          <para>
+            Below the client area
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOWHERE</term>
+          <listitem>
+          <para>
+            In the client area, but below the last item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONITEM</term>
+          <listitem>
+          <para>
+            On the bitmap or label associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONBUTTON</term>
+          <listitem>
+          <para>
+            On the button associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONICON</term>
+          <listitem>
+          <para>
+            On the bitmap associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONINDENT</term>
+          <listitem>
+          <para>
+            In the indentation associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONLABEL</term>
+          <listitem>
+          <para>
+            On the label (text) associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONRIGHT</term>
+          <listitem>
+          <para>
+            In the area to the right of an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONSTATEICON</term>
+          <listitem>
+          <para>
+            On the state icon for a tree-view item that is in a user-defined state.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOLEFT</term>
+          <listitem>
+          <para>
+            To the left of the client area.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TORIGHT</term>
+          <listitem>
+          <para>
+            To the right of the client area.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view will reply for any given point, even invalid points like (-7000, -6000). Points not on the tree-view
+    control itself will have the <computeroutput>hItem</computeroutput> index set to 0 and the
+    <computeroutput>location</computeroutput> string will show where the point is in relation to the control. For
+    example (-7000, -6000) will have a location string of "ABOVE TOLEFT".
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::hitTestInfo() -->
+
+<section id="indent" xreflabel="indent"><title>Indent</title>
+<indexterm><primary>Indent</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--indent---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Indent method retrieves the amount, in pixels,
+by which the child items are indented relative to their parent item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The amount indented, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="indentnew" xreflabel="indent="><title>Indent=</title>
+<indexterm><primary>Indent=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--indent=indent--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Indent= method sets the width of indentation
+for a tree-view control and redraws the control to reflect the new width.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>indent</term>
+<listitem><para>The width of the indentation, in pixels. If you specify a width that
+is smaller than the system-defined minimum, it is set to the system-defined
+minimum.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>-1 if <emphasis role="italic">indent</emphasis> is 0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthInsertClsTreeView" xreflabel="insert"><title>insert</title>
+<indexterm><primary>insert</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>insert</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insert(--+----------+-+---------+-+-------+-+-------+-+----------+--------->
+             +--parent--+ +-,-after-+ +-,-txt-+ +-,-img-+ +-,-selImg-+
+
+>------------+---------+-+------------+-+------------+-------------------------><
+             +-,-state-+ +-,-children-+ +-,-itemData-+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new item into the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>parent [optional]</term>
+      <listitem>
+      <para>
+        Handle of the parent to the new item. If this argument is omitted, or is the keyword <emphasis
+        role="italic">root</emphasis>, case insignificant, then the new item is inserted a the root of the tree-view.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>after [optional]</term>
+      <listitem>
+      <para>
+        Either a tree-view item handler, or one of the following keywords separated by spaces, case is not significant. This
+        specifies where the new item will be inserted. When <emphasis role="italic">after</emphasis> is an item handle, the
+        new item is inserted after the specified item. Otherwise the item is inserted as explained for each keyword:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>FIRST</member>
+          <member>LAST </member>
+          <member>SORT </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>FIRST</term>
+          <listitem>
+          <para>
+            Inserts the item at the beginning of the list.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LAST</term>
+          <listitem>
+          <para>
+            Inserts the item at the end of the list. This is the default if the <emphasis role="italic">after</emphasis>
+            argument is omitted
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SORT</term>
+          <listitem>
+          <para>
+            Inserts the item into the list in alphabetical order.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the item. If this arugment is omitted then the empty string is used as the text.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>img [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list of the icon
+        image to use when the item is in the nonselected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selImg [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list of the icon
+        image to use when the item is in the selected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>state [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted the item state will be normal, not expanded:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BOLD    </member>
+          <member>EXPANDED</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BOLD</term>
+          <listitem>
+          <para>
+            The item is shown bolded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDED</term>
+          <listitem>
+          <para>
+            The item's list of child items is currently expanded, that is, the child items are visible. Only parent items can
+            have this state.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>children [optional]</term>
+      <listitem>
+      <para>
+        Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
+        1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
+        linkend="styTreeViewBUTTONS"/> style, see the remarks section. When this argument is omitted or less than 1, it is
+        in effect ignored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>itemData [optional]</term>
+      <listitem>
+      <para>
+        Associates the specified value with the tree-view item being inserted. This can be any Rexx object that the
+        programmer wants to use.  The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to
+        retrieve this value.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the handle of the newly inserted item on success, or zero on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a tree-view controls has the BUTTONS style, it displays plus and minus buttons next to <emphasis
+    role="italic">parent</emphasis> items. It does not display the buttons for any item that has no children. However, it is
+    sometimes useful to dynamically insert child items when the button is clicked. Specifying 1 for the <emphasis
+    role="italic">children</emphasis> argument forces the tree-view control to use a plus button for the item, even if the
+    item has no children.
+  </para>
+  <para>
+    Associating a item data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
+    role="italic">itemData</emphasis> argument allows the programme to assoicate the value at the time the item in added to
+    the tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example inserts a new folder tree-view item as a sibling of the currently selected item. It also assigns both a
+    selected and unselected icon to the item from the tree-view's image list by specifying the index in the image list for
+    the icons:
+<programlisting>
+<![CDATA[
+
+::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
+::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
+::constant UNSELECTED_LEAF    2         -- Index for the icon of an unselected leaf item
+::constant SELECTED_LEAF      3         -- Index for the icon of a selected leaf item
+
+...
+
+treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::insert() -->
+
+<section id="isancestor" xreflabel="isAncestor"><title>IsAncestor</title>
+<indexterm><primary>IsAncestor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isAncestor(--hParent--,--hItem--)------------><
+
+
+]]>
+</programlisting>
+
+<para>The IsAncestor method checks if an item is an ancestor
+of another item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>hParent</term>
+<listitem><para>The ancestor.
+</para></listitem></varlistentry>
+<varlistentry><term>hItem</term>
+<listitem><para>The item to be checked.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>1 if <emphasis role="italic">hParent</emphasis> is an ancestor
+of <emphasis role="italic">hItem</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthItemInfoClsTreeView" xreflabel="itemInfo"><title>itemInfo</title>
+<indexterm><primary>itemInfo</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>itemInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemInfo(--hItem--)--------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">itemInfo</emphasis> method returns the attributes of the specified item as a stem.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The handle of the tree-view item whose attributes are to be returned.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a stem on success, or -1 if an error occurred. The tails, (the indexes,) of the stem will be:
+  </para>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">!TEXT</emphasis></term>
+    <listitem>
+    <para>
+      The text, the label, of the item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">!CHILDREN</emphasis></term>
+    <listitem>
+    <para>
+      Whether the item has children or not. True if the item has children, false if it does not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">!IMAGE</emphasis></term>
+    <listitem>
+    <para>
+      The index in the image list of the normal icon for the item. The index will be 0 if there is no index assigned to the
+      item. However, 0 is also a valid index in a the image list. There is no way to distinguish the two.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">!SELECTEDIMAGE</emphasis></term>
+    <listitem>
+    <para>
+      The index in the image list of the selected icon for the item. The index will be 0 if there is no index assigned to the
+      item. However, 0 is also a valid index in a the image list. There is no way to distinguish the two.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">!STATE</emphasis></term>
+    <listitem>
+    <para>
+      A string consisting of 0 or more of the following keywords:
+    </para>
+    <variablelist>
+      <varlistentry><term>EXPANDED</term>
+      <listitem><para>
+        The item's list is currently expanded with all child items visible. This only applies to parent items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOLD</term>
+      <listitem>
+      <para>
+        The item is in bold.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SELECTED</term>
+      <listitem>
+      <para>
+        The item is selected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXPANDEDONCE</term>
+      <listitem>
+      <para>
+        The item's list has been expanded at least once. This only applies to parent items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INDROP</term>
+      <listitem>
+      <para>
+        The item is selected as a drag-and-drop target.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CUT</term>
+      <listitem>
+      <para>
+        The item is selected as part of a cut-and-paste operation.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXPANDPARTIAL</term>
+      <listitem>
+      <para>
+        Indicates a partially expanded tree-view item. In this state, some, but not all, of the child items are visible and
+        the parent item's plus symbol is displayed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">!ITEMDATA</emphasis></term>
+    <listitem>
+    <para>
+      The item data value, if a value has been assigned to the item. If no item data value has been assigned, the
+      <computeroutput>.nil</computeroutput> object is returned.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The item data value can be assigned to a tree-view item through a number of methods, such as the <xref
+    linkend="mthSetItemDataClsTreeView"/>, <xref linkend="mthInsertClsTreeView"/>, or <xref linkend="mthModifyClsTreeView"/>
+    methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example displays the attributes of the selected item:
+
+<programlisting>
+<![CDATA[
+::method Info
+  tree = self~newTreeView(IDC_TREE)
+  itemInfo. = curTree~itemInfo(tree~selected)
+  say itemInfo.!TEXT
+  say itemInfo.!CHILDREN
+  say itemInfo.!IMAGE
+  say itemInfo.!STATE
+  say itemInfo.!ITEMDATA
+]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::itemInfo() -->
+
+<section id="itemstrc" xreflabel="items"><title>items</title>
+<indexterm><primary>items</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--items----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The items method retrieves the number of items
+in a tree-view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of items.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example counts all items in a tree-view control:
+<programlisting>
+<![CDATA[
+::method Count
+  curTree = self~newTreeView("IDC_TREE")
+  say curTree~items
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthItemTextClsTreeView" xreflabel="itemText"><title>itemText</title>
+<indexterm><primary>itemText</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>itemText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemText(--hItem--)--------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the text of the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the text from.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the text assigned to the specified tree-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example retrieves the text of the selected item:
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeVies(IDC_TV_BOOK)
+
+  selectedItem = tv~selected
+  if selectedItem == 0 then do
+      say 'No item is selected'
+  end
+  else do
+      say 'The text for the selected item is:' tv~itemText(selectedItem)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::itemText() -->
+
+
+<section id="makefirstvisibletrc" xreflabel="makeFirstVisible"><title>MakeFirstVisible</title>
+<indexterm><primary>MakeFirstVisible</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--makeFirstVisible(--hItem--)------------------><
+
+
+]]>
+</programlisting>
+
+<para>The MakeFirstVisible method ensures that
+<emphasis role="italic">hItem</emphasis> is visible and displays
+it at the top of the control's dialog, if
+possible. If the specified item is near the end of the control's hierarchy
+of items, it might not become the first visible item depending on how many
+items fit in the dialog.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be visible first.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item is visible first.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> was not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthModifyClsTreeView" xreflabel="modify"><title>modify</title>
+<indexterm><primary>modify</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>modify</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--modify(--+---------+-+-------+-+-------+-+----------+---------------------->
+             +--hItem--+ +-,-txt-+ +-,-img-+ +-,-selImg-+
+
+>------------+---------+-+------------+-+------------+-------------------------><
+             +-,-state-+ +-,-children-+ +-,-itemData-+
+]]>
+</programlisting>
+
+<para>
+  Modifies some or all of an item's attributes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [optional]</term>
+      <listitem>
+      <para>
+        Handle of the item to modify. If this argument is omitted the currently selected item is used. If the item is omitted
+        and there is no currently selected item, -1 is returned as an error.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the item. If this argument is omitted then the text is not changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>img [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list of the icon
+        image to use when the item is in the nonselected state. If omitted, then the index is not changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selImg [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClsTreeView">image</link> list of the icon
+        image to use when the item is in the selected state. If omitted the selected icon index is not changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>state [optional]</term>
+      <listitem>
+      <para>
+        Modifies the item state. Use 0 or more of the following keywords separated by spaces, case is not significant. If
+        this argument is omitted, or the empty string, the item state is not changed.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BOLD    </member>
+          <member>NOBOLDBOLD    </member>
+          <member>EXPANDED</member>
+          <member>NOTEXPANDED</member>
+          <member>DROP</member>
+          <member>NOTDROP</member>
+          <member>SELECTED</member>
+          <member>NOTSELECTED</member>
+          <member>CUT</member>
+          <member>NOTCUT</member>
+          <member>EXPANDEDONCE</member>
+          <member>NOTEXPANDEDONCE</member>
+          <member>EXPANDPARTIAL</member>
+          <member>NOTEXPANDPARTIAL</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BOLD</term>
+          <listitem>
+          <para>
+            The item is shown bolded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTBOLD</term>
+          <listitem>
+          <para>
+            The item is shown not bolded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDED</term>
+          <listitem>
+          <para>
+            The item's list of child items is currently expanded, that is, the child items are visible. Only parent items can
+            have this state.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTEXPANDED</term>
+          <listitem>
+          <para>
+            The item's list is currently not expanded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DROP</term>
+          <listitem>
+          <para>
+            The item is selected as a drag-and-drop target.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTDROP</term>
+          <listitem>
+          <para>
+            The item is not selected as a drag-and-drop target.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SELECTED</term>
+          <listitem>
+          <para>
+            The item is selected. Its appearance depends on whether it has the focus and whether the system colors are used
+            for the selection.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTSELECTED</term>
+          <listitem>
+          <para>
+            The item is not selected.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CUT</term>
+          <listitem>
+          <para>
+            The item is selected as part of a cut-and-paste operation.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTCUT</term>
+          <listitem>
+          <para>
+            The item is not selected as part of a cut-and-paste operation.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDEDONCE</term>
+          <listitem>
+          <para>
+            The item's list of child items has been expanded at least once.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTEXPANDEDONCE</term>
+          <listitem>
+          <para>
+            The item's list of child items has not been expanded at least once.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDPARTIAL</term>
+          <listitem>
+          <para>
+            A partially expanded tree-view item. In this state, some, but not all, of the child items are visible and the
+            parent item's plus symbol is displayed.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTEXPANDPARTIAL</term>
+          <listitem>
+          <para>
+            The item is not in a partially expanded state.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>children [optional]</term>
+      <listitem>
+      <para>
+        Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
+        1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
+        linkend="styTreeViewBUTTONS"/> style. When this argument is omitted the item's <emphasis
+        role="italic">children</emphasis> value is not changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>itemData [optional]</term>
+      <listitem>
+      <para>
+        Associates the specified value with the tree-view item being inserted. This can be any Rexx object that the
+        programmer wants to use.  The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to
+        retrieve this value. If this argument is omitted, the item's item data value is not changed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns one of the following values:
+  </para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      The item has been modified.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term></term>
+    <listitem>
+    <para>
+      The tree-view control reported an error when modifying the item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">hItem</emphasis> argument was not valid.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example changes the text of the item to bold when it is selected:
+<programlisting>
+<![CDATA[
+::method onSelectChanging
+  tree = self~newTreeView(IDC_TREE)
+  tree~modify(tree~selected, , , ,"BOLD")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::modify() -->
+
+
+<section id="moveitem" xreflabel="moveItem"><title>moveItem</title>
+<indexterm><primary>moveItem</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--moveItem(--hItem--,--hNewParent--,--redraw--+---------------+--)-----------><
+                                                +-,--"NODELETE"-+
+                                                +-,--"SIBLINGS"-+
+
+
+]]>
+</programlisting>
+
+<para>The moveItem method moves an item to a new location.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be moved.
+</para></listitem></varlistentry>
+<varlistentry><term>hNewParent</term>
+<listitem><para>The handle to the new parent to which the item is to be moved.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The tree-view control is updated.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>One of the following options:
+<variablelist>
+<varlistentry><term>&quot;NODELETE&quot;</term>
+<listitem><para>The item is copied to another location.
+</para></listitem></varlistentry>
+<varlistentry><term>&quot;SIBLINGS&quot;</term>
+<listitem><para>Siblings are moved together with the item.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the new parent, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="nexttrc" xreflabel="next"><title>next</title>
+<indexterm><primary>next</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--next(--hItem--)------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The next method retrieves the sibling item next
+to <emphasis role="italic">hItem</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item next to the sibling item to be retrieved.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the next sibling item, or -1 if you omitted
+<emphasis role="italic">hItem</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the name of the selected item and its
+siblings:
+<programlisting>
+<![CDATA[
+::method SiblingNames
+  curTree = self~newTreeView("IDC_TREE")
+  nextItem = curTree~selected
+  do while nextItem \= 0
+    itemInfo. = curTree~itemInfo(nextItem)
+    say ItemInfo.!Text
+    nextItem = curTree~next(nextItem)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="nextvisible" xreflabel="nextVisible"><title>NextVisible</title>
+<indexterm><primary>NextVisible</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--nextVisible(--hItem--)-----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NextVisible method retrieves the visible item
+following <emphasis role="italic">hItem</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item that precedes the visible item to be
+retrieved. <emphasis role="italic">hItem</emphasis> must also be visible.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the next visible item, or -1 if you omitted
+<emphasis role="italic">hItem</emphasis>, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="parent" xreflabel="parent"><title>Parent</title>
+<indexterm><primary>Parent</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--parent(--hItem--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Parent method retrieves the parent of the specified
+item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item for which the parent is to be retrieved.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the parent item, or -1 if
+<emphasis role="italic">hItem</emphasis> is not
+specified or is 0, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the name of the selected item's parent:
+<programlisting>
+<![CDATA[
+::method Parent
+  curTree = self~newTreeView("IDC_TREE")
+  itemInfo. = curTree~itemInfo(curTree~Parent(curTree~selected))
+  say ItemInfo.!Text
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="previoustrc" xreflabel="previous"><title>previous</title>
+<indexterm><primary>previous</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--previous(--hItem--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The previous method retrieves the sibling item
+preceding <emphasis role="italic">hItem</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item that follows the sibling item to be retrieved.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the previous sibling item, or -1 if
+<emphasis role="italic">hItem</emphasis>
+is not specified or is 0, or 0 in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="previousvisible" xreflabel="previousVisible"><title>PreviousVisible</title>
+<indexterm><primary>PreviousVisible</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--previousVisible(--hItem--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The PreviousVisible method retrieves the visible
+item preceding <emphasis role="italic">hItem</emphasis>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item that follows the visible child item to be retrieved.
+ <emphasis role="italic">hItem</emphasis> must also be visible.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the previous visible child item, or -1 if
+<emphasis role="italic">hItem</emphasis> is not specified or is 0, or 0
+in all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRemoveItemDataClsTreeView" xreflabel="removeItemData"><title>removeItemData</title>
+<indexterm><primary>removeItemData</primary><secondary>TreeViewClass</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>removeItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeItemData(--hItem--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes and returns the item data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item whose data value is being removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
+    no data associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value is set using the <xref
+    linkend="mthSetItemDataClsTreeView"/> method. The data value can be retrieved without removing it from a tree-view item
+    through the <xref linkend="mthGetItemDataClsTreeView"/> method.  Storing a user value for each item can be useful in any
+    number of ways.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::removeItemData() -->
+
+
+<section id="mthRoot" xreflabel="root"><title>root</title>
+<indexterm><primary>root</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>root</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--root-----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">root</emphasis> method retrieves item handle of the first or topmost item of the tree-view
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has not arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The handle to the first or topmost item on success. 0 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example displays the text, or label, of the root item:
+<programlisting>
+<![CDATA[
+::method rootLabel
+  tv = self~newTreeView(IDC_TV_ORG_CHART)
+  say 'The head of the organization is' tv~getItemText(tv~root)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selecttrc" xreflabel="select"><title>select</title>
+<indexterm><primary>select</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--select(--hItem--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The select method selects a specific item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was selected.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> was not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedtrc" xreflabel="selected"><title>selected</title>
+<indexterm><primary>selected</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selected-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The selected method retrieves the currently selected
+item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the currently selected item, or 0 in all other cases.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the name of the selected item:
+<programlisting>
+<![CDATA[
+::method SelectedName
+  curTree = self~newTreeView("IDC_TREE")
+  itemInfo. = curTree~itemInfo(curTree~selected)
+  say ItemInfo.!Text
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetImageListClsTreeView" xreflabel="setImageList"><title>setImageList</title>
+<indexterm><primary>setImageList</primary>
+<secondary>TreeView class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setImageList(--+----------------+--+-----------+--)---------><
+                   +--newImageList--+  +--,--type--+
+]]>
+</programlisting>
+
+<para>
+  Assigns, or removes, an image list for the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>newImageList [optional]</term>
+    <listitem>
+    <para>
+      The <xref linkend="clsImageList"/> object to assign to the tree-view. If this argument is omitted or is the
+      <computeroutput>.nil</computeroutput> object, the existing image list, if any, is removed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      Specifies which image list, the NORMAL or STATE image list, to assign or remove. The operating system uses these 2
+      flags to specify the 2 types of image lists.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      TVSIL_NORMAL: Numeric value == 0. Use the NORMAL keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_NORMAL to get the correct numeric value.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      TVSIL_STATE: Numeric value == 2. Use the STATE keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_STATE to get the correct numeric value.
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      If this argument is omitted, the default is TVSIL_NORMAL.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The existing image list is returned, if there is one. Otherwise, <computeroutput>.nil</computeroutput> is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Tree-view controls can have two image lists. The normal image list, which contains selected, nonselected, and overlay
+    images for the items of a tree-view control. And, the state image list. The state images can be used by the programmer to
+    indicate application-defined item states. A state image is displayed to the left of an item's selected or nonselected
+    image.
+  </para>
+  <para>
+    The tree-view control does not destroy an image list that is associated with it. The programmer must destroy the image
+    list separately, if desired. This is useful if the same image list is assigned to multiple tree-view controls. In
+    essence, the ownership of the image list remains with the programmer. The <xref linkend="clsImageList"/> and <xref
+    linkend="clsImage"/> classes are used to manage image lists and images in ooDialog. The documentation on both classes
+    discusses when and why the programmer may want to release image lists. The Image class documentation has the most detail
+    on this subject.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates an image list and assigns it to the tree-view control for use as the normal image list. Since the
+    normal is the default, the <emphasis role="italic">type</emphasis> argument does not need to be specified:
+<programlisting>
+<![CDATA[
+
+  /* set images for the items */
+  image = .Image~getImage("bmp\psdemotv.bmp")
+  imageList = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR8), 10, 0)
+  if \image~isNull,  \imageList~isNull then do
+     imageList~add(image)
+     tc~setImageList(imageList)
+     image~release
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setImageList() -->
+
+
+<section id="mthSetItemDataClsTreeView" xreflabel="setItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemData(--hItem,--+--------+--)----------><
+                          +-,-data-+
+]]>
+</programlisting>
+
+<para>
+  Sets the item data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item the data value is associated with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data [optional]</term>
+      <listitem>
+      <para>
+        The data value to store for the tree-view item. This can be any Rexx object. (Recall that in ooRexx numbers and
+        strings are also objects.) If this argument is omitted, the current item data, if any, is removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous item data associated with the tree-view item, or <computeroutput>.nil</computeroutput> if there was
+    no previous data. On error, <computeroutput>.nil</computeroutput> is returned and the <xref
+    linkend="dotSystemErrorCode"/> is set. An error is highly unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
+    tree-view item through the <xref linkend="mthGetItemDataClsTreeView"/> method, or it can be removed through the <xref
+    linkend="mthRemoveItemDataClsTreeView"/>. Storing a user value for each item can be useful in any number of ways. One
+    specific use is in the <xref linkend="mthSortChildrenCB"/> method.
+  </para>
+  <para>
+    It is possible, although very unlikely, that there will be an error in the tree-view control when setting the item data.
+    In this case <computeroutput>.nil</computeroutput> is returned and the <computeroutput>.systemErrorCode</computeroutput>
+    is set to 156  ERROR_SIGNAL_REFUSED <emphasis role="italic">The recipient process has refused the signal</emphasis>.
+  </para>
+  <para>
+    This is not a system error, the code is just used here to indicate a tree-view error when setting the item data. The
+    tree-view provides no information on why it failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setItemData() -->
+
+
+<section id="mthSetItemHeightClsTreeView" xreflabel="setItemHeight"><title>setItemHeight</title>
+<indexterm><primary>setItemHeight</primary><secondary>TreeViewClass</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemHeight(--cyItem--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the height of the tree-view items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>cyItem [required]</term>
+      <listitem>
+      <para>
+        The new height for every item in the tree view, in pixels. Heights less than 1 will be set to 1. If this argument is
+        not even, it will be rounded down to the nearest even value. If this argument is -1, the control will
+        revert to using its default item height.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous item height, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view uses the value for the height of all items. The value itself is the height of a single item.  See the <link
+    linkend="mthGetItemItemClsTreeView">getItemHeight</link> method. By default, the tree-view only allows even heights. However, if
+    the <link linkend="styTreeViewNONEVENHEIGHT">NONEVENHEIGHT</link> style is give to the tree-view, both odd and even
+    values can be assigned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the height of each tree-view item to 20 pixels.  (For this specific application the previouse height
+    was 16 pixels.)
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeView(IDC_TREE)
+  tv~setItemHeight(20)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setItemHeight() -->
+
+<section id="mthSetStateImage" xreflabel="setStateImage"><title>setStateImage</title>
+<indexterm><primary>setStateImage</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setStateImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setStateImage(--hItem--,--index--)-----------><
+]]>
+</programlisting>
+
+<para>
+  Assigns the index in the <link linkend="mthSetImageListClsTreeView">image</link> list of the state image for the specified
+  tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>hItem [required]</term>
+    <listitem>
+    <para>
+      The handle of the tree-view item whose state image index is being set.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The index of the image in the state image list for the specified tree-view item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    State images ares displayed next to an item's icon, immediately to the left. They are used to indicate an application
+    defined state for the item. The state image list is set using the <xref
+    linkend="mthSetImageListClsTreeView"/> method. A value of 0 indicates there is no state image. Only 15 state images can
+    be assigned, indexes 1 through 15.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+::method setStateIndex private
+    expose tv
+    use strict arg hItem, state
+
+    select
+        when state == 'singleton' then index = 1
+        when state == 'duplicate' then index = 2
+        when state == 'triplicate' then index = 3
+        when state == 'quadruplicate' then index = 4
+        otherwise index = 0
+    end
+
+    tv~setStateImage(hItem, index)
+
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setStateImage() -->
+
+
+<section id="mthSetToolTipsClsTreeView" xreflabel="setToolTips"><title>setToolTips</title>
+<indexterm><primary>setToolTips</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setToolTips</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setToolTips(--toolTip--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>toolTip [required]</term>
+      <listitem>
+      <para>
+        The Rexx <computeroutput>ToolTip</computeroutput> object that represents the tool tip control the tree-view should
+        use.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous tool tip, as a Rexx <computeroutput>ToolTip</computeroutput> object, or the
+    <computeroutput>.nil</computeroutput> object if there is no previous tool tip.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setToolTips() -->
+
+
+<section id="sortchildren" xreflabel="sortChildren"><title>SortChildren</title>
+<indexterm><primary>SortChildren</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sortChildren(--hItem--)----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SortChildren method sorts the child items of
+the specified parent item in a tree-view control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the parent item the child items of which are to be sorted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The child items were sorted.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis>
+was not specified or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSortChildrenCB" xreflabel="sortChildrenCB"><title>sortChildrenCB</title>
+<indexterm><primary>sortChildrenCB</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>sortChildrenCB</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sortChildrenCB(--+---------+--+-----------+--+---------+--)----------------><
+                     +--hItem--+  +-,-mthName-+  +-,-param-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sortChildrenCB</emphasis> method causes the tree-view to sort the children of the specified
+  parent tree-view item by invoking a comparison method in the Rexx dialog. The Rexx comparsion method determines the order
+  of the children items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [optional]</term>
+      <listitem>
+      <para>
+        The parent item of the children to be sorted. If this argument is omitted, the <link linkend="mthRoot">root</link>
+        item is used as the parent.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        The name of the comparsion method in the Rexx dialog to be invoked to determine the relative order of two tree-view
+        items. If this argument is omitted, a default method name of <emphasis role="italic">onSortChildrenCB</emphasis> is
+        used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>param [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">param</emphasis> argument can be any object the programmer wants to use. If the argument
+        exists, it is passed as the third argument to the <emphasis role="italic">mthName</emphasis> comparison method. If
+        the argument is omitted, the <computeroutput>.nil</computeroutput> object is passed as the third argument.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a user <link
+    linkend="mthSetItemDataClsTreeView">data</link> value with any, or all, of the tree-view items. The data value can be any
+    ooRexx object. For the <emphasis role="italic">sortChildrenCB</emphasis> method to work correctly, the programmer must
+    associate a data value with each tree-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The onSortChildrenCB method</emphasis></term>
+  <listitem>
+  <para>
+    As the tree-view control needs to compare two items it will invoke, through the ooDialog framework, the comparison method
+    in the Rexx dialog named by the <emphasis role="italic">mthName</emphasis> argument. The return from the Rexx method
+    determines how the items are sorted.
+  </para>
+  <para>
+    The comparison method must return a whole number and this value is passed on to the tree-view control. The method must
+    return a negative value if the first item should come before the second item, a positive number if the first item should
+    come after the second item, and 0 if the items are equivalent.
+  </para>
+  <para>
+    The arguments passed to the comparsion method are the item data items associated with the two items being compared. This
+    is why the sort will not work correctly if tree-view items are not assigned a item data item. The comparison method
+    should be coded as follows:
+  </para>
+
+<programlisting>
+<![CDATA[
+::method onSortChildrenCB unguarded
+  use arg data1, data2, param
+]]>
+</programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The comparison method receives 3 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>data1</term>
+      <listitem>
+      <para>
+        The user <emphasis role="italic">data value</emphasis> assigned to the first tree-view item to be compared. This data
+        value is the value the programmer assigned to the item using one of the <xref linkend="mthSetItemDataClsTreeView"/>,
+        <link linkend="mthInsertClsTreeView">insert</link>, <link linkend="mthAddClsTreeView">add</link>, etc., methods.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data2</term>
+      <listitem>
+      <para>
+        The user <emphasis role="italic">data value</emphasis> assigned to the second tree-view item to be compared.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>param</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">param</emphasis> argument passed to the <emphasis role="italic">sortChildrenCB</emphasis>
+        method, if it exists. If it was omitted, the param argument will be the <computeroutput>.nil</computeroutput>
+        object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      The return must be a whole number. Less than 0 places the first item before the second item, greater than 0 places the
+      first item after the second. Return 0 if the two items are equivalent. The programmer determines what number to return
+      based on the 2 item data values passed to the method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sorts the children of the selected item in descending alphabetic order:
+<programlisting>
+<![CDATA[
+
+::method onSortChildren unguarded
+    expose tv
+
+    selectedItem = tv~selected
+    if selectedItem == 0 then selectedItem = tv~root
+
+    ret = tv~sortChildrenCB(selectedItem, rexxSort)
+
+
+::method rexxSort unguarded
+    use arg itemData1, itemData2, userParam
+
+    -- Reverse sort:
+    return itemData2~compareTo(itemData1)
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::sortChildrenCB() -->
+
+
+<section id="toggle" xreflabel="toggle"><title>Toggle</title>
+<indexterm><primary>Toggle</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--toggle(--hItem--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Toggle method collapses the list of the specified
+item if it was expanded, or expands it if it was collapsed.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hItem</term>
+<listitem><para>The handle to the item to be expanded or collapsed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The item was expanded or collapsed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para><emphasis role="italic">hItem</emphasis> is not specified
+or is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example toggles between expanding and
+collapsing a selected item:
+<programlisting>
+<![CDATA[
+::method ToggleSelected
+  curTree = self~newTreeView("IDC_TREE")
+  curTree~Toggle(curTree~selected)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="visibleitems" xreflabel="visibleItems"><title>VisibleItems</title>
+<indexterm><primary>VisibleItems</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--visibleItems---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The VisibleItems method obtains the number of items
+that can be fully visible in a tree-view control. This number can be greater
+than the number of items in the control. The control calculates this value
+by dividing the height of the client window by the height of an item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of items that can be fully visible. For example, if you can
+see all of 19 items and part of another item, the return value is 19, not
+20.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example returns the number of items that can be fully
+visible:
+<programlisting>
+<![CDATA[
+::method Visible
+  curTree = self~newTreeView("IDC_TREE")
+  say curTree~VisibleItems
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="clsTvCustomDrawSimple" xreflabel="TvCustomDrawSimple"><title>TvCustomDrawSimple Class</title>
+<indexterm><primary>TvCustomDrawSimple class</primary></indexterm>
+<para>
+  A <computeroutput>TvCustomDrawSimple</computeroutput> object is used when a <link
+  linkend="clsTreeView">TreeView</link> control is registered for simple <link linkend="clsCustomDraw">custom</link>
+  draw. A <computeroutput>TvCustomDrawSimple</computeroutput> object is passed to the CUSTOMDRAW event handler. It
+  supplies both information to the event handler and returns information back to the Windows control. The attributes of
+  the object convey the information both ways.
+</para>
+<para>
+  When the ooDialog framework receives information from the Windows custom draw control, it assigns values to the
+  attributes of the <computeroutput>TvCustomDrawSimple</computeroutput> object and sends the object to the Rexx dialog's
+  event handler. The programmer uses those values to determine what action to take and then assigns values to the
+  object's attributes to convey information back to the Windows control. The
+  <computeroutput>TvCustomDrawSimple</computeroutput> object is specific to the
+  <computeroutput>TreeView</computeroutput> class. Other ooDialog controls that support custom draw have their own
+  class that performs a similar function, but whose attributes are specific to that control. For instance, the <link
+  linkend="clsListView">ListView</link> class uses the <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link>
+  for its CUSTOMDRAW event handler.
+</para>
+
+<section id="evtTreeViewCustomDraw" xreflabel="TreeView CustomDraw Event Handler"><title>CustomDraw Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>CUSTOMDRAW</secondary></indexterm>
+<indexterm><primary>custom draw</primary><secondary>tree-view control</secondary></indexterm>
+<para>
+  When the tree-view control is registered for <xref linkend="sctSimpleCustomDraw"/> custom draw, the event handler is
+  invoked when the draw stage is item prepaint. For simple custom draw, the ooDialog framework handles the other draw stages
+  internally. It makes the appropriate response to the dialog control so that the dialog control will send the item prepaint
+  notifications.
+</para>
+<para>
+  The single argument passed to the event handler is a <computeroutput>TvCustomDrawSimple</computeroutput> object. The event
+  handler examines the values of the attributes of the object to determine the information sent by the underlying tree-view
+  control. The event handler then assigns values to the object that specify how the tree-view control should draw the item.
+  Finally, the programmer returns true to have the updated information passed on to the tree-view, or false to have the
+  tree-view draw the item as it normally would.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCustomDraw unguarded
+  use arg tvcdSimple
+
+  return boolean
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives 1 argument:
+  </para>
+  <variablelist>
+    <varlistentry><term>tvcdSimple</term>
+    <listitem>
+    <para>
+      A <computeroutput>TvCustomDrawSimple</computeroutput> object whose attributes are used to convey information back and
+      forth between the underlying tree-view control and the event handler.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return true to indicate that the attributes in the <computeroutput>TvCustomDrawSimple</computeroutput> object are to be
+    used by the tree-view when drawing the item. Return false to indicate the tree-view should draw the item itself.
+    Returning false is the equivalent of using the <xref linkend="cnstCDRF_DODEFAULT"/> value for the response to the
+    tree-view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The key to using custom draw is to examine the attributes of the <computeroutput>TvCustomDrawSimple</computeroutput>
+    object sent as the argument to the event handler to determine which item is about to be drawn, and then set attributes in
+    the object to customize the drawing of that item.
+  </para>
+  <para>
+    As an example, say the goal was to draw every other level in the tree-view with a different color. The event handler will
+    be invoked before each item is to be painted. The programmer would examine the <xref linkend="atrLevel"/> attrbute to
+    determine if it was an odd or even level. If the level was even, the color attributes, <xref linkend="atrClrTextBkTV"/>
+    and <xref linkend="atrClrTextTV"/>, would be set to the desired colors to color the item. If the level was odd, the
+    event handler would set the color attributes to the colors for a item at an odd level. Then the <xref
+    linkend="atrReplyTV"/> attribute would be set to a response value that indicates to the tree-view is to use the
+    information in the object to draw the item, and the event handler would return true to indicate that custom drawing is to
+    be done. The example below demonstrates this:
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows the code for the discussion in the remarks section
+<programlisting>
+<![CDATA[
+
+::method onCustomDraw unguarded
+  use arg tvcds
+
+  if tvcds~level // 2 == 1 then do
+    tvcds~clrText   = self~RGB(82, 61, 0)
+    tvcds~clrTextBk = self~RGB(250, 250, 250)
+  end
+  else do
+    tvcds~clrText   = self~RGB(0, 20, 82)
+    tvcds~clrTextBk = self~RGB(250, 250, 250)
+  end
+
+  tvcds~reply = self~CDRF_NEWFONT
+  return .true
+
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End CustomDraw Event Handler -->
+
+<section id="sctMethodsTvCustomDrawSimple"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>TvCustomDrawSimple</computeroutput> class:
+
+<table id="tblMethodsTvCustomDrawSimple" frame="all"> <title>TvCustomDrawSimple Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsTvCustomDrawSimple"/></entry>
+<entry>The Rexx programmer can not instantiate a <computeroutput>TvCustomDrawSimple</computeroutput>object, the ooDialog framework instantiates these objects</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrClrTextTV"/></entry>
+<entry>Reflects a custom color that the text of the tree-view item should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrClrTextBkTV"/></entry>
+<entry>Reflects a custom color that the text background of the tree-view item should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrDrawStageTV"/></entry>
+<entry>Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle.</entry>
+</row>
+<row>
+<entry><xref linkend="atrFontTV"/></entry>
+<entry>Reflects a custom font that the tree-view should use for the text.</entry>
+</row>
+<row>
+<entry><xref linkend="atrIDTV"/></entry>
+<entry>Reflects the resource ID of the tree-view control sending the custom draw event notification message.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItemTV"/></entry>
+<entry>Reflects the <xref linkend="defHandle"/> of the tree-view item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItemDataClsTvCustomDrawSimple"/></entry>
+<entry>Reflects the item <emphasis role="italic">item</emphasis> for the tree-view item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLevel"/></entry>
+<entry>Reflects the level in the tree of the item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrReplyTV"/></entry>
+<entry>Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event notification.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsTvCustomDrawSimple" xreflabel="new"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>TvCustomDrawSimple class</secondary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <computeroutput>TvCustomDrawSimple</computeroutput> class can not be instantiated by the Rexx program. When
+  needed, the ooDialog framework instantiates a <computeroutput>TvCustomDrawSimple</computeroutput> object and passes
+  it to the dialog's custom draw event handler TODO need link.
+</para>
+</section>  <!-- End TvCustomDrawSimple::new() -->
+
+<section id="atrClrTextTV" xreflabel="clrText"><title>clrText (Attribute)</title>
+<indexterm><primary>clrText</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>clrText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrText-----------------------------------------------------><
+
+>>--clrText-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom color that the text of the tree-view item should be drawn with. This attribute is information sent back
+  to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrText get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrText set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to the color value for the text of the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. Note that the <xref linkend="cnstCLR_DEFAULT"/> value does not seem to
+    work with tree-views. Experimentation seems to show that the text color must be explicitly set to the proper value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
+<programlisting>
+<![CDATA[
+
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::clrText() [attribute]  -->
+
+<section id="atrClrTextBkTV" xreflabel="clrTextBk"><title>clrTextBk (Attribute)</title>
+<indexterm><primary>clrTextBk</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>clrTextBk</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrTextBk-----------------------------------------------------><
+
+>>--clrTextBk-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom color that the text background of the tree-view item should be drawn with. This attribute is information
+  sent back to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrTextBk get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrTextBk set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to a custom color that should be used for the text background when the item is drawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. Note that the <xref linkend="cnstCLR_DEFAULT"/> value does not seem to
+    work with tree-views. Experimentation seems to show that the text color must be explicitly set to the proper value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
+<programlisting>
+<![CDATA[
+
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::clrTextBk() [attribute]  -->
+
+<section id="atrDrawStageTV" xreflabel="drawStage"><title>drawStage (Attribute)</title>
+<indexterm><primary>drawStage</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>drawStage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawStage-----------------------------------------------------><
+
+>>--drawStage-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">drawStage get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the draw stage constant value as sent by the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">drawStage set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In <link linkend="sctSimpleCustomDraw">simple</link> custom draw, the ooDialog framework handles many of draw stage
+    notifications internally and the event handler only gets invoked for the <xref linkend="cnstCDDS_ITEMPREPAINT"/> draw
+    stage.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::drawStage() [attribute]  -->
+
+<section id="atrFontTV" xreflabel="font"><title>font (Attribute)</title>
+<indexterm><primary>font</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>font</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--font-----------------------------------------------------><
+
+>>--font-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom font that the tree-view should use for the text. This attribute is information sent back to the tree-view
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">font get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">font set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to the <xref linkend="defHandle"/> of a font to used for the text of the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To have the font drawn in the default font of the tree-view simply do not set the <emphasis role="italic">font</emphasis>
+    attribute to anything. For example, if the color for the font should be changed, but not the font itself, then the
+    programmer should not set this attribute.
+  </para>
+  <para>
+    Use the <xref linkend="mthCreateFontEx"/> method to get the handle of a font. Microsoft recommends that the response code
+    when a new font is to be used include <xref linkend="cnstCDRF_NEWFONT"/> value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::font() [attribute]  -->
+
+<section id="atrIDTV" xreflabel="id"><title>id (Attribute)</title>
+<indexterm><primary>id</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>id</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id-----------------------------------------------------><
+
+>>--id-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the resource ID of the tree-view control sending the custom draw event notification message. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the numeric <xref linkend="defResourceId"/> of the tree-view control that sent the custom draw event
+    notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses custom draw with a list-view and a tree-view. It uses the same event handler, <emphasis
+    role="italic">onCustomDraw</emphasis> for both controls and then use the <emphasis role="italic">id</emphasis> attribute
+    to determine which control has sent the event notification:
+<programlisting>
+<![CDATA[
+
+  self~customDraw
+  self~customDrawControl(IDC_LV_STATS, 'ListView', onCustomDraw)
+  self~customDrawControl(IDC_TV_PLAYERS, 'TreeView', onCustomDraw)
+
+  ...
+
+::method onCustomDraw unguarded
+    use arg customDrawInfo
+
+    if customDrawInfo~ID == .constDir[IDC_LV_STATS] then
+        return self~customDrawStats(customDrawInfo)
+    else
+        return self~customDrawPlayers(customDrawInfo)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::id() [attribute]  -->
+
+<section id="atrItemTV" xreflabel="item"><title>item (Attribute)</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item-----------------------------------------------------><
+
+>>--item-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the <xref linkend="defHandle"/> of the tree-view item that needs to be drawn. This attribute is information sent
+  from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item handle that the event notifications is for.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the item index to determine exactly which item or subitem is going to be painted.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the font and colors of the selected item in a tree-view It uses the <emphasis
+    role="italic">item</emphasis> attribute to determine if item to be drawn is the selected item or not. Notice that if the
+    item is not the selected item, .false is returned which tells the tree-view to draw the item without any customization:
+<programlisting>
+<![CDATA[
+
+    bkClr        = self~RGB(250, 250, 250)
+    selectedClr  = self~RGB(82, 0, 20)
+    selectedFont = self~createFontEx('Courier New', 10)
+
+    self~customDraw
+    self~customDrawControl(IDC_TREE, 'TreeView')
+    ...
+
+::method onCustomDraw unguarded
+    expose tv bkClr selectedClr selectedFont
+    use arg tvcds
+
+    if tv~selected == tvcds~item then do
+      tvcds~clrText   = selectedClr
+      tvcds~clrTextBk = bkClr
+      tvcds~font      = selectedFont
+      tvcds~reply     = self~CDRF_NEWFONT
+      return .true
+    end
+
+    return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::item() [attribute]  -->
+
+<section id="atrItemDataClsTvCustomDrawSimple" xreflabel="itemData"><title>itemData (Attribute)</title>
+<indexterm><primary>itemData</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>itemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemData-----------------------------------------------------><
+
+>>--itemData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the item <emphasis role="italic">data</emphasis> for the tree-view item that needs to be drawn. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemData get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item data object for the item about to be drawn, or <computeroutput>.nil</computeroutput> if no item data was
+    set for the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemData set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view allows the programmer to associate a value with any tree-view item. This item data value is sent by the
+    tree-view in the event notification information. The programmer can set the item data for a tree-view item in several
+    ways, using the <xref linkend="mthSetItemDataClsTreeView"/> of the <xref linkend="clsTreeView"/> class, for example.
+  </para>
+  <para>
+    The <emphasis role="italic">itemData</emphasis> attribute could be used to help decide how to custom draw the tree-view
+    item or subitem, see the example below.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the color to draw the text for each item is stored in the item data for the item. This makes for a very
+    simple event handler, the text color is just set to whatever value the item data is:
+<programlisting>
+<![CDATA[
+
+::method onCustomDraw unguarded
+    use arg tvcds
+
+    itemData = tvcds~itemData
+
+    tvcds~clrText   = itemData~textColor
+    tvcds~clrTextBk = itemData~backgroundColor
+    tvcds~reply     = self~CDRF_NEWFONT
+
+    return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::itemData() [attribute]  -->
+
+
+<section id="atrLevel" xreflabel="level"><title>level (Attribute)</title>
+<indexterm><primary>level</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>level</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--level-------------------------------------------------------><
+
+>>--level= varName---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the level in the tree of the item that needs to be drawn. This attribute is information sent from the tree-view
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">level get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the level in the tree of the item to be drawn. The root of the tree is level 1. All direct children of the root
+    are at level 2. A direct child of any node at level 2 is at level 3, and so on.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">level set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This snippet of code colors each level in a tree in alternating colors:
+<programlisting>
+<![CDATA[
+
+  ...
+
+  if tvcds~level // 2 == 1 then do
+    tvcds~clrText   = oddLevelClr
+    tvcds~clrTextBk = bkClr
+  end
+  else do
+    tvcds~clrText   = evenLevelClr
+    tvcds~clrTextBk = bkClr
+  end
+
+  tvcds~reply = self~CDRF_NEWFONT
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::level [attribute]  -->
+
+<section id="atrReplyTV" xreflabel="reply"><title>reply (Attribute)</title>
+<indexterm><primary>reply</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--reply-----------------------------------------------------><
+
+>>--reply-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event
+  notification. This attribute is information sent back to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">reply get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">reply set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">reply</emphasis> attribute should be set to one of the CDRF_* constant values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">reply</emphasis> attribute can be set to any valid combination of CDRF_* values. However, in
+    <emphasis role="italic">simple</emphasis> custom draw only a two values make any sense. These are CDRF_NOTIFYITEMDRAW,
+    and CDRF_NEWFONT.
+  </para>
+  <para>
+    Rather than set <emphasis role="italic">reply</emphasis> to CDRF_DODEFAULT and returning true from the event handler, the
+    programmer should just return false from the event handler. Using any of the other CDRF_* values, in simple custom draw,
+    will have no effect in the Rexx program and will cause the tree-view control to send unnecessary event notifications.
+  </para>
+  <para>
+    The only combination of CDRF_* values that make sense is combining CDRF_NEWFONT and CDRF_NOTIFYITEMDRAW. And, this is
+    never really needed. Using CDRF_NEWFONT is sufficient if the font is changed and CDRF_CDRF_NOTIFYITEMDRAW is sufficient
+    if any of the colors have been changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::reply() [attribute]  -->
+
+</section> <!-- End TvCustomDrawSimple Class -->
+
+
+</chapter>

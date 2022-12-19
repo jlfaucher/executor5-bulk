@@ -1,0 +1,1296 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Latout Container Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Layout Container</secondary></indexterm>
+
+<para>These classes provide a method of grouping and presenting displayable widgets that is
+independent of the underlying graphical subsystem. It allows windows which contain layout
+containers to be resized without adverse problems to the widgets the widow contains. All
+the widgets will retain their relative positions no matter what the size of the window.
+</para>
+
+<!-- ********************************** -->
+<!-- ********** GTKAlignment ********** -->
+<!-- ********************************** -->
+
+<section id="gtkalignment"><title>GTKAlignment</title>
+<para>The GTKAlignment class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This class controls the alignment of its child widget. A GTKAlignment widget should
+only have one child widget assigned to it.</para>
+
+<section id="gtkalignmentinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKAlignment</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new Alignment.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKAlignment~new(xalign, yalign, xscale, yscale)--------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>xalign</term>
+      <listitem><para>The X alignment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>yalign</term>
+      <listitem><para>The x alignment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>xscale</term>
+      <listitem><para>The x scale.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>yscale</term>
+      <listitem><para>The x scale.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ***************************** -->
+<!-- ********** GTKHBox ********** -->
+<!-- ***************************** -->
+
+<section id="gtkhbox"><title>GTKHBox</title>
+<para>The GTKHBox class is a subclass of the
+GTKBox class (<xref linkend="gtkbox" />).</para>
+
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets will be aligned horizontally.</para>
+
+<section id="gtkhboxinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKHBox</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new HBox.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHBox~new(homog, spacing)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>homog</term>
+      <listitem><para>The homogeneous boolean.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>spacing</term>
+      <listitem><para>The spacing amount.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ***************************** -->
+<!-- ********** GTKVHBox ********** -->
+<!-- ***************************** -->
+
+<section id="gtkvbox"><title>GTKVBox</title>
+<para>The GTKVBox class is a subclass of the
+GTKBox class (<xref linkend="gtkbox" />).</para>
+
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets will be aligned vertically.</para>
+
+<section id="gtlvboxinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKVBox</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new VBox.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKVBox~new(homog, spacing)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>homog</term>
+      <listitem><para>The homogeneous boolean.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>spacing</term>
+      <listitem><para>The spacing amount.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ****************************** -->
+<!-- ********** GTKFixed ********** -->
+<!-- ****************************** -->
+
+<section id="gtkfixed"><title>GTKFixed</title>
+<para>The GTKFixed class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets are assigned a fixed position within the
+GTKFixed container.</para>
+
+<section id="gtkfixedinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKFixed</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new Fixed object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKFixed~new()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkfixedput">
+<title>Method: put</title>
+<indexterm><primary>put</primary></indexterm>
+<indexterm><primary>GTKFixed</primary>
+<secondary>put</secondary></indexterm>
+<para>Attach a widget to the fixed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--put(widget, xpos, ypos)----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>widget</term>
+      <listitem><para>The widget to attach.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>xpos</term>
+      <listitem><para>The X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ypos</term>
+      <listitem><para>The Y position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkfixedmove">
+<title>Method: move</title>
+<indexterm><primary>move</primary></indexterm>
+<indexterm><primary>GTKFixed</primary>
+<secondary>move</secondary></indexterm>
+<para>Move a widget in the fixed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--move(widget, xpos, ypos)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>widget</term>
+      <listitem><para>The widget to move.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>xpos</term>
+      <listitem><para>The X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ypos</term>
+      <listitem><para>The Y position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ******************************* -->
+<!-- ********** GTKHPaned ********** -->
+<!-- ******************************* -->
+
+<section id="gtkhpaned"><title>GTKHPaned</title>
+<para>The GTKHPaned class is a subclass of the
+GTKPaned class (<xref linkend="gtkpaned" />).</para>
+
+<para>This widget contains two panes which are arrainged horizontally.</para>
+
+<section id="gtkhpanedinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKHPaned</primary>
+<secondary>init</secondary></indexterm>
+<para>Initialize a HPaned object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHPaned~new()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ******************************* -->
+<!-- ********** GTKVPaned ********** -->
+<!-- ******************************* -->
+
+<section id="gtkvpaned"><title>GTKVPaned</title>
+<para>The GTKVPaned class is a subclass of the
+GTKPaned class (<xref linkend="gtkpaned" />).</para>
+
+<para>This widget contains two panes which are arrainged vertically.</para>
+
+<section id="gtkvpanedinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKVPaned</primary>
+<secondary>init</secondary></indexterm>
+<para>Initialize a VPaned object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKVPaned~new()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKNotebook ********** -->
+<!-- ********************************* -->
+
+<section id="gtknotebook"><title>GTKNotebook</title>
+<para>The GTKNotebook class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This widget contains multiple pages, each with its own content. The user can page
+through the notebook and interact with each page individually. Tabs can also be added
+to the notebook to help the user locate pages or group pages together.</para>
+
+<section id="gtknotebookinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKNotebook~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookappendpage">
+<title>Method: append_page</title>
+<indexterm><primary>append_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>append_page</secondary></indexterm>
+<para>Append a page to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_page(page, label)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to append.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookprependpage">
+<title>Method: prepend_page</title>
+<indexterm><primary>prepend_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>prepend_page</secondary></indexterm>
+<para>Prepend a page to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_page(page, label)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to prepend.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookinsertpage">
+<title>Method: insert_page</title>
+<indexterm><primary>insert_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>insert_page</secondary></indexterm>
+<para>Insert a page to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_page(page, label, pos)----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to insert.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position of the page.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookappendpagemenu">
+<title>Method: append_page_menu</title>
+<indexterm><primary>append_page_menu</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>append_page_menu</secondary></indexterm>
+<para>Append a page with a popup menu to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_page_menu(page, label, menu)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to insert.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>menu</term>
+      <listitem><para>The menu.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookprependpagemenu">
+<title>Method: prepend_page_menu</title>
+<indexterm><primary>prepend_page_menu</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>prepend_page_menu</secondary></indexterm>
+<para>Prepend a page with a popup menu to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_page_menu(page, label, menu)---------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to insert.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>menu</term>
+      <listitem><para>The menu.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookinsertpagemenu">
+<title>Method: insert_page_menu</title>
+<indexterm><primary>insert_page_menu</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>insert_page_menu</secondary></indexterm>
+<para>Insert a page with a popup menu to the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_page_menu(page, label, menu, pos)-----------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The container page to insert.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The notebook tab label.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>menu</term>
+      <listitem><para>The menu.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookremovepage">
+<title>Method: remove_page</title>
+<indexterm><primary>remove_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>remove_page</secondary></indexterm>
+<para>Remove a page from the notebook.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--remove_page(pos)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebooksetshowborder">
+<title>Method: set_show_border</title>
+<indexterm><primary>set_show_border</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_show_border</secondary></indexterm>
+<para>Toggle the display of the border.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_show_border(toggle)----------------------------------------------><
+
+>>--show_border = toggle-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>toggle</term>
+      <listitem><para>The border display boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksetshowtabs">
+<title>Method: set_show_tabs</title>
+<indexterm><primary>set_show_tabs</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_show_tabs</secondary></indexterm>
+<para>Toggle the display of the tabs.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_show_tabs(toggle)------------------------------------------------><
+
+>>--show_tabs = toggle---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>toggle</term>
+      <listitem><para>The tab display boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksettabpos">
+<title>Method: set_tab_pos</title>
+<indexterm><primary>set_tab_pos</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_tab_pos</secondary></indexterm>
+<para>Toggle the display position of the tabs.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tab_pos(pos)-----------------------------------------------------><
+
+>>--tab_pos = pos--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The tab display position.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksethomegeneoustabs">
+<title>Method: set_homegeneous_tabs</title>
+<indexterm><primary>set_homegeneous_tabs</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_homogeneous_tabs</secondary></indexterm>
+<para>Toggle the display position of homogemeous tabs.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_homogeneous_tabs(toggle)-----------------------------------------><
+
+>>--homogeneous_tabs = toggle--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>toggle</term>
+      <listitem><para>The homogeneous boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksettabborder">
+<title>Method: set_tab_border</title>
+<indexterm><primary>set_tab_border</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_tab_border</secondary></indexterm>
+<para>Set the width of tab borders.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tab_border(width)------------------------------------------------><
+
+>>--tab_border = width---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>widthe</term>
+      <listitem><para>The tab border width.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksetscrollable">
+<title>Method: set_scrollable</title>
+<indexterm><primary>set_scrollable</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_scrollable</secondary></indexterm>
+<para>Set tabs as scrollable.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_tab_scrollable(toggle)-------------------------------------------><
+
+>>--tab_scrollable = toggle----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>toggle</term>
+      <listitem><para>The scrollable boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebookpopupenable">
+<title>Method: popup_enable</title>
+<indexterm><primary>popup_enable</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_popup_enable</secondary></indexterm>
+<para>Enable popups.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--popup_enable()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookpopupdisable">
+<title>Method: popup_disable</title>
+<indexterm><primary>popup_disable</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>popup_disable</secondary></indexterm>
+<para>Disable popups.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--popup_disable()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtknotebookgetcurrentpage">
+<title>Method: get_current_page</title>
+<indexterm><primary>get_current_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>get_current page</secondary></indexterm>
+<para>Get the current page number.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_current_page()---------------------------------------------------><
+
+>>--current_page()-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Page number</para>
+</section>
+
+<section id="gtknotebooksetcurrentpage">
+<title>Method: set_current_page</title>
+<indexterm><primary>set_current_page</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>set_current page</secondary></indexterm>
+<para>Set the current page.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_current_page(page)-----------------------------------------------><
+
+>>--current_page = page--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page number.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtknotebooksignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtknotebooksignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKNotebook</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKNotebook Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>change_current_page</entry>
+   <entry>signal_change_current_page</entry>
+</row>
+<row>
+   <entry>create_window</entry>
+   <entry>signal_create_window</entry>
+</row>
+<row>
+   <entry>focus_tab</entry>
+   <entry>signal_focus_tab</entry>
+</row>
+<row>
+   <entry>move_focus_out</entry>
+   <entry>signal_move_focus_out</entry>
+</row>
+<row>
+   <entry>page_added</entry>
+   <entry>signal_page_added</entry>
+</row>
+<row>
+   <entry>page_removed</entry>
+   <entry>signal_page_removed</entry>
+</row>
+<row>
+   <entry>page_reordered</entry>
+   <entry>signal_page_reordered</entry>
+</row>
+<row>
+   <entry>reorder_tab</entry>
+   <entry>signal_reorder_tab</entry>
+</row>
+<row>
+   <entry>select_tab</entry>
+   <entry>signal_select_tab</entry>
+</row>
+<row>
+   <entry>switch_page</entry>
+   <entry>signal_switch_page</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ****************************** -->
+<!-- ********** GTKTable ********** -->
+<!-- ****************************** -->
+
+<section id="gtktable"><title>GTKTable</title>
+<para>The GTKTable class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This widget provides a user specified number of horizontal and vertical cells. Each
+cell can contain one child widget. When the table is resized all the cells are proportionately
+resized as well but all cells retain the original relative position.</para>
+
+<section id="gtktableinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTable</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a table.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTable~new(rows, cols, homog)-------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>rows</term>
+      <listitem><para>Table rows.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>cols</term>
+      <listitem><para>Table columns.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>homog</term>
+      <listitem><para>Table homegeneous boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktableattach">
+<title>Method: attach</title>
+<indexterm><primary>attach</primary></indexterm>
+<indexterm><primary>GTKTable</primary>
+<secondary>attach</secondary></indexterm>
+<para>Attach a widget to a table.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--attach(widget, left, right, top, bottom, xopt, yopt, xpad, ypad)-----><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>widget</term>
+      <listitem><para>Widget to be added.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>left</term>
+      <listitem><para>Left position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>right</term>
+      <listitem><para>Right position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>top</term>
+      <listitem><para>Top position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bottom</term>
+      <listitem><para>Bottom position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>xopt</term>
+      <listitem><para>X options.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>yopt</term>
+      <listitem><para>Y optiions.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>xpad</term>
+      <listitem><para>X padding.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ypad</term>
+      <listitem><para>Y padding.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktableattachdefaults">
+<title>Method: attach_defaults</title>
+<indexterm><primary>attach_defaults</primary></indexterm>
+<indexterm><primary>GTKTable</primary>
+<secondary>attach_defaults</secondary></indexterm>
+<para>Attach a widget to a table with default options and padding.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--attach_defaults(widget, left, right, top, bottom)--------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>widget</term>
+      <listitem><para>Widget to be added.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>left</term>
+      <listitem><para>Left position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>right</term>
+      <listitem><para>Right position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>top</term>
+      <listitem><para>Top position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bottom</term>
+      <listitem><para>Bottom position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktablesetrowspacings">
+<title>Method: set_row_spacings</title>
+<indexterm><primary>set_row_spacings</primary></indexterm>
+<indexterm><primary>GTKTable</primary>
+<secondary>set_row_spacing</secondary></indexterm>
+<para>Set the table row spacing.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_row_spacing(spacing)---------------------------------------------><
+
+>>--row_spacing = spacing------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>spacing</term>
+      <listitem><para>Row spacing.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktablesetcolspacings">
+<title>Method: set_col_spacings</title>
+<indexterm><primary>set_col_spacings</primary></indexterm>
+<indexterm><primary>GTKTable</primary>
+<secondary>set_col_spacing</secondary></indexterm>
+<para>Set the table column spacing.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_col_spacing(spacing)---------------------------------------------><
+
+>>--col_spacing = spacing------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>spacing</term>
+      <listitem><para>Column spacing.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKExpander ********** -->
+<!-- ********************************* -->
+
+<section id="gtkexpander"><title>GTKExpander</title>
+<para>The GTKExpander class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>This wdget can hide or show its child widget by clicking on the expabder triangle.
+The child widget appears below the expander widget.</para>
+
+<section id="gtkexpandernewwithmnemonic">
+<title>Method: newwithmnemonic (class method)</title>
+<indexterm><primary>newwithmnemonic</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>newwithmnemonic</secondary></indexterm>
+<para>Create an expander.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKExpander~newwithmnemonic(--+---------+--)------------------------><
+                                   +--label--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The expander label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkexpanderinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an expander.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKExpander~new(--+---------+--)------------------------------------><
+                       +--label--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The expander label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkexpandersetexpanded">
+<title>Method: set_expanded</title>
+<indexterm><primary>set_expanded</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>set_expanded</secondary></indexterm>
+<para>Set the expander state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_expanded(state)--------------------------------------------------><
+
+>>--expanded = state-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>state</term>
+      <listitem><para>The expander state flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkexpandersetlabel">
+<title>Method: set_label</title>
+<indexterm><primary>set_label</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>set_label</secondary></indexterm>
+<para>Set the expander label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_label(label)-----------------------------------------------------><
+
+>>--label = label--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>label</term>
+      <listitem><para>The expander label.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkexpandergetlabel">
+<title>Method: get_label</title>
+<indexterm><primary>get_label</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>get_label</secondary></indexterm>
+<para>Get the expander label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_label()----------------------------------------------------------><
+
+>>--label()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Label</para>
+</section>
+
+<section id="gtkexpandersetuseunderline">
+<title>Method: set_use_underline</title>
+<indexterm><primary>set_use_underline</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>set_use_underline</secondary></indexterm>
+<para>Set the expander underline.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_use_underline(flag)----------------------------------------------><
+
+>>--use_underline = flag-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>   The expander underline flag</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkexpandersetspacing">
+<title>Method: set_spacing</title>
+<indexterm><primary>set_spacing</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>set_spacing</secondary></indexterm>
+<para>Set the expander spacing.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_spacing(spacing)-------------------------------------------------><
+
+>>--spacing = spacing----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>spacing</term>
+      <listitem><para>The expander spacing amount.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkexpandersignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkexpandersignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKExpander</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKExpander Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>activate</entry>
+   <entry>signal_activate</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

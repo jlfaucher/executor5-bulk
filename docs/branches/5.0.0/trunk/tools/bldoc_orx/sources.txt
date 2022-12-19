@@ -1,0 +1,136 @@
+Sources for the tools used by this package
+------------------------------------------
+
+This package uses multiple tools and files which were collected from various
+locations.  In most cases they are being used unmodified but in others, changes
+have been made.  This file provides information on where the tools were found in
+case the user needs further documentation about them.
+
+Fonts
+-----
+
+The style sheets supplied by Publican call for the use of two sets of fonts that
+were developed by RedHat - Liberation Sans and Liberation Mono.  These font
+packages are available here:
+https://www.fontsquirrel.com/fonts/liberation-sans
+https://www.fontsquirrel.com/fonts/liberation-mono
+On Windows, the setup.rex program puts the unzipped contents of both into the
+Liberation Fonts sub-folder but does not install them.  On some Linux
+distributions, especially those from RedHat, these fonts may be installed by
+default.  On other distributions and MacOs, they may be downloaded and installed
+using the approriate tools for that platform.
+
+XSLTPROC
+--------
+
+This is the transform tool whose home page is here:
+http://xmlsoft.org/XSLT/xsltproc2.html
+On MacOS this package is already installed so no further action is required.  On
+Linux you must install the package using the appropriate command for your
+distribution.  On Windows a link on that page takes you to the page where the
+Windows binaries can be downloaded: https://www.zlatkovic.com/projects/libxml/
+
+There are actually four packages that are required: libxlt, libxml, iconv and
+zlib.  For Windows, the unzipped versions of those packages are placed by
+setup.rex in sub-folders of this package.  Each of them has a bin\ directory
+containing the executables that must be accessible.  Rather than adding them to
+the path, the contents have been copied to the main package directory.  No
+changes are needed.
+
+FOP
+---
+
+This is the Apache tool used to create a PDF whose home page is here:
+https://xmlgraphics.apache.org/fop/2.6/
+The unzipped version of this package is placed in a sub-folder by setup.rex on
+Windows.  Use the appropriate install tools on MacOS or on Linux to make the
+tool available.  On Windows the program is run by executing an included .bat
+file so nothing needs to be copied in order to make it accessible.  No changes
+are needed.  This package is not needed if you are only going to build the HTML
+version of the documents.
+
+DocBook DTD and Style Sheets
+----------------------------
+
+The transform process needs access to the DocBook DTD and the DocBook style
+sheets.  While these can be retrieved when needed over the Internet, performance
+can be improved by up to a factor of 100 by accessing them locally.  The DTD
+files are at http://www.oasis-open.org/docbook/xml/4.5/docbook-xml-4.5.zip and
+the style sheets are at
+https://github.com/docbook/xslt10-stylesheets/releases/download/release/1.79.2/
+in the docbook-xsl-nons-1.79.2.zip file.  On Linux there are three packages that
+need to be installed: docbook, docbook-xml, and docbook-xsl.  In addition, the
+catalog file needs to have a line added so that the style sheets can be located.
+On MacOs there are two packages that need to be installed: docbook and
+docbook-xsl.  The setup program on Windows places the unzipped versions of both
+the DTD files and the style sheets in a sub-folder.  No changes are needed to
+either of these packages.
+
+In addition to the unmodified style sheets, there are four style sheets that are
+copied from the Publican tools located in our SVN repository on Source Forge:
+https://sf.net/projects/oorexx/files/oorexx-docs-bildutils/publican_obsolete
+The file PublicanWindows.zip contains a directory Publican\xsl\ and from it the
+files defaults.xsl, pdf.xsl, html.xsl, and xhtml-common.xsl have been copied.
+Defaults.xsl is unchanged but pdf.xsl has been modified 1) to remove a
+Publican-supplied fix for a problem with footnotes since it is now fixed by
+DocBook itself, 2) to turn off using extensions for table columns as we are not
+using Perl, 3) to add templates for the removal of leading and trailing blank
+lines from our examples, 4) to add a parameter to set the depth for the Table Of
+Contents to 3 in order to match the historical look of our documents, 5) to turn
+off hyphenation since it is not honored, and 6) to update the import statements
+to point to GitHub rather than SourceForge.  The html.xsl file has been modified
+1) to import the chunkfast.xsl file rather than chunk.xsl in order to improve
+performance on the larger documents, 2) to add a parameter to suppress the
+messages produced as each individual HTML file is produced, and 3) to update the
+import statements to point to GitHub rather than SourceForge.  Finally, the
+xhtml-common.xsl file has been modified 1) to supply the title for the web pages
+which had been passed as a parameter by Publican, 2) to turn off using
+extensions for table columns as we are not using Perl, 3) to turn off scaling of
+images as they are now SVG format, and 4) to remove a section referring to
+Publican that was inserted into the Web pages.
+
+Configuration File for FOP
+--------------------------
+
+In order for FOP to find the graphics files that it is to include in the PDF, it
+needs information that is supplied in a configuration file, fop.cfg.  This file
+also tells it to determine the fonts that are available for use on the system so
+it will use the Liberation fonts if they have been installed.  This file was
+created based on the sample fop.xconf provided in the fop package.
+
+ooRexx Programs
+---------------
+
+In order to simplify the execution of the tools and hide the specific syntax
+they require, several ooRexx programs were written based on the Windows batch
+files created originally.
+
+docpath.rex     - used to specify the location of the working copy of the
+                  documents
+docprep.rex     - used to specify the book/document to be built and to do
+                  preprocessing of the files associated with that book
+doc2fo.rex      - used to transform the preprocessed source files to XSL-FO
+                  format
+fo2pdf.rex      - used to convert the XSL-FO format file to a PDF
+doc2HTML.rex    - used to transform the source files for a book/document
+                  to chunked HTML files and optionally ZIP them into a single
+                  file; will run the docprep program if needed
+doc2pdf.rex     - a combination program that will run docprep, doc2fo and fo2PDF
+                  for the specified book/document
+html2zip.rex    - used to ZIP the HTML files produced by doc2HTML either as part
+                  of that program or afterward as a separate step
+
+Several other ooRexx programs are part of the package as well.
+
+setup.rex       - used on Windows to automate the installation of the external
+                  packages required
+doc_props.rex   - the REQUIRES file used to create and update the properties
+                  file that contains the values of various parameters used by
+                  the different programs
+setprop.rex     - a utility program that can display or set the values of the
+                  various parameters stored in the properties file
+getdocrev.rex   - a utility program that obtains the revision level and the
+                  revision date of a book/document which is then used by the
+                  docprep program to update the setting of the appropriate
+                  values in that book's entity file.  May also be run from the
+                  command line.

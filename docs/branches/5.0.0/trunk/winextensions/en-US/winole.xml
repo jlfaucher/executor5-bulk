@@ -1,0 +1,2016 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2021, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chapOLEAutomation"><title>OLE Automation</title>
+<para>
+  OLE (Object Linking and Embedding) automation is a subset of COM (Component Object Model). These
+  technologies were first developed on Windows and are deeply embedded in the Windows operating system.
+  Although COM is not tied to the Windows operating system, in practice it is not seen much on other
+  operating systems. Because of this, the ooRexx classes supporting OLE Automation are currently Windows
+  only classes.
+</para>
+
+<section id="sectOLEAutomtion"><title>Overview of OLE Automation</title>
+<indexterm><primary>OLE Automation</primary>
+<secondary>overview</secondary></indexterm>
+<para>
+  OLE (Object Linking and Embedding) is an implementation of COM (Component Object Model). OLE automation
+  makes it possible for one application to manipulate objects implemented in another application, or to
+  expose objects so they can be manipulated. ooRexx provides two classes, OLEObject (<xref
+  linkend="clsOLEObject" />) and OLEVariant (<xref linkend="clsOLEVariant" /> that allow
+  the programmer to take advantage of this ability to manipulate objects that are exposed as OLE objects.
+</para>
+<para>
+  An automation client is an application that can manipulate exposed objects belonging to another
+  application. An automation server is an application that exposes the objects. The OLEObject class
+  enables Rexx to be an OLE automation client. In addition, some automation servers have an event mechanism (<xref
+  linkend="oleevents" />) that allows them to invoke methods in the OLE automation client.
+  The OLEObject class also supports this mechanism.
+</para>
+<para>
+  Applications can provide OLE objects, and OLE objects that support automation can be used by a Rexx
+  script to remotely control the object through the supplied methods. This lets you write a Rexx script
+  that, for example, starts a Web browser, navigates to a certain page, and changes the display mode of
+  the browser.
+</para>
+<para>
+  Every application that supports OLE places a unique identifier in the registry. This identifier is
+  called the class ID (CLSID) of the OLE object. It consists of several hexadecimal numbers separated by
+  the minus symbol.
+</para>
+<para>
+  <emphasis role="bold">Example:</emphasis> CLSID of <trademark class="registered">Microsoft</trademark>
+  Internet Explorer (Version 5.00.2014.0216):
+</para>
+<programlisting>
+"{0002DF01-0000-0000-C000-000000000046}"
+</programlisting>
+<para>
+  The CLSID number can prove inconvenient when you want to create or access a certain object, so a
+  corresponding easy-to-remember entry is provided in the registry, and this entry is mapped to the
+  CLSID. This entry is called the ProgID (the program ID), and is a string containing words separated by
+  periods.
+</para>
+<para>
+  <emphasis role="bold">Example:</emphasis> ProgID of Microsoft Internet Explorer:
+  <computeroutput>"InternetExplorer.Application"</computeroutput>
+</para>
+<para>
+  To find the ProgID of an application, you can use the sample script
+  <computeroutput>OLEINFO.REX</computeroutput> or the Microsoft OLEViewer, you can consult the
+  documentation of the application, or you can search the registry manually.
+</para>
+<para>
+  Several sample programs are provided in the Open Object Rexx installation directory under
+  <computeroutput>samples\ole</computeroutput>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  The apps directory contains examples of how to use Rexx to remote-control other applications.
+</para>
+</listitem>
+<listitem>
+<para>
+  The oleinfo directory is a sample Rexx application that can be used to browse through the information
+  an OLE object provides.
+</para>
+</listitem>
+<listitem>
+<para>
+    In the adsi directory there are eight examples of how to use the Active Directory Services Interface
+    with the Rexx OLE interface.
+</para>
+</listitem>
+<listitem>
+<para>
+  The methinfo directory contains a very basic example of how to access the information an OLE object
+  provides.
+</para>
+</listitem>
+<listitem>
+<para>
+  Finally, the wmi directory contains five examples of how to work with the Windows Management
+  Instrumentation.
+</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section id="oleevents"><title>OLE Events</title>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLE events</secondary></indexterm>
+<para>
+  Some, but not all, OLE automation objects support <emphasis role="italic">events</emphasis>. The most
+  prevalent use of OLE is for the automation server (the OLE object) to implement methods that the
+  automation client (the ooRexx OLEObject) invokes. However, it is also possible for the automation
+  client (the ooRexx OLEObject) to implement methods that the automation server (the OLE object) invokes.
+</para>
+<para>
+  The methods that the automation client implements are called event methods and the automation server
+  that suports event methods is called a <emphasis role="italic">connectable</emphasis> object. The
+  connectable object defines the events it supports by defining the name of the method and its arguments,
+  but does not implement the method. Rather the automation client implements the method. The client asks
+  the automation server to make a <emphasis role="italic">connection</emphasis>. If the connection is
+  established, then from that point on whenever one of the defined events occurs, the server invokes the
+  event method on the connected client.
+</para>
+<para>
+  In effect, what is happening is that the automation server is <emphasis
+  role="italic">notifying</emphasis> the automation client that some event has occurred and giving the
+  client a chance to react to the event. Any number of clients can be connected to the same connectable
+  object at the same time. Each client will receive a notification for any event they are interested in.
+  There is no need for the client to receive notifications for every event. When the client is not
+  interested in an event, the client simply does not implement a method for that event.
+</para>
+<para>
+  The original implementation of OLEObject allowed the Rexx programmer to use events in this way: The
+  programmer defines and implements a subclass of the OLEObject. Within the subclass, the programmer
+  defines and implements the event methods for which she wants to receive notifications. The programmer
+  has the client make a connection to the automation server at the time the OLEObject object is instantiated (<xref
+  linkend="oleobjinit" /> by using the <computeroutput>WITHEVENTS</computeroutput>
+  keyword for the <emphasis role="italic">events</emphasis> argument. If the
+  <computeroutput>WITHEVENTS</computeroutput> keyword is not used during instantiation, then no event
+  connection can be made.
+</para>
+<para>
+  This is relatively easy to understand and a simple example should make this clear. In the following,
+  rather than create a new OLEObject, the programmer defines a subclass of the OLEObject, a WatchedIE
+  class. The WatchedIE object is instantiated with events. This tells the OLEObject to make an event
+  connection, if possible. In the subclass, the programmer implements the events he is interested in
+  receiving notifications for.
+</para>
+<example id="ex.ole-ie">
+<title>OLEObject - WatchedIE</title>
+<programlisting>
+<![CDATA[
+
+-- Instantiate an instance of the subclassed OLEObject
+myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
+...
+
+-- This class is derived from OLEObject and contains several methods
+-- that will be called when certain events take place.
+::class 'WatchedIE' subclass OLEObject
+
+-- This is an event of the Internet Explorer */
+::method titleChange
+  use arg Text
+  say "The title has changed to:" text
+
+-- This is an event of the Internet Explorer
+::method beforeNavigate2
+  use arg pDisp, URL, Flags, TargetFrameName, PostData, Headers, Cancel
+  ...
+
+-- This is an event of the Internet Explorer */
+::method onQuit
+  ...
+
+]]>
+</programlisting>
+</example>
+<para>
+  However, the process described above only allows using events with OLEObject objects that are directly
+  instantiated by the programmer. There are a number of OLE objects that support events, where the
+  OLEObject object is not instantiated by the programmer, but rather is returned from a method
+  invocation. Prior to ooRexx 4.0.0, events could not be used with these objects. In 4.0.0, methods were
+  added to the OLEObject class that allow using events with any OLE object that supports events.
+</para>
+<para>
+  This second process works this way: With an already instantiated object, the programmer can create
+  method objects for any events of interest and use the addEventMethod () (<xref
+  linkend="oleobjaddeventmethod" />) method to add the method to the instantiated
+  object. Then the connectEvents () (<xref linkend="oleobjconnectevents" />) method is used to connect
+  the automation client (the instantiated object in this case) to the connectable OLE automation server.
+</para>
+<para>
+  The following example demonstrates this second process that is available in ooRexx 4.0.0 and onwards.
+</para>
+<example id="ex.ole-word">
+<title>OLEObject - Watch Word</title>
+<programlisting>
+<![CDATA[
+
+  wordApp = .OLEObject~new("Word.Application")
+  wordApp~visible = .true
+  document = wordApp~documents~Add
+
+  -- Use the isConnectable method to ensure the object supports connections.
+  if document~isConnectable then do
+
+    -- Create a method for the OLEEvent_Close event. From the Word documentation
+    --and experimentation, it is known that this event has no arguments.
+    mArray = .array~new
+    mArray[1] = 'say "Received the OLEEvent_Close event."'
+    mArray[2] = 'say "  Event has" arg() "parameters."'
+    mArray[3] = 'say'
+
+    mClose = .Method~new("OLEEvent_Close", mArray)
+
+    -- Now add this method to the document object.
+    document~addEventMethod("OLEEvent_Close", mClose)
+
+    -- Tell the object to make an events connection.
+    document~connectEvents
+  end
+
+]]>
+</programlisting>
+</example>
+<para>
+  The preceding example brings up one last point that is important to note when defining event methods.
+  It is possible for an event method to have the same name as a normal invocation method of the OLE
+  object.  This gives rise to this scenario:
+</para>
+<para>
+  The programmer adds an ooRexx event method to the OLEObject with that name. Then the programmer tries
+  to invoke the normal method.  However, the invocation will no longer get forwarded to the unknown() (<xref
+  linkend="oleobunk" />) method. Instead the event method by the same name is invoked. This
+  is the case in the above example. The document object has a <computeroutput>close</computeroutput>()
+  method that is used to close the document. The document also has the
+  <computeroutput>close</computeroutput>() event method that is used to notify clients that the document
+  is about to close.
+</para>
+<para>
+  To prevent this scenario, when an event method of an OLE object has the same name as a normal method
+  name, the programmer must prepend <computeroutput>OLEEvent_</computeroutput> to the method name. The
+  implementation of OLEObject assumes the programmer has done so. If the programmer does not name the
+  event methods using this convention, the results are unpredictable.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis> that <emphasis role="italic">only</emphasis> the event method
+  names that have matching normal event names can be prepended with the OLEEvent_prefix. Other event
+  names must not have the prefix. One way to check for this is to use the getKnownEvents() (<xref
+  linkend="oleobgetknev" />) method. This method will return the correct names for
+  all events the OLE object supports.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  This example is a complete working program. To run it, Microsoft OutLook must be installed. The
+  program demonstrates some of the various methods of the OLEObject that deal with events. The interface
+  to the program is simplistic, but workable.
+</para>
+<para>
+  Once the program starts, the user controls it by creating specific named files in working directory of
+  the program.  This could be done for example using echo:
+<programlisting>
+<![CDATA[
+echo " " > stop.monitor
+]]>
+</programlisting>
+  The three specific file names are: <computeroutput>stop.monitor</computeroutput>,
+  <computeroutput>pause.monitor</computeroutput>, and <computeroutput>restart.monitor</computeroutput>.
+  The stop file ends the program. The pause file has the program stop monitoring for new mail, but keep
+  running. The restart file has the program restart monitoring from the paused state.
+</para>
+<example id="ex.ole-outlook">
+<title>OLEObject - Monitor Outlook</title>
+<programlisting>
+<![CDATA[
+
+/* Monitor OutLook for new mail */
+  say; say; say 'ooRexx Mail Monitor version 1.0.0'
+
+  outLook = .oleObject~new("Outlook.Application")
+
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  if \ inboxItems~isConnectable then do
+    say 'Inbox items is NOT connectable, quitting'
+    return 99
+  end
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+  inboxItems~connectEvents
+
+  if \ inboxItems~isConnected then do
+    say 'Error connecting to inbox events, quitting'
+    return 99
+  end
+
+  monitor = .Monitor~new
+  say 'ooRexx Mail Monitor - monitoring ...'
+  do while monitor~isActive
+    j = SysSleep(1)
+    status = monitor~getStatus
+
+    select
+      when status == 'disconnect' then do
+        inboxItems~disconnectEvents
+        say 'ooRexx Mail Monitor - paused ...'
+      end
+      when status == "reconnect" then do
+        inboxItems~connectEvents
+        say 'ooRexx Mail Monitor - monitoring ...'
+      end
+      otherwise do
+        nop
+      end
+    end
+    -- End select
+  end
+  say 'ooRexx Mail Monitor version 1.0.0 ended'
+
+return 0
+
+::method printNewMail unguarded
+  use arg mailItem
+  say 'You have mail'
+  say 'Subject:' mailItem~subject
+
+::class 'Monitor'
+::method init
+  expose state active
+
+  state = 'continue'
+  active = .true
+  j = SysFileDelete('stop.monitor')
+  j = SysFileDelete('pause.monitor')
+  j = SysFileDelete('restart.monitor')
+
+::method isActive
+  expose active
+  return active
+
+::method getStatus
+  expose state active
+
+  if SysIsFile('stop.monitor') then do
+    j = SysFileDelete('stop.monitor')
+    active = .false
+    state = 'quit'
+    return state
+  end
+
+  if SysIsFile('pause.monitor') then do
+    j = SysFileDelete('pause.monitor')
+    if state == "paused" then return "continue"
+
+    if state \== 'quit' then do
+      state = "paused"
+      return 'disconnect'
+    end
+  end
+
+  if SysIsFile('restart.monitor') then do
+    j = SysFileDelete('restart.monitor')
+    if state == 'continue' then return state
+
+    if state \== 'quit' then do
+      state = 'continue'
+      return 'reconnect'
+    end
+  end
+
+  return 'continue'
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="clsOLEObject"><title>The OLEObject Class</title>
+<indexterm><primary>OLEObject class</primary></indexterm>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLEObject class</secondary></indexterm>
+<para>
+  The OLEObject class is a built-in class. No <computeroutput>::requires</computeroutput> directive is
+  needed to use the class.
+</para>
+<para>
+  <emphasis role="bold">Methods available to the OLEObject class:</emphasis>
+</para>
+<simplelist>
+<member>new (Class method)</member>
+<member>getObject(Class method)</member>
+<member>addEventMethod</member>
+<member>class</member>
+<member>CLSID</member>
+<member>copy</member>
+<member>connectEvents</member>
+<member>disconnectEvents</member>
+<member>dispatch</member>
+<member>getConstant</member>
+<member>getKnownEvents</member>
+<member>getKnownMethods</member>
+<member>getOutParameters</member>
+<member>hasOleMethod</member>
+<member>isConnectable</member>
+<member>isConnected</member>
+<member>ProgID</member>
+<member>removeEventHandler</member>
+<member>removeEventMethod</member>
+<member>start</member>
+<member>startWith</member>
+<member>unknown</member>
+</simplelist>
+<para>
+  <emphasis role="bold">Note:</emphasis> It is somewhat useful to think of the Rexx OLEObject object as a
+  proxy to the real OLE object. The real OLE object has its own methods. Which methods it has is
+  dependent on its individual implementation.  These methods are then accessed transparently through the
+  unknown() (<xref linkend="oleobunk" />) method mechanism of the OLEObject by invoking a method of the
+  same name on the OLEObject object.
+</para>
+
+<section id="oleobjinit"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Instantiates a new OLEObject as a proxy for a COM / OLE object with the specified <emphasis
+  role="italic">classID</emphasis> (the <computeroutput>ProgID</computeroutput> or
+  <computeroutput>CLSID</computeroutput>). If the COM / OLE object can not be accessed or created, an
+  error will be raised. See the list of OLE specific errors in the Open Object Rexx Reference document.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>classID</term>
+      <listitem>
+        <para>
+          The <computeroutput>ProgID</computeroutput> or <computeroutput>CLSID</computeroutput> that
+          identifies the COM / OLE object to proxy for.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>events</term>
+      <listitem>
+        <para>
+          Controls how the event methods of the COM / OLE object are handled:
+        </para>
+        <para>
+          If the argument is omitted completely, then no action concerning the event methods is taken.
+        </para>
+        <para>
+           If the argument is NOEVENTS then the COM / OLE object is queried to determine if it is a
+           connectable object. If it is, an internal table is constructed listing all the event methods.
+           But the object is not connected.
+        </para>
+        <para>
+           If the argument is WITHEVENTS then the COM / OLE object is queried to determine if it is a
+           connectable object. If it is, an internal table is constructed listing all the event methods,
+           and an event connection is established.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>getObject</term>
+      <listitem>
+        <para>
+          A flag asking to first try to get an already instantiated OLE object, rather than instantiate a
+          new object. Some OLE automation servers register themselves with the operating system when an
+          object is first created, but not all do. If this flag is true, then the OLEObject first tries
+          to proxy for an already running OLE / COM object. If this fails, then a new OLE / COM object is
+          instantiated.
+        </para>
+        <para>
+          If the flag is omitted, or <computeroutput>.false</computeroutput> then no attempt to look for
+          an already running OLE / COM object is made.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+<programlisting>
+<![CDATA[
+myOLEObject = .OLEObject~new("InternetExplorer.Application")
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="oleobgetob"><title>getObject (Class method)</title>
+<indexterm><primary>getObject method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getObject method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getobject.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  This is a class method that allows you to obtain an OLE object through the use of a moniker. A moniker
+  is a string and is similar to a nickname. Monikers are used by OLE to connect to and activate OLE
+  objects. OLE returns the object that the moniker identifies.
+</para>
+<para>
+  If the object is already running, OLE will find it in memory. If the object is stored passively on
+  disk, OLE will locate a server for the object, run the server, and have the server bring the object
+  into the running state. This makes monikers very easy for the automation client to use. OLE hides all
+  the details from the client. However, since the OLEObject also hides all the details when a new OLE
+  object is instantiated, for the Rexx programmer there is not much difference between using the
+  <computeroutput>getObject</computeroutput> method and using the <computeroutput>new</computeroutput>
+  method.
+</para>
+<para>
+  Note that file system names are monikers. Therefore, if a file is associated with an application that
+  is an OLE automation server, a new OLE object can be instantiated by using the file name as the
+  moniker. Obviously, this is not true of every file. It is true for files like
+  <computeroutput>.xls</computeroutput> and <computeroutput>.doc</computeroutput> files, for example,
+  because Word and Excel are OLE automation applications.
+</para>
+<para>
+  The optional <emphasis role="italic">class</emphasis> argument can be used to specify a subclass of
+  OLEObject, and can be used to obtain an OLE object that supports events
+  (the<computeroutput>&apos;WITHEVENTS&apos;</computeroutput> option will be used in this case).  This
+  method is similar to the <computeroutput>new</computeroutput> method where the programmer supplies a
+  ProgID or CLSID. In this case the programmer supplies a moniker.
+</para>
+<example id="ex.ole-getObkectMoniker">
+<title>OLEObject - getObjectMoniker method</title>
+<programlisting>
+/* create a Word.Document by opening a certain file */
+myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjaddeventmethod"><title>addEventMethod</title>
+<indexterm><primary>addEventMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addEventMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_addeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  <computeroutput>addEventMethod</computeroutput> adds a new method to this object's collection of
+  methods. The <emphasis role="italic">name</emphasis> argument specifies the name of the new method and
+  the <emphasis role="italic">methodObject</emphasis> argument defines the method. The acceptable values
+  for <emphasis role="italic">methodObject</emphasis> are the same as those for the second argument to
+  the <computeroutput>setMethod</computeroutput> method of the<computeroutput>.Object</computeroutput>
+  class. That is, it can be a method object, a string containing a method source line, or an array of
+  strings containing individual method source lines.
+</para>
+<para>
+  The purpose of this method is to add an event method to a OLEObject after the object has been
+  instantiated. See the OLE Events (<xref linkend="oleevents" />) section for more details on events.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  Note that in this example, the printNewMail method is defined as a floating method. See the
+  documentation for the <computeroutput>.methods</computeroutput> directory in the Open Object Rexx
+  Reference book for more details if needed.
+</para>
+<example id="ex.ole-printNewMail">
+<title>OLEObject - printNewMail method</title>
+<programlisting>
+<![CDATA[
+
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+
+...
+
+::method printNewMail unguarded
+  use arg mailItem
+  say 'You have mail'
+  say 'Subject:' mailItem~subject
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobclass" revisionflag="added"><title>&added50;class</title>
+<indexterm><primary>class method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>class</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_class.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('class')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-classOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  clz=oleObj~class:.object    -- use method 'class' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="oleobclsid" revisionflag="added"><title>&added50;CLSID</title>
+<indexterm><primary>CLSID attribute</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>CLSID</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_clsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the string value of the CLSID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
+</section>
+
+<section id="oleobcopy" revisionflag="added"><title>&added50;copy</title>
+<indexterm><primary>copy method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>copy</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_copy.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('copy')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-copyOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  o=oleObj~copy:.object    -- use method 'copy' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjconnectevents"><title>connectEvents</title>
+<indexterm><primary>connectEvents method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>connectEvents</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_connectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  The connectEvents() method is used to connect the instantiated automation client (the OLEObject
+  subclass object) to the automation server (the OLE object) at any time. The method returns
+  <computeroutput>.true</computeroutput> if the connection was made, otherwise
+  <computeroutput>.false</computeroutput>. Remember, not all OLE objects support events. The programmer
+  can determine if the OLE object supports events by using the isConnectable() (<xref
+  linkend="oleobjisconnectable" />) method.
+</para>
+<example id="ex.ole-connectEvents">
+<title>OLEObject - connectEvents method</title>
+<programlisting>
+<![CDATA[
+
+  wordApp = .OLEObject~new("Word.Application")
+  wordApp~visible = .true
+  document = wordApp~documents~Add
+
+  wordApp~connectEvents
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjdisconnectevents"><title>disconnectEvents</title>
+<indexterm><primary>disconnectEvents method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disconnectEvents</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_disconnectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  This method disconnects from the connectable OLE object. The method returns
+  <computeroutput>.false</computeroutput> if there is not a current connection, otherwise
+  <computeroutput>.true</computeroutput>. After this method is called, the OLE object will no longer
+  invoke the event methods, in effect stopping event notifications.
+</para>
+<para>
+  The internal data structures used to manage events remain intact. The programmer can use the connectEvents() (<xref
+  linkend="oleobjconnectevents" />) method to reconnect at any time. Since the
+  internal data structures do not need to be rebuilt, this will save some small amount of processor time.
+  To completely remove the internal data structures use the removeEventHandler() (<xref
+  linkend="oleobjremoveeventhandler" />) method.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  This example shows some code snippets from a program that monitors the user's inbox in OutLook. When a
+  new mail item arrives, the user is notified. The interface for the program allows the user to turn off
+  the notifications when she wants, then turn them back on later. When the interface signals the program
+  to stop the notifications, the program simply disconnects the events from the OutLook object. When the
+  user wants to resume notifications, the program reconnects the events.
+</para>
+<example id="ex.ole-disconnectEvents">
+<title>OLEObject - disconnectEvents method</title>
+<programlisting>
+<![CDATA[
+
+  outLook = .oleObject~new("Outlook.Application")
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  ...
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+  inboxItems~connectEvents
+
+  ...
+
+    select
+      when status == 'disconnect' then do
+        inboxItems~disconnectEvents
+        say 'ooRexx Mail Monitor - paused ...'
+      end
+      when status == "reconnect" then do
+        inboxItems~connectEvents
+        say 'ooRexx Mail Monitor - monitoring ...'
+      end
+      otherwise do
+        nop
+      end
+    end
+    -- End select
+
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oledispatch"><title>dispatch</title>
+<indexterm><primary>dispatch method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>dispatch method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_dispatch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Dispatches a method with the optionally supplied arguments.
+</para>
+</section>
+
+<section id="oleobgetcon"><title>getConstant</title>
+<indexterm><primary>getConstant method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getConstant</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getconstant.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Retrieves the value of a constant that is associated with this
+OLE object. If no constant of that name exists, the .Nil object will be returned.
+You can also omit the name of the constant; this returns a stem with all known
+constants and their values. In this case the constant names will be prefixed
+with a "!" symbol.</para>
+<para><emphasis role="bold">Example 1:</emphasis></para>
+<programlisting>
+myExcel = .OLEObject~new("Excel.Application")
+say "xlCenter has the value" myExcel~getConstant("xlCenter")
+myExcel~quit
+exit
+</programlisting>
+<para>Possible output:</para>
+<programlisting>
+xlCenter has the value -4108
+</programlisting>
+<para><emphasis role="bold">Example 2:</emphasis></para>
+<programlisting>
+myExcel = .OLEObject~new("Excel.Application")
+constants. = myExcel~getConstant
+myExcel~quit
+
+do i over constants.
+  say i"="constants.i
+end
+</programlisting>
+<para>Possible output:</para>
+<programlisting>
+!XLFORMULA=5
+!XLMOVE=2
+!XLTEXTMAC=19
+...
+</programlisting>
+</section>
+
+<section id="oleobgetknev"><title>getKnownEvents</title>
+<indexterm><primary>getKnownEvents method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getKnownEvents method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getknownevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns a stem with information on the events (<xref linkend="oleevents" /> that the connectable OLE
+  object supports. It collects this information from the type library of the OLE object. A type library
+  provides the names, types, and arguments of the provided methods. The OLEObject object does not need to
+  be currently connected to connectable OLE object.
+</para>
+<para>
+  This method will return the event methods for any connectable object.  Prior to ooRexx 4.0.0, only
+  OLEObjects created directly, and created with the 'event' flag (WITHEVENTS or NOEVENTS) would return
+  any known events. This fact had not been fully documented. Therefore, if the user did not create the
+  OLEObject correctly, .nil would be returned for objects that did support event connections.
+</para>
+<para>
+  In 4.0.0, the behavior is fixed (or enhanced depending on the point of view) so that the known events
+  are returned for all connectable objects under all circumstances.
+</para>
+<para>The stem provides the following information:</para>
+
+<table frame="all">
+<title>Stem Information</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry>stem.0</entry>
+<entry>The number of events.</entry>
+</row>
+<row>
+<entry>stem.n.!NAME</entry>
+<entry>Name of n-th event.</entry>
+</row>
+<row>
+<entry>stem.n.!DOC</entry>
+<entry>Description of n-th event (if available).</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.0</entry>
+<entry>Number of parameters for n-th event.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!NAME</entry>
+<entry>Name of i-th parameter of n-th event.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!TYPE</entry>
+<entry>Type of i-th parameter of n-th event.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!FLAGS</entry>
+<entry>Flags of i-th parameter of n-th event; can be "in",
+"out", "opt", or any combination of these.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+  If no information is available, the .NIL object is returned. This indicates that the OLE object does
+  support events.
+</para>
+<para><emphasis role="bold">Example script:</emphasis></para>
+<programlisting>
+myIE = .OLEObject~new("InternetExplorer.Application","NOEVENTS")
+events. = myIE~getKnownEvents
+
+if events. == .nil then
+  say "Sorry, this object does not have any events."
+else do
+  say "The following events may occur:"
+  do i = 1 to events.0
+    say events.i.!NAME
+  end
+end
+
+exit
+</programlisting>
+<para><emphasis role="bold">Sample output:</emphasis></para>
+<programlisting>
+The following events may occur:
+ONTHEATERMODE
+ONFULLSCREEN
+ONSTATUSBAR
+...
+</programlisting>
+<para>
+  For an example of how to use events, see examples
+  <computeroutput>samples\ole\apps\samp12.rex</computeroutput> and
+  <computeroutput>samples\ole\apps\samp13.rex</computeroutput>. The samples directory is installed as
+  part of the normal Windows installation.
+</para>
+</section>
+
+<section id="oleobgetknme"><title>getKnownMethods</title>
+<indexterm><primary>getKnownMethods method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getKnownMethods method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getknownmethods.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a stem with information on the methods that the OLE object
+supplies. It collects this information from the type library of the object. A
+type library provides the names, types, and arguments of the provided methods.
+Parts of the supplied information have only informational character as you
+cannot use them directly.</para>
+<para>The stem provides the following information:</para>
+
+<table frame="all">
+<title>Stem Information</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry>stem.0</entry>
+<entry>The number of methods.</entry>
+</row>
+<row>
+<entry>stem.!LIBNAME</entry>
+<entry>Name of the type library that describes this object.</entry>
+</row>
+<row>
+<entry>stem.!LIBDOC</entry>
+<entry>A help string describing the type library. Only set
+when the string is available.</entry>
+</row>
+<row>
+<entry>stem.!COCLASSNAME</entry>
+<entry>COM class name of this object.</entry>
+</row>
+<row>
+<entry>stem.!COCLASSDOC</entry>
+<entry>A string describing the COM class. Only set
+when the string is supplied by the type library.</entry>
+</row>
+<row>
+<entry>stem.n.!NAME</entry>
+<entry>The name of the n-th method.</entry>
+</row>
+<row>
+<entry>stem.n.!DOC</entry>
+<entry>A help string for the n-th method. If this information
+is not supplied in the type library this value will not be set.</entry>
+</row>
+<row>
+<entry>stem.n.!INVKIND</entry>
+<entry>A number that represents the invocation kind of the
+method: 1 = normal method call, 2 =
+<computeroutput>property get</computeroutput>, 4 = <computeroutput>property
+put</computeroutput>. A normal method call is used with brackets; for a
+<computeroutput>property
+get</computeroutput> only the name is to be specified; and a
+<computeroutput>property set</computeroutput> uses
+the "=" symbol, as in these examples:
+<computeroutput>object~methodCall(a,b,c)</computeroutput>
+<computeroutput>object~propertyPut="Hello"</computeroutput>
+<computeroutput>say object~propertyGet</computeroutput></entry>
+</row>
+<row>
+<entry>stem.n.!RETTYPE</entry>
+<entry>The return type of the n-th method. The return type
+will be automatically converted to a Rexx object (see
+Type Conversion (<xref linkend="oleobtypconv" /> in
+the description of the UNKNOWN method of the OLEObject class).</entry>
+</row>
+<row>
+<entry>stem.n.!MEMID</entry>
+<entry>The MemberID of the n-th method. This is only used internally
+to call the method.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.0</entry>
+<entry>The number of parameters of the n-th method.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!NAME</entry>
+<entry>The name of the i-th parameter of the n-th method.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!TYPE</entry>
+<entry>The type of the i-th parameter of the n-th method.</entry>
+</row>
+<row>
+<entry>stem.n.!PARAMS.i.!FLAGS</entry>
+<entry>The flags of the i-th parameter of the n-th method;
+can be "in", "out", "opt", or any combination of these (for example: "[in,
+opt]").</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>If no information is available, the .NIL object is returned.</para>
+
+<para>
+  <emphasis role="bold">Note</emphasis> that it is not required that an OLE object supply a type library.
+  The methods of OLE objects that do not supply a type library can still be invoked by name, but there is
+  no way for <computeroutput>getKnownMethods</computeroutput> to look up the methods. To use these OLE
+  objects the Rexx programmer would need to consult the documentation for the OLE object.
+</para>
+<para>
+  In addition all OLE objects have methods that can only be used internally. There are mechanisms to
+  <emphasis role="italic">hide</emphasis> these methods from the user, because they can not be used by
+  the automation client. It is possible that these are not hidden properly and will be listed when using
+  <computeroutput>getKnownMethods</computeroutput>. The following methods can not be used by an instance
+  of the OLEObject:
+</para>
+<simplelist>
+<member>AddRef</member>
+<member>GetTypeInfoCount</member>
+<member>GetTypeInfo</member>
+<member>GetIDsOfNames</member>
+<member>QueryInterface</member>
+<member>Release</member>
+</simplelist>
+<example id="ex.ole-getKnownMethods">
+<title>OLEObject - getKnownMethods method</title>
+<programlisting>
+myOLEObject = .OLEObject~new("InternetExplorer.Application")
+methods. = myOLEObject~getKnownMethods
+
+if methods. == .nil then
+  say "Sorry, no information on the methods available!"
+else do
+  say "The following methods are available to this OLE object:"
+  do i = 1 to methods.0
+    say methods.i.!NAME
+  end
+end
+
+exit
+</programlisting>
+</example>
+<para><emphasis role="bold">Sample output:</emphasis></para>
+<programlisting>
+The following methods are available to this OLE object:
+GoBack
+GoForward
+GoHome
+...
+</programlisting>
+</section>
+
+
+<section id="oleobgetoutpar"><title>getOutParameters</title>
+<indexterm><primary>getOutParameters method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getOutParameters method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getoutparameters.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array containing the results of the single
+<computeroutput>out</computeroutput> parameters
+of the OLE object, or the .NIL object if it does not have any.
+<computeroutput>Out</computeroutput> parameters
+are arguments to the OLE object that are filled in by the OLE object. As this
+is not possible in Rexx due to data encapsulation, the results are placed
+in the array mentioned above.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>Consider an OLE object method with the following signature:</para>
+<programlisting>
+aMethod([in] A, [in] B, [out] sumAB)
+</programlisting>
+<para>The resulting <computeroutput>out</computeroutput> parameter of the
+method invocation will be placed in the <computeroutput>out</computeroutput>
+array at position one; the "normal" return
+value gets processed as usual. In this case the method will return the .NIL
+object:</para>
+<example id="ex.ole-getOutParameters">
+<title>OLEObject - getOutParameters method</title>
+<programlisting>
+resultTest = myOLEObject~aMethod(1, 2, .NIL)
+say "Invocation result  :" resultTest
+say "Result in out array:" myOLEObject~getOutParameters~at(1)
+</programlisting>
+</example>
+<para>The output of this sample script will be:</para>
+<programlisting>
+The NIL object
+3
+</programlisting>
+<para><computeroutput>Out</computeroutput> parameters are placed in the
+<computeroutput>out</computeroutput> array in order
+from left to right. If the above OLE method looked like this:</para>
+<programlisting>
+aMethod([in] A, [in] B, [out] sumAB, [out] productAB),
+</programlisting>
+<para>then the <computeroutput>out</computeroutput> array would contain the sum
+of A and B at position one, and the product at position two.</para>
+</section>
+
+<section id="oleobhasolemethod" revisionflag="added"><title>&added50;hasOleMethod</title>
+<indexterm><primary>hasOleMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasOleMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_hasolemethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Queries whether a method named methodName exists.
+Returns <computeroutput>.true</computeroutput> if methodName exists, <computeroutput>.false</computeroutput> else.</para>
+</section>
+
+<section id="oleobjisconnectable"><title>isConnectable</title>
+<indexterm><primary>isConnectable method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isConnectable</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnectable.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Determines if the OLE object is a connectable object. In other words, does the OLE object support event
+  methods and will it accept connections at this time. Not all OLE objects support events, probably the
+  majority do not support events. This method returns <computeroutput>.true</computeroutput> if the
+  object is connectable, otherwise <computeroutput>.false</computeroutput>.
+</para>
+<example id="ex.ole-isConnectable">
+<title>OLEObject - isConnectable method</title>
+<programlisting>
+<![CDATA[
+
+  outLook = .oleObject~new("Outlook.Application")
+
+  -- This searches all folders for the 'Mailbox - .. ' folder.  Which is
+  -- usually the default folder in a business installation of Outlook.
+  nameSpace = outLook~getNameSpace('MAPI')
+  folders = nameSpace~folders
+  do i = 1 to folders~count
+    if folders~item(i)~name~caselessPos("Mailbox") <> 0 then do
+      theMailBoxFolder = folders~item(i)
+      leave
+    end
+  end
+
+  -- Now that we have the Mailbox folder, get the collection of folders that
+  -- are contained in the Mailbox folder.
+  folders = theMailBoxFolder~folders
+
+  if folders~isConnectable then do
+    -- Add event methods to the folders object.
+    ...
+  end
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobjisconnected"><title>isConnected</title>
+<indexterm><primary>isConnected method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isConnected</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnected.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Determines if the OLEObject instance is currently connected to a connectable OLE automation server.
+  Returns <computeroutput>.true</computeroutput> if the instance is connected and
+  <computeroutput>.false</computeroutput> if not.
+</para>
+<example id="ex.ole-isConnected">
+<title>OLEObject - isConnected method</title>
+<programlisting>
+<![CDATA[
+  wordObj = .oleObject~new("Word.Application", "WITHEVENTS")
+  if wordObj~isConnected then do
+    ...
+  end
+  else do
+    ...
+  end
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+
+
+
+<section id="oleobprogid" revisionflag="added"><title>&added50;ProgID</title>
+
+<indexterm><primary>ProgID attribute</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>ProgID</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_progid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the string value of the ProgID attribute, <computeroutput>.nil</computeroutput> if no value is present.</para>
+</section>
+
+
+
+<section id="oleobjremoveeventhandler"><title>removeEventHandler</title>
+<indexterm><primary>removeEventHandler method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeEventHandler</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventhandler.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Removes the event handler and cleans up the internal data structures used to manage events. No event
+  methods will be invoked after this method is called. See the disconnectEvents() (<xref
+  linkend="oleobjdisconnectevents" />) method for a way to temporarily disconnect
+  from event notifications.
+</para>
+<example id="ex.ole-removeEventHandler">
+<title>OLEObject - removeEventHandler method</title>
+<programlisting>
+<![CDATA[
+
+  inboxItems~removeEventHandler
+  inboxItems~removeEventMethod("ItemAdd")
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="oleobjremoveeventmethod"><title>removeEventMethod</title>
+<indexterm><primary>removeEventMethod method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeEventMethod</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Removes the event method with the specified <emphasis role="italic">name</emphasis> that has been
+  previously added to this object by the addEventMethod() (<xref linkend="oleobjaddeventmethod" />)
+  method.
+</para>
+<example id="ex.ole-removeEventMethod">
+<title>OLEObject - removeEventMethod method</title>
+<programlisting>
+<![CDATA[
+
+  inboxID = outLook~getConstant(olFolderInBox)
+  inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
+
+  inboxItems~addEventMethod("ItemAdd", .methods~printNewMail)
+  inboxItems~connectEvents
+
+  ...
+
+::method doneWithItemEvents private
+  expose inboxItems
+
+  inboxItems~removeEventHandler
+  inboxItems~removeEventMethod("ItemAdd")
+
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="oleobstart" revisionflag="added"><title>&added50;start</title>
+<indexterm><primary>start method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>start</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_start.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('start')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-startOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  m=oleObj~start:.object(…)    -- use method 'start' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobstartwith" revisionflag="added"><title>&added50;startWith</title>
+<indexterm><primary>startwith method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>startwith</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_startwith.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If <emphasis role="italic">self~hasOleMethod('startwith')</emphasis> returns <computeroutput>.true</computeroutput>,
+then forwards to Windows, otherwise to superclass (ooRexx root class Object).</para>
+
+<para>Note: to force resolution to the ooRexx root class Object, use the scope override option.</para>
+
+<example id="ex.ole-startwithOverride">
+<title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
+<programlisting>
+<![CDATA[
+
+  ... cut ...
+
+  m=oleObj~startWith:.object(…) -- use method 'startWith' in the ooRexx root class Object
+
+  .. cut ...
+
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="oleobunk"><title>unknown</title>
+<indexterm><primary>unknown method</primary>
+<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unknown method</secondary>
+<tertiary>of OLEObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_unknown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  The <computeroutput>unknown</computeroutput> message is the central mechanism through which methods of
+  the OLE object are called.
+</para>
+<para>
+  For further information on the details on how an <computeroutput>unknown</computeroutput> method works,
+  see <emphasis role="italic">Defining an unknown Method</emphasis> in the Open Object Rexx Reference.
+</para>
+<para>
+  The programmer can invoke the methods of the real OLE object by simply invoking the methods on the
+  the Rexx (proxy) OLEObject object like this:
+</para>
+<programlisting>
+myOLEObject~OLEMethodName
+</programlisting>
+<para>
+  This calls the method <computeroutput>"OLEMethodName"</computeroutput> of the real OLE object for any
+  message (method) <emphasis role="italic">that does not exist</emphasis> in the Rexx OLEObject object
+  through the <emphasis role="italic">unknown</emphasis> method mechanism. The implementation for the
+  <computeroutput>unknown</computeroutput>() method in the OLEObject class does this by dispatching the
+  method call to the real OLE object.
+</para>
+<para>
+  This presents a problem when an OLE object has a method with a name that is identical to a method
+  defined for the OLEObject object. When this situation happens, the programmer has two choices.
+</para>
+<para>
+  One choice is for the programmer to call the <computeroutput>unknown</computeroutput> method directly.
+  E.g., take an OLE object that has the method <computeroutput>copy</computeroutput> used to copy
+  something from a source to a destination. Since <computeroutput>copy</computeroutput> is a method
+  of the <computeroutput>Object</computeroutput> class, the copy method of the OLE object is a method
+  name already defined for the OLEObject. The programmer can invoke the
+  <computeroutput>unknown</computeroutput> method directly, like this:
+</para>
+<example id="ex.ole-unknown">
+<title>OLEObject - unknown method</title>
+<programlisting>
+msgArgs = .array~of("C:\open\myFile.txt", "C:\processDir\")
+val = myOLEObject~unknown("copy", msgArgs)
+</programlisting>
+</example>
+<para>
+  This causes the implementation of the <computeroutput>unknown</computeroutput>() method in the
+  OLEObject object to invoke the <computeroutput>copy</computeroutput> method of the OLE object with the
+  arguments of <computeroutput>C:\open\myFile.txt</computeroutput> and
+  <computeroutput>C:\processDir\</computeroutput>.
+</para>
+<para>
+  The other thing the Rexx programmer can do is use the dispatch() (<xref linkend="oledispatch" />)
+  method. Since, in OLE automation terms, the act of invoking a method on the OLE object is commonly
+  referred to as <emphasis role="italic">dispatching</emphasis> a message to the OLE object, this may
+  make the code a little easier to understand.  In the above example the
+  <computeroutput>dispatch</computeroutput> method would be used like this:
+</para>
+<programlisting>
+val = myOLEObject~dispatch("copy", "C:\open\myFile.txt", "C:\processDir\")
+</programlisting>
+</section>
+
+<section id="oleobtypconv"><title>Type Conversion</title>
+<indexterm><primary>Type conversion</primary></indexterm>
+<para>Unlike Rexx, OLE uses strict typing of data. Conversion to and from these
+types is done automatically, if conversion is possible. OLE types are called
+variants, because they are stored in one structure that
+gets flagged with the type it represents. The following is a list of all variant
+types valid for use with OLE Automation and the Rexx objects that they are
+converted from or into.</para>
+
+<table frame="all">
+<title>OLE/Rexx Types</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>VARIANT type</entry>
+<entry>Rexx object</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>VT_EMPTY</entry>
+<entry>.NIL</entry>
+</row>
+<row>
+<entry>VT_NULL</entry>
+<entry>.NIL</entry>
+</row>
+<row>
+<entry>VT_ERROR</entry>
+<entry>.NIL</entry>
+</row>
+<row>
+<entry>VT_I1</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_I2</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_I4</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_I8</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_UI1</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_UI2</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_UI4</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_UI8</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_INT</entry>
+<entry>Rexx string (a whole number)</entry>
+</row>
+<row>
+<entry>VT_UINT</entry>
+<entry>Rexx string (a whole, positive number)</entry>
+</row>
+<row>
+<entry>VT_DECIMAL</entry>
+<entry>Rexx string (a decimal number)</entry>
+</row>
+<row>
+<entry>VT_R4</entry>
+<entry>Rexx string (a real number)</entry>
+</row>
+<row>
+<entry>VT_R8</entry>
+<entry>Rexx string (a real number)</entry>
+</row>
+<row>
+<entry>VT_CY</entry>
+<entry>Rexx string (currency, a fixed-point number with 15 digits to
+the left of the decimal point and 4 digits to the right)</entry>
+</row>
+<row>
+<entry>VT_DATE</entry>
+<entry>Rexx string (a date)</entry>
+</row>
+<row>
+<entry>VT_BSTR</entry>
+<entry>Rexx string</entry>
+</row>
+<row>
+<entry>VT_DISPATCH Rexx</entry>
+<entry>OLEObject</entry>
+</row>
+<row>
+<entry>VT_BOOL</entry>
+<entry>.TRUE or .FALSE</entry>
+</row>
+<row>
+<entry>VT_VARIANT</entry>
+<entry>Any Rexx object that can be represented as a VARIANT</entry>
+</row>
+<row>
+<entry>VT_UNKNOWN</entry>
+<entry>OLEObject</entry>
+</row>
+<row>
+<entry>VT_ARRAY *</entry>
+<entry>Rexx Array</entry>
+</row>
+<row>
+<entry>VT_BYREF *</entry>
+<entry>Any Rexx object</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>* VT_ARRAY and VT_BYREF are combined with any of the other variant types
+and never used alone. VT_ARRAY and another variant type are used for a SAFEARRAY
+datatype, an array of the other variant type.  VT_BYREF and another variant type
+are used to pass the other variant type to or from an OLE object by reference.
+The programmer need not worry about this passing by reference, the OLE support
+handles this transparently.</para>
+</section>
+</section>
+
+<section id="clsOLEVariant"><title>The Windows OLEVariant Class</title>
+<indexterm><primary>OLEVariant Class</primary></indexterm>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLEVariant class</secondary></indexterm>
+
+<para>
+The OLEVariant class enhances the support for OLE Automation provided by the
+OLEObject class (<xref linkend="clsOLEObject" /> and is used in conjunction with
+that class.  An OLEVariant object is used as a parameter in a method call of
+an OLEObject object.  In the OLEObject's role as a proxy for a OLE / COM
+object, the parameters in method calls are forwarded on to the actual OLE /
+COM object.  (OLE / COM objects will be referred to simply as COM objects.)
+</para>
+<para>
+There are two areas where the OLEVariant adds to the capabilities of
+OLEObject method calls.</para>
+<itemizedlist>
+<listitem><para>Parameters forwarded on to COM objects must be converted to and from
+the proper datatypes.  This conversion is done automatically (see
+<xref linkend="oleobtypconv" />.)
+Occasionally this automatic conversion is
+incorrect.  The OLEVariant allows the ooRexx programmer to override the
+automatic conversion by specifying how the conversion should be done.
+</para></listitem>
+<listitem><para>COM objects can return data to the caller in "out" parameters ([OUT]
+parameters.)  The OLEVariant can be used to transport this returned data
+back to the calling ooRexx program.
+</para></listitem>
+</itemizedlist>
+<para>
+In general, the automatic type conversion in the OLE support uses type
+libraries to determine how to format the parameters being sent to an OLE
+object in a method call.  The information in a type library specifies the
+variant type an ooRexx object, used as a parameter, needs to be converted
+to.  Type libraries also detail how a parameter is to be flagged when it is
+sent to the COM object.
+</para>
+<para>
+However, COM objects are not required to supply type libraries.  When there
+is no type library, ooRexx uses an educated guess to determine this
+information.  On rare occasions this guess is wrong and the method call
+fails.  In theses cases, if the ooRexx programmer knows what the correct
+information is, the programmer can use an OLEVariant to specify this
+information.  The programmer can supply either or both of these pieces of
+information by specifying the variant type for the converted ooRexx object
+and the parameter flags.
+</para>
+<para>
+The following is a real world example where the automatic conversion in the
+OLE support does not work and shows how the OLEVariant is used to specify
+the correct conversion.  The snippet comes from code to automate a CICS
+client.  In this case the variant type that the ooRexx object needs to be
+converted to is specified.  The parameter flags are omitted.  The fourth
+parameter to the ~link method call is the parameter where the default
+conversion was failing.
+</para>
+<example id="ex.ole-conversion">
+<title>OLEObject - automatic conversions</title>
+<programlisting>
+  connect  = .OLEObject~new("Ccl.Connect")
+  flow     = .OLEObject~new("Ccl.Flow")
+  buffer   = .OLEObject~new("Ccl.Buffer")
+
+  uow      = .OLEVariant~New(.nil, VT_DISPATCH)
+  ...
+  connect~link(flow, "FOO", buffer, uow)
+</programlisting>
+</example>
+<note><para>
+It is extremely rare that the OLE support fails to do the right thing
+with its automatic conversion.  99.999% of the time the ooRexx programmer
+does not need to use an OLEVariant object to specify the type conversion.
+This use of the OLEVariant is provided for those few times when it is
+necessary to override the default conversion.  Furthermore, if the ooRexx
+programmer does not know what variant type to specify, this usage will not
+be much help.  Normally the ooRexx programmer would know what type to
+specify through the documentation for the COM class the programmer is using.
+</para></note>
+<para>
+The next example shows how the OLEVariant can be used to transport the data
+returned in an "out" parameter back to the calling ooRexx program.  This
+usage will be more common and does not require that the ooRexx have a lot of
+detailed knowledge of the COM object.  Obviously, the programmer does need
+to know that the parameter is an out parameter.  This example comes from
+updating a MS Access database where the number of records affected by the
+update is returned in an "out" parameter.  Here the out parameter is the
+second parameter in the ~execute method call.
+</para>
+<example id="ex.olevariant-new">
+<title>OLEVariant - new</title>
+<programlisting>
+  sql = "update myTable set id=id*3 where id > 7"
+  param = .OLEVariant~new(0)
+  conn~execute(sql, param)
+  count = param~!varValue_
+  say count "record(s) were affected."
+</programlisting>
+</example>
+<para>
+Finally an example where the OLE support does not use the correct parameter
+flags for the method call.  The Windows Management Instrumentation,
+Win32_Process COM class does not supply a type library.  The fourth
+parameter in the ~create method call is an "out" parameter.  That
+information is known by the ooRexx programmer through the documentation of
+the class.  However, without a type library, ooRexx has no way to know that.
+Here the variant type specification is omitted (signaling ooRexx to go
+ahead and use its automatic conversion) and the parameter flags are
+specified.  Since this an out parameter, the OLEVariant object is also used
+to transport the returned data back to the calling program.
+</para>
+<example id="ex.ole-parameterflags">
+<title>OLEObject - incorrect parameter flags</title>
+<programlisting>
+  objProcess = .oleObject~getObject("WinMgmts:Win32_Process")
+
+  param = .OLEVariant~new( 0, , "IN,OUT" )
+  ret = objProcess~create('notepad.exe', .nil, .nil, param)
+  if ret == 0 then do
+    pid = param~!varValue_
+    say 'The notepad process was created and its PID is' pid
+  end
+</programlisting>
+</example>
+<para>
+<emphasis role="bold">Methods available to the OLEVariant class</emphasis>
+</para>
+<simplelist>
+<member>new</member>
+<member>!varValue_</member>
+<member>!varValue_=</member>
+<member>!varType_</member>
+<member>!varType_=</member>
+<member>!paramFlags_</member>
+<member>!paramFlags_=</member>
+</simplelist>
+<note><para>
+A possible future enhancement of the OLEVariant class requires that
+its method names be unique, which is the reason for the method name style.
+In normal usage the ooRexx programmer would only be concerned with the new
+and the !varValue methods.  Therefore the slightly unorthodox method names
+should not present a problem.
+</para></note>
+
+<section id="olevarnew"><title>new Class method</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Instantiates a new OLEVariant object to be used as a parameter in an
+OLEObject method call.  The first argument is the ooRexx object to be
+converted to a variant type for the method call.  It is the object to be
+used in the method call.  This argument is required.  The varType and
+paramFlags arguments are optional.
+</para>
+<para>
+The varType argument is used to specify the type of the variant that the
+valueObject is to be converted to.  If this argument is omitted or is .nil
+then ooRexx will use the default conversion for the valueObject.  If it is
+not omitted it must be a valid OLE Automation variant type and ooRexx will
+attempt to convert the valueObject to this variant type.
+</para>
+<para>
+The valid variant type symbols are listed in
+<xref linkend="oleobtypconv" />.
+In addition any of those symbols can be combined with the
+VT_BYREF or the VT_ARRAY symbol.  When symbols are combined a comma is used
+to separate the two symbols.  This of course necessitates that the argument
+be quoted.  Case does not matter for this argument.  For example vt_bool,
+VT_bool, or VT_BOOL are all treated the same.
+</para>
+<para>
+The paramFlags argument is used to specify the flags for the parameter.  The
+flags are separated by a comma.  Although any combination of valid
+PARAMFLAGS as defined for OLE Automation will be accepted, in practice the
+ooRexx programmer will probably only need to use "IN,OUT" for this argument.
+</para>
+<para>
+The PARAMFLAGS defined for OLE Automation:
+</para>
+<simplelist>
+<member>PARAMFLAG_NONE</member>
+<member>PARAMFLAG_FIN</member>
+<member>PARAMFLAG_FOUT</member>
+<member>PARAMFLAG_FLCID</member>
+<member>PARAMFLAG_FRETVAL</member>
+<member>PARAMFLAG_FOPT</member>
+<member>PARAMFLAG_FHASDEFAULT</member>
+<member>PARAMFLAG_FHASCUSTDATA</member>
+</simplelist>
+<para>
+The ooRexx programmer should only use the last portion of the symbol.  I.e.,
+NONE, IN, OUT, LCID, RETVAL, OPT, HASDEFAULT, or HASCUSTOMDATA.  Case also
+does not matter for this argument and "in,out" is equivalent to "IN,OUT"
+</para>
+<para>
+If the paramFlags argument is omitted or .nil, (the normal case,) ooRexx
+will determine the flags for the parameter through its default mechanism.
+If the argument is not omitted, ooRexx will use the specified flags
+unconditionally.
+</para>
+<note><para>
+If either the varType or paramFlags arguments are used, and not the
+.nil object, they must be valid variant types or param flags for OLE
+Automation.  If they are not valid, a syntax error will be raised.
+</para></note>
+<example id="ex.ole-parameters">
+<title>OLEObject - parameters</title>
+<programlisting>
+manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
+cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
+...
+classSize = .cf~forName("com.sun.star.awt.Size")
+
+param = .OLEVariant~new(.nil, "VT_DISPATCH,VT_BYREF", "IN,OUT")
+
+retVal = classSize~createObject(param)
+</programlisting>
+</example>
+</section>
+
+<section><title>!VARVALUE_</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_varvalue.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Returns the value object set within an instance of an OLEVariant.  If the
+parameter in a COM method call that the OLEVariant was used for is an "out"
+parameter, than the value object of the instance will be the data returned
+by the COM object.  Otherwise, the value object is that set by the ooRexx
+programmer.
+</para>
+<programlisting>
+manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
+cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
+...
+classSize = .cf~forName("com.sun.star.awt.Size")
+
+param = .OLEVariant~new(.nil, "VT_DISPATCH,VT_BYREF", "IN,OUT")
+
+retVal = classSize~createObject(param)
+size = param~!varValue_
+</programlisting>
+</section>
+
+<section><title>!VARVALUE_=</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_varvalue_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Sets the value object an instance of an OLEVariant contains.
+</para>
+</section>
+
+<section><title>!VARTYPE_</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_vartype.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Returns the variant type specification of the OLEVariant instance.
+</para>
+</section>
+
+<section><title>!VARTYPE_=</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_vartype_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Sets the variant type specification of an OLEVariant instance.  This serves
+the same purpose as the second argument to the
+new method (<xref linkend="olevarnew" />)
+and follows the same rules as specified in the documentation of the
+new method.  I.e., the value must be a valid variant type used in OLE
+Automation, or .nil.  If not a syntax error is raised.
+</para>
+</section>
+
+<section><title>!PARAMFLAGS_</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_paramflags.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Returns the parameter flags specification of the OLEVariant instance.
+</para>
+</section>
+
+<section><title>!PARAMFLAGS_=</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_paramflags_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+Sets the flags specification of an OLEVariant instance.  This serves the
+same purpose as the third argument to the
+new method (<xref linkend="olevarnew" />)
+and follows the same rules as specified in the documentation of the new
+method.  I.e., the value must be a valid combination of PARAMFLAG types as
+documented for use in OLE Automation, or .nil.  If not a syntax error is
+raised.
+</para>
+</section>
+</section>
+
+
+</chapter>
+

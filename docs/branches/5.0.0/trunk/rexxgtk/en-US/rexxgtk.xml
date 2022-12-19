@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<book>
+	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+
+<chapter><title>What is RexxGTK?</title>
+<para>RexxGTK is an Object Rexx Class library providing access to the GTK
+interface available on most Unix/Linux distributions.
+</para>
+
+<para>It is assumed that you are familiar with the basic GTK functionality and can reference
+those specific to the system. For more information, refer to the 
+<ulink url="http://library.gnome.org/devel/gtk/unstable/index.html">
+<citetitle>GNOME Documentation Library</citetitle></ulink>.</para>
+
+<indexterm><primary>requirements, RexxGTK</primary></indexterm>
+<indexterm><primary>RexxGTK requirements</primary></indexterm>
+<para>The RexxGTK package requires that the operating system have the GTK+ libraries
+available. The minimum version for the Rexx interpreter is ooRexx 4.0.
+RexxGTK does not work with any other Rexx interpreter/compiler.</para>
+
+<section id="linuxinstallation"><title>Linux Installation</title>
+<indexterm><primary>Linux installation</primary></indexterm>
+<indexterm><primary>installation</primary>
+<secondary>Linux</secondary></indexterm>
+<para>The RexxGTK package is contained in the file
+<emphasis role="italic">rexxgtk.so</emphasis>. This file must be placed in
+a directory listed in your LD_LIBRARY_PATH or in the system library path.
+RexxGTK also requires an ooRexx class file (<emphasis role="italic">rexxgtk.cls</emphasis>).
+This file must be placed in a directory listed in your PATH.
+To get access to the class and methods in the RexxGTK
+package you must include a ::REQUIRES directive in any Object Rexx script that
+uses the class:
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
+<programlisting>
+     .
+     .
+     .
+::requires "rexxgtk.cls"
+</programlisting></para>
+</section>
+
+<section id="windowsinstallation"><title>Windows Installation</title>
+<indexterm><primary>Windows installation</primary></indexterm>
+<indexterm><primary>installation</primary>
+<secondary>Windows Linux</secondary></indexterm>
+<para>The RexxGTK package is contained in the file
+<emphasis role="italic">rexxgtk.dll</emphasis>. This file must be placed in
+a directory listed in your PATH.
+RexxGTK also requires an ooRexx class file (<emphasis role="italic">rexxgtk.cls</emphasis>).
+This file must be placed in a directory listed in your PATH.
+To get access to the class and methods in the RexxGTK
+package you must include a ::REQUIRES directive in any Object Rexx script that
+uses the class:
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
+<programlisting>
+     .
+     .
+     .
+::requires "rexxgtk.cls"
+</programlisting></para>
+</section>
+
+<section><title>Classes and Methods</title>
+<para>The RexxGTK package is developed around the class structure of the GTK+ system. For
+each GTK+ class there is a cooresponding RexxGTK class. Most of the GTK_ functions have a
+one to one mapping to a cooresponding RexxGTK method with the arguments and return types
+also matching. However, there are exceptions to the mapping, especially in the more
+complicated classes where it was determined that a simplified method made more sense in
+some cases. Also, sometimes it was preferable to return ooRexx builtin objects as opposed
+to the structures returned by the GTK+ function.</para>
+
+<para>In order to make it easy for a novice to learn the RexxGTK classes and methods the
+book <citetitle>Foundations of GTK+ Development</citetitle> by Andrew Krause published by
+Apress&reg; has been used to create a large number of example programs. A user can obtain
+a copy of this book, which is oriented to C programmers, and examine all the example
+programs in that book. Each example program has a cooresponding test program contained
+in the RexxGTK package. Thus a developer can see how to accomplish the same programs in
+the book using the RexxGTK package. This should get a novice started very quickly.</para>
+
+<para>This document is also organized in much the same way that the
+<ulink url="http://library.gnome.org/devel/gtk/unstable/index.html">
+<citetitle>GNOME Documentation Library</citetitle></ulink> is organized so locating classes
+and methods reference manual should be similar.</para>
+</section>
+
+<section><title>Other Notes</title>
+<para>Currently the RexxGTK package is not a complete replication of all GTK+ classes and
+functions (methods). There are many missing widgets and even more missing functions
+(methods). It is the intent of the RexxGTK developers to include as many widgets as 
+feasible in the package over time. The same is true for GTK+ functions, but in this case
+it may take a much longer period of time and it may never be complete.</para>
+</section>
+</chapter>
+
+<xi:include href="functions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="windows.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="dispwidgets.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="buttons.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="textentry.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="multiline.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="treelist.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="menucombo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="action.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="selectors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="layout.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="scrolling.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="misc.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="abstract.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="constants.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<appendix><title>Sample RexxGTK Programs</title>
+<indexterm><primary>RexxGTK example programs</primary></indexterm>
+<indexterm><primary>example</primary>
+<secondary>RexxGTK programs</secondary></indexterm>
+<indexterm><primary>using RexxGTK</primary></indexterm>
+<para>The RexxGTK distribution contains a number of example programs. All of these progeams
+are ported from example programs contained in the book
+<citetitle>Foundations of GTK+ Development</citetitle> by Andrew Krause published by
+Apress&reg;.</para>
+</appendix>
+
+
+<xi:include href="Common_Content/Notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Common_Content/CPLv1.0.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Revision_History.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<index />
+
+
+</book>

@@ -1,0 +1,3413 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="intro"><title>Open Object Rexx General Concepts</title>
+<indexterm><primary>general concepts</primary></indexterm>
+<para>The Rexx language is particularly suitable for:
+<itemizedlist>
+<listitem><para>Application scripting</para></listitem>
+<listitem><para>Command procedures</para></listitem>
+<listitem><para>Application front ends</para></listitem>
+<listitem><para>User-defined macros (such as editor subcommands)</para>
+</listitem>
+<listitem><para>Prototyping</para></listitem>
+<listitem><para>Personal computing</para></listitem>
+</itemizedlist></para>
+<para> As an object-oriented language, Rexx provides data
+encapsulation,
+polymorphism, an object class hierarchy, class-based inheritance of methods,
+and concurrency.  It includes a number of useful base classes and allows you
+create new object classes of your own.</para>
+<para>
+Open Object Rexx is compatible with earlier Rexx versions, both non-object based Rexx and IBM's Object
+Rexx. It has the usual structured-programming instructions, for example IF, SELECT,
+DO WHILE, and LEAVE, and a number of useful built-in functions.</para>
+<para>The language imposes few restrictions
+<indexterm><primary>programming restrictions</primary></indexterm>
+<indexterm><primary>restrictions</primary>
+<secondary>in programming</secondary></indexterm>
+on the program format. There can be more than one clause on a line, or a single
+clause can occupy more than one line. Any indentation scheme is allowed. You can,
+therefore, code programs in a format that emphasizes their structure,
+making them easier to read.</para>
+<para>There is no limit to the size of variable values, as long as
+all values fit into the storage available. There are no restrictions on
+the types of data that variables can contain.</para>
+<indexterm><primary>execution</primary>
+<secondary>by language processor</secondary></indexterm>
+<indexterm><primary>language</primary>
+<secondary>processor execution</secondary></indexterm>
+<para>
+  A language processor (interpreter) runs Rexx programs. That is, the program runs line by line and word
+  by word, without first being translated (compiled) to machine language. One of the advantages of this
+  is that you can fix the error and rerun the program faster than when using a compiler.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> Open Object Rexx also supplies the
+  <xref linkend="xnosorc" xrefstyle="template:rexxc"/> program that can be used to
+  translate Rexx programs into a sourceless executable file.
+  Translating a program is not the same as compiling a program to machine language.
+  A translated Rexx program will still be interpreted line by line, though
+  it will typically start faster as the initial parsing has already been done.
+</para>
+
+<section id="object"><title>What Is Object-Oriented Programming?</title>
+<indexterm><primary>object-oriented programming</primary></indexterm>
+<para> Object-oriented
+programming is a way to write computer programs by focusing not on the
+instructions
+and operations a program uses to manipulate data, but on the data itself.
+First, the program simulates, or models, objects in the physical world as
+closely as possible. Then the objects interact with each other to produce
+the desired result.</para>
+<para>Real-world objects, such as a company's employees, money in a bank
+account, or a report, are stored as data so the computer can act upon it.
+For example, when you print a report, print is the action
+and report is the object acted upon.  Essentially, the objects are the
+"nouns", while the actions are the "verbs".
+</para>
+</section>
+
+<section id="module"><title>Modularizing Data</title>
+<indexterm><primary>data</primary>
+<secondary>modularization</secondary></indexterm>
+<indexterm><primary>modularizing data</primary></indexterm>
+<para> In conventional, structured programming, actions like print
+are often isolated from the data by placing them in subroutines or modules.
+A module typically contains an operation for implementing one simple action.
+You might have a PRINT module, a SEND module, an ERASE module. The data these
+modules operate on must be constructed by the programmer and passed to the
+modules to perform an action.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/Modules.png" scale="65" />
+</imageobject>
+</mediaobject>
+
+<para>But with object-oriented programming, it is the data that is modularized.
+And each data module includes its own operations for performing actions directly
+related to its data.  The programmer that uses the objects need only be aware of the
+operations an object performs and not how the data is organized internally.
+</para>
+
+<figure><title>Modular Data&mdash;a Report Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ReportObject.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>In the case of report, the report object would contain its own built-in
+PRINT, SEND, ERASE, and FILE operations.</para>
+<para>Object-oriented programming lets you model real-world objects&mdash;even
+very complex ones&mdash;precisely and elegantly. As a result, object manipulation
+becomes easier and computer instructions become simpler and can be modified
+later with minimal effort.</para>
+<para>Object-oriented programming <emphasis>hides</emphasis> any information
+that is not important for acting on an object, thereby concealing the object's
+complexities. Complex tasks can then be initiated simply, at a very high level.
+</para>
+</section>
+
+<section id="objects"><title>Modeling Objects</title>
+<para>In object-oriented programming, objects are modeled to real-world objects.
+A real-world object has actions related to it and characteristics of its own.
+</para>
+<para>Take a ball, for example. A ball can be acted on&mdash;rolled, tossed,
+thrown, bounced, caught. But it also has its own physical characteristics&mdash;size,
+shape, composition, weight, color, speed, position. An accurate data model
+of a real ball would define not only the physical characteristics but
+<emphasis>all</emphasis> related actions and characteristics in one package:
+</para>
+
+<figure><title>A Ball Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/BallObject.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>In object-oriented programming,
+objects are the basic building blocks&mdash;the fundamental units of data.</para>
+<indexterm><primary>object</primary>
+<secondary>definition</secondary></indexterm>
+<indexterm><primary>object</primary>
+<secondary>kinds of</secondary></indexterm>
+<para>There are many kinds of objects; for example, character
+strings, collections, and input and output streams. An object&mdash;such as
+a character string&mdash;always consists of two parts: the possible actions
+or operations related to it, and its characteristics or variables. A variable
+has a <emphasis>name</emphasis>, and an associated data value
+that can change over time.
+The variables represent the internal state of the object, and can be directly
+accessed only by the code that implements the object's actions.
+</para>
+
+<figure><title>Ball Object with Variable Names and Values</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/BallObjectData.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>To access an object's data, you must always specify an
+action. For example, suppose the object is the number
+<computeroutput>5</computeroutput>. Its actions
+might include addition, subtraction, multiplication, and division. Each of
+these actions is an interface to the object's data. The data is said to
+be <emphasis>encapsulated</emphasis>
+<indexterm><primary>encapsulation of data</primary></indexterm>
+<indexterm><primary>data</primary>
+<secondary>encapsulation</secondary></indexterm>
+because the only way to access it
+is through one of these surrounding actions. The encapsulated internal
+characteristics of an object are its
+<indexterm><primary>variables</primary>
+<secondary>in objects</secondary></indexterm>
+<emphasis>variables</emphasis>. The variables are associated
+with an object and exist for the lifetime of that object:</para>
+
+<figure><title>Encapsulated 5 Object</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/EncapsulatedObject.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+
+<section id="interac"><title>How Objects Interact</title>
+<indexterm><primary>messages</primary></indexterm>
+<para>The actions defined by an object
+are its only interface to other objects. Actions form a kind of &quot;wall&quot;
+that encapsulates the object, and shields its internal information from outside
+objects. This shielding is called
+<indexterm><primary>information hiding</primary></indexterm>
+<emphasis role="italic">information hiding.</emphasis> Information
+hiding protects an object's data from corruption by outside objects, and
+also protects outside objects from relying on another object's private
+data, which can change without warning.</para>
+<para>One object can act upon another (or
+cause it to act) only by calling that object's actions, namely by sending
+<emphasis>messages</emphasis>. Objects respond to these messages by performing
+an action, returning data, or both. A message to an object must specify:
+<itemizedlist>
+<listitem><para>A receiving object</para></listitem>
+<listitem>
+<para>The &quot;message send&quot; symbol, ~,
+which is called the <emphasis>twiddle</emphasis>
+<indexterm><primary>~ (tilde or twiddle)</primary></indexterm>
+<indexterm><primary>tilde (~)</primary></indexterm>
+<indexterm><primary>twiddle (~)</primary></indexterm>
+<indexterm><primary>message-send operator (~)</primary></indexterm>
+</para></listitem>
+<listitem><para>The action and, optionally in parentheses, any parameters
+required by the action</para></listitem>
+</itemizedlist></para>
+<para>So the message format looks like this: </para>
+<programlisting>
+object~action(parameters)
+</programlisting>
+<para>Assume that the object is the string
+<computeroutput>!iH.</computeroutput> Sending it a message
+to use its REVERSE action: </para>
+<programlisting>
+"!iH"~reverse
+</programlisting>
+<para>returns the string object <computeroutput>Hi!.</computeroutput></para>
+</section>
+
+<section id="methods"><title>Methods</title>
+<indexterm><primary>method</primary>
+<secondary>definition</secondary></indexterm>
+<para>Sending a message to
+an object results in performing some action; that is, it executes
+some underlying code. The action-generating code is called a
+<emphasis>method</emphasis>. When you send a message to an object,
+the message is the name of the target method.
+Method names are character strings like <literal>reverse</literal>.
+In the preceding example, sending the <literal>reverse</literal>
+message to the <literal>!iH</literal> object causes it to run the
+<methodname>reverse</methodname> method. Most objects are capable
+of more than one action, and so have a number of available methods.</para>
+<para>The classes Rexx provides include their own predefined methods.
+The Message class, for example, has <methodname>completed</methodname>,
+<methodname>init</methodname>, <methodname>notify</methodname>,
+<methodname>result</methodname>, <methodname>send</methodname>, and
+<methodname>start</methodname> methods.
+When you create your own classes, you can write new methods for them
+in Rexx code. Much of the object programming in Rexx is writing the code for
+the methods you create.
+</para>
+<para>Rexx lets you send the same message to objects that are different:
+<example>
+<title>Methods</title>
+<programlisting>
+"!iH"~reverse   -- Reverses the characters "!iH" to form "Hi!"
+pen~reverse     -- Reverses the direction of a plotter pen
+ball~reverse    -- Reverses the direction of a moving ball
+</programlisting>
+</example>
+</para>
+<para>As long as each object has its own <methodname>reverse</methodname>
+method, <methodname>reverse</methodname> runs
+even if the programming implementation is different for each object.
+Each object knows only its own version of <methodname>reverse</methodname>.
+And even though the objects are different, each reverses itself as
+dictated by its own code.</para>
+<para>Although the <literal>!iH</literal> object's
+<methodname>reverse</methodname> code is different from
+the plotter pen's, the method name can be the same because Rexx keeps
+track of the methods each object owns.
+You do not need to have several message names like
+<literal>reverse_string</literal>, <literal>reverse_pen</literal>,
+<literal>reverse_ball</literal>.
+This keeps method-naming schemes simple and makes
+complex programs easy to follow and modify.
+</para>
+</section>
+
+<section id="abstrac"><title>Data Abstraction</title>
+<indexterm><primary>data</primary>
+<secondary>abstraction</secondary></indexterm>
+<para>The ability to create
+new, high-level data types and organize them into a meaningful class structure
+is called <emphasis>data abstraction</emphasis>. Data abstraction is at
+the core of object-oriented programming. Once you model objects with real-world
+properties from the basic data types, you can continue creating, assembling,
+and combining them into increasingly complex objects. Then you can use these
+objects as if they were part of the original programming language.</para>
+</section>
+
+<section id="xclass"><title>Classes and Instances</title>
+<indexterm><primary>class</primary>
+<secondary>definition</secondary></indexterm>
+<indexterm><primary>instances</primary>
+<secondary>definition</secondary></indexterm>
+
+<para>In Rexx, objects are
+organized into <emphasis>classes</emphasis>. Classes are like templates;
+they define the methods and variables that a group of similar objects have
+in common and store them in one place.</para>
+<para>If you write a program to manipulate some screen icons, for example, you
+might create an Icon class. In that Icon class you can include all the icon
+objects with similar actions and characteristics:</para>
+
+<figure><title>A Simple Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/SimpleClass.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>All the icon objects might use common methods like DRAW or ERASE. They
+might contain common variables like position, color, or size. What makes each
+icon object different from one another is the data assigned to its variables.
+For the Windows system icon, it might be position="20,20",
+while for the shredder it is "20,30" and for information it is "20,40":</para>
+
+<figure><title>Icon Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/IconClass.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>Objects that belong to a class are called
+<emphasis>instances</emphasis> of that class. As instances of the Icon class,
+the Windows system icon, shredder icon, and
+information icon <emphasis>acquire</emphasis> the methods and variables
+of that class. Instances behave as if they each had their own methods and
+variables of the same name. All instances, however, have their own unique
+properties&mdash;the <emphasis>data</emphasis> associated with the variables.
+Everything else can be stored at the class level.</para>
+
+<figure><title>Instances of the Icon Class</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/IconClassInstances.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>If you must update or change a particular method, you
+only have to change it at one place, at the class level. This single update
+is then acquired by every new instance that uses the method.</para>
+<para>A class that can create instances
+of an object is called an <emphasis>object class</emphasis>.
+<indexterm><primary>object classes</primary></indexterm>
+The Icon class
+is an object class you can use to create other objects with similar properties,
+such as an application icon or a drives icon.</para>
+<para>An object class is like a factory for producing instances of the objects.
+</para>
+</section>
+
+<section id="xpolym"><title>Polymorphism</title>
+<indexterm><primary>variables</primary>
+<secondary>aquiring</secondary></indexterm>
+<indexterm><primary>polymorphism</primary></indexterm>
+<para>Polymorphism gives you a single interface to objects of different types.
+This example shows instances of classes inheriting from the Collection
+class, all sharing a common method named <methodname>put</methodname>,
+but with a different implementation each.
+<example>
+<title>Polymorphism</title>
+<programlisting>
+stem~put("value", "tail")         -- sets a Stem tail to "value"
+stringTable~put("value", "index") -- sets a StringTable "index" to "value"
+array~put("value", 1)             -- sets Array index 1 to "value"
+set~put("value")                  -- makes "value" a member of the Set
+</programlisting>
+</example>
+</para>
+
+<para>The ability to hide the various implementations of a method while
+leaving the interface the same illustrates polymorphism.
+On a higher level, polymorphism permits extensive code reuse.
+</para>
+</section>
+
+<section id="sub"><title>Subclasses, Superclasses, and Inheritance</title>
+<indexterm><primary>inheritance</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>subclasses</secondary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>superclasses</secondary></indexterm>
+<indexterm><primary>multiple inheritance</primary></indexterm>
+<indexterm><primary>subclasses</primary></indexterm>
+<indexterm><primary>superclasses</primary></indexterm>
+<para>When you write your first object-oriented program, you do not have to begin
+your real-world modeling from scratch. Rexx provides predefined classes and
+methods. From there you can create additional classes and methods of your
+own, according to your needs.</para>
+<para>Rexx classes are hierarchical. Any subclass (a class below
+another class in the hierarchy) <emphasis>inherits</emphasis> the methods and
+variables of one or more <emphasis>superclasses</emphasis> (classes above a
+class in the hierarchy):</para>
+
+<figure><title>Superclass and Subclasses</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/Subclasses.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>You can add a class to an existing superclass. For example, you might add
+the Icon class to the Screen-Object superclass:</para>
+
+<figure><title>The Screen-Object Superclass</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ScreenObject.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>In this way, the subclass inherits additional methods
+from the superclass. A class can have more than one superclass, for example,
+subclass Bitmap might have the superclasses Screen-Object and Art-Object.
+Acquiring methods and variables from more than one superclass is known as
+<emphasis>multiple inheritance</emphasis>:</para>
+
+<figure><title>Multiple Inheritance</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/MultipleInheritance.png" scale="70" />
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+
+<section id="structu"><title>Structure and General Syntax</title>
+<indexterm><primary>language</primary>
+<secondary>structure and syntax</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>syntax</primary>
+<secondary>general</secondary></indexterm>
+<indexterm><primary>structure and syntax</primary></indexterm>
+<indexterm><primary>variables</primary>
+<secondary>aquiring</secondary></indexterm>
+<para>A Rexx program is built from a series of
+<emphasis>clauses</emphasis> that are composed of: </para>
+<itemizedlist>
+<listitem><para>Zero or more whitespace characters (blank or horizontal tabs)
+(which are ignored)</para></listitem>
+<listitem><para>A sequence of tokens (see
+<xref linkend="xtokens" />)</para></listitem>
+<listitem><para>Zero or more whitespace characters (again
+ignored)</para></listitem>
+<listitem><para>A semicolon (;)
+<indexterm><primary>semicolons</primary>
+<secondary>within a clause</secondary></indexterm>
+delimiter that the line end, certain keywords, or the colon (:)
+implies.</para></listitem></itemizedlist>
+<para>Conceptually,
+each clause is scanned from left to right before processing, and the tokens
+composing it are identified. Instruction keywords are recognized at this stage,
+comments are removed, and sequences of whitespace characters (except within
+literal strings) are converted to single blanks.  Whitespace characters adjacent
+to operator characters and special
+<indexterm><primary>blanks</primary>
+<secondary>adjacent to special character</secondary></indexterm>
+<indexterm><primary>whitespace</primary>
+<secondary>adjacent to special character</secondary></indexterm>
+characters are also removed.</para>
+
+<section id="characters"><title>Characters</title>
+<indexterm><primary>character</primary>
+<secondary>definition</secondary></indexterm>
+<para>A <emphasis>character</emphasis> is a member of a
+defined set of elements that is used for the
+control or representation of data. You can usually enter a character with
+a single keystroke. The coded representation of a character
+is its representation
+in digital form. A character, the letter A, for example, differs from
+its <emphasis>coded representation</emphasis> or encoding.
+Various coded character
+sets (such as ASCII and EBCDIC) use different encodings
+for the letter A (decimal
+values 65 and 193, respectively). This book uses characters to convey meanings
+and not to imply a specific character code, except where otherwise stated.
+The exceptions are certain built-in functions that convert between characters
+and their representations. The functions C2D, C2X, D2C, X2C, and XRANGE depend
+on the character set used.</para>
+<indexterm><primary>code page</primary></indexterm>
+<indexterm><primary>page, code</primary></indexterm>
+<para>A code page specifies the encodings for each character in a set. Be aware
+that:
+<itemizedlist>
+<listitem><para>Some code pages do not contain all characters that Rexx defines
+as valid (for example, the logical NOT character).</para></listitem>
+<listitem><para>Some characters that Rexx defines
+as valid have different encodings in
+different code pages, for example the exclamation mark (!).</para></listitem>
+</itemizedlist></para>
+</section>
+
+<section id="whitespace"><title>Whitespace</title>
+<indexterm><primary>whitespace</primary></indexterm>
+<para>A whitespace character is one that the interpreter recognizes as a "blank"
+or "space" character.  There are two characters used by Rexx as whitespace that
+can be used interchangeably:
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">(blank)</emphasis></term>
+<listitem><para>A "blank" or "space" character.  This is represented by '20'X in
+ASCII implementations.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">(horizontal tab)</emphasis></term>
+<listitem><para>A "tab".  This is represented by '09'X in ASCII implementations.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Horizontal tabs encountered in Rexx program source are converted into
+blanks, allowing tab characters and blanks to be use interchangeably in source.
+Additionally, Rexx operations such as the PARSE instruction or the SUBWORD()
+built-in function will also accept either blank or tab characters as word
+delimiters.</para>
+</section>
+
+<section id="cmts"><title>Comments</title>
+<indexterm><primary>comments</primary></indexterm>
+<para>A comment is a sequence of characters delimited by specific characters.
+It is ignored by the program but acts as a separator. For example, a token
+containing one comment is treated as two tokens.</para>
+<para>The interpreter recognizes the following types of comments:</para>
+<itemizedlist>
+<listitem><para>A line comment, where the comment is limited to one line
+<indexterm><primary>comments</primary>
+<secondary>line comment</secondary></indexterm>
+</para></listitem>
+<listitem><para>The standard Rexx comment, where the comment
+can cover several lines
+<indexterm><primary>comments</primary>
+<secondary>standard comment</secondary></indexterm>
+</para></listitem></itemizedlist>
+<para>A <emphasis>line comment</emphasis> is
+started by two subsequent minus signs (--) and ends at the end
+of a line. Example:</para>
+<indexterm><primary>examples</primary>
+<secondary>line comments</secondary></indexterm>
+<programlisting>
+"Fred"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        -- Same as "You shouldn&apos;t"
+&quot;&quot;
+</programlisting>
+<para>In this example, the language processor processes the statements
+from <computeroutput>&apos;Fred&apos;</computeroutput> to
+<computeroutput>&apos;You shouldn&apos;&apos;t&apos;</computeroutput>, ignores the words following
+the line comment, and continues to process the statement
+<computeroutput>&quot;&quot;</computeroutput>.</para>
+<para>A <emphasis>standard comment</emphasis> is a sequence of characters
+(on one or more lines) delimited by /* and */. Within these delimiters any
+characters are allowed.
+Standard comments can contain other standard comments, as long as each begins
+and ends with the necessary delimiters. They are called
+<emphasis>nested comments</emphasis>. Standard comments can be anywhere and
+of any length.</para>
+<indexterm><primary>examples</primary>
+<secondary>standard comments</secondary></indexterm>
+<programlisting>
+/* This is an example of a valid Rexx comment */
+</programlisting>
+<para>Take special care when commenting out lines of code containing
+<computeroutput>/*</computeroutput> or <computeroutput>*/</computeroutput>
+as part of a literal string. Consider the following
+program segment:
+<example>
+<title>Comments</title>
+<programlisting>
+01    parse pull input
+02    if substr(input,1,5) = "/*123"
+03      then call process
+04    dept = substr(input,32,5)
+</programlisting>
+<para>To comment out lines 2 and 3, the following change would be incorrect:
+</para>
+<programlisting>
+01    parse pull input
+02 /* if substr(input,1,5) = "/*123"
+03      then call process
+04 */ dept = substr(input,32,5)
+</programlisting>
+</example>
+</para>
+<para>This is incorrect because the language processor would interpret the
+<computeroutput>/*</computeroutput> that is part of the literal string
+<computeroutput>/*123</computeroutput> as the start
+of a nested standard comment. It would not process the rest of the program
+because it would be looking for a matching standard comment end
+(<computeroutput>*/</computeroutput>).</para>
+<para>You can avoid this type of problem by using concatenation for literal
+strings containing <computeroutput>/*</computeroutput> or
+<computeroutput>*/</computeroutput>; line 2 would be:
+<programlisting>
+if substr(input,1,5) = "/" || "*123"
+</programlisting>
+</para>
+<para>You could comment out lines 2 and 3 correctly as follows:
+<example>
+<title>Comments</title>
+<programlisting>
+01    parse pull input
+02 /* if substr(input,1,5) = "/" || "*123"
+03      then call process
+04 */ dept = substr(input,32,5)
+</programlisting>
+</example>
+</para>
+<para>Both types of comments can be mixed and nested. However, when
+you nest the two types, the type of comment that comes first takes precedence
+over the one nested. Here is an example:
+<example>
+<title>Comments</title>
+<programlisting>
+"Fred"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t"
+""                      -- The null string         */
+</programlisting>
+</example>
+</para>
+<para>In this example, the language processor ignores everything after
+<computeroutput>&apos;You shouldn&apos;&apos;t&apos;</computeroutput> up to the end of the last
+line. In this case, the standard comment has precedence over the line comment.
+</para>
+<para>When nesting the two comment types, make sure that the start
+delimiter of the standard comment <computeroutput>/*</computeroutput> is not
+in the line commented out with the line comment signs.
+<example>
+<title>Comments</title>
+<programlisting>
+"Fred"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        -- Same as /* "You shouldn&apos;t"
+""                      The null string         */
+</programlisting>
+</example>
+</para>
+<para>This example produces an error because the language processor
+ignores the start delimiter of the standard comment, which is commented out
+using the line comment.</para>
+</section>
+
+<section id="xtokens"><title>Tokens</title>
+<indexterm><primary>tokens</primary>
+<secondary>description</secondary></indexterm>
+<para>A <emphasis>token</emphasis> is the unit of low-level syntax from which
+clauses are built. Programs written in Rexx are composed of tokens. Tokens
+can be of any length, up to an implementation-restricted maximum. They are
+separated by whitespace or comments, or by the nature of the tokens themselves.
+The classes of tokens are:
+</para>
+<itemizedlist>
+<listitem><para>Literal strings</para></listitem>
+<listitem><para>Hexadecimal strings</para></listitem>
+<listitem><para>Binary strings</para></listitem>
+<listitem><para>Symbols</para></listitem>
+<listitem><para>Numbers</para></listitem>
+<listitem><para>Operator characters</para></listitem>
+<listitem><para>Special characters</para></listitem></itemizedlist>
+
+<section id="litstrings"><title>Literal Strings</title>
+<indexterm><primary>tokens</primary>
+<secondary>literal strings</secondary></indexterm>
+<indexterm><primary>literal</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>null</primary>
+<secondary>strings</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>as literal constant</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>as name of function</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>null</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>quotations marks in</secondary></indexterm>
+<para>A literal string is a sequence including <emphasis>any</emphasis>
+characters except <xref linkend="line-end" xrefstyle="template:line-end"/>
+and <xref linkend="end-of-file" xrefstyle="template:end-of-file"/> characters,
+and delimited by a single quotation mark
+(<computeroutput>&apos;</computeroutput>) or a double quotation mark
+(<computeroutput>&quot;</computeroutput>). You use
+two consecutive double quotation marks
+(<computeroutput>&quot;&quot;</computeroutput>) to represent
+one double quotation mark (<computeroutput>"</computeroutput>)
+within a literal string delimited by double
+quotation marks. Similarly, you use two consecutive single quotation marks
+(<computeroutput>&apos;&apos;</computeroutput>) to represent one single quotation mark
+(<computeroutput>&apos;</computeroutput>) within a string delimited by single
+quotation marks. A literal string
+is a constant and its contents are never modified when it is processed. Literal
+strings must be complete on a single line. This means that unmatched quotation
+marks can be detected on the line where they occur.</para>
+<para>A literal string with no characters (that is, a string of length
+<computeroutput>0</computeroutput>) is called a
+<emphasis>null string</emphasis>.</para>
+<para>These are valid strings:
+<example>
+<title>Valid strings</title>
+<programlisting>
+"Fred"
+"Don&apos;t Panic!"
+&apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t" */
+""                      /* The null string         */
+</programlisting>
+</example>
+</para>
+<para>
+<indexterm><primary>implementation maximum</primary>
+<secondary>literal strings</secondary></indexterm>
+<indexterm><primary>literal</primary>
+<secondary>implementation maximum</secondary></indexterm>
+A literal string has no upper bound on the number of characters, limited only
+by available memory.
+</para>
+<para>Note that a string immediately followed by a left parenthesis is
+considered to be the name of a function. If immediately followed by the symbol
+<varname>X</varname> or <varname>x</varname>, it is considered to be a
+hexadecimal string. If followed immediately by the symbol <varname>B</varname>
+or <varname>b</varname>, it is considered to be a binary string.</para>
+</section>
+
+<section id="hexastrings"><title>Hexadecimal Strings</title>
+<indexterm><primary>hexadecimal</primary>
+<secondary>digits</secondary></indexterm>
+<indexterm><primary>hexadecimal</primary>
+<secondary>strings</secondary>
+<tertiary>description</tertiary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>hexadecimal specification of</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>hexadecimal strings</secondary></indexterm>
+<para>A hexadecimal string is a literal string, expressed using
+a hexadecimal notation of its encoding. It is any sequence of zero or more
+hexadecimal digits
+(<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>,
+<computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
+<computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>),
+grouped in pairs. A single leading <literal>0</literal>
+is assumed, if necessary, at the beginning of the string to make an even
+number of hexadecimal digits. The groups of digits are optionally separated
+by one or more whitespace characters, and the whole sequence is delimited by
+single or double quotation marks and immediately followed by the symbol
+<literal>x</literal> or <literal>X</literal>.
+Neither <literal>x</literal> nor <literal>X</literal> can be part of a
+longer symbol.
+The whitespace characters, which can only be on byte boundaries (and not at the
+beginning or end of the string), are to improve readability.  The language
+processor ignores them.
+</para>
+<para>A hexadecimal string is a literal string formed by packing the hexadecimal
+digits given. Packing the hexadecimal digits removes whitespace and converts
+each pair of hexadecimal digits into its equivalent character, for example,
+<literal>'41'x</literal> to <literal>A</literal>.
+</para>
+<para>Hexadecimal strings let you include characters in a program even if you
+cannot directly enter the characters themselves. These are valid hexadecimal
+strings:
+<example>
+<title>Valid hexadecimal strings</title>
+<programlisting>
+"ABCD"x
+"1d ec f8"X
+'1 d8'x
+</programlisting>
+</example>
+</para>
+
+<note><title>Note</title>
+<para>A hexadecimal string is <emphasis>not</emphasis> a representation of a
+number.
+It is an escape mechanism that lets a user describe a character
+in terms of its encoding (and, therefore, is machine-dependent).
+In ASCII, <literal>'20'x</literal> is the encoding for a blank.
+In every case, a string of the form <literal>'.....'x</literal>
+is an alternative to a straightforward string.
+In ASCII <literal>'41'x</literal> and <literal>"A"</literal>
+are identical, as are <literal>'20'x</literal> and a blank, and must be treated identically.
+</para></note>
+<para>
+<indexterm><primary>hexadecimal</primary>
+<secondary>strings</secondary>
+<tertiary>implementation maximum</tertiary></indexterm>
+<indexterm><primary>implementation maximum</primary>
+<secondary>hexadecimal strings</secondary></indexterm>
+The packed length of a hexadecimal string (the string with whitespace removed)
+is unlimited.
+</para>
+</section>
+
+<section id="binstrings"><title>Binary Strings</title>
+<indexterm><primary>binary</primary>
+<secondary>digits</secondary></indexterm>
+<indexterm><primary>binary</primary>
+<secondary>strings</secondary>
+<tertiary>description</tertiary></indexterm>
+<indexterm><primary>binary</primary>
+<secondary>strings</secondary>
+<tertiary>nibbles</tertiary></indexterm>
+<indexterm><primary>nibbles</primary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>binary specification of</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>binary strings</secondary></indexterm>
+<para>A binary string is a literal string, expressed using
+a binary representation of its encoding. It is any sequence of zero or more
+binary digits (<computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput>) in groups of 8 (bytes) or 4 (nibbles).
+The first group can have less than four digits; in this case, up to three
+0 digits are assumed to the left of the first digit, making a total of four
+digits. The groups of digits are optionally separated by one or more whitespace
+characters, and the whole sequence is delimited by matching single or double
+quotation marks and immediately followed by the symbol
+<computeroutput>b</computeroutput> or <computeroutput>B</computeroutput>.
+Neither <computeroutput>b</computeroutput> nor
+<computeroutput>B</computeroutput> can be part of a longer symbol. The
+whitespace characters, which can only be byte or nibble boundaries (and not at
+the beginning or end of the string), are to improve readability. The language
+processor ignores them.
+</para>
+<para>A binary string is a literal string formed by packing the binary digits
+given. If the number of binary digits is not a multiple of 8, leading zeros
+are added on the left to make a multiple of 8 before packing. Binary strings
+allow you to specify characters explicitly, bit by bit. These are valid binary
+strings:
+<example>
+<title>Valid binary strings</title>
+<programlisting>
+"11110000"b        /* == "f0"x                  */
+"101 1101"b        /* == "5d"x                  */
+'1'b               /* == '00000001'b or '01'x  */
+"10000 10101010"b  /* == "0001 0000 1010 1010"b */
+""b                /* == ""                     */
+</programlisting>
+</example>
+</para>
+
+<para>
+<indexterm><primary>binary</primary>
+<secondary>strings</secondary>
+<tertiary>implementation maximum</tertiary></indexterm>
+<indexterm><primary>implementation maximum</primary>
+<secondary>binary strings</secondary></indexterm>
+The packed length of a binary-literal string is unlimited.</para>
+</section>
+
+<section id="xsymbol"><title>Symbols</title>
+<indexterm><primary>alphabetics</primary>
+<secondary>used in symbols</secondary></indexterm>
+<indexterm><primary>names</primary>
+<secondary>of variables</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>uppercase translation</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>valid names</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>symbols</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>names</secondary></indexterm>
+<para>Symbols are groups of characters, selected
+from the:</para>
+<itemizedlist>
+<listitem><para>English alphabetic characters
+(<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>
+and <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>).
+</para></listitem>
+<listitem><para>Numeric characters
+(<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
+</para></listitem>
+<listitem><para>Characters <computeroutput>. ! ?</computeroutput>
+and underscore (<computeroutput>_</computeroutput>).
+</para></listitem></itemizedlist>
+<indexterm><primary>uppercase translation</primary>
+<secondary>of symbols</secondary></indexterm>
+<para>Any lowercase alphabetic character in a symbol is translated to uppercase
+(that is, lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>) before
+use.</para>
+<para>These are valid symbols:
+<example>
+<title>Valid symbols</title>
+<programlisting>
+Fred
+Albert.Hall
+WHERE?
+</programlisting>
+</example>
+</para>
+
+<para>If a symbol does not begin with a digit or a period, you can use it as
+a variable and can assign it a value. If you have not assigned a value to
+it, its value is the characters of the symbol itself, translated to uppercase
+(that is, lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>).
+Symbols that begin with a number or a period are
+<xref linkend="constnt" xrefstyle="template:constant symbols" />
+and cannot directly be assigned a value.
+</para>
+<para>One other form of symbol is allowed to support the representation of
+numbers in exponential format. The symbol starts with a digit
+(<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
+or a period, and it can end with the sequence
+<computeroutput>E</computeroutput> or <computeroutput>e</computeroutput>,
+followed immediately by an optional sign (<computeroutput>-</computeroutput>
+or <computeroutput>+</computeroutput>), followed immediately by one
+or more digits (which cannot be followed
+by any other symbol characters). The character sequence to the left of the "E" or "e" must be a valid simple number, consisting only of digits or '.'.
+There must be at least one digit and at most one '.'.
+The sign in this context is part of the symbol
+and is not an operator.</para>
+<para>These are valid numbers in exponential notation:
+<indexterm><primary>exponential notation</primary>
+<secondary>example</secondary></indexterm>
+<example>
+<title>Valid exponential numbers</title>
+<programlisting>
+17.3E-12
+.03e+9
+</programlisting>
+</example>
+</para>
+<para>These are not valid numbers in exponential notation,
+but rather multiple tokens with an operator between:
+<example>
+<title>Invalid exponential numbers</title>
+<programlisting>
+.E-12     -- no digits
+3ae+6     -- non-digit character
+3..0e+9   -- more than one '.'
+</programlisting>
+</example>
+</para>
+</section>
+
+<section id="numbrs"><title>Numbers</title>
+<indexterm><primary>numbers</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>rounding</primary>
+<secondary>using a character string as a number</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>numbers</secondary></indexterm>
+<para>Numbers are character strings consisting of one or more decimal digits,
+with an optional prefix of a plus (+) or minus (-) sign, and optionally
+including a single period (<computeroutput>.</computeroutput>) that represents
+a decimal point. A number can also have a power of 10
+<indexterm><primary>powers of ten in numbers</primary></indexterm>
+suffixed in conventional exponential notation: an
+<computeroutput>E</computeroutput> (uppercase or lowercase),
+followed optionally by a plus or minus sign,
+then followed by one or more decimal digits defining the power of 10. Whenever
+a character string is used as a number, rounding can occur to a precision
+specified by the NUMERIC DIGITS instruction (the default is nine digits).
+See <xref linkend="numarit" /> for
+a full definition of numbers.</para>
+<para>Numbers
+<indexterm><primary>restrictions</primary>
+<secondary>embedded in numbers</secondary></indexterm>
+can have leading whitespace (before and after the sign) and trailing whitespace.
+Whitespace characters cannot be embedded among the digits of a number or in the
+exponential part. Note that a symbol or a literal string can be a number. A
+number cannot be the name of a variable.
+</para>
+<para>These are valid numbers:
+<example>
+<title>Valid numbers</title>
+<programlisting>
+12
+"-17.9"
+127.0650
+73e+128
+" + 7.9E5 "
+</programlisting>
+</example>
+</para>
+<para>You can specify numbers with or without quotation marks around them. Note
+that the sequence <computeroutput>-17.9</computeroutput>
+(without quotation marks) in an expression
+is not simply a number. It is a minus operator (which can be prefix minus
+if no term is to the left of it) followed by a positive number. The result
+of the operation is a number, which might be rounded or reformatted into
+exponential form depending on the size of the number and the current
+NUMERIC DIGITS setting.
+</para>
+<para>A <emphasis>whole number</emphasis> is a number that has a no decimal
+part and that the language
+processor would not usually express in exponential notation. That is, it has
+no more digits before the decimal point than the current setting of NUMERIC
+DIGITS.</para>
+<para><emphasis role="bold">Implementation maximum:</emphasis>
+<indexterm><primary>numbers</primary>
+<secondary>implementation maximum</secondary></indexterm>
+<indexterm><primary>implementation maximum</primary>
+<secondary>numbers</secondary></indexterm>
+<indexterm><primary>whole numbers</primary>
+<secondary>description</secondary></indexterm>
+The exponent of a number expressed in exponential notation can have
+up to nine digits.</para>
+</section>
+
+<section id="operatorchar"><title>Operator Characters</title>
+<indexterm><primary>concatenation</primary>
+<secondary>operator</secondary>
+<tertiary>||</tertiary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>as special characters</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>characters</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>operator characters</secondary></indexterm>
+<para>The characters
+<computeroutput>+ -  \ /  %  *  | &amp;  =  &not;  >  &lt;</computeroutput>
+and the sequences
+<computeroutput>>=  &lt;=  \>  \&lt;  \=  >&lt;  &lt;>  ==  \==  //  &amp;&amp;
+||  ** &not;>  &not;&lt;  &not;=  &not;==  >>  &lt;&lt;  >>=  \&lt;&lt;
+&not;&lt;&lt;  \>> &not;>>  &lt;&lt;=</computeroutput> indicate operations
+ (see <xref linkend="opera" />).
+A few of these are also used in parsing templates, and the equal sign
+<indexterm><primary>equal</primary>
+<secondary>sign</secondary>
+<tertiary>to indicate assignment</tertiary></indexterm>
+and the sequences <computeroutput>+= -= *= /= %= //= ||= &amp;= |= &amp;&amp;=</computeroutput>
+are also
+used to indicate assignment. Whitespace characters adjacent to operator
+characters are removed. Therefore, the following are identical in meaning:
+<example>
+<title>White space and numbers</title>
+<programlisting>
+345>=123
+345 >=123
+345 >= 123
+345 > = 123
+</programlisting>
+</example>
+</para>
+<para>Some of these characters (and some special characters&mdash;see the next
+section) might not be available in all character sets. In this case,
+appropriate translations can be used.
+<indexterm><primary>logical OR operator</primary></indexterm>
+In particular, the vertical bar (|) is often
+shown as a split vertical bar (&brvbar;).</para>
+<note><title>Note</title>
+<para>The Rexx interpreter uses ASCII character
+124 in the concatenation operator and as the logical OR operator. Depending
+on the code page or keyboard for your particular country, ASCII 124 can be
+shown as a solid vertical bar ( <literal>|</literal> ) or a split vertical bar ( <literal>&brvbar;</literal> ).
+The character on the screen might not match the character engraved on the
+key. If you receive error 13,
+<computeroutput>Invalid character in program</computeroutput>, on
+an instruction including a vertical bar character, make sure this character
+is ASCII 124.</para></note>
+<para>Throughout the language, the NOT (<literal>&not;</literal>)
+<indexterm><primary>logical NOT character</primary></indexterm>
+<indexterm><primary>NOT operator</primary></indexterm>
+character is synonymous with the backslash
+<indexterm><primary>backslash, use of</primary></indexterm>
+(<literal>\</literal>). You can
+use the two characters interchangeably according to availability and personal
+preference.</para>
+
+<para>The Rexx interpreter recognizes both ASCII character 170 (<literal>'AA'x</literal>) and ASCII
+character 172 (<literal>'AC'x</literal>) for the logical NOT operator. Depending on your country,
+the <literal>&not;</literal> might not appear on your keyboard. If the character is not available,
+you can use the backslash (<literal>\</literal>) in place of <literal>&not;</literal>.
+</para>
+</section>
+
+<section id="specchar"><title>Special Characters</title>
+<indexterm><primary>special</primary>
+<secondary>characters and example</secondary></indexterm>
+<indexterm><primary>tokens</primary>
+<secondary>special characters</secondary></indexterm>
+<para>The following characters, together with the operator characters,
+have special significance when found outside of literal strings: </para>
+<programlisting>
+,   ;   :   (   )   [   ]   ~
+</programlisting>
+<indexterm><primary>comma</primary>
+<secondary>as a special character</secondary></indexterm>
+<indexterm><primary>, (comma)</primary>
+<secondary>as a special character</secondary></indexterm>
+<indexterm><primary>; semicolon</primary>
+<secondary>as a special character</secondary></indexterm>
+<indexterm><primary>: (colon)</primary>
+<secondary>as a special character</secondary></indexterm>
+<indexterm><primary>colon</primary>
+<secondary>as a special character</secondary></indexterm>
+<para>These characters constitute the set of special characters. They all act
+as token delimiters, and
+<indexterm><primary>parentheses</primary>
+<secondary>adjacent to whitespace</secondary></indexterm> whitespace characters
+(blank or horizontal tab)
+adjacent to any of these are removed. There is an exception: a whitespace
+character adjacent to the outside of a parenthesis or bracket is deleted only if
+it is also adjacent to another special character (unless the character is a
+parenthesis or bracket and the whitespace character is outside it, too). For
+example, the language processor does not remove the blank in
+<computeroutput>A&nbsp;(Z)</computeroutput>. This is a concatenation that is
+not equivalent to <computeroutput>A(Z)</computeroutput>,
+a function call. The language processor removes the blanks in
+<computeroutput>(A)&nbsp;+&nbsp;(Z)</computeroutput> because this is equivalent
+to <computeroutput>(A)+(Z)</computeroutput>.</para>
+</section>
+
+<section id="speccharexmp"><title>Example</title>
+<para>The following
+example shows how a clause is composed of tokens:
+<indexterm><primary>examples</primary>
+<secondary>special characters</secondary></indexterm>
+<example>
+<title>Special characters</title>
+<programlisting>
+"REPEAT"   A + 3;
+</programlisting>
+</example>
+</para>
+<para>This example is composed of six tokens&mdash;a literal string
+(<computeroutput>"REPEAT"</computeroutput>), a blank operator, a symbol
+(<computeroutput>A</computeroutput>, which can have an assigned
+value), an operator (<computeroutput>+</computeroutput>), a second symbol
+(<computeroutput>3</computeroutput>, which is
+a number and a symbol), and the clause delimiter
+(<computeroutput>;</computeroutput>). The blanks
+between the <computeroutput>A</computeroutput> and the
+<computeroutput>+</computeroutput> and between the
+<computeroutput>+</computeroutput> and
+the <computeroutput>3</computeroutput> are removed.
+However, one of the blanks between the
+<computeroutput>"REPEAT"</computeroutput> and the
+<computeroutput>A</computeroutput> remains as an operator. Thus, this clause
+is treated as though written: </para>
+<programlisting>
+"REPEAT" A+3;
+</programlisting>
+</section>
+</section>
+
+<section id="imsemi"><title>Implied Semicolons</title>
+<indexterm><primary>implied semicolons</primary></indexterm>
+<indexterm><primary>semicolons</primary>
+<secondary>implied</secondary></indexterm>
+<para>The last element in a clause is the semicolon (;) delimiter.
+ The language processor implies the semicolon at a line end, after certain
+keywords, and after a colon if it follows a single symbol. This means that
+you need to include semicolons only when there is more than one clause on
+a line or to end an instruction whose last character is a comma.</para>
+<para>A line end usually marks the end of a clause and, thus, Rexx implies a
+semicolon at most end of lines. However, there are the following exceptions:
+<itemizedlist>
+<listitem><para>The line ends in the middle of a multi-line
+(<literal>/*</literal> ... <literal>*/</literal>) comment.
+The clause continues on to the next line.</para></listitem>
+<listitem><para>The last token was the continuation character (a comma
+or a minus sign) and the
+line does not end in the middle of a comment.
+(Note that a comment is not a token.)</para></listitem>
+</itemizedlist></para>
+<para>Rexx automatically implies semicolons after colons (when following a single
+symbol or literal string, a label) and after certain keywords when they are in the correct context.
+The keywords that have this effect are ELSE, OTHERWISE, and THEN.  These
+special cases reduce typographical errors significantly. </para>
+
+<note><title>Note</title>
+<para>The two characters forming the comment delimiters,
+<literal>/*</literal> and
+<literal>*/</literal>, must not be split by a line end (that is,
+<literal>/</literal> and <literal>*</literal>
+should not appear on different lines) because they could not then
+be recognized correctly; an implied semicolon would be added.
+</para></note>
+</section>
+
+<section id="contin"><title>Continuations</title>
+<indexterm><primary>, (comma)</primary>
+<secondary>as continuation character</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>continuation of</secondary></indexterm>
+<indexterm><primary>comma</primary>
+<secondary>as continuation character</secondary></indexterm>
+<indexterm><primary>continuation</primary>
+<secondary>character</secondary></indexterm>
+<indexterm><primary>continuation</primary>
+<secondary>clauses</secondary></indexterm>
+<para>One way to continue a clause on the next line is to use the comma or
+the minus sign (-), which is referred to as the
+<emphasis>continuation character</emphasis>. The continuation character is
+functionally replaced by a blank, and, thus, no semicolon is implied.
+One or more comments can follow
+the continuation character before the end of the line.</para>
+<para>The following example shows how to use the continuation character to
+continue a clause:
+<indexterm><primary>continuation</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>continuation</secondary></indexterm>
+<example>
+<title>Continuations</title>
+<programlisting>
+say "You can use a comma",       -- this line is continued
+"to continue this clause."
+</programlisting><para>or </para>
+<programlisting>
+say "You can use a minus"-       -- this line is continued
+"to continue this clause."
+</programlisting>
+</example>
+</para>
+</section>
+</section>
+
+<section id="expopr"><title>Terms, Expressions, and Operators</title>
+<indexterm><primary>terms and data</primary></indexterm>
+<para>Expressions in Rexx are a general mechanism for combining one or more
+pieces of data in various ways to produce a result, usually different from the
+original data. All expressions evaluate to objects.
+<indexterm><primary>object</primary></indexterm>
+</para>
+<para>Everything in Rexx is an object.
+<indexterm><primary>data</primary>
+<secondary>objects</secondary></indexterm>
+Rexx provides some objects, which are described in later sections. You can
+also define and create objects that are useful in particular applications&mdash;for
+example, a menu object for user interaction. See
+<xref linkend="objects" /> for
+more information.</para>
+
+<section id="expres"><title>Terms and Expressions</title>
+<indexterm><primary>data</primary>
+<secondary>terms</secondary></indexterm>
+<para><emphasis>Terms</emphasis> are literal strings, symbols, message
+terms and sequences, Array terms, Variable Reference terms, function
+calls, or subexpressions interspersed with zero or more operators
+that denote operations to be carried out on terms.</para>
+<para><emphasis role="italic">Literal strings</emphasis>,
+which are delimited by quotation marks, are constants.</para>
+<para><emphasis>Symbols</emphasis> (no quotation marks) are translated to
+uppercase. A symbol that does not begin with a digit or a period can be the
+name of a variable; in this case the
+<indexterm><primary>value</primary></indexterm>
+value of that variable is used. A symbol
+that begins with a period can identify an object that the current environment
+provides; in this case, that object is used. Otherwise a symbol is treated
+as a constant string. A symbol can also be
+<emphasis role="italic">compound</emphasis>.</para>
+<para><emphasis role="italic">Message terms</emphasis>
+are described in <xref linkend="mssg" />,
+<emphasis role="italic">Message sequences</emphasis>
+are described in <xref linkend="mseq" />.
+</para>
+<para><emphasis role="italic">Array terms</emphasis>
+are described in <xref linkend="arrayterm" />.
+</para>
+<para><emphasis role="italic">Variable Reference terms</emphasis>
+are described in <xref linkend="varrefterm" />.
+</para>
+<para><emphasis role="italic">Function calls</emphasis>
+(see <xref linkend="funct" />), which
+are of the following form:
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/intro_function.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The <emphasis role="italic">symbolorstring</emphasis> is a symbol or
+literal string.</para>
+<para>An <emphasis role="italic">expression</emphasis> consists of
+one or more terms. A <emphasis role="italic">subexpression</emphasis>
+<indexterm><primary>subexpression</primary></indexterm>
+is a term in an
+expression surrounded with a left and a right parenthesis.</para>
+<indexterm><primary>evaluation of expressions</primary></indexterm>
+<indexterm><primary>expressions</primary>
+<secondary>evaluation</secondary></indexterm>
+<para>Evaluation of an expression is left to right, modified by parentheses
+and operator precedence in the usual algebraic manner (see
+<xref linkend="oprpri" />).
+Expressions are wholly evaluated, unless an error occurs during evaluation.
+</para>
+<indexterm><primary>expressions</primary>
+<secondary>results of</secondary></indexterm>
+<para>As each term is used in an expression, it is evaluated
+as appropriate. The result is an object. Consequently, the result of evaluating
+any expression is itself an object
+<indexterm><primary>object</primary>
+<secondary>as data value</secondary></indexterm>
+(such as a character string).</para>
+</section>
+
+<section id="opera"><title>Operators</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>operators</secondary></indexterm>
+<indexterm><primary>messages to objects</primary>
+<secondary>operator as message</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>arithmetic</secondary>
+<tertiary>description</tertiary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>as message</secondary></indexterm>
+<para>An <emphasis role="italic">operator</emphasis> is a representation
+of an operation, such as an addition, to be carried out on one or two terms.
+Each operator, except for the prefix operators, acts on two terms, which can
+be symbols, strings, function calls, message terms, intermediate results,
+or subexpressions. Each prefix operator acts on the term or subexpression
+that follows it. Whitespace characters (and comments) adjacent to operator
+characters have no effect on the operator; thus, operators constructed from more
+than one character can have embedded whitespace and comments. In addition, one
+or more whitespace characters, if they occur in expressions but are not adjacent
+to another operator, also act as an operator. The language processor
+functionally translates operators into message terms. For dyadic operators,
+<indexterm><primary>dyadic operators</primary></indexterm>
+which operate on two terms, the
+language processor sends the operator as a message to the term on the left,
+passing the term on the right as an argument. For example, the sequence </para>
+<programlisting>
+say 1+2
+</programlisting>
+<para>is functionally equivalent to:</para>
+<programlisting>
+say 1~"+"(2)
+</programlisting>
+<para>The blank concatenation operator sends the message &quot;&nbsp;&quot;
+(a single blank), and the abuttal concatenation operator sends the &quot;&quot;
+message (a null string). When the &not; character is used in an operator, it
+is changed to a <computeroutput>\</computeroutput>. That is, the operators
+&not;= and \= both send the message \= to the target object.</para>
+<para>For an operator that works on a single term (for example, the
+prefix&nbsp;- and prefix&nbsp;+ operators), Rexx sends a message to the term,
+with no arguments. This means <computeroutput>-z</computeroutput> has the
+same effect as <computeroutput>z~"-"</computeroutput>.</para>
+<para>See <xref linkend="mthObjectComparisonMethods" /> for comparison operator methods of
+the Object class and  <xref linkend="mthStringArithmeticMethods" />
+for arithmetic operator methods of the String class.</para>
+<para>There are four types of operators:
+<itemizedlist>
+<listitem><para>Concatenation</para></listitem>
+<listitem><para>Arithmetic</para></listitem>
+<listitem><para>Comparison</para></listitem>
+<listitem><para>Logical</para></listitem></itemizedlist></para>
+
+<section id="strgcon"><title>String Concatenation</title>
+<indexterm><primary>concatenation</primary>
+<secondary>of strings</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>concatenation</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>concatenation of</secondary></indexterm>
+<para>The concatenation operators combine two strings to form one string by
+appending the second string to the right-hand end of the first string. The
+concatenation may occur with or without an intervening blank. The concatenation
+operators are: </para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row>
+<entry>(blank)</entry>
+<entry>
+<para>Concatenate terms with one blank in between
+<indexterm><primary>blanks</primary></indexterm>
+<indexterm><primary>concatenation</primary>
+<secondary>as concatenation operator</secondary></indexterm>
+<indexterm><primary>concatenation</primary>
+<secondary>blank</secondary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>||</entry>
+<entry>
+<para>Concatenate without an intervening blank
+<indexterm><primary>|| concatenation operator</primary></indexterm>
+<indexterm><primary>concatenation</primary>
+<secondary>operator</secondary>
+<tertiary>||</tertiary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>(abuttal)</entry>
+<entry>
+<para>Concatenate without an intervening blank
+<indexterm><primary>concatenation</primary>
+<secondary>abuttal</secondary></indexterm>
+<indexterm><primary>abuttal</primary></indexterm>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>You can force concatenation without a blank by using the
+<computeroutput>||</computeroutput> operator.</para>
+<para>The abuttal operator is assumed between two terms that are not separated
+by another operator. This can occur when two terms are syntactically distinct,
+such as a literal string and a symbol, or when they are only separated by
+a comment.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<para>An example of syntactically distinct terms is: if
+<computeroutput>Fred</computeroutput> has the
+value <computeroutput>37.4</computeroutput>, then
+<computeroutput>Fred"%"</computeroutput> evaluates to
+<computeroutput>37.4%</computeroutput>.</para>
+<para></para>
+<para>If the variable <varname>PETER</varname> has the value
+<computeroutput>1</computeroutput>, then <varname>(Fred)(Peter)</varname>
+evaluates to <computeroutput>37.41</computeroutput>.</para>
+<para>The two adjoining strings, one hexadecimal and one literal,
+<computeroutput>"4a 4b"x"LMN"</computeroutput> evaluate to
+<computeroutput>JKLMN</computeroutput>.</para>
+<para>In the case of </para>
+<programlisting>
+Fred/* The NOT operator precedes Peter. */&not;Peter
+</programlisting>
+<para> there is no abuttal operator implied, and the expression is not valid.
+ However, </para>
+<programlisting>
+(Fred)/* The NOT operator precedes Peter. */(&not;Peter)
+</programlisting><para> results
+in an abuttal, and evaluates to <computeroutput>37.40</computeroutput>.</para>
+</section>
+
+<section id="xarithm"><title>Arithmetic</title>
+<indexterm><primary>numbers</primary>
+<secondary>arithmetic on</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>arithmetic</secondary>
+<tertiary>list</tertiary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>comparison</secondary></indexterm>
+<para>You can combine character strings that are
+valid numbers (see <xref linkend="numbrs" />)
+using the following arithmetic operators: </para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row>
+<entry>+</entry>
+<entry>
+<para>Add
+<indexterm><primary>+ (addition operator)</primary></indexterm>
+<indexterm><primary>addition operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>-</entry>
+<entry>
+<para>Subtract
+<indexterm><primary>- (subtraction operator)</primary></indexterm>
+<indexterm><primary>subtraction operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>*</entry>
+<entry>
+<para>Multiply
+<indexterm><primary>* (multiplication operator)</primary></indexterm>
+<indexterm><primary>multiplication operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>/</entry>
+<entry>
+<para>Divide
+<indexterm><primary>/ (division operator)</primary></indexterm>
+<indexterm><primary>division operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>%</entry>
+<entry>
+<para>Integer divide (divide and return the integer part of the
+result)
+<indexterm><primary>% (integer division operator)</primary></indexterm>
+<indexterm><primary>integer division operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>//</entry>
+<entry>
+<para>Remainder (divide and return the remainder&mdash;not
+<xref linkend="mthStringModulo" xrefstyle="select:title"/>,
+because the result can be negative)
+<indexterm><primary>remainder operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>**</entry>
+<entry>
+<para>Power (raise a number to a whole-number power)
+<indexterm><primary>exponentiation</primary>
+<secondary>operator</secondary></indexterm>
+<indexterm><primary>power operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>Prefix -</entry>
+<entry>
+<para>Same as the subtraction:
+<computeroutput>0 - number</computeroutput>
+<indexterm><primary>prefix - operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>Prefix +</entry>
+<entry>
+<para>Same as the addition:
+<computeroutput>0 + number</computeroutput>
+<indexterm><primary>prefix + operator</primary></indexterm>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>See <xref linkend="numarit" />
+for details about precision, the format of valid numbers, and the
+operation rules for arithmetic. Note that if an arithmetic result is
+shown in exponential notation, it is likely that rounding has occurred.</para>
+</section>
+
+<section id="compari"><title>Comparison</title>
+<indexterm><primary>comparisons</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>comparisons</primary>
+<secondary>of strings</secondary></indexterm>
+<indexterm><primary>equality, testing of</primary></indexterm>
+<indexterm><primary>numbers</primary>
+<secondary>comparison of</secondary></indexterm>
+<indexterm><primary>strict comparison</primary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>comparison of</secondary></indexterm>
+<para>The
+comparison operators compare two terms and return the value
+<computeroutput>1</computeroutput> if
+the result of the comparison is true, or <computeroutput>0</computeroutput>
+otherwise.</para>
+<para>The strict comparison operators
+<indexterm><primary>strict comparison</primary></indexterm>
+all have one of the characters defining the operator doubled. The
+<computeroutput>==</computeroutput>,
+<indexterm><primary>== (strictly equal operator)</primary></indexterm>
+<indexterm><primary>strictly equal operator</primary></indexterm>
+<computeroutput>\==</computeroutput>,
+<indexterm><primary>inequality, testing of</primary></indexterm>
+<indexterm><primary>\== (not strictly equal operator)</primary></indexterm>
+<indexterm><primary>prefix \ operator</primary></indexterm>
+and <computeroutput>&not;==</computeroutput>
+<indexterm><primary>&not;== (not strictly equal operator)</primary></indexterm>
+<indexterm><primary>strictly not equal operator</primary></indexterm>
+operators test for an exact
+match between two strings.  The two strings must be identical (character by
+character) and of the same length to be considered strictly equal. Similarly,
+the strict comparison operators such as
+<computeroutput>&gt;&gt;</computeroutput>
+<indexterm><primary>&gt;&gt; (strictly greater than operator)</primary>
+</indexterm>
+<indexterm><primary>strictly greater than operator</primary></indexterm>
+or <computeroutput>&lt;&lt;</computeroutput>
+<indexterm><primary>&lt;&lt; (strictly less than operator)</primary></indexterm>
+<indexterm><primary>strictly less than operator</primary></indexterm>
+carry out a simple character-by-character comparison, with no padding of either
+of the strings being compared.  The comparison of the two strings is from
+left to right. If one string is shorter than the other and is a leading
+substring of another, then it is smaller than (less than) the other.
+The strict comparison
+<indexterm><primary>comparisons</primary>
+<secondary>of numbers</secondary></indexterm>
+operators also do not attempt to perform a numeric comparison on the two
+operands.</para>
+<para>For all other comparison operators, if both terms
+involved are numeric, a numeric comparison (see
+<xref linkend="numcom" />) is
+effected. Otherwise, both terms are treated as character strings, leading
+and trailing whitespace characters are ignored, and the shorter string is padded
+with blanks on the right.
+</para>
+<para>Character comparison and strict comparison operations are both
+case-sensitive, and the exact collating order might depend on the
+character set used for the implementation. In an ASCII environment,
+such as Windows and *nix, the ASCII character value of digits is lower than
+that of the alphabetic characters,
+and that of lowercase alphabetic characters is higher than that of uppercase
+alphabetic characters.</para>
+<para>The comparison operators and operations are: </para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row>
+<entry>=</entry>
+<entry>
+<para>True if the terms are equal (numerically or when padded)
+<indexterm><primary>= (equal sign)</primary>
+<secondary>equal operator</secondary></indexterm>
+<indexterm><primary>equal</primary>
+<secondary>operator</secondary></indexterm>
+</para>
+</entry>
+</row>
+<row><entry>\=, &not;=</entry>
+<entry><para>True if the terms are not equal (inverse of =)
+<indexterm><primary>\= (not equal operator)</primary></indexterm>
+<indexterm><primary>&not;= (not equal operator)</primary></indexterm>
+<indexterm><primary>not equal operator</primary></indexterm>
+</para></entry></row>
+<row><entry>>
+<indexterm><primary>greater than operator (>)</primary></indexterm>
+</entry>
+<entry><para>Greater than
+<indexterm><primary>&gt; (greater than operator)</primary></indexterm>
+<indexterm><primary>greater than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&lt;
+<indexterm><primary>less than operator (&lt;)</primary></indexterm>
+</entry>
+<entry><para>Less than
+<indexterm><primary>&lt; (less than operator)</primary></indexterm>
+</para></entry></row>
+<row><entry>>&lt;
+<indexterm><primary>greater than or less than operator (>&lt;)</primary>
+</indexterm>
+</entry>
+<entry><para>Greater than or less than (same as not equal)
+<indexterm><primary>>&lt; (greater than or less than operator)</primary>
+</indexterm>
+<indexterm><primary>greater than or less than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&lt;&gt;
+<indexterm><primary>less than or greater than operator (&lt;>)</primary>
+</indexterm>
+</entry>
+<entry><para>Greater than or less than (same as not equal)
+<indexterm><primary>&lt;&gt; (less than or greater than operator)</primary>
+</indexterm>
+</para></entry></row>
+<row><entry>&gt;=
+<indexterm><primary>greater than or equal to operator (>=)</primary>
+</indexterm>
+</entry>
+<entry><para>Greater than or equal to
+<indexterm><primary>&gt;= (greater than or equal operator)</primary>
+</indexterm>
+<indexterm><primary>greater than or equal operator</primary></indexterm>
+</para></entry></row>
+<row><entry>\&lt;, &not;&lt;</entry>
+<entry><para>Not less than
+<indexterm><primary>\&lt; (not less than operator)</primary></indexterm>
+<indexterm><primary>&not;&lt; (not less than operator)</primary></indexterm>
+<indexterm><primary>not less than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&lt;=
+<indexterm><primary>less than or equal to operator (&lt;=)</primary></indexterm>
+</entry>
+<entry><para>Less than or equal to
+<indexterm><primary>&lt;= (less than or equal operator)</primary>
+</indexterm>
+</para></entry></row>
+<row><entry>\>, &not;></entry>
+<entry><para>Not greater than
+<indexterm><primary>\&gt; (not greater than operator)</primary></indexterm>
+<indexterm><primary>&not;> (not greater than operator)</primary></indexterm>
+<indexterm><primary>not greater than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>==</entry>
+<entry><para>True if terms are strictly equal (identical)
+<indexterm><primary>== (strictly equal operator)</primary></indexterm>
+<indexterm><primary>strictly equal operator</primary></indexterm>
+</para></entry></row>
+<row><entry>\==, &not;==</entry>
+<entry><para>True if the terms are not strictly equal (inverse of ==)
+<indexterm><primary>\== (not strictly equal operator)</primary></indexterm>
+<indexterm><primary>&not;== (not strictly equal operator)</primary></indexterm>
+<indexterm><primary>strictly not equal operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&gt;&gt;</entry>
+<entry><para>Strictly greater than
+<indexterm><primary>&gt;&gt; (strictly greater than operator)</primary>
+</indexterm>
+<indexterm><primary>strictly greater than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&lt;&lt;</entry>
+<entry><para>Strictly less than
+<indexterm><primary>&lt;&lt; (strictly less than operator)</primary></indexterm>
+<indexterm><primary>strictly less than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&gt;&gt;=</entry>
+<entry><para>Strictly greater than or equal to
+<indexterm><primary>&gt;&gt;= (strictly greater than or equal operator)</primary>
+</indexterm>
+<indexterm><primary>strictly greater than or equal operator</primary></indexterm>
+</para></entry></row>
+<row><entry>\&lt;&lt;, &not;&lt;&lt;</entry>
+<entry><para>Strictly not less than
+<indexterm><primary>\&lt;&lt; (strictly not less than operator)</primary>
+</indexterm>
+<indexterm><primary>&not;&lt;&lt; (strictly not less than operator)</primary>
+</indexterm>
+<indexterm><primary>strictly not less than operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&lt;&lt;=</entry>
+<entry><para>Strictly less than or equal to
+<indexterm><primary>&lt;&lt;= (strictly less than or equal operator)</primary>
+</indexterm>
+</para></entry></row>
+<row><entry>\&gt;&gt;, &not;&gt;&gt;</entry>
+<entry><para>Strictly not greater than
+<indexterm><primary>\&gt;&gt; (strictly not greater than operator)</primary>
+</indexterm>
+<indexterm><primary>&not;&gt;&gt; (strictly not greater than operator)</primary>
+</indexterm>
+<indexterm><primary>strictly not greater than operator</primary></indexterm>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+
+<note><title>Note</title>
+<para>Throughout the language, the NOT (&not;)
+<indexterm><primary>&not; (NOT operator)</primary></indexterm>
+character is
+synonymous with the backslash(<computeroutput>\</computeroutput>).
+<indexterm><primary>backslash, use of</primary></indexterm>
+<indexterm><primary>\ (NOT operator)</primary></indexterm>
+<indexterm><primary>prefix \ operator</primary></indexterm>
+ You can use the two
+characters interchangeably, according to availability and personal preference.
+The backslash can appear in the following operators:
+<computeroutput>\</computeroutput> (prefix
+not),<computeroutput>\=</computeroutput>, <computeroutput>\==</computeroutput>,
+<computeroutput>\&lt;</computeroutput>, <computeroutput>\></computeroutput>,
+<computeroutput>\&lt;&lt;</computeroutput>, and
+<computeroutput>\>></computeroutput>.
+</para></note>
+</section>
+
+<section id="logicl"><title>Logical (Boolean)</title>
+<indexterm><primary>boolean operations</primary></indexterm>
+<indexterm><primary>logical</primary>
+<secondary>operations</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>logical</secondary></indexterm>
+<para>A character string has the value false if it is
+<computeroutput>0</computeroutput>, and true
+if it is <computeroutput>1</computeroutput>.  The logical operators take one or
+two such values and return
+<computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput> as appropriate.  Values other than
+<computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput> are not permitted.
+</para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row><entry>&amp;</entry>
+<entry><para>AND &mdash; returns <computeroutput>1</computeroutput> if both
+terms are true.
+<indexterm><primary>&amp; (AND logical operator) operator</primary></indexterm>
+<indexterm><primary>AND, logical operator</primary></indexterm>
+</para></entry></row>
+<row><entry>|
+<indexterm><primary>inclusive OR operator</primary></indexterm>
+<indexterm><primary>OR, logical</primary></indexterm>
+</entry>
+<entry><para>Inclusive OR &mdash; returns <computeroutput>1</computeroutput>
+if either term or both terms are true.
+<indexterm><primary>| inclusive OR operator</primary></indexterm>
+</para></entry></row>
+<row><entry>&amp;&amp;
+<indexterm><primary>exclusive OR operator</primary></indexterm>
+<indexterm><primary>XOR, logical</primary></indexterm>
+</entry>
+<entry><para>Exclusive OR &mdash; returns <computeroutput>1</computeroutput>
+if either term, but not both terms, is true.
+<indexterm><primary>&amp;&amp; (exclusive OR operator)</primary></indexterm>
+</para></entry></row>
+<row><entry><emphasis role="bold">Prefix</emphasis> \, &not;
+<indexterm><primary>NOT operator</primary></indexterm>
+<indexterm><primary>negation</primary>
+<secondary>of logical values</secondary></indexterm>
+</entry>
+<entry><para>Logical NOT&mdash; negates; <computeroutput>1</computeroutput>
+becomes <computeroutput>0</computeroutput>, and
+<computeroutput>0</computeroutput> becomes <computeroutput>1</computeroutput>.
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+</section>
+
+<section id="oprpri"><title>Parentheses and Operator Precedence</title>
+<indexterm><primary>algebraic precedence</primary></indexterm>
+<indexterm><primary>precedence of operators</primary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>precedence (priorities) of</secondary></indexterm>
+<indexterm><primary>parentheses</primary>
+<secondary>in expressions</secondary></indexterm>
+<para>Expression
+evaluation is from left to right; parentheses and operator precedence modify
+this:
+<itemizedlist>
+<listitem><para>When parentheses are encountered&mdash;other than those that
+identify the arguments on messages (see
+<xref linkend="mssg" />) and function calls&mdash;the
+entire subexpression between the parentheses is evaluated immediately when
+the term is required.</para></listitem>
+<listitem><para>When the sequence </para>
+<programlisting>
+term1 operator1 term2 operator2 term3
+</programlisting>
+<para>is encountered, and <computeroutput>operator2</computeroutput>
+has precedence over <computeroutput>operator1</computeroutput>,
+the subexpression (<computeroutput>term2 operator2 term3</computeroutput>)
+is evaluated first.</para>
+<para>Note, however, that individual terms are evaluated from left
+to right in the expression (that is, as soon as they are encountered).  The
+precedence rules affect only the order of
+<emphasis role="bold">operations</emphasis>.</para></listitem>
+</itemizedlist></para>
+<para> For example, <computeroutput>*</computeroutput> (multiply) has a
+higher priority than <computeroutput>+</computeroutput> (add), so
+<computeroutput>3+2*5</computeroutput> evaluates to
+<computeroutput>13</computeroutput> (rather than
+the <computeroutput>25</computeroutput> that would result if a
+strict left-to-right evaluation occurred).
+To force the addition to occur before the multiplication, you could rewrite
+the expression as <computeroutput>(3+2)*5</computeroutput>.
+Adding the parentheses makes the first
+three tokens a subexpression. Similarly, the expression
+<computeroutput>-3**2</computeroutput> evaluates
+to <computeroutput>9</computeroutput> (instead of
+<computeroutput>-9</computeroutput>) because the prefix minus operator
+has a higher priority than the power operator.</para>
+<para>The order of precedence of the operators is (highest at the top):</para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="3*" />
+<tbody>
+<row><entry>~&nbsp;&nbsp;&nbsp;~~</entry><entry>(message send)</entry></row>
+<row><entry>+&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&not;&nbsp;&nbsp;&nbsp;\</entry><entry>(prefix operators)</entry></row>
+<row><entry>**</entry><entry>(power)</entry></row>
+<row><entry>*&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;%&nbsp;&nbsp;&nbsp;//</entry><entry>(multiply and divide)</entry></row>
+<row><entry>+&nbsp;&nbsp;&nbsp;-</entry><entry>(add and subtract)</entry></row>
+<row><entry>(blank)&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;(abuttal)</entry><entry>(concatenation with or without blank)</entry></row>
+<row><entry>=&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;&lt;</entry><entry>(comparison operators, all with equal precedence)</entry></row>
+<row><entry>==&nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;&lt;&lt;</entry><entry>&nbsp;</entry></row>
+<row><entry>\=&nbsp;&nbsp;&nbsp;&not;=</entry><entry>&nbsp;</entry></row>
+<row><entry>>&lt;&nbsp;&nbsp;&nbsp;&lt;></entry><entry>&nbsp;</entry></row>
+<row><entry>\>&nbsp;&nbsp;&nbsp;&not;></entry><entry>&nbsp;</entry></row>
+<row><entry>\&lt;&nbsp;&nbsp;&nbsp;&not;&lt;</entry><entry>&nbsp;</entry></row>
+<row><entry>\==&nbsp;&nbsp;&nbsp;&not;==</entry><entry>&nbsp;</entry></row>
+<row><entry>\>>&nbsp;&nbsp;&nbsp;&not;>></entry><entry>&nbsp;</entry></row>
+<row><entry>\&lt;&lt;&nbsp;&nbsp;&nbsp;&not;&lt;&lt;</entry><entry>&nbsp;</entry></row>
+<row><entry>>=&nbsp;&nbsp;&nbsp;>>=</entry><entry>&nbsp;</entry></row>
+<row><entry>&lt;=&nbsp;&nbsp;&nbsp;&lt;&lt;=</entry><entry>&nbsp;</entry></row>
+<row><entry>&amp;</entry><entry>(and)</entry></row>
+<row><entry>|&nbsp;&nbsp;&nbsp;&amp;&amp;</entry><entry>(or, exclusive or)</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>Suppose the symbol <computeroutput>A</computeroutput> is a variable
+whose value is <computeroutput>3</computeroutput>,
+<computeroutput>DAY</computeroutput> is a variable whose value is
+<computeroutput>Monday</computeroutput>, and other variables are
+uninitialized. Then:
+<indexterm><primary>examples</primary>
+<secondary>expressions</secondary></indexterm>
+<indexterm><primary>expressions</primary>
+<secondary>examples</secondary></indexterm>
+<example>
+<title>Arithmetic</title>
+<programlisting>
+<![CDATA[
+A+5                  ->    "8"
+A-4*2                ->    "-5"
+A/2                  ->    "1.5"
+0.5**2               ->    "0.25"
+(A+1)>7              ->    "0"         /* that is, .false */
+" "=""               ->    "1"         /* that is, .true  */
+" "==""              ->    "0"         /* that is, .false */
+" "\==""             ->    "1"
+/* that is, .true  */
+(A+1)*3=12           ->    "1"         /* that is, .true  */
+"077">"11"           ->    "1"         /* that is, .true  */
+"077" >> "11"        ->    "0"         /* that is, .false */
+"abc" >> "ab"        ->    "1"         /* that is, .true  */
+"abc" << "abd"       ->    "1"         /* that is, .true  */
+"ab " << "abd"       ->    "1"         /* that is, .true  */
+Today is Day         ->    "TODAY IS Monday"
+"If it is" day       ->    "If it is Monday"
+Substr(Day,2,3)      ->    "ond"    /* Substr is a function */
+"!"xxx"!"            ->    "!XXX!"
+]]>
+</programlisting>
+</example>
+</para>
+
+<note><title>Note</title>
+<para>The Rexx order of precedence usually causes no difficulty because it is the
+same as in conventional algebra and other computer languages. There are two
+differences from common notations:
+<itemizedlist>
+<listitem><para>The prefix minus operator always has a higher priority than the
+power operator.</para></listitem>
+<listitem><para>Power operators (like other operators) are evaluated from
+left to right.</para></listitem></itemizedlist></para>
+<para>For example:
+<programlisting>
+-3**2     ==  9  /* not -9  */
+-(2+1)**2 ==  9  /* not -9  */
+2**2**3   == 64  /* not 256 */
+</programlisting>
+</para>
+</note>
+</section>
+
+<section id="mssg"><title>Message Terms</title>
+<para>You can include <emphasis>messages</emphasis> to objects in an expression
+wherever a term, such as a literal string, is valid. A message can be sent
+to an object to perform an action, obtain a result, or both.</para>
+<para>A <emphasis>message term</emphasis> can have one of the following forms:
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/intro_messageterm1.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/intro_messageterm2.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The <emphasis role="italic">receiver</emphasis> is a term (see
+<xref linkend="expres" /> for a definition
+of term). It receives the message. The ~ or ~~ indicates
+sending a message. The <emphasis role="italic">messagename</emphasis>
+is a literal string or a symbol that is taken as a constant. The
+<emphasis role="italic">expression</emphasis>s (separated by commas)
+between the parentheses or brackets are the arguments for
+the message. The <emphasis role="italic">receiver</emphasis>
+and the argument <emphasis role="italic">expressions</emphasis> can
+themselves include message terms. If the message has no arguments, you can
+omit the parentheses.</para>
+<para>The left parenthesis, if present, must immediately follow a token
+(<emphasis role="italic">messagename</emphasis> or
+<emphasis role="italic">symbol</emphasis>) with no blank in
+between them. Otherwise, only the first part of the construct is recognized
+as a message term. (A blank operator would be assumed at that point.) Only
+a comment (which has no effect) can appear between a token and the left
+parenthesis.</para>
+<para>You can use any number of <emphasis role="italic">expressions</emphasis>,
+separated by commas. The <emphasis role="italic">expressions</emphasis>
+are evaluated from left to right and form the arguments during
+the execution of the called method. Any ARG, PARSE ARG, or USE ARG instruction or
+ARG() built-in function in the called method accesses these objects while the
+called method is running. You can omit
+<emphasis role="italic">expressions</emphasis>, if appropriate,
+by including extra commas.</para>
+<para>The <emphasis role="italic">receiver</emphasis> object is evaluated, followed
+by one or more <emphasis role="italic">expression</emphasis> arguments.
+The message name (in uppercase) and the resulting argument
+objects are then sent to the receiver object. The receiver object selects
+a method to be run based on the message name, and
+runs the selected method with the specified argument objects. The receiver
+eventually returns, allowing processing to continue.</para>
+<para>If the message term uses ~, the receiver method must return a result object.
+This object is included in the original expression as if the entire message
+term had been replaced by the name of a variable whose value is the returned
+object.</para>
+<para>For example, the message POS is valid for strings, and you could code:
+</para>
+<programlisting>
+c="escape"
+a="Position of &apos;e&apos; is:" c~pos("e",3)
+/* would set A to "Position of &apos;e&apos; is: 6" */
+</programlisting>
+<para>If the message term uses ~~, the receiver method need not return
+a result object. Any result object is discarded, and the receiver object is
+included in the original expression in place of the message term.</para>
+<para>For example, the messages INHERIT and SUBCLASS are valid for classes
+(see <xref linkend="clsClass" />) and, assuming the
+existence of the Persistent class, you could code:</para>
+<programlisting>
+account = .object~subclass("Account")~~inherit(.persistent)
+/* would set ACCOUNT to the object returned by SUBCLASS, */
+/* after sending that object the message INHERIT */
+</programlisting>
+<para>If the message term uses brackets, the message <methodname>[]</methodname> is sent to
+the receiver object. (The <emphasis role="italic">expression</emphasis>s
+within the brackets are available to the receiver object as arguments.)
+The effect is the same as for the corresponding ~
+form of the message term. Thus, <computeroutput>a[b]</computeroutput>
+is the same as <code>a~"[]"(b)</code>.</para>
+
+<para>For example, the message <methodname>[]</methodname> is valid for arrays
+(see <xref linkend="clsArray" />) and you could code:
+<indexterm><primary>arguments</primary>
+<secondary>passing in messages</secondary></indexterm>
+<example>
+<title>Arrays</title>
+<programlisting>
+a = .array~of(10,20)
+say "Second item is" a[2]   /* Same as: a~at(2)              */
+/* or a~"[]"(2)                  */
+/* Produces: "Second item is 20" */
+</programlisting>
+</example>
+</para>
+<para>A message can have a variable number of arguments. You need to specify
+only those required. For example,
+<computeroutput>"ESCAPE"~POS("E")</computeroutput> returns
+<computeroutput>1</computeroutput>.</para>
+<para>A colon (:) and symbol can follow the message name. In this case, the
+symbol must be the name of a variable (usually the special variable
+<xref linkend="xsuper" xrefstyle="template:SUPER"/>) or an
+<xref linkend="ensym" xrefstyle="template:environment symbol"/>.
+The resulting value changes the usual method selection. For more information,
+see <xref linkend="chsrod" />.</para>
+</section>
+
+<section id="mseq"><title>Message Sequences</title>
+<indexterm><primary>messages to objects</primary>
+<secondary>~, using</secondary></indexterm>
+<indexterm><primary>messages to objects</primary>
+<secondary>~~, using</secondary></indexterm>
+<para>The ~
+<indexterm><primary>~ (tilde or twiddle)</primary></indexterm>
+and ~~
+<indexterm><primary>~~</primary></indexterm>
+forms of message terms
+differ only in their treatment of the result object. Using
+<computeroutput>~</computeroutput> returns the result of the method.
+Using <computeroutput>~~</computeroutput> returns
+the object that received the message. Here is an example:
+<example>
+<title>Messages</title>
+<programlisting>
+/* Two ways to use the INSERT method to add items to a list */
+/* Using only ~ */
+team = .list~of("Bob","Mary")
+team~insert("Jane")
+team~insert("Joe")
+team~insert("Steve")
+say "First on the team is:" team~firstitem     /* Bob   */
+say "Last on the team is:" team~lastitem       /* Steve */
+/* Do the same thing using ~~ */
+team=.list~of("Bob","Mary")
+/* Because ~~ returns the receiver of the message       */
+/* each INSERT message following returns the list       */
+/* object (after inserting the argument value).         */
+team~~insert("Jane")~~insert("Joe")~~insert("Steve")
+say "First on the team is:" team~firstitem     /* Bob   */
+say "Last on the team is:" team~lastitem       /* Steve */
+</programlisting>
+</example>
+</para>
+<para>Thus, you would use <literal>~</literal> when you want the returned
+result to be the receiver of the next message in the sequence.
+</para>
+</section>
+
+<!-- Array Term ================================================ -->
+<section id="arrayterm" revisionflag="added"><title>&added50;Array Term</title>
+<indexterm><primary>array term</primary></indexterm>
+<para>As a convenience, Rexx allows a shortened syntax for creating arrays,
+called <emphasis role="italic">Array term</emphasis>, of the following form:
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/intro_arrayterm.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para>
+Except for trailing commas, an Array term returns a newly created array,
+as if it had been created with the message term
+<computeroutput>rexx:Array~of(&hellip;)</computeroutput>.
+(An Array term will always return an instance of the Rexx-defined
+<classname>Array</classname> class, even if a user-defined class named
+<literal>Array</literal> exists.)
+</para><para>
+Here are some examples:
+<programlisting>week = "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+say week~items "days"                           -- 7 days
+
+say ("here", "we", "go")~makeString(, " ")      -- here we go
+
+iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
+
+do list over .environment, .local
+  say list~items                                -- 65
+end                                             -- 10
+
+say 0~sendWith("MAX", (2, 3, 5, 7, 11, 13))     -- 13
+
+sparse = ,,,0
+say "size" sparse~size"," sparse~items "items"  -- size 4, 1 items
+</programlisting>
+</para><para>
+If the array term has trailing commas, the returned array has a
+bigger size than what <computeroutput>.Array~of(&hellip;)</computeroutput>
+would have returned:
+<programlisting>say (1, , 3, ,)~size .Array~of(1, , 3, ,)~size  -- 5 3
+say (,)~size .Array~of(,)~size                  -- 2 0
+</programlisting>
+</para>
+<para>In a context, where commas already have a different meaning,
+it may be necessary to put an Array term between brackets.
+For example:
+<programlisting>call func "uno", 2, "tre"      -- no Array term: three parms
+call func ("uno", 2, "tre")    -- Array term: one Array as parm
+</programlisting>
+</para>
+<para>An Array term cannot return an array of size zero or one, although
+it can return an array with zero or one items (but still of at least size two).
+<programlisting>say (,)~items      -- 0
+say (,)~size       -- 2
+</programlisting>
+</para>
+</section>
+
+<!-- Variable Reference Term ====================================== -->
+<section id="varrefterm" revisionflag="added"><title>&added50;Variable Reference Term</title>
+<indexterm><primary>array term</primary></indexterm>
+<para>A variable reference term represents a reference to a variable.
+Variable reference terms can be used as arguments to subroutines, functions,
+methods, or routines, thus allowing the original variable to be modified or
+created by the called Rexx code.
+</para>
+<para>While subroutines, functions, methods, or routines can modify argument
+objects when accessed with the USE ARG instruction without using a variable
+reference, changing the value of arguments to new objects&mdash;like setting
+them to a new string, a new Array, or to <literal>.nil</literal>&mdash;can
+only be done using a variable reference term.
+</para>
+<para>Variable reference terms start with either of the two reference
+operators, <literal>&gt;</literal> or <literal>&lt;</literal>,
+followed by a simple variable name or a stem variable name.
+Variable references to compound variables are not allowed.
+</para>
+<para>Here is an example:
+<programlisting>
+call dir >files, ".txt"
+say files~items "files with extension .txt"
+
+::routine dir
+  use strict arg >array, extension = ""
+  array = .Array~new
+  do file over .File~new(".")~list
+    if file~caselessEndsWith(extension) then
+      array~append(file)
+  end
+</programlisting>
+</para>
+<para>Variable reference arguments and
+<xref linkend="keyUseArg" xrefstyle="template:USE ARG"/> names must
+match.
+They must either be both simple variable references, or
+both stem references.
+USE ARG variable references can never be optional, a default value is not
+allowed.
+</para>
+</section>
+
+</section>
+
+<section id="clausin"><title>Clauses and Instructions</title>
+<para>Clauses can be subdivided into the following types:
+<itemizedlist spacing="compact">
+<listitem><para><xref linkend="nullcla" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="directives" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="labels" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="instructions" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="assigns" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="msgit" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para><xref linkend="keyinst" xrefstyle="select:title"/>, and</para></listitem>
+<listitem><para><xref linkend="cmds" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist></para>
+
+<section id="nullcla"><title>Null Clauses</title>
+<indexterm><primary>clauses</primary>
+<secondary>null</secondary></indexterm>
+<indexterm><primary>null</primary>
+<secondary>clauses</secondary></indexterm>
+<para>A clause consisting only of whitespace characters, comments, or both is a
+<emphasis>null clause</emphasis>. It is completely ignored.</para>
+
+<note><title>Note</title>
+<para>A null clause is not an instruction; for example, putting an extra
+semicolon after the THEN or ELSE in an IF instruction is not equivalent to
+using a dummy instruction (as it would be in the C language). The NOP
+instruction is provided for this purpose.</para></note>
+</section>
+
+<section id="directives"><title>Directives</title>
+<indexterm><primary>clauses</primary>
+<secondary>directives</secondary></indexterm>
+<para>A clause that begins with two colons is a <emphasis>directive</emphasis>.
+Directives are nonexecutable code and can start in any column. They
+divide a program into separate executable units (methods and routines) and
+supply information about the program or its executable units. Directives perform
+various functions, such as creating new Rexx classes (::CLASS
+directive) or defining a method (::METHOD directive). See
+<xref linkend="dire" /> for
+more information about directives.</para>
+</section>
+
+<section id="labels"><title>Labels</title>
+<indexterm><primary>label</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>labels</secondary></indexterm>
+<indexterm><primary>colon</primary>
+<secondary>as label terminators</secondary></indexterm>
+<indexterm><primary>colon</primary>
+<secondary>in a label</secondary></indexterm>
+<para>A clause that consists of a single symbol
+or string followed by a colon is a <emphasis>label</emphasis>. The colon
+<indexterm><primary>: (colon)</primary>
+<secondary>in a label</secondary></indexterm>
+in this context implies a semicolon (clause separator), so no semicolon is
+required.</para>
+
+<para>The label's name is taken from the string or symbol part
+of the label. If the label uses a symbol for the name, the label's name
+is in uppercase. If a label uses a string, the name can contain mixed-case
+characters.</para>
+<para>Labels identify the targets of CALL instructions, SIGNAL instructions,
+and internal function calls. Label searches for CALL, SIGNAL, and internal
+function calls are case-sensitive. Label-search targets specified as symbols
+cannot match labels with lowercase characters. Literal-string or computed-label
+searches can locate labels with lowercase characters.
+</para>
+<para>Labels can be any number of successive clauses. Several labels can precede
+other clauses.
+Labels are treated as null clauses and can be
+traced selectively to aid debugging.
+</para>
+<para>Duplicate labels are permitted, but control is only passed to the
+first of any duplicates in the main program (prolog), a method, or a routine.
+The duplicate labels occurring later can be traced but cannot be used as
+a target of a CALL, SIGNAL, or function invocation.
+</para>
+</section>
+
+<section id="instructions"><title>Instructions</title>
+<indexterm><primary>clauses</primary>
+<secondary>instructions</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>definition</secondary></indexterm>
+<para>An <emphasis>instruction</emphasis> consists
+of one or more clauses describing some course of action for the language
+processor to take. Instructions can be assignments, message instructions,
+keyword instructions, or commands.</para>
+</section>
+
+<section id="assigns"><title>Assignments</title>
+<indexterm><primary>clauses</primary>
+<secondary>assignment</secondary></indexterm>
+<para>A single clause of
+the form <emphasis role="italic">symbol=expression</emphasis> is an instruction
+known as an <emphasis>assignment</emphasis>. An assignment gives a (new) value
+to a variable. See <xref linkend="assinmt" />.
+</para>
+<section><title>Extended Assignments</title>
+<para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, &amp;&amp;=, and **=</computeroutput>
+can be used to create extended assignments.  These sequences combine an operation with the assignment.
+See <xref linkend="extassign" /> for more details.</para>
+</section>
+</section>
+
+<section id="msgit"><title>Message Instructions</title>
+<indexterm><primary>clauses</primary>
+<secondary>message instructions</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>message</secondary></indexterm>
+<indexterm><primary>message instructions</primary></indexterm>
+<para>A <emphasis>message instruction</emphasis> is a single clause in the
+form of a message term (see <xref linkend="mssg" />)
+or in the form
+<emphasis role="italic">messageterm</emphasis>=<emphasis role="italic">expression</emphasis>.
+A message is sent to an object, which responds by performing some action.
+See <xref linkend="msgi" />.</para>
+</section>
+
+<section id="keyinst"><title>Keyword Instructions</title>
+<indexterm><primary>clauses</primary>
+<secondary>keyword instructions</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>keyword</secondary></indexterm>
+<indexterm><primary>subkeyword</primary></indexterm>
+<para>A <emphasis>keyword instruction</emphasis> is one or more clauses, the
+first of which starts
+with a keyword that identifies the instruction. Keyword instructions control,
+for example, the external interfaces and the flow of control. Some keyword
+instructions can include nested instructions. In the following example, the
+DO construct (DO, the group of instructions that follow it, and its associated
+END keyword) is considered a single keyword instruction.</para>
+<programlisting>
+DO
+  instruction
+  instruction
+  instruction
+END
+</programlisting>
+<para>A <emphasis>subkeyword</emphasis> is
+a keyword that is reserved within the context of a particular instruction,
+for example, the symbols TO and WHILE in the DO instruction.</para>
+</section>
+
+<section id="cmds"><title>Commands</title>
+<indexterm><primary>clauses</primary>
+<secondary>commands</secondary></indexterm>
+<indexterm><primary>command</primary>
+<secondary>clause</secondary></indexterm>
+<para>A <emphasis>command</emphasis> is a clause consisting of an expression
+only. The expression is evaluated and the result is passed as a command string
+to an external environment.</para>
+</section>
+</section>
+
+<section id="assinmt"><title>Assignments and Symbols</title>
+<indexterm><primary>assignment</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>assignment</secondary></indexterm>
+<indexterm><primary>equal</primary>
+<secondary>sign</secondary>
+<tertiary>to indicate assignment</tertiary></indexterm>
+<indexterm><primary>restrictions</primary>
+<secondary>first character of variable name</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>assigning values to</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>use of</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>simple</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>setting a new value</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>valid names</secondary></indexterm>
+<para>A <emphasis>variable</emphasis> is an object whose value can change
+during the running of a
+Rexx program. The process of changing the value of a variable is
+called <emphasis>assigning</emphasis> a new value to it. The value of a
+variable is a single object. Note that an object can be
+composed of other objects, such as an array or directory object.</para>
+<para>You can assign
+a new value to a variable with the ARG, PARSE, PULL, or USE instructions,
+or the VALUE built-in function, but the most
+common way of changing the value of a variable is the assignment instruction
+itself. Any clause in the form</para>
+<para><emphasis role="italic">symbol</emphasis>=<emphasis role="italic">
+expression</emphasis>;</para>
+<indexterm><primary>= (equal sign)</primary>
+<secondary>assignment operator</secondary></indexterm>
+<indexterm><primary>assignment</primary>
+<secondary>indicator (=)</secondary></indexterm>
+<para>is taken
+to be an assignment. The result of
+<emphasis role="italic">expression</emphasis> becomes the new value
+of the variable named by the symbol to the left of the equal sign.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+/* Next line gives FRED the value "Frederic" */
+Fred="Frederic"
+</programlisting>
+<para>The symbol naming the variable cannot begin with a digit
+(<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
+or a period.</para>
+<para>You can use a symbol
+in an expression even if you have not assigned a value to it, because a symbol
+has a defined value at all times. A variable to which you have not assigned
+<indexterm><primary>uninitialized variable</primary></indexterm>
+a value is <emphasis>uninitialized</emphasis>.  Its value is the characters
+of the symbol itself, translated to uppercase (that is,
+lowercase <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>).
+However, if it is a compound symbol (described in
+<xref linkend="compsym" />), its value is the
+derived name of the symbol.
+<indexterm><primary>symbol</primary>
+<secondary>classifying</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>constant</secondary></indexterm>
+<example>
+<title>Derived symbol names</title>
+<programlisting>
+/* If Freda has not yet been assigned a value,   */
+/* then next line gives FRED the value "FREDA"   */
+Fred=Freda
+</programlisting>
+</example>
+</para>
+<para>The meaning of a symbol
+in Rexx varies according to its context. As a term in an expression, a symbol
+belongs to one of the following groups: constant symbols, simple symbols,
+compound symbols, environment symbols, and stems. Constant symbols cannot
+be assigned new values. You can use simple symbols for variables where the
+name corresponds to a single value. You can use compound symbols and stems
+for more complex collections of variables although the collection classes
+might be preferable in many cases. See
+<xref linkend="clsCollection" />.
+</para>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>When the ARG, PARSE, PULL, or USE instruction, the VALUE
+built-in function, or the variable pool interface changes a variable, the
+effect is identical to an assignment.
+</para></listitem>
+<listitem><para>Any clause that starts with a symbol and whose second token is
+(or starts with) an equal sign (<computeroutput>=</computeroutput>)
+is an assignment, rather than an expression
+(or a keyword instruction). This is not a restriction, because you can ensure
+that the clause is processed as a command, such as by putting a null string
+before the first name, or by enclosing the expression in
+parentheses. </para>
+<para>If you unintentionally use a Rexx keyword as the variable
+name in an assignment, this should not cause confusion.  For example, the
+following clause is an assignment, not an ADDRESS instruction:</para>
+<programlisting>
+Address="10 Downing Street";
+</programlisting>
+</listitem>
+<listitem><para>You can use the <xref linkend="bifVar" xrefstyle="select:title"/>
+function to test whether a symbol has been assigned a value.
+In addition, you can set
+<xref linkend="uninit" xrefstyle="template:SIGNAL ON NOVALUE"/>
+to trap the use of any uninitialized variables (except when they are tails
+in compound variables or stem variables, which are always initialized with a Stem object
+when first used.)
+</para></listitem>
+</orderedlist>
+
+<section id="extassign"><title>Extended Assignments</title>
+<indexterm><primary>extended assignments</primary></indexterm>
+<indexterm><primary>assignment</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>clauses</primary>
+<secondary>extended assignment</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>assigning values to</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>use of</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>setting a new value</secondary></indexterm>
+<para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, &amp;&amp;=, and **=</computeroutput>
+can be used to create extended assignment instructions.
+An extended assignment combines a non-prefix operator with
+an assignment where the term on the left side of the assignment
+is also used as the left term of the operator.  For
+example,</para>
+<programlisting>
+    a += 1
+</programlisting>
+<para>is exactly equivalent to the instruction</para>
+<programlisting>
+    a = a + 1
+</programlisting>
+<para>Extended assignments are processed identically to the longer form of the instruction.</para>
+</section>
+
+<section id="constnt"><title>Constant Symbols</title>
+<indexterm><primary>constant symbols</primary></indexterm>
+<para>A <emphasis role="italic">constant symbol</emphasis> starts with
+a digit (<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
+or a period.</para>
+<para>You cannot change the value of a constant symbol.  It is simply the string
+consisting of the characters of the symbol (that is, with any lowercase
+alphabetic characters translated to uppercase).</para>
+<para>These are constant symbols:
+<example>
+<title>Constants</title>
+<programlisting>
+77
+827.53
+.12345
+12e5       /* Same as 12E5 */
+3D
+17E-3
+</programlisting>
+</example>
+</para>
+<para>Constant symbols, where the first character is a period and the second character
+is alphabetic, are <xref linkend="ensym" xrefstyle="template:environment symbols"/>
+and may have a value other than the symbol name.
+</para>
+</section>
+
+<section id="simpsym"><title>Simple Symbols</title>
+<indexterm><primary>simple</primary>
+<secondary>symbols</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>simple</secondary></indexterm>
+<para>A <emphasis role="italic">simple symbol</emphasis> does not contain
+any periods and does not start with a digit
+(<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>).</para>
+<para>By default, its value is the characters of the symbol (that is, translated
+to uppercase). If the symbol has been assigned a value, it names a variable
+and its value is the value of that variable.</para>
+<para>These are simple symbols:
+<example>
+<title>Simple symbols</title>
+<programlisting>
+FRED
+Whatagoodidea?    /* Same as WHATAGOODIDEA? */
+?12
+</programlisting>
+</example>
+</para>
+</section>
+
+<section id="stems"><title>Stems</title>
+<indexterm><primary>assignment</primary>
+<secondary>of stems variables</secondary></indexterm>
+<indexterm><primary>array</primary>
+<secondary>initialization</secondary></indexterm>
+<para>A <emphasis role="italic">stem</emphasis> is
+a symbol that contains a single period as the last character of the name. It cannot start with
+a digit.</para>
+<para>These are stems:
+<example>
+<title>Stems</title>
+<programlisting>
+FRED.
+A.
+</programlisting>
+</example>
+</para>
+<para>The value of a stem is always a Stem object (see
+<xref linkend="clsStem" /> for details).
+The stem variable's Stem object is automatically created the first time
+you use the stem variable or a
+<xref linkend="compsym" xrefstyle="template:compound variable"/>
+containing the stem variable name.
+The Stem object's assigned name is
+the name of the stem variable (with the characters translated to uppercase).
+If the stem variable has been assigned a value, or the Stem object has been
+given a default value, the assigned name overrides the default stem name.
+A reference to a stem variable will return the associated Stem object.
+</para>
+<indexterm><primary>compound</primary>
+<secondary>variable</secondary>
+<tertiary>setting new value</tertiary></indexterm>
+<indexterm><primary>stem of a variable</primary>
+<secondary>assignment to</secondary></indexterm>
+<para>When a stem is the target of an assignment, the action taken
+depends on the value being assigned.  If the new value is a Stem object,
+the new Stem object will replace the Stem object that is currently associated
+with the stem variable.  This can result in multiple stem variables referring to
+the same Stem object, effectively creating a variable alias.
+<example>
+<title>Stems</title>
+<programlisting>
+hole.   = "empty"
+hole.19 = "full"
+say  hole.1  hole.mouse  hole.19
+/* Says "empty empty full" */
+
+hole2. = hole.       /* copies reference to hole. stem to hole2. */
+
+say  hole2.1  hole2.mouse  hole2.19
+
+/* Also says "empty empty full" */
+</programlisting>
+</example>
+</para>
+<para>If the new value is not a Stem object,
+a new Stem object is created and assigned to the stem variable, replacing the
+Stem object currently associated with the stem variable.</para>
+<para>
+The new value assigned to the
+stem variable is given to the new Stem object as a default value. Following
+the assignment, a reference to any compound symbol with that stem variable
+returns the new value until another value is assigned to the stem, the Stem
+object, or the individual compound variable.
+<indexterm><primary>initialization</primary>
+<secondary>of arrays</secondary></indexterm>
+<indexterm><primary>initialization</primary>
+<secondary>of compound variables</secondary></indexterm>
+<example>
+<title>Stems</title>
+<programlisting>
+hole.  = "empty"
+hole.19 = "full"
+say  hole.1  hole.mouse  hole.19
+/* says "empty empty full" */
+</programlisting>
+</example>
+</para>
+<para>Thus, you can initialize an entire collection of compound variables to the same value.</para>
+<para>You can pass stem collections as function, subroutine, or method
+arguments.
+<example>
+<title>Stems</title>
+<programlisting>
+/* CALL RANDOMIZE count, stem. calls routine */
+Randomize: Use Arg count, stem.
+do i = 1 to count
+  stem.i = random(1,100)
+end
+return
+</programlisting>
+</example>
+</para>
+<para>The USE ARG instruction functions as an assignment instruction.  The variable
+STEM. in the example above is functionally equivalent to:</para>
+<programlisting>
+stem. = arg(2)
+</programlisting>
+<note><title>Note</title>
+<para>USE ARG must be used to access the stem variable as a collection.
+PARSE and PARSE ARG will force the stem to be a string value.</para></note>
+<para>Stems can also be returned as function, subroutine, or method results.
+The resulting return value is the Stem object associated with the stem variable.
+<example>
+<title>Stems</title>
+<programlisting>
+/* RANDOMIZE(count) calls routine */
+Randomize: Use Arg count
+do i = 1 to count
+  stem.i = random(1,100)
+end
+return stem.
+</programlisting>
+</example>
+</para>
+<para>When a stem. variable is used in an expression context, the stem variable
+reference returns the associated Stem object.  The Stem object will forward
+many object messages to its default value.  For example, the STRING method
+will return the Stem object's default value's string representation:
+<example>
+<title>Stems</title>
+<programlisting>
+total. = 0
+say total.                         /* says "0" */
+</programlisting>
+</example>
+</para>
+<para>The <methodname>[]</methodname> method with no arguments will return the currently associated
+default value.
+ variables can always be obtained by using the stem. However,
+this is not the same as using a compound variable whose derived name is the
+null string.
+<example>
+<title>Stems</title>
+<programlisting>
+total. = 0
+null = ""
+total.null = total.null + 5
+say total.[] total.null              /* says "0 5" */
+</programlisting>
+</example>
+</para>
+<para>You can use the
+<xref linkend="keyDrop" xrefstyle="select:title"/>,
+<xref linkend="keyExpose" xrefstyle="select:title"/>, and
+<xref linkend="keyProcedure" xrefstyle="select:title"/>
+instructions to manipulate collections of variables, referred to by their stems.
+<computeroutput>DROP FRED.</computeroutput> assigns
+a new Stem object to the specified stem.
+<computeroutput>EXPOSE FRED.</computeroutput>
+and <computeroutput>PROCEDURE EXPOSE FRED.</computeroutput> expose all possible
+variables with that stem.</para>
+
+<para>The <xref linkend="keyDo" xrefstyle="select:title"/>
+instruction can also iterate over all of the values
+assigned to a stem variable.
+</para>
+</section>
+
+<section id="compsym"><title>Compound Symbols</title>
+<indexterm><primary>tail</primary></indexterm>
+<indexterm><primary>stem of a variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>assignment</primary>
+<secondary>of compound variables</secondary></indexterm>
+<indexterm><primary>associative storage</primary></indexterm>
+<indexterm><primary>content addressable storage</primary></indexterm>
+<indexterm><primary>array</primary>
+<secondary>setting up</secondary></indexterm>
+<indexterm><primary>compound</primary>
+<secondary>symbols</secondary></indexterm>
+<indexterm><primary>derived names of variables</primary></indexterm>
+<indexterm><primary>compound</primary>
+<secondary>variable</secondary>
+<tertiary>description</tertiary></indexterm>
+<indexterm><primary>period</primary>
+<secondary>causing substitution in variable names</secondary></indexterm>
+<indexterm><primary>substitution</primary>
+<secondary>in variable names</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>compound</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>compound</secondary></indexterm>
+<para>A <emphasis role="italic">compound symbol</emphasis>
+contains at least one period and two other characters.
+It cannot start with a digit or a period, and if there is only one period
+it cannot be the last character.</para>
+<para>The name begins with a stem (that
+part of the symbol up to and including the first period) and is followed by
+a tail consisting of one or more name parts (delimited by periods)
+<indexterm><primary>. (period)</primary>
+<secondary>causing substitution in variable names</secondary></indexterm>
+that are constant
+symbols, simple symbols, or null. Note that you cannot use constant symbols
+with embedded signs (for example, 12.3E+5) after a stem; in this case the
+whole symbol would not be valid.</para>
+<para>These are compound symbols:
+<example>
+<title>Compound symbols</title>
+<programlisting>
+FRED.3
+Array.I.J
+AMESSY..One.2.
+</programlisting>
+</example>
+</para>
+<para>Before the
+symbol is used, that is, at the time of reference, the language processor
+substitutes in the compound symbol the character string values of any simple
+symbols in the tail (<computeroutput>I</computeroutput>,
+<computeroutput>J</computeroutput>, and
+<computeroutput>One</computeroutput> in the
+examples), thus generating a new, derived tail. The value of a compound symbol
+is, by default, it's the name of the Stem object associated with the stem variable
+concatenated to the
+derived tail or, if it has been used
+as the target of an assignment, the value of Stem element named by the derived
+tail.</para>
+<para>The substitution in the symbol permits arbitrary indexing (subscripting)
+of collections of variables that have a common stem. Note that the values
+substituted can contain <emphasis>any</emphasis> characters (including
+periods and blanks). Substitution is done only once.</para>
+<para>More formally, the derived name of a compound variable that is referenced
+by the symbol </para>
+<programlisting>
+s0.s1.s2. --- .sn
+</programlisting>
+<para>is given by </para>
+<programlisting>
+d0.v1.v2. --- .vn
+</programlisting>
+<para>where <computeroutput>d0</computeroutput> is the name of the Stem
+object associated with the stem variable <computeroutput>s0</computeroutput> and
+<computeroutput>v1</computeroutput> to <computeroutput>vn</computeroutput>
+are the values of the constant or simple symbols
+<computeroutput>s1</computeroutput> through <computeroutput>sn</computeroutput>.
+Any of the symbols <computeroutput>s1</computeroutput> to
+<computeroutput>sn</computeroutput> can be null. The values
+<computeroutput>v1</computeroutput> to <computeroutput>vn</computeroutput>
+can also be null and can contain <emphasis>any</emphasis> characters (including periods).
+Lowercase characters are not translated to uppercase,
+blanks are not removed, and periods have no special significance. There is
+no limit on the length of the evaluated name.</para>
+<para>Some examples of simple and compound symbols follow in the form of a small
+extract from a Rexx program:
+<example>
+<title>Compound symbols</title>
+<programlisting>
+a=3       /* assigns "3" to the variable A    */
+z=4                 /*   "4"      to Z        */
+c="Fred"            /*   "Fred"   to C        */
+a.z="Fred"          /*   "Fred"   to A.4      */
+a.fred=5            /*   "5"      to A.FRED   */
+a.c="Bill"          /*   "Bill"   to A.Fred   */
+c.c=a.fred          /*   "5"      to C.Fred   */
+y.a.z="Annie"       /*   "Annie"  to Y.3.4    */
+say  a  z  c  a.a  a.z  a.c  c.a  a.fred y.a.4
+/* displays the string:                     */
+/*    "3 4 Fred A.3 Fred Bill C.3 5 Annie"  */
+</programlisting>
+</example>
+</para>
+<para>You can use compound symbols to set up arrays and lists of variables in
+which the subscript is not necessarily numeric, thus offering a great scope
+for the creative programmer. A useful application is to set up an array in
+which the subscripts are taken from the value of one or more variables,
+producing a form of associative memory (content-addressable).</para>
+
+<section id="evcoms"><title>Evaluated Compound Variables</title>
+<para>The value of a stem variable is always a Stem object (see
+<xref linkend="clsStem" /> for
+details). A Stem object is a type of collection that supports the
+<methodname>[]</methodname> and <methodname>[]=</methodname> methods
+used by other collection classes. The <methodname>[]</methodname> method
+provides an alternate means of accessing compound variables that also allows
+embedded subexpressions.</para>
+<para>Tails for compound variables are normally specified by symbols separated by periods.
+An alternative is to specify the tail as a bracketed list of expressions separated by commas.
+The expressions are evaluated to character strings.
+These are concatenated with intervening periods and the resulting string is used as tail.
+This notation can be used in assignments to compound variables as well as when referencing them.
+Examples:
+<example>
+<title>Evaluated compound variables</title>
+<programlisting>
+a.[1+2,3+4]=17      -- assigns A.3.7
+Say a.3.7           -- => 17
+v1='1+2'
+v2='3+4'
+a.v1.v2=18          -- tail used: '1+2.3+4'
+Say a.['1+2','3+4'] -- => 18
+Parse Value '1 2 3' With . a.[1,1+1] .
+Say a.1.2           -- => 2
+</programlisting>
+</example>
+</para>
+</section>
+</section>
+
+<section id="ensym"><title>Environment Symbols</title>
+<indexterm><primary>symbols</primary>
+<secondary>environment</secondary></indexterm>
+<para>An environment symbol starts with a period and has at least one other character.
+The symbol may not be a valid Rexx number.  By default the value of an environment
+symbol is the string consisting of the characters of the symbol (translated
+to uppercase). If the symbol identifies an object in the current environment,
+its value is the mapped object.</para>
+<para>These are environment symbols:
+<example>
+<title>Environment symbols</title>
+<programlisting>
+.method    // A reference to the Rexx Method class
+
+.true      // The Rexx "true" object.  Has the value "1"
+
+.xyz       // Normally the value .XYZ
+
+.3DGlasses // Normally the value .3DGLASSES
+</programlisting>
+</example>
+</para>
+<para>When you use an environment symbol, the language processor performs a
+series of searches to see if the environment symbol has an assigned value. The
+search locations and their ordering are:
+<orderedlist>
+<listitem><para>Constants &true;, &false; and &nil;.
+</para></listitem>
+<listitem><para>The list of classes declared on
+<xref linkend="clasdi" xrefstyle="template:::CLASS directives"/>
+within the current program package or added to the current package using
+the <xref linkend="mthPackageAddClass" xrefstyle="select:title" /> method.
+</para></listitem>
+<listitem><para>The list of public classes declared on ::CLASS directives
+of other files included with a <xref linkend="requ" xrefstyle="template:::REQUIRES directive"/> or added to the current
+Package instance using the <xref linkend="mthPackageAddPackage" xrefstyle="select:title" /> method.
+</para></listitem>
+<listitem><para>The list of public Rexx supplied classes in the REXX package, like
+<xref linkend="clsObject" xrefstyle="template:Object" />,
+<xref linkend="clsString" xrefstyle="template:String" />, or
+<xref linkend="clsArray" xrefstyle="template:Array" />.
+</para></listitem>
+<listitem><para>The package local environment directory specific to the current package.
+You can access the package local environment directory through the
+<classname>Package</classname>
+<xref linkend="mthPackageLocal" xrefstyle="select:title"/> method.
+</para>
+</listitem>
+<listitem><para>The local environment directory specific to the current
+interpreter instance. The local
+environment includes instance-specific
+objects such as the .INPUT and .OUTPUT objects. You can directly access the
+local environment directory by using the <xref linkend="locenv" xrefstyle="template:.LOCAL environment symbol"/>.
+</para>
+</listitem>
+<listitem><para>The global environment directory.
+The global environment includes Rexx supplied objects like
+<xref linkend="ENDOFLINE" xrefstyle="template:.endofline"/> or the
+<xref linkend="rexxinfoEnv" xrefstyle="template:.RexxInfo object"/>.
+You can directly access the global environment by using the
+<xref linkend="envo" xrefstyle="template:.ENVIRONMENT environment symbol"/>.
+Entries in the global environment directory can also be accessed via the
+<xref linkend="bifValue" xrefstyle="template:VALUE built-in function"/>
+by using a null string for the
+<emphasis role="italic">selector</emphasis> argument.</para></listitem>
+<listitem><para>Rexx defined symbols. Other simple environment symbols are
+reserved for use by Rexx <xref linkend="oneof" xrefstyle="template:built-in environment objects"/>.
+The currently defined built-in objects are
+<xref linkend="rs" xrefstyle="template:.RS"/>,
+<xref linkend="linee" xrefstyle="template:.LINE"/>,
+<xref linkend="methe" xrefstyle="template:.METHODS"/>,
+<xref linkend="routinee" xrefstyle="template:.ROUTINES"/>,
+<xref linkend="resourcese" xrefstyle="template:.RESOURCES"/>, and
+<xref linkend="contexte" xrefstyle="template:.CONTEXT"/>.</para></listitem>
+</orderedlist>
+</para>
+<para>If an entry is not found for an environment symbol, then the default
+character string value is used.</para>
+
+<note><title>Note</title>
+<para>You can place entries in both the <literal>.LOCAL</literal>
+and the <literal>.ENVIRONMENT</literal> directories for programs to use.
+To avoid conflicts with future Rexx defined entries, it is recommended
+that the entries that you place in either directory include at least one
+period in the entry name, for example:
+<programlisting>
+/* establish settings directory */
+.local~setentry("MyProgram.settings", .directory~new)
+</programlisting>
+</para>
+</note>
+</section>
+</section>
+
+
+<section id="namespacesym" revisionflag="added"><title>&added50;Namespaces</title>
+<indexterm><primary>namespace</primary></indexterm>
+<indexterm><primary>symbols</primary>
+<secondary>namespace</secondary></indexterm>
+<para>
+Namespaces can be used to differentiate between classes or routines of
+the same name, having been loaded through
+<xref linkend="requ" xrefstyle="template:::REQUIRES directives"/>.
+</para>
+<para>
+Using ::REQUIRES with the NAMESPACE option allows to tag a loaded file
+with a namespace name, which in turn can be used to qualify references
+to classes or routines within that namespace to explicitly identify a
+specific class or routine.  A special reserved namespace "REXX" will
+allow to always access the Rexx-provided classes.
+</para>
+<para>Examples:
+<example><title>Namespaces</title>
+<programlisting>-- disambiguate between two classes with same name
+say .number~id                          -- The Real Number class
+say natural:number~id                   -- The Natural Number class
+
+-- use reserved namespace "REXX" to get Rexx-defined .Array
+-- not :class array as defined below
+say rexx:array~of(2, 3, 5, 7)~items     -- 4
+
+-- call ::routine verify, not built-in function
+call natural:verify(17)
+
+-- use natural:number as a message target
+say natural:number~subclass("Integer")  -- The Integer class
+
+
+-- subclass natural:number, not ::class number as defined below
+::class rationalNumber subclass natural:number
+
+-- class "number"; same name as a class in 'number.cls'
+::class number
+::method id class
+return "The Real Number class"
+
+-- class "Array"; same name as Rexx-defined
+::class array
+
+::requires 'number.cls' namespace natural
+</programlisting>
+</example>
+
+<example><title>number.cls</title>
+<programlisting>::class number public
+::method id class
+return "The Natural Number class"
+
+::routine verify public
+return arg(1) >= 0 &amp; arg(1)~dataType("W")
+</programlisting>
+</example>
+</para>
+
+</section>
+
+
+<section id="msgi"><title>Message Instructions</title>
+<indexterm><primary>message instructions</primary></indexterm>
+<indexterm><primary>message sequence instructions</primary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>message</secondary></indexterm>
+<para>You can send a message to an object to perform an action, obtain a result,
+or both. You use a message instruction if the main purpose of the message
+is to perform an action. You use a
+<xref linkend="mssg" xrefstyle="template:message term"/>
+if the main purpose of the message is to obtain a result.</para>
+<para>A <emphasis>message instruction</emphasis> is a clause of the form:
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/intro_messageinstruction.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>If there is only a <emphasis role="italic">messageterm</emphasis>,
+the message is sent in exactly the same way as for a
+<xref linkend="mssg" xrefstyle="template:message term"/>. If the message
+yields a result object, it is assigned to the sender's special variable RESULT.
+If you use the ~~ form of message term, the receiver object
+is used as the result. If there is no result object, the variable RESULT is
+dropped (becomes uninitialized).
+A message term using ~~ is sometimes referred to as a
+<emphasis role="italic">cascading message</emphasis>.
+<indexterm><primary>examples</primary>
+<secondary>message instructions</secondary></indexterm>
+<example>
+<title>Message instructions</title>
+<programlisting>
+mytable~add("John",123)
+</programlisting>
+</example>
+</para>
+<para>This sends the message ADD to the object MYTABLE. The ADD method need not
+return a result. If ADD returns a result, the result is assigned to the variable
+RESULT.</para>
+<para>The equal sign (=) sets a value. If
+<computeroutput>=expression</computeroutput> follows
+the message term, a message is sent to the receiver object with an
+<computeroutput>=</computeroutput> concatenated to the end of the
+message name. The result of evaluating
+the expression is passed as the first argument of the message.
+
+<example>
+<title>Message instructions</title>
+<programlisting>
+person~age = 39                   /* Same as person~"AGE="(39) */
+table[i] = 5                      /* Same as table~"[]="(5,i)  */
+</programlisting>
+</example>
+</para>
+<para>The expressions are evaluated in the order in which the arguments are
+passed to the method. That is, the language processor evaluates the
+<computeroutput>=expression</computeroutput> first. Then it evaluates
+the argument expressions within any [] pairs from left to right.</para>
+<para>The extended assignment form may also be used with message terms.
+
+<example>
+<title>Message instructions</title>
+<programlisting>
+   table[i] += 1        -- Same as table[i] = table[i] + 1
+</programlisting>
+</example>
+</para>
+<para>See <xref linkend="extassign" /> for more details</para>
+</section>
+
+<section id="cmdhost"><title>Commands to External Environments</title>
+<para>Issuing commands to the surrounding environment is an integral part of
+Rexx.</para>
+
+<section id="xenvir" revisionflag="changed"><title>&changed50;Environment</title>
+<indexterm><primary>default</primary>
+<secondary>environment</secondary></indexterm>
+<para>The base system for the language processor is assumed to include
+at least one environment for processing commands. An environment is selected by
+default on entry to a Rexx program. You can change the environment by using
+the <xref linkend="keyAddress" xrefstyle="select:title"/> instruction.
+You can find out the name of the current environment by using the
+<xref linkend="bifAddress" xrefstyle="select:title"/> built-in function.
+The underlying operating system defines
+environments external to the Rexx program. The environments selected depend
+on the caller.
+The default environment is <literal>CMD</literal> on Windows and
+<literal>sh</literal> on Unix-based systems.
+There are three aliases for the default environment, <literal>""</literal>
+(null string), <literal>COMMAND</literal> and <literal>SYSTEM</literal>.
+These environments execute commands through the standard command
+interpreter or system shell, which is <literal>cmd.exe</literal> on
+Windows and <literal>sh</literal> on Unix-based systems.
+On Unix-based systems alternate environments
+<literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+<literal>ksh</literal>, <literal>tcsh</literal>, and <literal>zsh</literal>
+are available, which allow execution of commands through a shell named like
+the environment, if such a shell is installed on the system.
+</para>
+<para>An additional environment <literal>PATH</literal>&mdash;available on both
+Windows and Unix-based systems&mdash;provides an alternative to command
+interpreter- / shell-based environments.
+It executes commands directly, without the need for a command interpreter
+or shell by searching the environment variable <literal>PATH</literal>
+to locate the command.
+Note that this environment does not provide shell or command interpreter
+features such as internal commands, redirection, piping, environment variable
+substitution or wildcard expansion.
+</para>
+<para>
+If called from an editor that accepts subcommands from
+the language processor, the default environment can be that editor.</para>
+<para>A Rexx program can issue commands&mdash;called
+<emphasis>subcommands</emphasis>&mdash;to other application programs.
+For example, a Rexx program written
+for a text editor can inspect a file being edited, issue subcommands to make
+changes, test return codes to check that the subcommands have been processed
+as expected, and display messages to the user when appropriate.</para>
+<para>An application that uses Rexx as a macro language must register its
+environment with the Rexx language processor. See the
+<citetitle pubwork="book">Open Object Rexx: Application Programming Interfaces</citetitle>
+for a discussion of this mechanism.</para>
+</section>
+
+<section id="commnds"><title>Commands</title>
+<indexterm><primary>command</primary>
+<secondary>alternative destinations</secondary></indexterm>
+<indexterm><primary>command</primary>
+<secondary>issuing to host</secondary></indexterm>
+<indexterm><primary>host commands</primary>
+<secondary>issuing commands to underlying operating system</secondary>
+</indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>RC</tertiary></indexterm>
+<para>To send a command to the currently addressed environment, use a clause
+of the form:</para>
+<programlisting>
+expression;
+</programlisting>
+<para>The expression (which must not be an expression that forms a valid
+<xref linkend="msgi" xrefstyle="template:message instruction"/>)
+is evaluated, resulting in a character string value
+(which can be the null string), which is then prepared as appropriate
+and submitted to the environment specified by the current ADDRESS setting.
+</para>
+<para>The environment then processes the command and returns control
+to the language processor after setting a return code. A
+<emphasis>return code</emphasis> is a string, typically a number,
+that returns some information
+about the command processed. A return code usually indicates if a command
+was successful but can also represent other information. The language processor
+places this return code in the
+<indexterm><primary>return</primary>
+<secondary>code</secondary>
+<tertiary>as set by commands</tertiary></indexterm>
+<indexterm><primary>RC (return code)</primary>
+<secondary>set by commands</secondary></indexterm>
+<indexterm><primary>altering</primary>
+<secondary>special variables</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>special</secondary>
+<tertiary>RC</tertiary></indexterm>
+Rexx <xref linkend="spvard" xrefstyle="template:special variable RC"/>.
+</para>
+
+<para>In addition to setting a return code, the underlying system can also
+indicate to the language processor if an error or failure occurred. An
+<emphasis>error</emphasis> is a condition raised by a command to which a program
+that uses that command can respond. For example, a locate command to an editing
+system might report <computeroutput>requested string not found</computeroutput>
+as an error. A <emphasis>failure</emphasis> is a condition raised by a command
+to which a program that uses that command cannot respond, for example, a
+command that is not executable or cannot be found.</para>
+<para>Errors
+<indexterm><primary>error</primary>
+<secondary>definition</secondary></indexterm>
+and failures in commands can affect Rexx processing if a condition
+trap for ERROR or FAILURE is ON (see
+<xref linkend="condtra" />). They can also
+<indexterm><primary>failure, definition</primary></indexterm>
+<indexterm><primary>error</primary>
+<secondary>from commands</secondary></indexterm>
+cause the command to be traced if <computeroutput>TRACE E</computeroutput>
+or <computeroutput>TRACE F</computeroutput> is
+set. <computeroutput>TRACE Normal</computeroutput> is the same as
+<computeroutput>TRACE F</computeroutput> and is the
+default&mdash;see <xref linkend="keyTrace" />.</para>
+<para>The .RS environment symbol can also be used to detect command failures
+and errors. When the command environment indicates that a command failure
+has occurred, the Rexx environment symbol .RS has the value
+<computeroutput>-1</computeroutput>.
+When a command error occurs, .RS has a value of
+<computeroutput>1</computeroutput>. If the command
+did not have a FAILURE or ERROR condition, .RS is
+<computeroutput>0</computeroutput>.</para>
+<para>Here is an example of submitting a command. Where the default
+environment is Windows, the sequence:
+<example>
+<title>Commands</title>
+<programlisting>
+fname = "CHESHIRE"
+exten = "CAT"
+"TYPE" fname"."exten
+</programlisting>
+</example>
+</para>
+<para>would result in passing the string
+<computeroutput>TYPE CHESHIRE.CAT</computeroutput> to
+the command processor, CMD.EXE.
+The simpler expression:
+<example>
+<title>Commands</title>
+<programlisting>
+"TYPE CHESHIRE.CAT"
+</programlisting>
+</example>
+</para>
+<para>has the same effect.</para>
+<para>On return, the return code placed in RC will have the value
+0 if the file CHESHIRE.CAT were typed, or a nonzero value if the file could
+not be found in the current directory.</para>
+
+<note><title>Note</title>
+<para>Remember that the expression is evaluated before
+it is passed to the environment. Constant portions of the command should be
+specified as literal strings.</para></note>
+<example>
+<title>Commands &mdash; Windows</title>
+<programlisting>
+delete "*".lst           /* not "multiplied by" */
+var.003 = anyvalue
+type "var.003"           /* not a compound symbol */
+
+w = any
+dir"/w"                  /* not "divided by ANY" */
+</programlisting>
+</example>
+<example>
+<title>Commands &mdash; Linux</title>
+<programlisting>
+rm "*".lst               /* not "multiplied by" */
+var.003 = anyvalue
+cat "var.003"            /* not a compound symbol */
+
+w = any
+ls "/w"                  /* not "divided by ANY" */
+</programlisting>
+</example>
+
+<para>
+Enclosing an entire message instruction in parentheses causes
+the message result to be used as a command. Any clause that is a message
+instruction is not treated as a command. Thus, for example, the clause </para>
+<programlisting>
+myfile~linein
+</programlisting>
+<para>causes the returned line to be assigned to the variable RESULT, not to
+be used as a command to an external environment, while</para>
+<programlisting>
+(myfile~linein)
+</programlisting>
+<para>would submit the return value from the linein method as a command to the external
+environment.</para>
+</section>
+</section>
+
+<section id="windows-unix"><title>Using Rexx on Windows and Unix</title>
+
+<section id="windows-unix-calling"><title>Calling other Rexx scripts</title>
+<para></para>
+<para>Rexx programs can call other Rexx programs as external
+functions or subroutines with the
+<xref linkend="keyCall" xrefstyle="select:title"/> instruction.</para>
+<para>If a program is called with the
+CALL instruction, the program runs in the same
+process as the calling program.
+If you call another program by a Rexx command, the program is executed in
+a new process and therefore does not share .environment, .local,
+or the Windows/Unix shell environment.
+<example>
+<title>Calling other Rexx scripts</title>
+<programlisting>
+call "other.REX"         /* runs in the same process */
+"rexx other.REX"         /* runs in a new child process */
+"start rexx other.REX"   /* runs in a new detached process */
+</programlisting>
+</example>
+</para>
+<para>When Rexx programs call other Rexx programs as commands, the return code
+of the command is the exit value of the called program provided that this
+value is a whole number in the range -32768 to 32767.  Otherwise, the exit
+value is ignored and the called program is given a return code of 0.</para>
+</section>
+
+<section id="shebang"><title>Shebang support</title>
+<indexterm><primary>shebang</primary></indexterm>
+<indexterm><primary>hashbang</primary></indexterm>
+<para>Rexx supports
+<emphasis role="italic">shebang</emphasis>s, also called
+<emphasis role="italic">hashbang</emphasis>s, as the first line of a
+Rexx program on both Unix-like and Windows systems.
+</para>
+<para>Typically, shebangs are found on Unix-like systems to identify the
+script language with which to run a script.
+On these systems, to run a script as a Rexx program, depending on where the
+interpreter is installed, the shebang would be something like
+<literal>#!/usr/bin/rexx</literal>.
+</para>
+<para>With several Unix-like systems changing the standard
+installation location away from <literal>/usr/bin</literal> (including
+macOS), a new convention is used for the sample programs, which works
+if the Rexx
+interpreter is anywhere on the path. This convention uses the
+<literal>env</literal> command in the shebang, like this:
+<literal>#!/usr/bin/env rexx</literal>. This has the advantage that it
+is portable, and will use the first occurrence of
+<literal>rexx</literal> that is found on <literal>$PATH</literal>.
+</para>
+<para>On a Windows system, Rexx will simply ignore the first line of a
+Rexx program, if it starts with the character sequence "<literal>#!</literal>".
+</para>
+</section>
+
+<section id="line-end"><title>Line-end characters</title>
+<para>Windows and Unix-like systems use different characters to indicate
+a line-break (ending one line and starting a new one) in a text file.
+While Windows uses the two-character sequence <literal>'0d 0a'x</literal>
+(carriage-return, line-feed), Unix-like systems use the character
+<literal>'0a'x</literal> (line-feed) as a line-end indicator.
+</para>
+<para>Rexx supports both line-end indicators on each platform, both for the
+Rexx program itself, and for data manipulated with e. g. built-in functions
+<xref linkend="bifLines" xrefstyle="template:LINES"/>,
+<xref linkend="bifLinein" xrefstyle="template:LINEIN"/>,
+<classname>Stream</classname> methods <xref linkend="mthStreamLines" xrefstyle="select:title"/>,
+<xref linkend="mthStreamLineIn" xrefstyle="select:title"/>,
+<xref linkend="mthStreamArrayIn" xrefstyle="select:title"/>,
+<classname>String</classname> method <xref linkend="mthStringMakeArray" xrefstyle="select:title"/>, or
+<classname>MutableBuffer</classname> method <xref linkend="mthMutableBufferMakeArray" xrefstyle="select:title"/>.
+This means, when moving from one platform to another, typically there should be
+no line-end conversions necessary for Rexx programs or data read by these programs.
+</para>
+<para>Note that you cannot include line-end characters
+<literal>'0d'x</literal> or <literal>'0a'x</literal> in a
+<xref linkend="litstrings" xrefstyle="template:literal string"/>.
+</para>
+</section>
+
+<section id="end-of-file"><title>End-of-file character</title>
+<para>Traditionally Windows used a special character <literal>'1a'x</literal>
+(end-of-file) to signify the end of a text file.
+Although today use of this special end-of-file character has become less common,
+some editors may still append it to the end of a text file.
+Unix-like systems do not use a special end-of-file character in text files.
+</para>
+<para>Rexx will honor the end-of-file character <literal>'1a'x</literal>
+within a Rexx program source file on both Windows and Unix-like platforms.
+It will not scan the source file beyond any end-of-file character it finds.
+This means, that a character <literal>'1a'x</literal> cannot be directly used
+within a Rexx program source file, for example within a
+<xref linkend="litstrings" xrefstyle="template:literal string"/> or a comment.
+</para>
+</section>
+
+</section>
+
+</chapter>

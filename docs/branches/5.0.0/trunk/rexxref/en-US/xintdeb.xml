@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="xintdeb"><title>Debugging Aids</title>
+<para>In addition to the <xref linkend="keyTrace" xrefstyle="select:title"/>
+instruction there are the following debugging aids.</para>
+
+<section id="osidbg"><title>Interactive Debugging of Programs</title>
+<indexterm><primary>tracing</primary>
+<secondary>by interactive debug</secondary></indexterm>
+<indexterm><primary>user input and output</primary></indexterm>
+<para>The debug facility permits interactively controlled execution of a
+program. Adding the prefix character ? to the TRACE instruction,
+the TRACE function, or TRACE keyword of the ::OPTIONS directive.  For example,
+<computeroutput>TRACE ?I</computeroutput>,
+<computeroutput>TRACE(?I)</computeroutput>, or <computeroutput>::OPTIONS TRACE ?I</computeroutput>) turns on interactive debugging
+and indicates to the user that interactive
+debugging is active. Further TRACE instructions in the program are ignored,
+and the language processor pauses after nearly all instructions that are traced
+at the console (see <xref linkend="debugexc" />
+for the exceptions). When
+the language processor pauses, the following debug actions are available:
+</para>
+<itemizedlist>
+<listitem><para>Entering a null line causes the language processor to continue
+with the execution until the next pause for debugging input. Repeatedly entering a
+null line, therefore, steps from pause point to pause point. For
+<computeroutput>TRACE ?A</computeroutput>,
+for example, this is equivalent to single-stepping through the program.
+</para></listitem>
+<listitem><para>Entering an equal sign (=)
+<indexterm><primary>= (equal sign)</primary>
+<secondary>immediate debug command</secondary></indexterm>
+with no surrounding whitespace causes the language processor to reexecute the
+clause last traced. For example, if an IF clause is about to take the wrong
+branch, you can change the value of the variables on which it depends, and then
+reexecute it.</para>
+<para>Once the clause has been reexecuted, the language processor pauses
+again.</para></listitem>
+<listitem><para>Anything else entered is treated as a line of one or more
+clauses, and processed immediately (that is, as though DO; line;
+END; had been inserted in the program). The same rules apply as for the INTERPRET
+instruction (for example, DO-END constructs must be complete). If an instruction
+contains a syntax error, a standard message is displayed and you are prompted
+for input again. Similarly, all other SIGNAL conditions are disabled while
+the string is processed to prevent unintentional transfer of control.</para>
+<para>During
+<indexterm><primary>RC (return code)</primary>
+<secondary>not set during interactive debug</secondary></indexterm>
+<indexterm><primary>.RS (return code)</primary>
+<secondary>not set during interactive debug</secondary></indexterm>
+interpretation of the string, no tracing takes place, except that nonzero
+return codes from commands are displayed. The special variable RC and the
+environment symbol .RS are not set by commands executed from the string. Once
+the string has been processed, the language processor pauses again for further
+debugging input.</para></listitem></itemizedlist>
+<para>Interactive debug is turned off in either of the following cases:</para>
+<itemizedlist>
+<listitem><para>A TRACE instruction uses the ? prefix while interactive
+debug is in effect</para></listitem>
+<listitem><para>At any time, if <computeroutput>TRACE O</computeroutput> or
+<computeroutput>TRACE</computeroutput> with no options
+is entered</para></listitem></itemizedlist>
+</section>
+
+<section id="debugexc"><title>Debugging Aids</title>
+<para>The numeric form of the TRACE instruction can be used to allow sections
+of the program to be executed without pause for debugging input.
+<computeroutput>TRACE n</computeroutput>
+(that is, a positive result) allows execution to continue, skipping
+the next <computeroutput>n</computeroutput> pauses (when interactive debugging
+is or becomes active). <computeroutput>TRACE -n</computeroutput> (that is, a
+negative result) allows execution to continue without
+pause and with tracing inhibited for <computeroutput>n</computeroutput> clauses
+that would otherwise
+be traced. The trace action a TRACE instruction selects is saved and restored
+across subroutine calls. This means that if you are stepping through a program
+(for example, after using <computeroutput>TRACE ?R</computeroutput> to trace
+results) and then enter
+a subroutine in which you have no interest, you can enter
+<computeroutput>TRACE O</computeroutput> to
+turn off tracing. No further instructions in the subroutine are traced, but
+on return to the caller, tracing is restored.</para>
+<para>Similarly, if you are interested only in a subroutine, you can put a
+<computeroutput>TRACE ?R</computeroutput> instruction at its start. Having
+traced the routine, the original
+status of tracing is restored and, if tracing was off on entry to the subroutine,
+tracing and interactive debugging are turned off until the next entry to the
+subroutine.</para>
+<para>Because any instructions can be executed in interactive debugging you have
+considerable control over the execution.</para>
+<para>The following are some examples: </para>
+<indexterm><primary>character input and output</primary></indexterm>
+<example>
+<title>Character inout and output</title>
+<programlisting>
+Say expr     /* displays the result of evaluating the         */
+             /* expression                                    */
+
+name=expr    /* alters the value of a variable                */
+
+Trace O      /* (or Trace with no options) turns off          */
+             /* interactive debugging and all tracing         */
+
+Trace ?A     /* turns off interactive debugging but           */
+             /* continues tracing all clauses                 */
+
+exit         /* terminates execution of the program           */
+
+do i=1 to 10; say stem.i; end
+             /* displays ten elements of the array stem.      */
+</programlisting>
+</example>
+<para>Exceptions: Some clauses cannot safely
+be reexecuted, and therefore the language processor does not pause after them,
+even if they are traced. These are:</para>
+<itemizedlist>
+<listitem><para>Any repetitive DO clause, on the second or subsequent time
+around the loop.</para></listitem>
+<listitem><para>All END clauses.</para></listitem>
+<listitem><para>All THEN, ELSE, OTHERWISE, or null clauses.</para></listitem>
+<listitem><para>All RETURN and EXIT clauses.</para></listitem>
+<listitem><para>All SIGNAL clauses (but the language processor pauses after the
+target label is traced).</para></listitem>
+<listitem><para>Any clause that causes a syntax error. They can be trapped by
+SIGNAL ON SYNTAX, but cannot be reexecuted.</para></listitem>
+</itemizedlist>
+<para>A pause occurs after a REPLY instruction, but the REPLY instruction
+cannot be reexecuted.</para>
+</section>
+
+<section id="rxtr"><title>RXTRACE Variable</title>
+<indexterm><primary>RXTRACE environment variable</primary></indexterm>
+<para>When the interpreter starts, it
+checks the setting of the special environment variable,
+<emphasis role="italic">RXTRACE</emphasis>.
+If <emphasis role="italic">RXTRACE</emphasis> has been set to
+<computeroutput>ON</computeroutput> (not case-sensitive), each time when starting
+a new Rexx procedure, the
+interpreter starts in interactive debug mode as if the Rexx instruction
+<computeroutput>TRACE &apos;?R&apos;</computeroutput> had been the first interpretable
+instruction. All other settings
+of <emphasis role="italic">RXTRACE</emphasis> are ignored.
+<emphasis role="italic">RXTRACE</emphasis> is only checked when starting 
+a new Rexx interpreter, it is not checked each time when starting
+a new Rexx procedure.</para>
+<para>Use the SET command to set or query an environment
+variable or query all environment variables. To delete an environment variable,
+use SET <emphasis role="italic">variable</emphasis>=.</para>
+</section>
+
+</chapter>

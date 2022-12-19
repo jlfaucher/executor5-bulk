@@ -1,0 +1,597 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="numarit"><title>Numbers and Arithmetic</title>
+<indexterm><primary>decimal</primary>
+<secondary>integer</secondary></indexterm>
+<indexterm><primary>integer</primary>
+<secondary>arithmetic</secondary></indexterm>
+<indexterm><primary>numbers</primary>
+<secondary>arithmetic on</secondary></indexterm>
+<indexterm><primary>numbers</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>period</primary>
+<secondary>in numbers</secondary></indexterm>
+<para>This chapter gives an overview of the arithmetic facilities of the Rexx
+language.</para>
+<para> Numbers can be expressed flexibly. Leading and trailing whitespace
+characters are permitted, and exponential notation can be used. Valid numbers
+are, for example:
+</para>
+<example>
+<title>Numbers</title>
+<programlisting>
+12             /* a whole number                      */
+"-76"          /* a signed whole number               */
+12.76          /* decimal places                      */
+" +  0.003 "   /* blanks around the sign and so forth */
+17.            /* same as 17                          */
+.5             /* same as 0.5                         */
+4E9            /* exponential notation                */
+0.73e-7        /* exponential notation                */
+</programlisting>
+</example>
+<para>Ignoring <xref linkend="expnot" xrefstyle="select:title"/>,
+a number in Rexx is defined as follows:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_no_exponential.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<variablelist>
+<varlistentry><term><emphasis role="italic">whitespace</emphasis></term>
+<listitem><para>are one or more blanks or horizontal tab characters.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">sign</emphasis></term>
+<listitem><para>is either <computeroutput>+</computeroutput> or
+<computeroutput>-</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">digits</emphasis></term>
+<listitem><para>are one or more of the decimal digits
+<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Note that a single period alone is not a valid number.</para>
+<indexterm><primary>. (period)</primary>
+<secondary>in numbers</secondary></indexterm>
+<para>The arithmetic operators
+<indexterm><primary>operator</primary>
+<secondary>arithmetic</secondary>
+<tertiary>description</tertiary></indexterm>
+<indexterm><primary>arithmetic</primary>
+<secondary>operators</secondary></indexterm>
+include addition (<computeroutput>+</computeroutput>),
+subtraction (<computeroutput>-</computeroutput>),
+multiplication (<computeroutput>*</computeroutput>),
+power (<computeroutput>**</computeroutput>),
+division (<computeroutput>/</computeroutput>),
+prefix plus (<computeroutput>+</computeroutput>), and prefix minus
+(<computeroutput>-</computeroutput>). In addition, it includes
+integer divide (<computeroutput>%</computeroutput>),
+<indexterm><primary>integer</primary>
+<secondary>division</secondary>
+<tertiary>description></tertiary></indexterm>
+which divides and returns the integer part, and
+remainder (<computeroutput>//</computeroutput>), which
+divides and returns the remainder. For examples of the arithmetic operators,
+see <xref linkend="aropxmp" />.</para>
+<para>The result of an arithmetic operation is formatted as a character string
+according to specific rules. The most important rules are: </para>
+<itemizedlist>
+<listitem><para>Results are calculated up to a maximum number of significant
+digits. The default is <computeroutput>9</computeroutput>, but can be overridden
+on a source-file basis with the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
+The default setting can be altered with the NUMERIC DIGITS instruction.
+<indexterm><primary>DIGITS option of NUMERIC instruction</primary></indexterm>
+Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is rounded to 9 digits.
+For example, the division of 2 by 3 results in 0.666666667.</para></listitem>
+<listitem><para>Except for division and power, trailing zeros are preserved.
+For example:
+<example>
+<title>Arithmetic</title>
+<programlisting>
+2.40 + 2    ->    4.40
+2.40 - 2    ->    0.40
+2.40 * 2    ->    4.80
+2.40 / 2    ->    1.2
+</programlisting>
+</example>
+If necessary, you can remove trailing zeros with the
+<classname>String</classname> <xref linkend="mthStringStrip" xrefstyle="select:title"/>
+method, the
+<xref linkend="bifStrip" xrefstyle="select:title"/> built-in function,
+or by division by 1.
+</para></listitem>
+<listitem><para>A zero result is always expressed as the single digit
+<computeroutput>0</computeroutput>.</para></listitem>
+<listitem><para>Exponential form is used for a result depending on its value
+and the setting of NUMERIC DIGITS.
+If the number of places needed
+before the decimal point exceeds the NUMERIC DIGITS setting, or the number
+of places after the point exceeds twice the NUMERIC DIGITS setting, the number
+is expressed in exponential notation:
+<example>
+<title>Arithmetic</title>
+<programlisting>
+1e6 * 1e6    ->    1E+12           /* not 1000000000000 */
+1 / 3E10     ->    3.33333333E-11  /* not 0.0000000000333333333 */
+</programlisting>
+</example>
+</para></listitem></itemizedlist>
+
+<section id="prec"><title>Precision</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>precision</secondary></indexterm>
+<indexterm><primary>significant digits in arithmetic</primary></indexterm>
+<indexterm><primary>DIGITS subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<para>Precision is the maximum number of significant digits that can result
+from an operation. This is controlled by the instruction:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_digits.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+<para>
+The <emphasis role="italic">expression</emphasis> is evaluated and must result in a positive
+whole number. This defines the precision (number of significant digits) of
+a calculation.  Results are rounded to that precision, if necessary.</para>
+<para>If you do not specify <emphasis role="italic">expression</emphasis>
+in this instruction, or if no
+NUMERIC DIGITS instruction has been processed since the start of a program,
+the default precision is used. The Rexx standard for the default precision
+is <computeroutput>9</computeroutput>.  The default may be overridden on a
+source-file basis using the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
+</para>
+<para>NUMERIC DIGITS can set values smaller than nine. However, use small
+values with care because the loss of precision and rounding affects all Rexx
+computations, including, for example, the computation of new values for the
+control variable in DO loops.</para>
+</section>
+
+<section id="arithoper"><title>Arithmetic Operators</title>
+<indexterm><primary>numbers</primary>
+<secondary>arithmetic on</secondary></indexterm>
+<indexterm><primary>arithmetic</primary>
+<secondary>operators</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>arithmetic</secondary>
+<tertiary>description</tertiary></indexterm>
+<para>Rexx
+arithmetic is performed by the operators <computeroutput>+</computeroutput>,
+<indexterm><primary>+ (addition operator)</primary></indexterm>
+<computeroutput>-</computeroutput>,
+<indexterm><primary>- (subtraction operator)</primary></indexterm>
+<computeroutput>*</computeroutput>,
+<indexterm><primary>* (multiplication operator)</primary></indexterm>
+<computeroutput>/</computeroutput>,
+<indexterm><primary>/ (division operator)</primary></indexterm>
+<computeroutput>%</computeroutput>,
+<indexterm><primary>% (integer division operator)</primary></indexterm>
+<computeroutput>//</computeroutput>, and
+<indexterm><primary>// (remainder operator)</primary></indexterm>
+<computeroutput>**</computeroutput>
+<indexterm><primary>** (power operator)</primary></indexterm>
+(add, subtract, multiply, divide, integer divide, remainder, and power).</para>
+<para>Before every arithmetic operation, the terms operated upon have leading
+zeros removed (noting the position of any decimal point, and leaving only
+one zero if all the digits in the number are zeros). They are then truncated,
+if necessary, to DIGITS + 1 significant digits before being used in the
+computation. The extra digit improves accuracy because it is inspected at the
+end of an operation, when a number is rounded to the required precision. When
+a number is truncated, the LOSTDIGITS condition is raised if a SIGNAL ON LOSTDIGITS
+condition trap is active. The operation is then carried out under up to double
+that precision. When the operation is completed, the result is rounded, if
+necessary, to the precision specified by the NUMERIC DIGITS instruction.</para>
+<para>The values are rounded as follows: 5 through 9 are rounded up, and 0
+through 4 are rounded down.</para>
+
+<section id="power"><title>Power</title>
+<indexterm><primary>absolute value</primary>
+<secondary>used with power</secondary></indexterm>
+<para>The ** (power) operator
+raises a number to a power, which can be positive, negative, or
+<computeroutput>0</computeroutput>. The power must be a whole number.
+The second term in the operation must be a whole number and is rounded to
+DIGITS digits, if necessary, as described in
+<xref linkend="nudbr" />.
+If negative, the absolute value of the power is
+used, and the result is inverted (that is, the number 1 is divided by the
+result). For calculating the power, the number is multiplied by itself for
+the number of times expressed by the power. Trailing zeros are then removed
+as though the result were divided by 1.</para>
+</section>
+
+<section id="intedivis"><title>Integer Division</title>
+<indexterm><primary>integer</primary>
+<secondary>division</secondary>
+<tertiary>description></tertiary></indexterm>
+<para>The % (integer divide) operator divides two numbers
+and returns the integer part of the result.  The result is calculated by
+repeatedly subtracting the divisor from the dividend as long as the dividend is
+larger than the divisor. During this subtraction, the absolute values of both
+the dividend and the divisor are used: the sign of the final result is the same
+as that which would result from regular division.</para>
+<para>If the result cannot be expressed as a whole number, the operation is in
+error and fails&mdash;that is, the result must not have more digits than the
+current setting of NUMERIC DIGITS. For example,
+<computeroutput>10000000000%3</computeroutput> requires
+10 digits for the result (3333333333) and would, therefore, fail if
+<computeroutput>NUMERIC DIGITS 9</computeroutput> were in effect.</para>
+</section>
+
+<section id="remainder"><title>Remainder</title>
+<indexterm><primary>remainder</primary>
+<secondary>description></secondary></indexterm>
+<para>The // (remainder) operator returns the remainder
+from an integer division and is defined to be the residue of the dividend
+after integer division.  The sign of the remainder, if nonzero, is the same
+as that of the original dividend.</para>
+<para>This operation fails under the same conditions as integer division, that
+is, if integer division on the same two terms fails, the remainder cannot
+be calculated.</para>
+</section>
+
+<section id="aropxmp"><title>Operator Examples</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>basic operator examples</secondary></indexterm>
+<indexterm><primary>arithmetic</primary>
+<secondary>operator examples</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>basic operator examples</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>operator examples</secondary></indexterm>
+<indexterm><primary>basic operator examples</primary></indexterm>
+<example>
+<title>Operators</title>
+<programlisting>
+/* With:  NUMERIC DIGITS 5 */
+12+7.00     ->    19.00
+1.3-1.07    ->     0.23
+1.3-2.07    ->    -0.77
+1.20*3      ->     3.60
+7*3         ->    21
+0.9*0.8     ->     0.72
+1/3         ->     0.33333
+2/3         ->     0.66667
+5/2         ->     2.5
+1/10        ->     0.1
+12/12       ->     1
+8.0/2       ->     4
+2**3        ->     8
+2**-3       ->     0.125
+1.7**8      ->    69.758
+2%3         ->     0
+2.1//3      ->     2.1
+10%3        ->     3
+10//3       ->     1
+-10//3      ->    -1
+10.2//1     ->     0.2
+10//0.3     ->     0.1
+3.6//1.3    ->     1.0
+</programlisting>
+</example>
+</section>
+</section>
+
+<section id="expnot"><title>Exponential Notation</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>exponential notation</secondary></indexterm>
+<indexterm><primary>exponential notation</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>exponentiation</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>notation</primary>
+<secondary>engineering</secondary></indexterm>
+<indexterm><primary>notation</primary>
+<secondary>scientific</secondary></indexterm>
+<indexterm><primary>scientific notation</primary></indexterm>
+<indexterm><primary>ten, powers of</primary></indexterm>
+<para>For both large and small numbers, an exponential notation can be useful.
+For example: </para>
+<programlisting>
+numeric digits 5
+say 54321*54321
+</programlisting>
+<para>would display <computeroutput>2950800000</computeroutput> in the long
+form. Because this is misleading, the result is expressed as
+<computeroutput>2.9508E+9</computeroutput> instead.</para>
+<para>The definition of numbers is, therefore, extended as follows:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_exponential.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para>The integer following the <computeroutput>E</computeroutput>
+represents a power of ten that is to be applied to the number. The
+<computeroutput>E</computeroutput> can be in uppercase or lowercase.</para>
+<para>Certain character strings are numbers even though they do not appear to
+be numeric, such as <computeroutput>0E123</computeroutput> (0 times 10 raised to the
+power of 123) and <computeroutput>1E342</computeroutput> (1 times 10 raised to the
+power of 342).  Also, a comparison such as
+<computeroutput>0E123=0E567</computeroutput> gives a true result of
+<computeroutput>1</computeroutput> (0 is equal to 0).
+To prevent problems when comparing nonnumeric strings, use the strict
+comparison operators.</para>
+<para>Here are some examples:</para>
+<indexterm><primary>arithmetic</primary>
+<secondary>exponential notation</secondary>
+<tertiary>examples</tertiary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>exponential notation</secondary></indexterm>
+<indexterm><primary>exponential notation</primary>
+<secondary>example</secondary></indexterm>
+<indexterm><primary>notation</primary>
+<secondary>exponential, example</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>examples</secondary></indexterm>
+<example>
+<title>Exponential notation</title>
+<programlisting>
+12E7   =    120000000           /* Displays "1" */
+12E-5  =    0.00012             /* Displays "1" */
+-12e4  =    -120000             /* Displays "1" */
+0e123  =    0e456               /* Displays "1" */
+0e123  ==   0e456               /* Displays "0" */
+</programlisting>
+</example>
+<para>The results of calculations are returned in either conventional or
+exponential form, depending on the setting of
+<indexterm><primary>NUMERIC instruction</primary>
+<secondary>FORM option</secondary></indexterm>
+NUMERIC DIGITS. If the number of places
+needed before the decimal point exceeds DIGITS, or the number of places after
+the point exceeds twice DIGITS, the exponential form is used. The exponential
+form the language processor generates always has a sign following the
+<computeroutput>E</computeroutput> to improve readability. If the exponent is
+<computeroutput>0</computeroutput>, the exponential
+part is omitted&mdash;that is, an exponential part of
+<computeroutput>E+0</computeroutput> is not
+generated.</para>
+<para>You can explicitly convert numbers to exponential form, or force them to
+be displayed in the long form, by using the
+<xref linkend="bifFormat" xrefstyle="select:title"/> built-in function.
+</para>
+<para>Scientific
+notation is a form of exponential notation that adjusts the power of
+ten so that the number contains only one nonzero digit before the decimal
+point. Engineering notation is a form of exponential
+notation in which up to three digits appear before the decimal point, and
+the power of ten is always a multiple of three. The integer part can, therefore,
+range from <computeroutput>1</computeroutput> through
+<computeroutput>999</computeroutput>. You can control whether scientific
+or engineering notation
+<indexterm><primary>engineering notation</primary></indexterm>
+is used with the following instruction:
+<indexterm><primary>FORM subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/number_form.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para> Scientific notation is the default. </para>
+<example>
+<title>Scientific notation</title>
+<programlisting>
+/* after the instruction */
+Numeric form scientific
+
+123.45 * 1e11     ->     1.2345E+13
+
+/* after the instruction */
+Numeric form engineering
+
+123.45  * 1e11    ->    12.345E+12
+</programlisting>
+</example>
+</section>
+
+<section id="numcom"><title>Numeric Comparisons</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>comparisons</secondary></indexterm>
+<indexterm><primary>operator</primary>
+<secondary>comparison</secondary></indexterm>
+<indexterm><primary>comparisons</primary>
+<secondary>of numbers</secondary></indexterm>
+<indexterm><primary>imprecise numeric comparison</primary></indexterm>
+<indexterm><primary>numbers</primary>
+<secondary>comparison of</secondary></indexterm>
+<para>The comparison operators are listed in
+<xref linkend="compari" />. You can
+use any of them for comparing numeric strings.  However, you should not use
+<computeroutput>==</computeroutput>,
+<indexterm><primary>== (strictly equal operator)</primary></indexterm>
+<computeroutput>\==</computeroutput>,
+<indexterm><primary>\== (not strictly equal operator)</primary></indexterm>
+<computeroutput>&not;==</computeroutput>,
+<indexterm><primary>&not;== (not strictly equal operator)</primary></indexterm>
+<computeroutput>>></computeroutput>,
+<computeroutput>\>></computeroutput>,
+<computeroutput>&not;>></computeroutput>,
+<computeroutput>&lt;&lt;</computeroutput>,
+<computeroutput>\&lt;&lt;</computeroutput>,
+and <computeroutput>&not;&lt;&lt;</computeroutput>
+for comparing numbers because leading and trailing whitespace characters and
+leading zeros are significant with these operators.
+</para>
+<para>Numeric values are compared by subtracting the two numbers (calculating
+the difference) and then comparing the result with 0. That is, the operation:
+</para>
+<programlisting>
+A ? Z
+</programlisting>
+<para> where <computeroutput>?</computeroutput> is any numeric comparison
+operator, is identical with: </para>
+<programlisting>
+(A - Z) ? "0"
+</programlisting>
+<para>It is, therefore, the difference between two numbers,
+when subtracted under Rexx subtraction rules, that determines their equality.
+</para>
+
+<indexterm><primary>FUZZ</primary>
+<secondary>instruction</secondary></indexterm>
+<indexterm><primary>FUZZ</primary>
+<secondary>controlling numeric comparison</secondary></indexterm>
+<indexterm><primary>FUZZ subkeyword</primary>
+<secondary>in a NUMERIC instruction</secondary></indexterm>
+<para>  Fuzz affects the comparison of two numbers. It controls how much two
+numbers can differ and still be considered equal in a comparison. The FUZZ
+value is set by the following instruction:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_fuzz.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
+
+<para><emphasis role="italic">expression</emphasis> must result in a positive
+whole number or zero. The default is <computeroutput>0</computeroutput>.</para>
+<para>Fuzz is to temporarily reduce the value of DIGITS. That is, the numbers
+are subtracted with a precision of DIGITS minus FUZZ digits during the
+comparison. The FUZZ setting must always be less than DIGITS.</para>
+<para>If, for example, DIGITS = 9 and FUZZ = 1, the comparison is carried out
+to 8 significant digits, just as though
+<computeroutput>NUMERIC DIGITS 8</computeroutput> had been
+put in effect for the duration of the operation.</para>
+<indexterm><primary>arithmetic</primary>
+<secondary>numeric comparisons example</secondary>
+<tertiary>examples</tertiary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>numeric comparisons</secondary></indexterm>
+<indexterm><primary>comparisons</primary>
+<secondary>numeric, example</secondary></indexterm>
+<indexterm><primary>numeric</primary>
+<secondary>comparisons, example</secondary></indexterm>
+<example>
+<title>Comparison</title>
+<programlisting>
+<![CDATA[
+Numeric digits 5
+Numeric fuzz 0
+say  4.9999 = 5     /* Displays "0"    */
+say  4.9999 < 5     /* Displays "1"    */
+Numeric fuzz 1
+say  4.9999 = 5     /* Displays "1"    */
+say  4.9999 < 5     /* Displays "0"    */
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="nudbr"><title>Limits and Errors when Rexx Uses Numbers Directly</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>errors</secondary></indexterm>
+<indexterm><primary>numbers</primary>
+<secondary>use in the language</secondary></indexterm>
+<para> When Rexx uses numbers directly,
+that is, numbers that have not been involved in an arithmetic operation, they
+are rounded, if necessary, according to the setting of NUMERIC DIGITS.  The normal
+whole number limit depends on the default NUMERIC DIGITS setting.  The default setting is 9, making the normal whole
+number limit 999999999.
+</para>
+<para>The following table shows which numbers must be whole numbers and what
+their limits are:</para>
+
+<table frame="all">
+<title>Whole Number Limits</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry>Power values (right-hand operand of the power operator)</entry>
+<entry>The platform whole number limit.</entry>
+</row>
+<row>
+<entry>Values of <emphasis role="italic">exprr</emphasis> and
+<emphasis role="italic">exprf</emphasis> in the DO instruction</entry>
+<entry>The platform whole number limit</entry>
+</row>
+<row>
+<entry>Values given for DIGITS or FUZZ in the NUMERIC instruction
+<indexterm><primary>functions</primary>
+<secondary>numeric arguments of</secondary></indexterm>
+</entry>
+<entry>The platform whole number limits  (Note: FUZZ must always be less than DIGITS.)</entry>
+</row>
+<row>
+<entry>Positional patterns in parsing templates</entry>
+<entry>The platform whole number limit</entry>
+</row>
+<row>
+<entry>Number given for <emphasis role="italic">option</emphasis> in the TRACE
+instruction</entry>
+<entry>The platform whole number limit</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<para>When Rexx uses numbers directly, the following types of errors can occur:
+</para>
+<itemizedlist>
+<listitem><para>Overflow or underflow.
+<indexterm><primary>arithmetic</primary>
+<secondary>overflow</secondary></indexterm>
+<indexterm><primary>arithmetic</primary>
+<secondary>underflow</secondary></indexterm>
+<indexterm><primary>overflow, arithmetic</primary></indexterm>
+<indexterm><primary>underflow, arithmetic</primary></indexterm>
+</para>
+<para>This error occurs if the exponential part of
+a result exceeds the range that the language processor can handle, when the
+result is formatted according to the current settings of NUMERIC DIGITS and
+NUMERIC FORM.  The language defines a minimum capability for the exponential
+part, namely the largest number that can be expressed as an exact integer
+in default precision. Because the default precision is
+<computeroutput>9</computeroutput>, you can
+use exponents in the range <computeroutput>-999999999</computeroutput> through
+<computeroutput>999999999</computeroutput>.
+</para>
+<para>Because this allows for (very) large exponents, overflow or underflow
+is treated as a syntax error.</para></listitem>
+<listitem><para>Insufficient storage.</para>
+<para>Storage is needed for calculations and intermediate
+results, and if an arithmetic operation fails because of lack of storage.
+This is considered as a terminating error.</para></listitem></itemizedlist>
+</section>
+</chapter>

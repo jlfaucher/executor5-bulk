@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file.
+    #
+    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<!-- Appendix 06 - Direct Manipulation				  v01-00 22Aug13
+
+     An overview of drag-drop or direct manipulation - part of the
+     Model-View Framework (MVF).
+
+     Changes:
+     v01-00 22Aug13: First version.
+
+     A6   *  Direct Manipulation                              apx6-dm
+     A6.1    * The Mouse Class                              apx6-dm-ms
+     A6.2    * Enabling Drag/Drop                          apx6-dm-setup
+     A6.3    * Pickup and Drag                               apx6-dm-pickup
+     A6.4    * Drop on Target                                 apx6-dm-drop
+
+-->
+<appendix id="apx6-dm">
+  <title id="apx6-dm.title">Direct Manipulation</title>
+  <indexterm><primary>Direct manipulation</primary></indexterm>
+  <indexterm><primary>Drag-drop</primary></indexterm>
+  <para>This appendix provides an overview of the internals of the direct manipulation or
+    "drag/drop" function provided from Exercise08 onwards. Drag/drop is handled by a framework that
+    relieves the application developer from almost all of the necessary complexities of drag/drop.
+    This framework is implemented by a cooperation between the <computeroutput>View</computeroutput>
+    superclass and a new "manager" class, the Drag Manager
+      (<computeroutput>DragMgr.rex</computeroutput>) both of which are located in the
+      <computeroutput>Exercise08\Support</computeroutput> folder. A description of the application
+    developer's view of drag/drop is provided in Chapter 8, <xref linkend="chap08-dragdrop"/>.</para>
+  <para>This Appendix discusses the following aspects of the "mechanics" of drag/drop:</para>
+  <itemizedlist>
+    <listitem><para><xref linkend="apx6-dm-mouse"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-factoring"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-setup"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-drag"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-drop"/></para></listitem>
+  </itemizedlist>
+  <!-- Section A6.1: ??? -->
+  <section id="apx6-dm-mouse" xreflabel="The Mouse Class">
+    <title>The Mouse Class</title>
+    <para>Drag/drop is enabled through ooDialog's <computeroutput>Mouse</computeroutput> class. When
+      a window (a dialog or a control such as a List View) is to be the source of a
+      drag operation, then an instance of the <computeroutput>Mouse</computeroutput> class must be
+      instantiated (typically in the dialog's <computeroutput>initDialog</computeroutput> method) and
+      associated with the window. For example:
+      <programlisting><![CDATA[     mouse = .Mouse~new(self)]]></programlisting>
+      Mouse events are
+      then connected to the mouse instance. For example, here's the code for
+      connecting a left-button-down (aka "start drag" or "pickup") event:
+      <programlisting><![CDATA[     mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)]]></programlisting>This
+      defines the method <computeroutput>dmOnLBdown</computeroutput> as the event handler for a
+      pickup. Other drag/drop events include mouse movement (dragging with the left
+      button down) and a drop (left button up).</para>
+    <para>When the user presses and holds the left mouse button then a pickup event is detected, and
+      the "Left Button Down" event handler method is invoked. In this method, the mouse instance is
+      "captured" as follows: <programlisting><![CDATA[     if mouse~dragDetect(...) then do
+        ...
+        mouse~capture()
+        ...
+      end]]></programlisting>The <computeroutput>dragDetect</computeroutput> method returns
+        <computeroutput>.true</computeroutput> if the user has indeed started dragging. Note that
+      all drag/drop events are sent to the object in which the mouse was instantiated - and each
+      mouse instance is affiliated with a specific window object. For clarity, in the above code
+      various statements to do with setting the drag cursor and establishing the initial state of
+      the drag operation (e.g. the "we're not over a target" state) are omitted.</para>
+  </section>
+
+  <section id="apx6-dm-factoring" xreflabel="Factoring the Drag/Drop Code">
+    <title>Factoring the Drag/Drop Code</title>
+    <para>Drag/drop code is not particularly simple. So the question is, can the code be factored so
+      that much of the detail can be delegated so that the application developer finds drag/drop
+      easy to implement? To answer this, we start by defining the things that <emphasis
+        role="italic"><emphasis role="bold">must</emphasis></emphasis> be done by the application
+      developer; everything else can then be delegated to a superclass or other "manager" object.
+      This minimum set, for simple drag/drop operations between dialogs, is as follows: <itemizedlist>
+        <listitem>
+          <para>Define the dialog window (or control window within a dialog) that is to be the
+            drag/drop "source" (i.e. that it can be picked up). This includes: <itemizedlist>
+              <listitem>
+                <para>The area within the window from which a pickup is valid.</para>
+              </listitem>
+              <listitem>
+                <para>The cursor icon to be used in dragging from a source window.</para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+        <listitem>
+          <para>Define the dialog window (or a control window within a dialog) that will accept a
+            drop. This includes the area within the window in which a drop is valid.</para>
+        </listitem>
+      </itemizedlist>Definition of both source and target dialogs is handled by an invocation of the
+      superclass in an application dialog's <computeroutput>initDialog</computeroutput> method (as
+      discussed in the next section). Everything else is handled by the
+        <computeroutput>View</computeroutput> superclass (the superclass of all "view" components
+      and located in the <computeroutput>Support</computeroutput> folder).</para>
+      <para>Finally, <computeroutput>View</computeroutput> delegates most of the detailed
+      handling of a drag/drop operation to the Drag Manager (<computeroutput>DragMgr.rex</computeroutput> - also located
+      in the <computeroutput>Support</computeroutput> folder).
+    </para>
+  </section>
+
+  <section id="apx6-dm-setup" xreflabel="Enabling Drag/Drop">
+      <title id="apx6-dm-setup.title">Enabling Drag/Drop</title>
+    <para>In Exercise08, all mouse events are registered in the
+        <computeroutput>View</computeroutput> superclass. However, only an application-level dialog
+      can define itself as a potential source for a drag operation. It does this by supering (from
+      its <computeroutput>initDialog</computeroutput> method) a
+        <computeroutput>dmSetAsSource</computeroutput> message (as shown at the top of <xref
+        linkend="fig-apx6-01"/>). A mouse instance is created in the superclass's
+        <computeroutput>dmSetAsSource</computeroutput> method and the pickup, drag, and drop events
+      are connected to <computeroutput>View</computeroutput> methods. Finally,
+        <computeroutput>View</computeroutput> sends a <computeroutput>setSource</computeroutput>
+      message to the Drag Manager informing it that a new source dialog is present (the dialog's
+      mouse instance being included as one of the arguments). The Drag Manager stores this
+      information in a table. When a drag is started, it is the Drag Manager that manages the fine
+      detail of the operation, finding the right mouse instance from its table of source and target
+      windows.</para>
+    <para>Now, if mouse events are fired during drag/drop, then what object instance receives these
+      events? The answer is the object that instantiated the mouse - that is, the application-level
+      view component - although handling these events is done in the
+        <computeroutput>View</computeroutput> superclass, from where they're passed to the Drag
+      Manager. </para>
+
+    <para>The diagram "<xref linkend="fig-apx6-01"/>" shows how components are enabled for either
+      dragging or dropping. <figure id="fig-apx6-01">
+        <title>Drag/Drop Setup</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Appendix06-image1.jpg" scale="75"/>
+          </imageobject>
+        </mediaobject>
+      </figure>In the diagram, a component view that can be "picked up and dragged" is called a
+        <emphasis role="italic">source dialog</emphasis>. <indexterm>
+        <primary>Source dialog</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Direct manipulation</primary>
+        <secondary>Source dialog</secondary>
+      </indexterm> It defines itself as a "source" by supering to
+        <computeroutput>View</computeroutput> a <computeroutput>dmSetAsSource</computeroutput>
+      message (typically from its <computeroutput>initDialog</computeroutput> method). There are
+      three parameters to this message: first (obligatory) is the file name of the cursor to show
+      when dragging (a <computeroutput>*.cur</computeroutput> file), and second (optional) the area
+      of the source dialog from which it's valid to "pick up" - i.e. to start dragging, and the
+      third (optional) is a control window when the pickup is from a specific control in the dialog.
+      If the second parameter is not provided, then the superclass defaults to the dialog area less
+      10 on each side. If the third argum,ent is not provided, it default to the dialog window. </para>
+    <para>In its <computeroutput>dmSetAsSource</computeroutput> method,
+        <computeroutput>View</computeroutput> first creates an instance of the
+        <computeroutput>.Mouse</computeroutput> class, and registers three event handling methods -
+        <computeroutput>LBUTTONDOWN</computeroutput>), <computeroutput>MOUSEMOVE</computeroutput>
+      and <computeroutput>LBUTTONUP</computeroutput>. If these events are not defined then drag/drop
+      operations are ignored. It then invokes the <computeroutput>setSource</computeroutput> method
+      of the Drag Manager with five arguments: the source window, the mouse instance, the cursor
+      filename, the source's valid pickup area, and the source dialog. The Drag Manager then adds
+      the source window to its table of sources. Note that if a
+        <computeroutput>dmSetAsSource</computeroutput> message is not supered by a dialog, then no
+      mouse events are handled, and so nothing happens when mouse button 1 is pressed and
+      held.</para>
+    <para>A view component that will accept a drop is called a <emphasis role="italic">target
+        dialog</emphasis>. <indexterm>
+        <primary>Target dialog</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Direct manipulation</primary>
+        <secondary>Target dialog</secondary>
+      </indexterm> It defines itself as a target by supering a
+        <computeroutput>dmSetAsTarget</computeroutput> message (typically from its
+        <computeroutput>initDialog</computeroutput> method) to its
+        <computeroutput>View</computeroutput> superclass. The only argument is the area in the
+      dialog in which a drop is allowed. If omitted, the default is the dialog client area less 10
+      on each side. <computeroutput>View</computeroutput> then invokes the Drag Manager's
+        <computeroutput>setTarget</computeroutput> method with three parameters: the dialog id, the
+      dialog's window handle, and area within the dialog within which a drop is allowed. </para>
+    <para>Finally, note that a view component can be both a source and a target.</para>
+  </section>
+
+  <section id="apx6-dm-drag" xreflabel="Pickup and Drag">
+    <title id="apx6-dm-drag.title">Pickup and Drag</title>
+    <para>The top part of the following figure shows the pickup and drag operation. The lower half
+      shows a drop.</para>
+  <figure id="fig-apx6-02" xreflabel="Drag/Drop Operation"><title>Drag/Drop Operation</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Appendix06-image2.jpg" scale="75" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>The operation is as follows:
+    <orderedlist>
+      <listitem><para>The operation starts with the user pressing and holding the "primary" button (usually the left
+            button) of the mouse while over a "source" dialog. This results in the event
+              <computeroutput>LBUTTONDOWN</computeroutput> being signaled to the source dialog. This
+            is handled by the <computeroutput>View</computeroutput> superclass's
+              <computeroutput>dmOnLBdown</computeroutput> method, which in turn invokes the Drag
+            Manager's <computeroutput>dmPickup</computeroutput> method. The Drag Manager then
+            "captures" the mouse instance (using the Mouse class's
+              <computeroutput>capture</computeroutput> method). This results in all mouse messages
+            being sent to the source dialog where they are handled by the
+              <computeroutput>View</computeroutput> superclass. </para>
+      </listitem>
+      <listitem><para>As the mouse is dragged, multiple <computeroutput>MOUSEMOVE</computeroutput> events are
+            handled by the <computeroutput>View</computeroutput> superclass, which delegates them to
+            the Darg Manager. For each such message, the Drag Manager checks if the mouse is over a
+            target that’s registered in its Target Table. If no, then nop. If yes, then a possible
+            target has been found, at which point the Drag Manager:</para>
+        <itemizedlist>
+          <listitem><para>Sends a <computeroutput>dmQueryDrop</computeroutput> message to the class object of the target
+                view's model with source's model class name as the single parameter. Why the class
+                object? And why that of the target view's model? The reason is that, in the general
+                case, the user may drag the mouse across a large number of possible targets such as
+                multiple entries in a list view. And it could well be that each item in the list
+                represents a model and view instance (e.g. a list of Customers). Further, it may
+                well be that none of them are instantiated (which could well involve accessing a
+                data base of some sort). Now all that's required for the drag operation is a simple
+                yes/no answer: can the source be dropped or not. Thus in order to avoid excessive
+                and pointless processing, the model's class object is invoked. The target object
+                returns a simple yes or no as to whether as drop on an instance of the target class
+                is permissible.</para></listitem>
+          <listitem><para>If the potential target returns true, then the Drag Manager set the cursor to the "drop OK"
+                cursor - that is, the cursor provided by the source dialog when it told its
+                superclass that it was a potential drag source.</para></listitem>
+        </itemizedlist></listitem>
+    </orderedlist></para>
+  </section>
+  <section id="apx6-dm-drop" xreflabel="Drop on Target">
+    <title>Drop on a Target</title>
+    <para>The drop is illustrated diagrammatically in the bottom half of <xref linkend="fig-apx6-02"
+      />. A dialog (or a control within a dialog) sets itself as a potential drop target by supering
+      a <computeroutput>dmSetAsTarget</computeroutput> message. The
+        <computeroutput>View</computeroutput> superclass then sends the Drag Manager a
+        <computeroutput>setTarget</computeroutput> message with three parameters: the dialog id, the
+      dialog's window id, and the drop area. The Drag Manager stores this information in a table. A
+      drop occurs when the user releases the left button. When this happens, the event handling
+      method <computeroutput>dmOnLBup</computeroutput> in the <computeroutput>View</computeroutput>
+      superclass is invoked. <computeroutput>View</computeroutput> then sends the Drag Manager a
+        <computeroutput>dmDrop</computeroutput> message. This has three arguments: the dialog id,
+      the key state, and the mouse position. The Drag Manager first releases the mouse and resets
+      the mouse cursor. Then it sends a <computeroutput>dmDrop</computeroutput> message to the
+      target view's model object, with two arguments: the model id of the source object, and the
+      source dialog's id. </para>
+    <para>The target object then does whatever it wishes to do. Often target's action is to send a
+        <computeroutput>query</computeroutput> message to the source model in order to get its data.
+      The drag-drop operation is now complete.  </para>
+  </section>
+  <!--  End of A6.1.  -->
+</appendix>

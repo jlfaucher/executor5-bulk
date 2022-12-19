@@ -1,0 +1,3151 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oosqlite.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooSqlite XML file.
+    #
+    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chpOOSQLiteConstants"><title>The ooSQLite Constants</title>
+<indexterm><primary>ooSQLite Constants</primary></indexterm>
+<indexterm><primary>ooSQLiteConstants class</primary></indexterm>
+<para>
+  ooSQLite provides a number of constant values that are used to interact with the SQLite database engine. These constants
+  are needed in both the object orientated and classical Rexx interafaces, so they have been documented separately in this
+  chapter. Although the constants are provided through a class object, the syntax for using an ooRexx constant is extremely
+  simple and should present no problem for the ooSQLite programmer that is unfamiliar with classes and objects. The classic
+  Rexx programmer need simply prefix each constant value with: <computeroutput>.ooSQLite~</computeroutput>.
+</para>
+<para>
+  This rule is absolute for every constant listed in this chapter. If the classic Rexx programmer wants to use the constant
+  <computeroutput>CORRUPT</computeroutput> in her Rexx code, the prefix <computeroutput>.ooSQLite~</computeroutput> is added
+  to <computeroutput>CORRUPT</computeroutput> like so
+
+<programlisting>
+<![CDATA[
+
+  dbConn = ''
+  ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
+
+  if ret == .ooSQLite~CORRUPT then do
+    -- handle error in some fashion
+    say 'Error return:' .ooSQLite~CORRUPT
+    say 'The "ooFoods.rdbx" database file has been corrupted.'
+    ...
+  end
+
+/* Output wouled be, if the file was indeed detected to be corrunt:
+
+Error return: 11
+The "ooFoods.rdbx" database file has been corrupted.
+
+*/
+
+]]>
+</programlisting>
+</para>
+<para>The <computeroutput>ooSQLiteConstants</computeroutput> class a mixin class that provides <emphasis
+  role="italic">constant</emphasis> values defined using the <computeroutput>::constant</computeroutput> directive. Each
+  constant maps to a SQLite constant and all SQLite constants have a corresponding ooSQLite constant.
+</para>
+<para>
+  Each ooSQLite constant is named the same as the SQLite constant, minus the <emphasis role="italic">SQLITE_</emphasis> part
+  of the name.  For instance, the SQLite constant, <emphasis role="italic">SQLITE_OK</emphasis> is the <emphasis
+  role="italic">OK</emphasis> constant in the <computeroutput>ooSQLiteConstant</computeroutput> class.
+</para>
+<para>
+  All of the ooSQLite objects supplied by ooSQLite inherit the <computeroutput>ooSQLiteConstant</computeroutput> class.
+</para>
+
+<section id="sctMethodsOOSQLiteConstants"><title>All Constants Table</title>
+<para>
+  The following table lists <emphasis role="italic">all</emphasis> of the constant values provided by the
+  ooSQLiteConstants class. Additional tables list subsets of the constant values grouped by purpose.
+</para>
+<table id="tblOOSQLiteConstants" frame="all">
+<title>The ooSQLite Constants</title>
+<tgroup cols="2">
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<!-- NOTE these 3 constants must be updated each time a new version of the SQLite database engine is embedded in ooSQLite -->
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Compile-Time Version Constants</emphasis></entry>
+</row>
+<row>
+<entry>VERSION</entry>
+<entry>&quot;3.8.1&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+<row>
+<entry>VERSION_NUMBER</entry>
+<entry>3008001 The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+<row>
+<entry>SOURCE_ID</entry>
+<entry>&quot;2013-10-17 12:57:35 c78be6d786c19073b3a6730dfe3fb1be54f5657a&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry id="rowOOSQLiteResultCode" align="center"><emphasis role="bold">ooSQLite Specific Result Code Constants</emphasis></entry>
+</row>
+<row>
+<entry>OO_INTERNAL_ERR</entry>
+<entry>The ooSQLite framework encountered an error internally that it is unprepared to handle. It was not considered possible for the error to happen.</entry>
+</row>
+<row>
+<entry>OO_WRONG_ARG_TYPE</entry>
+<entry>An argument to a method or function is not the correct type. For instance the argument requires a number, but the supplied argument is not a number.</entry>
+</row>
+<row>
+<entry>OO_UNEXPECTED_RESULT</entry>
+<entry>The SQLite database engine returned a result that was considered to be impossible to produce.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_IN_PROGRESS</entry>
+<entry>A method was invoked on this database connection object when the database is the destnation of a backup in progress.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_DB_ERRSTATE</entry>
+<entry>The specified source or destination database for a backup operation is in an error state.</entry>
+</row>
+<row>
+<entry id="rowOOSQLiteResultSetFormat" align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Specific Result Set Format Constants</emphasis></entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_ARRAYS</entry>
+<entry>Result sets are returned as an array where each item in the array is an array. The array at item 1 is an array of the column names. The following items are the records of the result set.</entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_DIRECTORIES</entry>
+<entry>Result sets are returned as an array where each item in the array is a Directory object. Each directory in the array contains the values of the columns in a row, where the indexes are the names of the columns.</entry>
+</row>
+<row>
+<entry>OO_STEM_OF_STEMS</entry>
+<entry>Result sets are returned as a stem with the tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a stem for each row. The tails of stem of a row are the column names for the rows.</entry>
+</row>
+<row>
+<entry>OO_CLASSIC_STEM</entry>
+<entry>Result sets are returned as a stem with the tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain compound tails for each row. The compound tails consists of the row number combined with each column name of the row.</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Result Code Constants</emphasis></entry>
+</row>
+<row>
+<entry>OK</entry>
+<entry>Successful result</entry>
+</row>
+<row>
+<entry>ERROR</entry>
+<entry>SQL error or missing database</entry>
+</row>
+<row>
+<entry>INTERNAL</entry>
+<entry>Internal logic error in SQLite</entry>
+</row>
+<row>
+<entry>PERM</entry>
+<entry>Access permission denied</entry>
+</row>
+<row>
+<entry>ABORT</entry>
+<entry>Callback routine requested an abort</entry>
+</row>
+<row>
+<entry>BUSY</entry>
+<entry>The database file is locked</entry>
+</row>
+<row>
+<entry>LOCKED</entry>
+<entry>A table in the database is locked</entry>
+</row>
+<row>
+<entry>NOMEM</entry>
+<entry>A malloc() failed</entry>
+</row>
+<row>
+<entry>READONLY</entry>
+<entry>Attempt to write a readonly database</entry>
+</row>
+<row>
+<entry>INTERRUPT</entry>
+<entry>Operation terminated by sqlite3_interrupt()</entry>
+</row>
+<row>
+<entry>IOERR</entry>
+<entry>Some kind of disk I/O error occurred</entry>
+</row>
+<row>
+<entry>CORRUPT</entry>
+<entry>The database disk image is malformed</entry>
+</row>
+<row>
+<entry>NOTFOUND</entry>
+<entry>Unknown opcode in sqlite3_file_control()</entry>
+</row>
+<row>
+<entry>FULL</entry>
+<entry>Insertion failed because database is full</entry>
+</row>
+<row>
+<entry>CANTOPEN</entry>
+<entry>Unable to open the database file</entry>
+</row>
+<row>
+<entry>PROTOCOL</entry>
+<entry>Database lock protocol error</entry>
+</row>
+<row>
+<entry>EMPTY</entry>
+<entry>Database is empty</entry>
+</row>
+<row>
+<entry>SCHEMA</entry>
+<entry>The database schema changed</entry>
+</row>
+<row>
+<entry>TOOBIG</entry>
+<entry>String or BLOB exceeds size limit</entry>
+</row>
+<row>
+<entry>CONSTRAINT</entry>
+<entry>Abort due to constraint violation</entry>
+</row>
+<row>
+<entry>MISMATCH</entry>
+<entry>Data type mismatch</entry>
+</row>
+<row>
+<entry>MISUSE</entry>
+<entry>Library used incorrectly</entry>
+</row>
+<row>
+<entry>NOLFS</entry>
+<entry>Uses OS features not supported on host</entry>
+</row>
+<row>
+<entry>AUTH</entry>
+<entry>Authorization denied</entry>
+</row>
+<row>
+<entry>FORMAT</entry>
+<entry>Auxiliary database format error</entry>
+</row>
+<row>
+<entry>RANGE</entry>
+<entry>2nd parameter to sqlite3_bind out of range</entry>
+</row>
+<row>
+<entry>NOTADB</entry>
+<entry>File opened that is not a database file</entry>
+</row>
+<row>
+<entry>ROW</entry>
+<entry>sqlite3_step() has another row ready</entry>
+</row>
+<row>
+<entry>DONE</entry>
+<entry>sqlite3_step() has finished executing</entry>
+</row>
+<!--  Support for the extended error codes is compiled in. So we make no distiction between a result
+      code and an extended result code.
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Extended Result Code Constants</emphasis></entry>
+</row>
+-->
+<row>
+<entry>IOERR_READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHORT_READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_WRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_FSYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DIR_FSYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_TRUNCATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_FSTAT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_UNLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_RDLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DELETE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_BLOCKED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_NOMEM</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_ACCESS</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CHECKRESERVEDLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_LOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CLOSE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DIR_CLOSE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMOPEN</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMSIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMMAP</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SEEK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DELETE_NOENT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_MMAP</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_GETTEMPPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CONVPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCKED_SHAREDCACHE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BUSY_RECOVERY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BUSY_SNAPSHOT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_NOTEMPDIR</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_ISDIR</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_FULLPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_CONVPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CORRUPT_VTAB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_RECOVERY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_CANTLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_DBMOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ABORT_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_CHECK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_COMMITHOOK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_FOREIGNKEY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_FUNCTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_NOTNULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_PRIMARYKEY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_UNIQUE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_VTAB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>NOTICE_RECOVER_WAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>NOTICE_RECOVER_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>WARNING_AUTOINDEX</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">File Open Constants</emphasis></entry>
+</row>
+<row>
+<entry>OPEN_READONLY</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened in read-only mode. If the database does not already exist, an error is returned.</entry>
+</row>
+<row>
+<entry>OPEN_READWRITE</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened for reading and writing if possible, or reading only if the file is write protected by the operating system. In either case the database must already exist, otherwise an error is returned</entry>
+</row>
+<row>
+<entry>OPEN_CREATE</entry>
+<entry>Ok for sqlite3_open_v2(). When merged with OPEN_READWRITE, the database is opened for reading and writing, and is created if it does not already exist.</entry>
+</row>
+<row>
+<entry>OPEN_DELETEONCLOSE</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_EXCLUSIVE</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_AUTOPROXY</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_URI</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_MAIN_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TEMP_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TRANSIENT_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_MAIN_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TEMP_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_SUBJOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_MASTER_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_NOMUTEX</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_FULLMUTEX</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_SHAREDCACHE</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_PRIVATECACHE</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_WAL</entry>
+<entry>VFS only</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Authorizer Action Constants</emphasis></entry>
+</row>
+<row>
+<entry>CREATE_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>PRAGMA</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SELECT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TRANSACTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UPDATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ATTACH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DETACH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ALTER_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>REINDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ANALYZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_VTABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_VTABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FUNCTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SAVEPOINT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>RECURSIVE</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Authorizer Return Code Constants</emphasis></entry>
+</row>
+<row>
+<entry>DENY</entry>
+<entry>Abort the SQL statement with an error</entry>
+</row>
+<row>
+<entry>IGNORE</entry>
+<entry>Don't allow access, but don't generate an error</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">xAccess VFS Method Constants</emphasis></entry>
+</row>
+<row>
+<entry>ACCESS_EXISTS</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ACCESS_READWRITE</entry>
+<entry>Used by PRAGMA temp_store_directory</entry>
+</row>
+<row>
+<entry>ACCESS_READ</entry>
+<entry>Unused</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Checkpoint Operation Parameter Constants</emphasis></entry>
+</row>
+<row>
+<entry>CHECKPOINT_PASSIVE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CHECKPOINT_FULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CHECKPOINT_RESTART</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Configuration Option Constants</emphasis></entry>
+</row>
+<row>
+<entry>CONFIG_SINGLETHREAD</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_MULTITHREAD</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_SERIALIZED</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_MALLOC</entry>
+<entry>sqlite3_mem_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_GETMALLOC</entry>
+<entry>sqlite3_mem_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_SCRATCH</entry>
+<entry>void*, int sz, int N</entry>
+</row>
+<row>
+<entry>CONFIG_PAGECACHE</entry>
+<entry>void*, int sz, int N</entry>
+</row>
+<row>
+<entry>CONFIG_HEAP</entry>
+<entry>void*, int nByte, int min</entry>
+</row>
+<row>
+<entry>CONFIG_MEMSTATUS</entry>
+<entry>boolean</entry>
+</row>
+<row>
+<entry>CONFIG_MUTEX</entry>
+<entry>sqlite3_mutex_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_GETMUTEX</entry>
+<entry>sqlite3_mutex_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_LOOKASIDE</entry>
+<entry>int int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE</entry>
+<entry>no-op</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE</entry>
+<entry>no-op</entry>
+</row>
+<row>
+<entry>CONFIG_LOG</entry>
+<entry>xFunc, void*</entry>
+</row>
+<row>
+<entry>CONFIG_URI</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_COVERING_INDEX_SCAN</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_SQLLOG</entry>
+<entry>xSqllog, void*</entry>
+</row>
+<row>
+<entry>CONFIG_MMAP_SIZE</entry>
+<entry>sqlite3_int64, sqlite3_int64</entry>
+</row>
+<row>
+<entry>CONFIG_WIN32_HEAPSIZE</entry>
+<entry>int nByte</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">DB Connection Configuration Constants</emphasis></entry>
+</row>
+<row>
+<entry>DBCONFIG_LOOKASIDE</entry>
+<entry>void* int int</entry>
+</row>
+<row>
+<entry>DBCONFIG_ENABLE_FKEY</entry>
+<entry>int int*</entry>
+</row>
+<row>
+<entry>DBCONFIG_ENABLE_TRIGGER</entry>
+<entry>int int*</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">DB Status Parameter Constants</emphasis></entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_SCHEMA_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_STMT_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_HIT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_MISS_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_MISS_FULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_HIT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_MISS</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_WRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DBSTATUS_MAX</entry>
+<entry>Largest defined DBSTATUS</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">File Control Opcode Constants</emphasis></entry>
+</row>
+<row>
+<entry>FCNTL_LOCKSTATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>GET_LOCKPROXYFILE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SET_LOCKPROXYFILE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LAST_ERRNO</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SIZE_HINT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_CHUNK_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_FILE_POINTER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC_OMITTED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_WIN32_AV_RETRY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_PERSIST_WAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_OVERWRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_VFSNAME</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_POWERSAFE_OVERWRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_PRAGMA</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_BUSYHANDLER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TEMPFILENAME</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_MMAP_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TRACE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_HAS_MOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_COMMIT_PHASETWO</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Fundamental Datatype Constants</emphasis></entry>
+</row>
+<row>
+<entry>INTEGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FLOAT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BLOB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SQLNULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TEXT</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Device Characteristic Constants</emphasis></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC512</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC1K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC2K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC4K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC8K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC16K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC32K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC64K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_SAFE_APPEND</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_SEQUENTIAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_UNDELETABLE_WHEN_OPEN</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_POWERSAFE_OVERWRITE</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Run-Time Limit Constants</emphasis></entry>
+</row>
+<row>
+<entry>LIMIT_LENGTH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_SQL_LENGTH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_COLUMN</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_EXPR_DEPTH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_COMPOUND_SELECT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_VDBE_OP</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_FUNCTION_ARG</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_ATTACHED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_LIKE_PATTERN_LENGTH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_VARIABLE_NUMBER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LIMIT_TRIGGER_DEPTH</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">File Locking Constants</emphasis></entry>
+</row>
+<row>
+<entry>LOCK_NONE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_SHARED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_RESERVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_PENDING</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_EXCLUSIVE</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Mutex Type Constants</emphasis></entry>
+</row>
+<row>
+<entry>MUTEX_FAST</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_RECURSIVE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_MASTER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_MEM</entry>
+<entry>sqlite3_malloc()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_OPEN</entry>
+<entry>sqlite3BtreeOpen()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_PRNG</entry>
+<entry>sqlite3_random()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_LRU</entry>
+<entry>lru page list</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_PMEM</entry>
+<entry>sqlite3PageMalloc()</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">xShmLock VFS Constants</emphasis></entry>
+</row>
+<row>
+<entry>SHM_UNLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_LOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_SHARED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_EXCLUSIVE</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Destructor Behavior Constants</emphasis></entry>
+</row>
+<row>
+<entry>STATIC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TRANSIENT</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Status Parameter Constants</emphasis></entry>
+</row>
+<row>
+<entry>STATUS_MEMORY_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_OVERFLOW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_OVERFLOW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_MALLOC_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PARSER_STACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_MALLOC_COUNT</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Status Parameter Constants (Stmt)</emphasis></entry>
+</row>
+<row>
+<entry>STMTSTATUS_FULLSCAN_STEP</entry>
+<entry>This is the number of times that SQLite has stepped forward in a table as part of a full table scan. Large numbers for this counter may indicate opportunities for performance improvement through careful use of indices.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_SORT</entry>
+<entry>This is the number of sort operations that have occurred. A non-zero value in this counter may indicate an opportunity to improvement performance through careful use of indices.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_AUTOINDEX</entry>
+<entry>This is the number of rows inserted into transient indices that were created automatically in order to help joins run faster. A non-zero value in this counter may indicate an opportunity to improvement performance by adding permanent indices that do not need to be reinitialized each time the statement is run.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_VM_STEP</entry>
+<entry>This is the number of virtual machine operations executed by the prepared statement if that number is less than or equal to 2147483647. The number of virtual machine operations can be used as a proxy for the total work done by the prepared statement. If the number of virtual machine operations exceeds 2147483647 then the value returned by this statement status code is undefined.</entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Synchronization Constants</emphasis></entry>
+</row>
+<row>
+<entry>SYNC_NORMAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SYNC_FULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SYNC_DATAONLY</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Text Encoding Constants</emphasis></entry>
+</row>
+<row>
+<entry>UTF8</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16LE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16BE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16</entry>
+<entry>Use native byte order</entry>
+</row>
+<row>
+<entry>ANY</entry>
+<entry>Deprecated</entry>
+</row>
+<row>
+<entry>UTF16_ALIGNED</entry>
+<entry>sqlite3_create_collation only</entry>
+</row>
+<row>
+<entry>DETERMINISTIC</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Virtual Table Config Option Constants</emphasis></entry>
+</row>
+<row>
+<entry>VTAB_CONSTRAINT_SUPPORT</entry>
+<entry></entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctCompileTimeVersion"><title>Compile Time Version Constants</title>
+<para>
+  The following table lists the compile time version constants:
+</para>
+<table id="tblCompileTimeVersion" frame="all">
+<title>The Compile Time Version Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<!-- NOTE these 3 constants should maybe be updated each time a new version of SQLite is used? ... -->
+<row>
+<entry>VERSION</entry>
+<entry>&quot;3.8.3&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+<row>
+<entry>VERSION_NUMBER</entry>
+<entry>3008003 The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+<row>
+<entry>SOURCE_ID</entry>
+<entry>&quot;2014-02-03 14:04:11 6c643e45c274e755dc5a1a65673df79261c774be&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctOOSQLiteSpecific"><title>ooSQLite Specific Constants</title>
+<para>
+  The following table lists constants specific to ooSQLite. These constants have no counterpart in SQLite:
+</para>
+<table id="tblOOSQLiteSpecific" frame="all">
+<title>The ooSQLite Specific Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Result Set Format Constants</emphasis></entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_ARRAYS</entry>
+<entry>Result sets are returned as an array where each item in the array is an array. The array at item 1 is an array of the column names. The following items are the records of the result set.</entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_DIRECTORIES</entry>
+<entry>Result sets are returned as an array where each item in the array is a Directory object. Each directory in the array contains the values of the columns in a row, where the indexes are the names of the columns.</entry>
+</row>
+<row>
+<entry>OO_STEM_OF_STEMS</entry>
+<entry>Result sets are returned as a stem with tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a stem for each row. The tails of the stem of a row are the column names for the rows.</entry>
+</row>
+<row>
+<entry>OO_CLASSIC_STEM</entry>
+<entry>Result sets are returned as a stem with tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a compound index, n.columnName for each row. The value of each stm.n.columnName variable is the value of the columnName column for the nth row.</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctOOSQLiteSpecificResultCodes"><title>ooSQLite Specific Result Code Constants</title>
+<para>
+  The following table lists result code constants specific to ooSQLite. These constants have no counterpart in SQLite:
+</para>
+<table id="tblOOSQLiteSpecificResultCod" frame="all">
+<title>The ooSQLite Specific Result Code Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry align="center"><emphasis role="bold">ooSQLite Result Code Constants</emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Result Code Constants</emphasis></entry>
+</row>
+<row>
+<entry>OO_INTERNAL_ERR</entry>
+<entry>The ooSQLite framework encountered an error internally that it is unprepared to handle. It was not considered possible for the error to happen.</entry>
+</row>
+<row>
+<entry>OO_WRONG_ARG_TYPE</entry>
+<entry>An argument to a method or function is not the correct type. For instance the argument requires a number, but the supplied argument is not a number.</entry>
+</row>
+<row>
+<entry>OO_UNEXPECTED_RESULT</entry>
+<entry>The SQLite database engine returned a result that was considered to be impossible to produce.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_IN_PROGRESS</entry>
+<entry>A method was invoked on this database connection object when the database is the destnation of a backup in progress.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_DB_ERRSTATE</entry>
+<entry>The specified source or destination database for a backup operation is in an error state.</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctResultCode"><title>Result Code Constants</title>
+<para>
+  The following table lists the result code constants. Note that these result code constants also contain what the
+  SQLite documentation referes to as the <emphasis role="italic">extended</emphasis> result codes. ooSQLite has the
+  extended result codes enabled at compile time, so there is no distinction between the result codes and the extended
+  result codes:
+</para>
+<table id="tblResultCode" frame="all">
+<title>The Result Code Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>OK</entry>
+<entry>Successful result</entry>
+</row>
+<row>
+<entry>ERROR</entry>
+<entry>SQL error or missing database</entry>
+</row>
+<row>
+<entry>INTERNAL</entry>
+<entry>Internal logic error in SQLite</entry>
+</row>
+<row>
+<entry>PERM</entry>
+<entry>Access permission denied</entry>
+</row>
+<row>
+<entry>ABORT</entry>
+<entry>Callback routine requested an abort</entry>
+</row>
+<row>
+<entry>BUSY</entry>
+<entry>The database file is locked</entry>
+</row>
+<row>
+<entry>LOCKED</entry>
+<entry>A table in the database is locked</entry>
+</row>
+<row>
+<entry>NOMEM</entry>
+<entry>A malloc() failed</entry>
+</row>
+<row>
+<entry>READONLY</entry>
+<entry>Attempt to write a readonly database</entry>
+</row>
+<row>
+<entry>INTERRUPT</entry>
+<entry>Operation terminated by sqlite3_interrupt()</entry>
+</row>
+<row>
+<entry>IOERR</entry>
+<entry>Some kind of disk I/O error occurred</entry>
+</row>
+<row>
+<entry>CORRUPT</entry>
+<entry>The database disk image is malformed</entry>
+</row>
+<row>
+<entry>NOTFOUND</entry>
+<entry>Unknown opcode in sqlite3_file_control()</entry>
+</row>
+<row>
+<entry>FULL</entry>
+<entry>Insertion failed because database is full</entry>
+</row>
+<row>
+<entry>CANTOPEN</entry>
+<entry>Unable to open the database file</entry>
+</row>
+<row>
+<entry>PROTOCOL</entry>
+<entry>Database lock protocol error</entry>
+</row>
+<row>
+<entry>EMPTY</entry>
+<entry>Database is empty</entry>
+</row>
+<row>
+<entry>SCHEMA</entry>
+<entry>The database schema changed</entry>
+</row>
+<row>
+<entry>TOOBIG</entry>
+<entry>String or BLOB exceeds size limit</entry>
+</row>
+<row>
+<entry>CONSTRAINT</entry>
+<entry>Abort due to constraint violation</entry>
+</row>
+<row>
+<entry>MISMATCH</entry>
+<entry>Data type mismatch</entry>
+</row>
+<row>
+<entry>MISUSE</entry>
+<entry>Library used incorrectly</entry>
+</row>
+<row>
+<entry>NOLFS</entry>
+<entry>Uses OS features not supported on host</entry>
+</row>
+<row>
+<entry>AUTH</entry>
+<entry>Authorization denied</entry>
+</row>
+<row>
+<entry>FORMAT</entry>
+<entry>Auxiliary database format error</entry>
+</row>
+<row>
+<entry>RANGE</entry>
+<entry>2nd parameter to sqlite3_bind out of range</entry>
+</row>
+<row>
+<entry>NOTADB</entry>
+<entry>File opened that is not a database file</entry>
+</row>
+<row>
+<entry>NOTICE</entry>
+<entry>Notifications from sqlite3_log()</entry>
+</row>
+<row>
+<entry>WARNING</entry>
+<entry>Warnings from sqlite3_log()</entry>
+</row>
+<row>
+<entry>ROW</entry>
+<entry>sqlite3_step() has another row ready</entry>
+</row>
+<row>
+<entry>DONE</entry>
+<entry>sqlite3_step() has finished executing</entry>
+</row>
+<!--  Support for the extended error codes is compiled in. So we make no distiction between a result
+      code and an extended result code.
+<row>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Extended Result Code Constants</emphasis></entry>
+</row>
+-->
+<row>
+<entry>IOERR_READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHORT_READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_WRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_FSYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DIR_FSYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_TRUNCATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_FSTAT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_UNLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_RDLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DELETE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_BLOCKED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_NOMEM</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_ACCESS</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CHECKRESERVEDLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_LOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CLOSE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DIR_CLOSE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMOPEN</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMSIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SHMMAP</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_SEEK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_DELETE_NOENT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_MMAP</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_GETTEMPPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOERR_CONVPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCKED_SHAREDCACHE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BUSY_RECOVERY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BUSY_SNAPSHOT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_NOTEMPDIR</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_ISDIR</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_FULLPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CANTOPEN_CONVPATH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CORRUPT_VTAB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_RECOVERY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_CANTLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_DBMOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ABORT_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_CHECK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_COMMITHOOK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_FOREIGNKEY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_FUNCTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_NOTNULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_PRIMARYKEY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_UNIQUE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CONSTRAINT_VTAB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>NOTICE_RECOVER_WAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>NOTICE_RECOVER_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>WARNING_AUTOINDEX</entry>
+<entry></entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctFileOpen"><title>File Open Constants</title>
+<para>
+  The following table lists the file open constants:
+</para>
+<table id="tblFileOpen" frame="all">
+<title>The File Open Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>OPEN_READONLY</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened in read-only mode. If the database does not already exist, an error is returned.</entry>
+</row>
+<row>
+<entry>OPEN_READWRITE</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened for reading and writing if possible, or reading only if the file is write protected by the operating system. In either case the database must already exist, otherwise an error is returned</entry>
+</row>
+<row>
+<entry>OPEN_CREATE</entry>
+<entry>Ok for sqlite3_open_v2(). When merged with OPEN_READWRITE, the database is opened for reading and writing, and is created if it does not already exist.</entry>
+</row>
+<row>
+<entry>OPEN_DELETEONCLOSE</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_EXCLUSIVE</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_AUTOPROXY</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_URI</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_MAIN_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TEMP_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TRANSIENT_DB</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_MAIN_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_TEMP_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_SUBJOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_MASTER_JOURNAL</entry>
+<entry>VFS only</entry>
+</row>
+<row>
+<entry>OPEN_NOMUTEX</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_FULLMUTEX</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_SHAREDCACHE</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_PRIVATECACHE</entry>
+<entry>Ok for sqlite3_open_v2()</entry>
+</row>
+<row>
+<entry>OPEN_WAL</entry>
+<entry>VFS only</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctAuthorizerAction"><title>Authorizer Action Constants</title>
+<para>
+  The following table lists the authorizer action constants:
+</para>
+<table id="tblAuthorizerAction" frame="all">
+<title>The Authorizer Action Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>CREATE_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TEMP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_INDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TEMP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_TRIGGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_VIEW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>PRAGMA</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READ</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SELECT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TRANSACTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UPDATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ATTACH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DETACH</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ALTER_TABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>REINDEX</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ANALYZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CREATE_VTABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>DROP_VTABLE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FUNCTION</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SAVEPOINT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>RECURSIVE</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctAuthorizerReturnCode"><title>Authorizer Return Code Constants</title>
+<para>
+  The following table lists the authorizer return code constants:
+</para>
+<table id="tblAuthorizerReturnCode" frame="all">
+<title>The Authorizer Return Code Constants</title>
+<tgroup cols="2">
+<colspec colwidth="7*" />
+<colspec colwidth="17*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>DENY</entry>
+<entry>Abort the SQL statement with an error</entry>
+</row>
+<row>
+<entry>IGNORE</entry>
+<entry>Don't allow access, but don't generate an error</entry>
+</row>
+<row>
+<entry>OK</entry>
+<entry>The operation requested is ok</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+<section id="sctXAccessVFSMethod"><title>xAccess VFS Method Constants</title>
+<para>
+  The following table lists the authorizer return code constants:
+</para>
+<table id="tblXAccessVFSMethod" frame="all">
+<title>The xAccess VFS Method Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>ACCESS_EXISTS</entry>
+<entry></entry>
+</row>
+<row>
+<entry>ACCESS_READWRITE</entry>
+<entry>Used by PRAGMA temp_store_directory</entry>
+</row>
+<row>
+<entry>ACCESS_READ</entry>
+<entry>Unused</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctCheckpointOperationParameter"><title>Checkpoint Operation Parameter Constants</title>
+<para>
+  The following table lists the checkpoint operation parameter constants:
+</para>
+<table id="tblCheckpointOperationParameter" frame="all">
+<title>The Checkpoint Operation Parameter Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>CHECKPOINT_PASSIVE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CHECKPOINT_FULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>CHECKPOINT_RESTART</entry>
+<entry></entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctConfigurationOption"><title>Configuration Option Constants</title>
+<para>
+  The following table lists the configuration options constants:
+</para>
+<table id="tblConfigurationOptions" frame="all">
+<title>The Configuration Options Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>CONFIG_SINGLETHREAD</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_MULTITHREAD</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_SERIALIZED</entry>
+<entry>nil</entry>
+</row>
+<row>
+<entry>CONFIG_MALLOC</entry>
+<entry>sqlite3_mem_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_GETMALLOC</entry>
+<entry>sqlite3_mem_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_SCRATCH</entry>
+<entry>void*, int sz, int N</entry>
+</row>
+<row>
+<entry>CONFIG_PAGECACHE</entry>
+<entry>void*, int sz, int N</entry>
+</row>
+<row>
+<entry>CONFIG_HEAP</entry>
+<entry>void*, int nByte, int min</entry>
+</row>
+<row>
+<entry>CONFIG_MEMSTATUS</entry>
+<entry>boolean</entry>
+</row>
+<row>
+<entry>CONFIG_MUTEX</entry>
+<entry>sqlite3_mutex_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_GETMUTEX</entry>
+<entry>sqlite3_mutex_methods*</entry>
+</row>
+<row>
+<entry>CONFIG_LOOKASIDE</entry>
+<entry>int int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE</entry>
+<entry>no-op</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE</entry>
+<entry>no-op</entry>
+</row>
+<row>
+<entry>CONFIG_LOG</entry>
+<entry>xFunc, void*</entry>
+</row>
+<row>
+<entry>CONFIG_URI</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_COVERING_INDEX_SCAN</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_SQLLOG</entry>
+<entry>xSqllog, void*</entry>
+</row>
+<row>
+<entry>CONFIG_MMAP_SIZE</entry>
+<entry>sqlite3_int64, sqlite3_int64</entry>
+</row>
+<row>
+<entry>CONFIG_WIN32_HEAPSIZE</entry>
+<entry>int nByte</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctDBConnectionConfiguration"><title>DB Connection Configuration Constants</title>
+<para>
+  The following table lists the DB connection configuration constants:
+</para>
+<table id="tblDBConnectionConfiguration" frame="all">
+<title>The DB Connection Configuration Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>DBCONFIG_LOOKASIDE</entry>
+<entry>void* int int</entry>
+</row>
+<row>
+<entry>DBCONFIG_ENABLE_FKEY</entry>
+<entry>int int*</entry>
+</row>
+<row>
+<entry>DBCONFIG_ENABLE_TRIGGER</entry>
+<entry>int int*</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctDBStatusParameter"><title>DB Status Parameter Constants</title>
+<para>
+  The following table lists the DB status parameter constants:
+</para>
+<table id="tblDBStatusParameter" frame="all">
+<title>The DB Status Parameter Constants</title>
+<tgroup cols="2">
+<colspec colwidth="5*" />
+<colspec colwidth="7*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>DBSTATUS_LOOKASIDE_USED</entry>
+<entry>The number of lookaside memory slots currently checked out.</entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_HIT</entry>
+<entry>The number of malloc attempts that were satisfied using lookaside memory. Only the high-water value is meaningful; the current value is always zero.</entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_MISS_SIZE</entry>
+<entry>The number malloc attempts that might have been satisfied using lookaside memory but failed due to the amount of memory requested being larger than the lookaside slot size. Only the high-water value is meaningful, the current value is always zero.</entry>
+</row>
+<row>
+<entry>DBSTATUS_LOOKASIDE_MISS_FULL</entry>
+<entry>The number malloc attempts that might have been satisfied using lookaside memory but failed due to all lookaside memory already being in use. Only the high-water value is meaningful, the current value is always zero.</entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_USED</entry>
+<entry>The approximate number of of bytes of heap memory used by all pager caches associated with the database connection. The highwater mark associated with DBSTATUS_CACHE_USED is always 0.</entry>
+</row>
+<row>
+<entry>DBSTATUS_SCHEMA_USED</entry>
+<entry>
+  The approximate number of of bytes of heap memory used to store the schema for all databases associated with the connection, main, temp, and any ATTACH-ed databases. The full amount of memory used by the schemas is reported, even if the schema memory is shared with other database connections due to shared cache mode being enabled. The highwater mark associated with
+  DBSTATUS_SCHEMA_USED is always 0.
+</entry>
+</row>
+<row>
+<entry>DBSTATUS_STMT_USED</entry>
+<entry>the approximate number of of bytes of heap and lookaside memory used by all prepared statements associated with the database connection. The highwater mark associated with DBSTATUS_STMT_USED is always 0.</entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_HIT</entry>
+<entry>The number of pager cache hits that have occurred. The highwater mark associated with DBSTATUS_CACHE_HIT is always 0.</entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_MISS</entry>
+<entry>The number of pager cache misses that have occurred. The highwater mark associated with DBSTATUS_CACHE_MISS is always 0.</entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_WRITE</entry>
+<entry>
+  The number of dirty cache entries that have been written to disk. Specifically, the number of pages written to the wal file in wal mode databases, or the number of pages written to the database file in rollback mode databases. Any pages written as part of transaction rollback or database recovery operations are not included. If an IO or other error occurs while writing a
+  page to disk, the effect on subsequent DBSTATUS_CACHE_WRITE requests is undefined. The highwater mark associated with DBSTATUS_CACHE_WRITE is always 0.
+</entry>
+</row>
+<row>
+<entry>DBSTATUS_MAX</entry>
+<entry>Largest defined DBSTATUS</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctFileControlOpcode"><title>File Control Opcode Constants</title>
+<para>
+  The following table lists the file control opcode constants:
+</para>
+<table id="tblFileControlOpcode" frame="all">
+<title>The File Control Opcode Constants</title>
+<tgroup cols="2">
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>FCNTL_LOCKSTATE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>GET_LOCKPROXYFILE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SET_LOCKPROXYFILE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LAST_ERRNO</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SIZE_HINT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_CHUNK_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_FILE_POINTER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC_OMITTED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_WIN32_AV_RETRY</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_PERSIST_WAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_OVERWRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_VFSNAME</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_POWERSAFE_OVERWRITE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_PRAGMA</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_BUSYHANDLER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TEMPFILENAME</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_MMAP_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TRACE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_HAS_MOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_COMMIT_PHASETWO</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctFundamentalDatatype"><title>Fundamental Datatype Constants</title>
+<para>
+  The following table lists the fundamental datatype constants:
+</para>
+<table id="tblFundamentalDatatype" frame="all">
+<title>The Fundamental Datatype Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>INTEGER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FLOAT</entry>
+<entry></entry>
+</row>
+<row>
+<entry>BLOB</entry>
+<entry></entry>
+</row>
+<row>
+<entry>NULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TEXT</entry>
+<entry></entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctDeviceCharacteristic"><title>Device Characteristic Constants</title>
+<para>
+  The following table lists the device characteristic constants:
+</para>
+<table id="tblDeviceCharacteristic" frame="all">
+<title>The Device Characteristic Constants</title>
+<tgroup cols="2">
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>IOCAP_ATOMIC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC512</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC1K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC2K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC4K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC8K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC16K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC32K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_ATOMIC64K</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_SAFE_APPEND</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_SEQUENTIAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_UNDELETABLE_WHEN_OPEN</entry>
+<entry></entry>
+</row>
+<row>
+<entry>IOCAP_POWERSAFE_OVERWRITE</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctRunTimeLimit"><title>Run-Time Limit Constants</title>
+<para>
+  The following table lists the run-time limit constants:
+</para>
+<table id="tblRunTimeLimit" frame="all">
+<title>The Run-Time Limit Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LIMIT_LENGTH</entry>
+<entry>The maximum size of any string or BLOB or table row, in bytes.</entry>
+</row>
+<row>
+<entry>LIMIT_SQL_LENGTH</entry>
+<entry>The maximum length of an SQL statement, in bytes.</entry>
+</row>
+<row>
+<entry>LIMIT_COLUMN</entry>
+<entry>The maximum number of columns in a table definition or in the result set of a SELECT or the maximum number of columns in an index or in an ORDER BY or GROUP BY clause.</entry>
+</row>
+<row>
+<entry>LIMIT_EXPR_DEPTH</entry>
+<entry>The maximum depth of the parse tree on any expression.</entry>
+</row>
+<row>
+<entry>LIMIT_COMPOUND_SELECT</entry>
+<entry>The maximum number of terms in a compound SELECT statement.</entry>
+</row>
+<row>
+<entry>LIMIT_VDBE_OP</entry>
+<entry>The maximum number of instructions in a virtual machine program used to implement an SQL statement. This limit is not currently enforced, though that might be added in some future release of SQLite.</entry>
+</row>
+<row>
+<entry>LIMIT_FUNCTION_ARG</entry>
+<entry>The maximum number of arguments on a function.</entry>
+</row>
+<row>
+<entry>LIMIT_ATTACHED</entry>
+<entry>The maximum number of attached databases.</entry>
+</row>
+<row>
+<entry>LIMIT_LIKE_PATTERN_LENGTH</entry>
+<entry>The maximum length of the pattern argument to the LIKE or GLOB operators.</entry>
+</row>
+<row>
+<entry>LIMIT_VARIABLE_NUMBER</entry>
+<entry>The maximum index number of any parameter in an SQL statement.</entry>
+</row>
+<row>
+<entry>LIMIT_TRIGGER_DEPTH</entry>
+<entry>The maximum depth of recursion for triggers.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctFileLocking"><title>File Locking Constants</title>
+<para>
+  The following table lists the file locking constants:
+</para>
+<table id="tblFileLocking" frame="all">
+<title>The File Locking Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LOCK_NONE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_SHARED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_RESERVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_PENDING</entry>
+<entry></entry>
+</row>
+<row>
+<entry>LOCK_EXCLUSIVE</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctMutexType"><title>Mutex Type Constants</title>
+<para>
+  The following table lists the mutex type constants:
+</para>
+<table id="tblMutexType" frame="all">
+<title>The Mutex Type Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>MUTEX_FAST</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_RECURSIVE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_MASTER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_MEM</entry>
+<entry>sqlite3_malloc()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_OPEN</entry>
+<entry>sqlite3BtreeOpen()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_PRNG</entry>
+<entry>sqlite3_random()</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_LRU</entry>
+<entry>lru page list</entry>
+</row>
+<row>
+<entry>MUTEX_STATIC_PMEM</entry>
+<entry>sqlite3PageMalloc()</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctXShmLockVFS"><title>xShmLock VFS Constants</title>
+<para>
+  The following table lists the xShmLock VFS constants:
+</para>
+<table id="tblXShmLockVFS" frame="all">
+<title>The xShmLock VFS Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>SHM_UNLOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_LOCK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_SHARED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SHM_EXCLUSIVE</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctDestructorBehavior"><title>Destructor Behavior Constants</title>
+<para>
+  The following table lists the destructor behavior constants:
+</para>
+<table id="tblDestructorBehavior" frame="all">
+<title>The Destructor Behavior Open Constants</title>
+<tgroup cols="2">
+<colspec colwidth="5*" />
+<colspec colwidth="19*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>STATIC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>TRANSIENT</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctStatusParameter"><title>Status Parameter Constants</title>
+<para>
+  The following table lists the status parameter constants:
+</para>
+<table id="tblStatusParameter" frame="all">
+<title>The Status Parameter Constants</title>
+<tgroup cols="2">
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>STATUS_MEMORY_USED</entry>
+<entry>This parameter is the current amount of memory checked out using the SQLite malloc routine, either directly or indirectly. The figure includes calls made to the routine by the application and internal memory usage by the SQLite library. Scratch memory controlled by CONFIG_SCRATCH and auxiliary page-cache memory controlled by
+  CONFIG_PAGECACHE is not included in this parameter. The amount returned is the sum of the allocation sizes as reported by the xSize method in sqlite3_mem_methods.</entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_OVERFLOW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_USED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_OVERFLOW</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_MALLOC_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PARSER_STACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_PAGECACHE_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_SCRATCH_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>STATUS_MALLOC_COUNT</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctStatusParameterStmt"><title>Status Parameter (stmt) Constants</title>
+<para>
+  The following table lists the status parameter (stmt) constants:
+</para>
+<table id="tblStatusParameterStmt" frame="all">
+<title>The Status Parameter (stmt) Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>STMTSTATUS_FULLSCAN_STEP</entry>
+<entry>This is the number of times that SQLite has stepped forward in a table as part of a full table scan. Large numbers for this counter may indicate opportunities for performance improvement through careful use of indices.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_SORT</entry>
+<entry>This is the number of sort operations that have occurred. A non-zero value in this counter may indicate an opportunity to improvement performance through careful use of indices.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_AUTOINDEX</entry>
+<entry>This is the number of rows inserted into transient indices that were created automatically in order to help joins run faster. A non-zero value in this counter may indicate an opportunity to improvement performance by adding permanent indices that do not need to be reinitialized each time the statement is run.</entry>
+</row>
+<row>
+<entry>STMTSTATUS_VM_STEP</entry>
+<entry>This is the number of virtual machine operations executed by the prepared statement if that number is less than or equal to 2147483647. The number of virtual machine operations can be used as a proxy for the total work done by the prepared statement. If the number of virtual machine operations exceeds 2147483647 then the value returned by this statement status code is undefined.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctSynchronization"><title>Synchronization Constants</title>
+<para>
+  The following table lists the synchronization constants:
+</para>
+<table id="tblSynchronization" frame="all">
+<title>The Synchronization Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>SYNC_NORMAL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SYNC_FULL</entry>
+<entry></entry>
+</row>
+<row>
+<entry>SYNC_DATAONLY</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctTextEncoding"><title>Text Encoding Constants</title>
+<para>
+  The following table lists the text encoding constants:
+</para>
+<table id="tblTextEncoding" frame="all">
+<title>The Text Encoding Constants</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>UTF8</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16LE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16BE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>UTF16</entry>
+<entry>Use native byte order</entry>
+</row>
+<row>
+<entry>ANY</entry>
+<entry>Deprecated</entry>
+</row>
+<row>
+<entry>UTF16_ALIGNED</entry>
+<entry>sqlite3_create_collation only</entry>
+</row>
+<row>
+<entry>DETERMINISTIC</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctVirtualTableConfigOption"><title>Virtual Table Config Option Constants</title>
+<para>
+  The following table lists the virtual table config option constants:
+</para>
+<table id="tblVirtualTableConfigOption" frame="all">
+<title>The Virtual Table Config Option Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>VTAB_CONSTRAINT_SUPPORT</entry>
+<entry></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="mthMerge"><title>merge (Class method)</title>
+<indexterm><primary>merge</primary></indexterm>
+<indexterm><primary>ooSQLiteConstant class</primary><secondary>merge</secondary></indexterm>
+<programlisting>
+<![CDATA[
+             +--,--+
+             V     |
+>>--merge(--value--+--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Performs a bit-wise <emphasis role="italic">or</emphasis> operation on the arguments and returns the result.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>value</term>
+      <listitem>
+      <para>
+        One or more whole numbers that will be <emphasis role="italic">merged</emphasis> together. The <emphasis
+        role="italic">value</emphasis> argument can repeat any number of times, but the series of values can not omit an
+        argument in the middle of the series.  Although this method will work with any numbers, it is intended to be used
+        with values that are <computeroutput>ooSQLiteConstant</computeroutput> values.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the result of performing a bit-wise <emphasis role="italic">or</emphasis> operation on the supplied numbers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In some cases when the SQLite constants are used as arguments to a method or function, the constants are actually bit flags
+    that are meant to be <emphasis role="italic">or'd</emphasis> together. The <emphasis role="italic">opts</emphasis> argument
+    in the <link linkend="mthNewClsOOSQLiteConnection">new</link> method of the
+    <computeroutput>ooSqliteConnection</computeroutput> class is an example of this. This is a common practice in C / C++
+    programming, not so common in Rexx. The <emphasis role="italic">merge</emphasis> method is provided as a convenience to
+    the Rexx programmer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example
+<programlisting>
+<![CDATA[
+
+	dbName = 'ooFoods.rdbx'
+  openOpts = .ooSQLite~merge(.ooSQLite~OPEN_READWRTITE, .ooSQLite~OPEN_CREATE)
+
+  dbConn = .ooSQLiteConnection~new(dbName, openOpts)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConstant::merge() -->
+
+</chapter>
