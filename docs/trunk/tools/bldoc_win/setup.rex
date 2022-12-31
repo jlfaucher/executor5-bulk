@@ -193,7 +193,8 @@
     -- Finally the Apache FOP package
     -- https://xmlgraphics.apache.org/fop/download.html
     -- Use the above site to find an alternate mirror site if needed.
-    src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
+    -- src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
+    src_url="https://archive.apache.org/dist/xmlgraphics/fop/binaries/"
     fop_lvl = getfoplvl()   -- determine the latest version from the Web page
     if fop_lvl = "??" then
         say "Unable to determine the latest version of Apache FOP."
