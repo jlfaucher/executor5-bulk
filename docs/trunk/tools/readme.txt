@@ -109,3 +109,13 @@ create/change documentation parts.
           (ii) upload the ooRexx documentation
           The script will check and build/upload only documents that have been
           amended. Instructions for use are embedded in the script.
+          This script is intended for use by the developers only.
+
+ooRexx-docs-bildutils-check
+
+        - contains an additional script used by the Jenkins framework to 
+          (i) see if any changes have been made to the documentation build
+          tools folder, and
+          (ii) upload those tools that have been amended to sourceforge
+          Files section.
+          This script is intended for use by the developers only.
