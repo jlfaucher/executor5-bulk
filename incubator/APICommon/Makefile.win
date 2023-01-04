@@ -48,7 +48,7 @@
 #
 # Define the correct REXX_HOME here, if needed:
 
-REXX_HOME = C:\Rexx\static.ooRexx.4.1.0.release
+# REXX_HOME = C:\Rexx\static.ooRexx.4.1.0.release
 
 # Define DEBUG on the command line, or here, to build a debug version.  By
 # default non-debug (release) versions are built.
@@ -142,7 +142,7 @@ $(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
 
 $(BIN_DIR)\APICommon.obj: $(OUT_DIR)\APICommon.obj
     copy $(OUT_DIR)\APICommon.obj $(BIN_DIR) 1>nul 2>&1
-    copy $(ROOTDIR)\vc100.pdb $(BIN_DIR) 1>nul 2>&1
+#   copy $(ROOTDIR)\vc100.pdb $(BIN_DIR) 1>nul 2>&1
 
 $(BIN_DIR)\APICommon.hpp: src\APICommon.hpp
     copy src\APICommon.hpp $(BIN_DIR) 1>nul 2>&1
