@@ -1,7 +1,12 @@
-docs\trunk\tools (as of: 2022-07-01)
+docs\trunk\tools (as of: 2023-01-04)
 ------------------------------------
 
-This directory is supposed to collect all utilities that can be used to
+To use the tools below start by checking out the complete documentation source:
+
+svn co svn://svn.code.sf.net/p/oorexx/code-0/docs/trunk/ docSVN
+
+
+The tools directory is supposed to collect all utilities that can be used to
 create/change documentation parts.
 
 - rexxpg/createClassHierarchy.rex:
@@ -99,7 +104,7 @@ create/change documentation parts.
 
 - JenkinsDocBuildTools.zip
 
-        - contains the additional script to build the ooRexx documentation on
+        - contains an additional script to build the ooRexx documentation on
           a macOS Jenkins agent; Start by unzipping oorexxdocs_macOS and make
           sure everything works, thereafter unzip and copy the contents of this
           folder to a folder to be used for building the documents and follow
@@ -114,8 +119,6 @@ create/change documentation parts.
 ooRexx-docs-bildutils-check
 
         - contains an additional script used by the Jenkins framework to 
-          (i) see if any changes have been made to the documentation build
-          tools folder, and
-          (ii) upload those tools that have been amended to sourceforge
-          Files section.
+          (i) see if any changes have been made to the readme.txt file and
+          (ii) upload it to sourceforge when there are amendments.
           This script is intended for use by the developers only.
