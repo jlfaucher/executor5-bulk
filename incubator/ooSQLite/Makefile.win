@@ -1,11 +1,11 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
 #/* distribution. A copy is also available at the following address:           */
-#/* http://www.oorexx.org/license.html                                         */
+#/* https://www.oorexx.org/license.html                                        */
 #/*                                                                            */
 #/* Redistribution and use in source and binary forms, with or                 */
 #/* without modification, are permitted provided that the following            */
@@ -203,8 +203,11 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 OUTDIR = $(ROOTDIR)\$(BIN_DIR)
 
 OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(APICOMMON_DIR)\APICommon.obj   $(OUT_DIR)\ooSqlSysLibrary.obj \
-            $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\percentile.obj  $(OUT_DIR)\rot13.obj \
-            $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj  $(OUT_DIR)\totype.obj $(OUT_DIR)\wholenumber.obj
+            $(OUT_DIR)\base64.obj  $(OUT_DIR)\csv.obj \
+            $(OUT_DIR)\ieee754.obj $(OUT_DIR)\nextchar.obj \
+            $(OUT_DIR)\percentile.obj $(OUT_DIR)\regexp.obj \
+            $(OUT_DIR)\rot13.obj   $(OUT_DIR)\spellfix.obj \
+            $(OUT_DIR)\totype.obj  $(OUT_DIR)\wholenumber.obj
 
 
 # What we want to build.  ooSQLite3.exe is the command line version of SQLite.
@@ -224,6 +227,12 @@ $(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp  src\sqlite\sqlite3.h
 
 $(OUT_DIR)\ooSqlSysLibrary.obj: $(PLATFORM_DIR)\ooSqlSysLibrary.cpp $(PLATFORM_DIR)\ooSqlSysLibrary.hpp Makefile.win
   cl $(CFLAGS) $(SYSLIB_FLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\ooSqlSysLibrary.cpp
+
+$(OUT_DIR)\base64.obj: src\sqlite\extensions\base64.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\base64.c
+
+$(OUT_DIR)\csv.obj: src\sqlite\extensions\csv.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\csv.c
 
 $(OUT_DIR)\ieee754.obj: src\sqlite\extensions\ieee754.c Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\ieee754.c
@@ -287,7 +296,7 @@ dist: all
 
 clean:
     del /Q $(BIN_DIR)\*.dll $(BIN_DIR)\*exe $(BIN_DIR)\*.cls 1>nul 2>&1
-	  del /Q $(OUT_DIR)\* 1>nul 2>&1
+    del /Q $(OUT_DIR)\* 1>nul 2>&1
 
     @cd examples\user.extensions
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
@@ -302,8 +311,8 @@ clean_all:
     del /Q bin.dbg\windows\* 1>nul 2>&1
     del /Q bin.dbg\linux\* 1>nul 2>&1
 
-	  del /Q build\release\* 1>nul 2>&1
-	  del /Q build\debug\* 1>nul 2>&1
+   del /Q build\release\* 1>nul 2>&1
+   del /Q build\debug\* 1>nul 2>&1
 
     @cd examples\user.extensions
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean

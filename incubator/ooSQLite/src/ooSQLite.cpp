@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -168,7 +168,7 @@ void resetRoutineErrMsg(RexxThreadContext *c)
  * If the value in the database for the requested field is NULL, the
  * sqlite3_column_text() returns a null pointer
  *
- * We can't pass a null pointer ito the native API, so if null, we use the
+ * We can't pass a null pointer into the native API, so if null, we use the
  * passed in nulObj instead.  'nullObj' allows the user to set the
  * representation they want for SQL NULL.  The default is .nil.
  *
@@ -608,8 +608,8 @@ static RexxObjectPtr enquoteN(RexxThreadContext *c, RexxArrayObject v, size_t si
  *         error.  On error an exception has been raised, with one exception see
  *         the remarks.
  *
- * @remarks  Assumes the statement is valid.  The caller is repsonisible for
- *           freeing memory in the returned array, which inlcudes freeing the
+ * @remarks  Assumes the statement is valid.  The caller is responsible for
+ *           freeing memory in the returned array, which includes freeing the
  *           strings in the array.
  *
  *           Memory is allocated using sqlite3_malloc() so the returned array
@@ -945,29 +945,30 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     {
         if ( strlen(encrypt) > 0 )
         {
-            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit) %s\n",
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit) %s" LINE_END,
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
         }
         else
         {
-            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit)\n",
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit)" LINE_END,
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
         }
 
         char buf1[512];
 
-        snprintf(buf1, sizeof(buf1), "          Built %s %s\n          Copyright (c) RexxLA %s.\n"
-                                     "          All Rights Reserved.\n\n",
+        snprintf(buf1, sizeof(buf1), "          Built %s %s" LINE_END
+                                     "          Copyright (c) %s Rexx Language Association. All rights reserved." LINE_END LINE_END,
                  __DATE__, __TIME__, OOSQLITE_COPYRIGHT_YEAR);
         strcat(buf, buf1);
 
         size_t rx = c->InterpreterVersion();
 
-        snprintf(buf1, sizeof(buf1), "Rexx:     Open Object Rexx Version %zd.%zd.%zd\n\n",
+        snprintf(buf1, sizeof(buf1), "Rexx:     Open Object Rexx Version %zd.%zd.%zd" LINE_END LINE_END,
                  (rx >> 16) & 0xff, (rx >> 8) & 0xff, rx & 0x0000ff);
         strcat(buf, buf1);
 
-        snprintf(buf1, sizeof(buf1), "SQLite:   SQLite Library Version %s\n          %.19s\n",
+        snprintf(buf1, sizeof(buf1), "SQLite:   SQLite Library Version %s" LINE_END
+                                     "          %.19s",
                  sqlite3_libversion(), sqlite3_sourceid());
         strcat(buf, buf1);
     }
@@ -975,19 +976,19 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     {
         if ( minimal )
         {
-            snprintf(buf, sizeof(buf), "%d.%d.%d.%d\n",
+            snprintf(buf, sizeof(buf), "%d.%d.%d.%d",
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD);
         }
         else
         {
             if ( strlen(encrypt) > 0 )
             {
-                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit) %s\n",
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit) %s",
                          OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
             }
             else
             {
-                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit)\n",
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit)",
                          OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
             }
         }
@@ -3630,7 +3631,7 @@ RexxMethod1(RexxObjectPtr, oosql_getNull_atr_cls, CSELF, pCSelf)
 {
     return ((pCooSQLiteClass)pCSelf)->nullObj;
 }
-/** ooSQLite::null  [attribute get]
+/** ooSQLite::null  [attribute set]
  *
  *  @note  The default value to use for SQL NULL is set in this, the ooSQLite
  *         class. When a new connection object is created, the default value of
@@ -3678,7 +3679,7 @@ RexxMethod1(uint32_t, oosql_getRecordFormat_atr_cls, CSELF, pCSelf)
 {
     return ((pCooSQLiteClass)pCSelf)->format;
 }
-/** ooSQLite::recordFormat  [attribute get]
+/** ooSQLite::recordFormat  [attribute set]
  */
 RexxMethod2(RexxObjectPtr, oosql_setRecordFormat_atr_cls, uint32_t, format, CSELF, pCSelf)
 {
@@ -3936,7 +3937,7 @@ RexxMethod0(int, oosql_threadSafe_cls)
  *                 Number (for libversion number)
  *                 SourceID
  *
- *               The defualt is OneLine
+ *               The default is OneLine
  *
  */
 RexxMethod1(RexxObjectPtr, oosql_version_cls, OPTIONAL_CSTRING, type)
@@ -4659,7 +4660,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
  *           Anything else indicates either a SQLite error return, or it
  *           indicates our internal logic is screwed up.  If our internal logic
  *           is screwed up, we want to be sure and report it as an unexpected
- *           result, so that hopefully, an user will report that, and we can fix
+ *           result, so that hopefully, a user will report that, and we can fix
  *           our logic.
  *
  *           In particular, after doing the first step and getting back
@@ -4723,8 +4724,8 @@ static RexxObjectPtr exeSingleValueStmt(RexxMethodContext *c, sqlite3_stmt *stmt
  * @return A Rexx object as described above on success, or an error return code
  *         with message.
  *
- * @remarks  This function is currently only called for incrementalVacum and
- *           shrinkMemory.  shrinkMemory takes no argument and incrementalVacum
+ * @remarks  This function is currently only called for incrementalVacuum and
+ *           shrinkMemory.  shrinkMemory takes no argument and incrementalVacuum
  *           is valid either with or without an argument.
  */
 RexxObjectPtr pragmaTrigger(RexxMethodContext *context, pCooSQLiteConn pConn, CSTRING name, RexxObjectPtr value,
@@ -4786,7 +4787,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *context, pCooSQLiteConn pConn, CS
  * with more that 1 column.  Returns a result set in the default format for the
  * database connection.
  *
- * @param c
+ * @param context
  * @param pConn
  * @param name
  * @param value
@@ -4916,12 +4917,11 @@ RexxObjectPtr pragmaList(RexxMethodContext *context, pCooSQLiteConn pConn, CSTRI
  * @param c
  * @param pConn
  * @param name
- * @param pragma
  *
  * @return The single value returned by SQLite for the pragma, or an ooSQLite
  *         error return code.
  *
- * @note  Although an error is unlikely, it is always possbile.  Check the last
+ * @note  Although an error is unlikely, it is always possible.  Check the last
  *        error attributes for an error.  If there is no error, the
  *        ooSQLiteConnection last error code attribute will always be OK.  If
  *        there is an error, the attribute will never be OK.
@@ -4964,12 +4964,11 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
  * @param pConn
  * @param name
  * @param value
- * @param pragma
  *
  * @return The single value returned by SQLite for the pragma, or an ooSQLite
  *         error return code.
  *
- * @note  Although an error is unlikely, it is always possbile.  Check the last
+ * @note  Although an error is unlikely, it is always possible.  Check the last
  *        error attributes for an error.  If there is no error, the
  *        ooSQLiteConnection last error code attribute will always be OK.  If
  *        there is an error, the attribute will never be OK.
@@ -5007,7 +5006,6 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
  * @param pConn
  * @param name
  * @param value
- * @param pragma
  *
  * @return An ooSQLite result code.
  *
@@ -6497,7 +6495,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *  @param  doCallback   [optional]  Whether to use the call back feature of
  *                       sqlite3_exec(). If false, then the remaining arguments
  *                       are ignored, and the return from exec() is a return
- *                       code. The defualt if this argument is omitted is false.
+ *                       code. The default if this argument is omitted is false.
  *
  *                       If true *and* the callBackObj arg is omitted then an
  *                       internal callback of the ooSQLite framework is used and
@@ -7010,7 +7008,7 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
 
 /** ooSQLiteConnection::profile()
  *
- *  Registers an user callback method used for profiling
+ *  Registers a user callback method used for profiling
  *
  *  @param  callbackObj  [required]  An instantiated class object with a method
  *                       that is invoked as each SQL statement finishes.
@@ -7027,7 +7025,7 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
  *  @param userData      [optional] This can be any Rexx object the user
  *                       desires. The object will be sent as the third argument
  *                       to the profile callback method when it is invoked.
- *                       This argument is ignored when  the callbackObj argument
+ *                       This argument is ignored when the callbackObj argument
  *                       is .nil.
  *
  *  @return  A sqlite result code.
@@ -7067,7 +7065,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_profile, RexxObjectPtr, callbackObj, OPTION
 
 /** ooSQLiteConnection::progressHandler()
  *
- *  Registers an user callback method that is invoked periodically during long
+ *  Registers a user callback method that is invoked periodically during long
  *  running calls to ooSQLiteConnection::exec(), and ooSQLiteStmt::step() for this
  *  database connection. An example use for this interface is to keep a GUI
  *  updated during a large query.
@@ -7215,7 +7213,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_rollbackHook, RexxObjectPtr, callbackObj, O
 
 /** ooSQLiteConnection::setAuthorizer()
  *
- *  Registers an user callback method that is invoked as SQL statements are
+ *  Registers a user callback method that is invoked as SQL statements are
  *  being compiled by ooSQLStmt::Prepare().  At various points during the
  *  compilation process, as logic is being created to perform various actions,
  *  the authorizer callback is invoked to see if those actions are allowed.
@@ -7295,7 +7293,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_setAuthorizer, RexxObjectPtr, callbackObj,
  *
  *
  *  @note The parameter order here is slightly switched from
- *        sqlite3_table_column_metadata() to put the opitonal dbName after
+ *        sqlite3_table_column_metadata() to put the optional dbName after
  *        results, so that optional arguments are placed at the end.
  */
 RexxMethod5(int, oosqlconn_tableColumnMetadata, CSTRING, tableName, CSTRING, colName,
@@ -7334,7 +7332,7 @@ RexxMethod1(int, oosqlconn_totalChanges, CSELF, pCSelf)
 
 /** ooSQLiteConnection::trace()
  *
- *  Registers an user callback method used for tracing.
+ *  Registers a user callback method used for tracing.
  *
  *  @param  callbackObj  [required]  An instantiated object with a method that
  *                       is invoked at various times when an SQL statement is
@@ -8098,7 +8096,7 @@ RexxMethod1(uint32_t, oosqlstmt_getRecordFormat_atr, CSELF, pCSelf)
     }
     return pCstmt->format;
 }
-/** ooSQLiteStmt::recordFormat  [attribute get]
+/** ooSQLiteStmt::recordFormat  [attribute set]
  */
 RexxMethod2(RexxObjectPtr, oosqlstmt_setRecordFormat_atr, uint32_t, format, CSELF, pCSelf)
 {
@@ -8645,7 +8643,7 @@ RexxMethod2(double, oosqlstmt_columnDouble, int32_t, col, CSELF, pCSelf)
  *           that differ only in case.  Not sure if this is SQLite specific or
  *           not.
  *
- *  @note    This is not method that maps to a SQLite API.  It is an ooSQLite
+ *  @note    This is not a method that maps to a SQLite API.  It is an ooSQLite
  *           enhancement.
  *
  *  @note    sqlite3_free() is a harmless nop for a null pointer.
@@ -9054,7 +9052,7 @@ RexxMethod1(int, oosqlstmt_step, CSELF, pCSelf)
  *  @return True or false.
  *
  *  @note  We allow pCstmt->stmt to be null, i.e. the statement has already been
- *         finalize, for this method because SQLite returns false if stmt is
+ *         finalized, for this method because SQLite returns false if stmt is
  *         null.
  */
 RexxMethod1(logical_t, oosqlstmt_stmtBusy, CSELF, pCSelf)
@@ -9759,7 +9757,7 @@ RexxMethod1(RexxObjectPtr, oosqlbu_getDestConn, CSELF, pCSelf)
  *            step() automatically invokes the finish() method for the user.
  *
  *            If OK, BUSY, or LOCKED is returned the user can retry the step. A
- *            syntax condition is rasied if the user invokes finish() when
+ *            syntax condition is raised if the user invokes finish() when
  *            finish has already been invoked.  Because of this, the user only
  *            needs to / should only invoke finish() when she wants to abandon
  *            the backup.  If needed, the user can check the finished attribute
@@ -10521,7 +10519,7 @@ static int cancelAutoBuiltin(RexxMethodContext *c, CSTRING name, pCooSQLExtensio
 }
 
 /**
- * Produce a result set, in the format on an array of arrays, listing all the
+ * Produce a result set, in the format of an array of arrays, listing all the
  * builtin extensions
  *
  * @param c
@@ -10550,7 +10548,7 @@ RexxObjectPtr listBuiltinsArray(RexxMethodContext *c, bool print)
 }
 
 /**
- * Produce a result set, in the format on an array of directories, listing all
+ * Produce a result set, in the format of an array of directories, listing all
  * the builtin extensions
  *
  * @param c
@@ -10581,7 +10579,7 @@ RexxObjectPtr listBuiltinsDirectory(RexxMethodContext *c, bool print)
 }
 
 /**
- * Produce a result set, in the format on a classic stem, listing all the
+ * Produce a result set, in the format of a classic stem, listing all the
  * builtin extensions
  *
  * @param c
@@ -10617,7 +10615,7 @@ RexxObjectPtr listBuiltinsClassicStem(RexxMethodContext *c, bool print)
 }
 
 /**
- * Produce a result set, in the format on a stem of stems, listing all the
+ * Produce a result set, in the format of a stem of stems, listing all the
  * builtin extensions
  *
  * @param c
@@ -11502,7 +11500,7 @@ RexxMethod2(RexxObjectPtr, oosqlext_listBuiltins_cls, OPTIONAL_logical_t, printI
     if ( printImmediate )
     {
         printf(BUILTIN_ROW_FMT, "Name", "Description");
-        printf("%s\n", BUILTIN_DASHED_LINE);
+        printf("%s" LINE_END, BUILTIN_DASHED_LINE);
     }
 
     pCooSQLiteClass pcsc = ensureCSelf(context, pcext);
@@ -11524,11 +11522,6 @@ RexxMethod2(RexxObjectPtr, oosqlext_listBuiltins_cls, OPTIONAL_logical_t, printI
         case aClassicStem :
             result = listBuiltinsClassicStem(context, printImmediate ? true : false);
             break;
-    }
-
-    if ( printImmediate )
-    {
-        printf("\n");
     }
 
     return result;
@@ -14959,7 +14952,7 @@ RexxRoutine4(int, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, CSTRING, _stmt, 
 
 /** oosqlProfile()
  *
- *  Registers an user callback routine used for profiling
+ *  Registers a user callback routine used for profiling
  *
  *  @param  db       [required]  The open database connection that the profile
  *                   callback is registered (installed) for.
@@ -15011,7 +15004,7 @@ RexxRoutine3(RexxObjectPtr, oosqlProfile_rtn, POINTER, _db, CSTRING, rtnName, OP
 
 /** oosqlProgressHandler()
  *
- *  Registers an user callback routine that is called periodically during long
+ *  Registers a user callback routine that is called periodically during long
  *  running calls to oosqlExec(), and oosqlStep() for this database connection.
  *  An example use for this interface is to keep a GUI updated during a large
  *  query.
@@ -15306,7 +15299,7 @@ RexxRoutine3(RexxObjectPtr, oosqlRollbackHook_rtn, POINTER, _db, CSTRING, rtnNam
 
 /** oosqlSetAuthorizer()
  *
- *  Registers an user callback routine that is invoked as SQL statements are
+ *  Registers a user callback routine that is invoked as SQL statements are
  *  being compiled by oosqlPrepare().  At various points during the compilation
  *  process, as logic is being created to perform various actions, the
  *  authorizer callback is called to see if those actions are allowed.
@@ -15510,7 +15503,7 @@ RexxRoutine2(int, oosqlStrGlob_rtn, CSTRING, glob, CSTRING, str)
  *  @return  OK on success, othewise an error code.
  *
  *  @note The parameter order here is slightly switched from
- *        sqlite3_table_column_metadata() to put the opitonal dbName after
+ *        sqlite3_table_column_metadata() to put the optional dbName after
  *        results, so that optional arguments are placed at the end.
  */
 RexxRoutine5(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName, CSTRING, colName, RexxObjectPtr, results,
@@ -15556,7 +15549,7 @@ RexxRoutine1(int, oosqlTotalChanges_rtn, POINTER, _db)
 
 /** ooSQLiteConnection::trace()
  *
- *  Registers an user callback routine used for tracing.
+ *  Registers a user callback routine used for tracing.
  *
  *  @param  db       [required]  The open database connection that the profile
  *                   callback is registered (installed) for.

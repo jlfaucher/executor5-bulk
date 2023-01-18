@@ -1,12 +1,12 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -47,7 +47,7 @@
  *  by making any of them an automatic extension.
  *
  *  When a builtin extension is registered with a database connection, then that
- *  extension can be used for the life of the database extension.  When the
+ *  extension can be used for the life of the database connection.  When the
  *  database connection is closed, the builtin extension is no longer usable.
  *
  *  The registerBuiltin() method of the ooSQLiteExtensions class is used to
@@ -64,235 +64,75 @@
  *
  *  The list of currently available builtin extensions is:
  *
+ *    base64
  *    ieee754
+ *    csv
  *    nextChar
+ *    percentile
  *    regExp
  *    rot13
  *    spellFix
+ *    toType
  *    wholeNumber
- *
- *  This example uses iee754, regExp, rot13, and wholenumber to demonstrate the
- *  methods related to using the builtin extensions.
+
+ *  This example demonstrate some methods related to using the builtin
+ *  extensions.
  */
 
-  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
-	dbName                 = 'ooFoods.rdbx'
+say "version     " .ooSQLite~version
+say "libVersion  " .ooSQLite~libVersion
+say "version('s')" .ooSQLite~version("s")
 
-  -- Set all the available builtin extensions to automatically be registered
-  -- with any database connection when it is opened:
-  ret = .ooSQLExtensions~autoBuiltin
-  if ret <> .ooSQLExtensions~ok then do
-    say 'Error registering builtin extensions:' .ooSQLExtensions~lastErrMsg
-    return .ooSQLExtensions~lastErrCode
+say
+say "builtin extensions:"
+
+mem = .ooSQLiteConnection~new(":memory:")
+food = .ooSQLiteConnection~new('ooFoods.rdbx', .ooSQLite~OPEN_READONLY)
+do extension over .ooSQLExtensions~listBuiltins
+  say extension~name
+  say extension~description
+  -- register this extension with both our database connections
+  -- (we could have used .ooSQLExtensions~autoBuiltin to register all of them)
+  .ooSQLExtensions~registerBuiltin(mem, extension~name)
+  .ooSQLExtensions~registerBuiltin(food, extension~name)
+  select case extension~name
+    when "base64" then call exec mem, -
+      "SELECT base64('SGVsbG8gd29ybGQh');"
+    when "ieee754" then call exec mem, -
+      "SELECT ieee754(45.25);" --2, ieee754(45.25);"
+    when "csv" then call exec mem, -
+      'CREATE VIRTUAL TABLE orders USING csv(filename = "test.csv", header = 1);' .endofline || -
+      'SELECT "order date",total FROM orders;'
+    when "regExp" then call exec food, -
+      "SELECT name FROM foods WHERE name regexp 'Th.+r';"
+    when "rot13" then call exec food, -
+      "SELECT name, rot13(name) FROM foods WHERE name like 'Flou%'"
+    when "spellFix" then call exec mem, -
+      "CREATE VIRTUAL TABLE words USING spellfix1;" .endofline || -
+      "INSERT INTO words (word) VALUES ('adder'), ('alter'), ('odd'), ('other');" .endofline || -
+      "SELECT word FROM words WHERE word MATCH 'odder';"
+    when "toType" then call exec mem, -
+      "SELECT tointeger('0123'), toreal('.0123e4');"
+    when "wholeNumber" then call exec mem, -
+      "CREATE VIRTUAL TABLE nums USING wholenumber; SELECT value FROM nums WHERE value < 5;"
+    otherwise say "---- no test SQL for" extension~name "----"; say
   end
+end
 
-  -- Open a database connection and execute some SQL that uses four of the
-  -- available extensions
-  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+::routine exec
+  use strict arg db, sql
+  first = .true
 
-  say "No executed SQL should have an empty result set:"
-  say '------------------------------------------------'
-  say
-  ret = execShortList(dbConn)
-  say
-
-  ret = dbConn~close
-
-  -- This will reset the automatic extension list back to none.
-  .ooSQLExtensions~resetAutoBuiltin
-
-  dbConn2 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  say "All executed SQL should have an empty result set:"
-  say '-------------------------------------------------'
-  say
-  ret = execShortList(dbConn2)
-
-  ret = dbConn2~close
-
-  -- This sets only the ieee754, nextChar, and rot13 extensions to be
-  -- automatically registered.  Our execShortList() routine does not use
-  -- nextChar
-  ret = .ooSQLExtensions~autoBuiltin(.array~of(ieee754, nextChar, rot13))
-  if ret <> .ooSQLExtensions~ok then do
-    say 'Error registering builtin extensions:' .ooSQLExtensions~lastErrMsg
-    return .ooSQLExtensions~lastErrCode
+  say sql
+  do row over db~exec(sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
+    if first then -- skip result table header
+      first = .false
+    else
+      say row~toString(, ", ")
   end
-
-  say "Only SQL using ieee754 and rot13 should produce a retul;t set:"
-  say '--------------------------------------------------------------'
-  say
-  dbConn3 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-  ret = execShortList(dbConn3)
-
-  ret = dbConn3~close
-
-  -- Reset the automatically registered extensions list
-  .ooSQLExtensions~resetAutoBuiltin
-
-  dbConn4 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  -- Register builtin extensions individually with opened database connections:
-  .ooSQLExtensions~registerBuiltin(dbConn4, 'ieee754')
-
-  say "Registering ieee754 only:"
-  say '-------------------------'
-  say
-  sql = "SELECT ieee754(2.0);"
-  resultSet = dbConn4~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
+  if first, db~lastErrCode \ = 0 then
+    say "**" "error code" db~lastErrCode db~lastErrMsg
   say
 
-  ret = dbConn4~close
 
-  dbConn5 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  .ooSQLExtensions~registerBuiltin(dbConn5, .array~of('ieee754', 'rot13'))
-
-  say "Registering ieee754 and rot13 only:"
-  say '-----------------------------------'
-  say
-  sql = "SELECT ieee754(2.0);"
-  resultSet = dbConn5~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT rot13('Hello');"
-  resultSet = dbConn5~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT rot13('Goodbye');"
-  resultSet = dbConn5~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  ret = dbConn5~close
-
-  -- All the builtin extensions can be registered with a databaseconnections
-  -- at one time by omitting the argument.
-
-  dbConn6 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  .ooSQLExtensions~registerBuiltin(dbConn6)
-
-  say "No executed SQL should have an empty result set:"
-  say '------------------------------------------------'
-  say
-  ret = execShortList(dbConn6)
-  say
-
-  ret = dbConn6~close
-  return ret
-
-::requires 'ooSQLite.cls'
-::requires 'utilities.frm'
-
-
--- This routine will execute some SQL using several of the avaiable builtin
--- extensions.  If any extension is not registered with the database connection
--- the SQL will produce an empty result set
-::routine execShortList
-  use arg dbConn
-
-  sql = "SELECT ieee754(2.0);"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT ieee754(45.25);"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT rot13('Hello');"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT rot13('Goodbye');"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT regexp('o?', 'Goodbye');"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-  say
-
-  sql = "SELECT * FROM foods where name regexp 'o{2,2}' ORDER BY name;"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-
-  sql = "SELECT * FROM foods where name regexp 'Th.+r' ORDER BY name;"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-
-  sql1 = "CREATE VIRTUAL TABLE nums USING wholenumber;"
-  sql2 = "SELECT value FROM nums WHERE value>10 AND value< 22;"
-  dbConn~exec(sql1)
-  resultSet = dbConn~exec(sql2, .true)
-
-  say 'SQL1:            ' sql1
-  say 'SQL2:            ' sql2
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-
-  return 0
+::requires "ooSQLite"

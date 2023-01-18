@@ -65,15 +65,19 @@ OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OO
 
 ifeq ($(CPU),X64)
 ifeq ($(DEBUG),1)
-	APICOMMON_DIR=../APICommon/bin.debug64/linux
+    APICOMMON_DIR=../APICommon/bin.debug64/linux
+    OPT=-g
 else
-	APICOMMON_DIR=../APICommon/bin.release64/linux
+    APICOMMON_DIR=../APICommon/bin.release64/linux
+    OPT=-O3
 endif
 else
 ifeq ($(DEBUG),1)
-	APICOMMON_DIR=../APICommon/bin.debug32/linux
+    APICOMMON_DIR=../APICommon/bin.debug32/linux
+    OPT=-g
 else
-	APICOMMON_DIR=../APICommon/bin.release32/linux
+    APICOMMON_DIR=../APICommon/bin.release32/linux
+    OPT=-O3
 endif
 endif
 
@@ -115,7 +119,6 @@ BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAG
 OUT_DIR=build/release
 BIN_DIR=bin/linux
 
-#DBG=-g
 SYSLIB_FLAGS=-DOOSQLITE_SHARED_LIBRARY_EXT=\".so\"
 
 SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles
@@ -127,8 +130,10 @@ EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread -lstdc++ -lreadline -lcurses -lm
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
 OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(APICOMMON_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o \
-              $(OUT_DIR)/ieee754.o $(OUT_DIR)/nextchar.o $(OUT_DIR)/percentile.o      $(OUT_DIR)/rot13.o \
-              $(OUT_DIR)/regexp.o  $(OUT_DIR)/spellfix.o $(OUT_DIR)/totype.o          $(OUT_DIR)/wholenumber.o
+              $(OUT_DIR)/base.o    $(OUT_DIR)/compress.o $(OUT_DIR)/csv.o \
+              $(OUT_DIR)/ieee754.o $(OUT_DIR)/nextchar.o $(OUT_DIR)/percentile.o \
+              $(OUT_DIR)/regexp.o  $(OUT_DIR)/rot13.o    $(OUT_DIR)/spellfix.o \
+              $(OUT_DIR)/totype.o  $(OUT_DIR)/wholenumber.o $(OUT_DIR)/zipfile.o
 
 
 # What we want to build.
@@ -136,80 +141,92 @@ all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls  exa
 
 
 $(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.h Makefile.lin
-	gcc $(DBG) $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
+    gcc $(OPT) $(CFLAGS) -DOOSQLITE_BUILD -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
 
 $(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.h Makefile.lin
-	gcc $(DBG) $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
 $(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp $(APICOMMON_DIR)/APICommon.hpp src/sqlite/sqlite3.h Makefile.lin
-	gcc $(DBG)  $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
+    gcc $(OPT) $(CFLAGS) -DOOSQLITE_BUILD -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
 
 $(OUT_DIR)/ooSqlSysLibrary.o: $(PLATFORM_DIR)/ooSqlSysLibrary.cpp $(PLATFORM_DIR)/ooSqlSysLibrary.hpp Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
+    gcc $(OPT) $(CFLAGS) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
+
+$(OUT_DIR)/base64.o: src/sqlite/extensions/base64.c Makefile.lin
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/base64.o src/sqlite/extensions/base64.c
+
+$(OUT_DIR)/compress.o: src/sqlite/extensions/compress.c Makefile.lin
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/compress.o src/sqlite/extensions/compress.c
+
+$(OUT_DIR)/csv.o: src/sqlite/extensions/csv.c Makefile.lin
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/csv.o src/sqlite/extensions/csv.c
 
 $(OUT_DIR)/ieee754.o: src/sqlite/extensions/ieee754.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ieee754.o src/sqlite/extensions/ieee754.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/ieee754.o src/sqlite/extensions/ieee754.c
 
 $(OUT_DIR)/nextchar.o: src/sqlite/extensions/nextchar.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/nextchar.o src/sqlite/extensions/nextchar.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/nextchar.o src/sqlite/extensions/nextchar.c
 
 $(OUT_DIR)/percentile.o: src/sqlite/extensions/percentile.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/percentile.o src/sqlite/extensions/percentile.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/percentile.o src/sqlite/extensions/percentile.c
 
 $(OUT_DIR)/regexp.o: src/sqlite/extensions/regexp.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/regexp.o src/sqlite/extensions/regexp.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/regexp.o src/sqlite/extensions/regexp.c
 
 $(OUT_DIR)/rot13.o: src/sqlite/extensions/rot13.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/rot13.o src/sqlite/extensions/rot13.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/rot13.o src/sqlite/extensions/rot13.c
 
 $(OUT_DIR)/spellfix.o: src/sqlite/extensions/spellfix.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/spellfix.o src/sqlite/extensions/spellfix.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/spellfix.o src/sqlite/extensions/spellfix.c
 
 $(OUT_DIR)/totype.o: src/sqlite/extensions/totype.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/totype.o src/sqlite/extensions/totype.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/totype.o src/sqlite/extensions/totype.c
 
 $(OUT_DIR)/wholenumber.o: src/sqlite/extensions/wholenumber.c Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/wholenumber.o src/sqlite/extensions/wholenumber.c
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/wholenumber.o src/sqlite/extensions/wholenumber.c
+
+$(OUT_DIR)/zipfile.o: src/sqlite/extensions/zipfile.c Makefile.lin
+    gcc $(OPT) $(CFLAGS) -o $(OUT_DIR)/zipfile.o src/sqlite/extensions/zipfile.c
 
 $(OUT_DIR)/liboosqlite.so: $(OOSQLITE_OBJS)
-	gcc $(DBG)  $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OOSQLITE_OBJS) $(SO_LLIBS)
+    gcc $(OPT) $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OOSQLITE_OBJS) $(SO_LLIBS)
 
 $(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
-	gcc $(DBG) $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
+    gcc $(OPT) $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
 
 $(BIN_DIR)/liboosqlite.so: $(OUT_DIR)/liboosqlite.so
-	cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1
+    cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1
 
 $(BIN_DIR)/oosqlite3: $(OUT_DIR)/oosqlite3
-	cp $(OUT_DIR)/oosqlite3 $(BIN_DIR) 1>/dev/null 2>&1
+    cp $(OUT_DIR)/oosqlite3 $(BIN_DIR) 1>/dev/null 2>&1
 
 $(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
-	cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
+    cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
 
 example_dlls:
-	@echo
-	@echo Building example shared library \(libraries\)
-	cd examples/user.extensions; make -f Makefile.lin
-	cd examples/user.extensions/autoPackages; make -f Makefile.lin
-	cd ../../../
+    @echo
+    @echo Building example shared library \(libraries\)
+    cd examples/user.extensions; make -f Makefile.lin
+    cd examples/user.extensions/autoPackages; make -f Makefile.lin
+    cd ../../../
 
 dist: all
-	@echo Create distribution file
-	rexx src/rexx/makeDistFile.rex $(OOSQLITE_VER_STR)
+    @echo Create distribution file
+    rexx src/rexx/makeDistFile.rex $(OOSQLITE_VER_STR)
 
 dist_clean: clean_all
 
 clean_all:
-	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/*.cls
-	rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
-	rm -f src/ooSQLite.ver.incl
-	cd examples/user.extensions; make -f Makefile.lin clean
-	cd examples/user.extensions/autoPackages; make -f Makefile.lin clean
-	cd ../../../
+    rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/*.cls
+    rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
+    rm -f src/ooSQLite.ver.incl
+    cd examples/user.extensions; make -f Makefile.lin clean
+    cd examples/user.extensions/autoPackages; make -f Makefile.lin clean
+    cd ../../../
 
 clean:
-	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/oosqlite3
-	cd examples/user.extensions; make -f Makefile.lin clean
-	cd examples/user.extensions/autoPackages; make -f Makefile.lin clean
-	cd ../../../
+    rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/oosqlite3
+    cd examples/user.extensions; make -f Makefile.lin clean
+    cd examples/user.extensions/autoPackages; make -f Makefile.lin clean
+    cd ../../../
 

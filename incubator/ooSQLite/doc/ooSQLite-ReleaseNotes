@@ -1,10 +1,10 @@
-                  ooSQLite Version 1.0.0.11910 (Preview)
-                  ========================================
+                  ooSQLite Version 1.0.1.12617 (Preview)
+                  ======================================
 
 ooSQLite is an ooRexx extension that provides an interface to the SQLite
 database engine.  For complete details on SQLite, go to:
 
-http://www.sqlite.org
+https://www.sqlite.org
 
 The SQLite database engine is embedded in the ooSQLite extension.
 Therefore, the ooSQLite extension provides everything needed to create,
@@ -16,8 +16,8 @@ agnostic.  That is, all ooSQLite code and the database files themselves
 will work unchanged on any platform ooRexx is supported on.  A complete
 database is stored in a single cross-platform disk file.
 
-ooSQLite provides both an object-orientated interface and a 'classic
-Rexx' interface to SQLite.  That is, the object-orientated interface
+ooSQLite provides both an object-oriented interface and a 'classic
+Rexx' interface to SQLite.  That is, the object-oriented interface
 encapsulates the SQLite provided APIs using different classes and
 methods of those classes.  The 'classic Rexx' interface provides a
 procedural interface where all SQLite APIs are accessed using function
@@ -59,10 +59,10 @@ Documentation:
 The primary source of documentation for ooSQLite is, and will always be,
 the SQLite project itself:
 
-http://www.sqlite.org/docs.html
+https://www.sqlite.org/docs.html
 
 The ooSQLite reference manual will document the class and methods
-available in the object-orientated interface, and the functions
+available in the object-oriented interface, and the functions
 available in the 'classic Rexx' interface.  The reference manual will
 note exactly which SQLite API the method or function accesses.  But the
 in-depth details of: how SQLite works, how to use SQLite, what SQL
@@ -86,25 +86,20 @@ Pick the distribution file to match the bitness, 32-bit or 64-bit, of
 the ooRexx interpreter installed on the system.  Pick one of the *.exe
 files for Windows and one of the *_lin.tgz files for Linux:
 
-ooSQLite_1_0_0_xxxx_x86_32.exe         <- Windows 32-bit binaries
-ooSQLite_1_0_0_xxxx_x86_64.exe         <- Windows 64-bit binaries
-ooSQLite_1_0_0_xxxx_x86_32_lin.tgz     <- Linux 32-bit binaries
-ooSQLite_1_0_0_xxxx_x86_32_lin.tgz     <- Linux 64-bit binaries
+ooSQLite_1_0_m_xxxxx_x86_32.exe         <- Windows 32-bit installer
+ooSQLite_1_0_m_xxxxx_x86_64.exe         <- Windows 64-bit installer
+ooSQLite_1_0_m_xxxxx_x86_32_lin.tgz     <- Linux 32-bit binaries
+ooSQLite_1_0_m_xxxxx_x86_32_lin.tgz     <- Linux 64-bit binaries
 
-The 'xxxx' in the file name will be the svn revision number, which may
+The 'xxxxx' in the file name will be the svn revision number, which may
 vary slightly depending on the exact time the distribution file is
 built.
-
-Mac OS X pre-compiled binaries are available, but out of date.
-Hopefully AIX pre-compiled binaries will be added shortly.
-Unfortunately, this is dependent on a developer willing to build the
-binaries stepping forward.
 
 
 Installation Windows:
 ---------------------
 
-* Down load and execute the appropriate distribution file.  The Windows
+* Download and execute the appropriate distribution file.  The Windows
   installer will install ooSQLite to the ooRexx installation directory.
   An uninstaller is included with the ooSQLite installation.
 
@@ -112,7 +107,7 @@ Installation Windows:
 Installation Linux:
 ---------------------
 
-* Down load the appropriate distribution file to a directory of your
+* Download the appropriate distribution file to a directory of your
   choice on your system.
 
 * Unpack the file using tar.  tar -xzfv <fileName>
@@ -120,7 +115,7 @@ Installation Linux:
 * Unpacking the distribution file will create a subdirectory tree that
   looks like this:
 
-ooSQLite.1.0.0.xxxx
+ooSQLite.1.0.m.xxxxx
    |
    *---bin
    |
@@ -143,7 +138,7 @@ path.  Either add bin to your path or copy the files in bin to a
 directory already in the path on your system.  ooSQLite is now ready for
 use.
 
-The root of the subdirectory tree (ooSQLite.1.0.0.xxxx) contains a few
+The root of the subdirectory tree (ooSQLite.1.0.m.xxxxx) contains a few
 text documents, including this ReleaseNotes file, that are typically
 found in an open source software distribution.
 
@@ -153,7 +148,7 @@ directory to the path.
 
 On Linux, if bash is your shell, source the setOOSQLiteEnv.sh file:
 
-ooSQLite.1.0.0.7817# . ./setOOSQLiteEnv.sh
+ooSQLite.1.0.m.xxxxx# . ./setOOSQLiteEnv.sh
 
 The doc subdirectory contains documentation files for ooSQLite.
 Currently the documentation is meager.  The directory also contains an
@@ -187,7 +182,9 @@ contribute to the direction for ooSQLite.
 Anyone can check out the entire, current, ooSQLite source tree from its
 location in the ooRexx repository using this svn command:
 
-svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/incubator/ooSQLite  ooSQLite
+svn co https://svn.code.sf.net/p/oorexx/code-0/incubator/ooSQLite ooSQLite
+svn co https://svn.code.sf.net/p/oorexx/code-0/incubator/APICommon APICommon
+
 
 However, it seems that many ooRexx users are unwilling to do that.  So,
 a preview distribution is being put on SourceForge to allow anyone to
@@ -208,10 +205,10 @@ programs to the ooRexx project.
 Please join in and participate in discussions concerning ooSQLite on the
 ooRexx users list, which can be subscribed to at:
 
-https://sourceforge.net/mail/?group_id=119701
+https://sourceforge.net/p/oorexx/mailman/
 
 Discussion of ooSQLite is encouraged at any of the lists used by ooRexx
-users, RexxLa, the developers list, etc., but the user list is the one
+users, RexxLA, the developers list, etc., but the user list is the one
 place that all users of ooRexx can access.  This makes it the ideal
 place to carry out discussions of things related to ooRexx, that include
 the entire user community.
@@ -220,9 +217,23 @@ the entire user community.
                           Cumulative Changes:
                           ===================
 
-Changes since ooSQLite Version 1.0.0.9974 (Preview)
+Changes since ooSQLite Version 1.0.0.12617 (Preview)
 ------------------------------------------------------------------------
 
+The SQLite library is updated to version 3.40.1.
+
+ooSQLite was updated as follows:
+* FTS4 and FTS5 support enabled (SQLITE_ENABLE_FTS4, SQLITE_ENABLE_FTS5)
+* all SQLite extensions already included in ooSQLite have been refreshed
+  to their latest updates
+* two additional extensions, base64 and csv, have been included in the
+  ooSQLite distribution
+* changed builtinExtensions.rex example
+* minor bug fixes
+
+
+Changes since ooSQLite Version 1.0.0.9974 (Preview)
+------------------------------------------------------------------------
 
 The SQLite library is updated to version 3.29.0.  No new features
 introduced after 3.8.0 have been implemented in ooSQLite.
@@ -238,7 +249,6 @@ ooSQLite was updated as follows:
 Changes since ooSQLite Version 1.0.0.9908 (Preview)
 ------------------------------------------------------------------------
 
-
 The SQLite library is updated to 3.8.4.3.  The changes to the SQLite
 library since the last release of ooSQLite with SQLite version 3.8.3
 have had no new features added.  So, there was nothing that needed to be
@@ -247,7 +257,6 @@ updated in ooSQLite.
 
 Changes since ooSQLite Version 1.0.0.9391 (Preview)
 ------------------------------------------------------------------------
-
 
 The SQLite library is updated to 3.8.3.  All new features in 3.8.1 have
 been implemented, with the exception of the SQLITE_DETERMINISTIC bit.

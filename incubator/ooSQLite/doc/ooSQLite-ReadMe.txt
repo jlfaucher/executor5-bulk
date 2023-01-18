@@ -1,25 +1,27 @@
                                   ooSQLite
                                   ========
 
-ooSQLite is an ooRexx extension that provideds an interface to the SQLite
+ooSQLite is an ooRexx extension that provides an interface to the SQLite
 database engine.  For complete details on SQLite, go to:
 
-http://www.sqlite.org
+https://www.sqlite.org
 
 The SQLite database engine is embedded in the ooSQLite extension.  SQLite
-does not have a license or copyright, but rather:
+is Public Domain:
 
-"All of the deliverable code in SQLite has been dedicated to the public
-domain by the authors.  All code authors, and representatives of the
+"All of the code and documentation in SQLite has been dedicated to the
+public domain by the authors. All code authors, and representatives of the
 companies they work for, have signed affidavits dedicating their
 contributions to the public domain and originals of those signed affidavits
-are stored in a firesafe at the main offices of Hwaci.  Anyone is free to
-copy, modify, publish, use, compile, sell, or distribute the original SQLite
-code, either in source code form or as a compiled binary, for any purpose,
-commercial or non-commercial, and by any means."
+are stored in a firesafe at the main offices of Hwaci. All contributors are
+citizens of countries that allow creative works to be dedicated into the
+public domain. Anyone is free to copy, modify, publish, use, compile, sell,
+or distribute the original SQLite code, either in source code form or as a
+compiled binary, for any purpose, commercial or non-commercial, and by any
+means."
 
 Using ooSQLite:
--------------
+---------------
 
 ooSQLite is currently distributed as 32-bit and 64-bit binaries along with
 some example programs and some informal example programs.  The informal

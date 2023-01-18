@@ -46,21 +46,21 @@
 
 ifeq ($(CPU),X64)
 ifeq ($(DEBUG),1)
-	DBG=-g
-	OUT_DIR=build/debug
-	BIN_DIR=bin.debug64/linux
+        DBG=-g
+        OUT_DIR=build/debug
+        BIN_DIR=bin.debug64/linux
 else
-	OUT_DIR=build/release
-	BIN_DIR=bin.release64/linux
+        OUT_DIR=build/release
+        BIN_DIR=bin.release64/linux
 endif
 else
 ifeq ($(DEBUG),1)
-	DBG=-g
-	OUT_DIR=build/debug
-	BIN_DIR=bin.debug32/linux
+        DBG=-g
+        OUT_DIR=build/debug
+        BIN_DIR=bin.debug32/linux
 else
-	OUT_DIR=build/release
-	BIN_DIR=bin.release32/linux
+        OUT_DIR=build/release
+        BIN_DIR=bin.release32/linux
 endif
 endif
 
@@ -77,21 +77,21 @@ all: $(BIN_DIR)/APICommon.o $(BIN_DIR)/APICommon.hpp
 
 
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
-	gcc $(CFLAGS) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
+        gcc $(CFLAGS) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
 $(BIN_DIR)/APICommon.o: $(OUT_DIR)/APICommon.o
-	cp $(OUT_DIR)/APICommon.o  $(BIN_DIR)
+        cp $(OUT_DIR)/APICommon.o  $(BIN_DIR)
 
 $(BIN_DIR)/APICommon.hpp: src/APICommon.hpp
-	cp src/APICommon.hpp  $(BIN_DIR)
+        cp src/APICommon.hpp  $(BIN_DIR)
 
 clean:
-	rm -f $(BIN_DIR)/*
+        rm -f $(BIN_DIR)/*
 
 # Not sure if we should remove Windows binaries here.
 clean_all:
-	rm -f $(OUT_DIR)/*
-	rm -f bin.release32/linux/*
-	rm -f bin.release64/linux/*
-	rm -f bin.debug32/linux/*
-	rm -f bin.debug64/linux/*
+        rm -f $(OUT_DIR)/*
+        rm -f bin.release32/linux/*
+        rm -f bin.release64/linux/*
+        rm -f bin.debug32/linux/*
+        rm -f bin.debug64/linux/*

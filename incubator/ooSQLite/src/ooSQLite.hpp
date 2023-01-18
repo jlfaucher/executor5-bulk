@@ -1,11 +1,12 @@
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -109,6 +110,8 @@
 // Function prototypes for the builtin extensions
 BEGIN_EXTERN_C()
 
+extern int sqlite3_base_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_csv_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_ieee_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_nextchar_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_percentile_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
@@ -122,6 +125,8 @@ END_EXTERN_C()
 
 const fnXExtensionInit builtins[] =
 {
+    sqlite3_base_init,
+    sqlite3_csv_init,
     sqlite3_ieee_init,
     sqlite3_nextchar_init,
     sqlite3_percentile_init,
@@ -134,6 +139,8 @@ const fnXExtensionInit builtins[] =
 
 const char *builtinNames[] =
 {
+    "base64",
+    "csv",
     "ieee754",
     "nextChar",
     "percentile",
@@ -146,22 +153,24 @@ const char *builtinNames[] =
 
 const char *builtinDescription[] =
 {
-    "Implements functions for the exact display and input of IEEE754 Binary64 floating-point numbers.",
-    "Implements next_char(A,T,F,H) that finds all \"next\" characters for string A given the vocabulary in T.F",
-    "implements the percentile(Y,P) SQL function as described in the documentation.",
-    "Implements a compact regular-expression matcher for posix extended regular expressions against UTF8 text.",
-    "Implements a rot13() function and a rot13 collating sequence.",
-    "Implements the spellfix1 VIRTUAL TABLE that can be used to search a large vocabulary for close matches.",
-    "Implements the functions tointeger(X) and toreal(X).",
-    "Implements a virtual table that returns the whole numbers between 1 and 4294967295, inclusive."
+    "Implements a base64() SQL function to convert between a blob and Base64 text.",
+    "Implements a virtual table for reading CSV files.",
+    "Implements SQL functions for IEEE 754 binary64 floating-point numbers.",
+    "Implements the next_char(A, T, F, W, C) SQL function.",
+    "Implements the percentile(Y, P) SQL function.",
+    "Implements a POSIX extended regular expression matcher for UTF-8.",
+    "Implements a rot13() SQL function and a rot13 collating sequence.",
+    "Implements the spellfix1 virtual table that can search a vocabulary for close matches.",
+    "Implements tointeger() and toreal() SQL functions.",
+    "Implements the wholenumber virtual table that returns whole numbers between 1 and 4294967295."
 };
 
-#define BUILTIN_ROW_FMT  "%-11s %s\n"
+#define BUILTIN_ROW_FMT  "%-11s %s" LINE_END
 #define BUILTIN_DASHED_LINE \
     "---------------------------------------------------------------------------------------------------------"
 #define BUILTINS_COUNT sizeof(builtins) / sizeof(fnXExtensionInit)
 
-#define BUILTIN_NAMES                 "ieee754, nextChar, percentile, regExp, rot13, spellFix, toType, or wholeNumber"
+#define BUILTIN_NAMES                 "base64, csv, ieee754, nextChar, percentile, regExp, rot13, spellFix, toType, or wholeNumber"
 #define BUILTIN_LOAD_ERR_FMT          "Error loading builtin extension %s"
 #define BUILTIN_AUTO_ERR_FMT          "Failed to make builtin extension %s automatic"
 #define BUILTIN_CANCEL_AUTO_ERR_FMT   "Failed to cancel builtin extension %s as automatic"
