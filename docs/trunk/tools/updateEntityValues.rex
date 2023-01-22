@@ -49,7 +49,8 @@
                          - allow for ignoring ${book}/revision_info.txt with new switch "-ri revision",
                            or refresh that file using svn revision with the new switch "-rr revision";
                            create condition if "-r[i|r]" switch without "-e" switch
-   version: 1.1
+            - 2023-01-22 - make sure pos() result gets compared to a number in an IF statement
+   version: 1.2
    usage:   see "::resource usage" at the end
 */
 
@@ -432,7 +433,7 @@ end
       s~close
       do line over arr
          if line="" then iterate
-         if pos(line~strip~left(1),"-#") then iterate -- a comment?
+         if pos(line~strip~left(1),"-#")>0 then iterate -- a comment?
          ignoreRevisions~put(line)  -- assume a revision string
       end
   end
