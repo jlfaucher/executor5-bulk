@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,6 +36,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /*
+   changed: 2023-01-20: ignore directories that are not under version control
+
    This tool uses "svn list --xml --incremental" to get the revision numbers of
    all files and directories under revision control from the supplied path.
 
@@ -104,7 +106,10 @@ if path<>"" then call test path
   if \sysFileExists(path) then
      raise syntax 40.900 array ( "path" pp(path) "does not exist")
 
-  return parse_xml_data(get_list_infos(path)) ~sortWith(.revisionedItem~getRevisionComparator)
+  res=parse_xml_data(get_list_infos(path))
+  if res~items=0 then   -- return empty array, do not sort it
+     return res
+  return res~sortWith(.revisionedItem~getRevisionComparator)
 
 /* ========================================================================== */
 /* execute "svn --xml --incremental list" command, return stdout array        */
@@ -114,8 +119,8 @@ if path<>"" then call test path
   outData=.array~new
   command="svn -r HEAD --xml --incremental list" path
   address system command with output using (outData)
-  if rc<>0 then
-     raise syntax 40.900 array ( .context~name "(line" .line"): command" pp(command) "caused return code RC="pp(rc))
+  if rc<>0 then      -- if svn error, then assume not under version control
+     outData~empty   -- empty outData to ignore this path
   return outData
 
 /* ========================================================================== */

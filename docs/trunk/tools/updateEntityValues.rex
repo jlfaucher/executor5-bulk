@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2022 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2022-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,11 +41,15 @@
 
    usage:   - no argument  ... show help (see "::resource usage" at the very end below)
             - dir argument ... show current values for YEAR, VERSION and EDITION entities
-            - arguments    ... [[-y "year string"] [-v "versionFrom -> versionTo"] [-e "edition string"] [-r revisionNumber]] [dir]
+            - arguments    ... [[-y "year string"] [-v "versionFrom -> versionTo"] [-e "edition string"] [-r[r|i] revisionNumber]] [dir]
 
-   date:    2022-12-21, 2022-12-22
+   date:    2022-12-21, 2022-12-22, 2023-01-21
 
-   version: 1.0
+   changes: - 2023-01-21 - ignore revisions defined in new file ignoreRevisions.txt
+                         - allow for ignoring ${book}/revision_info.txt with new switch "-ri revision",
+                           or refresh that file using svn revision with the new switch "-rr revision";
+                           create condition if "-r[i|r]" switch without "-e" switch
+   version: 1.1
    usage:   see "::resource usage" at the end
 */
 
@@ -102,14 +106,21 @@ analyzeArgs: procedure
  pkgLocal~argVersion =.false
  pkgLocal~argEdition =.false
  pkgLocal~argRevision=.false
+ pkgLocal~argIgnoreRevisionFile=.false -- ignore "${book}/revision_info.txt"
+ pkgLocal~argRefreshRevisionFile=.false   -- refresh (replace) "${book}/revision_info.txt"
 
  do i=1 to argNum by 2
     select case .sysCargs[i]
 
-      when "-r" then    -- revision: honor only revisions smaller than supplied revision value
+      when "-r", "-ri", "-rr" then  -- revision: honor only revisions smaller than supplied revision value, ignore revision file?
                do
                   pkgLocal~revisionValue   =.sysCargs[i+1]~strip
                   pkgLocal~argRevision     =.true
+                  select case .sysCargs[i]
+                    when "-ri" then pkgLocal~argIgnoreRevisionFile=.true
+                    when "-rr" then pkgLocal~argRefreshRevisionFile=.true
+                    otherwise nop
+                  end
                end
 
       when "-y" then    -- latest year value: if alreay a year range, then change the upper year to the supplied one
@@ -137,13 +148,19 @@ analyzeArgs: procedure
           exit -4
     end
  end
+
+if .argRevision, \.argEdition then
+do
+    say "error: revision switch [-r] without [-e] switch is illegal"
+    exit -5
+end
+
+
  return
 
 /* ========================================================================== */
 ::routine showEntityValues       -- show the entity values YEAR, VERSION and EDITION of all books
-
-  tgtDir=.dir || .dirSep
-  call sysFileTree tgtDir"*", "dirs.", "DO"
+  dirs.=determineDirectoriesToWorkOn() -- get directories to work on
   do i=1 to dirs.0
      bookPath=dirs.i
      book=FileSpec('name',dirs.i)   -- get directory assume it is a book
@@ -156,6 +173,21 @@ analyzeArgs: procedure
      else
         say entFile": does not exist, skipping ..."
   end
+
+/* ========================================================================== */
+::routine determineDirectoriesToWorkOn
+  probeDir = .dir || .dirSep || "en-US"   -- is .dir a ${book} directory?
+  if sysFileExists(probeDir) then
+  do
+     dirs.0=1
+     dirs.1=qualify(.dir)
+  end
+  else   -- assuming the root dir in which the book directories are located
+  do
+     tgtDir=.dir || .dirSep
+     call sysFileTree tgtDir"*", "dirs.", "DO"
+  end
+  return dirs.       -- return stem
 
 /* ========================================================================== */
 ::routine analyzeEntFile
@@ -203,17 +235,18 @@ analyzeArgs: procedure
 
 /* ========================================================================== */
 ::routine updateEntityValues       -- show the entity values YEAR, VERSION and EDITION of all books
+  dirs.=determineDirectoriesToWorkOn()  -- get directories to work on
 
-  tgtDir=.dir || .dirSep
-  call sysFileTree tgtDir"*", "dirs.", "DO"
   do i=1 to dirs.0 -- for 1 -- NIXI
      bookPath=dirs.i
      book=FileSpec('name',dirs.i)   -- get directory assume it is a book
      entFile=bookPath || .dirSep || "en-US" || .dirSep || book".ent"
+
      if SysFileExists(entFile) then
      do
          res=updateEntFile(entFile, bookPath, book)   -- returns the values
-         say (book~left(17,'.')) res
+         say (book~left(17,'.'))       res[1]
+         if res[1]<>res[2] then say right("new -->", 17) res[2]
      end
   end
 
@@ -225,8 +258,8 @@ analyzeArgs: procedure
   str=s~charIn(1,s~chars)
   s~close
   res=""
-
-  mb=.MutableBuffer~new
+  mb   =.MutableBuffer~new       -- new file's content
+  mbUpdates=.MutableBuffer~new   --
 
   do ent over "YEAR", "VERSION", "EDITION"
      select case ent       -- skip entity ?
@@ -266,42 +299,70 @@ analyzeArgs: procedure
         parse var str 1 preStr +(pos-1) =(pos) (needle1) '"' val '"' (needle2) str
 
         mb~append(preStr,needle1,' "')
+
+        if mbUpdates~length>0 THEN mbUpdates~append(" ")  -- already an entry, add blank
+        mbUpdates~append(ent,': ')
         select case ent       -- process entity
             when 'YEAR'    then  -- replace or change upper year
                            do
                                if val~pos("-")>0 then -- already a range, replace upper year
                                do
                                   parse var val oldYear '-' currYear
-                                  mb~append(oldYear,'-',.yearValue)
+                                  newVal=oldYear'-'.yearValue
                                end
                                else
                                do
                                   if val<.yearValue then
-                                     mb~append(val~strip,"-",.yearValue)   -- turn into range
+                                     newVal=val~strip"-".yearValue   -- turn into range
                                   else
-                                     mb~append(.yearValue)
+                                  do
+                                     newVal=.yearValue
+                                  end
                                end
+                               mb       ~append(newVal)
+                               mbUpdates~append(newVal)
                            end
-            when 'VERSION' then mb~append(val~changeStr(.versionCurrValue,.versionNewValue))
+            when 'VERSION' then
+                           do
+                               newVal=val~changeStr(.versionCurrValue,.versionNewValue)
+                               mb       ~append(newVal)
+                               mbUpdates~append(newVal)
+                           end
             when 'EDITION' then
                            do
-                               mb~append(.editionValue)
+                               mb~       append(.editionValue)
+                               mbUpdates~append(.editionValue)
                                if .argRevision then    -- if release supplied: ignore release or newer
                                do
-                                  revFileName=bookPath || .dirSep || .revInfoFileName
-                                  if sysFileExists(revFileName) then -- use first line of ${book}/revision_info.txt
+                                  if .argIgnoreRevisionFile then  -- get and use revision from svn
                                   do
-                                      sr=.stream~new(revFileName)~~open("read")
-                                      srArr=sr~arrayIn
-                                      sr~close
-                                      mb~append(" ",srArr[1])  -- write first line
+                                     newVal=getRevInfo(bookPath, book) -- get revision information, can be .nil
                                   end
                                   else
                                   do
-                                     revInfo=getRevInfo(bookPath, book) -- get revision information
-                                     mb~append(" ",revInfo)
-                                       -- save revision info in ${book}/revision_info.txt
-                                     .stream~new(revFileName)~~open("write")~~charout(revInfo)~~close
+                                     revFileName=bookPath || .dirSep || .revInfoFileName
+                                     -- use first line of an existing ${book}/revision_info.txt ?
+                                     if sysFileExists(revFileName), .argRefreshRevisionFile=.false then
+                                     do
+                                         sr=.stream~new(revFileName)~~open("read")
+                                         srArr=sr~arrayIn
+                                         sr~close
+                                         -- mb~append(" ",srArr[1])  -- write first line
+                                         newVal=srArr[1]
+                                     end
+                                     else -- (re-)create ${book}/revision_info.txt from svn revision information?
+                                     do
+                                         newVal=getRevInfo(bookPath, book) -- get revision information, can be .nil
+                                         -- mb~append(" ",revInfo)
+                                          -- if revision exists, save in ${book}/revision_info.txt
+                                         if \newVal~isNil then
+                                            .stream~new(revFileName)~~open("replace")~~charout(revInfo)~~close
+                                     end
+                                  end
+                                  if \newVal~isNil then  -- if non-ignorable revision available, use and append it
+                                  do
+                                     mb~       append(" ",newVal)
+                                     mbUpdates~append(" ",newVal)
                                   end
                                end
                            end
@@ -314,10 +375,9 @@ analyzeArgs: procedure
      end
   end
   mb~append(str)     -- append any left over
-  newContent=mb~string
-  -- replace file
-  .stream~new(entFile)~~open("replace")~~charout(newContent)~~close
-  return strip(res)
+  -- replace file with new content
+  .stream~new(entFile)~~open("replace")~~charout(mb~string)~~close
+  return (strip(res),mbUpdates~string) -- return old and new content
 
 /* ========================================================================== */
 ::requires "svnListRevisions.rex"   -- get revision utility
@@ -331,33 +391,66 @@ analyzeArgs: procedure
   use arg bookPath, book
   -- look into the files in "en-US", ignore ${book}.ent file
   tgtDir=bookPath || .dirSep || "en-US"
+  arr=getRevisionInfos(tgtDir)         -- from svnListRevisions.rex
+  if arr~items=0 then return "(n/a)"   -- ignore, not under version control
 
   ignoreFiles=book".ent" "Author_Group.xml"  -- add additional file names, if sensible
+  ignorableRevisions=getIgnorableRevisions() -- get revisions to ignore (e.g. change copyright year commits and the like)
 
-  arr=getRevisionInfos(tgtDir)
   maxRelease=.revisionValue-1        -- anything higher (= newer) gets ignored
   tmpRelease=.nil
   do revItem over arr
       if revItem~revision>maxRelease then iterate
+
+      if ignorableRevisions~hasIndex(revItem~revision) then iterate  -- 2023-01-20
       if wordPos(revItem~name,ignoreFiles)>0 then iterate
+
       if tmpRelease=.nil then
          tmpRelease=revItem
       else if tmpRelease~date<revItem~date then
+      do
          tmpRelease=revItem
+      end
   end
+
+  if tmpRelease~isNil then    -- all releases to be ignored according to the supplied arguments
+     return .nil
+
   parse value tmpRelease~date with date "T" time
   return "(last revised on" date~changeStr("-","") "with r"tmpRelease~revision")"
+
+/* ========================================================================== */
+::routine getIgnorableRevisions
+
+  parse source . . fullPath
+  fn=filespec('location',fullPath)"ignoreRevisions.txt"
+  ignoreRevisions=.set~new
+  if sysFileExists(fn) then
+  do
+      s=.stream~new(fn)
+      arr=s~arrayin
+      s~close
+      do line over arr
+         if line="" then iterate
+         if pos(line~strip~left(1),"-#") then iterate -- a comment?
+         ignoreRevisions~put(line)  -- assume a revision string
+      end
+  end
+
+  return ignoreRevisions
+
 
 /* ========================================================================== */
 ::resource usage        -- usage information (if no argument supplied)
 List or change the values for the entities YEAR, VERSION, EDITION from/in
 all the files ${book}/en-US/${book].ent
 
-updateEntityValues [arguments]
-      no argument    ... show this text
+updateEntityValues [[arguments] [dir]]
+      no arguments   ... show this text
       dir            ... always the last argument, denotes the root of the docs
                          directory to work on (if dir contains spaces it needs
-                         to be enquoted in double-quotes).
+                         to be enquoted in double-quotes), or the path to a specific
+                         ${book} directory.
                          If no switches are supplied than the current values
                          of the YEAR, VERSION and EDITION entity values for
                          each books get displayed.
@@ -366,18 +459,27 @@ updateEntityValues [arguments]
       -v "version"   ... set VERSION to the supplied string in the form (quoted!)
                          of "oldValue -> newValue"
       -e "edition"   ... set EDITION to the supplied string (can be anything);
-                         if -r switch is not set, then no revision information
-                         string gets appended
+                         if none of the -r switches are not set, then no revision
+                         information string gets appended
       -r revision    ... append revision information to EDITION; if the file
                          ${book}/revision_info.txt exists, its first line will
                          be used as the revision information string; otherwise
                          the revision information is built from commits with
                          revisions that are smaller than the supplied revision,
                          the result gets also written to ${book}/revision_info.txt
+      -ri revision   ... append revision information to EDITION ignore
+                         ${book}/revision_info.txt use the latest svn revision that
+                         is smaller than the supplied revision
+      -rr revision   ... append revision information to EDITION, refresh (replace)
+                         ${book}/revision_info.txt using svn revision smaller
+                         than the supplied revision
+
 examples:
-      updateEntityValues.rex -v "5.0.0 -> 5.1.0" -e "2022.12.24" ".."
-      updateEntityValues.rex -e "2022.12.24" -r 12537  ..
-      updateEntityValues.rex -y 2022 -v "5.0 -> 5.1" -e "2022.12.25" -r 99999  ..
+      updateEntityValues.rex -v "5.0.0 -> 5.1.0" -e "2023.01.01" ".."
+      updateEntityValues.rex -e "2023.01.01" -r 12537  ..
+      updateEntityValues.rex -e "2023.01.01" -ri 12537  ..
+      updateEntityValues.rex -e "2023.01.01" -rr 12537  ..
+      updateEntityValues.rex -y 2023 -v "5.0 -> 5.1" -e "2023.01.01" -r 99999  ..
       updateEntityValues.rex ..
 ::END
 
