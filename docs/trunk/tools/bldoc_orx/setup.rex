@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -193,11 +193,18 @@
     -- Finally the Apache FOP package
     -- https://xmlgraphics.apache.org/fop/download.html
     -- Use the above site to find an alternate mirror site if needed.
-    src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
+    -- src_url = "https://mirror.nodesdirect.com/apache/xmlgraphics/fop/binaries/"
     fop_lvl = getfoplvl()   -- determine the latest version from the Web page
     if fop_lvl = "??" then
         say "Unable to determine the latest version of Apache FOP."
     else do
+        -- determine the "mirror" site that is suggested for downloading the
+        --  current fop binary
+        src_url = getfopmirror()
+        if src_url~right(3) = "fop" then
+            src_url = src_url"/binaries/"
+        else
+            src_url = "https://archive.apache.org/dist/xmlgraphics/fop/binaries/"
         fop_pkg = "fop-"fop_lvl
         if \.file~new(".\"fop_pkg)~isDirectory then do
             say "Making Apache FOP package available. (5/5)"
@@ -205,6 +212,7 @@
             fop_zip = .file~new(fop_zip_name)
             if \fop_zip~exists then do
                 say _"Downloading" fop_pkg"-bin.zip"
+                say _"  from" src_url
                 call retrieve src_url||fop_pkg"-bin.zip", fop_zip_name
                 if result \= 0 then
                     say _"Error retrieving" fop_pkg"-bin.zip; RC was" result"."
@@ -252,17 +260,59 @@ unzip: procedure    -- extract the package files to the appropriate location
 getfoplvl: procedure    -- determine the current level of FOP
     fopHomePage = "https://xmlgraphics.apache.org/fop/"
     htmlFile = .file~new("fop_page.htm")
-    call retrieve fopHomePage, htmlFile~name
+    call retrieve fopHomePage, htmlFile~name, "use_IWR"
     fopPage = .stream~new(htmlFile)
     fopLines = fopPage~arrayin
     fopPage~close
     htmlFile~delete
-    lvl = '??'  -- default if unable to find the line with the latest level
+    lvl = "??"  -- default if unable to find the line with the latest level
     do i=1 to fopLines~items
-        if fopLines[i]~pos('latest version of FOP is available at') > 0 then do
+        if fopLines[i]~pos("latest version of FOP is available at") > 0 then do
             -- found the line, now get the value of the latest level
-            parse value fopLines[i] with . '<a' . '>FOP ' lvl '<' .
+            parse value fopLines[i] with . "<a" . ">FOP " lvl "<" .
             leave
         end
     end
     return lvl
+
+getfopmirror: procedure -- determine the current "mirror" site for FOP downloads
+    info? = .false
+    fopDownloadPage = "https://www.apache.org/dyn/closer.cgi/xmlgraphics/fop"
+    htmlFile = .file~new("fop_page.htm")
+    call retrieve fopDownloadPage, htmlFile~name, "use_IWR"
+    fopPage = .stream~new(htmlFile)
+    fopLines = fopPage~arrayin
+    fopPage~close
+    htmlFile~delete
+    site = "???"
+    sugg? = .false
+    dwld? = .false
+    do i = 1 to fopLines~items
+        select
+            when \sugg? then do
+                if fopLines[i]~pos("suggest") > 0 then do
+                    sugg? = .true
+                    if info? then say "Found suggest on line" i
+                    i -= 1  -- rescan the line
+                end
+            end
+            when \dwld? then do
+                if fopLines[i]~pos("download:") > 0 then do
+                    dwld? = .true
+                    if info? then say "Found download: on line" i
+                    i -= 1  -- rescan the line
+                end
+            end
+            -- next line with a URL is the mirror
+            when fopLines[i]~pos("https:") > 0 then do
+                if info? then say "Found URL on line" i":".endofline || ,
+                    fopLines[i]
+                parse value fopLines[i] with . 'href="' site '">' .
+                -- site ends w/ "fop"
+                leave i
+            end
+            otherwise
+                nop
+        end
+    end
+    return site
