@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -65,5 +65,29 @@
     props~setProperty('docpath', docpath)
     call save_props                 -- save the updated properties
     say 'The docpath is set to' docpath
+
+-- need to delete the Common_Content subfolder if it exists as it probably is
+--  for a different docpath
+    ccfo = .file~new(props~getProperty('work_folder')||_'Common_Content')
+    if ccfo~isDirectory then
+        call delTree ccfo, props~getLogical('verbose')
+
+::routine delTree
+/* expects one argument, a file object representing a directory (not checked);
+    a second, optional, argument if .true will display the file/directory names
+    as they are deleted
+*/
+    use arg theDir, info?=.false
+    do aFile over theDir~listFiles
+        if aFile~isDirectory then do
+            call delTree aFile, info?
+            ? = aFile~delete
+            if info? then say "Removed" aFile~absolutePath':' ?~?('OK','FAILED')
+        end
+        else do
+            ? = aFile~delete
+            if info? then say "Deleted" aFile~absolutePath':' ?~?('OK','FAILED')
+        end
+    end
 
 ::requires doc_props.rex

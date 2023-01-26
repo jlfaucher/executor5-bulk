@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -88,21 +88,13 @@
     out_file = PDF_files||_||whichdoc'.pdf'
     -- check for the fop.cfg file and create it if necessary
     work_folder = props~getProperty('work_folder')
-    fopcfg = work_folder||_'fop.cfg'
+    fopcfg = work_folder||_'Common_Content'_'fop.cfg'
     if \.file~new(fopcfg)~exists then do    -- need to create a new fop.cfg file
         -- read in the fop.cfg template
         fopcfg_in = .stream~new('fop.cfg')
         fopcfg_src = fopcfg_in~arrayin
         fopcfg_in~close
-        do j = 1 to fopcfg_src~items
-            aLine = fopcfg_src[j]
-            if aLine~strip~left(6) = '<base>' then do   -- modify this line
-                aLine = aLine~changestr('..', props~getProperty('srcdir'))
-                fopcfg_src[j] = aLine   -- <base> now points to the source dir.
-                leave j
-            end
-        end
-        .stream~new(fopcfg)~~arrayout(fopcfg_src)~close
+        .stream~new(fopcfg)~~arrayout(fopcfg_src)~close -- and write it out
     end
     fop = 'fop' -- fop is installed on non-Windows systems
     if _ = '\' then do  -- Windows

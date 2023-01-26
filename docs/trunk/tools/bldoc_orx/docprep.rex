@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,26 +62,34 @@
         say 'Unable to find' srcdir'; please check the spelling.'
         exit
     end
-    props~setProperty('srcdir', srcdir) -- save for possible use in fop.cfg
     say time() '- Preparing' whichdoc 'source files.'
 
-/* Instead of creating/updating a sub-folder, edit each .xml file in the
-    whichdoc directory, replacing 'Common_Content' with
-    docpath||_'oorexx'_'en_us' and saving the result in 'work_folder'. (Xsltproc
-    will then use the files in 'work_folder' rather than those in
-    docpath||_||whichdoc.) Can also update the .ent file at the same time. May
-    need to have a fop.cfg file in that folder as well which needs to be updated
-    to point to docpath||_||whichdoc. And any references to *.tmp files will be
-    edited to refer to 'work_folder' and then the files created.
-*/
-    -- first we need to clean up any existing files in 'work_folder'
+/* Instead of creating/updating a sub-folder for the Common_Content in the
+    working copy of the document - docpath||_||whichdoc, replicate that
+    structure in 'work_folder'. Edit each .xml file in the whichdoc directory,
+    replacing the path for any *.tmp files with '' and saving the result in
+    'work_folder'.  (Xsltproc will then use the files in 'work_folder' rather
+    than those in docpath||_||whichdoc.)  Can also update the .ent file at the
+    same time.  And any references to *.tmp files will be noted and then the
+    files created.  */
+
+    -- if needed, create/update the Common_Content subfolder
+    cc_srce = docpath||_'oorexx'_'en-US'        -- path to Common_Content source
+    cc_dest = work_folder||_'Common_Content'    -- path to Common_Content dest.
+    fileList = .array~new                       -- for list of files copied
+
+    destDir = .file~new(cc_dest)~~makeDir
+    do aSrce over .file~new(cc_srce)~listFiles
+        call rxcopy aSrce, destDir, fileList, info?
+    end
+    if info? then say fileList~toString
+
+    -- then we need to clean up any existing files in 'work_folder'
     work_folder = props~getProperty('work_folder')
     do oldFile over .file~new(work_folder)~~makeDirs~listFiles
         if oldFile~isFile then
             oldFile~delete
     end
-    cc = 'Common_Content'
-    rep = docpath~translate('/','\')'/oorexx/en-US' -- URI always needs /
     p4tmp = '../../../' -- path for *.tmp files
     chgs = 0            -- lines changed in a file
     cfiles = 0          -- files changed
@@ -98,17 +106,17 @@
             ext = ''
         select
             when ext = 'XML' then do
-                -- process the source file, resolving Common_Content/p4tmp
+                -- process the source file, resolving p4tmp
                 chgs = 0
                 do j = 1 to theLines~items
                     aLine = theLines[j]
                     select
-                        when aLine~caselessPos(cc) > 0 then do
+                    /*  when aLine~caselessPos(cc) > 0 then do
                             theLines[j] = aLine~caselessChangeStr(cc, rep)
                             chgs += 1
                         /*  say 'change in' aFile~name 'at line' j
                             say 'new line is: ['theLines[j]']'  */
-                        end
+                        end --*/
                         when aLine~pos(p4tmp) > 0 then do
                             theLines[j] = aLine~changeStr(p4tmp, '')
                             chgs += 1
@@ -182,3 +190,57 @@
     say time() whichdoc 'source files are ready.'
 
 ::requires doc_props.rex
+
+::routine rxcopy
+-- routine to implement the "deep copy" of the XCOPY command
+    use arg srceObj, destObj, fn_list=(.array~new), info?=.false
+    -- expects srce and dest to be file objects AND dest to be a directory
+    --  fn_list is an optional array (or other ordered collection) that will
+    --  receive the names of the files that were copied
+    dir_sep = .doc.props~getProperty('dir_sep')
+    select
+        when srceObj~isFile then do -- copying a single file
+            -- ensure dest directory exists
+            destObj~makeDirs
+            -- do we need to copy it?
+            srceDate = srceObj~lastModified
+            destFile = destObj~absolutePath || dir_sep || srceObj~name
+            destDate = .file~new(destFile)~lastModified
+            -- above may be .nil if destFile doesn't exist
+            select
+                when destDate == .nil then do
+                    if info? then say 'No destination file'
+                    cpy? = .true
+                end
+                when srceDate > destDate then do
+                    if info? then say 'Newer source file'
+                    cpy? = .true
+                end
+                otherwise
+                    if info? then say 'Destination file is current'
+                    cpy? = .false
+            end
+            if cpy? then do
+                if info? then say 'Need to copy the file'
+                inFile = .stream~new(srceObj)
+                inData = inFile~charIn(, inFile~chars)
+                inFile~close
+                if info? then say 'Srce data read'
+                outFile = .stream~new(destFile)~~open(write replace)
+                outFile~~charOut(inData)~close
+                if info? then say 'Dest data written'
+                fn_list~append(infile~qualify)
+            end
+        end
+        when srceObj~isDirectory then do    -- copying a directory
+            newDestName = destObj~absolutePath || dir_sep || srceObj~name
+            newDestObj = .file~new(newDestName)~~makeDirs
+            srceList = srceObj~listFiles    -- array of file objects
+            do anObj over srceList
+                call rxcopy anObj, newDestObj, fn_list, info?
+            end
+        end
+        otherwise   -- neither file nor directory; probably typo
+            say 'Unknown source object:' srceObj~absolutePath'; check spelling'
+    end
+    return

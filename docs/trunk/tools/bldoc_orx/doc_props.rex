@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -61,8 +61,8 @@
         props~setProperty('fop_opts', '-Xmx1280M')
         props~setLogical('verbose', .false)
         props~setLogical('zip_HTML', .true)
-        props~setLogical('rexxref', .true)
-        props~setLogical('rexxapi', .true)
+        props~setLogical('rexxref', .false)
+        props~setLogical('rexxapi', .false)
         props~save(prop_fn)         -- save it in the properties file
     end
     .local~doc.props = props        -- put the properties collection in .local
