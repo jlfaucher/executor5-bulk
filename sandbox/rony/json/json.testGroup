@@ -1,16 +1,12 @@
 #!/usr/bin/env rexx
-/*
-  SVN Revision: $Rev: 12091 $
-  Change Date:  $Date: 2020-06-16 18:51:04 +0200 (Di., 16 Jun 2020) $
-*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -219,7 +215,7 @@ else
     r = j~fromJson(array)
     self~assertIsA(r, .Array)
     self~assertSame((r[1] = .nil)~?(0, r[1]), r~items)
-    self~assertSame(array~space(0), .json~minify(j~toJson(r)))
+    self~assertSame(array~space(0), j~toJson(r))
   end
 
   -- nested
@@ -252,26 +248,28 @@ else
   .Json~new~fromJson('{"name": }')
 
 ::method test_object
-  j = .Json~new         -- minifying
+  j = .Json~new
 
   json = "{}"
   dir = j~fromJson(json)
-  self~assertIsA(dir, .directory)
+  self~assertIsA(dir, .StringTable)
   self~assertSame(0, dir~items)
-  self~assertSame(json, j~toMinifiedJson(dir))  -- remove CRLF for comparison
+  self~assertSame(json, j~toJson(dir))
 
   json = '{"name": "value"}'
   dir = j~fromJson(json)
-  self~assertIsA(dir, .directory)
+  self~assertIsA(dir, .StringTable)
   self~assertSame(1, dir~items)
   self~assertSame("value", dir["name"])
+  self~assertSame('{"name":"value"}', j~toJson(dir)~space(0))
 
   json = '{"first": 123, "second": "xyz"}'
   dir = j~fromJson(json)
-  self~assertIsA(dir, .directory)
+  self~assertIsA(dir, .StringTable)
   self~assertSame(2, dir~items)
   self~assertSame(123, dir["first"])
   self~assertSame("xyz", dir["second"])
+  self~assertOneOrAnother('{"first":123,"second":"xyz"}', '{"second":"xyz","first":123}', j~toJson(dir)~space(0))
 
 
 -- we have a bunch of samples in ./valid and ./invalid
@@ -299,318 +297,6 @@ else
   syntax:
   return condition("object")["MESSAGE"]
 
---- test new and enhanced features introduced with 100.20210606
-
-::method test_encodings
-  arr=.array~of( ("00 00 FE FF"x, "UTF-32BE", 5) , -
-                 ("FF FE 00 00"x, "UTF-32LE", 5) , -
-                 ("FE FF"x      , "UTF-16BE", 3) , -
-                 ("FF FE"x      , "UTF-16LE", 3))
-
-   -- test getEncoding
-  do a over arr
-     self~assertSame(a[2], .json~getEncoding(a[1]))
-  end
-  self~assertSame("UTF-8", .json~getEncoding())
-  self~assertSame("UTF-8", .json~getEncoding("012345"))
-
-   -- test getEncodingDataOffset
-  do a over arr
-     self~assertSame(a[3], .json~getEncodingDataOffset(a[1]))
-  end
-  self~assertSame(1, .json~getEncodingDataOffset())
-  self~assertSame(1, .json~getEncodingDataOffset("012345"))
-
-   -- test getJsonBOM
-  do a over arr
-     self~assertSame(a[1], .json~getJsonBom(a[2]))
-  end
-  self~assertSame("", .json~getJsonBom())
-  self~assertSame("", .json~getJsonBom("UTF-8"))
-
-::method test_version
-  v=.json~version
-  parse var v ver '.' date
-  parse var date year +4 month +2 day
-  self~assertTrue(ver>=100)
-  self~assertTrue(datatype(ver,'W'))   -- whole number
-  dt=.dateTime~fromStandardDate(date)
-  self~assertEquals(year, dt~year)
-  self~assertEquals(month, dt~month)
-  self~assertEquals(day, dt~day)
-
-::method test_json_boolean
-
-  t=.json~true
-  self~assertTrue(t~class~id~caselessequals("JSONBOOLEAN"))
-  self~assertTrue(datatype(t,'O'))        -- logical value?
-  self~assertTrue(t~value)                -- logical value?
-  self~assertTrue(t~request("string"))    -- logical value?
-  self~assertEquals("true", t~request("json"))  -- logical value?
-  self~assertSame(t, .json~true)
-  self~assertSame(.true, .json~true)
-
-  f=.json~false
-  self~assertTrue(f~class~id~caselessequals("JSONBOOLEAN"))
-  self~assertTrue(datatype(f,'O'))        -- logical value?
-  self~assertFalse(f~value)               -- logical value?
-  self~assertFalse(f~request("string"))   -- logical value?
-  self~assertEquals("false", f~request("json")) -- logical value?
-  self~assertSame(f, .json~false)
-  self~assertSame(.false, .json~false)
-
-::method test_json_null
-  j=.json~new
-
-  jnull=j~toJson(.nil)
-  self~assertEquals("null",jnull)
-
-  n=j~fromJson(jnull)
-  self~assertNil(n)
-
-::method test_jsonDirClass
-  self~assertEquals(.directory, .json~jsonDirClass)
-
-  .json~jsonDirClass=.stringTable
-  self~assertEquals(.stringTable, .json~jsonDirClass)
-
-  .json~jsonDirClass=.directory           -- reset to default
-  self~assertEquals(.directory, .json~jsonDirClass)
-
-::method test_legible
-  j=.json~new
-  self~assertFalse(j~legible)    -- default
-  j~legible=.true
-  self~assertTrue(j~legible)
-
-  j~legible=.false               -- reset
-  self~assertFalse(j~legible)
-
-::method test_object_stringTable
-  j = .Json~new         -- minifying
-  oldClz=.json~jsonDirClass
-  j~class~jsonDirClass=.StringTable
-
-  json = "{}"
-  dir = j~fromJson(json)
-  self~assertIsA(dir, .stringTable)
-  self~assertSame(0, dir~items)
-  self~assertSame(json, j~toMinifiedJson(dir))  -- remove CRLF for comparison
-
-  json = '{"name": "value"}'
-  dir = j~fromJson(json)
-  self~assertIsA(dir, .stringTable)
-  self~assertSame(1, dir~items)
-  self~assertSame("value", dir["name"])
-
-  json = '{"first": 123, "second": "xyz"}'
-  dir = j~fromJson(json)
-  self~assertIsA(dir, .stringTable)
-  self~assertSame(2, dir~items)
-  self~assertSame(123, dir["first"])
-  self~assertSame("xyz", dir["second"])
-
-  j~class~jsonDirClass=oldClz
-
-::method test_minified_legible_file
-  -- create an object with all relevant JSON types
-  o=.StringTable~new          -- a .StringTable (a MapCollection)
-  o['Name']    ="Caesar"      -- a string
-  o['children']=3             -- a number
-  o['Parents']= .array~of('Anna', 'Bertram') -- a .Array (an OrderableCollection)
-  o['Salary']  =.nil          -- no value at all (not employed)
-  o['rich']    =.json~false   -- use .Json's false (a JsonBoolean)
-  o['poor']    =.json~true    -- use .Json's true (a JsonBoolean)
-
-  j=.json~new                 -- create a minifying JSON converter
-  jsonString1=j~toJson(o)     -- encode oect as JSON string
-  minified='{"children":3,"Name":"Caesar","Parents":["Anna","Bertram"],"poor":true,"rich":false,"Salary":null}'
-  self~assertEquals(minified, jsonString1)
-
-  obj1=j~fromJson(jsonString1)
-  self~assertEquals(.json~jsonDirClass, obj1~class)
-  self~assertTrue(compareObj(o,obj1))
-
-  -- legible version
-
-  j~legible=.true             -- make JSON string legible for humans
-  jsonString2=j~toJson(o)
-  self~assertNotEquals(jsonString1,jsonString2)
-  self~assertTrue(jsonString2~pos(" ")>0)
-  self~assertTrue(jsonString2~pos("0d"x)>0)
-  self~assertTrue(jsonString2~pos("0a"x)>0)
-
-  min2=.json~minify(jsonString2)
-  self~assertEquals(minified,min2)
-
-  obj2=j~fromJson(jsonString2)
-  self~assertEquals(.json~jsonDirClass, obj2~class)
-  self~assertTrue(compareObj(o,obj2))
-
-  jBooleanClz=.json~true~class
-  self~assertIsA(obj2['rich'],jBooleanClz)
-  self~assertIsA(obj2['poor'],jBooleanClz)
-
-  ---
-  jsonString3=j~toMinifiedJson(o)
-  self~assertEquals(minified,jsonString3)
-
-
-  ---
-  j~legible=.false            -- make minified JSON strings
-  tms=.Test_MakeString~new
-  tmsj=j~toJson(tms)    -- triggers makestring
-  self~assertEquals(tms~jsonvalue,tmsj)
-
-  ---
-  tas=.Test_MakeArray~new
-  tasj=j~toJson(tas)    -- triggers makestring
-  self~assertEquals(tas~jsonvalue,tasj)
-
-  ---
-  tjs=.Test_MakeJson~new
-  tjsj=j~toJson(tjs)    -- triggers makestring
-  self~assertEquals(tjs~jsonvalue,tjsj)
-
-  --- test to/from file
-  testFile=filespec("l",self~class~package~name)"delete_this_testfile.json"
-  call sysFileDelete testFile    -- make sure we delete it
-
-      -- by default legible, if writing to file
-  .json~toJsonFile(testFile,o)
-  s=.stream~new(testFile)~~open("read")
-  data=s~charin(1,s~chars)
-  s~close
-  self~assertSame(jsonString2,data)
-
-  fobj1=.json~fromJsonFile(testFile)
-  self~assertTrue(compareObj(o,fobj1))
-
-      -- now writing minified version
-  .json~toJsonFile(testFile,o,.false)   -- now minified
-  s=.stream~new(testFile)~~open("read")
-  data=s~charin(1,s~chars)
-  s~close
-  self~assertSame(jsonString1,data)
-
-  fobj2=.json~fromJsonFile(testFile)
-  self~assertTrue(compareObj(o,fobj2))
-
-  call sysFileDelete testFile    -- make sure we delete it
-
-  return
-
-compareObj: procedure
-  use arg o, obj
-  entries="Name", "children", "Parents", "Salary", "rich", "poor"
-  do e over entries
-     if \o~hasindex(e) | \obj~hasindex(e) then return .false
-     if e="Parents" then
-     do
-        a =o[e]
-        a1=obj[e]
-        do i=1 to a~items
-           if a[i]<>a1[i] then return .false
-        end
-     end
-     else if o[e]<>obj[e] then return .false
-
-  end
-  return .true
-
-
-
-
-::method test_jsonBoolean
-  clz=.json~true~class        -- get JsonBoolean class object
-
-  true =clz~true
-  false=clz~false
-  self~assertSame(true,.json~true)
-  self~assertSame(false,.json~false)
-
-  self~assertSame(clz,.json~true~class)
-  self~assertSame(clz,.json~false~class)
-
-   -- test JsonBoolean's version string
-  v=clz~version
-  parse var v ver '.' date
-  parse var date year +4 month +2 day
-  self~assertTrue(ver>=100)
-  self~assertTrue(datatype(ver,'W'))   -- whole number
-  dt=.dateTime~fromStandardDate(date)
-  self~assertEquals(year, dt~year)
-  self~assertEquals(month, dt~month)
-  self~assertEquals(day, dt~day)
-
-   --
-  self~assertEquals(1, true)
-  self~assertEquals(0, false)
-
-  self~assertEquals(1, true~value)
-  self~assertEquals(0, false~value)
-
-  self~assertEquals(1, true~request("string"))
-  self~assertEquals(0, false~request("string"))
-
-  self~assertEquals("true",  true~request("json"))
-  self~assertEquals("false", false~request("json"))
-
-  self~assertTrue(clz~new(1))
-  self~assertTrue(clz~new("true"))
-  self~assertTrue(clz~new(.true))
-
-  self~assertFalse(clz~new(0))
-  self~assertFalse(clz~new("false"))
-  self~assertFalse(clz~new(.false))
-
-
-  -- last one
-  self~expectSyntax(88.900)
-  val=clz~new("not a logical value, nor 'false', 'true'")
-
--- create private test classes that implement one of makestring, makejson, makearray
---------------------------------------------------------------------
-::class test_makeString metaclass singleton
-::method init
-  expose value jsonvalue
-  value    ="one two three"
-  jsonvalue='"one two three"'
-
-::attribute value
-::attribute jsonvalue
-
-::method makeString
-  expose value jsonvalue
-  return value
-
---------------------------------------------------------------------
-::class test_makeArray  metaclass singleton
-::method init
-  expose value jsonvalue
-  value    ="one","two","three"
-  jsonvalue='["one","two","three"]'
-
-::attribute value
-::attribute jsonvalue
-
-::method makeArray
-  expose value jsonvalue
-  return value
-
---------------------------------------------------------------------
-::class test_makeJson   metaclass singleton
-::method init
-  expose value jsonvalue
-  value    ='{"children":3,"Name":"Caesar","Parents":["Anna","Bertram"],"poor":true,"rich":false,"Salary":null}'
-  jsonvalue=value
-
-::attribute value
-::attribute jsonvalue
-
-::method makeJson
-  expose value jsonvalue
-  return jsonvalue
 
 
 ::options novalue error
