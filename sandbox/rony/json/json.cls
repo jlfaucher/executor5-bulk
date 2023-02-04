@@ -61,10 +61,19 @@
                               - new convenience class methods fromJsonFile(fileName) and
                                 toJsonFile(fileName, ooRexxObject [, legible=.true]) to
                                 make it easy to read or write JSON data from/to files
+
+   changes: 2023-02-04: - undo change of using .StringTable instead of .Directory: this
+                          may break existing code if it tests for instance of .directory
+                          (.stringtable is not a subclass of .directory)
+
+                        -
+
 */
 
+/**
+    An ooRexx utility class to encode and decode ooRexx objects in JSON (RFC 4627).
+*/
 
--- A class to encode and decode ooRexx objects in JSON (RFC 4627)
 ::class json public
 
 /** Returns the .JsonBoolean proxy for <code>.true</code>, which ensures a proper JSON encoding.
@@ -86,7 +95,7 @@
 
 
 /**
- * Initilizes the class
+ * Constructor, initilizes the instance.
  */
 ::method init
     expose eJS uJS ctrl crlf legible
@@ -112,8 +121,20 @@
 
     crlf = "0d0a"x
 
-
+/** Returns current value of attribute <code>legible</code>.
+*   @return <code>.true</code> or <code>.false</code>
+*/
 ::attribute legible get
+
+/** Returns current value of attribute <code>legible</code>.
+*   @return <code>.true</code> or <code>.false</code>
+*/
+::attribute legible set
+  expose legible
+  use strict arg value
+  .Validate~logical("legible",value)   -- test for logical value 0 or 1
+  legible=value
+
 
 /** Utility class method to ease reading JSON files into an ooRexx object.
 *
@@ -147,7 +168,7 @@
 *
 *  @param fn file name or file object to write produced JSON text to
 *  @param rexxObject rexxObject to encode as JSON
-*  @param isLegible optional logical value, defaults to <code>.true</code>
+*  @param isLegible optional logical value, defaults to <code>.false</code>
 *
 */
 ::method toJsonFile class
@@ -168,14 +189,12 @@
  *                      the makeArray method for the object, returning
  *                      "null" if no makeArray method is available.
  */
- -- TODO: shouldn't we raise a condition if an unhandable object gets supplied?
- --       we could accept any object if it had a MAKEJSON method like the JsonBoolean class
 ::method toJSON
     expose buffer legible
-    use strict arg rexxObject, legible=(legible)
+    use strict arg rexxObject, tmpLegible=(legible)
 
     buffer = .mutablebuffer~new()
-    if legible then
+    if tmpLegible then
        self~parseRexxObjectLegible(rexxObject)
     else
        self~parseRexxObject(rexxObject)
@@ -206,7 +225,7 @@
             if rexxObject~hasMethod('makearray') then do
                 self~parseRexxObject(rexxObject~makearray())
             end
-            else buffer~append('null')
+            else buffer~append('null')    -- TODO: shouldn't we supply an error indicator instead?
     end
 
 ::method parseRexxArray private
@@ -370,7 +389,7 @@
 /* ========================================================================== */
 
 /**
- * Recursively converts a JSON text to Rexx objects
+ * Recursively converts a JSON text to Rexx objects.
  *
  * @param  jsonString   A JSON text.
  */
@@ -434,8 +453,7 @@ parseError: raise propagate
     expose jsonString jsonPos
     signal on user parseError
 
-    -- rexxDirectory = .directory~new()
-    rexxDirectory = .stringTable~new()
+    rexxDirectory = .directory~new()
 
     self~trimLeadingWhitespace()
     parse value jsonString with =(jsonPos) char +1
@@ -676,6 +694,12 @@ parseError: raise propagate
 */
 ::attribute false get class   -- false proxy, class getter method
 
+
+/** Make sure that only the JsonBoolean class can create instances.
+*/
+::method new class private
+  forward class (super)
+
 /** Finalizes the class initialization by creating the two proxy class attribute values <code>true</code>
 *   and <code>false</code>.
 */
@@ -684,14 +708,15 @@ parseError: raise propagate
   true =self~new(.true)       -- create and store true proxy value
   false=self~new(.false)      -- create and store false proxy value
 
-/** Constructor.
+/** Constructor that saves argument in its attribute 'value'.
 * @param value mandatory Rexx string representing the logical value
 */
-::method init private   -- make constructor method inaccessible to other classes, own metaclass is allowed to access directly
+::method init           -- make constructor method inaccessible to other classes, own metaclass is allowed to access directly
   expose value
   use strict arg value  -- assign boolean value
 
-
+/** Forwards message to the string value of the JBoolean.
+*/
 ::method unknown
   expose value          -- the string value of this JsonBoolean
   use arg msg, args

@@ -252,20 +252,20 @@ else
 
   json = "{}"
   dir = j~fromJson(json)
-  self~assertIsA(dir, .StringTable)
+  self~assertIsA(dir, .Directory)
   self~assertSame(0, dir~items)
   self~assertSame(json, j~toJson(dir))
 
   json = '{"name": "value"}'
   dir = j~fromJson(json)
-  self~assertIsA(dir, .StringTable)
+  self~assertIsA(dir, .Directory)
   self~assertSame(1, dir~items)
   self~assertSame("value", dir["name"])
   self~assertSame('{"name":"value"}', j~toJson(dir)~space(0))
 
   json = '{"first": 123, "second": "xyz"}'
   dir = j~fromJson(json)
-  self~assertIsA(dir, .StringTable)
+  self~assertIsA(dir, .Directory)
   self~assertSame(2, dir~items)
   self~assertSame(123, dir["first"])
   self~assertSame("xyz", dir["second"])
@@ -296,6 +296,155 @@ else
 
   syntax:
   return condition("object")["MESSAGE"]
+
+::method test_wikipedia_to_json_from_resources
+   -- fetch resource (returns string array) and get its string value
+  wiki_json     = .resources~wikipedia.json          ~makeString
+  wiki_min_json = .resources~wikipedia_minimized.json~makeString
+  wiki_leg_json = .resources~wikipedia_legible.json  ~makeString
+
+  j    = .json~new
+  obj1 = j~fromJson(wiki_json)   -- returns a directory object
+  min1 = j~toJson(obj1)          -- by default minimizes
+  self~assertSame(min1,wiki_min_json)
+
+  leg1 = j~toJson(obj1,.true)    -- get legible rendering
+  self~assertSame(leg1,wiki_leg_json)
+
+  obj2 = j~fromJson(min1)
+  min2 = j~toJson(obj2)
+  self~assertSame(min1,min2)
+  leg2 = j~toJson(obj2,.true)
+  self~assertSame(leg1,leg2)
+
+  obj3 = j~fromJson(leg1)
+  min3 = j~toJson(obj2)
+  self~assertSame(min1,min3)
+  leg3 = j~toJson(obj3,.true)
+  self~assertSame(leg1,leg3)
+
+  -- test the legible attribute
+  self~assertFalse(j~legible)
+  j~legible=.true
+  self~assertTrue(j~legible)
+
+  self~expectSyntax(88.927)
+  j~legible=3        -- cause a condition
+
+
+::method test_jsonBoolean
+   -- test the JSONBoolean values, note: using assertEquals() as assertSame() will check the class
+  jsonTrue=.json~true
+  self~assertEquals(jsonTrue,.true)
+
+  jsonFalse=.json~false
+  self~assertEquals(jsonFalse,.false)
+
+  self~expectSyntax(97.2)
+  tmp=jsonTrue~class~new(1)   -- this is illegal, no one but JSONBoolean itself can create instances of itself
+
+
+::method test_wikipedia_to_json_from_file
+   -- fetch resource (returns string array) and get its string value
+   -- resource names
+  names ="wikipedia.json", "wikipedia_minimized.json", "wikipedia_legible.json"
+  values  =.array~new
+  inFiles =.array~new
+  outFiles=.array~new
+  do counter c n over names
+     values[c]   = .resources~entry(n)         -- get resource's value
+     inFiles[c]  = .TemporaryTestFile~new(.nil,n) ~~create(values[c])  -- create file, assign content
+     outFiles[c] = .TemporaryTestFile~new(.nil,"json_tmpOut_"n)
+  end
+
+  do i=1 to 3     -- read from original json, minimized json, legible json
+     obj = .json~fromJsonFile(inFiles[i])       -- read JSON file
+
+     .json~toJsonFile(outFiles[2],obj,.false)
+     s=.stream~new(outFiles[2])~~open("read")   -- open minimized for reading
+     minimizedJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(minimizedJson,values[2])
+
+     .json~toJsonFile(outFiles[3],obj)          -- legible=.true by default
+     s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading
+     legibleJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(legibleJson,values[3])
+
+     .json~toJsonFile(outFiles[3],obj, .true)   -- legible=.true by default
+     s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading
+     legibleJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(legibleJson,values[3])
+  end
+
+
+::resource wikipedia.json  -- cf. <https://en.wikipedia.org/wiki/JSON> (2023-02-04)
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "isAlive": true,
+  "age": 27,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021-3100"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "office",
+      "number": "646 555-4567"
+    }
+  ],
+  "children": [
+      "Catherine",
+      "Thomas",
+      "Trevor"
+  ],
+  "spouse": null
+}
+::END
+
+::resource wikipedia_minimized.json -- json.cls will sort by name(key)
+{"address":{"city":"New York","postalCode":"10021-3100","state":"NY","streetAddress":"21 2nd Street"},"age":27,"children":["Catherine","Thomas","Trevor"],"firstName":"John","isAlive":true,"lastName":"Smith","phoneNumbers":[{"number":"212 555-1234","type":"home"},{"number":"646 555-4567","type":"office"}],"spouse":null}
+::END
+
+::resource wikipedia_legible.json   -- json.cls will sort by name(key)
+{
+   "address": {
+      "city": "New York",
+      "postalCode": "10021-3100",
+      "state": "NY",
+      "streetAddress": "21 2nd Street"
+   },
+   "age": 27,
+   "children": [
+      "Catherine",
+      "Thomas",
+      "Trevor"
+   ],
+   "firstName": "John",
+   "isAlive": true,
+   "lastName": "Smith",
+   "phoneNumbers": [
+      {
+         "number": "212 555-1234",
+         "type": "home"
+      },
+      {
+         "number": "646 555-4567",
+         "type": "office"
+      }
+   ],
+   "spouse": null
+}
+::END
 
 
 
