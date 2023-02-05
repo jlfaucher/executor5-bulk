@@ -212,6 +212,9 @@
     use strict arg rexxObject
 
     select
+        when rexxObject~hasMethod('makejson') then do    -- handles .JsonBoolean as well
+           buffer~append(rexxObject~makeJson)
+        end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxArray(rexxObject)
         end
@@ -224,17 +227,10 @@
         when rexxObject~isNil then do
             buffer~append('null')
         end
-        when rexxObject~isA(.JsonBoolean) then do
-            buffer~append(rexxObject~makeJson)
+        when rexxObject~hasMethod('makearray') then do
+            self~parseRexxObject(rexxObject~makearray())
         end
         otherwise
-            if rexxObject~hasMethod('makejson') then do
-               buffer~append(rexxObject~makeJson)
-            end
-            else if rexxObject~hasMethod('makearray') then do
-                self~parseRexxObject(rexxObject~makearray())
-            end
-            else
             do
                  -- buffer~append('null') -- original implementation eradicated any information
                  -- run the object's string method and use that value which may help debugging, if needed
@@ -310,8 +306,10 @@
 ::method parseRexxObjectLegible private
     expose buffer leadin
     use strict arg rexxObject, level=0, leadin="   "
-
     select
+        when rexxObject~hasMethod('makejson') then do -- this will handle .JsonBoolean as well
+            buffer~append(rexxObject~makeJson)
+        end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxOrderedCollectionLegible(rexxObject,level)
         end
@@ -324,14 +322,15 @@
         when rexxObject~isNil then do
             buffer~append('null')
         end
-        when rexxObject~isA(.JsonBoolean) then do
-            buffer~append(rexxObject~makeJson)
-        end
         when rexxObject~hasMethod('makearray') then do
                 self~parseRexxObjectLegible(rexxObject~makearray, level+1)
         end
         otherwise
-            buffer~append('null')
+            do
+                 -- buffer~append('null') -- original implementation eradicated any information
+                 -- run the object's string method and use that value which may help debugging, if needed
+                 buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
+            end
     end
 
 ::method parseRexxOrderedCollectionLegible private

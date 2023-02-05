@@ -347,18 +347,18 @@ else
 ::method test_class_without_json_support
   j=.json~new
   o=.class_without_json_support~new
-  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
   self~assertEquals('"a CLASS_WITHOUT_JSON_SUPPORT"', j~toJson(o))
 
 
 ::method test_class_without_json_support_quotes
   j=.json~new
   o=.class_without_json_support_quotes~new
-  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
   self~assertEquals('"n_\"/\"_a"', j~toJson(o))
 
   o=.class_without_json_support_quotes~new('o"o')
-  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
   self~assertEquals('"o\"o"', j~toJson(o))
 
 
