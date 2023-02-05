@@ -176,6 +176,10 @@
 <entry>Gets the value of the horizontal extent for the combo box.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetItemDataClsComboBox"/></entry>
+<entry>Retrieves the item data associated with the specified comboBox item.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetItemHeightClsComboBox"/></entry>
 <entry>Determines the height of the list items or the height of the selection field in this combo box.</entry>
 </row>
@@ -228,6 +232,10 @@
 <entry>Reverts the color for this combo box to its default, if the <xref linkend="mthSetFullColor"/> method has previously been invoked on this combo box.</entry>
 </row>
 <row>
+<entry><xref linkend="mthRemoveItemDataClsComboBox"/></entry>
+<entry>Removes and returns the item data associated with the specified comboBox item.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSelectClsComboBox"/></entry>
 <entry>Selects the list entry that matches the specified text.</entry>
 </row>
@@ -258,6 +266,10 @@
 <row>
 <entry><xref linkend="mthSetHorizontalExtentClsComboBox"/></entry>
 <entry>Sets the width, in pixels, that the combo box's list box can be scrolled horizontally.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemDataClsComboBox"/></entry>
+<entry>Sets the item data associated for the specified comboBox item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetItemHeightClsComboBox"/></entry>
@@ -1113,6 +1125,81 @@ Simple Combo Box
 </variablelist>
 </section>  <!-- End ComboBox::getHorizontalExtent() -->
 
+<section id="mthGetItemDataClsComboBox" xreflabel="getItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemData(--+--------+--)------------------><
+                  +--index-+
+]]>
+</programlisting>
+<para>
+  Gets the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item to retrieve the item data from.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns the item data associated with the specified item, or the .nil object if there is no data
+   associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any, or
+    all, of the comboBox items. The data value can be any ooRexx object. The data value is set using
+    the <xref linkend="mthSetItemDataClsComboBox"/> method. If needed the data value can be removed from a list-view item through
+    the <xref linkend="mthRemoveItemDataClsComboBox"/> method. Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the data stored for the selected combooBox item and says it's string value.
+    The data can be any ooRexx object
+<programlisting>
+<![CDATA[
+
+  ::method initDialog
+…
+  self~connectComboBoxEvent(100, "SELCHANGE", "onSelChange")
+…
+::method onSelChange                                               unguarded
+use arg info, hwnd, id, notifyCode, comboBox
+  idx = comboBox~selectedIndex
+  if idx > 0
+  then say idx':' comboBox~getItemData(idx)
+RETURN 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getItemData() -->
+
 <section id="mthGetItemHeightClsComboBox" xreflabel="getItemHeight"><title>getItemHeight</title>
 <indexterm><primary>getItemHeight</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>getItemHeight</secondary></indexterm>
@@ -1782,6 +1869,59 @@ New minimum visible setting is:  10
 </variablelist>
 </section>  <!-- End ComboBox::removeFullColor() -->
 
+<section id="mthRemoveItemDataClsComboBox" xreflabel="RemoveItemData"><title>removeItemData</title>
+<indexterm><primary>removeItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>removeItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeItemData(--+--------+--)---------------><
+                     +--index-+
+]]>
+</programlisting>
+<para>
+  Removes and returns the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item whose data value is being removed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns the item data value associated with the specified item, or .nil if there is no data
+   associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any, or
+    all, of the comboBox items. The data value can be any ooRexx object. The data value is set using
+    the <xref linkend="mthSetItemDataClsComboBox"/> method. The data value can be retrieved without
+    removing it from a list-view item through the <xref linkend="mthGetItemDataClsComboBox"/> method.
+    Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::RemoveItemData() -->
+
 
 <section id="mthSelectClsComboBox" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary><secondary>ComboBox class</secondary></indexterm>
@@ -2344,6 +2484,65 @@ New minimum visible setting is:  10
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ComboBox::setHorizontalExtent() -->
+
+<section id="mthSetItemDataClsComboBox" xreflabel="setItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemData(--+--------+--)------------------><
+                  +--index-+
+]]>
+</programlisting>
+<para>
+  Sets the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item the data value is associated with.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The data value to store for the list-view item. This can be any Rexx object. (Recall that in
+      ooRexx numbers and strings are also objects.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns true on success, false on error. An error is unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any,
+    or all, of the comboBox items. The data value can be any ooRexx object. The data value can be
+    retrieved without removing it from a list-view item through the <xref linkend="mthGetItemDataClsComboBox"/> method,
+    or it can be retrieved and removed through the <xref linkend="mthRemoveItemDataClsComboBox"/> method.
+    Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setItemData() -->
 
 <section id="mthSetItemHeightClsComboBox" xreflabel="setItemHeight"><title>setItemHeight</title>
 <indexterm><primary>setItemHeight</primary><secondary>ComboBox class</secondary></indexterm>
