@@ -66,15 +66,20 @@
                           may break existing code if it tests for instance of .directory
                           (.stringtable is not a subclass of .directory)
 
-                        -
+            2023-02-05: - if makejson method (cf. request-protocol) then it will get run
 
+                        - if an object that cannot be handled then use its string value
+                          (the objectname) as the JSON encoded value to allow for debugging,
+                          if necessary; previously 'null' was used, not indicating a problem/error
+                          at all, but wiping out the entire information about the object
+                          does not seem to be right
 */
 
 /**
     An ooRexx utility class to encode and decode ooRexx objects in JSON (RFC 4627).
 */
 
-::class json public
+::class "JSON" public
 
 /** Returns the .JsonBoolean proxy for <code>.true</code>, which ensures a proper JSON encoding.
     It can be used interchangeably with ooRexx' <code>.true</code> or <code>1</code> values.
@@ -100,6 +105,7 @@
 ::method init
     expose eJS uJS ctrl crlf legible
     use arg legible=.false    -- default to producing minimized json
+    .Validate~logical("legible",legible)  -- test for logical value 0 or 1
 
     eJS = .directory~new() -- escape Javascript
     eJS['08'x] = '\b'
@@ -222,10 +228,18 @@
             buffer~append(rexxObject~makeJson)
         end
         otherwise
-            if rexxObject~hasMethod('makearray') then do
+            if rexxObject~hasMethod('makejson') then do
+               buffer~append(rexxObject~makeJson)
+            end
+            else if rexxObject~hasMethod('makearray') then do
                 self~parseRexxObject(rexxObject~makearray())
             end
-            else buffer~append('null')    -- TODO: shouldn't we supply an error indicator instead?
+            else
+            do
+                 -- buffer~append('null') -- original implementation eradicated any information
+                 -- run the object's string method and use that value which may help debugging, if needed
+                 buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
+            end
     end
 
 ::method parseRexxArray private
@@ -678,13 +692,14 @@ parseError: raise propagate
 
 /* ========================================================================= */
 
-/** A private ooRexx class to represent a JSON boolean (logical) value. It inherits from
+/** An ooRexx class to represent a JSON boolean (logical) value. It inherits from
     the ooRexx mixinclass <code>Comparable</code> and therefore implements its abstract
     method <code>compareTo</code>.
-    To get access to the JsonBoolean true and false sentinels use the JSON class attributes
+    To get access to the <code>JsonBoolean</code> <code>true</code> and <code>false</code>
+    sentinels it is advised to use the JSON class attributes
     <code>true</code> and <code>false</code>.
 */
-::class "JsonBoolean" inherit comparable
+::class "JsonBoolean" public inherit comparable
 
 /** Class getter attribute method that refers to the proxy object that represents the value <code>.true</code>.
 */

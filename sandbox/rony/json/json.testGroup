@@ -331,14 +331,55 @@ else
   self~expectSyntax(88.927)
   j~legible=3        -- cause a condition
 
+::method test_json_create_json_with_nonboolean_value
+  self~expectSyntax(88.927)
+  j=.json~new(3)     -- no or a boolean value
+
+::method test_class_with_makejson
+  j=.json~new
+  o=.class_with_makejson~new
+  self~assertEquals('"n/a"', j~toJson(o))
+
+  o=.class_with_makejson~new('o"o')
+  self~assertEquals('"o\"o"', j~toJson(o))
+
+
+::method test_class_without_json_support
+  j=.json~new
+  o=.class_without_json_support~new
+  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"a CLASS_WITHOUT_JSON_SUPPORT"', j~toJson(o))
+
+
+::method test_class_without_json_support_quotes
+  j=.json~new
+  o=.class_without_json_support_quotes~new
+  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"n_\"/\"_a"', j~toJson(o))
+
+  o=.class_without_json_support_quotes~new('o"o')
+  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"o\"o"', j~toJson(o))
+
+
 
 ::method test_jsonBoolean
    -- test the JSONBoolean values, note: using assertEquals() as assertSame() will check the class
   jsonTrue=.json~true
+  jsonBooleanTrue=.jsonBoolean~true
+  self~assertIsA(jsonTrue,.JsonBoolean)
   self~assertEquals(jsonTrue,.true)
+  self~assertTrue(jsonTrue~?(.true,.false))     -- test forwarding to string
+  self~assertEquals(jsonTrue,jsonBooleanTrue)
+  self~assertSame(jsonTrue,jsonBooleanTrue)     -- identical
 
   jsonFalse=.json~false
+  jsonBooleanFalse=.jsonBoolean~false
+  self~assertIsA(jsonFalse,.JsonBoolean)
   self~assertEquals(jsonFalse,.false)
+  self~assertFalse(jsonFalse~?(.true,.false))   -- test forwarding to string
+  self~assertEquals(jsonFalse,jsonBooleanFalse)
+  self~assertSame(jsonFalse,jsonBooleanFalse)   -- identical
 
   self~expectSyntax(97.2)
   tmp=jsonTrue~class~new(1)   -- this is illegal, no one but JSONBoolean itself can create instances of itself
@@ -446,6 +487,28 @@ else
 }
 ::END
 
+
+/* ******************************************************* */
+::class class_with_makejson    -- a class that can fulfill request('json'): has makejson method
+::method init
+  expose value
+  use arg value="n/a"
+
+::method makejson    -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return '"' || value~string~changeStr('"','\"') || '"'
+
+/* ******************************************************* */
+::class class_without_json_support  -- a class that cannot be handled by toJSON, so use its string value
+
+/* ******************************************************* */
+::class class_without_json_support_quotes -- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value='n_"/"_a'  -- test whether string gets escaped in this case
+::method string
+  expose value
+  return value~string
 
 
 ::options novalue error
