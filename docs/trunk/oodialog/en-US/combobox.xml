@@ -1182,10 +1182,11 @@ Simple Combo Box
 <programlisting>
 <![CDATA[
 
-  ::method initDialog
-…
+::method initDialog
+  ...
   self~connectComboBoxEvent(100, "SELCHANGE", "onSelChange")
-…
+  ...
+
 ::method onSelChange                                               unguarded
 use arg info, hwnd, id, notifyCode, comboBox
   idx = comboBox~selectedIndex
