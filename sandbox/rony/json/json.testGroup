@@ -323,17 +323,30 @@ else
   leg3 = j~toJson(obj3,.true)
   self~assertSame(leg1,leg3)
 
-  -- test the legible attribute
-  self~assertFalse(j~legible)
-  j~legible=.true
-  self~assertTrue(j~legible)
+  --- test via class
+  obj1 = .json~fromJson(wiki_json)   -- returns a directory object
+  min1 = .json~toJson(obj1)          -- by default minimizes
+  self~assertSame(min1,wiki_min_json)
 
-  self~expectSyntax(88.927)
-  j~legible=3        -- cause a condition
+  leg1 = .json~toJson(obj1,.true)    -- get legible rendering
+  self~assertSame(leg1,wiki_leg_json)
+
+  obj2 = .json~fromJson(min1)
+  min2 = .json~toJson(obj2)
+  self~assertSame(min1,min2)
+  leg2 = .json~toJson(obj2,.true)
+  self~assertSame(leg1,leg2)
+
+  obj3 = .json~fromJson(leg1)
+  min3 = .json~toJson(obj2)
+  self~assertSame(min1,min3)
+  leg3 = .json~toJson(obj3,.true)
+  self~assertSame(leg1,leg3)
+
 
 ::method test_json_create_json_with_nonboolean_value
-  self~expectSyntax(88.927)
-  j=.json~new(3)     -- no or a boolean value
+  self~expectSyntax(93.902)
+  j=.json~new(3)     -- no argument allowed
 
 ::method test_class_with_makejson
   j=.json~new
@@ -407,11 +420,11 @@ else
      s~close
      self~assertSame(minimizedJson,values[2])
 
-     .json~toJsonFile(outFiles[3],obj)          -- legible=.true by default
+     .json~toJsonFile(outFiles[3],obj)          -- legible=.false by default
      s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading
-     legibleJson = s~charin(1,s~chars)
+     minimizedJson = s~charin(1,s~chars)
      s~close
-     self~assertSame(legibleJson,values[3])
+     self~assertSame(minimizedJson,values[2])
 
      .json~toJsonFile(outFiles[3],obj, .true)   -- legible=.true by default
      s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading

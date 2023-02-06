@@ -73,6 +73,17 @@
                           if necessary; previously 'null' was used, not indicating a problem/error
                           at all, but wiping out the entire information about the object
                           does not seem to be right
+
+            2023-02-06: - remove all unnecessary features (no real reason for a legible attribute)
+
+                        - leave optional argument that allows creating legible JSON, however default to
+                          minimized also with toJSONFile such that the same applies (easier to remember)
+                          as with toJSON
+
+                        - allow using toJSON, toJSONFile, fromJSON and fromJSONFile directly via .JSON
+
+                        - rearrange the type tests (move isA(.string) to top as this is probably
+                          the most used encoding value; place makejson at the end of the select
 */
 
 /**
@@ -86,7 +97,7 @@
 
     @return the .JsonBoolean value for <code>.true</code>
 */
-::attribute true     get class
+::attribute true     get class unguarded
   return .jsonBoolean~true
 
 /** Returns the .JsonBoolean proxy for <code>.false</code>, which ensures a proper JSON encoding.
@@ -94,7 +105,7 @@
 
     @return the .JsonBoolean value for <code>.false</code>
 */
-::attribute false    get class
+::attribute false    get class unguarded
   return .jsonBoolean~false
 
 
@@ -103,9 +114,8 @@
  * Constructor, initilizes the instance.
  */
 ::method init
-    expose eJS uJS ctrl crlf legible
-    use arg legible=.false    -- default to producing minimized json
-    .Validate~logical("legible",legible)  -- test for logical value 0 or 1
+    expose eJS uJS ctrl crlf
+    use strict arg      -- no arguments allowed
 
     eJS = .directory~new() -- escape Javascript
     eJS['08'x] = '\b'
@@ -126,20 +136,6 @@
     ctrl = .Set~of(' ', '}', ']', ',', '09'x, '0a'x, '0d'x)
 
     crlf = "0d0a"x
-
-/** Returns current value of attribute <code>legible</code>.
-*   @return <code>.true</code> or <code>.false</code>
-*/
-::attribute legible get
-
-/** Returns current value of attribute <code>legible</code>.
-*   @return <code>.true</code> or <code>.false</code>
-*/
-::attribute legible set
-  expose legible
-  use strict arg value
-  .Validate~logical("legible",value)   -- test for logical value 0 or 1
-  legible=value
 
 
 /** Utility class method to ease reading JSON files into an ooRexx object.
@@ -163,9 +159,9 @@
   return json~fromJson(jsonText)    -- use it to create ooRexx representation
 
 
-/** Utility class method to ease creating legible JSON files from an ooRexx object.
-*   If a minified JSON file is desired instead, supply <code>.false</code> as the
-*   third argument.
+/** Utility class method to ease creating minimized JSON files from an ooRexx object.
+*   If a legible (with ignorable whitespace to ease reading for humans) JSON file
+*   is desired instead, supply <code>.true</code> as the third argument.
 *
 <p>Example:
 <pre>
@@ -174,17 +170,27 @@
 *
 *  @param fn file name or file object to write produced JSON text to
 *  @param rexxObject rexxObject to encode as JSON
-*  @param isLegible optional logical value, defaults to <code>.false</code>
+*  @param isLegible optional logical value, defaults to <code>.false</code> (create minimized JSON string)
 *
 */
 ::method toJsonFile class
-  use strict arg fn, rexxObject, isLegible=.true
+  use strict arg fn, rexxObject, legible=.false -- TODO: adjust test and documentation! 202302-06
+  if arg()=3 then       -- check supplied argument
+     .Validate~logical("legible",legible) -- test for logical value 0 or 1
 
-  json=self~new(isLegible)          -- create json instance
-  jsonText=json~toJSON(rexxObject)  -- create JSON text representing the rexxObject
+  json=self~new                  -- create json instance
+  jsonText=json~toJSON(rexxObject, legible)  -- create JSON text representing the rexxObject
 
    -- open stream for writing, delete existing file, if any, write json text to it
   .stream~new(fn)~~open("write replace")~~charout(jsonText)~~close
+
+::method toJSON class unguarded     -- make available via class object
+  j=self~new                        -- create JSON instance
+  forward to (j)                    -- forward message to JSON instance
+
+::method fromJSON class unguarded   -- make available via class object
+  j=self~new                        -- create JSON instance
+  forward to (j)                    -- forward message to JSON instance
 
 
 /**
@@ -196,13 +202,16 @@
  *                      "null" if no makeArray method is available.
  */
 ::method toJSON
-    expose buffer legible
-    use strict arg rexxObject, tmpLegible=(legible)
+    expose buffer
+    use strict arg rexxObject, legible=(.false) -- default to minimized JSON
+
+  if arg()=2 then       -- check supplied argument
+     .Validate~logical("legible",legible) -- test for logical value 0 or 1
 
     buffer = .mutablebuffer~new()
-    if tmpLegible then
+    if legible then  -- human readable (adds ignorable whitespace)
        self~parseRexxObjectLegible(rexxObject)
-    else
+    else             -- default: minimized version (no ignorable whitespace)
        self~parseRexxObject(rexxObject)
 
     return buffer~string
@@ -212,8 +221,8 @@
     use strict arg rexxObject
 
     select
-        when rexxObject~hasMethod('makejson') then do    -- handles .JsonBoolean as well
-           buffer~append(rexxObject~makeJson)
+        when rexxObject~isA(.string) then do
+            self~parseRexxString(rexxObject)
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxArray(rexxObject)
@@ -221,21 +230,19 @@
         when rexxObject~isA(.MapCollection) then do
             self~parseRexxDirectory(rexxObject)
         end
-        when rexxObject~isA(.string) then do
-            self~parseRexxString(rexxObject)
-        end
         when rexxObject~isNil then do
             buffer~append('null')
+        end
+        when rexxObject~hasMethod('makejson') then do    -- handles .JsonBoolean as well
+           buffer~append(rexxObject~makeJson)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObject(rexxObject~makearray())
         end
         otherwise
-            do
-                 -- buffer~append('null') -- original implementation eradicated any information
-                 -- run the object's string method and use that value which may help debugging, if needed
-                 buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
-            end
+            -- buffer~append('null') -- original implementation eradicated any information
+            -- run the object's string method and use that value which may help debugging, if needed
+            buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
     end
 
 ::method parseRexxArray private
@@ -307,8 +314,8 @@
     expose buffer leadin
     use strict arg rexxObject, level=0, leadin="   "
     select
-        when rexxObject~hasMethod('makejson') then do -- this will handle .JsonBoolean as well
-            buffer~append(rexxObject~makeJson)
+        when rexxObject~isA(.string) then do
+            self~parseRexxStringLegible(rexxObject,,level)
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxOrderedCollectionLegible(rexxObject,level)
@@ -316,21 +323,19 @@
         when rexxObject~isA(.MapCollection) then do
             self~parseRexxMapCollectionLegible(rexxObject,level)
         end
-        when rexxObject~isA(.string) then do
-            self~parseRexxStringLegible(rexxObject,,level)
-        end
         when rexxObject~isNil then do
             buffer~append('null')
+        end
+        when rexxObject~hasMethod('makejson') then do -- this will handle .JsonBoolean as well
+            buffer~append(rexxObject~makeJson)
         end
         when rexxObject~hasMethod('makearray') then do
                 self~parseRexxObjectLegible(rexxObject~makearray, level+1)
         end
         otherwise
-            do
-                 -- buffer~append('null') -- original implementation eradicated any information
-                 -- run the object's string method and use that value which may help debugging, if needed
-                 buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
-            end
+            -- buffer~append('null') -- original implementation eradicated any information
+            -- run the object's string method and use that value which may help debugging, if needed
+            buffer~append('"', rexxObject~string~changeStr('"','\"'), '"')
     end
 
 ::method parseRexxOrderedCollectionLegible private
@@ -698,15 +703,15 @@ parseError: raise propagate
     sentinels it is advised to use the JSON class attributes
     <code>true</code> and <code>false</code>.
 */
-::class "JsonBoolean" public inherit comparable
+::class "JSONBoolean" public inherit comparable
 
 /** Class getter attribute method that refers to the proxy object that represents the value <code>.true</code>.
 */
-::attribute true  get class   -- true proxy, class getter method
+::attribute true  get class  unguarded -- true proxy, class getter method
 
 /** Class getter attribute method that refers to the proxy object that represents the value <code>.false</code>.
 */
-::attribute false get class   -- false proxy, class getter method
+::attribute false get class  unguarded -- false proxy, class getter method
 
 
 /** Make sure that only the JsonBoolean class can create instances.
@@ -731,7 +736,7 @@ parseError: raise propagate
 
 /** Forwards message to the string value of the JBoolean.
 */
-::method unknown
+::method unknown unguarded
   expose value          -- the string value of this JsonBoolean
   use arg msg, args
   forward to (value) message (msg) arguments (args)  -- maybe a method of the string value, forward it
@@ -741,7 +746,7 @@ parseError: raise propagate
 * @param other the other object representing a Boolean/logical value
 * @return <code>.true</code>, if this object and <code>other</code> can be reqarded to be equal, <code>.false</code> else
 */
-::method "="            -- equal method
+::method "=" unguarded           -- equal method
   expose value
   use strict arg other  -- other must be a Boolean value
   return value~compareTo(other)=0
@@ -750,24 +755,24 @@ parseError: raise propagate
 * @param other the other object representing a Boolean/logical value
 * @return <code>.true</code>, if this object and <code>other</code> cannot be reqarded to be equal, <code>.false</code> else
 */
-::method "\="           -- unequal method
+::method "\=" unguarded          -- unequal method
   expose value
   use strict arg other  -- other must be a Boolean value
   return value~compareTo(other)\=0
 
 /** Unequal comparison method, forwarding to method <code>&quot;\=&quot;</code>.
 */
-::method "<>"           -- synonym for "\="
+::method "<>" unguarded          -- synonym for "\="
   forward message ("\=")
 
 /** Unequal comparison method, forwarding to method <code>&quot;\=&quot;</code>.
 */
-::method "><"           -- synonym for "\="
+::method "><" unguarded          -- synonym for "\="
   forward message ("\=")
 
 /** Implements the abstract method inherited from the mixinclass <code>Comparable</code>.
 */
-::method compareTo   -- implementation for .orderable class: must return -1 if other greater, 0 if same, 1 otherwise
+::method compareTo unguarded  -- implementation for .orderable class: must return -1 if other greater, 0 if same, 1 otherwise
   expose value
   use strict arg other  -- other must be a Boolean value
 
@@ -787,7 +792,7 @@ parseError: raise propagate
 * @return a Rexx string representing its logical value, either &quot;<code>0</code>&quot; or
 *         &quot;<code>1</code>&quot;
 */
-::method makeString  -- allow instances of this class to be a plug in replacement for Rexx logical values
+::method makeString unguarded -- allow instances of this class to be a plug in replacement for Rexx logical values
   expose value
   return value
 
@@ -795,7 +800,7 @@ parseError: raise propagate
 * @return a string representing its logical value JSON encoded, either &quot;<code>false</code>&quot;
 *         or &quot;<code>true</code>&quot;
 */
-::method makeJSON    -- creates the string "true" or "false", depending on the attribute "value"
+::method makeJSON unguarded   -- creates the string "true" or "false", depending on the attribute "value"
   expose value
   if value=.true then return "true"
   return "false"
