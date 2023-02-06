@@ -84,6 +84,8 @@
 
                         - rearrange the type tests (move isA(.string) to top as this is probably
                           the most used encoding value; place makejson at the end of the select
+
+            2023-02-07: - handle makestring if available, cf. methods parseRexxObject[Legible]
 */
 
 /**
@@ -233,11 +235,14 @@
         when rexxObject~isNil then do
             buffer~append('null')
         end
-        when rexxObject~hasMethod('makejson') then do    -- handles .JsonBoolean as well
+        when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
            buffer~append(rexxObject~makeJson)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObject(rexxObject~makearray())
+        end
+        when rexxObject~hasMethod('makestring') then do  -- object can render itself as string
+           buffer~append('"', rexxObject~makeString~changeStr('"','\"'), '"')
         end
         otherwise
             -- buffer~append('null') -- original implementation eradicated any information
@@ -326,11 +331,14 @@
         when rexxObject~isNil then do
             buffer~append('null')
         end
-        when rexxObject~hasMethod('makejson') then do -- this will handle .JsonBoolean as well
-            buffer~append(rexxObject~makeJson)
+        when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
+           buffer~append(rexxObject~makeJson)
         end
         when rexxObject~hasMethod('makearray') then do
-                self~parseRexxObjectLegible(rexxObject~makearray, level+1)
+            self~parseRexxObjectLegible(rexxObject~makearray, level+1)
+        end
+        when rexxObject~hasMethod('makestring') then do  -- object can render itself as string
+           buffer~append('"', rexxObject~makeString~changeStr('"','\"'), '"')
         end
         otherwise
             -- buffer~append('null') -- original implementation eradicated any information

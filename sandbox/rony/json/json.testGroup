@@ -356,6 +356,18 @@ else
   o=.class_with_makejson~new('o"o')
   self~assertEquals('"o\"o"', j~toJson(o))
 
+::method test_class_with_makearray
+  o=.class_with_makearray~new
+  self~assertEquals('[1,31336,4881]', .json~toJson(o))
+
+
+::method test_class_with_makestring
+  o=.class_with_makestring~new
+  self~assertEquals('"1-31336-4881"', .json~toJson(o))
+
+  o=.class_with_makestring~new('3"4')
+  self~assertEquals('"3\"4"', .json~toJson(o))  -- escape double-quote
+
 
 ::method test_class_without_json_support
   j=.json~new
@@ -522,6 +534,28 @@ else
 ::method string
   expose value
   return value~string
+
+
+/* ******************************************************* */
+::class class_with_makearray -- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value=(1,31336,4881)
+
+::method makearray   -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return value       -- return array
+
+/* ******************************************************* */
+::class class_with_makestring-- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value="1-31336-4881"
+
+::method makestring  -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return value       -- return string
+
 
 
 ::options novalue error
