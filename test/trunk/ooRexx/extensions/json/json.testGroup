@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -296,6 +296,265 @@ else
 
   syntax:
   return condition("object")["MESSAGE"]
+
+::method test_wikipedia_to_json_from_resources
+   -- fetch resource (returns string array) and get its string value
+  wiki_json     = .resources~wikipedia.json          ~makeString
+  wiki_min_json = .resources~wikipedia_minimized.json~makeString
+  wiki_leg_json = .resources~wikipedia_legible.json  ~makeString
+
+  j    = .json~new
+  obj1 = j~fromJson(wiki_json)   -- returns a directory object
+  min1 = j~toJson(obj1)          -- by default minimizes
+  self~assertSame(min1,wiki_min_json)
+
+  leg1 = j~toJson(obj1,.true)    -- get legible rendering
+  self~assertSame(leg1,wiki_leg_json)
+
+  obj2 = j~fromJson(min1)
+  min2 = j~toJson(obj2)
+  self~assertSame(min1,min2)
+  leg2 = j~toJson(obj2,.true)
+  self~assertSame(leg1,leg2)
+
+  obj3 = j~fromJson(leg1)
+  min3 = j~toJson(obj2)
+  self~assertSame(min1,min3)
+  leg3 = j~toJson(obj3,.true)
+  self~assertSame(leg1,leg3)
+
+  --- test via class
+  obj1 = .json~fromJson(wiki_json)   -- returns a directory object
+  min1 = .json~toJson(obj1)          -- by default minimizes
+  self~assertSame(min1,wiki_min_json)
+
+  leg1 = .json~toJson(obj1,.true)    -- get legible rendering
+  self~assertSame(leg1,wiki_leg_json)
+
+  obj2 = .json~fromJson(min1)
+  min2 = .json~toJson(obj2)
+  self~assertSame(min1,min2)
+  leg2 = .json~toJson(obj2,.true)
+  self~assertSame(leg1,leg2)
+
+  obj3 = .json~fromJson(leg1)
+  min3 = .json~toJson(obj2)
+  self~assertSame(min1,min3)
+  leg3 = .json~toJson(obj3,.true)
+  self~assertSame(leg1,leg3)
+
+
+::method test_json_create_json_with_nonboolean_value
+  self~expectSyntax(93.902)
+  j=.json~new(3)     -- no argument allowed
+
+::method test_class_with_makejson
+  j=.json~new
+  o=.class_with_makejson~new
+  self~assertEquals('"n/a"', j~toJson(o))
+
+  o=.class_with_makejson~new('o"o')
+  self~assertEquals('"o\"o"', j~toJson(o))
+
+::method test_class_with_makearray
+  o=.class_with_makearray~new
+  self~assertEquals('[1,31336,4881]', .json~toJson(o))
+
+
+::method test_class_with_makestring
+  o=.class_with_makestring~new
+  self~assertEquals('"1-31336-4881"', .json~toJson(o))
+
+  o=.class_with_makestring~new('3"4')
+  self~assertEquals('"3\"4"', .json~toJson(o))  -- escape double-quote
+
+
+::method test_class_without_json_support
+  j=.json~new
+  o=.class_without_json_support~new
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"a CLASS_WITHOUT_JSON_SUPPORT"', j~toJson(o))
+
+
+::method test_class_without_json_support_quotes
+  j=.json~new
+  o=.class_without_json_support_quotes~new
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"n_\"/\"_a"', j~toJson(o))
+
+  o=.class_without_json_support_quotes~new('o"o')
+--  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
+  self~assertEquals('"o\"o"', j~toJson(o))
+
+
+
+::method test_jsonBoolean
+   -- test the JSONBoolean values, note: using assertEquals() as assertSame() will check the class
+  jsonTrue=.json~true
+  jsonBooleanTrue=.jsonBoolean~true
+  self~assertIsA(jsonTrue,.JsonBoolean)
+  self~assertEquals(jsonTrue,.true)
+  self~assertTrue(jsonTrue~?(.true,.false))     -- test forwarding to string
+  self~assertEquals(jsonTrue,jsonBooleanTrue)
+  self~assertSame(jsonTrue,jsonBooleanTrue)     -- identical
+
+  jsonFalse=.json~false
+  jsonBooleanFalse=.jsonBoolean~false
+  self~assertIsA(jsonFalse,.JsonBoolean)
+  self~assertEquals(jsonFalse,.false)
+  self~assertFalse(jsonFalse~?(.true,.false))   -- test forwarding to string
+  self~assertEquals(jsonFalse,jsonBooleanFalse)
+  self~assertSame(jsonFalse,jsonBooleanFalse)   -- identical
+
+  self~expectSyntax(97.2)
+  tmp=jsonTrue~class~new(1)   -- this is illegal, no one but JSONBoolean itself can create instances of itself
+
+
+::method test_wikipedia_to_json_from_file
+   -- fetch resource (returns string array) and get its string value
+   -- resource names
+  names ="wikipedia.json", "wikipedia_minimized.json", "wikipedia_legible.json"
+  values  =.array~new
+  inFiles =.array~new
+  outFiles=.array~new
+  do counter c n over names
+     values[c]   = .resources~entry(n)         -- get resource's value
+     inFiles[c]  = .TemporaryTestFile~new(.nil,n) ~~create(values[c])  -- create file, assign content
+     outFiles[c] = .TemporaryTestFile~new(.nil,"json_tmpOut_"n)
+  end
+
+  do i=1 to 3     -- read from original json, minimized json, legible json
+     obj = .json~fromJsonFile(inFiles[i])       -- read JSON file
+
+     .json~toJsonFile(outFiles[2],obj,.false)
+     s=.stream~new(outFiles[2])~~open("read")   -- open minimized for reading
+     minimizedJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(minimizedJson,values[2])
+
+     .json~toJsonFile(outFiles[3],obj)          -- legible=.false by default
+     s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading
+     minimizedJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(minimizedJson,values[2])
+
+     .json~toJsonFile(outFiles[3],obj, .true)   -- legible=.true by default
+     s=.stream~new(outFiles[3])~~open("read")   -- open minimized for reading
+     legibleJson = s~charin(1,s~chars)
+     s~close
+     self~assertSame(legibleJson,values[3])
+  end
+
+
+::resource wikipedia.json  -- cf. <https://en.wikipedia.org/wiki/JSON> (2023-02-04)
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "isAlive": true,
+  "age": 27,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021-3100"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "office",
+      "number": "646 555-4567"
+    }
+  ],
+  "children": [
+      "Catherine",
+      "Thomas",
+      "Trevor"
+  ],
+  "spouse": null
+}
+::END
+
+::resource wikipedia_minimized.json -- json.cls will sort by name(key)
+{"address":{"city":"New York","postalCode":"10021-3100","state":"NY","streetAddress":"21 2nd Street"},"age":27,"children":["Catherine","Thomas","Trevor"],"firstName":"John","isAlive":true,"lastName":"Smith","phoneNumbers":[{"number":"212 555-1234","type":"home"},{"number":"646 555-4567","type":"office"}],"spouse":null}
+::END
+
+::resource wikipedia_legible.json   -- json.cls will sort by name(key)
+{
+   "address": {
+      "city": "New York",
+      "postalCode": "10021-3100",
+      "state": "NY",
+      "streetAddress": "21 2nd Street"
+   },
+   "age": 27,
+   "children": [
+      "Catherine",
+      "Thomas",
+      "Trevor"
+   ],
+   "firstName": "John",
+   "isAlive": true,
+   "lastName": "Smith",
+   "phoneNumbers": [
+      {
+         "number": "212 555-1234",
+         "type": "home"
+      },
+      {
+         "number": "646 555-4567",
+         "type": "office"
+      }
+   ],
+   "spouse": null
+}
+::END
+
+
+/* ******************************************************* */
+::class class_with_makejson    -- a class that can fulfill request('json'): has makejson method
+::method init
+  expose value
+  use arg value="n/a"
+
+::method makejson    -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return '"' || value~string~changeStr('"','\"') || '"'
+
+/* ******************************************************* */
+::class class_without_json_support  -- a class that cannot be handled by toJSON, so use its string value
+
+/* ******************************************************* */
+::class class_without_json_support_quotes -- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value='n_"/"_a'  -- test whether string gets escaped in this case
+::method string
+  expose value
+  return value~string
+
+
+/* ******************************************************* */
+::class class_with_makearray -- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value=(1,31336,4881)
+
+::method makearray   -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return value       -- return array
+
+/* ******************************************************* */
+::class class_with_makestring-- a class that cannot be handled by toJSON
+::method init
+  expose value
+  use arg value="1-31336-4881"
+
+::method makestring  -- escape any double quotes to create a properly delimited JSON string
+  expose value
+  return value       -- return string
 
 
 
