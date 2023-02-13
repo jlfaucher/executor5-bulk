@@ -35,42 +35,29 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* Name: DOCPATH.REX                                                          */
+/* Name: DELTREE.REX                                                          */
 /* Type: Object REXX Script                                                   */
 /*                                                                            */
-    -- Get the path for the working copy of the ooRexx docs
-    parse arg docpath
-    if docpath = '' then do
-        say 'You must specify the path to the ooRexx docs.'
-        exit
-    end
-    /* Because the program is invoked as a command, there is only a single
-        argument, regardless of the number of words.  So, docpath contains the
-        entire path, unlike on Windows where double quotes are needed if the
-        path contains blanks. However it may be enclosed in quotes so we remove
-        them.   */
-    docpath = docpath~strip(,"'")~strip(,'"')   -- remove either type of quotes
-    -- verify that the path is valid
-    if \.file~new(docpath)~exists then do
-        say 'Unable to find' docpath'; please check the spelling.'
-        exit
-    end
-    -- get the properties collection
-    props = .doc.props
-    _ = props~getProperty('dir_sep')
-    docpath = docpath~strip(T, _)   -- remove any trailing directory separator
-    if docpath~words > 1 then
-        docpath = '"'docpath'"'
-    -- set docpath in the properties collection
-    props~setProperty('docpath', docpath)
-    call save_props                 -- save the updated properties
-    say 'The docpath is set to' docpath
+/* Provide a public routine to delete the contents of a directory recursively.
+    Note that the directory specified as the argument is NOT deleted but will be
+    empty following the execution and thus can be deleted if desired.
+*/
 
--- need to delete the Common_Content subfolder if it exists as it probably is
---  for a different docpath
-    ccfo = .file~new(props~getProperty('work_folder')||_'Common_Content')
-    if ccfo~isDirectory then
-        call delTree ccfo, props~getLogical('verbose')
-
-::requires doc_props.rex
-::requires delTree.rex
+::routine delTree public
+/* expects one argument, a file object representing a directory (not checked);
+    a second, optional, argument if .true will display the file/directory names
+    as they are deleted
+*/
+    use arg theDir, info?=.false
+    do aFile over theDir~listFiles
+        if aFile~isDirectory then do
+            call delTree aFile, info?
+            ? = aFile~delete
+            if info? then say "Removed" aFile~absolutePath':' ?~?('OK','FAILED')
+        end
+        else do
+            ? = aFile~delete
+            if info? then say "Deleted" aFile~absolutePath':' ?~?('OK','FAILED')
+        end
+    end
+    return

@@ -74,96 +74,103 @@
     files created.  */
 
     -- if needed, create/update the Common_Content subfolder
+    wf_name = props~getProperty('work_folder')  -- path to the work folder
+    wfDir = .file~new(wf_name)~~makeDirs        -- file object for work_folder
     cc_srce = docpath||_'oorexx'_'en-US'        -- path to Common_Content source
-    cc_dest = work_folder||_'Common_Content'    -- path to Common_Content dest.
+    cc_dest = wf_name||_'Common_Content'        -- path to Common_Content dest.
     fileList = .array~new                       -- for list of files copied
 
     destDir = .file~new(cc_dest)~~makeDir
     do aSrce over .file~new(cc_srce)~listFiles
-        call rxcopy aSrce, destDir, fileList, info?
+        call rxcopy aSrce, destDir, fileList, info?, .true
     end
     if info? then say fileList~toString
 
     -- then we need to clean up any existing files in 'work_folder'
-    work_folder = props~getProperty('work_folder')
-    do oldFile over .file~new(work_folder)~~makeDirs~listFiles
-        if oldFile~isFile then
-            oldFile~delete
+    do oldFile over wfDir~listFiles
+        if oldFile~isDirectory then do
+            if oldFile~compareTo(destDir) <> 0 then do  -- keep Common_Content
+                call delTree oldFile, info?             -- empty the folder
+                oldFile~delete                          -- delete the folder
+            end
+        end
+        else
+            oldFile~delete                              -- delete the file
     end
     p4tmp = '../../../' -- path for *.tmp files
     chgs = 0            -- lines changed in a file
     cfiles = 0          -- files changed
     totcLines = 0       -- total lines changed
     need_tmp? = .false  -- set to true if we find a reference to *.tmp
+    fileList~empty      -- clear the list of files copied
     do aFile over doc_source~listFiles
-        if aFile~isFile then do
+        if aFile~isDirectory then do
+        --  destDir = .file~new(wf_name)
+            call rxcopy aFile, wfDir, fileList, info?
+            if info? then say fileList~toString
+        end
+        else do
             src = .stream~new(aFile)
             theLines = src~arrayin
             src~close
             ext = aFile~extension~upper
-        end
-        else
-            ext = ''
-        select
-            when ext = 'XML' then do
-                -- process the source file, resolving p4tmp
-                chgs = 0
-                do j = 1 to theLines~items
-                    aLine = theLines[j]
-                    select
-                    /*  when aLine~caselessPos(cc) > 0 then do
-                            theLines[j] = aLine~caselessChangeStr(cc, rep)
-                            chgs += 1
-                        /*  say 'change in' aFile~name 'at line' j
-                            say 'new line is: ['theLines[j]']'  */
-                        end --*/
-                        when aLine~pos(p4tmp) > 0 then do
-                            theLines[j] = aLine~changeStr(p4tmp, '')
-                            chgs += 1
-                            need_tmp? = .true
-                        /*  say 'change in' aFile~name 'at line' j
-                            say 'new line is: ['theLines[j]']'  */
-                        end
-                        otherwise
-                            nop -- no changes needed to line
-                    end
-                end
-                if chgs > 0 then do
-                    cfiles += 1
-                    totcLines += chgs
-                end
-                newSource = .file~new(work_folder||_||aFile~name)
-                .stream~new(newSource)~~arrayOut(theLines)~close
-            end
-            when ext = 'ENT' then do    -- TBD
-                -- process the entities file, updating the VERSION and EDITION
-                -- determine if this document needs these changes
-                if props~getLogical(whichdoc~lower, .false) then do
-                    parse value getdocrev(whichdoc, docpath) with rev rdate
+            select
+                when ext = 'XML' then do
+                    -- process the source file, resolving p4tmp
+                    chgs = 0
                     do j = 1 to theLines~items
-                        parse value theLines[j] with w1 w2 w3 .
-                        if w2 = "VERSION", w1 = "<!ENTITY" then do  -- VERSION
-                            if w3~countstr(".") > 2 then do -- has revision lvl
-                                -- remove the revision level
-                                parse var w3 v1 "." v2 "." v3 "." .
-                                w3 = v1"."v2"."v3'">'
-                                theLines[j] = w1 w2 w3
+                        aLine = theLines[j]
+                        select
+                        /*  when aLine~caselessPos(cc) > 0 then do
+                                theLines[j] = aLine~caselessChangeStr(cc, rep)
+                                chgs += 1
+                            /*  say 'change in' aFile~name 'at line' j
+                                say 'new line is: ['theLines[j]']'  */
+                            end --*/
+                            when aLine~pos(p4tmp) > 0 then do
+                                theLines[j] = aLine~changeStr(p4tmp, '')
+                                chgs += 1
+                                need_tmp? = .true
+                            /*  say 'change in' aFile~name 'at line' j
+                                say 'new line is: ['theLines[j]']'  */
                             end
+                            otherwise   -- no changes needed to line
                         end
-                        if w2 = "EDITION", w1 = "<!ENTITY" then do  -- EDITION
-                            if (w3~left(3) = '"0.') | ,   -- old format
-                               (w3~pos('(revision') > 0) then do
-                                w3 = '"'rdate '(revision' rev~substr(2)')">'
-                                theLines[j] = w1 w2 w3
+                    end
+                    if chgs > 0 then do
+                        cfiles += 1
+                        totcLines += chgs
+                    end
+                end
+                when ext = 'ENT' then do
+                    -- process the entities file, updating the VERSION and EDITION
+                    -- determine if this document needs these changes
+                    if props~getLogical(whichdoc~lower, .false) then do
+                        parse value getdocrev(whichdoc, docpath) with rev rdate
+                        do j = 1 to theLines~items
+                            parse value theLines[j] with w1 w2 w3 .
+                            if w2 = "VERSION", w1 = "<!ENTITY" then do  -- VERSION
+                                if w3~countstr(".") > 2 then do -- has revision lvl
+                                    -- remove the revision level
+                                    parse var w3 v1 "." v2 "." v3 "." .
+                                    w3 = v1"."v2"."v3'">'
+                                    theLines[j] = w1 w2 w3
+                                end
+                            end
+                            if w2 = "EDITION", w1 = "<!ENTITY" then do  -- EDITION
+                                if (w3~left(3) = '"0.') | ,   -- old format
+                                   (w3~pos('(revision') > 0) then do
+                                    w3 = '"'rdate '(revision' rev~substr(2)')">'
+                                    theLines[j] = w1 w2 w3
+                                end
                             end
                         end
                     end
                 end
-                newSource = .file~new(work_folder||_||aFile~name)
-                .stream~new(newSource)~~arrayOut(theLines)~close
-            end
-            otherwise
-                nop -- must be a directory or unknown file type
+                otherwise   -- must be an unknown file type
+            end -- select
+            newSource = .file~new(wf_name||_||aFile~name)
+            .stream~new(newSource)~~arrayOut(theLines)~close
         end
     end
     if info? then do
@@ -173,11 +180,11 @@
     else
         say 'Source files have been modified.'
     if need_tmp? then do    -- create the *.tmp files in 'work_folder'
-        svnrev_tmp = work_folder||_'svnrev.tmp'
+        svnrev_tmp = wf_name||_'svnrev.tmp'
         address path 'svnversion' srcdir with output stream (svnrev_tmp)
         parse value date() with d . y
         theLine = date(W)', 'date(M) d', 'y
-        datepub_tmp = work_folder||_'datepub.tmp'
+        datepub_tmp = wf_name||_'datepub.tmp'
         .stream~new(datepub_tmp)~~lineout(theLine)~close
         say 'Temporary files have been created.'
     end
@@ -190,38 +197,45 @@
     say time() whichdoc 'source files are ready.'
 
 ::requires doc_props.rex
+::requires delTree.rex
 
 ::routine rxcopy
 -- routine to implement the "deep copy" of the XCOPY command
-    use arg srceObj, destObj, fn_list=(.array~new), info?=.false
+    use arg srceObj, destObj, fn_list=(.array~new), info?=.false, chkDate?=.false
     -- expects srce and dest to be file objects AND dest to be a directory
     --  fn_list is an optional array (or other ordered collection) that will
     --  receive the names of the files that were copied
+    --  info? controls the display of messages and chkDate? if true causes only
+    --  newer files to be copied
     dir_sep = .doc.props~getProperty('dir_sep')
     select
         when srceObj~isFile then do -- copying a single file
             -- ensure dest directory exists
             destObj~makeDirs
             -- do we need to copy it?
-            srceDate = srceObj~lastModified
             destFile = destObj~absolutePath || dir_sep || srceObj~name
-            destDate = .file~new(destFile)~lastModified
-            -- above may be .nil if destFile doesn't exist
-            select
-                when destDate == .nil then do
-                    if info? then say 'No destination file'
-                    cpy? = .true
+            if chkDate? then do
+                srceDate = srceObj~lastModified
+                destDate = .file~new(destFile)~lastModified
+                -- above may be .nil if destFile doesn't exist
+                select
+                    when destDate == .nil then do
+                        if info? then say 'No destination file'
+                        cpy? = .true
+                    end
+                    when srceDate > destDate then do
+                        if info? then say 'Newer source file'
+                        cpy? = .true
+                    end
+                    otherwise
+                        if info? then say 'Destination file is current'
+                        cpy? = .false
                 end
-                when srceDate > destDate then do
-                    if info? then say 'Newer source file'
-                    cpy? = .true
-                end
-                otherwise
-                    if info? then say 'Destination file is current'
-                    cpy? = .false
             end
+            else
+                cpy? = .true
             if cpy? then do
-                if info? then say 'Need to copy the file'
+                if info? then say 'Need to copy the file:' srceObj~name
                 inFile = .stream~new(srceObj)
                 inData = inFile~charIn(, inFile~chars)
                 inFile~close
@@ -237,7 +251,7 @@
             newDestObj = .file~new(newDestName)~~makeDirs
             srceList = srceObj~listFiles    -- array of file objects
             do anObj over srceList
-                call rxcopy anObj, newDestObj, fn_list, info?
+                call rxcopy anObj, newDestObj, fn_list, info?, chkDate?
             end
         end
         otherwise   -- neither file nor directory; probably typo
