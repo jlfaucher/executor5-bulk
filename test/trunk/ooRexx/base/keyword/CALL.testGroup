@@ -929,3 +929,29 @@ return testResult
   end
   return external
 
+-- Test that the search order algorithm correctly identifies when a filename
+-- has an extension (see SourceForge bug #1870)
+
+::method test_search_order_file_has_extension
+
+-- We need a directory with a dot to trigger this bug
+my.dir = .TemporaryTestDirectory~new(self,"my.dir")~~create
+
+-- Called program, with an extension
+called.rex = .TemporaryTestFile~new(my.dir,"called.rex")~~create("return 'ext'")
+
+s = .ooRexxUnit.directory.separator
+
+-- Call "my.dir\called.rex". This will work.
+call (my.dir~absolutePath()s"called.rex")
+self~assertSame("ext", result)
+
+-- Now call "my.dir\called". It's extensionless, so that the search order 
+-- should try a number of extensions. It will fail when the presence 
+-- of a dot in "my.dir" incorrectly makes ooRexx think that the filename 
+-- includes an extension.
+call (my.dir~absolutePath()s"called")
+self~assertSame("ext", result)
+
+called.rex~delete
+my.dir~delete
