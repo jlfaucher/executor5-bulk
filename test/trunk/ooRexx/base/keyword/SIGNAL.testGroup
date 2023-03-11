@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -257,4 +257,14 @@ return testResult
   self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options novalue syntax"))
   self~assertSyntaxError(98.986, ("signal off lostdigits; a = a; ::options all syntax"))
 
+-- [bugs:#1877] SYNTAX error raised on next clause only
+-- if (e.g.) a NOVALUE is raised and fails due to missing label, the resulting
+-- SYNTAX should be raised on the same clause instead of the next clause only
+::method test_bug_1877
+  signal on novalue
+  signal on syntax
+  a = novalue
+  a = "next clause"
+  syntax:
+  self~assertNotSame("next clause", a)
 
