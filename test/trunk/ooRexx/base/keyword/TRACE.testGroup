@@ -1,0 +1,1061 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2023 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.TRACE.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class TRACE.testGroup subclass ooTestCase public
+
+::method tearDown
+  -- Should a test case fail while a Monitor like .TraceOutput or .DebugInput
+  -- is redirected, this could trigger further test case failures.
+  -- The framework resets some of the Monitors for each test *group* run,
+  -- but we want to reset them here after each test *case* run.
+  .TraceOutput~destination(.Error)
+  .DebugInput~destination(.Input)
+  .Output~destination(.stdout)
+
+
+/*@@bug pending issues
+
+trace 2*3, trace (2*3), trace value 2*3 neither work as expected
+rexxref: "If interactive debugging is active and the option specified is a positive
+whole number (or an expression that evaluates to a positive whole number) ..."
+also rexxref: "The string or expression evaluates to ... A numeric option"
+trace 2*3
++++ Interactive trace.  Error 21:   Invalid data on end of clause.
++++ Interactive trace.  Error 21.906:  Data must not follow the TRACE setting; found "*".
+trace (2*3)
++++ Interactive trace.  Error 24:   Invalid TRACE request.
++++ Interactive trace.  Error 24.1:  TRACE request letter must be one of "ACEFILNOR"; found "6".
+trace value 2*3
++++ Interactive trace.  Error 24:   Invalid TRACE request.
++++ Interactive trace.  Error 24.1:  TRACE request letter must be one of "ACEFILNOR"; found "6".
+
+"trace i; nop; nop; nop" delays Ctrl+C on Windows
+
+"trace i; call r >a; r: use arg >v" trace prefix ">R>" not documented
+
+trace; say trace() should be N, but is O; same for trace ''
+
+"raise user 999 description 'dddd'" should trace >K> DESCRIPTION
+"raise user 999 return 1" should trace >K> RETURN instead of RESULT
+"raise user 999 exit 1" should trace >K> EXIT instead of RESULT
+
+"trace i; trace ??; say trace()" should not be nullstring
+
+strange: "trace i; a.[.line] = 1"
+
+>M> is only traced when assigment, not when message term
+ "trace i; .Array~new; a = .Array~new; (,)~empty; a = (,)~empty"
+
+message name isn't traced
+ "trace i; >v~value = 1"
+
+all 3-letter trace prefixes:
+ "a.0 = 1; address ! reverse(-.true rexx:String~null); parse var ! .; call r >a.; ::routine r; use arg >v.; ::options trace i"
+*/
+
+::method test_trace_option_invalid
+  -- TRACE request letter must be one of "ACEFILNOR"; found  "X"
+  self~assertSyntaxError(24.1, "trace ('Xyzzy')")
+
+::method test_trace_option_invalid_runtime
+  self~expectSyntax(24.1) -- TRACE request letter must be one of "ACEFILNOR"; found  "X"
+  trace (" ")
+
+::method test_trace_optional_additional
+  -- Data must not follow the TRACE setting; found "N".
+  self~assertSyntaxError(21.906, "trace n n")
+
+::method test_trace_numeric_invalid
+  self~expectSyntax(24.901) -- Numeric TRACE requests are valid only from interactive debugging
+  trace 1
+
+::method test_trace_value_missing
+  -- Missing expression following VALUE keyword of a TRACE instruction
+  self~assertSyntaxError(35.916, "trace value")
+
+::method test_trace_value_invalid
+  self~expectSyntax(24.1) -- TRACE request letter must be one of "ACEFILNOR"
+  trace value "?!"
+
+::method test_trace_option_none
+  self~disableTraceOutput
+  trace
+  --@@bug rexxref: "TRACE with no options .. continues tracing with TRACE Normal"
+  self~assertSame("N", trace(), "tracker bug #@@ ") -- should be N, but is O
+
+::method test_trace_nullstring
+  self~disableTraceOutput
+  trace ""
+  --@@bug rexxref: "TRACE with no options .. continues tracing with TRACE Normal"
+  self~assertSame("N", trace(), "tracker bug #@@") -- should be N, but is O
+
+::method test_trace_option
+  self~disableTraceOutput
+
+  -- symbol
+  all = "z"
+  trace all
+  self~assertSame("A", trace())
+
+  -- string
+  trace "command"
+  self~assertSame("C", trace())
+
+  -- expression
+  option = "ERROR"
+  trace (option)
+  self~assertSame("E", trace())
+
+  -- VALUE
+  option = "Fail"
+  trace value option
+  self~assertSame("F", trace())
+
+::method test_trace_valid_options
+  self~disableTraceOutput
+  do option over "acefilnor"~makeArray("")
+    trace (option)
+    self~assertSame(option~upper, trace(), "TRACE" option)
+  end
+
+-- trace output tests
+-- to generate the required "relative" trace output ::resource for
+-- Rexx clauses to be tested, put the clauses into a file starting with
+-- line 1, add ::options trace i as the last line, and run the code.
+-- Then copy/paste the output into the ::resource here.
+
+::method assertTraceOutput
+  use strict arg expected, actual, start
+  -- our captured trace output will typically have a trailing trace line
+  -- from "trace off", so we just ignore it, if it is there
+  if actual~items > expected~items, actual~lastItem~endsWith("trace off") then
+    actual~remove(actual~last)
+  msg = .endofline -
+   "actual trace output" .endofline || actual .endofline -
+   "expected trace output" .endofline || expected
+  self~assertTrue(expected~items = actual~items, "actual and expected trace output have different line counts" msg)
+  do i = 1 to expected~items
+    line = expected[i]
+    -- Wherever our expected trace output has a relative line number
+    -- (1, 2, ...) we replace it with an absolute line number calculated
+    -- as start + relative.
+    if line~left(7)~dataType("Whole") then do
+      line = (start + line~left(7))~right(6) line~subStr(8)
+    end
+    -- The IF test shows that actual trace output may have trailing blanks
+    -- (which may be a @@bug), so we strip trailing blanks for comparison.
+    if line \== actual[i]~strip("t") then
+      self~assertFail("trace output mismatch at line" i line msg)
+  end
+
+
+-- tests for all keyword instructions (ADDRESS through USE)
+
+-- trace ADDRESS keyword instruction
+::method test_trace_address
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  address
+  address 'invalid'
+  address ('invalid')
+  address 'invalid' ''
+  address 'invalid' with output normal
+  trace off
+  self~assertTraceOutput(.resources~address, t, start)
+
+  ::resource address end "  ::end"
+     1 *-* address
+     2 *-* address 'invalid'
+     3 *-* address ('invalid')
+       >L>   "invalid"
+       >>>   "invalid"
+     4 *-* address 'invalid' ''
+       >L>   ""
+       >>>   ""
+       +++   "RC(30)"
+     5 *-* address 'invalid' with output normal
+  ::end
+
+-- trace ARG keyword instruction
+::method test_trace_arg
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  arg
+  arg 1 a .
+  trace off
+  self~assertTraceOutput(.resources~arg, t, start)
+
+  ::resource arg end "  ::end"
+     1 *-* arg
+       >>>   ""
+     2 *-* arg 1 a .
+       >>>   ""
+       >L>   "1"
+       >>>   "1"
+       >=>   A <= ""
+       >.>   ""
+  ::end
+
+-- trace CALL keyword instruction
+::method test_trace_call
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  call left 'abc', 1
+  call on user 123
+  trace off
+  self~assertTraceOutput(.resources~call, t, start)
+
+  ::resource call end "  ::end"
+     1 *-* call left 'abc', 1
+       >L>   "abc"
+       >A>   "abc"
+       >L>   "1"
+       >A>   "1"
+       >>>   "a"
+     2 *-* call on user 123
+  ::end
+
+-- trace DO/END keyword instructions
+::method test_trace_do
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  do
+  end
+  do 2
+  end
+  do i = 1 to 3
+  end
+  do item over 'a', 'b'
+  end
+  trace off
+  self~assertTraceOutput(.resources~do, t, start)
+
+  ::resource do end "  ::end"
+     1 *-* do
+     2 *-* end
+     3 *-* do 2
+       >L>     "2"
+       >K>     "FOR" => "2"
+     4 *-* end
+     3 *-* do 2
+     4 *-* end
+     3 *-* do 2
+     5 *-* do i = 1 to 3
+       >L>     "1"
+       >L>     "3"
+       >K>     "TO" => "3"
+       >=>     I <= "1"
+     6 *-* end
+     5 *-* do i = 1 to 3
+       >V>     I => "1"
+       >=>     I <= "2"
+     6 *-* end
+     5 *-* do i = 1 to 3
+       >V>     I => "2"
+       >=>     I <= "3"
+     6 *-* end
+     5 *-* do i = 1 to 3
+       >V>     I => "3"
+       >=>     I <= "4"
+     7 *-* do item over 'a', 'b'
+       >L>     "a"
+       >A>     "a"
+       >L>     "b"
+       >A>     "b"
+       >>>     "an Array"
+       >K>     "OVER" => "an Array"
+       >=>     ITEM <= "a"
+     8 *-* end
+     7 *-* do item over 'a', 'b'
+       >=>     ITEM <= "b"
+     8 *-* end
+     7 *-* do item over 'a', 'b'
+  ::end
+
+-- trace DROP keyword instruction
+::method test_trace_drop
+  t = .TraceOutput~destination(.ArrayStream~new)
+  list = "rc result"
+  start = .line; trace i
+  drop (list)
+  trace off
+  self~assertTraceOutput(.resources~drop, t, start)
+
+  ::resource drop end "  ::end"
+     1 *-* drop (list)
+       >>>   "rc result"
+  ::end
+
+-- trace EXIT keyword instruction
+::method test_trace_exit
+  t = .TraceOutput~destination(.ArrayStream~new)
+  .Routine~new("trace_exit", "trace i; exit 99")~call
+  self~assertTraceOutput(.resources~exit, t, 0)
+
+  ::resource exit end "  ::end"
+     1 *-* exit 99
+       >L>   "99"
+       >>>   "99"
+  ::end
+
+-- trace EXPOSE keyword instruction
+::method test_trace_expose
+  expose list
+  list = "a b"
+  t = .TraceOutput~destination(.ArrayStream~new)
+  -- as EXPOSE must the first clause in a method, we need to dynamically
+  -- create a method with ::OPTIONS TRACE I, set it, and run it
+  m = .Method~new("", "expose (list); ::options trace i")
+  self~setMethod("trace_expose", m, "OBJECT") -- give access to object variables
+  self~trace_expose
+  self~assertTraceOutput(.resources~expose, t, 0)
+
+  ::resource expose end "  ::end"
+       >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "".
+     1 *-* expose (list);
+       >>>   "a b"
+  ::end
+
+-- trace FORWARD keyword instruction
+::method trace_forward
+::method trace_forward_ret
+  return "ret"
+::method test_trace_forward
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  forward message 'trace_forward' to (self) class (self~class) arguments (1, 2) continue
+  forward message 'trace_forward_ret' array ('a', , 'b') continue
+  trace off
+  self~assertTraceOutput(.resources~forward, t, start)
+
+  -- all keywords TO, MESSAGE, CLASS, ARGUMENTS, and ARRAY are traced
+  -- with >K>, and the return value is traced with >>>
+  ::resource forward end "  ::end"
+     1 *-* forward message 'trace_forward' to (self) class (self~class) arguments (1, 2) continue
+       >V>   SELF => "a TRACE.TESTGROUP"
+       >K>   "TO" => "a TRACE.TESTGROUP"
+       >L>   "trace_forward"
+       >K>   "MESSAGE" => "trace_forward"
+       >V>   SELF => "a TRACE.TESTGROUP"
+       >M>   "CLASS" => "The TRACE.TESTGROUP class"
+       >K>   "CLASS" => "The TRACE.TESTGROUP class"
+       >L>   "1"
+       >A>   "1"
+       >L>   "2"
+       >A>   "2"
+       >>>   "an Array"
+       >K>   "ARGUMENTS" => "an Array"
+     2 *-* forward message 'trace_forward_ret' array ('a', , 'b') continue
+       >L>   "trace_forward_ret"
+       >K>   "MESSAGE" => "trace_forward_ret"
+       >L>   "a"
+       >A>   "a"
+       >A>   ""
+       >L>   "b"
+       >A>   "b"
+       >K>   "ARRAY" => "an Array"
+       >>>   "ret"
+  ::end
+
+-- trace GUARD keyword instruction
+::method test_trace_guard
+  expose v
+  v = .true
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  guard on
+  guard off when v
+  trace off
+  self~assertTraceOutput(.resources~guard, t, start)
+
+  ::resource guard end "  ::end"
+     1 *-* guard on
+     2 *-* guard off when v
+       >V>   V => "1"
+       >K>   "WHEN" => "1"
+  ::end
+
+-- trace IF/THEN/ELSE keyword instructions
+::method test_trace_if
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  if .true then
+    nop
+  else
+    nop
+  if 0 = 1, 1 then
+    nop
+  else
+    nop
+  trace off
+  self~assertTraceOutput(.resources~if, t, start)
+
+  ::resource if end "  ::end"
+     1 *-* if .true
+       >E>   .TRUE => "1"
+       >>>   "1"
+     1 *-*   then
+     2 *-*     nop
+     5 *-* if 0 = 1, 1
+       >L>   "0"
+       >L>   "1"
+       >O>   "=" => "0"
+       >>>   "0"
+       >>>   "0"
+     7 *-*   else
+     8 *-*     nop
+  ::end
+
+-- trace INTERPRET keyword instruction
+::method test_trace_interpret
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  interpret 'a = 1'
+  trace off
+  self~assertTraceOutput(.resources~interpret, t, start)
+
+  ::resource interpret end "  ::end"
+     1 *-* interpret 'a = 1'
+       >L>   "a = 1"
+       >>>   "a = 1"
+     1 *-*   a = 1
+       >L>     "1"
+       >>>     "1"
+       >=>     A <= "1"
+  ::end
+
+-- trace ITERATE keyword instruction
+::method test_trace_iterate
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  do 2
+    iterate
+  end
+  trace off
+  self~assertTraceOutput(.resources~iterate, t, start)
+
+  ::resource iterate end "  ::end"
+     1 *-* do 2
+       >L>     "2"
+       >K>     "FOR" => "2"
+     2 *-*   iterate
+     1 *-* do 2
+     2 *-*   iterate
+     1 *-* do 2
+  ::end
+
+-- trace LEAVE keyword instruction
+::method test_trace_leave
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  do 2
+    leave
+  end
+  trace off
+  self~assertTraceOutput(.resources~leave, t, start)
+
+  ::resource leave end "  ::end"
+     1 *-* do 2
+       >L>     "2"
+       >K>     "FOR" => "2"
+     2 *-*   leave
+  ::end
+
+-- trace LOOP/END keyword instructions
+::method test_trace_loop
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  loop 2
+  end
+  loop i = 3 to 1 by -1 until i = 2
+  end
+  trace off
+  self~assertTraceOutput(.resources~loop, t, start)
+
+  ::resource loop end "  ::end"
+     1 *-* loop 2
+       >L>     "2"
+       >K>     "FOR" => "2"
+     2 *-* end
+     1 *-* loop 2
+     2 *-* end
+     1 *-* loop 2
+     3 *-* loop i = 3 to 1 by -1 until i = 2
+       >L>     "3"
+       >L>     "1"
+       >K>     "TO" => "1"
+       >L>     "1"
+       >P>     "-" => "-1"
+       >K>     "BY" => "-1"
+       >=>     I <= "3"
+     4 *-* end
+     3 *-* loop i = 3 to 1 by -1 until i = 2
+       >V>     I => "3"
+       >L>     "2"
+       >O>     "=" => "0"
+       >K>     "UNTIL" => "0"
+       >V>     I => "3"
+       >=>     I <= "2"
+     4 *-* end
+     3 *-* loop i = 3 to 1 by -1 until i = 2
+       >V>     I => "2"
+       >L>     "2"
+       >O>     "=" => "1"
+       >K>     "UNTIL" => "1"
+  ::end
+
+-- trace NOP keyword instruction and comments
+::method test_trace_nop
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  /* comments are not traced ... */
+  -- ... when on their own ...
+  /* ... or when leading a clause */ nop
+  nop -- but they are traced when ...
+  nop /* ... trailing a clause */
+  trace off
+  self~assertTraceOutput(.resources~nop, t, start)
+
+  ::resource nop end "  ::end"
+     3 *-* nop
+     4 *-* nop -- but they are traced when ...
+     5 *-* nop /* ... trailing a clause */
+  ::end
+
+-- trace NUMERIC keyword instruction
+::method test_trace_numeric
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  numeric digits (digits() + 1)
+  numeric form scientific
+  numeric fuzz 0
+  trace off
+  self~assertTraceOutput(.resources~numeric, t, start)
+
+  ::resource numeric end "  ::end"
+     1 *-* numeric digits (digits() + 1)
+       >F>   DIGITS => "9"
+       >L>   "1"
+       >O>   "+" => "10"
+       >K>   "DIGITS" => "10"
+     2 *-* numeric form scientific
+     3 *-* numeric fuzz 0
+       >L>   "0"
+       >K>   "FUZZ" => "0"
+  ::end
+
+-- trace OPTIONS keyword instruction
+::method test_trace_options
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  options "string"
+  trace off
+  self~assertTraceOutput(.resources~options, t, start)
+
+  ::resource options end "  ::end"
+     1 *-* options "string"
+       >L>   "string"
+       >>>   "string"
+  ::end
+
+-- trace PARSE keyword instruction
+::method test_trace_parse
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  parse value 1 2 3 with x y .
+  trace off
+  self~assertTraceOutput(.resources~parse, t, start)
+
+  ::resource parse end "  ::end"
+     1 *-* parse value 1 2 3 with x y .
+       >L>   "1"
+       >L>   "2"
+       >O>   " " => "1 2"
+       >L>   "3"
+       >O>   " " => "1 2 3"
+       >K>   "VALUE" => "1 2 3"
+       >>>   "1 2 3"
+       >=>   X <= "1"
+       >=>   Y <= "2"
+       >.>   "3"
+  ::end
+
+-- trace PROCEDURE keyword instruction
+::method test_trace_procedure
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  a = 1
+  a = p()
+  signal end
+  p: procedure expose a
+  return a + 1
+  end:
+  trace off
+  self~assertTraceOutput(.resources~procedure, t, start)
+
+  ::resource procedure end "  ::end"
+     1 *-* a = 1
+       >L>   "1"
+       >>>   "1"
+       >=>   A <= "1"
+     2 *-* a = p()
+     4 *-*   p:
+     4 *-*   procedure expose a
+     5 *-*   return a + 1
+       >V>     A => "1"
+       >L>     "1"
+       >O>     "+" => "2"
+       >>>     "2"
+       >F>   P => "2"
+       >>>   "2"
+       >=>   A <= "2"
+     3 *-* signal end
+     6 *-* end:
+  ::end
+
+-- trace PULL/PUSH/QUEUE keyword instructions
+::method test_trace_pull_push_queue
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  push "1 2 3"
+  queue "x y"
+  pull a . c
+  pull a
+  trace off
+  self~assertTraceOutput(.resources~pull_push_queue, t, start)
+
+  ::resource pull_push_queue end "  ::end"
+     1 *-* push "1 2 3"
+       >L>   "1 2 3"
+       >>>   "1 2 3"
+     2 *-* queue "x y"
+       >L>   "x y"
+       >>>   "x y"
+     3 *-* pull a . c
+       >K>   "PULL" => "1 2 3"
+       >>>   "1 2 3"
+       >=>   A <= "1"
+       >.>   "2"
+       >=>   C <= "3"
+     4 *-* pull a
+       >K>   "PULL" => "x y"
+       >>>   "X Y"
+       >=>   A <= "X Y"
+  ::end
+
+-- trace RAISE keyword instruction
+::method test_trace_raise
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  call p
+  signal end
+  p: raise user 999 array (1, 2) return
+  end:
+  trace off
+  self~assertTraceOutput(.resources~raise, t, start)
+
+  --@@bug: "raise user 999 description 'dddd'" should trace >K> DESCRIPTION
+  --@@bug: "raise user 999 return 1" should trace >K> RETURN instead of RESULT
+  --@@bug: "raise user 999 exit 1" should trace >K> EXIT instead of RESULT
+  ::resource raise end "  ::end"
+     1 *-* call p
+     3 *-*   p:
+     3 *-*   raise user 999 array (1, 2) return
+       >L>     "1"
+       >A>     "1"
+       >A>     "1"
+       >L>     "2"
+       >A>     "2"
+       >A>     "2"
+       >K>     "ARRAY" => "an Array"
+     2 *-* signal end
+     4 *-* end:
+  ::end
+
+-- our setup doesn't easily support testing REPLY
+-- RETURN is already tested with PROCEDURE
+
+-- trace SAY keyword instruction
+::method test_trace_say
+  t = .TraceOutput~destination(.ArrayStream~new)
+  .Output~destination(.ArrayStream~new)
+  start = .line; trace i
+  say 1 || 2
+  trace off
+  .Output~destination
+  self~assertTraceOutput(.resources~say, t, start)
+
+  ::resource say end "  ::end"
+     1 *-* say 1 || 2
+       >L>   "1"
+       >L>   "2"
+       >O>   "||" => "12"
+       >>>   "12"
+  ::end
+
+-- trace SELECT/WHEN/THEN/OTHERWISE keyword instructions
+::method test_trace_select
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  select
+    when .true then nop
+  end
+  select
+    when .false then nop
+    otherwise nop
+  end
+  a = 1
+  select case a
+    when 1 then nop
+  end
+  select case a
+    when 0 then nop
+    otherwise nop
+  end
+  trace off
+  self~assertTraceOutput(.resources~select, t, start)
+
+  -- @@bug #1850 but may well be intentional:
+  -- END is traced when flow goes through OTHERWISE, but
+  -- isn't when flow goes through WHEN
+  ::resource select end "  ::end"
+     1 *-* select
+     2 *-*   when .true
+       >E>     .TRUE => "1"
+       >>>     "1"
+     2 *-*     then
+     2 *-*       nop
+     4 *-* select
+     5 *-*   when .false
+       >E>     .FALSE => "0"
+       >>>     "0"
+     6 *-*   otherwise
+     6 *-*     nop
+     7 *-* end
+     8 *-* a = 1
+       >L>   "1"
+       >>>   "1"
+       >=>   A <= "1"
+     9 *-* select case a
+       >V>     A => "1"
+       >K>     "CASE" => "1"
+    10 *-*   when 1
+       >L>     "1"
+       >>>     "1"
+       >>>     "1"
+    10 *-*     then
+    10 *-*       nop
+    12 *-* select case a
+       >V>     A => "1"
+       >K>     "CASE" => "1"
+    13 *-*   when 0
+       >L>     "0"
+       >>>     "0"
+       >>>     "0"
+    14 *-*   otherwise
+    14 *-*     nop
+    15 *-* end
+  ::end
+
+-- trace SIGNAL keyword instruction
+::method test_trace_signal
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  signal lbl1; lbl1:
+  signal value "LBL2"; lbl2:
+  signal on user 999 name user999
+  trace off
+  self~assertTraceOutput(.resources~signal, t, start)
+
+  ::resource signal end "  ::end"
+     1 *-* signal lbl1;
+     1 *-* lbl1:
+     2 *-* signal value "LBL2";
+       >L>   "LBL2"
+       >K>   "VALUE" => "LBL2"
+     2 *-* lbl2:
+     3 *-* signal on user 999 name user999
+  ::end
+
+-- trace TRACE keyword instruction
+::method test_trace_trace
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  trace off
+  self~assertTraceOutput(.resources~trace, t, start)
+
+  ::resource trace end "  ::end"
+     1 *-* trace off
+  ::end
+
+-- trace USE keyword instruction
+::method test_trace_use
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  use arg a = .nil
+  trace off
+  self~assertTraceOutput(.resources~use, t, start)
+
+  ::resource use end "  ::end"
+     1 *-* use arg a = .nil
+       >E>   .NIL => "The NIL object"
+       >>>   "The NIL object"
+       >=>   A <= "The NIL object"
+  ::end
+
+-- the follwing tests cover three-letter trace prefixes not seen in any
+-- of the above tests: >C>, >I>, >M>, >N>
+
+-- three-letter trace prefix >C>
+::method test_trace_other_compound
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  a. = ''
+  i = 1
+  a = a.i.i.i.i
+  trace off
+  self~assertTraceOutput(.resources~compound, t, start)
+
+  ::resource compound end "  ::end"
+     1 *-* a. = ''
+       >L>   ""
+       >>>   ""
+       >=>   A. <= ""
+     2 *-* i = 1
+       >L>   "1"
+       >>>   "1"
+       >=>   I <= "1"
+     3 *-* a = a.i.i.i.i
+       >C>   A.I.I.I.I => "A.1.1.1.1"
+       >V>   A.I.I.I.I => ""
+       >>>   ""
+       >=>   A <= ""
+  ::end
+
+-- three-letter trace prefix >I>
+::method test_trace_other_entrypoint
+
+  t = .TraceOutput~destination(.ArrayStream~new)
+  .Routine~new("trace_other_entrypoint", "::options trace i")~call
+  self~assertTraceOutput(.resources~entrypoint, t, 0)
+
+  ::resource entrypoint end "  ::end"
+       >I> Routine "trace_other_entrypoint" in package "trace_other_entrypoint".
+  ::end
+
+-- three-letter trace prefix >M>
+::method test_trace_other_message
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  1~reverse
+  trace off
+  self~assertTraceOutput(.resources~message, t, start)
+
+  --@@bug >M> "REVERSE" => "1" missing if stand-alone "1~reverse" (works for assigment)
+  ::resource message end "  ::end"
+     1 *-* 1~reverse
+       >L>   "1"
+       >>>   "1"
+  ::end
+
+-- three-letter trace prefix >N>
+::method test_trace_other_namespace
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  a = rexx:Array
+  trace off
+  self~assertTraceOutput(.resources~namespace, t, start)
+
+  ::resource namespace end "  ::end"
+     1 *-* a = rexx:Array
+       >N>   REXX:ARRAY => "The Array class"
+       >>>   "The Array class"
+       >=>   A <= "The Array class"
+  ::end
+
+
+-- interactive debugging tests
+
+::method test_trace_?
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  -- queueing "trace 9" to .DebugInput avoids this test case hanging
+  -- in the unlikely case of a bug triggering an interactive debugging pause
+  .DebugInput~destination(.ArrayStream~of("trace 9"))
+
+  trace ? -- turn on interactive debugging
+  self~assertSame("?N", trace())
+
+  -- TRACE ? shouldn't have produced any output as we ran no commands
+  self~assertSame(0, t~items, "unexpected TRACE ? output" t)
+
+::method test_trace_??
+  trace ??
+  self~assertSame("", trace()) -- @@bug?
+
+-- when in interactive debugging mode TRACE instructions are ignored
+::method test_trace_ignored
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~of("trace 99")) -- belt and braces
+
+  trace ?c -- start interactive debugging mode
+  self~assertSame("?C", trace())
+  trace -- ignored
+  self~assertSame("?C", trace())
+  trace off -- ignored
+  self~assertSame("?C", trace())
+  trace ("*invalid*") -- invalid, but still ignored
+  self~assertSame("?C", trace())
+
+  self~assertSame(0, t~items, "unexpected TRACE ?C output" t) -- expect no output
+
+::method test_trace_?_option
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~new(5)~fill("trace 9")) -- belt and braces
+
+  trace ?c
+  self~assertSame("?C", trace())
+  call trace "?" -- stop interactive debugging mode
+
+  trace ?err
+  self~assertSame("?E", trace())
+  call trace "?"
+
+  trace ?F
+  self~assertSame("?F", trace())
+  call trace "?"
+
+  trace ???lbl -- triple ??? should be the same as a single ?
+  self~assertSame("?L", trace())
+  call trace "?"
+
+  trace ?n
+  self~assertSame("?N", trace())
+  call trace "off" -- stop all tracing
+
+  self~assertSame(0, t~items, "unexpected TRACE ?x output" t) -- expect no output
+
+::method test_trace_?a
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~of("trace 99")) -- continue tracing
+
+  trace ?a
+  self~assertSame("?A", trace())
+  call trace "off" -- stop all tracing
+
+  /* this is the expected TRACE ?A output
+       +++ "pppppppp METHOD path/to/ooRexx/base/keyword/TRACE.testGroup"
+   nnn *-* self~assertSame("?A", trace())
++++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
+   nnn *-*   call trace "off" -- stop tracing
+  */
+  self~assertSame(4, t~items, "unexpected TRACE ?A output" t)
+  self~assertSame("+++ *-* +++ Interactive *-*", -
+   t[1]~word(1) t[2]~word(2) t[3]~subWord(1, 2) t[4]~word(2), -
+   "unexpected TRACE ?A output" t)
+
+::method test_trace_?r
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~of("trace 99")) -- continue tracing
+
+  trace ?r
+  self~assertSame("?R", trace())
+  call trace "off" -- stop all tracing
+
+  -- with no expressions, the expected TRACE ?R output is the same as
+  -- above TRACE ?A output
+  self~assertSame(4, t~items, "unexpected TRACE ?R output" t)
+  self~assertSame("+++ *-* +++ Interactive *-*", -
+   t[1]~word(1) t[2]~word(2) t[3]~subWord(1, 2) t[4]~word(2), -
+   "unexpected TRACE ?R output" t)
+
+::method test_trace_?i
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~of("trace 999")) -- continue tracing
+
+  trace ?i
+  self~assertSame("?I", trace())
+  call trace "off" -- stop all tracing
+
+  /* this is the expected TRACE ?I output
+       +++ "pppppppp METHOD path/to/ooRexx/base/keyword/TRACE.testGroup"
+   nnn *-* self~assertSame("?I", trace())
+       >V>   SELF => "a TRACE.TESTGROUP"
+       >L>   "?I"
+       >A>   "?I"
+       >F>   TRACE => "?I"
+       >A>   "?I"
++++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
+   nnn *-*   call trace "off" -- stop all tracing
+       >L>     "off"
+       >A>     "off"
+  */
+  self~assertSame(11, t~items, "unexpected TRACE ?I output" t)
+  self~assertSame("+++ *-* >V> >L> >A> >F> >A> +++ Interactive *-* >L> >A>", -
+   t[1]~word(1) t[2]~word(2) t[3]~word(1) t[4]~word(1) t[5]~word(1) t[6]~word(1) -
+   t[7]~word(1) t[8]~subWord(1, 2) t[9]~word(2) t[10]~word(1) t[11]~word(1), -
+   "unexpected TRACE ?I output" t)
+
+
+
+-- ArrayStream allows to capture TRACE output to an Array
+-- we inherit from Stream just for the SAY method
+::class ArrayStream subclass Array inherit Stream
+::method init
+  expose line
+  line = 0
+::method lineOut
+  self~append(arg(1))
+  return 0
+::method lineIn
+  expose line
+  line += 1
+  if line > self~size then
+    raise notready
+  return self[line]
+
+
+::options all syntax error condition failure condition
