@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2719,4 +2719,13 @@ return testResult
 ::method test_no_end
    -- DO instruction on line .. requires matching END
    self~assertSyntaxError(14.1, ("do"))
+
+-- [bugs:#1879] DO LABEL X fails
+::method test_bug_1879
+  -- labeled DO blocks are a bit special and should report style LABELED_DO_BLOCK
+  -- otherwise this crashes the interpreter
+  do 2
+    do label l
+    end
+  end
 
