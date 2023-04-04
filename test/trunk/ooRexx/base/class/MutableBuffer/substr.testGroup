@@ -417,7 +417,7 @@ return testResult
 ::method 'test068'
     mb = .mutablebuffer~new('nv.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~substr(1,4,nv.)
+    xre = mb~substr(1,4,.nil)
 
 ::method 'test069'
     mb = .mutablebuffer~new('nv.10')
@@ -467,7 +467,7 @@ return testResult
 ::method 'test078'
     mb = .mutablebuffer~new('nv.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~substr(1,4,nv.)
+    xre = mb~substr(1,4,.nil)
 
 ::method 'test079'
     mb = .mutablebuffer~new('nv.10')

@@ -166,14 +166,14 @@ return testResult
 
 ::method 'test032'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutableBuffer~new('NV.')~caselessLastpos(nv.)
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil)
 
 ::method 'test034'
     self~assertSame('1', .mutableBuffer~new('NV')~caselessLastpos(nv))
 
 ::method 'test035'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutableBuffer~new('NV.')~caselessLastpos(nv.)
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil)
 
 ::method 'test036'
     self~assertSame('1', .mutableBuffer~new('NV.10')~caselessLastpos(nv.10))
@@ -448,14 +448,14 @@ return testResult
 
 ::method 'test117'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutableBuffer~new('NV.')~caselessLastpos(nv.,1)
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil,1)
 
 ::method 'test118'
     self~assertSame(0, .mutableBuffer~new('NV')~caselessLastpos(nv,1))
 
 ::method 'test119'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutableBuffer~new('NV.')~caselessLastpos(nv.,1)
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil,1)
 
 ::method 'test120'
     self~assertSame('0', .mutableBuffer~new('NV.10')~caselessLastpos(nv.10,1))

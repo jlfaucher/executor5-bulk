@@ -640,7 +640,7 @@ return testResult
 ::method 'test131'
     mb = .mutablebuffer~new('*')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,nv.)~string
+    xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,.nil)~string
 
 ::method 'test132'
     mb = .mutablebuffer~new(noval2)

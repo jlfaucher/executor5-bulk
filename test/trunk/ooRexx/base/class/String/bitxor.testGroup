@@ -226,7 +226,7 @@ return testResult
 
 ::method "test_53"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    '2'~BITXOR(nv2.)
+    '2'~BITXOR(.nil)
 
 ::method "test_54"
    self~assertSame('3'~BITXOR(nv2.3), '7D56322E33'x)
@@ -236,7 +236,7 @@ return testResult
 
 ::method "test_56"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    '2'~BITXOR(nv2.)
+    '2'~BITXOR(.nil)
 
 ::method "test_57"
    self~assertSame('3'~BITXOR(nv2.3), '7D56322E33'X)
@@ -246,7 +246,7 @@ return testResult
 
 ::method "test_59"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    nv2.~BITXOR(mv2.)
+    nv2.~BITXOR(.nil)
 
 ::method "test_60"
    self~assertSame(nv2.3~BITXOR(mv2.3), '0300000000'X)
@@ -358,7 +358,7 @@ return testResult
 
 ::method "test_91"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   self~assertSame('  '~BITXOR(,nv2.), ' ')
+   self~assertSame('  '~BITXOR(,.nil), ' ')
 
 ::method "test_92"
    self~expectSyntax(93.922)
@@ -481,7 +481,7 @@ return testResult
 
 ::method "test_122"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   self~assertSame('2'~BITXOR('1',nv2.), '1259'X)
+   self~assertSame('2'~BITXOR('1',.nil), '1259'X)
 
 ::method "test_123"
    self~expectSyntax(93.922)
@@ -504,7 +504,7 @@ return testResult
 
 ::method "test_128"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   self~assertSame(nv2.~BITXOR(nv2.,nv2.), '1259'X)
+   self~assertSame(nv2.~BITXOR(nv2.,.nil), '1259'X)
 
 ::method "test_129"
    self~expectSyntax(93.922)

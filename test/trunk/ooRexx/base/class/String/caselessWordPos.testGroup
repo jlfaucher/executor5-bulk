@@ -178,7 +178,7 @@ return testResult
 
 ::method 'test033'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessWordPos(nv.)
+    xre = 'NV.'~caselessWordPos(.nil)
 
 ::method 'test034'
     self~assertSame('1', 'NV.10'~caselessWordPos(nv.10))
@@ -449,7 +449,7 @@ return testResult
 
 ::method 'test118'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessWordPos(nv.,1)
+    xre = 'NV.'~caselessWordPos(.nil,1)
 
 ::method 'test119'
     self~assertSame('1', 'NV.10'~caselessWordPos(nv.10,1))

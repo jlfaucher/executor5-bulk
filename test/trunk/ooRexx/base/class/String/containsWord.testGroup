@@ -163,7 +163,7 @@ return testResult
 
 ::method 'test033'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~containsWord(nv.)
+    xre = 'NV.'~containsWord(.nil)
 
 ::method 'test034'
     self~assertSame('1', 'NV.10'~containsWord(nv.10))
@@ -434,7 +434,7 @@ return testResult
 
 ::method 'test118'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~containsWord(nv.,1)
+    xre = 'NV.'~containsWord(.nil,1)
 
 ::method 'test119'
     self~assertSame('1', 'NV.10'~containsWord(nv.10,1))

@@ -192,7 +192,7 @@ return testResult
 
 ::method 'test035'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'nv.'~overLay(nv.,1,60,'1')
+    xre = 'nv.'~overLay(.nil,1,60,'1')
 
 ::method 'test036'
     self~expectSyntax(93.924)
@@ -216,7 +216,7 @@ return testResult
 
 ::method 'test041'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'nv.'~overLay('nv.',1,60,nv.)
+    xre = 'nv.'~overLay('nv.',1,60,.nil)
 
 ::method 'test042'
     self~expectSyntax(93.922)

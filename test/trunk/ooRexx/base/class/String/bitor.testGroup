@@ -215,7 +215,7 @@ return testResult
 
 ::method "test_49"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = '2'~bitor(nv2.)
+    xre = '2'~bitor(.nil)
 
 ::method "test_50"
    self~assertSame('2'~bitor(nv2.3), '7E56322E33'x)
@@ -225,7 +225,7 @@ return testResult
 
 ::method "test_52"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = '2'~bitor(nv2.)
+    xre = '2'~bitor(.nil)
 
 ::method "test_53"
    self~assertSame('3'~bitor(nv2.3), '7F'X||'V2.3')
@@ -322,14 +322,14 @@ return testResult
 
 ::method "test_80"
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = ''~bitor(nv2.,'x')
+    xre = ''~bitor(.nil,'x')
 
 ::method "test_81"
    self~assertSame(''~bitor(nv2.3,'x'), '7E7E7A7E'x||'{')
 
 ::method "test_82"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   self~assertSame('   '~bitor(,nv2.), ' ')
+   self~assertSame('   '~bitor(,.nil), ' ')
 
 ::method "test_83"
    self~expectSyntax(93.922)
@@ -450,7 +450,7 @@ return testResult
 
 ::method "test_bitor2method113"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   self~assertSame(nv2.~bitor(nv2.,nv2.), nv2.)
+   self~assertSame(nv2.~bitor(.nil,.nil), nv2.)
 
 ::method "test_bitor2method114"
    self~expectSyntax(93.922)

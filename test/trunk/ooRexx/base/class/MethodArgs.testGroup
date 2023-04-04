@@ -83,6 +83,9 @@ return testResult
       instance~cancel
 /*Dbg if instance~hasMethod("makeString") then say "activate:" class~id "has makeString"*/
     allInstances[instance] = instance~hasMethod("makeString")
+    -- stem is a special case because it overrides the REQUEST() method, so while it does
+    -- not explicitly have a MAKESTRING method, it forwards the request to the default value.
+    if instance~isA(.stem) then allInstances[instance] = .true
   end
   -- cover a few special cases: .nil, .RexxInfo, .StackFrame
   allInstances[.nil] = .nil~hasMethod("makeString")
@@ -124,6 +127,7 @@ return testResult
   do with index instance item hasMakeString over self~allInstances
     -- assert that object~method(instance) fails <--> hasMakeString is .false
     -- positive 'exception's are allowed
+
     self~assertEquals(hasMakeString | exceptions~hasItem(instance~class), -
      self~try(object, method, .Array~of(instance)~appendAll(trailing)), -
      objectAndMethod"("instance~class~id")" hasMakeString~?("should", "shouldn't") "work")
@@ -218,7 +222,5 @@ return testResult
   self~checkRequestString(.File, "new")
   buffer = .MutableBuffer~new
   self~checkRequestString(buffer, "append")
-
-
 
 ::options novalue error

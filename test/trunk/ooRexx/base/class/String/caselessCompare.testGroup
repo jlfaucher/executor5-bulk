@@ -259,7 +259,7 @@ return testResult
 
 ::method "test_53"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   var =  'NV.'~caselessCompare(nv.)
+   var =  'NV.'~caselessCompare(.nil)
 
 ::method "test_54"
    self~assertSame('NV.10'~caselessCompare(nv.10), '0')
@@ -507,7 +507,7 @@ return testResult
 
 ::method "test_121"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   var = 'NV.*'~caselessCompare(nv.,'*')
+   var = 'NV.*'~caselessCompare(.nil,'*')
 
 ::method "test_122"
    self~assertSame('NV.10*'~caselessCompare(nv.10,'*'), '0')
@@ -518,7 +518,7 @@ return testResult
 
 ::method "test_124"
    self~expectSyntax(88.909) -- Argument .. must have a string value
-   'nv.'~caselessCompare('NV.*',nv.)
+   'nv.'~caselessCompare('NV.*',.nil)
 
 ::method "test_125"
    self~expectSyntax(93.922)

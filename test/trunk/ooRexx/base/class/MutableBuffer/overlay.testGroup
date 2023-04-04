@@ -250,7 +250,7 @@ return testResult
 ::method 'test035'
     mb = .mutablebuffer~new('nv.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~overLay(nv.,1,60,'1')
+    xre = mb~overLay(.nil,1,60,'1')
 
 ::method 'test036'
     mb = .mutablebuffer~new(noval2)
@@ -280,7 +280,7 @@ return testResult
 ::method 'test041'
     mb = .mutablebuffer~new('nv.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~overLay('nv.',1,60,nv.)
+    xre = mb~overLay('nv.',1,60,.nil)
 
 ::method 'test042'
     mb = .mutablebuffer~new('nv.10')

@@ -166,7 +166,7 @@ return testResult
 
 ::method 'test032'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessLastPos(nv.)
+    xre = 'NV.'~caselessLastPos(.nil)
 
 ::method 'test033'
     self~assertSame(1, nv.~caselessLastPos('NV.'))
@@ -176,7 +176,7 @@ return testResult
 
 ::method 'test035'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessLastPos(nv.)
+    xre = 'NV.'~caselessLastPos(.nil)
 
 ::method 'test036'
     self~assertSame('1', 'NV.10'~caselessLastPos(nv.10))
@@ -454,14 +454,14 @@ return testResult
 
 ::method 'test117'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessLastPos(nv.,1)
+    xre = 'NV.'~caselessLastPos(.nil,1)
 
 ::method 'test118'
     self~assertSame(0, 'NV'~caselessLastPos(nv,1))
 
 ::method 'test119'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~caselessLastPos(nv.,1)
+    xre = 'NV.'~caselessLastPos(.nil,1)
 
 ::method 'test120'
     self~assertSame('0', 'NV.10'~caselessLastPos(nv.10,1))

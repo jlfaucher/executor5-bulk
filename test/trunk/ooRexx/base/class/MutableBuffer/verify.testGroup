@@ -148,7 +148,7 @@ return testResult
 
 ::method 'test030'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutablebuffer~new('')~verify(nova.)
+    xre = .mutablebuffer~new('')~verify(.nil)
 
 ::method 'test031'
     self~expectSyntax(93.924)
@@ -169,7 +169,7 @@ return testResult
 
 ::method 'test037'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutablebuffer~new('')~verify(nova.)
+    xre = .mutablebuffer~new('')~verify(.nil)
 
 ::method 'test038'
     self~assertSame('0', .mutablebuffer~new('')~verify(noval.12))
@@ -180,7 +180,7 @@ return testResult
 
 ::method 'test040'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutablebuffer~new('')~verify('',xova.)
+    xre = .mutablebuffer~new('')~verify('',.nil)
 
 ::method 'test041'
     self~expectSyntax(93.915)
@@ -203,7 +203,7 @@ return testResult
 
 ::method 'test046'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutablebuffer~new('')~verify('',nova.)
+    xre = .mutablebuffer~new('')~verify('',.nil)
 
 ::method 'test047'
     self~assertSame('0', .mutablebuffer~new('')~verify('',noval.12))

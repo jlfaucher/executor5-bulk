@@ -159,7 +159,7 @@ return testResult
 
 ::method 'test032'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~lastPos(nv.)
+    xre = 'NV.'~lastPos(.nil)
 
 ::method 'test033'
     self~assertSame(1, nv.~lastPos('NV.'))
@@ -169,7 +169,7 @@ return testResult
 
 ::method 'test035'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~lastPos(nv.)
+    xre = 'NV.'~lastPos(.nil)
 
 ::method 'test036'
     self~assertSame('1', 'NV.10'~lastPos(nv.10))
@@ -447,14 +447,14 @@ return testResult
 
 ::method 'test117'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~lastPos(nv.,1)
+    xre = 'NV.'~lastPos(.nil,1)
 
 ::method 'test118'
     self~assertSame(0, 'NV'~lastPos(nv,1))
 
 ::method 'test119'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = 'NV.'~lastPos(nv.,1)
+    xre = 'NV.'~lastPos(.nil,1)
 
 ::method 'test120'
     self~assertSame('0', 'NV.10'~lastPos(nv.10,1))

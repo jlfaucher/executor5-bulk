@@ -427,7 +427,7 @@ return testResult
 
 ::method 'test118'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = .mutablebuffer~new('NV.')~wordPos(nv.,1)
+    xre = .mutablebuffer~new('NV.')~wordPos(.nil,1)
 
 ::method 'test119'
     self~assertSame('1', .mutablebuffer~new('NV.10')~wordPos(nv.10,1))

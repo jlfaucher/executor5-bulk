@@ -163,7 +163,7 @@ return testResult
 
 ::method 'test033'
     self~expectSyntax(88.909) -- Argument 1 must have a string value
-    xre = 'NV.'~wordPos(nv.)
+    xre = 'NV.'~wordPos(.nil)
 
 ::method 'test034'
     self~assertSame('1', 'NV.10'~wordPos(nv.10))
@@ -434,7 +434,7 @@ return testResult
 
 ::method 'test118'
     self~expectSyntax(88.909) -- Argument 1 must have a string value
-    xre = 'NV.'~wordPos(nv.,1)
+    xre = 'NV.'~wordPos(.nil,1)
 
 ::method 'test119'
     self~assertSame('1', 'NV.10'~wordPos(nv.10,1))

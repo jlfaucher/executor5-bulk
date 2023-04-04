@@ -222,11 +222,11 @@ return testResult
 ::method 'test032'
     mb = .mutablebuffer~new('NV.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~lastPos(nv.)
+    xre = mb~lastPos(.nil)
 
 ::method 'test033'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    mb = .mutablebuffer~new(nv.)
+    mb = .mutablebuffer~new(.nil)
 
 ::method 'test034'
     mb = .mutablebuffer~new('NV')
@@ -236,7 +236,7 @@ return testResult
 ::method 'test035'
     mb = .mutablebuffer~new('NV.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~lastPos(nv.)
+    xre = mb~lastPos(.nil)
 
 ::method 'test036'
     mb = .mutablebuffer~new('NV.10')
@@ -250,7 +250,7 @@ return testResult
 
 ::method 'test038'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    mb = .mutablebuffer~new(nv.)
+    mb = .mutablebuffer~new(.nil)
 
 ::method 'test039'
     mb = .mutablebuffer~new(nv.10)
@@ -670,7 +670,7 @@ return testResult
 ::method 'test117'
     mb = .mutablebuffer~new('NV.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~lastPos(nv.,1)
+    xre = mb~lastPos(.nil,1)
 
 ::method 'test118'
     mb = .mutablebuffer~new('NV')
@@ -680,7 +680,7 @@ return testResult
 ::method 'test119'
     mb = .mutablebuffer~new('NV.')
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    xre = mb~lastPos(nv.,1)
+    xre = mb~lastPos(.nil,1)
 
 ::method 'test120'
     mb = .mutablebuffer~new('NV.10')
@@ -694,7 +694,7 @@ return testResult
 
 ::method 'test122'
     self~expectSyntax(88.909) -- Argument .. must have a string value
-    mb = .mutablebuffer~new(nv.)
+    mb = .mutablebuffer~new(.nil)
 
 ::method 'test123'
     mb = .mutablebuffer~new(nv.10)
