@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -167,7 +167,7 @@ test_01:
 
 
 ::method test_invalid_option
-  -- USE must be followed by the keyword ARG or LOCAL
+  -- USE must be followed by the keyword ARG, LOCAL or STRICT
   self~assertSyntaxError(25.905, "use upper arg")
 
 ::method test_strict_invalid_option
@@ -447,4 +447,4 @@ test_01:
 ::attribute assignmentTerm
 
 
-::options novalue error
+::options all syntax
