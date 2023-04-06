@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -295,23 +295,48 @@ postorder execution.</para></listitem>
 </orderedlist>
 
 <section id="filesearch" revisionflag="changed"><title>&changed50;Locating External Rexx Files</title>
-<para>Rexx uses an extensive search procedure for locating program files.  The first
-element of the search procedure is the locations that will be checked for files.  The
-locations, in order of checking, are:</para>
+<para>Rexx uses an extensive search procedure for locating program files,
+which involves three elements: the file specification, a list of locations
+that will be checked for that file specification, and a list of file extensions.
+</para>
+<para>The first element of the search procedure is the file specification, which
+may or may not include a path.
+If a path is included, it can be either a relative path, or an absolute path.
+The file name itself may be extension qualified or not.
+</para>
+<programlisting>
+  call routine                -- no path and no extension specified
+  call "class\Routine.rex"    -- a file specification with a relative path
+  call "~/bin/routine.rex"    -- a file specification with an absolute path
+</programlisting>
+<para>If the file specification is without a path, or has a relative path,
+a list of locations is checked, until a match is found.
+The found location is then combined with the file specification to form the
+new path.
+</para>
+<para>If the file specification already includes an absolute path, checking the
+list of locations is bypassed.
+</para>
+<para>The second element of the search procedure is the list of locations
+that will be checked for the file specification.
+The locations, in order of checking, are:
+</para>
 <orderedlist>
 <listitem><para>
-The same directory the program invoking the external routine is located.  If this is
-an initial program execution or the calling program was loaded from the macrospace, this
-location is skipped.  Checking in this directory allows related program files to be called
-without requiring the directory be added to the search path.
+The same directory the program invoking the external routine is located.
+If this is an initial program execution or the calling program was loaded
+from the macrospace, this location is skipped.
+Starting the checks from this directory allows related program files
+to be called without requiring the directory be added to the search path.
 </para></listitem>
 <listitem><para>
 The current filesystem directory.
 </para></listitem>
 <listitem><para>
-Some applications using Rexx as a scripting language may define an extension
-path used to locate called programs.  If the Rexx program was invoked directly
-from the system command line, then no extension path is defined.
+Some applications using Rexx as a scripting language may define an additional
+search path used to locate called programs.
+If the Rexx program was invoked directly from the system command line, then
+no additional search path is defined.
 </para></listitem>
 <listitem><para>
 Any directories specified via the REXX_PATH environment variable.
@@ -320,7 +345,7 @@ Any directories specified via the REXX_PATH environment variable.
 Any directories specified via the PATH environment variable.
 </para></listitem>
 </orderedlist>
-<para>The second element of the search process is the file extension.  If the
+<para>The third element of the search process is the file extension.  If the
 routine name contains at least one period, then this routine is extension
 qualified.  The search locations above will be checked for the target file unchanged, and
 no additional steps will be taken.  If the routine name is not extension qualified, then
@@ -345,7 +370,7 @@ If the calling program has a file extension, then the interpreter will attempt t
 a file using the same extension as the caller.
 </para></listitem>
 <listitem><para>
-Some applications using Rexx as a scripting language may define additional extension types.
+Some applications using Rexx as a scripting language may define additional extensions.
 For example, an editor might define a preferred extension that should be
 used for editor macros.  This extension would be searched next.
 </para></listitem>
