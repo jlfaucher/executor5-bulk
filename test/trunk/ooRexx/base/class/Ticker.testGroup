@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -159,14 +159,18 @@ return testResult
   self~assertSame(ticker, t1~stoppedTicker)
   self~assertSame("attachment", t1~stoppedAttached)
 
--- now a test with a message object.  This does not
--- pass along the ticker object
+-- Now a test with a message object.  This does not pass along the
+-- Ticker object, which means the TickerWaiter won't be able to cancel
+-- our Ticker if one of our asserts fails.
 ::method test_ticker_three_args_string_trigger_message
   t1 = .tickerWaiter~new
   m1 = .Message~new(t1, "triggered")
   ticker = .Ticker~new(0.5, m1, "attachment")
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
+  -- cancel the Ticker before there is a chance that any assert will fail
+  -- (see also comment in TickerWaiter triggered method)
+  ticker~cancel
   self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(.nil, t1~triggerTicker)   -- .Message doesn't pass
   self~assertSame(.nil, t1~triggerAttached) -- no ticker, so no attachment
@@ -247,6 +251,12 @@ return testResult
   if .nil \== ticker then
     triggerAttached = ticker~attachment
 
+  -- Our test group will hang if a test case fails an assert with the Ticker
+  -- still running.  To avoid this we cancel our Ticker after five ticks.
+  -- (we won't be able to do this for the Message case.)
+  if triggerCount >= 5, .nil \== ticker then
+    ticker~cancel
+
 ::method cancel unguarded
   expose stopped stoppedTicker stoppedAttached
   use strict arg ticker = .nil         -- see comment above
@@ -257,4 +267,4 @@ return testResult
     stoppedAttached = ticker~attachment
 
 
-::options novalue error
+::options all syntax
