@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -70,11 +70,11 @@ action instead of the language processor, the security manager uses the
 checkpoint information directory to pass information back to the language
 processor.</para>
 <para>Security manager methods must return a value of either
-&true; or &false;
-to the language processor. A value of &true;
+&false; or &true;
+to the language processor. A value of &false;
 indicates that the program is authorized to perform the indicated action.
 In this case, processing continues as usual. A value of
-&false; indicates that the security manager
+&true; indicates that the security manager
 performed the action itself. The security manager sets entries in the
 information directory to pass results for the action back to the language
 processor. The security manager can also use the RAISE instruction to raise a
