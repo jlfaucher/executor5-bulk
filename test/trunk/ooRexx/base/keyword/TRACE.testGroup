@@ -74,21 +74,32 @@ trace value 2*3
 +++ Interactive trace.  Error 24.1:  TRACE request letter must be one of "ACEFILNOR"; found "6".
 
 "trace i; nop; nop; nop" delays Ctrl+C on Windows
+"trace ?r; loop; nop; end;" once you press ENTER once, cannot Ctrl+C anymore
 
 "trace i; call r >a; r: use arg >v" trace prefix ">R>" not documented
-
-trace; say trace() should be N, but is O; same for trace ''
 
 "raise user 999 description 'dddd'" should trace >K> DESCRIPTION
 "raise user 999 return 1" should trace >K> RETURN instead of RESULT
 "raise user 999 exit 1" should trace >K> EXIT instead of RESULT
 
-"trace i; trace ??; say trace()" should not be nullstring
+each trace input increases indent
+rexx -e "trace ?a; nop /* 1 */; nop /* 2 */; nop /* 3 */; nop /* 4 */;nop /* 5 */; nop /* 6 */
+     1 *-* nop /* 1 */;
++++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
+a=1
+a=1
+a=1
+a=1
+a=1
+trace 0
+     1 *-*             nop /* 2 */;
+same with INTERPRET keyword instruction, if a non-loop
+rexx -e "trace r; interpret 'do 2; nop; end;'; interpret 'do 2; nop; end';
+rexx -e "trace r; interpret 'nop; nop'; interpret 'nop; nop';
+
+
 
 strange: "trace i; a.[.line] = 1"
-
->M> is only traced when assigment, not when message term
- "trace i; .Array~new; a = .Array~new; (,)~empty; a = (,)~empty"
 
 message name isn't traced
  "trace i; >v~value = 1"
@@ -113,6 +124,14 @@ all 3-letter trace prefixes:
   self~expectSyntax(24.901) -- Numeric TRACE requests are valid only from interactive debugging
   trace 1
 
+::method test_trace_expression_numeric_invalid
+  self~expectSyntax(24.901) -- Numeric TRACE requests are valid only from interactive debugging
+  trace (1+2)
+
+::method test_trace_value_numeric_invalid
+  self~expectSyntax(24.901) -- Numeric TRACE requests are valid only from interactive debugging
+  trace value 2 * 3
+
 ::method test_trace_value_missing
   -- Missing expression following VALUE keyword of a TRACE instruction
   self~assertSyntaxError(35.916, "trace value")
@@ -121,18 +140,26 @@ all 3-letter trace prefixes:
   self~expectSyntax(24.1) -- TRACE request letter must be one of "ACEFILNOR"
   trace value "?!"
 
+-- omitted means back to default
 ::method test_trace_option_none
-  self~disableTraceOutput
+  self~assertSame("N", trace()) -- NORMAL is the initial default
   trace
-  --@@bug rexxref: "TRACE with no options .. continues tracing with TRACE Normal"
-  self~assertSame("N", trace(), "tracker bug #@@ ") -- should be N, but is O
+  self~assertSame("N", trace())
+  trace l
+  self~assertSame("L", trace())
+  trace
+  self~assertSame("N", trace()) -- back to default
 
+-- nullstring means back to default
 ::method test_trace_nullstring
-  self~disableTraceOutput
   trace ""
-  --@@bug rexxref: "TRACE with no options .. continues tracing with TRACE Normal"
-  self~assertSame("N", trace(), "tracker bug #@@") -- should be N, but is O
+  self~assertSame("N", trace())
+  trace commands
+  self~assertSame("C", trace())
+  trace ""
+  self~assertSame("N", trace()) -- nullstring means back to default
 
+-- option either as symbol, as string, as an expression, or with VALUE
 ::method test_trace_option
   self~disableTraceOutput
 
@@ -160,6 +187,10 @@ all 3-letter trace prefixes:
   do option over "acefilnor"~makeArray("")
     trace (option)
     self~assertSame(option~upper, trace(), "TRACE" option)
+  end
+  do option over "ACEFILNOR"~makeArray("")
+    trace value option
+    self~assertSame(option, trace(), "TRACE VALUE" option)
   end
 
 -- trace output tests
@@ -274,6 +305,7 @@ all 3-letter trace prefixes:
   trace off
   self~assertTraceOutput(.resources~do, t, start)
 
+  --@@ looks like DO and LOOP do a double trace indent
   ::resource do end "  ::end"
      1 *-* do
      2 *-* end
@@ -462,10 +494,10 @@ all 3-letter trace prefixes:
      1 *-* interpret 'a = 1'
        >L>   "a = 1"
        >>>   "a = 1"
-     1 *-*   a = 1
-       >L>     "1"
-       >>>     "1"
-       >=>     A <= "1"
+     1 *-* a = 1
+       >L>   "1"
+       >>>   "1"
+       >=>   A <= "1"
   ::end
 
 -- trace ITERATE keyword instruction
@@ -716,7 +748,25 @@ all 3-letter trace prefixes:
      4 *-* end:
   ::end
 
--- our setup doesn't easily support testing REPLY
+-- trace REPLY keyword instruction
+-- to work properly, tests using REPLY require the special test framework
+-- marker "replyAssert"
+::method test_trace_reply_replyAssert
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  reply 1
+  trace off
+  -- before comparing trace output, we remove any trailing >I> Method ...
+  if t~lastItem~srip("l")~startsWith(">I> Method") then
+    t~remove(t~last)
+  self~assertTraceOutput(.resources~reply, t, start)
+
+  ::resource reply end "  ::end"
+     1 *-* reply 1
+       >L>   "1"
+       >>>   "1"
+  ::end
+
 -- RETURN is already tested with PROCEDURE
 
 -- trace SAY keyword instruction
@@ -847,8 +897,8 @@ all 3-letter trace prefixes:
        >=>   A <= "The NIL object"
   ::end
 
--- the follwing tests cover three-letter trace prefixes not seen in any
--- of the above tests: >C>, >I>, >M>, >N>
+-- the following tests cover three-letter trace prefixes rarely or never
+-- seen in any of the above tests: >C>, >I>, >M>, >N>, >R>
 
 -- three-letter trace prefix >C>
 ::method test_trace_other_compound
@@ -895,11 +945,10 @@ all 3-letter trace prefixes:
   trace off
   self~assertTraceOutput(.resources~message, t, start)
 
-  --@@bug >M> "REVERSE" => "1" missing if stand-alone "1~reverse" (works for assigment)
   ::resource message end "  ::end"
      1 *-* 1~reverse
        >L>   "1"
-       >>>   "1"
+       >M>   "REVERSE" => "1"
   ::end
 
 -- three-letter trace prefix >N>
@@ -915,6 +964,29 @@ all 3-letter trace prefixes:
        >N>   REXX:ARRAY => "The Array class"
        >>>   "The Array class"
        >=>   A <= "The Array class"
+  ::end
+
+-- three-letter trace prefix >R>
+::method test_trace_other_reference
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  call r >a.
+  trace off
+  signal end
+  r:
+    use arg >v.
+    return
+  end:
+  self~assertTraceOutput(.resources~reference, t, start)
+
+  ::resource reference end "  ::end"
+     1 *-* call r >a.
+       >O>   ">" => "A."
+       >A>   "A."
+     4 *-*   r:
+     5 *-*   use arg >v.
+       >R>     "A." => "V."
+     6 *-*   return
   ::end
 
 
@@ -933,8 +1005,40 @@ all 3-letter trace prefixes:
   self~assertSame(0, t~items, "unexpected TRACE ? output" t)
 
 ::method test_trace_??
+  self~assertSame("N", trace())
+  trace ("?"~copies(2))
+  self~assertSame("N", trace()) -- two debug toggles are a nop
+  trace value "??" || "n"
+  self~assertSame("N", trace()) -- ??N is the same as N
+  trace ?
+  self~assertSame("?N", trace())
+
+::method test_trace_??_all
+  self~disableTraceOutput
+  do option over "acefilnor"~makeArray("")
+    trace (option)
+    self~assertSame(option~upper, trace(), "TRACE" option)
+  end
+
+::method test_trace_?o
+  -- cannot turn on interactive debugging for trace off
+  trace o
+  self~assertSame("O", trace())
+  trace ?
+  self~assertSame("O", trace())
   trace ??
-  self~assertSame("", trace()) -- @@bug?
+  self~assertSame("O", trace())
+  trace ?off
+  self~assertSame("O", trace())
+  trace = "?o"
+  trace (trace)
+  self~assertSame("O", trace())
+  trace n
+  self~assertSame("N", trace())
+
+::method test_trace_multi
+  -- interatcive debuggin switch out of ? mode
+  --do options over
 
 -- when in interactive debugging mode TRACE instructions are ignored
 ::method test_trace_ignored
@@ -990,7 +1094,7 @@ all 3-letter trace prefixes:
        +++ "pppppppp METHOD path/to/ooRexx/base/keyword/TRACE.testGroup"
    nnn *-* self~assertSame("?A", trace())
 +++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
-   nnn *-*   call trace "off" -- stop tracing
+   nnn *-*   call trace "off" -- stop all tracing
   */
   self~assertSame(4, t~items, "unexpected TRACE ?A output" t)
   self~assertSame("+++ *-* +++ Interactive *-*", -
@@ -1039,7 +1143,29 @@ all 3-letter trace prefixes:
    t[7]~word(1) t[8]~subWord(1, 2) t[9]~word(2) t[10]~word(1) t[11]~word(1), -
    "unexpected TRACE ?I output" t)
 
+::method test_trace_numeric_debug
+  t = .TraceOutput~destination(.ArrayStream~new) -- capture .traceOutput
+  .DebugInput~destination(.ArrayStream~of("trace 0", "trace -1", "trace (0 - 1)", "trace value 1 * 1", "trace off"))
+  start = .line; trace ?a
+  nop /* 1 */
+  nop /* 2 */
+  nop /* 3 */
+  nop /* 4 */
+  nop /* 5 */
+  nop /* 6 */
+  nop /* 7 */
+  trace off
+  -- ignore entry trace output +++ "platform METHOD /path/to/TRACE.testGroup"
+  self~assertTraceOutput(.resources~trace_numeric_debug, t~section(2), start)
 
+  ::resource trace_numeric_debug end "  ::end"
+     1 *-* nop /* 1 */
++++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
+     2 *-* nop /* 2 */
+     4 *-* nop /* 4 */
+     6 *-* nop /* 6 */
+     7 *-* nop /* 7 */
+  ::end
 
 -- ArrayStream allows to capture TRACE output to an Array
 -- we inherit from Stream just for the SAY method
