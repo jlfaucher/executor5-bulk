@@ -35,21 +35,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Ticker.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  group = .TestGroup~new(fileSpec)
-  group~add(.Ticker.testGroup)
+::requires ooTest.frm
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
-::class "Ticker.testGroup" subclass ooTestCase public
+::class Ticker.testGroup subclass ooTestCase public
 
 ::method test_ticker_two_args_string_cancel
   t1 = .tickerWaiter~new
@@ -222,6 +218,74 @@ return testResult
 ::method test_ticker_four_args
   self~expectSyntax(93.902)
   ticker = .Ticker~new(1, .AlarmNotification~new, "attachment", 4)
+
+
+-- attachment
+
+::method test_attachment_too_many_args
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)
+  ticker~cancel
+  ticker~attachment(0)
+
+
+-- cancel/canceled/cancelled
+
+::method test_cancel_too_many_args
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)
+  ticker~cancel(1)
+  -- we didn't successfully cancel the trigger, which continues to tick
+  -- but .TickerWaiter will eventually cancel it after five ticks
+
+::method test_canceled_too_many_args
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)
+  ticker~cancel
+  ticker~cancelled(1)
+
+::method test_cancelled_too_many_args
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)
+  ticker~cancel
+  ticker~cancelled(1)
+
+::method test_cancel_immediately
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)~~cancel
+  self~assertTrue(ticker~canceled)
+  self~assertTrue(ticker~cancelled)
+
+::method test_cancel_twice
+  ticker = .Ticker~new(0.05, .TickerWaiter~new)
+  self~assertFalse(ticker~canceled)
+  self~assertFalse(ticker~cancelled)
+  ticker~cancel
+  self~assertTrue(ticker~canceled)
+  self~assertTrue(ticker~cancelled)
+  call SysSleep 0.1
+  ticker~cancel
+  self~assertTrue(ticker~canceled)
+  self~assertTrue(ticker~cancelled)
+
+
+-- interval
+
+::method test_interval_too_many_args
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  ticker = .Ticker~new(0.1, .TickerWaiter~new)
+  ticker~cancel
+  ticker~interval(0)
+
+::method test_ticker_interval_zero
+  ticker = .Ticker~new(0, .TickerWaiter~new)
+  ticker~cancel
+  self~assertiSA(ticker~interval, .TimeSpan)
+  self~assertSame(0, ticker~interval~totalSeconds)
+
+::method test_ticker_new_interval_timespan
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(0.000001), .TickerWaiter~new)
+  ticker~cancel
+  self~assertSame(1, ticker~interval~totalMicroseconds)
 
 
 ::class TickerWaiter inherit AlarmNotification
