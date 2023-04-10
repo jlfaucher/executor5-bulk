@@ -656,7 +656,7 @@ return testResult
 
 ::method test_fuzz_integer
   a = 555555555
-  b = a
+  b = a + 1
   do f = 1 to 8
     numeric fuzz f
     self~assertTrue( a  = b, "fuzz" f a "=" b)

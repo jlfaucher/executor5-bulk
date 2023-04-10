@@ -1548,7 +1548,7 @@ return str
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
 
   -- restore the current directory
-  call directory(currentDirectory)
+  call directory currentDirectory
 
  -- make sure the output streams are in default state
  .output~destination(.stdout)
