@@ -2309,24 +2309,24 @@ empty, they read the default input stream, .INPUT (typically, the keyboard).
 <indexterm><primary>source</primary>
 <secondary>of program and retrieval of information</secondary></indexterm>
 </term>
-<listitem><para>parses data describing the source of the program running.
-The language processor returns a string that does not change while the
-program is running.</para>
-<para>The source string contains operating system name,
-followed by either <computeroutput>COMMAND</computeroutput>,
-<computeroutput>FUNCTION</computeroutput>,
-<computeroutput>SUBROUTINE</computeroutput>, or
-<computeroutput>METHOD</computeroutput>, or
-<computeroutput>REQUIRES</computeroutput>, depending on
+<listitem><para>parses data describing the source of the program,
+routine or method running.
+</para>
+<para>The first two tokens of source string are the operating system name,
+followed by either <literal>COMMAND</literal>, <literal>FUNCTION</literal>,
+<literal>SUBROUTINE</literal>, <literal>METHOD</literal>, or
+<literal>REQUIRES</literal>, depending on
 whether the program was called as a host command, or from a function call in
 an expression, or using the CALL instruction, or as a method of an object,
 or from a ::REQUIRES directive to run the prolog code.
-These two tokens are followed by the complete path specification of the program
+These two tokens are followed by the path specification of the program
+or the name given to a Package, Routine or Method instance.
 file.</para>
-<para>The string parsed might, therefore, look like this:
-<programlisting>WindowsNT COMMAND C:\MYDIR\RexxTRY.CMD</programlisting>
-or
-<programlisting>LINUX COMMAND /opt/orexx/bin/rexxtry.cmd</programlisting>
+<para>The string might look like one of the following:
+<programlisting>
+WindowsNT COMMAND C:\Program Files\ooRexx\rexxtry.rex
+LINUX COMMAND /usr/local/bin/rexxtry.rex
+</programlisting>
 </para>
 </listitem></varlistentry>
 
