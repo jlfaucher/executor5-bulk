@@ -1,0 +1,23 @@
+:-- How to set up RexxCURL to build
+:-- (prereqs: ooRexx/REXX_HOME, wget, unzip, vcvars64)
+
+:-- download RexxCURL source from https://sourceforge.net/projects/rexxcurl/files/rexxcurl
+wget https://sourceforge.net/projects/rexxcurl/files/rexxcurl/2.1.0/RexxCURL-2.1.0.tar.gz
+tar -xvzf RexxCURL-2.1.0.tar.gz
+ren RexxCURL-2.1.0 RexxCURL
+
+:-- download curl for Windows 64-bit from https://curl.se/windows
+:-- and extract curl dll and include files
+wget https://curl.se/windows/dl-8.0.1_9/curl-8.0.1_9-win64-mingw.zip
+unzip -j curl-*.zip curl-*/bin/libcurl-x64.dll
+unzip curl-*.zip curl-*/include/*
+
+:-- build RexxCURL for Windows 64-bit
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64
+del *.obj
+:-- expect hundreds of compiler warnings
+nmake -f RexxCURL\makefile.win.vc INT=OOREXX4 DEBUG=Y TARGET_CPU=x64 REXXCURL_SRCDIR=RexxCURL CURLINCDIR=curl-8.0.1_9-win64-mingw\include
+:-- make libcurl-x64.dll and rexxcurl.dll available to ooRexx
+copy *.dll "C:\Program Files\rexx.org\ooRexx Extensions"
+(or to %REXX_HOME%)
+

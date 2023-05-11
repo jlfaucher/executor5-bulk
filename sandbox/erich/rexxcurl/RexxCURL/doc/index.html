@@ -1,0 +1,2222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Rexx/CURL</TITLE>
+<BODY aLink=#808000 bgColor=#ffffff link=#0000ff vLink=#ff0022>
+<CENTER><IMG alt=Rexx/CURL height=64 hspace=20 src="images/rxcurl64.png"width=64>
+<style type="text/css">
+td.deprecated
+{
+    background-color:LightGray;
+}
+</style>
+</head>
+<H1>A Rexx interface to the cURL library</H1>Version 2.1.0
+<P>10 February 2019</CENTER>
+<P>
+<P align=center>
+<HR>
+<!-- END-HEADER -->
+
+<!-- START-TOC -->
+<H2><B>Table of Contents</B></H2>
+<DL>
+  <dt><A href="#INTRODUCTION">1. Introduction</A><BR></dt>
+  <dt><A href="#OVERVIEW">2. Overview</A><BR></dt>
+  <dt><A href="#FUNCTIONS">3. Functions</A><BR></dt>
+  <dd><A href="#CURLINIT">CURLINIT</A></dd>
+  <dd><A href="#CURLCLEANUP">CURLCLEANUP</A></dd>
+  <dd><A href="#CURLRESET">CURLRESET</A></dd>
+  <dd><A href="#CURLESCAPE">CURLESCAPE</A></dd>
+  <dd><A href="#CURLUNESCAPE">CURLUNESCAPE</A></dd>
+  <dd><A href="#CURLSETOPT">CURLSETOPT</A></dd>
+  <dd><A href="#CURLFORMADD">CURLFORMADD</A></dd>
+  <dd><A href="#CURLFORMFREE">CURLFORMFREE</A></dd>
+  <dd><A href="#CURLPERFORM">CURLPERFORM</A></dd>
+  <dd><A href="#CURLGETINFO">CURLGETINFO</A></dd>
+  <dd><A href="#CURLVARIABLE">CURLVARIABLE</A></dd>
+  <dd><A href="#CURLLOADFUNCS">CURLLOADFUNC</A></dd>
+  <dd><A href="#CURLDROPFUNCS">CURLDROPFUNC</A></dd>
+  <dt><A href="#ERRORS">4. Errors</A><BR></dt>
+  <dt><A href="#USING">5. Using Rexx/CURL</A><BR></dt>
+  <dt><A href="#HISTORY">6. History of Rexx/CURL</A><BR></dt>
+</DL>
+<!-- END-TOC -->
+<P align=center>
+<HR>
+
+<!-- START-INTRODUCTION -->
+<H2><A name=INTRODUCTION><B>1. Introduction</B></A></H2>This document describes the
+interface to the <a href="http://curl.haxx.se">cURL</a> package. cURL is a general purpose
+package that allows access to any URL-addressable resource. With Rexx/CURL you can
+access resources such as web pages, ftp sites, and telnet sessions under
+control of your Rexx program. Rexx/CURL is actually built on top of <a href="http://curl.haxx.se/libcurl/">libcurl</a>
+but for the purposes of this document it will be refered to simply as cURL.
+Rexx/CURL implements the libcurl <i>easy interface</i>.
+<!-- END-INTRODUCTION -->
+<P align=center>
+<HR>
+
+<!-- START-OVERVIEW -->
+<H2><A name=OVERVIEW><B>2. Overview</B></A></H2>Rexx/CURL consists of Rexx
+external functions that allows a Rexx program to access any URL. The basic concept
+of Rexx/CURL (and cURL), is that you specify a URL and all options appropriate
+to that URL, and then perform the URL access.
+<br>See <A href="#USING">Using Rexx/CURL</a> for more details.
+<P>
+<P>The Rexx/CURL external functions are:
+<UL>
+  <LI><B>CURLINIT</B> - initialise the cURL interface
+  <LI><B>CURLCLEANUP</B> - cleanup the cURL interface
+  <LI><B>CURLRESET</B> - resets all options on the cURL handle
+  <LI><B>CURLESCAPE</B> - converts all special characters in a string, usually a URL, to escaped strings based on RFC 2396
+  <LI><B>CURLUNESCAPE</B> - converts all special characters in a string, usually a URL, to their normal representation
+  <LI><B>CURLSETOPT</B> - defines all the options appropriate to the type of URL you wish to access
+  <LI><B>CURLFORMADD</B> - add a section to a multipart/formdata HTTP POST
+  <LI><B>CURLFORMFREE</B> - free up resources used by CURLFORMADD
+  <LI><B>CURLPERFORM</B> - carries out the actions defined by the various calls to CURLSETOPT
+  <LI><B>CURLGETINFO</B> - return information about the action carried out by CURLPERFORM
+  <LI><B>CURLVARIABLE</B> - set or retrieve default run-time values
+</ul>
+<UL>
+  <LI><B>CURLLOADFUNCS</B> - load all Rexx/CURL external functions
+  <LI><B>CURLDROPFUNCS</B> - unload all Rexx/CURL external functions
+</ul>
+<p>
+Rexx/CURL also provides a number of <i>constants</i> that provide useful information for
+the user. Each of these <i>constants</i> is generally prefixed by a stem name (default is !REXXCURL.!) to make it
+easier to access when inside a procedure. Remember you need to EXPOSE the stem to get access
+to these <i>constants</i> inside a procedure.
+<br>
+The <i>constants</i> are:
+<ul>
+  <li><b>DIRSEP</b> - the operating system default seperator for directory names
+  <li><b>PATHSEP</b> - the operating system default seperator for directories in PATH
+</ul>
+eg. under Linux:
+<pre>
+!REXXCURL.!DIRSEP -> '/'
+!REXXCURL.!PATHSEP -> ':'
+</pre>
+In addition to the above environmental <i>constants</i> a number of <i>constants</i> that provide information
+about the capabilities of the loaded cURL library are available. They are:
+<ul>
+  <li><b>VERSION</b> - a string for the libcurl versionfor dir
+  <li><b>VERSION_NUM</b> - a 24 bit number created like this: <8 bits major number> | <8 bits minor number> | <8 bits patch number>. Version 7.9.8 is therefore returned as 0x070908.
+  <li><b>HOST</b> - a string showing what host information that this libcurl was built for. As discovered by a configure script or set by the build environment.
+  <li><b>SSL_VERSION</b> - a string for the OpenSSL version used. If libcurl has no SSL support, this is blank.
+  <li><b>LIBZ_VERSION</b> - a string for the version of libz used. If libcurl has no libz support, this is blank.
+  <li><b>ARES</b> - a string for the version of ares used. If libcurl has no ares support, this is blank.
+  <li><b>ARES_NUM</b> - a number representing the ares version used. If libcurl has no ares support, this is 0.
+  <li><b>LIBIDN</b> - a string for the version of libidn used. If libcurl has no libidn support, this is blank.
+  <li><b>LIBSSH_VERSION</b> - a string for the version of libssh used. If libcurl has no libssh support, this is blank.
+  <li><b>ICONV_VER_NUM</b> - a number representing the iconv version used. If libcurl has no iconv support, this is 0.
+  <li><b>SUPPORTS_IPV6</b> - supports IPv6
+  <li><b>SUPPORTS_KERBEROS4</b> - supports kerberos4 (when using FTP)
+  <li><b>SUPPORTS_SSL</b> - supports SSL (HTTPS/FTPS)
+  <li><b>SUPPORTS_LIBZ</b> - supports HTTP deflate using libz
+  <li><b>SUPPORTS_NTLM</b> - supports HTTP NTLM
+  <li><b>SUPPORTS_GSSNEGOTIATE</b> - supports HTTP GSS-Negotiate
+  <li><b>SUPPORTS_DEBUG</b> - libcurl was built with debug capabilities
+  <li><b>SUPPORTS_CURLDEBUG</b> - libcurl was built with memory tracking debug capabilities. This is mainly of interest for libcurl hackers
+  <li><b>SUPPORTS_ASYNCHDNS</b> - libcurl was built with support for asynchronous name lookups, which allows more exact timeouts (even on Windows)
+  <li><b>SUPPORTS_SPEGNO</b> - libcurl was built with support for SPNEGO authentication (Simple and Protected GSS-API Negotiation Mechanism, defined in RFC 2478.)
+  <li><b>SUPPORTS_LARGEFILE</b> - libcurl was built with support for large files.
+  <li><b>SUPPORTS_IDN</b> - libcurl was built with support for IDNA, domain names with international letters
+  <li><b>SUPPORTS_SSPI</b> - libcurl was built with support for SSPI. This is only available on Windows and makes libcurl use Windows-provided functions for NTLM authentication. It also allows libcurl to use the current user and the current user's password without the app having to pass them on
+  <li><b>SUPPORTS_CONV</b> - libcurl was built with support for character conversions, as provided by the CURLOPT_CONV_* callbacks. N/A to Rexx/CURL
+  <li><b>SUPPORTS_TLSAUTH_SRP</b> - libcurl was built with support for TLS-SRP
+  <li><b>SUPPORTS_NTLM_WB</b> - libcurl was built with support for NTLM delegation to a winbind helper
+  <li><b>PROTOCOLS</b> - an <i>array</i> containing the names of protocols that libcurl supports (using lowercase letters). The protocol names are the same as would be used in URLs.
+</ul>
+eg. under Linux:
+<pre>
+!REXXCURL.!VERSION -> '7.19.7'
+!REXXCURL.!VERSION_NUM -> '463623'
+!REXXCURL.!HOST -> 'i486-pc-linux-gnu'
+!REXXCURL.!SSL_VERSION -> 'OpenSSL/0.9.8k'
+!REXXCURL.!LIBZ_VERSION -> '1.2.3.3'
+!REXXCURL.!ARES -> ''
+!REXXCURL.!ARES_NUM -> '0'
+!REXXCURL.!LIBIDN -> '1.15'
+!REXXCURL.!LIBSSH_VERSION -> ''
+!REXXCURL.!ICONV_VER_NUM -> '0'
+!REXXCURL.!SUPPORTS_IPV6 -> '1'
+!REXXCURL.!SUPPORTS_KERBEROS4 -> '0'
+!REXXCURL.!SUPPORTS_SSL -> '1'
+!REXXCURL.!SUPPORTS_LIBZ -> '1'
+!REXXCURL.!SUPPORTS_NTLM -> '1'
+!REXXCURL.!SUPPORTS_GSSNEGOTIATE -> '1'
+!REXXCURL.!SUPPORTS_DEBUG -> '0'
+!REXXCURL.!SUPPORTS_CURLDEBUG -> '0'
+!REXXCURL.!SUPPORTS_ASYNCHDNS -> '0'
+!REXXCURL.!SUPPORTS_SPNEGO -> '0'
+!REXXCURL.!SUPPORTS_LARGEFILE -> '1'
+!REXXCURL.!SUPPORTS_IDN -> '1'
+!REXXCURL.!SUPPORTS_SSPI -> '0'
+!REXXCURL.!SUPPORTS_CONV -> '0'
+!REXXCURL.!SUPPORTS_TLSAUTH_SRP -> '0'
+!REXXCURL.!SUPPORTS_NTLM_WB -> '0'
+!REXXCURL.!PROTOCOLS.0-> '10'
+!REXXCURL.!PROTOCOLS.1 -> 'tftp'
+!REXXCURL.!PROTOCOLS.2 -> 'ftp'
+!REXXCURL.!PROTOCOLS.3 -> 'telnet'
+!REXXCURL.!PROTOCOLS.4 -> 'dict'
+!REXXCURL.!PROTOCOLS.5 -> 'ldap'
+!REXXCURL.!PROTOCOLS.6 -> 'ldaps'
+!REXXCURL.!PROTOCOLS.7 -> 'http'
+!REXXCURL.!PROTOCOLS.8 -> 'file'
+!REXXCURL.!PROTOCOLS.9 -> 'https'
+!REXXCURL.!PROTOCOLS.10 -> 'ftps'
+</pre>
+
+The default constant prefix can be changed by calling
+<a href="#CURLVARIABLE">CURLVARIABLE</a> with the <b>CONSTANTPREFIX</b> variable.
+eg.
+<pre>
+Call CURLVariable 'CONSTANTPREFIX', '?MYCURL.'
+</pre>
+<!-- END-OVERVIEW -->
+<P align=center>
+<HR>
+
+<!-- START-FUNCTIONS -->
+<H2><A name=FUNCTIONS><B>3. Functions</B></A></H2>This section provides the full
+syntax and usage of each function that comprises Rexx/CURL.
+<!-- END-FUNCTIONS -->
+<p>
+<!-- START-CURLINIT -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLINIT>CURLINIT()</A></b>
+    </td>
+  </tr>
+</table>
+Initialises the cURL interface. The return value from this call is used
+as the first argument to most of the other Rexx/CURL functions.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>none</I></B> </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>any non-blank value</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+  </dt>
+</DL>
+<!-- END-CURLINIT -->
+<p>
+<!-- START-CURLCLEANUP -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLCLEANUP>CURLCLEANUP()</A></b>
+    </td>
+  </tr>
+</table>
+This function must be the last function called for a session. It is the opposite of the <a name=CURLINIT>CURLINIT()</a> function
+and must be called with the same handle as input that the <a name=CURLINIT>CURLINIT()</a> call returned.
+
+This will effectively close all connections this handle has used and possibly has kept open until now. Don't call this function if you intend to transfer more files.
+Any uses of the handle after this function has been called are illegal. This kills the handle and all memory associated with it!
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+  </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>any non-blank value</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+  </dt>
+</DL>
+<!-- END-CURLCLEANUP -->
+<p>
+<!-- START-CURLRESET -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLRESET>CURLRESET()</A></b>
+    </td>
+  </tr>
+</table>
+Re-initializes all options previously set on a specified CURL handle to the default values.
+This puts back the handle to the same state as it was in when it was just created with <a name=CURLINIT>CURLINIT()</a>.
+
+It does not change the following information kept in the handle: live connections, the Session ID cache, the DNS cache, the cookies and shares.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+  </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>N/A</I>
+  </dt>
+</DL>
+<!-- END-CURLRESET -->
+<p>
+<!-- START-CURLESCAPE -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+    <B><A name=CURLESCAPE>CURLESCAPE(<I>handle</I>, <I>URL</I>)</A></b>
+    </td>
+  </tr>
+</table>
+This function converts the given input string to an URL encoded string and returns it.
+All input characters that are not a-z, A-Z, 0-9, '-', '.', '_' or '~' are converted to
+their &quot;URL escaped&quot; version (%NN where NN is a two-digit hexadecimal number).
+<P>
+<B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+  </dt>
+  <P>
+  <dt><B><I>URL</I></B>
+  <dd>This is the string (usually a URL) to be converted
+  <P></P>
+  </dt>
+  <P></P>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>The converted string</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLESCAPE -->
+<p>
+<!-- START-CURLUNESCAPE -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+    <B><A name=CURLUNESCAPE>CURLUNESCAPE(<I>handle</I>, <I>URL</I>)</A></b>
+    </td>
+  </tr>
+</table>
+This function converts the given URL encoded input string to a &quot;plain string&quot;
+and returns it. All input characters that are URL encoded (%XX where XX is a two-digit
+hexadecimal number) are converted to their binary versions.
+<P>
+<B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+  </dt>
+  <P>
+  <dt><B><I>URL</I></B>
+  <dd>This is the string (usually a URL) to be converted
+  <P></P>
+  </dt>
+  <P></P>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>The converted string</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLESCAPE -->
+<p>
+<!-- START-CURLSETOPT -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+    <B><A name=CURLSETOPT>CURLSETOPT(<I>handle</I>, <I>option</I>,<I>option value</I>[,<i>more option values</i>,...])</A></b>
+    </td>
+  </tr>
+</table>
+This function is called to define all the parameters and data required to
+carry out the particular request. The <i>option</i> argument is case-insensitive.
+The table below defining the options available contains the equivalent cURL option
+value used in the C/C++ interface.  Not all of the Rexx/CURL option strings are
+the same as the C/C++ equivalents; I've tried to be more consistent and clearer
+with the name of the option.  The C/C++ equivalents are there if you wish
+to read alternate definitions of these options. See the curl_easy_setopt() function
+documentation.
+<br>
+All options set with this function stay in effect until <a href="#CURLCLEANUP">CURLCLEANUP</a> is called
+or the option reset with another value.
+<P>
+<B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+  </dt>
+  <P>
+  <dt><B><I>option</I></B>
+  <dd>This is the string identifying the option to set. Values with a grey background have been deprecated and should not be used.
+  <table width="100%" border="1" cellpadding="4" cellspacing="0">
+    <tr>
+      <th>Rexx/CURL<br>Option</th>
+      <th>Description</th>
+      <th>cURL Equivalent<br>Option</th>
+    </tr>
+    <tr>
+      <td>ACCEPTENCODING</td>
+      <td>Sets the contents of the Accept-Encoding: header sent in an HTTP request, and enables decoding of a response when a Content-Encoding: header is received.
+        <ul>
+          <li><b>&quot;IDENTITY&quot;</b>: Does nothing</li>
+          <li><b>&quot;DEFLATE&quot;</b>: requests the server to compress its response using the zlib algorithm</li>
+          <li><b>&quot;GZIP&quot;</b>: requests the gzip algorithm</li>
+        </ul>
+        If a zero-length string is set, then an Accept-Encoding: header containing all supported encodings is sent.<br>
+        This is a request, not an order; the server may or may not do it.  This option must be set (to any non-empty value) or else any unsolicited encoding done by the server is ignored. See the special cURL file lib/README.encoding for details.
+      </td>
+      <td>CURLOPT_ACCEPT_ENCODING</td>
+    </tr>
+    <tr>
+      <td>ACCEPTTIMEOUTMS</td>
+      <td>Not documented on cURL site.</td>
+      <td>CURLOPT_ACCEPT_TIMEOUTMS</td>
+    <tr>
+    <tr>
+      <td>ADDRESSSCOPE</td>
+      <td>A number sppecifying the scope_id value to use when connecting to IPv6 link-local or site-local addresses.</td>
+      <td>CURLOPT_ADDRESS_SCOPE</td>
+    </tr>
+    </tr>
+      <td>APPEND</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that the remote file is to be appended to rather than replaced when an FTP upload is to be carried out.</td>
+      <td>CURLOPT_APPEND</td>
+    </tr>
+    <tr>
+      <td>BUFFERSIZE</td>
+      <td>Specify the size of the recieve buffer to use.</td>
+      <td>CURLOPT_BUFFERSIZE</td>
+    </tr>
+    <tr>
+      <td>CAINFO</td>
+      <td>The name of a file from which the SSL peer certificate data is read for the performed action. This file must exist.</td>
+      <td>CURLOPT_CAINFO</td>
+    </tr>
+    <tr>
+      <td>CAPATH</td>
+      <td>The CAPATH directory used to validate the peer certificate. This option is used only if SSL_VERIFYPEER is true.</td>
+      <td>CURLOPT_CAPATH</td>
+    </tr>
+    <tr>
+      <td>CERTINFO</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to enable libcurl's certificate chain info gatherer. With this enabled, libcurl (if built with OpenSSL) will extract lots of information and data about the certificates in the certificate chain used in the SSL connection. This data is then possible to extract after a transfer using <A href="#CURLGETINFO">CURLGETINFO</A> and its option <b>CERTINFO</b></td>
+      <td>CURLOPT_CERTINFO</td>
+    </tr>
+    <tr>
+      <td>CLOSEPOLICY</td>
+      <td>Specify the type of disconnection policy to use if the connection cache is filled. This is only applicable if you potentially use more than 5 concurrent connections. Can be one of &quot;<b>OLDEST</b>&quot;, or &quot;<b>LEAST_RECENTLY_USED</b>&quot;.</td>
+      <td>CURLOPT_CLOSEPOLICY</td>
+    </tr>
+    <tr>
+      <td>CONNECTONLY</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tell the library to perform any required proxy authentication and connection setup, but no data transfer.</td>
+      <td>CURLOPT_CONNECT_ONLY</td>
+    </tr>
+    <tr>
+      <td>CONNECTTIMEOUT</td>
+      <td>To limit the time it takes to connect to the server, set this value to the number of seconds.</td>
+      <td>CURLOPT_CONNECTTIMEOUT</td>
+    <tr>
+      <td>CONNECTTIMEOUTMS</td>
+      <td>Like CONNECTTIMEOUT but takes number of milliseconds instead.</td>
+      <td>CURLOPT_CONNECTTIMEOUT_MS</td>
+    </tr>
+    <tr>
+      <td>COOKIE</td>
+      <td>If you want to pass a cookie to the server, set this option to the cookie. The format of the cookie is: <i>name=contents</i>, where <i>name</i> is the name of the cookie to be set.</td>
+      <td>CURLOPT_COOKIE</td>
+    </tr>
+    <tr>
+      <td>COOKIEFILE</td>
+      <td>The name of a file from which cookie data is read for the performed action. The cookie file can contain Netscape/Mozilla formated cookies, or regular HTTP header format. If a file name is supplied, this file must exist. The file name can be the empty string to start the cookie engine but not read any cookies.</td>
+      <td>CURLOPT_COOKIEFILE</td>
+    </tr>
+    <tr>
+      <td>COOKIEJAR</td>
+      <td>The name of a file to which all known cookies are written after the operation completes.</td>
+      <td>CURLOPT_COOKIEJAR</td>
+    </tr>
+    <tr>
+      <td>COOKIELIST</td>
+      <td>Pass a string containing a cookie string. Cookie can be either in Netscape / Mozilla format or just regular HTTP-style header (Set-Cookie: ...) format. If cURL cookie engine was not enabled it will enable its cookie engine.
+        <br>Additionally, there are commands available that perform actions if you pass in these exact strings:
+        <ul>
+          <li><b>&quot;ALL&quot;</b>: erases all cookies held in memory</li>
+          <li><b>&quot;SESS&quot;</b>: erases all session cookies held in memory</li>
+          <li><b>&quot;FLUSH&quot;</b>: writes all known cookies to the file specified by option <b>COOKIEJAR</b></li>
+          <li><b>&quot;RELOAD&quot;</b>: loads all cookies from the files specified by option <b>COOKIEFILE</b></li>
+        </ul>
+      </td>
+      <td>CURLOPT_COOKIELIST</td>
+    </tr>
+    <tr>
+      <td>COOKIESESSION</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that this operation is the start of a cookie session. Set this option to a <b>0</b> or <b>N</b> to indicate that this operation is the end of a cookie session.</td>
+      <td>CURLOPT_COOKIESESSION</td>
+    </tr>
+    <tr>
+      <td>CRLF</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that LF charcaters should be converted to CRLF on transfers.</td>
+      <td>CURLOPT_CRLF</td>
+    </tr>
+    <tr>
+      <td>CRLFILE</td>
+      <td>Pass a string naming a file with the concatenation of CRL (in PEM format) to use in the certificate validation that occurs during the SSL exchange.
+        <br>
+          When curl is built to use NSS or GnuTLS, there is no way to influence the use of CRL passed to help in the verification process.
+          When libcurl is built with OpenSSL support, X509_V_FLAG_CRL_CHECK and X509_V_FLAG_CRL_CHECK_ALL are both set, requiring CRL check against all the
+          elements of the certificate chain if a CRL file is passed.
+        <br>
+        This option makes sense only when used in combination with the SSLVERIFYPEER option.
+      <td>CURLOPT_CRLFILE</td>
+    </tr>
+    <tr>
+      <td>CUSTOMREQUEST</td>
+      <td>To carry out an HTTP request command other than GET or HEAD, pass the command in this option.</td>
+      <td>CURLOPT_CUSTOMREQUEST</td>
+    </tr>
+    <tr>
+      <td>DIRLISTONLY</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that only filenames are to be returned when the <b>URL</b> option specifies an FTP directory. Normally, file sizes, dates etc. are returned.
+          This works for FTP and SFTP URLs.
+          <br>
+          This causes an FTP NLST command to be sent on an FTP server. Beware that some FTP servers list only files in their response to NLST; they might not include subdirectories and symbolic links.
+          <br>
+          Setting this option to <b>1</b> or <b>Y</b> also implies a directory listing even if the URL doesn't end with a slash, which otherwise is necessary.
+          </br>
+          Do NOT use this option if you also use the WILDCARDMATCH option as it will effectively break that feature.
+      <td>CURLOPT_DIRLISTONLY</td>
+    </tr>
+    <tr>
+      <td>DNSCACHETIMEOUT</td>
+      <td>This sets the timeout in seconds. Name resolves will be kept in memory for this number of seconds. Set to zero to completely disable caching, or set to -1 to make the cached entries remain forever. By default, libcurl caches info for 60 seconds.</td>
+      <td>CURLOPT_DNS_CACHE_TIMEOUT</td>
+    </tr>
+    <tr>
+      <td>DNSSERVERS</td>
+      <td>Set the list of DNS servers to be used instead of the system default. The format of the dns servers option is:
+         <br>
+         <b>host[:port][,host[:port]]...</b>
+         <br>
+         For example:
+         <br>
+         <b>192.168.1.100,192.168.1.101,3.4.5.6</b>
+         <br>
+         This option requires that libcurl was built with a resolver backend that supports this operation. The c-ares backend is the only such one. This can be determined by testing for
+         <b>!REXXCURL.!ARES</b> being non-blank or <b>!REXXCURL.!ARES_NUM</b> not being zero.
+         </td>
+      <td>CURLOPT_DNS_SERVERS</td>
+    </tr>
+    <tr>
+      <td>DNSUSEGLOBALCACHE</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to use a global DNS cahce that will last between operations.</td>
+      <td>CURLOPT_DNS_USE_GLOBAL_CACHE</td>
+    </tr>
+    <tr>
+      <td>EGDSOCKET</td>
+      <td>The name of the Entropy Gathering Socket which is used to seed the SSL random engine.</td>
+      <td>CURLOPT_EGDSOCKET</td>
+    </tr>
+    <tr>
+      <td class="deprecated">ENCODING<br>Use:<b>ACCEPTENCODING</b></td>
+      <td class="deprecated">Sets the contents of the Accept-Encoding: header sent in an HTTP request, and enables decoding of a response when a Content-Encoding: header is received.
+        <ul>
+          <li><b>&quot;IDENTITY&quot;</b>: Does nothing</li>
+          <li><b>&quot;DEFLATE&quot;</b>: requests the server to compress its response using the zlib algorithm</li>
+          <li><b>&quot;GZIP&quot;</b>: requests the gzip algorithm</li>
+        </ul>
+        If a zero-length string is set, then an Accept-Encoding: header containing all supported encodings is sent.<br>
+        This is a request, not an order; the server may or may not do it.  This option must be set (to any non-empty value) or else any unsolicited encoding done by the server is ignored. See the special cURL file lib/README.encoding for details.
+      <td class="deprecated">CURLOPT_ENCODING</td>
+    </tr>
+    <tr>
+      <td>ERRFILE</td>
+      <td>The name of a file into which any error output from the performed action is written. By default, if this file exists, it will be over-written. You can pass <b>APPEND</b> as an extra argument to append data to an existing file.</td>
+      <td>CURLOPT_STDERR</td>
+    </tr>
+    <tr>
+      <td>FAILONERROR</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to fail, rather than return the page, if the HTTP return code is greater than or equal to 300.</td>
+      <td>CURLOPT_FAILONERROR</td>
+    </tr>
+    <tr>
+      <td>FILETIME</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that cURL should attempt to retrieve the modification date of the remote document. Not all servers will respond to this type of request. To retrieve the date, call
+          <A href="#CURLGETINFO">CURLGETINFO</A> with the <b>FILE_TIME</b> option.</td>
+      <td>CURLOPT_FILETIME</td>
+    </tr>
+    <tr>
+      <td>FOLLOWLOCATION</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to follow any <i>Location:</i> headers in the specified site.</td>
+      <td>CURLOPT_FOLLOWLOCATION</td>
+    </tr>
+    <tr>
+      <td>FORBIDREUSE</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to make the next transfer explicitly close the connection when done. Normally, libcurl keeps all connections alive when done with one transfer in case there comes a succeeding one that can re-use them. This option should be used with caution and only if you understand what it does. Set to 0 to have libcurl keep the connection open for possibly later re-use (default behavior).</td>
+      <td>CURLOPT_FORBID_REUSE</td>
+    </tr>
+    <tr>
+      <td>FRESHCONNECT</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that the next transfer should use a new connection.</td>
+      <td>CURLOPT_FRESH_CONNECT</td>
+    </tr>
+    <tr>
+      <td>FTPALTERNATIVETOUSER</td>
+      <td>A string which will be used to authenticate if the usual FTP &quot;USER user&quot; and &quot;PASS password&quot; negotiation fails. This is currently only known to be required when connecting to Tumbleweed's Secure Transport FTPS server using client certificates for authentication.</td>
+      <td>CURLOPT_FTP_ALTERNATIVE_TO_USER</td>
+    </tr>
+    <tr>
+      <td class="deprecated">FTPAPPEND<br>Use:<b>APPEND</b></td>
+      <td class="deprecated">Set this option to a <b>1</b> or <b>Y</b> to indicate that the remote file is to be appended to rather than replaced when an FTP upload is to be carried out.</td>
+      <td class="deprecated">CURLOPT_FTPAPPEND</td>
+    </tr>
+    <tr>
+      <td>FTPCMDS</td>
+      <td>Specify a stem containing FTP commands to be issued before an FTP session is started.</td>
+      <td>CURLOPT_QUOTE</td>
+    </tr>
+    <tr>
+      <td>FTPCMDSAFTER</td>
+      <td>A list of FTP commands to be executed <b>after</b> the URL is accessed. The list of commands is specified as a stem name; ie the supplied string must end in a period, and represent a valid Rexx <i>array</i>.</td>
+      <td>CURLOPT_POSTQUOTE</td>
+    </tr>
+    <tr>
+      <td>FTPCMDSBEFORE</td>
+      <td>A list of FTP commands to be executed <b>before</b> the URL is accessed. The list of commands is specified as a stem name; ie the supplied string must end in a period, and represent a valid Rexx <i>array</i>.</td>
+      <td>CURLOPT_PREQUOTE</td>
+    </tr>
+    <tr>
+      <td>FTPCREATEMISSINGDIRS</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tell cURL to attempt to create any remote directory that it fails to CWD into. CWD is the command that changes working directory.</td>
+      <td>CURLOPT_FTP_CREATE_MISSING_DIRS</td>
+    </tr>
+    <tr>
+      <td>FTPCRLF</td>
+      <td>See the prefered CRLF option.</td>
+      <td>CURLOPT_CRLF</td>
+    </tr>
+    <tr>
+      <td class="deprecated">FTPLISTONLY<br>Use:<b>DIRLISTONLY</b></td>
+      <td class="deprecated">Set this option to a <b>1</b> or <b>Y</b> to indicate that only filenames are to be returned when the <b>URL</b> option specifies an FTP directory. Normally, file sizes, dates etc. are returned.</td>
+      <td class="deprecated">CURLOPT_FTPLISTONLY</td>
+    </tr>
+    <tr>
+      <td>FTPPORT</td>
+      <td>Set this option to a string to use as the parameter to the FTP <i>PORT</i> command. The parameter can be an IP address, a hostname, an interface name (undex Unix), or '-' to use the client machine's default IP address.</td>
+      <td>CURLOPT_FTPPORT</td>
+    </tr>
+    <tr>
+      <td>FTPRESPONSETIMEOUT</td>
+      <td>Causes uURL to set a timeout period (in seconds) on the amount of time that the server is allowed to take in order to generate a response message for a command before the session is considered hung.  Note that while curl is waiting for a response, this value overrides &quot;TIMEOUT&quot;. It is recommended that if used in conjunction with &quot;TIMEOUT&quot;, you set &quot;FTPRESPONSETIMEOUT&quot; to a value smaller than &quot;TIMEOUT&quot;.</td>
+      <td>CURLOPT_FTP_RESPONSE_TIMEOUT</td>
+    </tr>
+    <tr>
+      <td>FTPSKIPPASVIP</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to instruct libcurl to not use the IP address the server suggests in its 227-response to libcurl's PASV command when libcurl connects the data connection. Instead libcurl will re-use the same IP address it already uses for the control connection. But it will use the port number from the 227-response.
+        <br>This option has no effect if PORT, EPRT or EPSV is used instead of PASV.</td>
+      <td>CURLOPT_FTP_SKIP_PASV_IP</td>
+    </tr>
+    <tr>
+      <td class="deprecated">FTPSSL<br>Use:<b>USESSL</b></td>
+      <td class="deprecated">Set this option to one of the following string values to make libcurl use your desired level of SSL for the ftp transfer.
+        <ul>
+          <li><b>&quot;NONE&quot;</b>: Don't attempt to use SSL.</li>
+          <li><b>&quot;TRY&quot;</b>: Try using SSL, proceed as normal otherwise.</li>
+          <li><b>&quot;CONTROL&quot;</b>: Require SSL for the control connection or fail with FTP_SSL_FAILED.</li>
+          <li><b>&quot;ALL&quot;</b>: Require SSL for all communication or fail with FTP_SSL_FAILED.</li>
+        </ul>
+      </td>
+      <td class="deprecated">CURLOPT_FTP_SSL</td>
+    </tr>
+    <tr>
+      <td>FTPSSLAUTH</td>
+      <td>Set this option to one of the following string values to alter how libcurl issues AUTH TLS or AUTH SSL when FTP over SSL is activated.
+        <ul>
+          <li><b>&quot;DEFAULT&quot;</b>: Allow libcurl to decide.</li>
+          <li><b>&quot;SSL&quot;</b>: Try &quot;AUTH SSL&quot; first, and only if that fails try &quot;AUTH TLS&quot;.</li>
+          <li><b>&quot;TLS&quot;</b>: Try &quot;AUTH TLS&quot; first, and only if that fails try &quot;AUTH SSL&quot;.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_FTPSSLAUTH</td>
+    </tr>
+    <tr>
+      <td>FTPSSLCCC</td>
+      <td>If enabled, this option makes cURL use CCC (Clear Command Channel). It shuts down the SSL/TLS layer after authenticating. The rest of the control channel communication will be unencrypted. This allows NAT routers to follow the FTP transaction. Pass one of the values below.
+        <ul>
+          <li><b>&quot;NONE&quot;</b>: Don't attempt to use CCC.</li>
+          <li><b>&quot;PASSIVE&quot;</b>: Do not initiate the shutdown, but wait for the server to do it. Do not send a reply.</li>
+          <li><b>&quot;ACTIVE&quot;</b>: Initiate the shutdown and wait for a reply.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_FTP_SSL_CCC</td>
+    </tr>
+    <tr>
+      <td>FTPUSEEPSV</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tell cURL to use the EPSV command when doing passive FTP downloads (which it always does by default). Using EPSV means that it will first attempt to use EPSV before using PASV, but if you pass <b>0</b> or <b>N</b> to this option, it will not try using EPSV, only plain PASV.</td>
+      <td>CURLOPT_FTP_USE_EPSV</td>
+    </tr>
+    <tr>
+      <td>FTPUSEEPRET</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tell cURL to use the PRET (and LPRT) command when doing active FTP downloads (which is enabled by &quot;FTPPORT&quot;). Using EPRT means that it will first attempt to use EPRT and then LPRT before using PORT, but if you pass <b>0</b> to this option, it will not try using PRET or LPRT, only plain PORT.</td>
+      <td>CURLOPT_FTP_USE_PRET</td>
+    </tr>
+    <tr>
+      <td>GSSAPIDELEGATION</td>
+      <td>Set the extra parameter to one of the following:
+        <ul>
+          <li><b>&quot;FLAG&quot;</b>: Allow unconditional GSSAPI credential delegation.</li>
+          <li><b>&quot;POLICY_FLAG&quot;</b>: Delegate only if the OK-AS-DELEGATE flag is set in the service ticket in case this feature is supported by the GSSAPI implementation and the definition of GSS_C_DELEG_POLICY_FLAG was available at compile-time of libcurl.</li>
+          <li><b>&quot;NONE&quot;</b>: Disable delegation. This is the default setting.</li>
+        </ul>
+      <td>CURLOPT_GSSAPI_DELEGATION</td>
+    </tr>
+    <tr>
+      <td>HEADER</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to return header information for those protocols, like HTTP, that have seperate headers and footers.</td>
+      <td>CURLOPT_HEADER</td>
+    </tr>
+    <tr>
+      <td>HEADERFILE</td>
+      <td>The name of a file into which headers from the performed action are written. By default, if this file exists, it will be over-written. You can pass <b>APPEND</b> as an extra argument to append data to an existing file.</td>
+      <td>CURLOPT_WRITEHEADER<br>CURLOPT_HEADERDATA</td>
+    </tr>
+    <tr>
+      <td>HEADERSTEM</td>
+      <td>Specify the stem variable of an array into which any headers from the performed action are written. If the array exists, it will be over-written. Where possible, each entry in the array will contain a single line.</td>
+      <td>CURLOPT_WRITEHEADER</td>
+    </tr>
+    <tr>
+      <td>HTTP200ALIASES</td>
+      <td>Specify a stem containing a list of aliases to be treated as valid HTTP 200 responses.  Some servers respond with a custom header response line.  For example, IceCast servers respond with &quot;ICY 200 OK&quot;.  By including this string in your list of aliases, the response will be treated as a valid HTTP header line such as &quot;HTTP/1.0 200 OK&quot;.</td>
+      <td>CURLOPT_HTTP200ALIASES</td>
+    </tr>
+    <tr>
+      <td>HTTPAUTH</td>
+      <td>Pass one or more of the following string values as seperate arguments. These options tell cURL which HTTP authentication options to attempt from the list.
+        <ul>
+          <li><b>&quot;BASIC&quot;</b>: HTTP Basic authentication. This is the default choice, and the only method that is in wide-spread use and supported virtually everywhere. This is sending the user name and password over the network in plain text, easily captured by others.</li>
+          <li><b>&quot;DIGEST&quot;</b>: HTTP Digest authentication.  Digest authentication is defined in RFC2617 and is a more secure way to do authentication over public networks than the regular old-fashioned Basic method.</li>
+          <li><b>&quot;GSSNEGOTIATE&quot;</b>: HTTP GSS-Negotiate authentication. The GSS-Negotiate (also known as plain &quot;Negotiate&quot;) method was designed by Microsoft and is used in their web applications. It is primarily meant as a support for Kerberos5 authentication but may be also used along with another authentication methods. For more information see IETF draft draft-brezak-spnego-http-04.txt.</li>
+          <li><b>&quot;NTLM&quot;</b>: HTTP NTLM authentication. A proprietary protocol invented and used by Microsoft. It uses a challenge-response and hash concept similar to Digest, to prevent the password from being eavesdropped.</li>
+          <li><b>&quot;ANY&quot;</b>: This is a convenience macro that sets all bits and thus makes libcurl pick any it finds suitable. libcurl will automatically select the one it finds most secure.</li>
+          <li><b>&quot;ANYSAFE&quot;</b>: This is a convenience macro that sets all bits except Basic and thus makes libcurl pick any it finds suitable. libcurl will automatically select the one it finds most secure.</li>
+          <li>All of the above values with <b>&quot;AUTH_&quot;</b> prefix are now deprecated.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_HTTPAUTH</td>
+    </tr>
+    <tr>
+      <td>HTTPCONTENTDECODING</td>
+      <td>Set this option to tell cURL how to act on content decoding. If set to <b>0</b> or <b>N</b>, content decoding will be disabled. If set to <b>1</b> or <b>Y</b> it is enabled. Note however that cURL has no default content decoding but requires you to use ENCODING for that.</td>
+      <td>CURLOPT_HTTP_CONTENT_DECODING</td>
+    </tr>
+    <tr>
+      <td>HTTPGET</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to return to HTTP GET mode. Really only useful if a POST was set with the same connection handle.</td>
+      <td>CURLOPT_HTTPGET</td>
+    </tr>
+    <tr>
+      <td>HTTPHEADER</td>
+      <td>To pass a series of HTTP headers to the server, set this option to a valid Rexx stem. Any headers included in this option, that would have normally been generated internally by cURL, will be replaced.</td>
+      <td>CURLOPT_HTTPHEADER</td>
+    </tr>
+    <tr>
+      <td>HTTPPOST</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that a <i>regular</i> (application/x-www-form-urlencoded) HTTP POST is to be carried out. Most HTTP forms are of this type. See <b>HTTPPOSTFIELDS</b> option for details on how to specify the content of the form fields.</td>
+      <td>CURLOPT_POST</td>
+    </tr>
+    <tr>
+      <td>HTTPPOSTDATA</td>
+      <td>Setting this option indicates that you wish to issue a multipart/formdata HTTP POST. You pass the data that is posted as a valid Rexx stem.</td>
+      <td>CURLOPT_HTTPPOST</td>
+    </tr>
+    <tr>
+      <td>HTTPPOSTFIELDS</td>
+      <td>Specify the content of the fields to be filled in with a <b>HTTPPOST</b>. The passed parameter is a Rexx array, with each item in the array a name/value pair. eg field.1 = 'email=mark@rexx.org' and field.0 is the number items in the array.</td>
+      <td>CURLOPT_POSTFIELDS<br>CURLOPT_POSTFIELDSIZE</td>
+    </tr>
+    <tr>
+      <td>HTTPPOSTFORM</td>
+      <td>Setting this option indicates that the HTTP form data specified with <a href="#CURLFORMADD">CURLFORMADD</a> is to be posted. No data is passed with this option.</td>
+      <td>CURLOPT_HTTPPOST</td>
+    </tr>
+    <tr>
+      <td>HTTPPROXYTUNNEL</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tunnel all non-http operations through the HTTP proxy.</td>
+      <td>CURLOPT_HTTPPROXYTUNNEL</td>
+    </tr>
+    <tr>
+      <td>HTTPPUT</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get indicate that a HTTP PUT command is issued for the URL. The file to be uploaded must be specified with <b>INFILE</b>.</td>
+      <td>CURLOPT_PUT</td>
+    </tr>
+    <tr>
+      <td>HTTPTRANSFERDECODING</td>
+      <td>Set this option to tell cURL how to act on transfer decoding. If set to <b>0</b> or <b>N</b>, transfer decoding will be disabled. If set to <b>1</b> or <b>Y</b> it is enabled (default). cURL does chunked transfer decoding by default unless this option is set to zero.</td>
+      <td>CURLOPT_HTTP_TRANSFER_DECODING</td>
+    </tr>
+    <tr>
+      <td>HTTPVERSION</td>
+      <td>Set this option to &quot;<b>VERSION_NONE</b>&quot;, &quot;<b>VERSION_1_0</b>&quot; or &quot;<b>VERSION_1_1</b>&quot; to specify the version to be used in HTTP requests.</td>
+      <td>CURLOPT_HTTP_VERSION</td>
+    </tr>
+    <tr>
+      <td>IGNORECONTENTLENGTH</td>
+      <td>Ignore the Content-Length header. This is useful for Apache 1.x (and similar servers) which will report incorrect content length for files over 2 gigabytes. If this option is used, curl will not be able to accurately report progress, and will simply stop the download when the server ends the connection.</td>
+      <td>CURLOPT_IGNORE_CONTENT_LENGTH</td>
+    </tr>
+    <tr>
+      <td>INFILE</td>
+      <td>The name of a file from which data is read for the performed action. This file must exist. For ftp uploads, this is the file to upload.</td>
+      <td>CURLOPT_INFILE<br>CURLOPT_READDATA</td>
+    </tr>
+    <tr>
+      <td>INSTEM</td>
+      <td>Specify the stem variable of an array from which any input for the performed action is read. You can pass an extra argument specifying a character or sequence of characters to be appended to the value of the variable. This is useful for supplying text files via a stem. In Regina you could specify <i>.endofline</i>.</td>
+      <td>CURLOPT_INFILE<br>CURLOPT_READDATA</td>
+    </tr>
+    <tr>
+      <td>INTERFACE</td>
+      <td>To specify an outgoing interface other than the default, pass the interface in this option. The interface can be specified as an IP address, a hostname, or an interface name (undex Unix).</td>
+      <td>CURLOPT_INTERFACE</td>
+    </tr>
+    <tr>
+      <td>IPRESOLVE</td>
+      <td>Allows an application to select what kind of IP addresses to use when resolving host names. This is only interesting when using host names that resolve addresses using more than one version of IP. The allowed values are:
+        <ul>
+          <li><b>&quot;WHATEVER&quot;</b>: Default, resolves addresses to all IP versions that your system allows.</li>
+          <li><b>&quot;V4&quot;</b>: Resolve to ipv4 addresses.</li>
+          <li><b>&quot;V6&quot;</b>: Resolve to ipv6 addresses.</li>
+          <li>All of the above values with <b>&quot;IPRESOLVE_&quot;</b> prefix are now deprecated.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_IPRESOLVE</td>
+    </tr>
+    <tr>
+      <td>ISSUERCERT</td>
+      <td>Pass a string naming a file holding a CA certificate in PEM format. If the option is set, an additional check against the peer certificate is performed to verify the issuer is indeed the one associated with the certificate provided by the option. This additional check is useful in multi-level PKI where one needs to enforce that the peer certificate is from a specific branch of the tree.
+          This option makes sense only when used in combination with the <b>SSLVERIFYPEER</b> option. Otherwise, the result of the check is not considered as failure.</td>
+      <td>CURLOPT_ISSUERCERT</td>
+    </tr>
+    <tr>
+      <td>KEYPASSWD</td>
+      <td>Pass a string to be used as the password to use the <b>SSLKEY</b> or <b>SSHPRIVATEKEYFILE</b> private key. You never needed a pass phrase to load a certificate but you need one to load your private key.</td>
+      <td>CURLOPT_KEYPASSWD</td>
+    </tr>
+    <tr>
+      <td class="deprecated">KRB4LEVEL<br>Use:<b>KRBLEVEL</b></td>
+      <td class="deprecated">Set the krb4 security level, this also enables krb4 awareness. This is a string, &quot;<b>clear</b>&quot;, &quot;<b>safe</b>&quot;, &quot;<b>confidential</b>&quot; or &quot;<b>private</b>&quot;. If the string is set but doesn't match one of these, &quot;<b>private</b>&quot; will be used. Pass the empty string to disable kerberos4. The kerberos support only works for FTP.</td>
+      <td class="deprecated">CURLOPT_KRB4LEVEL</td>
+    </tr>
+    <tr>
+      <td>KRBLEVEL</td>
+      <td>Set the kerberos security level for FTP; this also enables kerberos awareness. This is a string, &quot;<b>clear</b>&quot;, &quot;<b>safe</b>&quot;, &quot;<b>confidential</b>&quot; or &quot;<b>private</b>&quot;. If the string is set but doesn't match one of these, &quot;<b>private</b>&quot; will be used. Pass the empty string to disable kerberos.</td>
+      <td>CURLOPT_KRBLEVEL</td>
+    </tr>
+    <tr>
+      <td>LOCALPORT</td>
+      <td>Sets the local port number of the socket used for connection. This can be used in combination with the <b>INTERFACE</b> option and you are recommended to use <b>LOCALPORTRANGE</b> option as well when this is set. Note that port numbers are only valid 1 - 65535.</td>
+      <td>CURLOPT_LOCALPORT</td>
+    </tr>
+    <tr>
+      <td>LOCALPORTRANGE</td>
+      <td>This is the number of attempts libcurl should do to find a working local port number. It starts with the given <b>LOCALPORT</b> option and adds one to the number for each retry. Setting this value to 1 or below will make libcurl do only one try for exact port number. Note that port numbers by nature is a scarce resource that will be busy at times so setting this value to something too low might cause unnecessary connection setup failures.</td>
+      <td>CURLOPT_LOCALPORTRANGE</td>
+    </tr>
+    <tr>
+      <td>LOGINOPTIONS</td>
+      <td>Pass a string to specify login options for the transfer. For more information about the login options please see <a href="http://www.ietf.org/rfc/rfc2384.txt">RFC 2384</a>, <a href="http://www.ietf.org/rfc/rfc5092.txt">RFC 5092</a> and IETF draft draft-earhart-url-smtp-00.txt. This option can be used to set protocol specific login options, such as the preferred authentication mechanism via "AUTH=NTLM" or "AUTH=*", and should be used in conjunction with the <b>USERNAME</b> option. Only IMAP, POP3 and SMTP protocols support login options.</td>
+      <td>CURLOPT_LOGIN_OPTIONS</td>
+    </tr>
+    <tr>
+      <td>LOWSPEEDLIMIT</td>
+      <td>This option should contain a number representing the bytes per second that cURL will use as the lowest transfer rate to run at before it aborts the session as being too slow.</td>
+      <td>CURLOPT_LOW_SPEED_LIMIT</td>
+    </tr>
+    <tr>
+      <td>LOWSPEEDTIME</td>
+      <td>This option should contain a number representing the number of seconds that cURL will use as the lowest transfer time to run for before it aborts the session as being too slow.</td>
+      <td>CURLOPT_LOW_SPEED_TIME</td>
+    </tr>
+    <tr>
+      <td>MAILAUTH</td>
+      <td>Pass a string to specify the authentication address (identity) of a submitted message that is being relayed to another server.
+          This optional parameter allows co-operating agents in a trusted environment to communicate the authentication of individual messages and should only be used by the application program, using libcurl, if the application is itself a mail server acting in such an environment. If the application is operating as such and the AUTH address is not known or is invalid, then an empty string should be used for this parameter.
+          Unlike <b>MAILFROM</b> and <b>MAILRCPT</b> options, the address should not be specified within a pair of angled brackets (&lt;&gt;). However, if an empty string is used then a pair of brackets will be sent by libcurl as required by RFC-2554.</td>
+      <td>CURLOPT_MAIL_AUTH</td>
+    </tr>
+    <tr>
+      <td>MAILFROM</td>
+      <td>Pass a string to specify the sender's email address when sending SMTP mail.
+          An originator email address should be specified with angled brackets (&lt;&gt;) around it, which if not specified, will be added by libcurl from version 7.21.4 onwards.
+          Failing to provide such brackets may cause the server to reject the email.
+          If this parameter is not specified then an empty address will be sent to the mail server which may or may not cause the email to be rejected.</td>
+      <td>CURLOPT_MAIL_FROM</td>
+    </tr>
+    <tr>
+      <td>MAILRCPT</td>
+      <td>Specify a stem with a list of recipients to pass to the server in your SMTP mail request.
+          Each recipient should be specified within a pair of angled brackets (&lt;&gt;), however, should you not use an angled bracket as the first character libcurl will assume you provided a single email address and enclose that address within brackets for you.</td>
+      <td>CURLOPT_MAIL_RCPT</td>
+    </tr>
+    <tr>
+      <td>MAXCONNECTS</td>
+      <td>You can specify how many persistent connections cURL is to maintain. The default is 5 and unless you know what you are doing leave it alone.</td>
+      <td>CURLOPT_MAXCONNECTS</td>
+    </tr>
+    <tr>
+      <td>MAXFILESIZE</td>
+      <td>This allows you to specify the maximum size (in bytes) of a file to download. If the file requested is larger than this value, the transfer will not start and FILESIZE_EXCEEDED will be returned.<br><b>NOTE:</b> The file size is not always known prior to download, and for such files this option has no effect even if the file transfer ends up being larger than this given limit. This concerns both FTP and HTTP transfers.</td>
+      <td>CURLOPT_MAXFILESIZE<br>CURLOPT_MAXFILESIZE_LARGE</td>
+    </tr>
+    <tr>
+      <td>MAXRECVSPEEDLARGE</td>
+      <td>Pass an integer. If a download exceeds this speed (counted in bytes per second) on cumulative average during the transfer, the transfer will pause to keep the average rate less than or equal to the parameter value. Defaults to unlimited speed.</td>
+      <td>CURLOPT_MAX_RECV_SPEED_LARGE</td>
+    </tr>
+    <tr>
+      <td>MAXREDIRS</td>
+      <td>To limit the number of redirections followed, set this value with this option. This option only makes sense when <b>FOLLOWLOCATION</b> is also set.</td>
+      <td>CURLOPT_MAXREDIRS</td>
+    </tr>
+    <tr>
+      <td>MAXSENDSPEEDLARGE</td>
+      <td>Pass an integer. If an upload exceeds this speed (counted in bytes per second) on cumulative average during the transfer, the transfer will pause to keep the average rate less than or equal to the parameter value. Defaults to unlimited speed.</td>
+      <td>CURLOPT_MAX_SEND_SPEED_LARGE</td>
+    </tr>
+    <tr>
+      <td>NETRC</td>
+      <td>This parameter controls the preference of libcurl between using user names and passwords from your ~/.netrc file, relative to user names and passwords in the URL supplied with the URL option.<br>
+          <b>Note:</b> cURL uses a user name (and supplied or prompted password) supplied with the option USERPWD in preference to any of the options controlled by this parameter.
+        <ul>
+          <li><b>&quot;OPTIONAL&quot;</b>: The use of your ~/.netrc file is optional, and information in the URL is to be preferred.  The file will be scanned with the host and user name (to find the password only) or with the host only, to find the first user name and password after that <i>machine</i>, which ever information is not specified in the URL. Undefined values of the option will have this effect.</li>
+          <li><b>&quot;IGNORED&quot;</b>: The library will ignore the file and use only the information in the URL. This is the default.</li>
+          <li><b>&quot;REQUIRED&quot;</b>: This value tells the library that use of the file is required, to ignore the information in the URL, and to search the file with the host only. Only machine name, user name and password are taken into account (init macros and similar things aren't supported).</li>
+        </ul>
+        <b>Note:</b> cURL does not verify that the file has the correct properties set (as the standard Unix ftp client does). It should only be readable by user.
+      </td>
+      <td>CURLOPT_NETRC</td>
+    </tr>
+    <tr>
+      <td>NETRCFILE</td>
+      <td>The name of a file you want to be used as a .netrc file. If this option is omitted, and NETRC option is set, then Rexx/CURL attempts to look for .netrc in the current user's home directory.</td>
+      <td>CURLOPT_NETRC_FILE</td>
+    </tr>
+    <tr>
+      <td>NEWDIRECTORYPERMS</td>
+      <td>Pass a long as a parameter, containing the value of the permissions that will be assigned to newly created directories on the remote server. The default value is 0755, but any valid value can be used. The only protocols that can use this are sftp://, scp:// and file://.</td>
+      <td>CURLOPT_NEW_DIRECTORY_PERMS</td>
+    </tr>
+    <tr>
+      <td>NOBODY</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to <b>not</b> return the body information for those protocols, like HTTP, that have seperate headers and footers.</td>
+      <td>CURLOPT_NOBODY</td>
+    </tr>
+    <tr>
+      <td>NOPROGRESS</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to turn off cURL's default progress meter.</td>
+      <td>CURLOPT_NOPROGRES</td>
+    </tr>
+    <tr>
+      <td>NOPROXY</td>
+      <td>Pass a string which should be a comma separated list of hosts which do not use a proxy, if one is specified. The only wildcard is a single * character, which matches all hosts, and effectively disables the proxy. Each name in this list is matched as either a domain which contains the hostname, or the hostname itself. For example, local.com would match local.com, local.com:80, and www.local.com, but not www.notlocal.com.</td>
+      <td>CURLOPT_NOPROXY</td>
+    </tr>
+    <tr>
+      <td>NOSIGNAL</td>
+      <td>N/A to Rexx/CURL</td>
+      <td>CURLOPT_NOSIGNAL</td>
+    </tr>
+    <tr>
+      <td>OUTFILE</td>
+      <td>The name of a file into which any output from the performed action is written. By default, if this file exists, it will be over-written. You can pass <b>APPEND</b> as an extra argument to append data to an existing file. This is necessary when using RESUMEFROM to resume a download.</td>
+      <td>CURLOPT_FILE<br>CURLOPT_WRITEDATA</td>
+    </tr>
+    <tr>
+      <td>OUTSTEM</td>
+      <td>Specify the stem variable of an array into which any output from the performed action is written. If the array exists, it will be over-written. This option should only be used when the output is expected to be line oriented with a known line terminating sequence of characters. By default the output is split into lines using the line termination character; x0A. You can pass the line termination sequence as the 4th argument. Output from performing an HTML request or from reading email will be line terminated with the CRLF sequence; x0D0A, and this value should be used as the 4th argument.</td>
+      <td>CURLOPT_FILE<br>CURLOPT_WRITEDATA</td>
+    </tr>
+    <tr>
+      <td>PASWORD</td>
+      <td>Pass a string which is used as the password for the transfer.
+      This option should be used in conjunction with the <b>USERNAME</b> option.</td>
+      <td>CURLOPT_PASSWORD</td>
+    </tr>
+    <tr>
+      <td>POSTQUOTE</td>
+      <td>See the prefered FTPCMDSAFTER option.</td>
+      <td>CURLOPT_POSTQUOTE</td>
+    </tr>
+    <tr>
+      <td>POSTREDIR</td>
+      <td>Pass one or more of the following string values as seperate arguments. These options control how libcurl acts on redirects after POSTs that get a 301, 302 or 303 response back.
+        <ul>
+          <li><b>&quot;GET_ALL&quot;</b>: Tells the library to change a POST request to a GET request after a 301 or 302 response</li>
+          <li><b>&quot;POST_301&quot;</b>: Tells the library to respect RFC 2616/10.3.2 and not convert POST requests into GET requests when following a 301 redirection.</li>
+          <li><b>&quot;POST_302&quot;</b>: Makes libcurl maintain the request method after a 302 redirect.</li>
+          <li><b>&quot;POST_ALL&quot;</b>: A convenience option that sets both <b>POST_301</b> and <b>POST_302</b></li>
+        </ul>
+      <td>CURLOPT_POSTREDIR</td>
+    </tr>
+    <tr>
+      <td class="deprecated">POST301<br>Use:<b>POSTREDIR</b></td>
+      <td class="deprecated">Set this option to a <b>1</b> or <b>Y</b> to tell the library to respect RFC 2616/10.3.2 and not convert POST requests into GET requests when following a 301 redirection. The non-RFC behaviour is ubiquitous in web browsers, so the library does the conversion by default to maintain consistency. However, a server may requires a POST to remain a POST after such a redirection. This option is meaningful only when setting the option <b>FOLLOWLOCATION</b>.</td>
+      <td class="deprecated">CURLOPT_POST301</td>
+    </tr>
+    <tr>
+      <td>PREQUOTE</td>
+      <td>See the prefered FTPCMDSBEFORE option.</td>
+      <td>CURLOPT_PREQUOTE</td>
+    </tr>
+    <tr>
+      <td>PRIVATE</td>
+      <td>Pass a string of private data that can be associated with the cURL handle to be retrieved later with a call to <A href="#CURLGETINFO">CURLGETINFO</A> with the PRIVATE option.</td>
+      <td>CURLOPT_PRIVATE</td>
+    </tr>
+    <tr>
+      <td>PROGRESSFUNCTION</td>
+      <td>When uploading or downloading, cURL will call the specified internal Rexx procedure at regular intervals.<br>Four arguments are passed; total bytes to download, bytes downloaded so far, total bytes to upload, bytes uploaded so far.<br>This option is only valid if your Rexx interpreter has the RexxCallback() API (to date only Regina has this).</td>
+      <td>CURLOPT_PROGRESSFUNCTION</td>
+    </tr>
+    <tr>
+      <td>PROTOCOLS</td>
+      <td>Pass one or more string values as seperate arguments. These options limit which protocols libcurl may use in the transfer. This allows you to have a libcurl built to support a wide range of protocols but still limit specific transfers to only be allowed to use a subset of them. By default libcurl will accept all protocols it supports. See the values of the <b>!REXXCURL.!PROTOCOLS</b> stem for possible values. See also <b>REDIR_PROTOCOLS</b>.</td>
+      <td>CURLOPT_PROTOCOLS</td>
+    </tr>
+    <tr>
+      <td>PROXY</td>
+      <td>If you need to use a HTTP proxy to access the outside world, specify it with this option. The format of the proxy string is <i>host[:port]</i>. The default port number is 1080.</td>
+      <td>CURLOPT_PROXY</td>
+    </tr>
+    <tr>
+      <td>PROXYAUTH</td>
+      <td>Pass one or more string values as seperate arguments. These options tell cURL which PROXY authentication options to attempt from the list. See HTTPAUTH for the list of valid string values.<br>
+      </td>
+      <td>CURLOPT_PROXYAUTH</td>
+    </tr>
+    <tr>
+      <td>PROXYPASSWORD</td>
+      <td>Pass a string containing the password to use for the transfer while connecting to a Proxy.
+          This option should be used in conjunction with the <b>PROXYUSERNAME</b> option.</td>
+      <td>CURLOPT_PROXYPASSWORD</td>
+    </tr>
+    <tr>
+      <td>PROXYPORT</td>
+      <td>Specify the port to use for the proxy server.</td>
+      <td>CURLOPT_PROXYPORT</td>
+    </tr>
+    <tr>
+      <td>PROXYTRANSFERMODE</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to tell libcurl to set the transfer mode (binary or ASCII) for FTP transfers done via a HTTP proxy, by appending ;type=a or ;type=i to the URL. Without this setting, or it being set to <b>0</b> or <b>N</b> (the default), <b>TRANSFERTEXT</b> has no effect when doing FTP via a proxy. Beware that not all proxies support this feature.</td>
+      <td>CURLOPT_PROXY_TRANSFER_MODE</td>
+    </tr>
+    <tr>
+      <td>PROXYTYPE</td>
+      <td>Set this option to &quot;<b>HTTP</b>&quot;, &quot;<b>SOCKS4</b>&quot; or &quot;<b>SOCKS5</b>&quot;.<br>
+      <td>CURLOPT_PROXYTYPE</td>
+    </tr>
+    <tr>
+      <td>PROXYUSERNAME</td>
+      <td>Pass a string containing the user name to use for the transfer while connecting to a Proxy.
+          This option should be used in same way as the <b>PROXYUSERPWD</b> is used. In comparison to <b>PROXYUSERPWD</b> this option allows the username to contain a colon, like in the following example: &quot;sip:user@example.com&quot;. This option is an alternative way to set the user name while connecting to Proxy. There is no meaning to use it together with the <b>PROXYUSERPWD</b> option.
+          <br>
+          In order to specify the password to be used in conjunction with the user name use the <b>PROXYPASSWORD</b> option.</td>
+      <td>CURLOPT_PROXYUSERNAME</td>
+    </tr>
+    <tr>
+      <td>PROXYUSERPWD</td>
+      <td>Specify the username/password to use for the the HTTP proxy connection. The format is <i>username[:password]</i>. If the password is omitted, you will be prompted for it.</td>
+      <td>CURLOPT_PROXYUSERPWD</td>
+    </tr>
+    <tr>
+      <td>QUOTE</td>
+      <td>See the prefered <b>FTPCMDS</b> option.</td>
+      <td>CURLOPT_QUOTE</td>
+    </tr>
+    <tr>
+      <td>RANDOMFILE</td>
+      <td>The name of a file from which is used to seed the SSL random engine. This file must exist.</td>
+      <td>CURLOPT_RANDOM_FILE</td>
+    </tr>
+    <tr>
+      <td>RANGE</td>
+      <td>Specify the required range you want in the format <i>X-Y</i>. I have no idea what this is!</td>
+      <td>CURLOPT_RANGE</td>
+    </tr>
+    <tr>
+      <td>REDIRPROTOCOLS</td>
+      <td>Pass one or more string values as seperate arguments. These options limit which protocols libcurl may use after a redirection if <b>FOLLOWLOCATION</b> is set to 1. By default libcurl will allow all protocols except for FILE and SCP. See the values of the <b>!REXXCURL.!PROTOCOLS</b> stem for possible values. See also <b>PROTOCOLS</b>.</td>
+      <td>CURLOPT_REDIR_PROTOCOLS</td>
+    </tr>
+    <tr>
+      <td>REFERER</td>
+      <td>Set this option to a string to set the header field: <i>referer:</i> in the HTTP request.</td>
+      <td>CURLOPT_REFERER</td>
+    </tr>
+    <tr>
+      <td>RESOLVE</td>
+      <td>Specify a stem containing strings with host name resolve information to use for requests with this handle.
+          Each single name resolve string should be written using the format <b>HOST:PORT:ADDRESS</b> where <b>HOST</b> is the name libcurl will try to resolve,
+          <b>PORT</b> is the port number of the service where libcurl wants to connect to the <b>HOST</b> and <b>ADDRESS</b> is the numerical IP address.
+          If libcurl is built to support IPv6, <b>ADDRESS</b> can of course be either IPv4 or IPv6 style addressing.
+          <br>
+          This option effectively pre-populates the DNS cache with entries for the host+port pair so redirects and everything that operations against the <b>HOST+PORT</b> will instead use your provided <b>ADDRESS</b>.
+          <br>
+          You can remove names from the DNS cache again, to stop providing these fake resolves, by including a string in the stem that uses the format <b>&quot;-HOST:PORT&quot;</b>.
+          The host name must be prefixed with a dash, and the host name and port number must exactly match what was already added previously.</td>
+      <td>CURLOPT_RESOLVE</td>
+    </tr>
+    <tr>
+      <td>RESUMEFROM</td>
+      <td>Set this option to the byte at which you want a request to start from. This is particularly useful for restarting a download that was interrupted.</td>
+      <td>CURLOPT_RESUME_FROM<br>CURLOPT_RESUME_FROM_LARGE</td>
+    </tr>
+    <tr>
+      <td>RTSPCLIENTCSEQ</td>
+      <td>Manually set the the CSEQ number to issue for the next RTSP request. Useful if the application is resuming a previously broken connection. The CSEQ will increment from this new number henceforth.</td>
+      <td>CURLOPT_RTSP_CLIENT_CSEQ</td>
+    </tr>
+    <tr>
+      <td>RTSPHEADER</td>
+      <td>This option is simply an alias for <b>HTTPHEADER</b>. Use this to replace the standard headers that RTSP and HTTP share. It is also valid to use the shortcuts such as <b>USERAGENT</b> option.</td>
+      <td>CURLOPT_RTSP_HEADER</td>
+    </tr>
+    <tr>
+      <td>RTSPREQUEST</td>
+      <td>Tell libcurl what kind of RTSP request to make. Pass one of the following strings.
+          Unless noted otherwise, commands require the Session ID to be initialized (via <b>RTSPSESSIONID</b>.
+          <ul>
+            <li>&quot;<b>OPTIONS</b>&quot; - Used to retrieve the available methods of the server. The application is responsbile for parsing and obeying the response. (The session ID is not needed for this method.)</li>
+            <li>&quot;<b>DESCRIBE</b>&quot; - Used to get the low level description of a stream. The application should note what formats it understands in the &quot;Accept:&quot; header. Unless set manually, libcurl will automatically fill in &quot;Accept: application/sdp&quot;. Time-condition headers will be added to Describe requests if the <b>TIMECONDITION</b> option is active. (The session ID is not needed for this method)</li>
+            <li>&quot;<b>ANNOUNCE</b>&quot; - When sent by a client, this method changes the description of the session. For example, if a client is using the server to record a meeting, the client can use Announce to inform the server of all the meta-information about the session. <b>ANNOUNCE</b> acts like a HTTP PUT or POST just like <b>SET_PARAMETER</b> sub-option</li>
+            <li>&quot;<b>SETUP</b>&quot; - Setup is used to initialize the transport layer for the session. The application must set the desired Transport options for a session by using the <b>TRANSPORT</b> sub-option prior to calling setup. If no session ID is currently set with <b>SESSIONID</b> option, libcurl will extract and use the session ID in the response to this request. (The session ID is not needed for this method).</li>
+            <li>&quot;<b>PLAY</b>&quot; - Send a Play command to the server. Use the <b>RANGE</b> option to modify the playback time (e.g. 'npt=10-15').</li>
+            <li>&quot;<b>PAUSE</b>&quot; - Send a Pause command to the server. Use the <b>RANGE</b> option with a single value to indicate when the stream should be halted. (e.g. npt='25')</li>
+            <li>&quot;<b>TEARDOWN</b>&quot; - This command terminates an RTSP session. Simply closing a connection does not terminate the RTSP session since it is valid to control an RTSP session over different connections.</li>
+            <li>&quot;<b>GET_PARAMETER</b>&quot; - Retrieve a parameter from the server. By default, libcurl will automatically include a &quot;Content-Type: text/parameters&quot; header on all non-empty requests unless a custom one is set. <b>GET_PARAMETER</b> acts just like a HTTP PUT or POST (see SET_PARAMETER sub-option). Applications wishing to send a heartbeat message (e.g. in the presence of a server-specified timeout) should send an empty <b>GET_PARAMETER</b> request.</li>
+            <li>&quot;<b>SET_PARAMETER</b>&quot; - Set a parameter on the server. By default, libcurl will automatically include a &quot;Content-Type: text/parameters&quot; header unless a custom one is set. The interaction with <b>SET_PARAMTER</b> is much like a HTTP PUT or POST. An application may either use <b>UPLOAD</b> option with <b>READDATA</b> option like a HTTP PUT, or it may use <b>POSTFIELDS</b> like a HTTP POST. Also, there is no use of multi-part POSTs within RTSP.</li>
+            <li>&quot;<b>RECORD</b>&quot; - Used to tell the server to record a session. Use the <b>RANGE</b> option to modify the record time.</li>
+            <li>&quot;<b>RECEIVE</b>&quot; - This is a special request because it does not send any data to the server. The application may call this function in order to receive interleaved RTP data. It will return after processing one read buffer of data in order to give the application a chance to run.</li>
+          </ul>
+      </td>
+      <td>CURLOPT_RTSP_REQUEST</td>
+    </tr>
+    <tr>
+      <td>RTSPSERVERCSEQ</td>
+      <td>Manually set the CSEQ number to expect for the next RTSP Server->Client request. At the moment, this feature (listening for Server requests) is unimplemented.</td>
+      <td>CURLOPT_RTSP_SERVER_CSEQ</td>
+    </tr>
+    <tr>
+      <td>RTSPSESSIONID</td>
+      <td>Pass a string to set the value of the current RTSP Session ID for the handle. Useful for resuming an in-progress session. Once this value is set to any non-empty value, libcurl will return &quot;<b>RTSP_SESSION_ERROR</b>&quot; if ID received from the server does not match. If unset (or set to the empty string), libcurl will automatically set the ID the first time the server sets it in a response.</td>
+      <td>CURLOPT_RTSP_SESSION_ID</td>
+    </tr>
+    <tr>
+      <td>RTSPSTREAMURI</td>
+      <td>Set the stream URI to operate on by passing a string . For example, a single session may be controlling <i>rtsp://foo/twister/audio</i> and <i>rtsp://foo/twister/video</i> and the application can switch to the appropriate stream using this option. If unset, libcurl will default to operating on generic server options by passing &quot;*&quot; in the place of the RTSP Stream URI. This option is distinct from <b>URL</b>. When working with RTSP, this option indicates what URL to send to the server in the request header while the <b>URL</b> indicates where to make the connection to. (e.g. the <b>URL</b> for the above examples might be set to <i>rtsp://foo/twister</i></td>
+      <td>CURLOPT_RTSP_STREAM_URI</td>
+    </tr>
+    <tr>
+      <td>RTSPTRANSPORT</td>
+      <td>Pass a string to tell libcurl what to pass for the Transport: header for this RTSP session. This is mainly a convenience method to avoid needing to set a custom Transport: header for every <b>SETUP</b> request. The application must set a Transport: header before issuing a <b>SETUP</b> request.</td>
+      <td>CURLOPT_RTSP_TRANSPORT</td>
+    </tr>
+    <tr>
+      <td>SOCKS5GSSAPINEC</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to enable or <b>0</b> or <b>N</b> to disable. As part of the gssapi negotiation a protection mode is negotiated. The rfc1961 says in section 4.3/4.4 it should be protected, but the NEC reference implementation does not. If enabled, this option allows the unprotected exchange of the protection mode negotiation.</td>
+      <td>CURLOPT_SOCKS5_GSSAPI_NEC</td>
+    </tr>
+    <tr>
+      <td>SOCKS5GSSAPISERVICE</td>
+      <td>Pass a string holding the name of the service. The default service name for a SOCKS5 server is rcmd/server-fqdn. This option allows you to change it.</td>
+      <td>CURLOPT_SOCKS5_GSSAPI_SERVICE</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SOURCEPOSTQUOTE<br>Removed in Rexx/CURL 2.0</td>
+      <td class="deprecated">Exactly like, <b>POSTQUOTE</b>, but for source host.</td>
+      <td class="deprecated">CURLOPT_SOURCE_POSTQUOTE</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SOURCEPREQUOTE<br>Removed in Rexx/CURL 2.0</td>
+      <td class="deprecated">Exactly like, <b>PREQUOTE</b>, but for source host.</td>
+      <td class="deprecated">CURLOPT_SOURCE_PREQUOTE</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SOURCEQUOTE<br>Removed in Rexx/CURL 2.0</td>
+      <td class="deprecated">Exactly like, <b>QUOTE</b>, but for source host.</td>
+      <td class="deprecated">CURLOPT_SOURCE_QUOTE</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SOURCEURL<br>Removed in Rexx/CURL 2.0</td>
+      <td class="deprecated">When set, it enables a FTP third party transfer, using this value as source, while the option; <b>URL</b> is the target.</td>
+      <td class="deprecated">CURLOPT_SOURCE_URL</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SOURCEUSERPWD<br>Removed in Rexx/CURL 2.0</td>
+      <td class="deprecated">Set this to a string in the format; &quot;username:password&quot; to use for the source connection when doing FTP third party transfers.</td>
+      <td class="deprecated">CURLOPT_SOURCE_USERPWD</td>
+    </tr>
+    <tr>
+      <td>SSHAUTHTYPES</td>
+      <td>Pass one or more of the following string values as seperate arguments. These are the authentication types cURL will use for SSH.
+        <ul>
+          <li><b>&quot;PUBLICKEY&quot;</b></li>
+          <li><b>&quot;PASSWORD&quot;</b></li>
+          <li><b>&quot;HOST&quot;</b></li>
+          <li><b>&quot;KEYBOARD&quot;</b></li>
+          <li><b>&quot;ANY&quot;</b>: Let cURL pick one.</li>
+          <li>All of the above values with <b>&quot;AUTH_&quot;</b> prefix are now deprecated.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_SSH_AUTH_TYPES</td>
+    </tr>
+    <tr>
+      <td>SSHHOSTPUBLICKEYMD5</td>
+      <td>Pass a string containing 32 hexadecimal digits. The string should be the 128 bit MD5 cheksum of the remote host's public key, and Rexx/CURL will reject the connection to the host unless the md5sums match. This option is only for SCP and SFTP transfers.</td>
+      <td>CURLOPT_SSH_HOST_PUBLIC_KEY_MD5</td>
+    </tr>
+    <tr>
+      <td>SSHKNOWNHOSTS</td>
+      <td>Pass a string holding the file name of the known_host file to use. The known_hosts file should use the OpenSSH file format as supported by libssh2. If this file is specified, libcurl will only accept connections with hosts that are known and present in that file, with a matching public key. Use <b>SSHKEYFUNCTION</b> to alter the default behavior on host and key (mis)matching.</td>
+      <td>CURLOPT_SSH_KNOWN_HOSTS</td>
+    </tr>
+    <tr>
+      <td>SSHPRIVATEKEYFILE</td>
+      <td>Pass a string pointing to a file name for your public key. If not used, libcurl defaults to using ~/.ssh/id_dsa.pub.</td>
+      <td>CURLOPT_SSH_PRIVATE_KEY_FILE</td>
+    </tr>
+    <tr>
+      <td>SSHPUBLICKEYFILE</td>
+      <td>Pass a string pointing to a file name for your private key. If not used, libcurl defaults to using ~/.ssh/id_dsa.
+          If the file is password-protected, set the password with <b>KEYPASSWD</b>.</td>
+      <td>CURLOPT_SSH_PUBLIC_KEY_FILE</td>
+    </tr>
+    <tr>
+      <td>SSLCERT</td>
+      <td>To set a SSL certificate, set this option to the filename containing the certificate. The certificate should be in PEM format.</td>
+      <td>CURLOPT_SSLCERT</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SSLCERTPASSWD<br>Use:<b>KEYPASSWD</b></td>
+      <td class="deprecated">The password associated with the SSL certificate set by <b>SSLCERT</b> can be set with this option. If you don't supply the password with this option, you will be prompted for it.</td>
+      <td class="deprecated">CURLOPT_SSLCERTPASSWD</td>
+    </tr>
+    <tr>
+      <td>SSLCERTTYPE</td>
+      <td>The type of SSL certificate. One of &quot;<b>DER</b>&quot; or &quot;<b>PEM</b>&quot;.</td>
+      <td>CURLOPT_SSLCERTTYPE</td>
+    </tr>
+    <tr>
+      <td>SSLCIPHERLIST</td>
+      <td>The list of ciphers to use for the SSL connection. It consists of one or more cipher strings separated by colons. Commas or spaces are also acceptable separators but colons are normally used, &quot;-&quot; and &quot;+&quot; can be used as operators. Valid examples of cipher lists include "RC4-SHA", "SHA1+DES", "TLSv1" and "DEFAULT". The default list is normally set when you compile OpenSSL. You'll find more details about cipher lists <a href="http://www.openssl.org/docs/apps/ciphers.html">here</a>
+      <td>CURLOPT_SSL_CIPHER_LIST</td>
+    </tr>
+    <tr>
+      <td>SSLENGINE</td>
+      <td>Identifies the name of the crypto engine used for your private key.</td>
+      <td>CURLOPT_SSL_ENGINE</td>
+    </tr>
+    <tr>
+      <td>SSLENGINEDEFAULT</td>
+      <td>Identifies the name of the default crypto engine used for asymetric crypto operations.</td>
+      <td>CURLOPT_SSL_ENGINEDEFAULT</td>
+    </tr>
+    <tr>
+      <td>SSLKEY</td>
+      <td>The name of the file containing your private key.</td>
+      <td>CURLOPT_SSLKEY</td>
+    </tr>
+    <tr>
+      <td class="deprecated">SSLKEYPASSWD<br>Use:<b>KEYPASSWD</b></td>
+      <td class="deprecated">This will be used as the password required to use the SSLKEY private key.</td>
+      <td class="deprecated">CURLOPT_SSLKEYPASSWD</td>
+    </tr>
+    <tr>
+      <td>SSLKEYTYPE</td>
+      <td>The format of your private key. One of &quot;<b>DER</b>&quot;, &quot;<b>PEM</b>&quot; or &quot;<b>ENG</b>&quot;.</td>
+      <td>CURLOPT_SSLKEYTYPE</td>
+    </tr>
+    <tr>
+      <td>SSLOPTIONS</td>
+      <td>Pass one or more of the following string values as seperate arguments to tell libcurl about specific SSL behaviors:
+        <ul>
+          <li>ALLOWBEAST - tell libcurl to not attempt to use any work-arounds for a security flaw in the SSL3 and TLS1.0 protocols. If this sub-option isn't used, the SSL layer libcurl uses may use a work-around for this flaw although it might cause interoperability problems with some (older) SSL implementations. WARNING: avoiding this work-around loosens the security, and by setting this sub-option you ask for exactly that.</li>
+          <li>NO_REVOKE - tells libcurl to disable certificate revocation checks for those SSL backends where such behavior is present.</li>
+        </ul>
+      </td>
+      <td>CURLOPT_SSL_OPTIONS</td>
+    </tr>
+    <tr>
+      <td>SSLPEERCERT</td>
+      <td>The name of a file from which the SSL peer certificate data is read for the performed action. This file must exist.</td>
+      <td>CURLOPT_CAINFO</td>
+    </tr>
+    <tr>
+      <td>SSLSESSIONIDCACHE</td>
+      <td>Set this option to <b>0</b> or <b>N</b> to disable cURL's use of SSL session-ID caching. Set this to a <b>1</b> or <b>Y</b> to enable it. By default all transfers are done using the cache. Note that while nothing ever should get hurt by attempting to reuse SSL session-IDs, there seem to be broken SSL implementations in the wild that may require you to disable this in order for you to succeed.</td>
+      <td>CURLOPT_SSL_SESSIONID_CACHE</td>
+    </tr>
+
+    <tr>
+      <td>SSLVERIFYHOST</td>
+      <td>Set this if we should verify the Common name from the peer certificate in the SSL hand-shake, set to &quot;<b>1</b>&quot; to check existence, &quot;<b>2</b>&quot; to ensure that it matches the provided hostname.</td>
+      <td>CURLOPT_SSL_VERIFYHOST</td>
+    </tr>
+    <tr>
+      <td>SSLVERIFYPEER</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that the SSL peer's certificate should be verified. The SSL peer certificate must be specified with the <b>SSLPEERCERT</b> option.</td>
+      <td>CURLOPT_SSL_VERIFYPEER</td>
+    </tr>
+    <tr>
+      <td>SSLVERIFYSTATUS</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to determines whether libcurl verifies the status of the server cert using the "Certificate Status Request" TLS extension (aka. OCSP stapling). Note that if this option is enabled but the server does not support the TLS extension, the verification will fail.</td>
+      <td>CURLOPT_SSL_VERIFYSTATUS</td>
+    </tr>
+    <tr>
+      <td>SSLVERSION</td>
+      <td>To over-ride the default SSL version used, pass this option in as a number.</td>
+      <td>CURLOPT_SSLVERSION</td>
+    </tr>
+    <tr>
+      <td>TCPKEEPALIVE</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that TCP keepalive probes will be sent.
+          The delay and frequency of these probes can be controlled by the <b>TCPKEEPIDLE</b> and <b>TCPKEEPINTVL</b> options, provided the operating system supports them.
+          The default behaiour is to disable keepalive probes.
+      </td>
+      <td>CURLOPT_TCP_KEEPALIVE</td>
+    </tr>
+    <tr>
+      <td>TCPKEEPIDLE</td>
+      <td>Specify the delay, in seconds, that the operating system will wait while the connection is idle before sending keepalive probes. Not all operating systems support this option.
+      </td>
+      <td>CURLOPT_TCP_KEEPIDLE</td>
+    </tr>
+    <tr>
+      <td>TCPKEEPINTVL</td>
+      <td>Specify the interval, in seconds, that the operating system will wait between sending keepalive probes. Not all operating systems support this option.
+      </td>
+      <td>CURLOPT_TCP_KEEPINTVL</td>
+    </tr>
+    <tr>
+      <td>TCPNODELAY</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to disable TCP's Nagle algorithm.
+          The purpose of this algorithm is to try to minimize the number of small packets on the network (where &quot;small packets&quot; means TCP segments less than the Maximum Segment Size (MSS) for the network).<br>
+          Maximizing the amount of data sent per TCP segment is good because it amortizes the overhead of the send. However, in some cases (most notably telnet or rlogin) small segments may need to be sent without delay. This is less efficient than sending larger amounts of data at a time, and can contribute to congestion on the network if overdone.<br>
+          The option is off by default. This will have no effect after the connection has been established.
+      </td>
+      <td>CURLOPT_TCP_NODELAY</td>
+    </tr>
+    <tr>
+      <td>TFTPBLKSIZE</td>
+      <td>Specify the block size to use for TFTP data transmission. Valid range as per RFC 2348 is 8-65464 bytes. The default of 512 bytes will be used if this option is not specified. The specified block size will only be used pending support by the remote server. If the server does not return an option acknowledgement or returns an option acknowledgement with no blksize, the default of 512 bytes will be used.</td>
+      <td>CURLOPT_TFTP_BLKSIZE</td>
+    </tr>
+    <tr>
+      <td>TIMECONDITION</td>
+      <td>This defines how the TIMEVALUE time value is treated. You can set this parameter to &quot;<b>IFMODSINCE</b>&quot;, &quot;<b>TIMECOND_IFUNMODSINCE</b>&quot; or &quot;<b>LASTMOD</b>&quot;. This option is valid for HTTP or FTP.</td>
+      <td>CURLOPT_TIMECONDITION</td>
+    </tr>
+    <tr>
+      <td>TIMEOUT</td>
+      <td>Specify the number of seconds in which the whole transaction is to complete. Note that this timeout period also includes the time taken to do name lookups, so don't specify too short a period.</td>
+      <td>CURLOPT_TIMEOUT</td>
+    </tr>
+    <tr>
+      <td>TIMEOUTMS</td>
+      <td>Like TIMEOUT but takes number of milliseconds instead.</td>
+      <td>CURLOPT_TIMEOUT_MS</td>
+    </tr>
+    <tr>
+      <td>TIMEVALUE</td>
+      <td>This should be the time in seconds since 1 Jan 1970 (Unix time_t format), and the time will be used in a condition as specified with TIMECONDITION.</td>
+      <td>CURLOPT_TIMEVALUE</td>
+    </tr>
+    <tr>
+      <td>TLSAUTHPASSWORD</td>
+      <td>Pass the password to use for the TLS authentication method specified with the <b>TLSAUTHTYPE</b> option. Requires that the <b>TLSUSERNAME</b> option also be set.</td>
+      <td>CURLOPT_TLSAUTH_PASSWORD</td>
+    </tr>
+    <tr>
+      <td>TLSAUTHTYPE</td>
+      <td>Pass one or more of the following string values as seperate arguments to tell libcurl which authentication method(s) you want it to use for TLS authentication.
+        <ul>
+          <li>SRP - Secure Remote Password authentication for TLS is defined in RFC 5054 and provides mutual authentication if both sides have a shared secret. To use TLS-SRP, you must also set the <b>TLSAUTHUSERNAME</b> and <b>TLSAUTHPASSWORD</b> options.</li>
+        </ul>
+        The libcurl being used needs to have been built with GnuTLS or OpenSSL with TLS-SRP support for this to work; ie !REXXCURL.!SUPPORTS_TLSAUTH_SRP has a value of 1.
+      </td>
+      <td>CURLOPT_TLSAUTH_TYPE</td>
+    </tr>
+    <tr>
+      <td>TLSAUTHUSERNAME</td>
+      <td>Pass the username to use for the TLS authentication method specified with the <b>TLSAUTHTYPE</b> option. Requires that the <b>TLSPASSWORD</b> option also be set.</td>
+      <td>CURLOPT_TLSAUTH_USERNAME</td>
+    </tr>
+    <tr>
+      <td>TRANSFERENCODING</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to request compressed Transfer Encoding in the outgoing HTTP request. If the server supports this and so desires, it can respond with the HTTP resonse sent using a compressed Transfer-Encoding that will be automatically uncompressed by libcurl on receival.
+         <br>
+         Transfer-Encoding differs slightly from the Content-Encoding you ask for with <b>ACCEPTENCODING</b> option in that a Transfer-Encoding is strictly meant to be for the transfer and thus MUST be decoded before the data arrives in the client. Traditionally, Transfer-Encoding has been much less used and supported by both HTTP clients and HTTP servers.
+      </td>
+      <td>CURLOPT_TRANSFER_ENCODING</td>
+    </tr>
+    <tr>
+      <td>TRANSFERTEXT</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get indicate that FTP transfers are to be done in ASCII mode. For LDAP requests, the details are returned in plain text rather than HTML.</td>
+      <td>CURLOPT_TRANSFERTEXT</td>
+    </tr>
+    <tr>
+      <td>UNRESTRICTEDAUTH</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that Rexx/CURL can continue to send authentication (user+password) when following locations, even when hostname changed. Note that this is meaningful only when setting FOLLOWLOCATION.</td>
+      <td>CURLOPT_UNRESTRICTED_AUTH</td>
+    </tr>
+    <tr>
+      <td>UPLOAD</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to indicate that an upload is to be done, rather than a download.</td>
+      <td>CURLOPT_UPLOAD</td>
+    </tr>
+    <tr>
+      <td>URL</td>
+      <td>The URL against which the access is to be made.</td>
+      <td>CURLOPT_URL</td>
+    </tr>
+    <tr>
+      <td>USERAGENT</td>
+      <td>Set this option to a string to set the header field: <i>user-agent:</i> in the HTTP request. This can be useful to imitate different browser clients.</td>
+      <td>CURLOPT_USERAGENT</td>
+    </tr>
+    <tr>
+      <td>USERPWD</td>
+      <td>Specify the username/password to use for this connection. The format is <i>username[:password]</i>. If the password is omitted, you will be prompted for it.</td>
+      <td>CURLOPT_USERPWD</td>
+    </tr>
+    <tr>
+      <td>USESSL</td>
+      <td>Set this option to one of the following string values to make libcurl use your desired level of SSL for the transfer.
+        <ul>
+          <li><b>&quot;NONE&quot;</b>: Don't attempt to use SSL.</li>
+          <li><b>&quot;TRY&quot;</b>: Try using SSL, proceed as normal otherwise.</li>
+          <li><b>&quot;CONTROL&quot;</b>: Require SSL for the control connection or fail with USE_SSL_FAILED.</li>
+          <li><b>&quot;ALL&quot;</b>: Require SSL for all communication or fail with USE_SSL_FAILED.</li>
+        </ul>
+      <td>CURLOPT_USE_SSL</td>
+    </tr>
+    <tr>
+      <td>VERBOSE</td>
+      <td>Set this option to a <b>1</b> or <b>Y</b> to get cURL to display lots of details about what it is doing.</td>
+      <td>CURLOPT_VERBOSE</td>
+    </tr>
+    <tr>
+      <td>XOATH2BEARER</td>
+      <td>Specifies the OAuth 2.0 Bearer Access Token for use with HTTP, IMAP, POP3 and SMTP servers that support the OAuth 2.0 Authorization Framework. For IMAP, POP3 and SMTP, the user name used to generate the Bearer Token should be supplied via the <b>USERNAME</b> option.</td>
+      <td>CURLOPT_XOATH2_BEARER</td>
+    </tr>
+  </table>
+  <P></P>
+  </dt>
+  <dt><B><I>option value</I></B>
+    <dd>The value of the option to set.</dd>
+  </dt>
+  <P></P>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>blank</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+        If this value is 1 (one) then <b>CURLERROR.CURLCODE</b> is also set
+        to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLSETOPT -->
+<p>
+<!-- START-CURLFORMADD -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <a name=CURLFORMADD>
+        <b>CURLFORMADD(<I>handle</I>,<i>option=COPYCONTENTS</i>,<i>section name</i>,<i>content type</i>,<i>content</i>)</b>
+        <br>
+        <b>CURLFORMADD(<I>handle</I>,<i>option=FILE</i>,<i>section name</i>,<i>content type</i>,<i>filename</i>,[...])</b>
+        <br>
+        <b>CURLFORMADD(<I>handle</I>,<i>option=FILE</i>,<i>section name</i>,<i>content type array</i>,<i>filename array</i>)</b>
+      </a>
+    </td>
+  </tr>
+</table>
+This function is used to append sections when building multipart/formdata HTTP POST
+transfers. Any number of sections can be added by calling this multiple times before
+executing the transfer with the <a href="#CURLPERFORM">CURLPERFORM</a> function.
+<br>
+Once <a href="#CURLPERFORM">CURLPERFORM</a> has been called, call
+<a href="#CURLFORMFREE">CURLFORMFREE</a> to free resources used in this function.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>option</I></B>
+    <dd>One of <b>COPYCONTENTS</b> or <b>FILE</b> which specifies the valid arguments to follow.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>section name</I></B>
+    <dd>The name to associate with this section of posted data.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>content type</I></B>
+    <dd>The type of data present in <i>content</i>.<b>Mandatory for COPYCONTENTS option, but for FILE option, if not specified, cURL tries to guess.</b></dd>
+    <P></P>
+  </dt>
+  <dt><B><I>content</I></B>
+    <dd>The data comprising this part.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>filename</I></B>
+    <dd>The name of the file containing the data for this part.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>filename array</I></B>
+    <dd>A Rexx <i>array</i> containing names of the files containing the data for this part.</dd>
+    <P></P>
+  </dt>
+  <dt><B><I>content type array</I></B>
+    <dd>A Rexx <i>array</i> of the types of data present in the <i>filename array</i>.<b>If an item in the array is not specified, cURL tries to guess.</b></dd>
+    <P></P>
+  </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>blank</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+        If this value is 1 (one) then <b>CURLERROR.CURLCODE</b> is also set
+        to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLFORMADD -->
+<p>
+<!-- START-CURLFORMFREE -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLFORMFREE>CURLFORMFREE(<I>handle</I>)</A></b>
+    </td>
+  </tr>
+</table>
+This function is required to be called after calling <a href="#CURLPERFORM">CURLPERFORM</a>
+if HTTP POST data is specified by calling <a href="#CURLFORMADD">CURLFORMADD</a>.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</a>.</dd>
+    <P></P>
+  </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>blank</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+        If this value is 1 (one) then <b>CURLERROR.CURLCODE</b> is also set
+        to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLFORMFREE -->
+<p>
+<!-- START-CURLPERFORM -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLPERFORM>CURLPERFORM(<I>handle</I>)</A></b>
+    </td>
+  </tr>
+</table>
+Once all the options have been set up, call this function to carry out
+the transfer.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+    <dd>The value returned from <a href="#CURLINIT">CURLINIT</A>.</dd>
+    <P></P>
+  </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>blank</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+        If this value is 1 (one) then <b>CURLERROR.CURLCODE</b> is also set
+        to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLPERFORM -->
+<p>
+<!-- START-CURLGETINFO -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLGETINFO>CURLGETINFO(<I>handle</I>, <i>option</i> [,<i>stem</i>]</A></b>
+    </td>
+  </tr>
+</table>
+Retrieves information about the most recently executed command.<br>
+<B>Arguments:</B>
+<DL>
+  <dt><B><I>handle</I></B>
+  <dd>The value returned from <a href="#CURLINIT">CURLINIT</A>.
+  <P></P>
+  <dt><B><I>option</I></B>
+  <dd>This is the string identifying the information to retrieve.
+  <table width="100%" border="1" cellpadding="4" cellspacing="0">
+    <tr>
+      <th>Rexx/CURL<br>Option</th>
+      <th>Description</th>
+      <th>cURL Equivalent<br>Option</th>
+    </tr>
+    <tr>
+      <td>APPCONNECT_TIME</td>
+      <td>Returns the time, in seconds, it took from the start until the SSL/SSH connect/handshake to the remote host was completed. This time is most often very near to the <b>PRETRANSFER_TIME</b> time, except for cases such as HTTP pipelining where the pretransfer time can be delayed due to waits in line for the pipeline and more.</td>
+      <td>CURLINFO_APPCONNECT_TIME</td>
+    </tr>
+    <tr>
+      <td>CERTINFO</td>
+      <td>Returns information about all certificate chains in the named stem (argument 3) assuming you had <b>CERTINFO</b> of <A href="#CURLSETOPT">CURLSETOPT</A> set when the previous request was done.
+      NOTE: this option is only available in libcurl built with OpenSSL support.
+      </td>
+      <td>CURLINFO_CERTINFO</td>
+    </tr>
+    <tr>
+      <td>CONDITION_UNMET</td>
+      <td>Returns 1 if the condition provided in the previous request didn't match (see <b>TIMECONDITION</b> option). Alas, if this returns a 1 you know that the reason you didn't get data in return is because it didn't fulfill the condition. Zero will be returned if the condition instead was met.</td>
+      <td>CURLINFO_CONDITION_UNMET</td>
+    </tr>
+    <tr>
+      <td>CONNECT_TIME</td>
+      <td>Returns the number of seconds it took to connect to the remote server.</td>
+      <td>CURLINFO_CONNECT_TIME</td>
+    </tr>
+    <tr>
+      <td>CONTENT_LENGTH_DOWNLOAD</td>
+      <td>Returns the length of the contents returned. This is the value returned by the header field; <i>Content-Length:</i> Since cURL 7.19.4 this will return -1 if the size isn't known.</i></td>
+      <td>CURLINFO_CONTENT_LENGTH_DOWNLOAD</td>
+    </tr>
+    <tr>
+      <td>CONTENT_LENGTH_UPLOAD</td>
+      <td>Returns the length of the specified upload size. Since cURL 7.19.4 this will return -1 if the size isn't known.</td>
+      <td>CURLINFO_CONTENT_LENGTH_UPLOAD</td>
+    </tr>
+    <tr>
+      <td>CONTENT_TYPE</td>
+      <td>Returns the content-type of the downloaded object. This is the value read from the &quot;Content-Type:&quot; field. If you get an empty string, it means that the server didn't send a valid Content-Type header or that the protocol used doesn't support this.</td>
+      <td>CURLINFO_CONTENT_TYPE</td>
+    </tr>
+    <tr>
+      <td>COOKIELIST</td>
+      <td>Returns the list of all cookies cURL knows (expired ones, too). The results are returned in the named stem (argument 3).</td>
+      <td>CURLINFO_COOKIELIST</td>
+    </tr>
+    <tr>
+      <td>EFFECTIVE_URL</td>
+      <td>Returns the last used effective URL.</td>
+      <td>CURLINFO_EFFECTIVE_URL</td>
+    </tr>
+    <tr>
+      <td>FILE_TIME</td>
+      <td>The file date and time of the remote document received in Unix time_t format. This is only returned if setopt <b>FILETIME</b> is called.</td>
+      <td>CURLINFO_FILETIME</td>
+    </tr>
+    <tr>
+      <td>FTP_ENTRY_PATH</td>
+      <td>Returns a string containing the initial path Rexx/CURL ended up in when logging into the FTP server. The empty string is returned if there was an error.</td>
+      <td>CURLINFO_FTP_ENTRY_PATH</td>
+    </tr>
+    <tr>
+      <td>HEADER_SIZE</td>
+      <td>Returns the length of all headers returned.</td>
+      <td>CURLINFO_HEADER_SIZE</td>
+    </tr>
+    <tr>
+      <td>HTTPAUTH_AVAIL</td>
+      <td>Returns a string containing the authentication method(s) available. The authentication method(s) are explained in the <b>HTTPAUTH</b> option for </td>
+      <td>CURLINFO_HTTPAUTH_AVAIL</td>
+    </tr>
+    <tr>
+      <td class="deprecated">HTTP_CODE<br>Use:<b>RESPONSE_CODE</b></td>
+      <td class="deprecated">Returns the last received HTTP code. Only useful if the last URL requested was HTTP.</td>
+      <td class="deprecated">CURLINFO_HTTP_CODE</td>
+    </tr>
+    <tr>
+      <td>HTTP_CONNECTCODE</td>
+      <td>Returns the last received proxy response code to a CONNECT</td>
+      <td>CURLINFO_HTTP_CONNECTCODE</td>
+    </tr>
+    <tr>
+      <td>LASTSOCKET</td>
+      <td>Returns the last socket used by this curl session. If the socket is no longer valid, -1 is returned. When you finish working with the socket, you must call <a href="#CURLCLEANUP">CURLCLEANUP</a> as usual and let libcurl close the socket and cleanup other resources associated with the handle. This is typically used in combination with <b>CONNECT_ONLY</b> option of <A href="#CURLSETOPT">CURLSETOPT</A>.</td>
+      <td>CURLINFO_LASTSOCKET</td>
+    </tr>
+    <tr>
+      <td>LOCAL_IP</td>
+      <td>Returns a string holding the local (source) IP address of the most recent connection done with this curl handle. This string may be IPv6 if that's enabled. The same restrictions apply as to <b>PRIMARY_IP</b>.</td>
+      <td>CURLINFO_LOCAL_IP</td>
+    </tr>
+    <tr>
+      <td>LOCAL_PORT</td>
+      <td>Retruns the local (source) port of the most recent connection done with this curl handle.</td>
+      <td>CURLINFO_LOCAL_PORT</td>
+    </tr>
+    <tr>
+      <td>NAMELOOKUP_TIME</td>
+      <td>Returns the time in seconds for the time taken to resolve the remote server name.</td>
+      <td>CURLINFO_NAMELOOKUP_TIME</td>
+    </tr>
+    <tr>
+      <td>NUM_CONNECTS</td>
+      <td>Returns the number of  new connections libcurl had to create to achieve the previous transfer (only the successful connects are counted). Combined with CURLINFO_REDIRECT_COUNT you are able to know how many times libcurl successfully reused existing connection(s) or not. See the Connection Options of curl_easy_setopt(3) to see how libcurl tries to make persistent connections to save time.</td>
+      <td>CURLINFO_NUM_CONNECTS</td>
+    </tr>
+    <tr>
+      <td>OS_ERRNO</td>
+      <td>Returns the operating system errno from a connect failure.</td>
+      <td>CURLINFO_OS_ERRONO</td>
+    </tr>
+    <tr>
+      <td>PRETRANSFER_TIME</td>
+      <td>Returns the total time taken from the start up until the transfer is about to begin. This time includes all pre-transfer commands and negotiations.</td>
+      <td>CURLINFO_PRETRANSFER_TIME</td>
+    </tr>
+    <tr>
+      <td>PRIMARY_IP</td>
+      <td>Retruns a string holding the IP address of the most recent connection done with this curl handle. This string may be IPv6 if that's enabled.</td>
+      <td>CURLINFO_PRIMARY_IP</td>
+    </tr>
+    <tr>
+      <td>PRIMARY_PORT</td>
+      <td>Retruns the destination port of the most recent connection done with this curl handle.</td>
+      <td>CURLINFO_PRIMARY_PORT</td>
+    </tr>
+    <tr>
+      <td>PRIVATE</td>
+      <td>Returns the private string associated with the curl handle (set with the PRIVATE option to <A href="#CURLSETOPT">CURLSETOPT</A>).</td>
+      <td>CURLINFO_PRIVATE</td>
+    </tr>
+    <tr>
+      <td>PROXYAUTH_AVAIL</td>
+      <td>Returns a string containing the proxy authentication method(s) available. The meaning of the bits is explained in the </b>PROXYAUTH</b> option for <A href="#CURLSETOPT">CURLSETOPT</A></td>
+      <td>CURLINFO_PROXYAUTH_AVAIL</td>
+    </tr>
+    <tr>
+      <td>REDIRECT_COUNT</td>
+      <td>Returns the total number of redirections that were actually followed.</td>
+      <td>CURLINFO_REDIRECT_COUNT</td>
+    </tr>
+    <tr>
+      <td>REDIRECT_TIME</td>
+      <td>Returns the total time, in seconds, it took for all redirection steps include name lookup, connect, pretransfer and transfer before final transaction was started. REDIRECT_TIME contains the complete execution time for multiple redirections.</td>
+      <td>CURLINFO_REDIRECT_TIME</td>
+    </tr>
+    <tr>
+      <td>REDIRECT_URL</td>
+      <td>Returns the URL a redirect would take you to if you would enable <b>FOLLOWLOCATION</b> option. This can come very handy if you think using the built-in libcurl redirect logic isn't good enough for you but you would still prefer to avoid implementing all the magic of figuring out the new URL.</td>
+      <td>CURLINFO_REDIRECT_URL</td>
+    </tr>
+    <tr>
+      <td>REQUEST_SIZE</td>
+      <td>Returns the total size of all requests. Note that this may be for more than one request if <b>FOLLOWLOCATION</b> was set.</td>
+      <td>CURLINFO_REQUEST_SIZE</td>
+    </tr>
+    <tr>
+      <td>RESPONSE_CODE</td>
+      <td>Returns the last received HTTP, FTP or SMTP response code. This option was previously known as <b>HTTP_CODE</b>. The value will be zero if no server response code has been received. Note that a proxy's CONNECT response should be read with <b>HTTP_CONNECTCODE</b> and not this.
+          Support for SMTP responses added in libcurl 7.25.0.
+      </td>
+      <td>CURLINFO_RESPONSE_CODE</td>
+    </tr>
+    <tr>
+      <td>RTSP_CLIENT_CSEQ</td>
+      <td>Returns the next CSEQ that will be used by the application.</td>
+      <td>CURLINFO_RTSP_CLIENT_CSEQ</td>
+    </tr>
+    <tr>
+      <td>RTSP_CSEQ_RECV</td>
+      <td>Returns the most recently received CSeq from the server. If your application encounters a <b>CURLE_RTSP_CSEQ_ERROR</b> then you may wish to troubleshoot and/or fix the CSeq mismatch by peeking at this value.
+      </td>
+      <td>CURLINFO_RTSP_CSEQ_RECV</td>
+    </tr>
+    <tr>
+      <td>RTSP_SERVER_CSEQ</td>
+      <td>Returns the next CSEQ that will be expected by the application.
+          Applications wishing to resume an RTSP session on another connection should retreive this info before closing the active connection.
+      </td>
+      <td>CURLINFO_RTSP_SERVER_CSEQ</td>
+    </tr>
+    <tr>
+      <td>RTSP_SESSION_ID</td>
+      <td>Returns a string holding the most recent RTSP Session ID.
+          Applications wishing to resume an RTSP session on another connection should retreive this info before closing the active connection.
+       </td>
+      <td>CURLINFO_RTSP_SESSION_ID</td>
+    </tr>
+    <tr>
+      <td>SIZE_DOWNLAOD</td>
+      <td>Returns the total number of bytes downloaded.</td>
+      <td>CURLINFO_SIZE_DOWNLOAD</td>
+    </tr>
+    <tr>
+      <td>SIZE_UPLOAD</td>
+      <td>Returns the total number of bytes uploaded.</td>
+      <td>CURLINFO_SIZE_UPLOAD</td>
+    </tr>
+    <tr>
+      <td>SPEED_DOWNLOAD</td>
+      <td>Returns the average download speed in bytes per second.</td>
+      <td>CURLINFO_SPEED_DOWNLOAD</td>
+    </tr>
+    <tr>
+      <td>SPEED_UPLOAD</td>
+      <td>Returns the average upload speed in bytes per second.</td>
+      <td>CURLINFO_SPEED_UPLOAD</td>
+    </tr>
+    <tr>
+      <td>SSL_ENGINES</td>
+      <td>Returns the list of supported SSL engines available. The results are returned in the named stem (argument 3). The return value will be the number of entries in the stem.</td>
+      <td>CURLINFO_SSL_ENGINES</td>
+    </tr>
+    <tr>
+      <td>SSL_VERIFY_RESULT</td>
+      <td>Returns the result of the SSL certificate verification requested by <b>SSLVERIFYPEER</b>.</td>
+      <td>CURLINFO_SSL_VERIFYRESULT</td>
+    </tr>
+    <tr>
+      <td>STARTTRANSFER_TIME</td>
+      <td>Returns the time in seconds it took from the start until the first byte is received by libcurl. This includes <b>PRETRANSFER_TIME</b> and also the time the server needs to calculate the result.</td>
+      <td>CURLINFO_STARTTRANSFER_TIME</td>
+    </tr>
+    <tr>
+      <td>TOTAL_TIME</td>
+      <td>Returns the time in seconds for the complete transfer.</td>
+      <td>CURLINFO_TOTAL_TIME</td>
+    </tr>
+  </table>
+  <P></P>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>the value specified above</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>blank</dd>
+    <dd>On <i>failure</i> <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+        If this value is 1 (one) then <b>CURLERROR.CURLCODE</b> is also set
+        to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLGETINFO -->
+<p>
+<!-- START-CURLVARIABLE -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLVARIABLE>CURLVARIABLE(<I>variable name</I>[,<I>variable value</I>])</A></b>
+    </td>
+  </tr>
+</table>
+Set or get the value for the specified variable.
+<P>The following variables are available in all implementations:
+<UL>
+  <LI><B>VERSION</B> <I>(readonly)</I> the version of Rexx/CURL, consisting of:
+    <UL>
+      <LI><I>package name</I> - <B>rexxcurl</B><BR>
+      </li>
+      <LI><I>Rexx/CURL version</I> - numerical version; eg. 1.0<BR>
+      </li>
+      <LI><I>Rexx/CURL date</I> - Rexx standard date format; eg. 4 Jul 2001<BR>
+      </li>
+      <LI><I>OS platform</I> - current operating system<BR>
+      </li>
+      <LI><I>cURL version</I> - version of cURL library: <b>libcurl</b> <i>version</i><BR>
+      </li>
+    </UL>
+    <P>eg. REXXCURL 1.0 4 Jul 2001 UNIX libcurl 7.8
+    <P></P>
+  </ul>
+  <ul>
+  <LI><B>DEBUG</B> <I>(setable)</I> level of debugging requested.
+    <UL>
+      <LI><I>0</I> - no debugging information displayed (default)
+      </li>
+      <LI><I>1</I> - Rexx variables displayed as set
+        <BR>Equivalent to <I>-v</I> command line flag.
+      </li>
+      <LI><I>2</I> - function entry/exit information displayed
+        <BR>Equivalent to  <I>-d</I> command line flag.
+      </li>
+      <LI><I>4</I> - internal tracing information displayed
+        <BR>Equivalent to <I>-D</I> command line flags.
+      </li>
+    </UL>
+    Any of the above values may be added together to combine their effects.
+    eg. 6 is equivalent to -dD on the command line.
+    <P></P>
+  </li>
+  <LI><B>DEBUGFILE</B> <I>(setable)</I> file where debug information is sent.<br>
+    Any valid filename. If the file exists it will be overwritten If not
+    specified, all dubugging information gets written to <i>stderr</i>.
+    <P></P>
+  </li>
+  <LI><B>ERROR</B> <I>(setable)</I> prefix for error code variables.<br>
+    Any valid Rexx variable name; usually a stem name. The default is
+    <b>CURLERROR.</b>
+    <P></P>
+  </li>
+  <LI><B>CONSTANTPREFIX</B> <I>(setable)</I> prefix for Rexx/CURL variables.<br>
+    Any valid Rexx variable name; usually a stem name. The default is
+    <b>&quot;!REXXCURL.!&quot;</b>.
+    <P></P>
+  </li>
+  </UL>
+<P>
+<dl>
+  <dt>
+    <B>Arguments:</B>
+    <DL>
+      <dt><B><I>variable name</I></B>
+        <dd>The name of the variable who's value is to be set or retrieved.</dd>
+      </dt>
+      <dt><B><I>variable value</I></B>
+        <dd>The value that the variable to be set to.</DD>
+      </dt>
+    </DL>
+  </dt>
+</dl>
+<B>Returns:</B>
+<DL>
+  <dt>with <I>variable value</I> specified:
+    <dd><b>success</b></dd>
+    <dd>blank if a valid <I>variable name</I> specified and it is able to be set;</dd>
+    <dd><b>failure</b></dd>
+    <dd>blank and <b>CURLERROR.INTCODE</b> set to a non-zero value.
+    </dd>
+  </dt>
+  <P></P>
+  <dt>with <I>variable value</I> NOT specified:
+    <dd><b>success</b></dd>
+    <dd>the current value of the variable</dd>
+    <dd><b>failure</b></dd>
+    <dd>blank and <b>CURLERROR.INTCODE</b> is set to a non-zero value.
+    </dd>
+  </dt>
+</DL>
+<!-- END-CURLVARIABLE -->
+<p>
+<!-- START-CURLLOADFUNCS -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLLOADFUNCS>CURLLOADFUNCS()</A></b>
+    </td>
+  </tr>
+</table>
+This function is used to load all the Rexx/CURL external functions. This function is called after the function
+has been loaded with the Rexx builtin function rxfuncadd().
+<P>Although this function is useful only for dynamic library implementations of
+Rexx/CURL, it can be called by the executable version of Rexx/CURL. In this case
+it does nothing.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>none</I></B> </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>zero</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>non-zero</dd>
+  </dt>
+</DL>
+<!-- END-CURLLOADFUNCS -->
+<p>
+<!-- START-CURLDROPFUNCS -->
+<table border=0 width="100%" cellpadding=4>
+  <tr>
+    <td bgcolor="#FFE745" valign=center>
+      <b><A name=CURLDROPFUNCS>CURLDROPFUNCS()</A></b>
+    </td>
+  </tr>
+</table>
+This function is used to
+terminate Rexx/CURL and free up all resources that have been used.
+<P>It should be called at the end of every Rexx/CURL program. In particular, this
+function should be called after a syntax error has been caught with SIGNAL ON
+SYNTAX.
+<P><B>Arguments:</B>
+<DL>
+  <dt><B><I>none</I></B> </dt>
+</DL>
+<B>Returns:</B>
+<DL>
+  <dt><I>success:</I>
+    <dd>zero</dd>
+  </dt>
+  <dt><I>failure:</I>
+    <dd>non-zero</dd>
+  </dt>
+</DL>
+<!-- END-CURLDROPFUNCS -->
+<P align=center>
+<HR>
+
+<!-- START-ERRORS -->
+<H2><A name=ERRORS><B>4. Errors</B></A></H2>
+The success or failure of each function call is determined by the Rexx compound
+variable; <b>CURLERROR.INTCODE</b>. If the function call succeeds, this will be
+set to zero. If the function call fails, this will be set to a non-zero value.
+If the value set is 1 (one), a cURL error occured, and <b>CURLERROR.CURLCODE</b>
+is set to the appropriate error code. Associated with both error code variables,
+is an equivalent textual error message. These are <b>CURLERROR.INTERRM</b> and
+<b>CURLERROR.CURLERRM</b> respectively.<br>
+The stem name initially set for the error variables is <b>CURLERROR.</b> <i>(including trailing
+period)</i>. You can change this to any value you prefer, with a call to
+<A href="#CURLVARIABLE">CURLVARIABLE</A> with the <b>ERROR</b> argument.
+
+<P><B>Internal Errors:</B> <BR>
+<PRE>
+    1  - Error from cURL
+    2  - Invalid Number
+    3  - Invalid Option
+    4  - Out of memory
+    5  - Invalid cURL handle
+    6  - Invalid filename
+    7  - Invalid boolean
+    8  - Expecting a stem as parameter
+    9  - Invalid variable name specified
+   10  - Attempt to set a readonly variable name
+   11  - Too few arguments supplied
+   12  - Field must be specified
+   13  - Error writing to temporary file
+</PRE>
+<!-- END-ERRORS -->
+<P align=center>
+<HR>
+<!-- START-USING -->
+<H2><A name=USING><B>5. Using Rexx/CURL</B></A></H2>
+A typical Rexx/CURL program looks like the following program. This
+example will simply display the contents of my home page:
+<table width="100%" border="1" cellpadding="4" cellspacing="0" bgcolor="#cccccc">
+  <tr>
+    <td>
+      <pre>
+Call RXFuncAdd 'CurlLoadFuncs','rexxcurl','CurlLoadFuncs'
+Call CurlLoadFuncs
+curl = CURLInit()
+If curl \= '' Then
+   Do
+      Call CURLSetOpt curl, 'URL', "http://www.rexx.org/"
+      If curlerror.intcode \= 0 Then Call Abort 'Error setting URL option'
+      Call CURLPerform curl
+      If curlerror.intcode \= 0 Then Call Abort 'Error performing action'
+      Call CURLCleanup curl
+   End
+Call CURLDropFuncs
+Return 0
+Abort:
+Parse Arg msg
+Say msg
+If curlerror.intcode = 1 Then Say 'Internal error:' curlerror.intcode curlerror.interrm
+Else Say 'CURL error:' curlerror.curlcode curlerror.curlerrm
+Call CURLCleanup curl
+Exit 1
+      </pre>
+    </td>
+  </tr>
+</table>
+<b>
+  Note that the third parameter to RxFuncAdd is case sensitive, so should always be specified as
+  &quot;CurlLoadFuncs&quot;.
+</b>
+
+<p>
+<b>Examples</b><br>
+Several example programs are provided with all Rexx/CURL distributions.
+<ul>
+  <li>
+    <b>getright.rexx URL output_directory</b><br>
+    Simplistic implementation of the &quot;GetRight&quot; download utility. Downloads
+    the specified URL to the specified directory. If the file already exists,
+    it will use the RESUME capability of the server (if implemented).
+  </li>
+  <li>
+    <b>httppost.rexx your_email_address your_list_password</b><br>
+    Suscribes to the rexxcurl mailing list at SourceForge using HTTP POST to fill
+    in an HTML form.
+  </li>
+  <li>
+    <b>mirror.rexx ftp_location username password</b><br>
+    Downloads all files (recursively) from the specified ftp location
+    to the current directory.
+  </li>
+  <li>
+    <b>scp.rexx remote_file_spec local_file_spec</b><br>
+    <b>scp.rexx local_file_spec remote_file_spec</b><br>
+    Mimics the SSH program: scp, but only copies to/from an ftp server.
+  </li>
+  <li>
+    <b>testcurl.rexx URL</b><br>
+    Displays the HTML source of the specified URL.
+  </li>
+  <li>
+    <b>upload.rexx filenames</b><br>
+    Uploads the files specified to the SourceForge &quot;uploads&quot; directory.
+  </li>
+  <li>
+    <b>sendmail-smtp.rexx</b><br>
+    Sends a simple text email using GMail via SNMP. Change GMail credentials as appropriate.
+  </li>
+  <li>
+    <b>getmail-pop3.rexx</b><br>
+    Connects to a POP3 server and for each email message displays the From: Subject: and Date: headers. Change email server/account details as appropriate.
+  </li>
+</ul>
+<!-- END-USING -->
+<P align=center>
+<HR>
+<!-- START-HISTORY -->
+<H2><A name=HISTORY><B>History of Rexx/CURL</B></A></H2>
+This section provides details of changes and additions made to the Rexx/CURL interface as it
+evolves.
+
+<p>
+<h3>Version 2.1.0: 9 Feb 2019</h3>
+  <ul>
+    <li>Addressed bugs: #8, #10, #11, #12, #13</li>
+    <li>Implement Support Request: #2</li>
+    <li>More options</li>
+    <li>Fix HTTPPOSTFIELDS; don't append & for each field unless optional arg is supplied</li>
+    <li>Windows builds now with libcurl 7.64.0</li>
+    <li>Full support for concurrent installations of Rexx/CURL on Windows
+    for different interpreters and/or 32bit or 64bit.
+    If you have Rexx/CURL already installed, you should manually
+    uninstall it prior to installing this version.</li>
+  </ul>
+<h3>Version 2.0.2: 12 Apr 2012</h3>
+  <ul>
+    <li>Fixes compilation erros with versions of cURL between 7.38.0 and 7.41.0
+    <li>Add CurlReset function</li>
+  </ul>
+<h3>Version 2.0: 25 April 2012</h3>
+  <ul>
+    <li> This release aligns with 7.25.0 of cURL</li>
+    <li> Added CURLESCAPE and CURLUNESCAPE function for converting URLs</li>
+    <li> Add better error message when invalid options are specified</li>
+    <li> Display warnings when deprecated (curlsetopt) options are used</li>
+    <li> Display warning on startup when using a runtime version of libcurl that is less than the version Rexx/CURL was built with</li>
+    <li> Add new constants providing information about libcurl support</li>
+    <li> Additional options (curlsetopt) from cURL 7.15.5 to 7.25.0</li>
+    <li> Additional options (curlgetinfo) from cURL 7.15.5 to 7.25.0</li>
+    <li> Removed SOURCE_* options (curlsetopt) as at cURL 7.16.0</li>
+    <li> Changed return format of HTTPAUTH_AVAIL (curlgetinfo)</li>
+    <li> OS/2 and eCS now supported</li>
+    <li> Rexx/CURL now thread-safe.</li>
+    <li> Licensing changed to CPLv1.0</li>
+  </ul>
+<h3>Version 1.6: 10 July 2006 (not released)</h3>
+<ul>
+  <li>Addition of FTP_ENTRY_PATH (curlgetinfo)</li>
+  <li>Bundle 7.15.4 library with Windows installer</li>
+</ul>
+<p>
+<h3>Version 1.5: 10 March 2006 (not released)</h3>
+<ul>
+  <li>Additional options (curlsetopt) from cURL 7.15.2: CONNECTONLY, LOCALPORT, LOCALPORTRANGE</li>
+  <li>Additional return information (curlgetinfo) from cURL 7.15.2: LASTSOCKET</li>
+</ul>
+<P>
+<H3>Version 1.4: 16 October 2005</H3>
+<ul>
+  <li>Additional return information (curlgetinfo) from cURL 7.14.0: NUM_CONNECTS, OS_ERRNO, SSL_ENGINES</li>
+  <li>Additional return information (curlgetinfo) from cURL 7.14.1: COOKIELIST</li>
+  <li>Added CURLFORMADD and CURLFORMFREE to provide more flexibility with HTTP POST options</li>
+  <li>Additional options (curlsetopt) from cURL 7.15.0: FTPSKIPPASVIP</li>
+</ul>
+<P>
+<H3>Version 1.3: 4 October 2005</H3>
+<ul>
+  <li>Additional options (curlsetopt) from cURL 7.14.0: FTPSSL, FTPSSLAUTH, SOURCEPOSTQUOTE, SOURCEPREQUOTE, SOURCEQUOTE, SOURCEURL, SOURCEUSERPWD, TCPNODELAY</li>
+</ul>
+<p>
+<H3>Version 1.2: 2 December 2004</H3>
+<UL>
+  <LI>Fixed bug with CURLGETINFO and returned string values
+  </LI>
+  <LI>Bring up-to-date with cURL 7.12.1 features
+  </LI>
+  <li>First callback (PROGRESSFUNCTION) added (only works with Regina)
+  </li>
+  <li>Fixed SF bugs 516517 618127
+  </li>
+</UL>
+<P>
+<H3>Version 1.1: 27 Jul 2003 (not released)</H3>
+<UL>
+  <LI>Bring up-to-date with cURL 7.10.2 features
+  </LI>
+</UL>
+<P>
+<H3>Version 1.0: 4 Jul 2001</H3>
+<UL>
+  <LI>Initial release for Unix platforms.
+  </LI>
+</UL>
+<!-- END-HISTORY -->
+<HR>
+
+<!-- START-TRAILER -->
+<CENTER>
+  <ADDRESS>
+    Copyright &copy; <A href="http://www.rexx.org/">Mark Hessling</A> 2001-2019&lt;<A href="mailto:mark@rexx.org">mark@rexx.org</A>&gt;
+  <BR>
+  </ADDRESS>
+  <BR>
+  <HR>
+  <BR>Last updated 10 February 2019<BR>
+</CENTER>
+<!-- END-TRAILER -->
+</BODY>
+</HTML>

@@ -1,0 +1,179 @@
+#
+# GNU MAKE-compatible MAKE file for building Rexx/curl with Innotech GCC
+#
+# will generate:
+#
+#      rexxcurl.dll
+#      rexxcurl.exe
+#
+# Usage: nmake [DEBUG=1]
+#              [INT=REGINA|OS2REXX|REXXTRANS]
+#              [rexxcurl.dll|rexxcurl.exe]
+#
+PROJ = rexxcurl
+ABBREV = rexxcurl
+
+SRCDIR = $(REXXCURL_SRCDIR)
+SRC = rexxcurl
+
+include $(SRCDIR)\rexxcurl.ver
+VERDOT = $(VER_DOT)
+VERDATE = $(VER_DATE)
+
+COMMONSRCDIR = $(SRCDIR)\common
+REGINA_REXXLIBS = $(REGINA_BINDIR)\regina.lib
+REGINA_REXXINC = -I$(REGINA_SRCDIR) -DUSE_REGINA
+REXXTRANS_REXXLIBS = $(REXXTRANS_BINDIR)\rexxtrans.lib
+REXXTRANS_REXXINC = -I$(REXXTRANS_SRCDIR) -DUSE_REXXTRANS
+OS2REXX_REXXLIBS =
+OS2REXX_REXXINC = -DUSE_OS2REXX
+PACKAGEINCDIR = $(CURL_HOMEDIR)\include
+#PACKAGELIB = $(CURL_HOMEDIR)\lib\curl.lib $(OPENSSL_HOMEDIR)\lib\libssl.lib $(OPENSSL_HOMEDIR)\lib\libcrypto.lib d:\lib\libz.lib d:\lib\idn.lib d:\lib\ssh2.lib
+PACKAGELIB = $(CURL_HOMEDIR)\lib\curl.lib d:\lib\libssl.lib d:\lib\libcrypto.lib d:\lib\libz.lib d:\lib\idn.lib d:\lib\ssh2.lib d:\lib\poll.lib
+#---------------------------------------------------------------------
+# You should not have to change anything below here...
+#---------------------------------------------------------------------
+
+ifeq ($(INT),REGINA)
+REXXLIBS = $(REGINA_REXXLIBS)
+REXXINC =  $(REGINA_REXXINC)
+REXXINT = regina
+else
+ifeq ($(INT),REXXTRANS)
+REXXLIBS = $(REXXTRANS_REXXLIBS)
+REXXINC =  $(REXXTRANS_REXXINC)
+REXXINT = rexxtrans
+else
+REXXLIBS = $(OS2REXX_REXXLIBS)
+REXXINC =  $(OS2REXX_REXXINC)
+INT     = OS2REXX
+REXXINT = os2rexx
+endif
+endif
+
+EXTRALINK =
+CCLIBS = -liconv
+DISTDIR=$(SRCDIR)\tmpdir
+CC = gcc
+LINK = gcc
+
+comcopts = -Zomf -DRXPACK_MULTI -DOS2 -D__OS2__ -DSTDC_HEADERS -DHAVE_PROTO -I$(SRCDIR) -I$(COMMONSRCDIR) -I$(PACKAGEINCDIR) $(REXXINC)  -DREXXCURL_VERSION=\"$(VERDOT)\" -DREXXCURL_DATE=\"$(VERDATE)\" -DINIT_RXPACKAGE=init_$(PROJ) -DTERM_RXPACKAGE=term_$(PROJ)
+comlopts = $(EXTRALINK) -Zomf -Zmt
+
+ifeq ($(DEBUG),Y)
+copts     = -c -g -Wall $(comcopts) -DDEBUG
+lopts     = -g $(comlopts)
+else
+copts     = -c -O3 -Wall $(comcopts)
+lopts     = -O3 $(comlopts) -s
+DEBUG     = N
+dist = $(build_distros)
+endif
+
+cflagsdll = $(copts) -DDYNAMIC -Zdll -Zmt
+cflagsexe = $(copts) -Zmt
+lflagsdll = $(lopts) -Zdll
+lflagsexe = $(lopts)
+
+objsdll = $(ABBREV)dll.obj packdll.obj rxmt_os2dll.obj
+objsexe = loader.obj getopt.obj $(ABBREV)exe.obj packexe.obj rxmt_os2.obj
+
+ccdll = $(CC) $(cflagsdll) $(listopt)
+ccexe = $(CC) $(cflagsexe) $(listopt)
+
+H1=$(COMMONSRCDIR)\defines.h
+H2=$(PACKAGEINCDIR)\curl\curl.h
+H3=$(COMMONSRCDIR)\rxpack.h $(COMMONSRCDIR)\rxdef.h
+H6=$(COMMONSRCDIR)\rxmt_os2.h $(COMMONSRCDIR)\rxmt.h
+
+all: how $(PROJ).exe $(PROJ).dll $(dist)
+
+how:
+	echo make -f $(SRCDIR)\makefile.os2.gcc INT=$(INT) DEBUG=$(DEBUG) ^%1 ^%2 > rebuild.cmd
+
+#
+# These function only required for EXE
+#
+getopt.obj: $(COMMONSRCDIR)\getopt.c
+	$(ccexe) -o getopt.obj $(COMMONSRCDIR)\getopt.c
+
+loader.obj: $(COMMONSRCDIR)\loader.c $(H1) $(H3)
+	$(ccexe) -o loader.obj $(COMMONSRCDIR)\loader.c
+
+#
+# These modules are the package-specific modules; both for DLL and EXE
+#
+
+$(ABBREV)dll.obj: $(SRCDIR)\$(SRC).c $(H1) $(H2) $(H3) $(SRCDIR)\rexxcurl.ver
+	$(ccdll) -o $(ABBREV)dll.obj $(SRCDIR)\$(SRC).c
+
+$(ABBREV)exe.obj: $(SRCDIR)\$(SRC).c $(H1) $(H2) $(H3) $(SRCDIR)\rexxcurl.ver
+	$(ccexe) -o $(ABBREV)exe.obj $(SRCDIR)\$(SRC).c
+
+#
+# These modules are common modules; both for DLL and EXE
+#
+
+packdll.obj: $(COMMONSRCDIR)\rxpack.c $(H1) $(H3) $(SRCDIR)\rexxcurl.ver
+	$(ccdll) -o packdll.obj $(COMMONSRCDIR)\rxpack.c
+
+packexe.obj: $(COMMONSRCDIR)\rxpack.c $(H1) $(H3) $(SRCDIR)\rexxcurl.ver
+	$(ccexe) -o packexe.obj $(COMMONSRCDIR)\rxpack.c
+
+#
+# Rules for thread-safe modules
+#
+rxmt_os2.obj: $(COMMONSRCDIR)\rxmt_os2.c $(H6)
+	$(ccexe) -o rxmt_os2.obj $(COMMONSRCDIR)\rxmt_os2.c
+
+rxmt_os2dll.obj: $(COMMONSRCDIR)\rxmt_os2.c $(H6)
+	$(ccdll) -o rxmt_os2dll.obj $(COMMONSRCDIR)\rxmt_os2.c
+
+#
+# Rules for resources
+#
+$(SRCDIR)\rexxcurlos2.res: $(SRCDIR)\rexxcurlos2.rc
+	-copy $(SRCDIR)\rexxcurlos2.ico
+	-rc -r $(SRCDIR)\rexxcurlos2.rc
+
+#
+# Rules for executables and DLLs
+#
+$(PROJ).dll: $(objsdll) $(SRCDIR)\rexxcurlos2.res
+	$(LINK) $(lflagsdll) $(objsdll) -o $(PROJ).dll $(PACKAGELIB) $(CCLIBS) $(REXXLIBS) $(SRCDIR)\$(PROJ)os2_dll.def
+	-rc $(SRCDIR)\rexxcurlos2.res $(PROJ).dll
+	-lxlite $(PROJ).dll
+
+$(PROJ).exe: $(objsexe) $(SRCDIR)\rexxcurlos2.res
+	$(LINK) $(lflagsexe) $(objsexe) -o $(PROJ).exe $(PACKAGELIB) $(CCLIBS) $(REXXLIBS) $(SRCDIR)\$(PROJ)os2_exe.def
+	-rc $(SRCDIR)\rexxcurlos2.res $(PROJ).exe
+	-lxlite $(PROJ).exe
+
+dist: rexxcurl.exe rexxcurl.dll $(SRCDIR)\makefile.os2.gcc
+	-mkdir $(DISTDIR)
+	-mkdir $(DISTDIR)\demo
+	-mkdir $(DISTDIR)\doc
+	-mkdir $(DISTDIR)\doc\images
+	-mkdir $(DISTDIR)\demo\os2
+	copy rexxcurl.exe $(DISTDIR)
+	copy rexxcurl.dll $(DISTDIR)
+	copy d:\dll\rexxtran.dll $(DISTDIR)
+	copy $(SRCDIR)\demo\testcurl.rexx $(DISTDIR)\demo\testcurl.cmd
+	copy $(SRCDIR)\demo\getright.rexx $(DISTDIR)\demo\getright.cmd
+	copy $(SRCDIR)\demo\httppost.rexx $(DISTDIR)\demo\httppost.cmd
+	copy $(SRCDIR)\demo\getmail-pop3.rexx $(DISTDIR)\demo\getmail-pop3.cmd
+	copy $(SRCDIR)\demo\sendmail-smtp.rexx $(DISTDIR)\demo\sendmail-smtp.cmd
+	copy $(SRCDIR)\demo\scp.rexx $(DISTDIR)\demo\scp.cmd
+	copy $(SRCDIR)\demo\upload.rexx $(DISTDIR)\demo\upload.cmd
+	copy $(SRCDIR)\demo\README.txt $(DISTDIR)\demo\
+	copy $(SRCDIR)\doc\index.html $(DISTDIR)\doc
+	copy $(SRCDIR)\doc\images\*.png $(DISTDIR)\doc\images
+	copy $(SRCDIR)\CPLv1.0.txt $(DISTDIR)
+	copy $(SRCDIR)\HISTORY $(DISTDIR)
+	copy $(SRCDIR)\INSTALL $(DISTDIR)
+	copy $(SRCDIR)\README $(DISTDIR)
+	make -C $(DISTDIR) -f $(SRCDIR)\makefile.os2.gcc zip
+
+zip:
+	-del ..\rexxcurl*os2.zip
+	zip -r ..\rexxcurl-$(REXXINT)-$(VER)os2.zip *.* demo doc

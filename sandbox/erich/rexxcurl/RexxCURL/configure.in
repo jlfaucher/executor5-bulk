@@ -1,0 +1,238 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(Rexx/CURL, m4_esyscmd_s([grep VER_DOT ./rexxcurl.ver | cut -f 2 -d '=']),mark@rexx.org, RexxCURL)
+AC_PREFIX_DEFAULT(/usr/local)
+
+MH_PACKAGE="Rexx/CURL"
+
+. $srcdir/rexxcurl.ver
+VER=\"$VER\"
+VER_DOT_UNQUOTED=$VER_DOT
+VER_DOT_QUOTED=\"$VER_DOT\"
+VER_DATE=\"$VER_DATE\"
+AC_SUBST(VER)
+AC_SUBST(VER_DOT_QUOTED)
+AC_SUBST(VER_DOT_UNQUOTED)
+AC_SUBST(VER_DATE)
+cp $srcdir/common/config.guess $srcdir
+cp $srcdir/common/config.sub $srcdir
+
+dnl ---------------------- check for '--with-dist' switch -----------------
+AC_ARG_WITH(dist,
+   [  --with-dist             specify this just to build a distribution],
+   [with_dist=$withval],
+   [with_dist=no],
+)
+if test "$with_dist" == no; then
+
+dnl ---------------------- check for C compiler -----------------
+dnl Checks for one of the C compilers below - change if yours not there.
+MH_PROG_CC
+
+AC_CONFIG_HEADER(config.h)
+AX_CREATE_STDINT_H(mystdint.h)
+AC_ISC_POSIX
+
+AC_CANONICAL_SYSTEM
+
+dnl
+dnl include our 32/64bit tests
+dnl
+sinclude(common/inclibarch.m4)
+
+dnl
+dnl include our Rexx switch checking
+dnl
+sinclude(common/increxx.m4)
+
+on_qnx4=no
+on_beos=no
+SHL="so"
+
+case "$target" in
+   *hp-hpux9*)
+      SYS_DEFS="-D_HPUX_SOURCE"
+      SHL="sl"
+      ;;
+   *hp-hpux1*)
+      SYS_DEFS="-D_HPUX_SOURCE"
+      if test "$ac_cv_prog_CC" != "gcc"; then
+         if test "$enable_hpux_portable" = yes; then
+            SYS_DEFS="${SYS_DEFS} +DAportable"
+         fi
+      fi
+      SHL="sl"
+      ;;
+   *ibm-aix3*)
+      SYS_DEFS="-DAIX -D_ALL_SOURCE"
+      SHL="a"
+      ;;
+   *ibm-aix4*)
+      SYS_DEFS="-DAIX -D_ALL_SOURCE"
+      SHL="a"
+      ;;
+   *dec-osf4*)
+      AC_DEFINE(HAVE_BROKEN_SYS_ACL_H)
+      ;;
+   *dec-osf*)
+      DYNLD="ld"
+      ;;
+   *apple-darwin*)
+# sinclude(common/inclibarch.m4) MUST have been included before here
+      SYS_DEFS="$valid_arch_flags"
+      EEXTRA="$valid_arch_flags"
+      ;;
+   *sequent-dynix*)
+      ;;
+   *solaris*)
+      ;;
+   sparc*sunos*)
+      ;;
+   *linux*)
+      ;;
+   *beos*)
+      on_beos=yes
+      ;;
+   *nto-qnx*)
+      ;;
+   *qnx*)
+      on_qnx4=yes
+      SYS_DEFS="-Q"
+      ;;
+esac
+dnl
+dnl Check for libraries - don't include libfl or libl
+dnl
+MH_LIBS_TO_CHECK="m socket nsl nsl_s" dnl rpc thread pthread pthreads
+MH_CHECK_LIB(${MH_LIBS_TO_CHECK})
+
+AC_SUBST(SYS_DEFS)
+AC_SUBST(EEXTRA)
+AC_SUBST(MH_EXTRA_LIBS)
+AC_SUBST(SHL)
+
+AC_PROG_GCC_TRADITIONAL
+
+dnl --------------------- Check for other programs. ---------------
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+dnl ------------------- get package details --------------------
+dnl -- MUST have curl-config!!!!
+AC_CHECK_PROG(mh_curl, curl-config, curl-config )
+if test x"$mh_curl" = x; then
+   AC_MSG_ERROR(Could not find curl-config in PATH. Is cURL development installed ?; cannot configure)
+fi
+MH_PACKAGE_INC=`curl-config --cflags`
+AC_SUBST(MH_PACKAGE_INC)
+MH_PACKAGE_LIBS=`curl-config --libs`
+AC_SUBST(MH_PACKAGE_LIBS)
+MH_PACKAGE_VER=`curl-config --version`
+AC_SUBST(MH_PACKAGE_VER)
+
+dnl -------------------- Checks for header files. -----------------
+AC_HEADER_STDC
+AC_CHECK_HEADERS( \
+   ctype.h \
+   assert.h \
+   sys/types.h \
+   sys/mode.h \
+   sys/stat.h \
+   sys/file.h \
+   sys/wait.h \
+   unistd.h \
+   errno.h \
+   stdlib.h \
+   stdint.h       \
+   inttypes.h     \
+   memory.h \
+   string.h \
+   stdarg.h \
+   time.h \
+   dl.h \
+   )
+
+MH_HAVE_PROTO
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+AC_CHECK_SIZEOF(long,4)
+MH_CHECK_CC_O
+MH_C_LONG_LONG
+
+dnl Checks for library functions.
+AC_FUNC_MEMCMP
+MH_CHECK_FUNCS()
+if test "$ac_cv_func_getopt_func" = no; then
+   GETOPT="getopt.o"
+   AC_SUBST(GETOPT)
+fi
+
+dnl --------------- allow --disable-posix-threads to disable multi-threading
+AC_ARG_ENABLE(posix-threads,
+   [  --disable-posix-threads disable POSIX-style multi-threading],
+   [enable_posix_threads=no],
+   [enable_posix_threads=yes],
+)
+
+dnl ---------------------- check for '--with-docdir' switch -----------------
+AC_ARG_WITH(docdir,
+   [  --with-docdir           specify location of document files],
+   [with_docdir=$withval],
+   [with_docdir=no],
+)
+if test "$with_docdir" == no; then
+   docdir="\$(prefix)/share/doc/\$(RPM_PACKAGE_DIR)"
+else
+   docdir="$with_docdir"
+fi
+AC_SUBST(docdir)
+
+dnl
+dnl include our debugging switch checking
+dnl
+sinclude(common/incdebug.m4)
+
+MH_CHECK_RPM()
+MH_GET_DISTRO_NAME()
+
+dnl --------------- Force definition of pre-compiler macro UNIX ----------
+AC_DEFINE(UNIX)
+
+dnl --------------- Check how to make shared libraries -------------------
+MH_SHARED_LIBRARY(rexxcurl)
+
+dnl ----------------------- Check for Posix Threads ------------------
+MH_CHECK_POSIX_THREADS
+if test "$mh_has_pthreads" = yes; then
+   RXPACKMULTITHREAD="yes"
+else
+   RXPACKMULTITHREAD="no"
+fi
+AC_SUBST(RXPACKMULTITHREAD)
+
+dnl --------------- Get us an install package ----------------------------
+AC_PROG_INSTALL
+
+else
+   aix_exports=""
+   AC_SUBST(aix_exports)
+fi dnl end of with-dist
+
+AC_OUTPUT(Makefile rexxcurl-config)
+chmod 755 rexxcurl-config
+
+dnl
+dnl include our status information
+dnl
+if test "$with_dist" = no; then
+   MH_SHOW_STATUS( MH_SHOW_CURL )
+else
+   echo ""
+   echo "Source distributions (zip and dist) can now be made for $MH_PACKAGE"
+   echo ""
+   rm -f config.h
+fi

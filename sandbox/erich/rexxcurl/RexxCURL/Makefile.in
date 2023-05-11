@@ -1,0 +1,461 @@
+#
+# Makefile for Rexx/CURL Extension
+#
+# The variable 'srcdir' refers to the source-distribution, and can be set with
+# the configure script by "--srcdir=DIR".
+#
+
+SHELL		= /bin/sh
+THIS		= Makefile
+
+@SET_MAKE@
+
+VER=@VER@
+VER_DOT=@VER_DOT_QUOTED@
+VER_DOT_UNQUOTED=@VER_DOT_UNQUOTED@
+VER_DATE=@VER_DATE@
+PACKAGE=RexxCURL
+PACKAGE_DIR=$(PACKAGE)-$(VER_DOT_UNQUOTED)
+RPM_PACKAGE_DIR=$(PACKAGE)-@REXX_BUILD@-$(VER_DOT_UNQUOTED)
+PACKAGE_NAME=rexxcurl
+
+srcdir		= @srcdir@
+abs_srcdir		= @abs_srcdir@
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+bindir		= $(exec_prefix)/bin
+includedir		= $(exec_prefix)/include
+srcdocdir		= $(srcdir)/doc
+commondir		= $(srcdir)/common
+sharedir = $(prefix)/share/rexxcurl
+#docdir = $(prefix)/share/doc/$(RPM_PACKAGE_DIR)
+docdir = @docdir@
+imagesdir		= $(docdir)/images
+libdir		= @libdir@
+libdir32		= @libdir32@
+libdir64		= @libdir64@
+
+INSTALL		= $(srcdir)/install-sh
+
+CC =               @CC@
+CFLAGS =           @CFLAGS@
+LDFLAGS =          @LDFLAGS@
+
+CEXTRA =           @CEXTRA@ @DLFCNINCDIR@
+DEBUG =            @DEBUG@
+DEBUGGING =        @DEBUGGING@
+EEXTRA =           @EEXTRA@
+OSAVE  =           @OSAVE@
+OBJ  =             @OBJ@
+EXE  =             @EXE@
+SHLPRE =           @SHLPRE@
+SHLPST =           @SHLPST@
+LIBPRE =           @LIBPRE@
+LIBPST =           @LIBPST@
+LIBEXE =           @LIBEXE@
+LIBFLAGS =         @LIBFLAGS@
+RANLIB =           @RANLIB@
+GETOPT  =          @GETOPT@
+DYN_COMP  =        @DYN_COMP@ @THREADING_COMPILE@
+SYS_DEFS  =        @SYS_DEFS@
+LIBS  =            @LIBS@ @LEXLIB@
+SHLIBS  =          @SHLIBS@ @DLFCNLIBDIR@
+LD_RXLIB1  =       @LD_RXLIB1@
+LD_RXLIB2  =       @MH_PACKAGE_LIBS@ @REXX_LIBS@ @MH_EXTRA_LIBS@
+DYNAMIC_LDFLAGS  = @DYNAMIC_LDFLAGS@ $(EEXTRA)
+SHL_TARGETS  =     @SHL_TARGETS@
+O2SAVE  =          @O2SAVE@
+O2SHO  =           @O2SHO@
+CC2O   =           @CC2O@
+SAVE2O  =          @SAVE2O@
+PURIFY =           @PURIFY@
+MT_FILE =          @MT_FILE@
+OTHER_INSTALLS =   @OTHER_INSTALLS@
+BASE_INSTALL =     @BASE_INSTALL@
+BASE_BINARY =      @BASE_BINARY@
+USE_ABI =          @USE_ABI@
+REXX_TARGET =      @REXX_TARGET@
+REXX_BUILD =       @REXX_BUILD@
+RPMTOPDIR =        @RPMTOPDIR@
+MYDISTRO =         @MYDISTRO@
+MACH_ARCH =        @MACH_ARCH@
+ADDONSDIR =        @REXX_ADDONS@
+REXX_VER =         @REXX_VER@
+
+#@aix_exports@
+RXDEFEXP1 =        @RXDEFEXP1@
+
+binarybitprefix =  @binarybitprefix@
+
+INCDIR		= $(srcdir)
+COMMONDIR = $(commondir)
+CPPFLAGS	= -I. -I$(INCDIR) -I$(COMMONDIR) $(DEBUG) @DEFS@ @SYS_DEFS@ -DREXXCURL_VERSION=\"$(VER_DOT)\" -DREXXCURL_DATE=\"$(VER_DATE)\" -DINIT_RXPACKAGE=init_$(PACKAGE) -DTERM_RXPACKAGE=term_$(PACKAGE)
+CCAFLAGS= $(CCFLAGS) -D__rxpack_tsd_initialized=$(PACKAGE)__rxpack_tsd_initialized -D__rxpack_tsd=$(PACKAGE)__rxpack_tsd -DRxPackInitializeProcess=$(PACKAGE)_RxPackInitializeProcess -DRxPackGetThreadID=$(PACKAGE)_RxPackGetThreadID -DIfcRxPackCleanup=$(PACKAGE)_IfcRxPackCleanup -DCURL_NO_OLDIES
+
+CCFLAGS		= -c $(CFLAGS) $(CPPFLAGS) -I$(commondir) @MH_PACKAGE_INC@ @REXX_INCLUDES@ -DCURL_NO_OLDIES
+
+LINK		= @PURIFY@ $(CC)
+LDFLAGS		= $(DEBUGGING) $(EEXTRA) @LDFLAGS@ @MH_PACKAGE_LIBS@ @REXX_LIBS@ @MH_EXTRA_LIBS@
+
+################################################################################
+
+H1=config.h
+H2=$(commondir)/rxpack.h $(commondir)/rxdef.h $(srcdir)/rexxcurl.h $(srcdir)/apphead.h
+H4=$(commondir)/rxmt.h
+
+#------------------------------------------------------------------------
+include $(commondir)/dist.inc
+
+CSRCFILES = $(PACKAGE_DIR)/$(PACKAGE_NAME).c
+ZIPCSRCFILES = $(PACKAGE_NAME).c
+
+HEADERS = $(PACKAGE_DIR)/apphead.h $(PACKAGE_DIR)/$(PACKAGE_NAME).h
+ZIPHEADERS = apphead.h $(PACKAGE_NAME).h
+
+OFILES = loader.$(OBJ) rexxcurl.$(OBJ) rxpack.$(OBJ) rxmt_notmt.$(OBJ)
+
+SHOFILES = rexxcurl.so.o rxpack.so.o $(MT_FILE).so.o
+LIBFILES = rexxcurl.a.o rxpack.a.o rxmt_notmt.a.o
+TARFILES = \
+$(PACKAGE_DIR)/README $(PACKAGE_DIR)/INSTALL $(PACKAGE_DIR)/TODO $(PACKAGE_DIR)/CPLv1.0.txt $(PACKAGE_DIR)/HISTORY $(CSRCFILES) $(HEADERS) $(COMMONFILES) \
+$(PACKAGE_DIR)/Makefile.in $(PACKAGE_DIR)/configure $(PACKAGE_DIR)/config.h.in $(PACKAGE_DIR)/rexxcurl-config.in \
+$(PACKAGE_DIR)/makefile.* $(PACKAGE_DIR)/*.def $(PACKAGE_DIR)/*.ico $(PACKAGE_DIR)/*.rc $(PACKAGE_DIR)/rexxcurl.ver \
+$(PACKAGE_DIR)/config.guess $(PACKAGE_DIR)/config.sub $(PACKAGE_DIR)/install-sh $(PACKAGE_DIR)/preinst.rexx \
+$(PACKAGE_DIR)/aclocal.m4 $(PACKAGE_DIR)/configure.in $(PACKAGE_DIR)/def2exp.rexx \
+$(PACKAGE_DIR)/demo/*.rexx $(PACKAGE_DIR)/demo/README.txt $(PACKAGE_DIR)/makew32.rex \
+$(PACKAGE_DIR)/doc/*.html $(PACKAGE_DIR)/doc/images/*.png \
+$(PACKAGE_DIR)/RexxCURL.spec \
+$(PACKAGE_DIR)/debian/control.rexxtrans $(PACKAGE_DIR)/debian/control.regina $(PACKAGE_DIR)/debian/control.oorexx $(PACKAGE_DIR)/debian/copyright $(PACKAGE_DIR)/debian/compat $(PACKAGE_DIR)/debian/rules.in
+
+################################################################################
+all:	$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(LIBPRE)$(PACKAGE_NAME)$(LIBPST) $(SHL_TARGETS)
+
+clean:
+	-rm -f *.a *.so *.o *.so.o $(PACKAGE_NAME) $(SHLPRE)$(PACKAGE_NAME)$(SHLPST) $(LIBPRE)$(PACKAGE_NAME)$(LIBPST)
+
+distclean: clean
+	-rm -f Makefile config.h config.log config.status $(PACKAGE_NAME)-config
+
+mostlyclean: clean
+
+realclean: distclean
+
+# rexxcurl
+$(PACKAGE_NAME)$(binarybitprefix)$(EXE): $(OFILES) $(GETOPT)
+	$(LINK) $(OFILES) $(XTRA_OBJS) -o $@ $(LDFLAGS)
+
+# librexxcurl.so
+$(SHLPRE)$(PACKAGE_NAME)$(SHLPST): $(SHOFILES) $(RXDEFEXP1) $(RXPACKEXP1)
+	$(LD_RXLIB1) $(RXPACKEXPORTS1) -o $@ $(SHOFILES) $(LD_RXLIB2)
+
+# librexxcurl.a
+$(LIBPRE)$(PACKAGE_NAME)$(LIBPST): $(LIBFILES)
+	rm -f $@
+	$(LIBEXE) $(LIBFLAGS) $@ $(LIBFILES)
+	-$(RANLIB) $@
+
+#
+# executable objects
+#
+rxpack.o: $(commondir)/rxpack.c $(H1) $(H2)
+	$(CC) $(CCFLAGS) -o rxpack.o $(commondir)/rxpack.c
+
+loader.o: $(commondir)/loader.c $(H1) $(H2)
+	$(CC) $(CCFLAGS) -o loader.o $(commondir)/loader.c
+
+rexxcurl.o: $(srcdir)/rexxcurl.c $(H1) $(H2)
+	$(CC) $(CCFLAGS) -o rexxcurl.o $(srcdir)/rexxcurl.c
+
+getopt.o: $(commondir)/getopt.c $(H1)
+	$(CC) $(CCFLAGS) -o getopt.o $(commondir)/getopt.c
+
+#
+# shared library objects
+#
+rexxcurl.so.o : $(srcdir)/rexxcurl.c $(H1) $(H2)
+	$(O2SAVE)
+	$(CC) $(CCFLAGS) $(CC2O) $(DYN_COMP) $(srcdir)/rexxcurl.c
+	$(O2SHO)
+	$(SAVE2O)
+
+rxpack.so.o : $(commondir)/rxpack.c $(H1) $(H2)
+	$(O2SAVE)
+	$(CC) $(CCFLAGS) $(CC2O) $(DYN_COMP) $(commondir)/rxpack.c
+	$(O2SHO)
+	$(SAVE2O)
+
+rxmt_notmt.o: $(commondir)/rxmt_notmt.c $(H4) Makefile
+	$(CC) $(CCFLAGS) $(CC2O) $(commondir)/rxmt_notmt.c
+
+rxmt_notmt.so.o: $(commondir)/rxmt_notmt.c $(H4) $(commondir)/rxmt_notmt.h Makefile
+	$(O2SAVE)
+	$(CC) $(CCFLAGS) $(DYN_COMP) $(CC2O) $(commondir)/rxmt_notmt.c
+	$(O2SHO)
+	$(SAVE2O)
+
+rxmt_posix.so.o: $(commondir)/rxmt_posix.c $(H4) $(commondir)/rxmt_posix.h Makefile
+	$(O2SAVE)
+	$(CC) $(CCFLAGS) $(DYN_COMP) $(CC2O) $(commondir)/rxmt_posix.c
+	$(O2SHO)
+	$(SAVE2O)
+
+#
+# static library objects
+#
+rxpack.a.o : $(commondir)/rxpack.c $(H1) $(H2)
+	$(O2SAVE)
+	$(CC) $(CCAFLAGS) $(CC2O) $(commondir)/rxpack.c
+	$(O2SHO)
+	$(SAVE2O)
+
+rexxcurl.a.o : $(srcdir)/rexxcurl.c $(H1) $(H2)
+	$(O2SAVE)
+	$(CC) $(CCAFLAGS) $(CC2O) $(srcdir)/rexxcurl.c
+	$(O2SHO)
+	$(SAVE2O)
+
+rxmt_notmt.a.o: $(commondir)/rxmt_notmt.c $(H4) $(commondir)/rxmt_notmt.h Makefile
+	$(O2SAVE)
+	$(CC) $(CCAFLAGS) $(CC2O) $(commondir)/rxmt_notmt.c
+	$(O2SHO)
+	$(SAVE2O)
+
+#
+# export file for AIX
+#
+$(RXPACKEXP1): $(srcdir)/$(PACKAGE_NAME)win.def $(srcdir)/def2exp.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/def2exp.rexx $(srcdir)/$(PACKAGE_NAME)win.def $(RXPACKEXP1)
+
+#
+# export file for cygwin
+#
+$(RXDEFEXP1): $(srcdir)/$(PACKAGE_NAME)win.def $(commondir)/filterexports.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(commondir)/filterexports.rexx CurlQueryFunction $(srcdir)/$(PACKAGE_NAME)win.def $(RXDEFEXP1)
+
+html:
+	cp $(srcdocdir)/index.html .
+	cp $(srcdocdir)/images/*.png images
+
+zip:
+	zip rexxcurl$(VER) README INSTALL TODO CPLv1.0.txt HISTORY $(ZIPCSRCFILES) $(ZIPHEADERS) $(ZIPCOMMONFILES)
+	zip rexxcurl$(VER) Makefile.in configure config.h.in rexxcurl-config.in
+	zip rexxcurl$(VER) makefile.* *.def *.ico *.rc rexxcurl.ver
+	zip rexxcurl$(VER) config.guess config.sub install-sh preinst.rexx
+	zip rexxcurl$(VER) aclocal.m4 configure.in def2exp.rexx
+	zip rexxcurl$(VER) demo/*.rexx demo/README.txt makew32.rex
+	zip rexxcurl$(VER) doc/*.html doc/images/*.png
+	zip rexxcurl$(VER) debian/*.regina debian/*.oorexx debian/copyright debian/compat
+	zip rexxcurl$(VER) RexxCURL.spec
+
+tar:
+	(cd $(srcdir)/..;rm -f $(PACKAGE_DIR))
+	(cd $(srcdir)/..;ln -sf $(abs_srcdir) $(PACKAGE_DIR))
+	(cd $(srcdir)/..; tar cvf - \
+	$(TARFILES) \
+	| gzip > $(PACKAGE_DIR).tar.gz)
+	(cd $(srcdir)/..;rm -f $(PACKAGE_DIR))
+
+install: $(BASE_INSTALL) $(DOC_INSTALL)
+
+installbase: all installtools installlib installdev installdoc
+
+installtools:
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) -c -m 755 ./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(DESTDIR)$(bindir)/$(PACKAGE_NAME)$(binarybitprefix)$(EXE)
+
+installlib:
+	$(INSTALL)  -d $(DESTDIR)$(libdir)
+	-$(INSTALL) -c -m 755 ./$(SHLPRE)$(PACKAGE_NAME)$(SHLPST) $(DESTDIR)$(libdir)/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST)
+
+installdev:
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL)  -d $(DESTDIR)$(libdir)
+	-$(INSTALL) -c -m 755 ./$(PACKAGE_NAME)-config $(DESTDIR)$(bindir)/$(PACKAGE_NAME)-config
+	-$(INSTALL) -c -m 755 ./$(LIBPRE)$(PACKAGE_NAME)$(LIBPST) $(DESTDIR)$(libdir)/$(LIBPRE)$(PACKAGE_NAME)$(LIBPST)
+
+installdoc: docinstall
+
+docinstall: html
+	$(INSTALL)  -d $(DESTDIR)$(docdir)
+	$(INSTALL)  -d $(DESTDIR)$(imagesdir)
+	$(INSTALL) -c -m 644 $(srcdir)/CPLv1.0.txt $(DESTDIR)$(docdir)/CPLv1.0.txt
+	$(INSTALL) -c -m 644 $(srcdocdir)/index.html $(DESTDIR)$(docdir)/index.html
+	$(INSTALL) -c -m 644 $(srcdocdir)/images/rxcurl64.png $(DESTDIR)$(imagesdir)/images/rxcurl64.png
+	$(INSTALL)  -d $(DESTDIR)$(sharedir)
+	$(INSTALL) -c -m 755 $(srcdir)/demo/testcurl.rexx      $(DESTDIR)$(sharedir)/testcurl.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/httppost.rexx      $(DESTDIR)$(sharedir)/httppost.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/getmail-pop3.rexx  $(DESTDIR)$(sharedir)/getmail-pop3.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/sendmail-smtp.rexx $(DESTDIR)$(sharedir)/sendmail-smtp.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/scp.rexx           $(DESTDIR)$(sharedir)/scp.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/upload.rexx        $(DESTDIR)$(sharedir)/upload.rexx
+	$(INSTALL) -c -m 755 $(srcdir)/demo/getright.rexx      $(DESTDIR)$(sharedir)/getright.rexx
+	$(INSTALL) -c -m 644 $(srcdir)/demo/README.txt $(DESTDIR)$(sharedir)/README.txt
+
+installaddons:
+	$(INSTALL) -d $(DESTDIR)$(exec_prefix)$(ADDONSDIR)
+	$(INSTALL) -c -m 755 ./$(SHLPRE)$(PACKAGE_NAME)$(SHLPST) $(DESTDIR)$(exec_prefix)$(ADDONSDIR)/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST)
+
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/$(PACKAGE_NAME)$(binarybitprefix)$(EXE)
+	rm -f $(DESTDIR)$(bindir)/rexxcurl-config
+	rm -f $(DESTDIR)$(libdir)/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST)
+	rm -f $(DESTDIR)$(libdir)/$(LIBPRE)$(PACKAGE_NAME)$(LIBPST)
+	rm -fr $(DESTDIR)$(sharedir)
+	rm -fr $(DESTDIR)$(docdir)
+
+cygwininstall: installbase
+	mv $(DESTDIR)$(libdir)/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST) $(DESTDIR)$(bindir)/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST)
+
+beosinstall: all
+	$(INSTALL) -d /boot/home/config/bin
+	$(INSTALL) -d /boot/home/config/lib
+	$(INSTALL) -d /boot/home/config/add-ons/rexx
+	$(INSTALL) -m 755 -c ./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE)
+	$(INSTALL) -m 755 -c ./rexxcurl-config $(bindir)/rexxcurl-config
+	$(INSTALL) -m 755 -c ./$(SHLPRE)$(PACKAGE_NAME)$(SHLPST) /boot/home/config/add-ons/rexx/$(SHLPRE)$(PACKAGE_NAME)$(SHLPST)
+	$(INSTALL) -m 755 -c ./$(LIBPRE)$(PACKAGE_NAME)$(LIBPST) /boot/home/config/lib/$(LIBPRE)$(PACKAGE_NAME)$(LIBPST)
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/testcurl.rexx /boot/home/config/bin/rexx/testcurl.rexx
+	-chmod 755 /boot/home/config/bin/rexx/testcurl.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/httppost.rexx /boot/home/config/bin/rexx/httppost.rexx
+	-chmod 755 /boot/home/config/bin/rexx/httppost.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/getmail-pop3.rexx /boot/home/config/bin/rexx/getmail-pop3.rexx
+	-chmod 755 /boot/home/config/bin/rexx/getmail-pop3.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/sendmail-smtp.rexx /boot/home/config/bin/rexx/sendmail-smtp.rexx
+	-chmod 755 /boot/home/config/bin/rexx/sendmail-smtp.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/scp.rexx /boot/home/config/bin/rexx/scp.rexx
+	-chmod 755 /boot/home/config/bin/rexx/scp.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/upload.rexx /boot/home/config/bin/rexx/upload.rexx
+	-chmod 755 /boot/home/config/bin/rexx/upload.rexx
+	./$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/preinst.rexx /boot/home/config/bin/$(PACKAGE_NAME)$(binarybitprefix)$(EXE) $(srcdir)/demo/getright.rexx /boot/home/config/bin/rexx/getright.rexx
+	-chmod 755 /boot/home/config/bin/rexx/getright.rexx
+	$(INSTALL) -c -m 644 $(srcdir)/demo/README.txt /boot/home/config/bin/rexx/README-rexxcurl.txt
+#
+# where to put doc for BeOS ?
+#	$(INSTALL) -c -m 644 $(docdir)/index.html $(DESTDIR)$(sharedir)/index.html
+#	$(INSTALL) -c -m 644 $(docdir)/images/rxcurl64.png $(DESTDIR)$(sharedir)/images/rxcurl64.png
+#
+
+binary: $(BASE_BINARY)
+
+binarybase: all
+	-rm -fr ./tmpdir
+	-mkdir -p ./tmpdir/bin
+	-mkdir -p ./tmpdir/lib
+	-mkdir -p ./tmpdir/share/$(PACKAGE_NAME)
+	-mkdir -p ./tmpdir/share/doc/rexxcurl/images
+	cp $(PACKAGE_NAME)$(binarybitprefix)$(EXE) ./tmpdir/bin
+	cp $(PACKAGE_NAME)-config ./tmpdir/bin
+	cp $(SHLPRE)$(PACKAGE_NAME)$(SHLPST) ./tmpdir/lib
+	cp $(LIBPRE)$(PACKAGE_NAME)$(LIBPST) ./tmpdir/lib
+	cp $(srcdir)/CPLv1.0.txt ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/HISTORY ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/INSTALL ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/README ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/TODO ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/doc/index.html ./tmpdir/share/doc/rexxcurl
+	cp $(srcdir)/doc/images/*.png ./tmpdir/share/doc/rexxcurl/images
+	cp $(srcdir)/demo/testcurl.rexx ./tmpdir/share/$(PACKAGE_NAME)/testcurl.rexx
+	cp $(srcdir)/demo/httppost.rexx ./tmpdir/share/$(PACKAGE_NAME)/httppost.rexx
+	cp $(srcdir)/demo/getmail-pop3.rexx ./tmpdir/share/$(PACKAGE_NAME)/getmail-pop3.rexx
+	cp $(srcdir)/demo/sendmail-smtp.rexx ./tmpdir/share/$(PACKAGE_NAME)/sendmail-smtp.rexx
+	cp $(srcdir)/demo/scp.rexx ./tmpdir/share/$(PACKAGE_NAME)/scp.rexx
+	cp $(srcdir)/demo/upload.rexx ./tmpdir/share/$(PACKAGE_NAME)/upload.rexx
+	cp $(srcdir)/demo/getright.rexx ./tmpdir/share/$(PACKAGE_NAME)/getright.rexx
+	cp $(srcdir)/demo/README.txt ./tmpdir/share/$(PACKAGE_NAME)/README.txt
+	(cd ./tmpdir; \
+	tar cvf - * | gzip > ../$(RPM_PACKAGE_DIR)-$(MACH_ARCH)-$(MYDISTRO).tgz )
+
+cygwinbinary: all
+	-rm -fr ./tmpdir
+	-mkdir -p ./tmpdir/bin
+	-mkdir -p ./tmpdir/lib
+	-mkdir -p ./tmpdir/rexx
+	-mkdir -p ./tmpdir/doc/rexxcurl
+	-mkdir -p ./tmpdir/doc/rexxcurl/images
+	cp $(PACKAGE_NAME)$(binarybitprefix)$(EXE) ./tmpdir/bin
+	cp $(SHLPRE)$(PACKAGE_NAME)$(SHLPST) ./tmpdir/bin
+	cp $(LIBPRE)$(PACKAGE_NAME)$(LIBPST) ./tmpdir/lib
+	cp $(srcdir)/CPLv1.0.txt ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/HISTORY ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/INSTALL ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/README ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/TODO ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/doc/index.html ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/doc/images/*.png ./tmpdir/doc/rexxcurl/images
+	cp $(srcdir)/demo/testcurl.rexx ./tmpdir/rexx/testcurl.rexx
+	cp $(srcdir)/demo/httppost.rexx ./tmpdir/rexx/httppost.rexx
+	cp $(srcdir)/demo/getmail-pop3.rexx ./tmpdir/rexx/getmail-pop3.rexx
+	cp $(srcdir)/demo/sendmail-smtp.rexx ./tmpdir/rexx/sendmail-smtp.rexx
+	cp $(srcdir)/demo/scp.rexx ./tmpdir/rexx/scp.rexx
+	cp $(srcdir)/demo/upload.rexx ./tmpdir/rexx/upload.rexx
+	cp $(srcdir)/demo/getright.rexx ./tmpdir/rexx/getright.rexx
+	cp $(srcdir)/demo/README.txt ./tmpdir/rexx/README.txt
+	(cd ./tmpdir; \
+	tar cvf - * | gzip > ../$(RPM_PACKAGE_DIR)-$(MACH_ARCH)-$(MYDISTRO).tgz )
+
+beosbinary: all
+	-rm -fr ./tmpdir
+	-mkdir -p ./tmpdir/bin
+	-mkdir -p ./tmpdir/lib
+	-mkdir -p ./tmpdir/add-ons/rexx
+	-mkdir -p ./tmpdir/doc/rexxcurl
+	-mkdir -p ./tmpdir/doc/rexxcurl/images
+	cp $(PACKAGE_NAME)$(binarybitprefix)$(EXE) ./tmpdir/bin
+	cp $(SHLPRE)$(PACKAGE_NAME)$(SHLPST) ./tmpdir/add-ons/rexx
+	cp $(LIBPRE)$(PACKAGE_NAME)$(LIBPST) ./tmpdir/lib
+	cp $(srcdir)/CPLv1.0.txt ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/HISTORY ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/INSTALL ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/README ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/TODO ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/doc/index.html ./tmpdir/doc/rexxcurl
+	cp $(srcdir)/doc/images/*.png ./tmpdir/doc/rexxcurl/images
+	cp $(srcdir)/demo/testcurl.rexx ./tmpdir/rexx/testcurl.rexx
+	cp $(srcdir)/demo/httppost.rexx ./tmpdir/rexx/httppost.rexx
+	cp $(srcdir)/demo/getmail-pop3.rexx ./tmpdir/rexx/getmail-pop3.rexx
+	cp $(srcdir)/demo/sendmail-smtp.rexx ./tmpdir/rexx/sendmail-smtp.rexx
+	cp $(srcdir)/demo/scp.rexx ./tmpdir/rexx/scp.rexx
+	cp $(srcdir)/demo/upload.rexx ./tmpdir/rexx/upload.rexx
+	cp $(srcdir)/demo/getright.rexx ./tmpdir/rexx/getright.rexx
+	cp $(srcdir)/demo/README.txt ./tmpdir/rexx/README.txt
+	(cd ./tmpdir; \
+	zip -r $(PACKAGE_DIR).BeOS.zip * )
+
+# target for building binary RPM
+rpm: tar
+	cp $(srcdir)/../$(PACKAGE_DIR).tar.gz $(RPMTOPDIR)/SOURCES
+	-rm $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-$(VER_DOT_UNQUOTED)*.rpm
+	-rm $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-*-$(VER_DOT_UNQUOTED)*.rpm
+	rpmbuild -bb --clean --define 'myrexx $(REXX_BUILD)' --define 'addonsdir $(ADDONSDIR)' --define 'myversion $(VER_DOT_UNQUOTED)' $(srcdir)/$(PACKAGE).spec
+	mv $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-$(VER_DOT_UNQUOTED)*.rpm `dirname $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-$(VER_DOT_UNQUOTED)*.rpm`/`basename $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-$(VER_DOT_UNQUOTED)*.rpm .rpm`-$(MYDISTRO).rpm
+	mv $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-devel-$(VER_DOT_UNQUOTED)*.rpm `dirname $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-devel-$(VER_DOT_UNQUOTED)*.rpm`/`basename $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-devel-$(VER_DOT_UNQUOTED)*.rpm .rpm`-$(MYDISTRO).rpm
+	mv $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-lib-$(VER_DOT_UNQUOTED)*.rpm `dirname $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-lib-$(VER_DOT_UNQUOTED)*.rpm`/`basename $(RPMTOPDIR)/RPMS/*/$(PACKAGE)-$(REXX_BUILD)-lib-$(VER_DOT_UNQUOTED)*.rpm .rpm`-$(MYDISTRO).rpm
+	ls -l $(RPMTOPDIR)/RPMS/*/$(PACKAGE)*rpm
+
+# Target for building the source RPM
+srcrpm: tar
+	cp $(srcdir)/../$(PACKAGE_DIR).tar.gz $(RPMTOPDIR)/SOURCES
+	-rm $(RPMTOPDIR)/SRPMS/$(PACKAGE)-$(VER_DOT_UNQUOTED)*.rpm
+	rpmbuild -bs --clean --with source --define "myversion $(VER_DOT_UNQUOTED)" $(srcdir)/$(PACKAGE).spec
+	ls -l $(RPMTOPDIR)/SRPMS/$(PACKAGE)*rpm
+
+deb: tar
+	-rm -fr tmp
+	-mkdir tmp
+	(cd tmp; \
+	tar zxvf ../../$(srcdir)/$(PACKAGE_DIR).tar.gz; \
+	cd $(PACKAGE_DIR); \
+	cp HISTORY debian/changelog; \
+	regina common/fixdebian.rexx debian/rules.in debian/rules $(REXX_BUILD) $(REXX_TARGET); \
+	cp debian/control.$(REXX_BUILD) debian/control; \
+	dpkg-buildpackage -rfakeroot; \
+	cd ..; \
+	mv $(PACKAGE_NAME)-tools-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb `basename $(PACKAGE_NAME)-tools-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb .deb`-$(MYDISTRO).deb; \
+	mv $(PACKAGE_NAME)-dev-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb `basename $(PACKAGE_NAME)-dev-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb .deb`-$(MYDISTRO).deb; \
+	mv $(PACKAGE_NAME)-lib-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb `basename $(PACKAGE_NAME)-lib-$(REXX_BUILD)_$(VER_DOT_UNQUOTED)*.deb .deb`-$(MYDISTRO).deb; \
+	ls -l )
+
+#
+# End of makefile
+#
+

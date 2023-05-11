@@ -1,0 +1,43 @@
+Source: rexxcurl
+Section: devel
+Priority: optional
+Maintainer: Mark Hessling <mark@rexx.org>
+Build-Depends: debhelper (>= 5), autotools-dev
+Standards-Version: 3.8.3
+
+Package: rexxcurl-tools-oorexx
+Architecture: any
+Section: devel
+Depends: ${shlibs:Depends}
+Provides: rexxcurl-tools
+Conflicts: rexxcurl-tools-rexxtrans, rexxcurl-tools-regina
+Description: Rexx interface to libcurl; http://curl.haxx.se/libcurl/
+ This package provides the rexxcurl executable with the external functions embedded.
+ Useful for checking should errors occur with rexxcurl-lib.
+
+Package: rexxcurl-dev-oorexx
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}
+Provides: rexxcurl-dev
+Conflicts: rexxcurl-dev-rexxtrans, rexxcurl-dev-regina
+Description: Rexx interface to libcurl; http://curl.haxx.se/libcurl/
+ This package provides the external function package as a static library
+ and config scripts to statically link with your Rexx interpreter.
+
+Package: rexxcurl-lib-oorexx
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Provides: rexxcurl-lib
+Conflicts: rexxcurl-lib-rexxtrans, rexxcurl-lib-regina
+Description: Rexx interface to libcurl; http://curl.haxx.se/libcurl/
+ This package provides the Rexx/CURL external function package
+ installed into the Rexx interpreter's addons directory.
+
+Package: rexxcurl-doc
+Architecture: all
+Section: doc
+Provides: rexxcurl-doc
+Description: Rexx interface to libcurl; http://curl.haxx.se/libcurl/
+ This package provides documentation for Rexx/CURL.

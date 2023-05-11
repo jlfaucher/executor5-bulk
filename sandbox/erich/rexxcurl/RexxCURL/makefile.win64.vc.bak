@@ -1,0 +1,21 @@
+#
+# NMAKE-compatible MAKE file for building Rexx/CURL with VC++
+#
+# Note that the cURL library that is linked with should be compiled
+# without the /MD switch if possible!!
+#
+# will generate:
+#
+#      rexxcurl.dll
+#      rexxcurl.exe
+#
+# Usage: nmake [DEBUG=Y]
+#              [INT=REGINA|OREXX|OOREXX|OOREXX4WINREXX|QUERCUS|UNIREXX|REXXTRANS]
+#              [rexxcurl.dll|rexxcurl.exe]
+#
+SRCDIR=$(REXXCURL_SRCDIR)
+LARCH=w64
+BARCH=W64
+WARCH=win64
+MACH=X64
+!include $(SRCDIR)\makefile.win.vc
