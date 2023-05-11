@@ -439,7 +439,7 @@ int RxStrToBool Args(( RxPackageGlobalDataDef *,RXSTRING *, ULONG * ));
 int RxStrToIntBool Args(( RxPackageGlobalDataDef *, RXSTRING *, unsigned int * ));
 int RxStrToInt Args(( RxPackageGlobalDataDef *, RXSTRING *, int * ));
 int RxStrToUInt Args(( RxPackageGlobalDataDef *, RXSTRING *, unsigned int * ));
-int RxStrToLong Args(( RxPackageGlobalDataDef *, RXSTRING *, long * ));
+int RxStrToLong Args(( RxPackageGlobalDataDef *, RXSTRING *, size_t * ));
 int RxStrToULong Args(( RxPackageGlobalDataDef *, RXSTRING *, unsigned long * ));
 int RxStrToLongLong Args(( RxPackageGlobalDataDef *, RXSTRING *, rx_long_long * ));
 int RxStrToINT8 Args(( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *ptr, int8_t *result ));

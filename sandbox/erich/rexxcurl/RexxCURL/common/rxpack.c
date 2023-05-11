@@ -655,12 +655,12 @@ int RxStrToUInt( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *ptr, uns
  * Converts a RXSTRING to signed long. Return 0 if OK and -1 if error.
  * Assumes a string of decimal digits with or without signs and does not check for overflow!
  *----------------------------------------------------------------------------*/
-int RxStrToLong( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *ptr, long *result )
+int RxStrToLong( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *ptr, intptr_t *result )
 {
    unsigned int i=0;
    int    rc=0;
    char   *p=(char *)ptr->strptr;
-   long   sum=0L;
+   size_t sum=0L;
    int    neg=0;
 
    for (i = ptr->strlength; i; i--)
@@ -685,7 +685,7 @@ int RxStrToLong( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *ptr, lon
          sum *= -1;
    }
    *result = sum;
-   DEBUGDUMP(fprintf(stderr,"%s-%d Thread(%ld): In RxStrToLong() Input string is \"%s\" Result is %ld\n",__FILE__,__LINE__,RxPackGetThreadID(),ptr->strptr, sum);)
+   DEBUGDUMP(fprintf(stderr,"%s-%d Thread(%ld): In RxStrToLong() Input string is \"%s\" Result is %zd\n",__FILE__,__LINE__,RxPackGetThreadID(),ptr->strptr, sum);)
    return rc;
 }
 
@@ -2582,7 +2582,7 @@ int RxReturnPointer( RxPackageGlobalDataDef *RxPackageGlobalData, RXSTRING *rets
 
    if ( ptr )
    {
-      retstr->strlength = sprintf( (char *)retstr->strptr, "%ld", (long)ptr );
+      retstr->strlength = sprintf( (char *)retstr->strptr, "%zd", (size_t)ptr );
    }
    else
    {

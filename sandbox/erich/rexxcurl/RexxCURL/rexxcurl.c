@@ -818,6 +818,9 @@ static curl_options RexxCurlGetinfos[] =
 #if LIBCURL_VERSION_NUM >= 0x071300
    { "APPCONNECT_TIME"        ,CURLINFO_APPCONNECT_TIME        ,RXCURLINFO_DOUBLE, NULL },
 #endif
+#if LIBCURL_VERSION_NUM >= 0x075400
+   { "CAINFO"                 ,CURLINFO_CAINFO                 ,RXCURLINFO_STRING, NULL },
+#endif
 #if LIBCURL_VERSION_NUM >= 0x071301
    { "CERTINFO"               ,CURLINFO_CERTINFO               ,RXCURLINFO_CERTINFO, NULL },
 #endif
@@ -2409,7 +2412,7 @@ rxfunc( CurlInit )
 
 rxfunc( CurlCleanup )
 {
-   long curl;
+   size_t curl;
    REXXCURLDATA *RexxCURLData;
    /*
     * Get thread-safe-data
@@ -2436,7 +2439,7 @@ rxfunc( CurlCleanup )
 rxfunc( CurlSetopt )
 {
    ULONG rc = 0L;
-   long curl;
+   size_t curl;
    int i,j,opt,sub_opt;
    long long_opt;
    rx_long_long longlong_opt;
@@ -2724,7 +2727,6 @@ rxfunc( CurlSetopt )
             }
             /* close the file and set ptr to NULL */
             fclose( RexxCURLData->FilePtrs[opt] );
-            break;
          }
          RexxCURLData->FilePtrs[opt] = NULL;
 
@@ -3414,7 +3416,7 @@ rxfunc( CurlSetopt )
 rxfunc( CurlReset )
 {
    ULONG rc = 0L;
-   long curl;
+   size_t curl;
    REXXCURLDATA *RexxCURLData;
    /*
     * Get thread-safe-data
@@ -3465,7 +3467,7 @@ array:
 rxfunc( CurlFormAdd )
 {
    ULONG rc = 0L;
-   long curl;
+   size_t curl;
    int i,opt;
    CURLFORMcode curl_rc;
    int count,idx,num_buffers,contenttype;
@@ -3732,7 +3734,7 @@ rxfunc( CurlFormAdd )
 
 rxfunc( CurlPerform )
 {
-   long curl;
+   size_t curl;
    CURLcode rc;
    char value[20]; /* big enough for an int */
    int valuelen,i;
@@ -3817,7 +3819,7 @@ rxfunc( CurlGetinfo )
 {
    ULONG rc = 0L;
    CURLcode curl_rc;
-   long curl;
+   size_t curl;
    int opt,suboption;
    int idx = 0;
    char *return_string = NULL;
@@ -4028,7 +4030,7 @@ rxfunc( CurlGetinfo )
 
 rxfunc( CurlFormFree )
 {
-   long curl;
+   size_t curl;
    int opt;
    REXXCURLDATA *RexxCURLData;
    /*
@@ -4067,7 +4069,7 @@ rxfunc( CurlFormFree )
 
 rxfunc( CurlEscape )
 {
-   long curl;
+   size_t curl;
    int valuelen;
    char *url, *return_string;
    REXXCURLDATA *RexxCURLData;
@@ -4108,7 +4110,7 @@ rxfunc( CurlEscape )
 
 rxfunc( CurlUnescape )
 {
-   long curl;
+   size_t curl;
    int valuelen;
    char *url, *return_string;
    REXXCURLDATA *RexxCURLData;

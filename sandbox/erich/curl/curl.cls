@@ -5,10 +5,10 @@
 /*
 usage examples:
 
-  say .cUrl~version~rexxcurl           -- rexxcurl 2.0 25 Apr 2012 libcurl/7.23.1 ..
+  say .curl~version~rexxcurl           -- rexxcurl 2.1.1 11 May 2023 libcurl/8.0.1 ..
 
   -- HTTP example
-  osm = .cUrl~new("http://www.openstreetmap.org/api/0.6/way/163840840")
+  osm = .curl~new("http://www.openstreetmap.org/api/0.6/way/163840840")
   say osm~get
   say osm~getInsecure                  -- short for url~get("SSLVERIFYPEER 0")
   say osm~code                         -- 200
@@ -17,10 +17,10 @@ usage examples:
   gb = .curl~new('ftp://gutenberg.pglaf.org/mirrors/gutenberg/')
   say gb~perform('DIRLISTONLY')
 
-  ::requires curl.cls"
+  ::requires curl"
 */
 
-::class cUrl public
+::class curl public
 
 ------------------------------------------------------------------------
 -- class methods
@@ -71,10 +71,10 @@ usage examples:
   call CurlDropFuncs "UNLOAD"
 
 -- class attributes
-::attribute supports class get    -- e. g. .cUrl~supports~ssl
-::attribute protocols class get   -- e. g. .cUrl~protocols~hasItem("https")
-::attribute version class get     -- e. g. .cUrl~version~libcurl
-::attribute host class get        -- e. g. .cUrl~host
+::attribute supports class get    -- e. g. .curl~supports~ssl
+::attribute protocols class get   -- e. g. .curl~protocols~hasItem("https")
+::attribute version class get     -- e. g. .curl~version~libcurl
+::attribute host class get        -- e. g. .curl~host
 
 
 -- returns string converted to encoded URL
@@ -84,7 +84,7 @@ usage examples:
 
   use strict arg url
   string = CurlEscape(handle, url)
-  call testForFailure "Escape", curlerror.
+  self~testForFailure("Escape", curlerror.)
   return string
 
 
@@ -95,7 +95,7 @@ usage examples:
 
   use strict arg url
   string = CurlUnescape(handle, url)
-  call testForFailure "Unescape", curlerror.
+  self~testForFailure("Unescape", curlerror.)
   return string
 
 
@@ -108,27 +108,28 @@ usage examples:
 
   use strict arg url = ""
 
-  -- each Url instance gets its own cUrl handle
+  -- each Url instance gets its own curl handle
   -- "CurlLoadFuncs" function has been made available at class init time
   call CurlLoadFuncs
   handle = CurlInit()
   if handle = "" then
     raise syntax 93.900 array("cURL failed to initialize") RETURN ("")
 
-::method uninit 
+::method uninit
   expose handle
 
-  -- remove cUrl handle
+  -- remove curl handle
   call CurlCleanup handle
 
 
 ::attribute url
+::attribute error
 
 
 -- set options through CurlSetopt()
 ::method setOpt
   expose handle
-  use strict arg options 
+  use strict arg options
 
   -- we accept a string or a collection of strings
   do option over options
@@ -138,12 +139,12 @@ usage examples:
     -- except for:
     --   HTTPHEADER, for which we allow a single string only
     --   HTTPPOSTFIELDS, supported by individual method setOptPostFields()
-    first = option~word(1) 
-    remainder = option~subWord(2) 
+    first = option~word(1)
+    remainder = option~subWord(2)
     select
       when first~caselessEquals("HTTPHEADER") then do
-        httpHeader.0 = 1 
-        httpHeader.1 = remainder 
+        httpHeader.0 = 1
+        httpHeader.1 = remainder
         call CurlSetopt handle, first, "httpHeader."
       end
       otherwise
@@ -152,14 +153,14 @@ usage examples:
         else
           call CurlSetopt handle, first, remainder
     end
-    call testForFailure "Setopt", curlerror.
+    self~testForFailure("Setopt", curlerror.)
   end
 
 
 -- set HTTPPOSTFIELDS option through CurlSetopt()
 ::method setOptPostFields
   expose handle
-  use strict arg fields 
+  use strict arg fields
 
   -- we accept a string or a collection of strings
   nr = 0
@@ -170,13 +171,13 @@ usage examples:
   end
   field.0 = nr
   call CurlSetopt handle, "HTTPPOSTFIELDS", "field."
-  call testForFailure "Setopt", curlerror.
+  self~testForFailure("Setopt", curlerror.)
 
 
 -- perform cURL operation
 ::method perform
   expose handle url
-  use strict arg options = .nil
+  use strict arg options = .nil, syntax = .true
 
   if .nil \== options then             -- set individual 'options', if any
     self~setOpt(options)
@@ -187,9 +188,9 @@ usage examples:
   -- returned as a single line
   call CurlSetopt handle, "URL", url
   call CurlSetopt handle, "OUTSTEM", "lines.", '5f3759df'x
-  call testForFailure "Setopt", curlerror.
+  self~testForFailure("Setopt", curlerror.)
   call CurlPerform handle
-  call testForFailure "Perform", curlerror.
+  self~testForFailure("Perform", curlerror., syntax)
   select
     when lines.0 = 0 then -- valid if e. g. "connectonly" option specified
       return ""
@@ -255,13 +256,13 @@ usage examples:
   use strict arg name
 
   -- we don't yet support names which require a stem as the third arg
-  value = CurlGetInfo(handle, name) 
-  call testForFailure "GetInfo", curlerror.
+  value = CurlGetInfo(handle, name)
+  self~testForFailure("GetInfo", curlerror.)
 
   return value
 
 
--- returns HTTP code for latest GET; short for getInfo("RESPONSE_CODE") 
+-- returns HTTP code for latest GET; short for getInfo("RESPONSE_CODE")
 ::method code
   use strict arg
 
@@ -270,19 +271,26 @@ usage examples:
 
 -- returns result for an option requiring a stem, requested with setOpt()
 ::method not_implemented_getOpt
-  use strict arg 
+  use strict arg
 
 
--- private routine to test Rexx/Curl calls for failure return
-::routine testForFailure
-  use strict arg name, curlerror.
+-- test Rexx/Curl calls for failure return
+::method testForFailure
+  expose error
+
+  use strict arg name, curlerror., syntax = .true
   select
-    when var("CURLERROR.INTCODE") = 0 then nop -- may be uninitialized, although docs don't say so
-    when curlerror.intcode = 0 then nop
-    when curlerror.intcode~abs = 1 then -- docs say intcode = 1, but we receive -1
-      raise syntax 93.900 array("Curl"name "failed with cURL error" curlerror.curlcode"," curlerror.curlerrm) RETURN ("")
+    when var("CURLERROR.INTCODE") = 0 then error = 0 -- may be uninitialized, although docs don't say so
+    when curlerror.intcode = 0 then error = 0
+    when curlerror.intcode~abs = 1 then do -- docs say intcode = 1, but we receive -1
+      if syntax then
+        raise syntax 93.900 array("Curl"name "failed with cURL error" curlerror.curlcode"," curlerror.curlerrm) RETURN ("")
+      error = curlerror.curlcode
+    end
     otherwise
-      raise syntax 93.900 array("Curl"name "failed with Rexx/Curl error" curlerror.intcode"," curlerror.interrm) RETURN ("")
+      if syntax then
+        raise syntax 93.900 array("Curl"name "failed with Rexx/Curl error" curlerror.intcode"," curlerror.interrm) RETURN ("")
+      error = curlerror.intcode
   end
 
 
@@ -295,7 +303,7 @@ usage examples:
 
 ::routine Url public
   use arg url
-  return .cUrl~new(url)~get
+  return .curl~new(url)~get
 
 
---::options novalue error
+--::options all syntax
