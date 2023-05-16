@@ -1,0 +1,1404 @@
+            Fixes in Open Object Rexx 5.0.0
+
+The following is a list of fixes, enhancements, and other relevant changes
+to ooRexx since the 4.2.0 release.  The numbers for each item can be used to
+look up the item in the appropriate tracker in the ooRexx project on
+SourceForge, i.e. the Bugs tracker, the Feature Requests tracker, etc.
+
+
+  Overview / Major Changes
+  ------------------------
+
+  Keyword instructions
+     new DO WITH INDEX .. ITEM .. OVER ..          [feature-requests:#158]
+     new FOR iterator for DO WITH and DO OVER      [feature-requests:#605]
+     new SELECT CASE                               [feature-requests:#600]
+     new USE LOCAL ..                              [feature-requests:#654]
+     added call type REQUIRES to PARSE SOURCE      [feature-requests:#622]
+
+  Built-in functions
+     added CONDITION("RESET")                      [feature-requests:#682]
+     added DATATYPE("Internal") format             [feature-requests:#711]
+     added DATE("ISO") format                      [feature-requests:#407]
+     added XRANGE() named character sequences      [feature-requests:#639]
+
+  Added notation
+     new [namespace]:[class|routine] notation      [feature-requests:#464]
+     new (item1, item2, ..) Array notation         [feature-requests:#613]
+     new "REXX" package                            [feature-requests:#602]
+
+  Directives
+     new ::ANNOTATE ATTRIBUTE/CLASS/CONSTANT/METHOD/PACKAGE/ROUTINE [feature-requests:#620]
+     added ABSTRACT subkeyword to ::CLASS          [feature-requests:#631]
+     added DELEGATE subkeyword to ::ATTRIBUTE and ::METHOD [feature-requests:#649]
+     value on ::CONSTANT now optional              [feature-requests:#389]
+     new ::OPTIONS NOVALUE CONDITION/ERROR         [feature-requests:#568]
+                                                   [feature-requests:#394]
+     new ::OPTIONS PROLOG/NOPROLOG                 [feature-requests:#621]
+     new ::RESOURCE                                [feature-requests:#545]
+                                                   [feature-requests:#61]
+     added NAMESPACE option to ::REQUIRES          [feature-requests:#464]
+
+  Changes to classes and methods
+     new class AlarmNotification                   [feature-requests:#644]
+     new class json                                [feature-requests:#625]
+     new class MessageNotification                 [feature-requests:#640]
+     new class RexxInfo                            [feature-requests:#618]
+     new class StringTable                         [feature-requests:#615]
+     new class Ticker                              [feature-requests:#653]
+     new class Validate                            [feature-requests:#707]
+
+     new methods added to Alarm class
+       canceled/cancelled                          [feature-requests:#652]
+       scheduledTime                               [feature-requests:#646]
+       attachment                                  [feature-requests:#645]
+
+     new methods added to Class class
+       annotation, annotations                     [feature-requests:#620]
+       defineMethods                               [feature-requests:#647]
+       isMetaclass                                 [feature-requests:#629]
+       package                                     [feature-requests:#596]
+
+     new method added to Collection classes
+       of                                          [feature-requests:#616]
+     changed existing method of Collection classes
+       size argument added to method new           [feature-requests:#604]
+       appendAll, putAll, fill, empty              [feature-requests:#670]
+
+     new method added to Directory class
+       removeEntry                                 [feature-requests:#607]
+
+     new methods added to Message class
+       halt                                        [feature-requests:#642]
+       hasResult                                   [feature-requests:#606]
+       sendWith, startWith (send/start changed)    [feature-requests:#643]
+       wait                                        [feature-requests:#641]
+     changes
+       allow messages triggered more than once     [feature-requests:#245]
+
+     new methods added to Method class
+       annotation, annotations                     [feature-requests:#620]
+       isAbstract, isConstant, and isAttribute     [feature-requests:#632]
+       scope                                       [feature-requests:#636]
+
+     changed existing methods of Method class
+       optional "context" argument added to newFile [feature-requests:#686]
+
+     new methods added to MutableBuffer class
+       [], []=                                     [feature-requests:#614]
+       (caseless)Contains, (caseless)ContainsWord  [feature-requests:#451]
+       (caseless)startsWith, (caseless)endsWith    [feature-requests:#651]
+       setText                                     [feature-requests:#599]
+     changed existing methods of MutableBuffer class
+       append allows multiple strings              [feature-requests:#619]
+       match/matchChar position restriction removed [feature-requests:#650]
+
+     new method added to Object class
+       isNil                                       [feature-requests:#696]
+
+     new methods added to Package class
+       annotation, annotations                     [feature-requests:#620]
+       findNamespace, namespaces                   [feature-requests:#464]
+       findProgram                                 [feature-requests:#648]
+       findPublicClass, findPublicRoutine          [feature-requests:#630]
+       local                                       [feature-requests:#708]
+       prolog                                      [feature-requests:#638]
+       resource, resources                         [feature-requests:#545]
+                                                   [feature-requests:#61]
+     changed existing methods of Package class
+       optional "context" argument added to new    [feature-requests:#633]
+       optional "namespace" argument added to addPackage [feature-requests:#464]
+
+     changed methods of Properties class
+        load (class and instance methods) and save allow .File instance [feature-requests:#598]
+
+     new methods added to Routine class
+       []                                          [feature-requests:#611]
+       annotation, annotations                     [feature-requests:#620]
+     changed existing methods of Routine class
+       optional "context" argument added to newFile [feature-requests:#686]
+
+     new methods added to String class
+       12 named character sequence class methods   [feature-requests:#639]
+       [], []=                                     [feature-requests:#614]
+       ?                                           [feature-requests:#627]
+       append                                      [feature-requests:#623]
+       (caseless)contains, (caseless)containsWord  [feature-requests:#451]
+       (caseless)startsWith, (caseless)endsWith    [feature-requests:#651]
+       modulo                                      [feature-requests:#683]
+     changed existing methods of String class
+       match/matchChar position restriction removed [feature-requests:#650]
+       dataType("Internal")                        [feature-requests:#711]
+
+     added method FtpAnnotateLog to class RxFtp    [feature-requests:#659]
+
+  Rexxutil library
+     added SysGet(Long/Short)PathName              [feature-requests:#678]
+     changed SysTextScreenSize to accept get/set   [feature-requests:#702]
+
+  Environment variables
+     new .RESOURCES StringTable                    [feature-requests:#545]
+                                                   [feature-requests:#61]
+     new .RexxInfo instance                        [feature-requests:#618]
+                                                   [feature-requests:#677]
+
+
+
+  Bugs
+  ----
+  https://sourceforge.net/p/oorexx/bugs/nnnn
+
+   1: # 1853 CMake breaks when no CMAKE_BUILD_TYPE specified
+             (entered by Rexxcoder on 2022-11-30 -> 2022-12-02)
+   2: # 1848 NUMERIC FUZZ not respected for integer comparisons
+             (entered by Erich on 2022-11-11 -> 2022-11-11)
+   3: # 1846 RAISE PROPAGATE for NOMETHOD not using correct message form
+             (entered by Rick McGuire on 2022-10-30 -> 2022-10-30)
+   4: # 1845 ooRexx CMake Build Error -- Linux ARM aarch64 and armv7l Architectures
+             (entered by Rexxcoder on 2022-10-03 -> 2022-10-05)
+   5: # 1842 linein performance issue
+             (entered by Erich on 2022-09-11 -> 25 minutes ago) ***TODO: [code]
+   6: # 1841 charin and record I/O linein/arrayin performance
+             (entered by Erich on 2022-09-11 -> 2022-09-11) ***TODO: [code]
+   7: # 1840 lineout for very long lines is broken
+             (entered by Erich on 2022-09-07 -> 2022-09-18) ***TODO: [tests]
+   8: # 1838 Crash while attempting to resolve a routine in a library package.
+             (entered by Rick McGuire on 2022-08-11 -> 2022-08-11) ***TODO: [tests]
+   9: # 1837 circular requires: some public classes are not visible
+             (entered by jfaucher on 2022-08-09 -> 25 minutes ago) ***TODO: [doc+test]
+  10: # 1835 Trace output inconsistent across OS's
+             (entered by Erich on 2022-07-25 -> 2022-07-28)
+  11: # 1834 Invalid .Error destination crashes interpreter
+             (entered by Erich on 2022-07-25 -> 2022-09-23)
+  12: # 1831 rexxhide message box should contain program name and date/time of failure
+             (entered by Garry Smithwick on 2022-07-17 -> 2022-07-24)
+  13: # 1830 Performance problems with lines()
+             (entered by Rick McGuire on 2022-07-13 -> 2022-07-14)
+  14: # 1829 TEST_REPLY_CONCURRENT test failing on OpenIndiana
+             (entered by Per Olov Jonsson on 2022-07-13 -> 2022-07-22)
+  15: # 1827 13 Sample files missing shebang
+             (entered by Per Olov Jonsson on 2022-07-05 -> 2022-07-22) ***TODO: [code+test]
+  16: # 1825 CALL with literal name should bypass internal labels
+             (entered by Matthé van der Lee on 2021-10-02 -> 2022-06-25) ***TODO: [tests]
+  17: # 1824 OLE: "System resources exhausted." if array as argument
+             (entered by Rony G. Flatscher on 2022-06-16 -> 24 minutes ago)
+  18: # 1822 Expanding multi-dimensional Arrays changes content
+             (entered by Erich on 2022-06-06 -> 2022-06-24)
+  19: # 1821 OLEVariant not honored for VT_ARRAY,VT_R8 for AutoCAD
+             (entered by Rony G. Flatscher on 2022-06-01 -> 24 minutes ago)
+  20: # 1820 OLEObject: (HRESULT=80010001 "Call was rejected by callee.")
+             (entered by Rony G. Flatscher on 2022-05-26 -> 24 minutes ago)
+  21: # 1819 Crash in OLEObject: hResult=0x80010001 [Call was rejected by callee.]
+             (entered by Rony G. Flatscher on 2022-05-15 -> 23 minutes ago)
+  22: # 1818 samples/windows/ole/adsi3.rex does not work on non-English systems
+             (entered by Rony G. Flatscher on 2022-05-07 -> 21 minutes ago)
+  23: # 1817 Memory alloc/free should always match
+             (entered by Erich on 2022-04-21 -> 2022-06-24)
+  24: # 1816 Multiple rxapi instances
+             (entered by Erich on 2022-04-16 -> 2022-06-24)
+  25: # 1814 CPack FREEBSD generator not available for FreeBSD
+             (entered by Per Olov Jonsson on 2022-03-27 -> 2022-07-22)
+  26: # 1812 ooDialog Guide Sample Exercise08 - Drag and Drop doesn't work
+             (entered by Jon Wolfers on 2022-03-24 -> 2022-04-04)
+  27: # 1810 CMake CMAKE_CXX_CREATE_SHARED_MODULE issue
+             (entered by Enrico  on 2022-03-17 -> 2022-03-17)
+  28: # 1806 Wrongly stating "Error 15.5: Hexadecimal strings must be grouped..."
+             (entered by Rony G. Flatscher on 2022-02-08 -> 2022-06-18)
+  29: # 1805 newFile method's context arg doesn't default to PROGRAMSCOPE
+             (entered by Erich on 2022-01-28 -> 2022-01-28)
+  30: # 1802 TIME bif fails when offset specified
+             (entered by Erich on 2022-01-14 -> 2022-06-24)
+  31: # 1800 lastModified one day off on New Year's Day on Linux
+             (entered by Erich on 2022-01-01 -> 2022-06-24)
+  32: # 1799 cpack and absolute installation paths
+             (entered by Enrico  on 2021-12-29 -> 2022-06-24)
+  33: # 1798 SysTextScreenRead() fails when reading more that 16000 characters
+             (entered by Rick McGuire on 2021-12-14 -> 2022-01-21)
+  34: # 1795 Invalid objects detected during garbage collection running the test suite.
+             (entered by Rick McGuire on 2021-11-28 -> 2021-11-29)
+  35: # 1794 testsuite just dies
+             (entered by Enrico  on 2021-11-28 -> 2022-07-22)
+  36: # 1791 rexxapitypes.h includes for stdint.h and inttypes.h not updated for external application builds with newer compilers
+             (entered by Mark Gaubatz on 2021-11-22 -> 2022-06-24)
+  37: # 1790 uppercase issue on NetBSD
+             (entered by Erich on 2021-11-20 -> 2021-11-22)
+  38: # 1788 .RexxInfo~executable not working for NetBSD and OpenBSD
+             (entered by Per Olov Jonsson on 2021-11-18 -> 2022-06-24)
+  39: # 1787 .socket~gethostid() method and SockGetHostId() function not working correctly on all platforms; rxsockfn.cpp may need revising
+             (entered by Per Olov Jonsson on 2021-11-13 -> 2022-07-22)
+  40: # 1786 RexxPullFromQueue() returning invalid data for a null queue entry
+             (entered by Daniel Erdos on 2021-11-05 -> 2021-11-27) ***TODO: [tests]
+  41: # 1785 ooRexx-5.0.0-12302.macOS.arm64.x86_64.dmg misbehaviour
+             (entered by Enrico  on 2021-10-31 -> 21 minutes ago)
+  42: # 1784 r12299 - homebrew quirks
+             (entered by Enrico  on 2021-10-23 -> 2022-07-22)
+  43: # 1777 rc = SockSetSockOpt(socket, SOL_SOCKET, SO_RCVTIMEO, 3000) receives -1 rc and fails to timout on Linux
+             (entered by Sam Boker on 2021-07-28 -> 2022-06-26)
+  44: # 1776 SysFileXXX.testGroup SysDrive.testGroup causing syntax errors on Windows 7 and 8
+             (entered by Per Olov Jonsson on 2021-07-25 -> 2022-06-24)
+  45: # 1774 Building and Testing on Windows 8
+             (entered by Per Olov Jonsson on 2021-07-13 -> 2021-12-30) ***TODO: [tests]
+  46: # 1772 SysFileExists(.nil) raises condition in 5.0
+             (entered by Rony G. Flatscher on 2021-07-06 -> 21 minutes ago)
+  47: # 1771 Stream's 'arrayin' does not return array object
+             (entered by Rony G. Flatscher on 2021-07-05 -> 2021-07-07)
+  48: # 1770 SysSemaphore sets invalid priority/policy
+             (entered by Erich on 2021-05-25 -> 2022-06-24)
+  49: # 1769 REXX_PATH default always set
+             (entered by Erich on 2021-05-24 -> 2022-06-24)
+  50: # 1768 ncurses.cls doesn't build on some platforms
+             (entered by Erich on 2021-05-23 -> 2021-06-02) ***TODO: [tests]
+  51: # 1767 Json: tojson applied to a not empty directory raises error "too many arguments"
+             (entered by jfaucher on 2021-05-22 -> 2021-05-23)
+  52: # 1766 rexximage cleanup: removeClassMethod forgets some classes
+             (entered by jfaucher on 2021-05-19 -> 2021-05-20)
+  53: # 1763 StreamSocket issues
+             (entered by Ruurd Idenburg on 2021-05-11 -> 2022-06-27) ***TODO: [code+doc+test]
+  54: # 1762 pushing very large data hangs RexxQueue
+             (entered by Erich on 2021-05-04 -> 2021-07-07) ***TODO: [code+test]
+  55: # 1759 Building failing on OpenIndiana Hipster 20
+             (entered by Per Olov Jonsson on 2021-04-29 -> 2022-06-24)
+  56: # 1758 rxunixsys xattr functions are not built
+             (entered by Erich on 2021-04-27 -> 2022-06-24)
+  57: # 1757 Floating-point conversions give incorrect results when not run in C locale
+             (entered by Erich on 2021-04-25 -> 2022-06-24)
+  58: # 1754 Install of RPM ooRexx-5.0.0-12217.x86_64 fails.
+             (entered by Sam Boker on 2021-03-30 -> 2021-04-03)
+  59: # 1753 oodialog sample toolTip.rex crashes
+             (entered by Erich on 2021-03-27 -> 2021-03-27)
+  60: # 1751 INTERPRET wipes out its parent's StackFrame name
+             (entered by Erich on 2021-03-19 -> 2021-03-19)
+  61: # 1750 INTERPRET .context~digits different from digits()
+             (entered by jfaucher on 2021-03-08 -> 2021-03-10)
+  62: # 1748 Typo in faux pthread_mutex_timedlock
+             (entered by Erich on 2021-02-26 -> 2021-03-02)
+  63: # 1746 REQUIRES doesn't find its file if it starts with a dot
+             (entered by Erich on 2021-02-24 -> 2021-02-24)
+  64: # 1745 SysSearchPath finds files starting with dot when it should not
+             (entered by Per Olov Jonsson on 2021-02-24 -> 2021-02-24)
+  65: # 1742 Stream RECLENGTH 1 issues
+             (entered by Erich on 2021-02-05 -> 2021-02-05) ***TODO: [tests]
+  66: # 1741 closing a file with CHAROUT( file )
+             (entered by frank on 2013-04-08 -> 2021-02-05)
+  67: # 1738 Inconsistent tracing of DO loops
+             (entered by Rick McGuire on 2021-01-30 -> 2021-01-31)
+  68: # 1734 Hang with multiple threads
+             (entered by Erich on 2020-12-19 -> 2022-06-19) ***TODO: [tests]
+  69: # 1733 spurious rexx like comments in oorexxapi.h
+             (entered by Enrico  on 2020-12-19 -> 2021-01-31)
+  70: # 1730 Error message insert off by one
+             (entered by Erich on 2020-12-06 -> 2020-12-06)
+  71: # 1728 Hang condition on Windows
+             (entered by Erich on 2020-11-20 -> 2020-12-06)
+  72: # 1727 216 warnings building ooRexx with clang 11
+             (entered by Enrico  on 2020-11-18 -> 2020-11-19)
+  73: # 1724 File attributes for Windows system files cannot be read
+             (entered by Erich on 2020-10-31 -> 2020-12-09)
+  74: # 1723 Correct case-sensitivity methods
+             (entered by Erich on 2020-10-31 -> 2021-01-31)
+  75: # 1721 R5 linein/lineout DRAMATIC slowdown???
+             (entered by Walter on 2020-09-30 -> 2022-04-08)
+  76: # 1719 Sysfiletree does not handle ";"s properly
+             (entered by Doug L on 2020-09-07 -> 2020-11-19)
+  77: # 1718 EXTERNAL option issues
+             (entered by Erich on 2020-09-07 -> 2020-09-07)
+  78: # 1717 ooDialog FileNameDialog issue
+             (entered by Erich on 2020-09-01 -> 2020-11-19)
+  79: # 1716 .method and .routine "new" method cannot process encoded compiled programs
+             (entered by Rony G. Flatscher on 2020-08-06 -> 2021-02-02)
+  80: # 1715 .method~newFile(compiledProgram) does not work
+             (entered by Rony G. Flatscher on 2020-08-06 -> 2021-02-02)
+  81: # 1712 rexx.img varies from ASLR
+             (entered by Bernhard M. Wiedemann on 2020-06-30 -> 2021-03-02)
+  82: # 1709 Error in FROMJSON method.
+             (entered by John Bodoh on 2020-06-13 -> 2020-06-21)
+  83: # 1702 File normalization issues
+             (entered by Erich on 2020-04-16 -> 2020-06-20)
+  84: # 1700 Stream query("exists") returns null string for hidden/system Windows files
+             (entered by Erich on 2020-04-13 -> 2020-06-20)
+  85: # 1699 SysSearchPath issues
+             (entered by Erich on 2020-04-04 -> 2020-04-05)
+  86: # 1698 SysSetFileDateTime issues
+             (entered by Erich on 2020-04-03 -> 2020-04-04)
+  87: # 1696 External call search issue on Unix
+             (entered by Erich on 2020-04-01 -> 2020-04-01)
+  88: # 1695 if format(99.999,,2,,2) \== '1.00E+2' then say 'ok' segfaults
+             (entered by Rene Vincent Jansen on 2020-03-28 -> 2022-07-04)
+  89: # 1694 Fix live marking
+             (entered by Erich on 2020-03-25 -> 2021-01-31)
+  90: # 1692 Interpreter (r11985) crashes with Rexx program
+             (entered by Rony G. Flatscher on 2020-03-07 -> 2020-03-28)
+  91: # 1688 SysFileSearch wrong linenumbers for lines over 1000
+             (entered by AvdP on 2020-02-04 -> 2020-02-06)
+  92: # 1684 Inconsistency between x~send('=', y) and x=y
+             (entered by Marc on 2020-01-01 -> 2020-01-25)
+  93: # 1681 SysStat('p') resturns wrong file type
+             (entered by Erich on 2019-12-21 -> 2020-01-25)
+  94: # 1680 Unix permissions sticky bit issues
+             (entered by Erich on 2019-12-21 -> 2019-12-22)
+  95: # 1679 SysFileTree date/time issues on Unix
+             (entered by Erich on 2019-12-21 -> 2019-12-22)
+  96: # 1678 File's length() returns directory sizes > 0 on Windows
+             (entered by Erich on 2019-12-21 -> 2019-12-22)
+  97: # 1674 Interpretation error: unmatched block instruction type 71
+             (entered by Erich on 2019-12-02 -> 2019-12-04)
+  98: # 1673 ::CONSTANT directive doesn't work in our internal classes
+             (entered by Erich on 2019-11-26 -> 2019-12-04)
+  99: # 1672 Tolerate Win32 file name spaces
+             (entered by Erich on 2019-11-26 -> 2019-12-04)
+ 100: # 1671 TIME BIF issue with Civil format
+             (entered by Erich on 2019-11-26 -> 2022-11-11)
+ 101: # 1668 File class parent() method issue
+             (entered by Erich on 2019-11-24 -> 2019-12-04)
+ 102: # 1667 CMake Linux build issues
+             (entered by Erich on 2019-11-18 -> 2020-04-05)
+ 103: # 1666 NUMERIC DIGITS should reset to package default
+             (entered by Erich on 2019-11-18 -> 2022-11-11)
+ 104: # 1664 OPTIONS NOVALUE becomes disabled unexpectedly
+             (entered by Erich on 2019-11-16 -> 2020-12-06)
+ 105: # 1663 CHARS/LINES BIFs inconsistent regarding NOTREADY
+             (entered by Erich on 2019-11-16 -> 2019-11-23)
+ 106: # 1660 System resources exhausted when retrieving an empty method source.
+             (entered by Josep Maria Blasco on 2019-11-12 -> 2019-12-05)
+ 107: # 1656 Lineout fails (at 2nd call) when path case not matched
+             (entered by AvdP on 2019-10-09 -> 2021-01-31) ***TODO: [code+test]
+ 108: # 1655 rexxc not handling /s flag (on macOS at least)
+             (entered by Per Olov Jonsson on 2019-10-05 -> 2020-03-08)
+ 109: # 1654 FILESPEC and RexxUtil functions don't convert File objects to String
+             (entered by Erich on 2019-10-03 -> 2021-03-14)
+ 110: # 1653 Obsolete version of makestring.rex in C:\Program Files\ooRexx\samples\ (Win64)
+             (entered by Per Olov Jonsson on 2019-10-02 -> 2019-10-04)
+ 111: # 1652 SysFileSearch doesn't return full line
+             (entered by Erich on 2019-09-28 -> 2019-09-28)
+ 112: # 1651 Stream I/O "read shared" and "read shared nobuffer" behaves differently for strings of 512 bytes or longer
+             (entered by Per Olov Jonsson on 2019-09-27 -> 2019-09-27)
+ 113: # 1649 Problem loading .dll built w/o a .def file
+             (entered by Gil Barmwater on 2019-08-24 -> 2021-01-31)
+ 114: # 1646 SysFileTree not returning correct date information on unix systems.
+             (entered by Rick McGuire on 2019-07-27 -> 2019-12-22)
+ 115: # 1645 64-bit Linux RPM package cannot be created
+             (entered by Rony G. Flatscher on 2019-07-27 -> 2020-04-06)
+ 116: # 1644 Compiled and encoded Rexx program cannot be run
+             (entered by Rony G. Flatscher on 2019-07-17 -> 2019-07-17)
+ 117: # 1643 decodedBase64 not detecting malformed strings.
+             (entered by Rick McGuire on 2019-07-15 -> 2019-07-15)
+ 118: # 1642 ooDialog problem if required twice
+             (entered by Jon Wolfers on 2019-07-09 -> 2019-07-10)
+ 119: # 1641 rxapi Windows elevated permissions problem
+             (entered by Rick McGuire on 2019-07-06 -> 2019-07-06)
+ 120: # 1639 sysfiletree incorrect when Unicode in filename (was OK before)
+             (entered by AvdP on 2019-06-24 -> 2019-07-12)
+ 121: # 1635 Bug in SysFileexists and SysDumpVariables
+             (entered by Theo Keijzer on 2019-05-28 -> 2019-12-04)
+ 122: # 1634 linein() not reading really long lines on unix platforms.
+             (entered by Per Olov Jonsson on 2019-05-15 -> 2019-07-13)
+ 123: # 1633 DateTime ISO issues
+             (entered by Erich on 2019-05-12 -> 2020-02-15)
+ 124: # 1628 Inconsistent interfacing to THE editor
+             (entered by Jochem Peelen on 2019-04-12 -> 2019-10-11)
+ 125: # 1626 rexx does not raise 3.903 when running rexxc-compiled program from a different operating system
+             (entered by Rony G. Flatscher on 2019-04-10 -> 2019-04-12)
+ 126: # 1625 NewRoutine() and LoadPackageFromData() raise error 13.1 on tokenized Rexx code
+             (entered by Rony G. Flatscher on 2019-04-06 -> 2019-07-16) ***TODO: [doc+test]
+ 127: # 1624 .Routine~newFile(rexxc-program) raises error 13.1
+             (entered by Rony G. Flatscher on 2019-04-06 -> 2019-04-17) ***TODO: [doc+test]
+ 128: # 1622 ooRexxTry.rex on Windows 10: cannot find "ooRexxTry_test9999.rex"
+             (entered by Rony G. Flatscher on 2019-03-29 -> 2019-04-17)
+ 129: # 1619 Native code argument index reported incorrectly
+             (entered by Erich on 2019-03-26 -> 2019-03-26)
+ 130: # 1618 typos in install error popup
+             (entered by AvdP on 2019-03-26 -> 2020-02-25)
+ 131: # 1617 SysMkDir() should return errno on Unix
+             (entered by Erich on 2019-03-25 -> 2019-03-25)
+ 132: # 1615 No items found when using UNC name as filespec in SysFileTree
+             (entered by AvdP on 2019-03-23 -> 2019-12-06)
+ 133: # 1613 SysFileSearch does not set return code to 0 when successful.
+             (entered by Mark Harsen on 2019-03-19 -> 2019-05-01)
+ 134: # 1612 FAILURE condition on Windows
+             (entered by Graham Norris on 2019-03-17 -> 2019-03-17)
+ 135: # 1611 RXSUBCOM LOAD does not fail when DLL is missing
+             (entered by Graham Norris on 2019-03-17 -> 2021-01-31)
+ 136: # 1610 SysFileSearch Crashes entire OOREXX process w/o Error Msgs
+             (entered by Mark Harsen on 2019-03-15 -> 2019-07-13)
+ 137: # 1609 .File attributes lastModified/lastAccessed ignore fractions of seconds
+             (entered by Erich on 2019-03-10 -> 2019-12-06)
+ 138: # 1608 SysSetFileDateTime() sets slightly-inaccurate value
+             (entered by CyberSimian on 2019-03-10 -> 2019-03-10)
+ 139: # 1606 ooRexxTry.rex with error 88.907
+             (entered by Rony G. Flatscher on 2019-03-08 -> 2019-03-11)
+ 140: # 1605 RAISE NOMETHOD does not result in a syntax error if not trapped.
+             (entered by Rick McGuire on 2019-03-05 -> 2019-03-11)
+ 141: # 1603 .Stream seek() method issues
+             (entered by Erich on 2019-02-25 -> 2021-01-31)
+ 142: # 1600 SysGetMessage broken
+             (entered by Erich on 2019-02-19 -> 2019-12-06)
+ 143: # 1598 typo in rexxref.pdf for Collection~hasIndex
+             (entered by AvdP on 2019-02-06 -> 2019-02-10)
+ 144: # 1597 ooSQLite installer reject ooRexx 5.0
+             (entered by Erich on 2019-02-01 -> 2020-02-27)
+ 145: # 1595 Array removeItem() w/o args segfaults
+             (entered by Erich on 2019-01-24 -> 2019-01-25)
+ 146: # 1593 Text for WIKI Howto Build ooRexx
+             (entered by Per Olov Jonsson on 2019-01-09 -> 2019-01-18)
+ 147: # 1592 unix RexxUtil file functions inconsistent on ~ usage
+             (entered by Rick McGuire on 2019-01-08 -> 2020-04-04)
+ 148: # 1590 Lingering Rexxbuild processes from building on macOS
+             (entered by Per Olov Jonsson on 2018-12-31 -> 2019-01-05)
+ 149: # 1589 Beep is silent
+             (entered by Jon Wolfers on 2018-12-30 -> 2019-01-18)
+ 150: # 1588 crash in sample osinfo.rex
+             (entered by AvdP on 2018-12-26 -> 2018-12-29)
+ 151: # 1587 rexx -e not tracing runtime errors
+             (entered by Rick McGuire on 2018-12-23 -> 2018-12-24)
+ 152: # 1586 Wrong error message while parsing a faulty "additional" subkeyword expression on the "raise" keyword instruction
+             (entered by Rony G. Flatscher on 2018-12-23 -> 2019-01-06)
+ 153: # 1585 ::options trace i not tracing intermediates.
+             (entered by Rick McGuire on 2018-12-20 -> 2018-12-20)
+ 154: # 1584 Routine new() method doesn't support hashbang as first line
+             (entered by Erich on 2018-12-16 -> 2018-12-16)
+ 155: # 1583 "::method a attribute abstract" fails
+             (entered by Erich on 2018-12-14 -> 2018-12-15)
+ 156: # 1582 sockgethostid() now gives 0.0.0.0
+             (entered by AvdP on 2018-12-10 -> 2018-12-10) ***TODO: [doc+test]
+ 157: # 1581 trace "all" crashes when the scope of a method is NIL
+             (entered by jfaucher on 2018-12-09 -> 2018-12-15)
+ 158: # 1579 Commands are no longer tracing the fully resolved command expression.
+             (entered by Rick McGuire on 2018-12-02 -> 2018-12-02)
+ 159: # 1578 ADDRESS WITH issues
+             (entered by Erich on 2018-11-26 -> 2018-12-03)
+ 160: # 1577 Mac (Mojave) "stdlib.h" not found
+             (entered by Rony G. Flatscher on 2018-11-22 -> 2018-11-22)
+ 161: # 1574 Strange behaviour in VAR.testGroup
+             (entered by Per Olov Jonsson on 2018-11-20 -> 2018-12-16)
+ 162: # 1573 Test framework wrong shebang in testgroup files
+             (entered by Per Olov Jonsson on 2018-11-19 -> 2018-11-22)
+ 163: # 1572 Sample files that are classes should have .cls extension
+             (entered by Per Olov Jonsson on 2018-11-17 -> 2018-11-19)
+ 164: # 1570 Socket issues
+             (entered by Erich on 2018-11-05 -> 2018-11-06) ***TODO: [tests]
+ 165: # 1567 .rex programs included in the build should not use hard coded shebangs
+             (entered by Rick McGuire on 2018-10-27 -> 2018-12-14)
+ 166: # 1565 Procedure expose not working properly with USE LOCAL
+             (entered by Rick McGuire on 2018-10-25 -> 2018-10-27)
+ 167: # 1564 Sample file complex.rex produces wrong output for certain results
+             (entered by Per Olov Jonsson on 2018-10-18 -> 2018-10-27)
+ 168: # 1563 sample file concurrency.rex not producing expected result
+             (entered by Per Olov Jonsson on 2018-10-17 -> 2018-10-27)
+ 169: # 1561 Rarely, but a hang
+             (entered by Rony G. Flatscher on 2018-10-07 -> 2018-10-24)
+ 170: # 1555 rexxc tokenization of rexxtry.rex segfaults on execution
+             (entered by Mark Gaubatz on 2018-09-19 -> 2018-10-27)
+ 171: # 1554 Hanging thread, but not always 'dead' ...
+             (entered by Rony G. Flatscher on 2018-09-18 -> 2019-06-16)
+ 172: # 1553 buglets in pipe.rex sample
+             (entered by Matthé van der Lee on 2018-09-05 -> 2018-12-03)
+ 173: # 1552 Implementaion of Address With in Unix/Linux/MacOS
+             (entered by Per Olov Jonsson on 2018-09-03 -> 2018-09-04)
+ 174: # 1551 ERROR: At SysThread(), createThread - RC = 1
+             (entered by Erich on 2018-09-01 -> 2018-10-30)
+ 175: # 1550 Array resizing is orphaning memory.
+             (entered by Rick McGuire on 2018-08-19 -> 2018-08-19)
+ 176: # 1549 .array~new is creating TWO array instances.
+             (entered by Rick McGuire on 2018-08-19 -> 2018-08-19)
+ 177: # 1547 RXQUEUE() issues
+             (entered by Erich on 2018-08-06 -> 2020-04-05)
+ 178: # 1546 SysWinSetDefaultPrinter should return zero on success
+             (entered by Erich on 2018-08-05 -> 2018-08-05)
+ 179: # 1544 SAY raises NOTREADY
+             (entered by Erich on 2018-08-02 -> 2018-08-06)
+ 180: # 1543 RXQUEUE filter doesn't honor RXQUEUE environment variable on Windows
+             (entered by Erich on 2018-08-02 -> 2018-12-15)
+ 181: # 1542 "3 == .object" bombs
+             (entered by Doug L on 2018-07-03 -> 2018-07-04)
+ 182: # 1541 InstanceMethods does not return enhanced methods
+             (entered by Rony G. Flatscher on 2018-06-30 -> 2018-06-30)
+ 183: # 1539 revision 11448 build fails
+             (entered by Enrico  on 2018-06-07 -> 2018-06-17)
+ 184: # 1538 The object copy() method does not clear guard status.
+             (entered by Rick McGuire on 2018-04-30 -> 2018-06-17)
+ 185: # 1537 DO/LOOP are not tracing the TO or BY keyword results
+             (entered by Rick McGuire on 2018-04-05 -> 2018-08-22)
+ 186: # 1536 Unable to override ::options novalue error
+             (entered by Rick McGuire on 2018-04-04 -> 2018-06-26)
+ 187: # 1535 Request for a change in CMakeLists.txt
+             (entered by Per Olov Jonsson on 2018-04-03 -> 2019-01-18)
+ 188: # 1533 5.0 ooDialog samples fail with comctl32.dll issue
+             (entered by Erich on 2018-03-29 -> 2018-08-28)
+ 189: # 1532 5.0 ooDialog sample fails due to missing DLL
+             (entered by Erich on 2018-03-29 -> 2018-10-27)
+ 190: # 1529 syswinver on Win10 gives 6.02
+             (entered by AvdP on 2018-03-13 -> 2018-03-14)
+ 191: # 1528 TimeSpan from..() class methods fail
+             (entered by Erich on 2018-03-04 -> 2018-03-04)
+ 192: # 1527 .File~isCaseSensitive gives wrong answer on MacOS
+             (entered by Rick McGuire on 2018-02-28 -> 2018-03-04)
+ 193: # 1523 Update CMakeLists.txt to enable Homebrew install
+             (entered by Alexander Adolf on 2018-02-06 -> 2018-04-02)
+ 194: # 1521 ooRexxTry.rex sample broken
+             (entered by Jon Wolfers on 2018-01-27 -> 2018-01-28)
+ 195: # 1520 lines() and chars() return incorrect result after partial read to stdin.
+             (entered by Rick McGuire on 2018-01-20 -> 2018-01-20)
+ 196: # 1518 Unknown mechanism does not trigger the unknown method, if subclassing .directory
+             (entered by Rony G. Flatscher on 2018-01-02 -> 2018-08-22)
+ 197: # 1517 Debug error in 64-bit rxwinsys.DLL "stack around the variable 'timeOut' corrupted"
+             (entered by Rony G. Flatscher on 2018-01-02 -> 2018-03-14)
+ 198: # 1513 Literal binary string doesn't enforce correct whitespace placement
+             (entered by Erich on 2017-12-15 -> 2018-02-10)
+ 199: # 1512 incorrect message (should say 'binary string')
+             (entered by Walter on 2017-12-15 -> 2017-12-15)
+ 200: # 1511 Crash in RexxClass::subclass
+             (entered by Rony G. Flatscher on 2017-12-14 -> 2017-12-14)
+ 201: # 1509 hashCode() should not accept any argument
+             (entered by Erich on 2017-12-10 -> 2017-12-10)
+ 202: # 1508 Security Manager: STREAM message bugs
+             (entered by Rony G. Flatscher on 2017-12-07 -> 2017-12-11)
+ 203: # 1505 Hang on Windows only
+             (entered by Rony G. Flatscher on 2017-11-14 -> 2018-10-28)
+ 204: # 1504 Crash
+             (entered by Rony G. Flatscher on 2017-11-07 -> 2017-12-06)
+ 205: # 1503 Hang upon returning from a nested external call on the GUI thread
+             (entered by Rony G. Flatscher on 2017-11-05 -> 2017-12-06)
+ 206: # 1500 OOREXXUNIT.CLS, missing assertion counter increases
+             (entered by Rony G. Flatscher on 2017-10-23 -> 2017-10-23)
+ 207: # 1498 OOREXXUNIT.CLS needs to reset: .traceoutput~current(.error)
+             (entered by Rony G. Flatscher on 2017-10-22 -> 2017-10-22)
+ 208: # 1497 Little bug in ooTest.frm
+             (entered by Rony G. Flatscher on 2017-10-22 -> 2017-10-22)
+ 209: # 1496 Segmentation violation in MemoryObject::unflattenProxyObjects
+             (entered by Erich on 2017-10-19 -> 2018-12-03)
+ 210: # 1493 SysFileTree returns too many files
+             (entered by AvdP on 2017-10-16 -> 2019-12-22)
+ 211: # 1492 SysCrypt() gives error "undefined symbol"
+             (entered by Erich on 2017-10-13 -> 2017-10-17)
+ 212: # 1490 Windows Command doesn't raise FAILURE
+             (entered by Erich on 2017-10-08 -> 2019-01-20)
+ 213: # 1489 USE (STRICT) ARG issues
+             (entered by Erich on 2017-10-07 -> 2017-11-28)
+ 214: # 1488 Bug in NativeActivation::setDigits and NativeActivation::setForm
+             (entered by Rony G. Flatscher on 2017-10-02 -> 2017-10-04)
+ 215: # 1486 Security Manager issues
+             (entered by Erich on 2017-09-24 -> 2017-09-24)
+ 216: # 1483 SysSleep() fails for certain time intervals
+             (entered by Erich on 2017-09-12 -> 2017-09-17)
+ 217: # 1480 EVENTS.CPP contains #include that is unneeded
+             (entered by Gil Barmwater on 2017-09-05 -> 2017-09-12)
+ 218: # 1479 SysDumpVariables crash on WIN7
+             (entered by AvdP on 2017-09-04 -> 2017-09-04)
+ 219: # 1478 Querying file time stamp, then deleting file, will prevent file from being written to
+             (entered by Erich on 2017-08-28 -> 2017-08-28)
+ 220: # 1474 format bif crashes
+             (entered by Walter on 2017-08-20 -> 2022-07-04)
+ 221: # 1473 MutableBuffer changeStr() fails under specific circumstances
+             (entered by Erich on 2017-08-10 -> 2017-08-10)
+ 222: # 1472 linein reading 510 byte records reports 511 byte length
+             (entered by Jerry Senowitz on 2017-07-29 -> 2017-09-12)
+ 223: # 1471 RXQUEUE loses lineends every 4096 chars
+             (entered by AvdP on 2017-07-25 -> 2017-07-30)
+ 224: # 1469 Code/documentation mismatch in Interpreter_instance.cpp
+             (entered by Gil Barmwater on 2017-07-06 -> 2017-07-06)
+ 225: # 1467 lineIn() / append() performance issue
+             (entered by Erich on 2017-07-05 -> 2017-07-06)
+ 226: # 1466 sortWith() crashes interpreter
+             (entered by Erich on 2017-07-03 -> 2017-07-07)
+ 227: # 1465 Repeated appends exhaust memory
+             (entered by Erich on 2017-06-30 -> 2018-08-22)
+ 228: # 1464 Further crashes with a slightly changed abc.cls
+             (entered by Rony G. Flatscher on 2017-06-26 -> 2017-10-21)
+ 229: # 1463 Using multiple Rexx interpreter instances causing crashes
+             (entered by Rony G. Flatscher on 2017-06-26 -> 2017-10-21)
+ 230: # 1462 Memory leak when creating many Rexx interpreter instances
+             (entered by Rony G. Flatscher on 2017-06-26 -> 2017-10-21)
+ 231: # 1461 Crash in "MemoryObject::markObjectsMain" et.al.
+             (entered by Rony G. Flatscher on 2017-06-26 -> 2017-10-21)
+ 232: # 1459 Test case causing crashes, giving different stack traces
+             (entered by Rony G. Flatscher on 2017-06-19 -> 2017-10-21)
+ 233: # 1458 ~listFiles gives current folder files for root folder
+             (entered by AvdP on 2017-06-13 -> 2017-09-13)
+ 234: # 1457 int64_t in RexxRoutine argument will cause an error 88.907 if supplying lowest 64-bit int value "-9223372036854775808"
+             (entered by Rony G. Flatscher on 2017-06-05 -> 2017-06-09)
+ 235: # 1454 Jenkins home directory incorrectly installed on Ubuntu target
+             (entered by Mark Gaubatz on 2017-05-18 -> 2017-06-09)
+ 236: # 1453 CreateRexxInterpreter returns "1002" instead of "1" on success
+             (entered by Rony G. Flatscher on 2017-05-18 -> 2017-05-18)
+ 237: # 1450 Performance drops suddenly (once even a crash)
+             (entered by Rony G. Flatscher on 2017-05-17 -> 2017-10-19)
+ 238: # 1449 Crash while executing createStackFrame()
+             (entered by Rony G. Flatscher on 2017-05-16 -> 2017-10-22)
+ 239: # 1447 Clean builds without compiler warnings
+             (entered by Erich on 2017-05-09 -> 2021-03-27) ***TODO: [code]
+ 240: # 1445 AttachThread()/DetachThread() memory leak
+             (entered by Rony G. Flatscher on 2017-04-30 -> 2017-05-18)
+ 241: # 1443 "USE LOCAL": wrong error message
+             (entered by Rony G. Flatscher on 2017-04-26 -> 2017-04-26)
+ 242: # 1442 Dynamically created routine no longer inherits parent context
+             (entered by Rony G. Flatscher on 2017-04-25 -> 2017-04-25)
+ 243: # 1440 address 'ksh' will execute any following code twice
+             (entered by Erich on 2017-04-19 -> 2017-10-16)
+ 244: # 1438 Fix build on OpenBSD
+             (entered by J. Johnson on 2017-04-14 -> 21 minutes ago)
+ 245: # 1437 oorexx at Revision 11226 does not build on Apple Sierra
+             (entered by Enrico  on 2017-04-13 -> 2017-04-13)
+ 246: # 1434 ::routine external specification doesn't ignore case
+             (entered by Erich on 2017-03-28 -> 2017-03-31)
+ 247: # 1433 Array~append Performance
+             (entered by Erich on 2017-03-20 -> 2017-03-31)
+ 248: # 1431 CALL ON ANY triggers for NOVALUE condition
+             (entered by Erich on 2017-02-22 -> 2017-03-11)
+ 249: # 1430 CALL ON ANY issues
+             (entered by Erich on 2017-02-21 -> 2017-05-23)
+ 250: # 1428 CONDITION('A') returns copy of offending object instead of object itself
+             (entered by Erich on 2017-02-17 -> 2017-02-18)
+ 251: # 1426 Sending say/lineout without argument to .stdout or .stderr does not yield a new line
+             (entered by Rony G. Flatscher on 2017-02-10 -> 2017-02-12)
+ 252: # 1424 X2D() returns incorrect result
+             (entered by Erich on 2017-01-31 -> 2017-02-12)
+ 253: # 1421 Symbolic links to shared objects on Linux should carry the ooRexx 4.2.0 main versions
+             (entered by Rony G. Flatscher on 2017-01-26 -> 2019-01-19)
+ 254: # 1420 Interpreter ending without message
+             (entered by Erich on 2017-01-14 -> 2018-12-14) ***TODO: [tests]
+ 255: # 1418 AlarmNotification's triggered() method gives surprising error message
+             (entered by Erich on 2017-01-13 -> 2017-01-14)
+ 256: # 1417 Linux system commands export/unset should be accepted in lowercase only
+             (entered by Erich on 2017-01-12 -> 2017-01-12)
+ 257: # 1416 Incorrect error messages
+             (entered by Erich on 2017-01-11 -> 2017-01-11)
+ 258: # 1415 Incorrect FORMAT() BIF/method output
+             (entered by Erich on 2017-01-11 -> 2017-01-11)
+ 259: # 1411 ncurses.cls should be removed from Windows 5.0 installer
+             (entered by Erich on 2016-10-24 -> 2018-03-27)
+ 260: # 1410 ::requires fails to resolve uppercase .REX extension
+             (entered by Erich on 2016-10-24 -> 2017-01-11)
+ 261: # 1408 QUALIFY() issues
+             (entered by Erich on 2016-10-09 -> 2016-10-10)
+ 262: # 1406 Adding a String and a TimeSpan (or DateTime) instance as indexes into a Table fails
+             (entered by Erich on 2016-09-26 -> 2019-01-18)
+ 263: # 1404 Some method args don't honor REQUEST("STRING")
+             (entered by Erich on 2016-09-24 -> 2019-01-19)
+ 264: # 1402 ooREXX stops after error.
+             (entered by John Bodoh on 2016-09-16 -> 2016-09-21)
+ 265: # 1401 rxregexp.cls issues
+             (entered by Erich on 2016-09-05 -> 2016-09-09)
+ 266: # 1399 Correct errror messages for SELECT LABEL/CASE and USE ARG/LOCAL
+             (entered by Erich on 2016-09-01 -> 2016-09-01)
+ 267: # 1398 Segmentation Fault - SysDumpVariables
+             (entered by Andy McMenemy on 2016-08-24 -> 2017-12-04)
+ 268: # 1395 "hostemu" subcommand "EXECIO" bugs
+             (entered by Erich on 2016-08-19 -> 2016-08-23)
+ 269: # 1394 SOURCELINE(1) reports different content, if hashbang exists
+             (entered by Erich on 2016-08-19 -> 2018-12-16)
+ 270: # 1393 Windows command "1:" will crash Rexx
+             (entered by Erich on 2016-08-19 -> 2016-08-19)
+ 271: # 1392 Incorrect response to request(string) from array instances
+             (entered by Gil Barmwater on 2016-08-18 -> 2017-01-14)
+ 272: # 1391 SysGetErrortext returns trailing '0d 0a'x chars on Windows
+             (entered by Erich on 2016-08-16 -> 2016-08-16)
+ 273: # 1389 PARSE SOURCE returns operating system name in mixed case
+             (entered by Erich on 2016-08-13 -> 2019-04-27)
+ 274: # 1388 Macrospace issues
+             (entered by Erich on 2016-07-14 -> 2018-12-15)
+ 275: # 1387 Regression tests fail due to different SysMkDir() implementations
+             (entered by Erich on 2016-07-06 -> 2016-08-05)
+ 276: # 1386 SysGetservbyname(...) gives wrong service PORT on SuSe x86_64
+             (entered by PaulD on 2016-07-05 -> 2016-07-06)
+ 277: # 1384 .Ticker triggers too often on Linux
+             (entered by Erich on 2016-06-28 -> 2016-06-28)
+ 278: # 1383 32-bit tests: datatype() returns NUM for exponents > 10 digits
+             (entered by Erich on 2016-06-20 -> 2016-06-29)
+ 279: # 1382 32-bit tests: BIF's and methods see 1.000000009 as a whole number
+             (entered by Erich on 2016-06-20 -> 2016-06-28)
+ 280: # 1380 4.2.0 build failure on Fedora 24 / GCC 6.1.1
+             (entered by Maarten Hoes on 2016-06-11 -> 2017-08-12)
+ 281: # 1379 Calling method of RexxQueue subclass instance crashes Rexx
+             (entered by Erich on 2016-06-08 -> 2019-01-18)
+ 282: # 1378 SysGetservbyname(...) gives Segmentation fault
+             (entered by PaulD on 2016-05-10 -> 2016-07-06)
+ 283: # 1377 Class uninit() method doesn't run in 5.0
+             (entered by Erich on 2016-05-10 -> 2016-05-10)
+ 284: # 1376 TIME(, "Civil") doesn't check for valid hours
+             (entered by Erich on 2016-05-10 -> 2016-05-10)
+ 285: # 1375 Fixes for compiling 4.2.0. with clang
+             (entered by Jörg Plate on 2016-05-08 -> 2016-08-07) ***TODO: [tests]
+ 286: # 1374 Array delete() method with out-of-bounds index gives exception
+             (entered by Erich on 2016-05-01 -> 2016-05-01)
+ 287: # 1373 Source method strips leading comments/whitespace
+             (entered by Gil Barmwater on 2016-04-25 -> 2018-12-15)
+ 288: # 1372 Creating a Package with an inherited method as parent scope makes interpreter fail
+             (entered by Erich on 2016-04-22 -> 2016-04-22)
+ 289: # 1371 File timestamps return inconsistent results
+             (entered by Erich on 2016-04-21 -> 2016-06-29)
+ 290: # 1369 API RexxRoutine uint64_t issue
+             (entered by Erich on 2016-03-30 -> 2016-04-23)
+ 291: # 1367 ooRexx on MacOSX 10.11 not operable anymore
+             (entered by Rony G. Flatscher on 2016-03-15 -> 2016-09-09)
+ 292: # 1365 Method compareTo not called for '=' operator
+             (entered by Erich on 2016-02-22 -> 2016-08-07)
+ 293: # 1364 Invalid Drive Letter for DIRECTORY() BIF gives Exception (Windows only)
+             (entered by Erich on 2016-02-21 -> 2016-02-21)
+ 294: # 1362 CALL ON ANY raises HALT too late and gives exception
+             (entered by Erich on 2015-11-29 -> 2017-06-01)
+ 295: # 1361 SIGNAL ON ANY doesn't trigger on NOVALUE
+             (entered by Erich on 2015-11-21 -> 2017-03-14)
+ 296: # 1360 Directives in INTERPRET ignored with no error
+             (entered by Erich on 2015-11-16 -> 2018-12-16)
+ 297: # 1358 Strict comparison gives unexpected result
+             (entered by Erich on 2015-11-04 -> 2015-11-04)
+ 298: # 1356 Segmentation faults and concurrency issues with Ticker
+             (entered by Erich on 2015-10-27 -> 2018-10-27)
+ 299: # 1355 MutableBuffer setText() crashes
+             (entered by Erich on 2015-10-25 -> 2016-04-28)
+ 300: # 1354 Queue lists excess instance methods
+             (entered by Erich on 2015-10-24 -> 2017-03-11)
+ 301: # 1353 Supplier only lists five instance mesthods, three more are missing
+             (entered by Erich on 2015-10-24 -> 2017-03-08)
+ 302: # 1352 Array hasIndex() raises error for index > 99,999,999
+             (entered by Erich on 2015-10-23 -> 2016-08-07)
+ 303: # 1351 Problem with RxFtp ftpTraceLog method
+             (entered by VicTor Smirnoff on 2015-09-06 -> 2015-09-06)
+ 304: # 1349 Crashes when running multiple interpreter instances
+             (entered by Rony G. Flatscher on 2015-08-13 -> 2017-12-06)
+ 305: # 1348 typo error (NATIVE_INTYPES) in REXXAPITYPES.H
+             (entered by AvdP on 2015-08-06 -> 2015-08-06)
+ 306: # 1344 "USE ARG" and ARG()-BIF sometimes not working correctly if multi Rexx intepreter instances run in the same thread
+             (entered by Rony G. Flatscher on 2015-07-26 -> 2017-12-06)
+ 307: # 1341 Some classes have a lot more instance methods than expected
+             (entered by Erich on 2015-06-27 -> 2017-05-18)
+ 308: # 1340 .Package "new" method third parameter "scope" not wokring correctly
+             (entered by Erich on 2015-06-25 -> 2016-04-22)
+ 309: # 1339 Multiplication gives wrong result
+             (entered by Erich on 2015-06-22 -> 2015-06-22)
+ 310: # 1337 Check number of method parameters
+             (entered by Erich on 2015-06-12 -> 2016-08-07)
+ 311: # 1336 Segmentation fault with invalid method parameters
+             (entered by Erich on 2015-06-12 -> 2015-11-02)
+ 312: # 1335 Cannot create "Ticker" instance
+             (entered by Erich on 2015-06-08 -> 2015-10-26)
+ 313: # 1334 Wrong "datatype" error message 93.915 insert
+             (entered by Erich on 2015-06-08 -> 2015-06-08)
+ 314: # 1333 unix/SystemCommands.cpp:198: possible bad array index ?
+             (entered by dcb on 2015-05-16 -> 2017-01-12)
+ 315: # 1331 Missing entries in condition('o') when doing a "raise error|failure|user..."
+             (entered by Rony G. Flatscher on 2015-05-04 -> 2019-01-20)
+ 316: # 1330 call rxqueue "d" crashes interpreter
+             (entered by Erich on 2015-04-28 -> 2016-08-07)
+ 317: # 1329 rexxmsg.xml still mentions requirement to use genmsgs.bat
+             (entered by Ruurd Idenburg on 2015-04-23 -> 2015-11-21)
+ 318: # 1328 CTRL+C suppressed when CMD.EXE started via an ooREXX program
+             (entered by Bertram_Moshier on 2015-04-12 -> 2017-05-29)
+ 319: # 1323 rxsock always setting h_errno to 1541
+             (entered by Rick McGuire on 2015-02-16 -> 21 minutes ago)
+ 320: # 1322 Sysgetfiledatetime() argument 2 no longer optional
+             (entered by Swifty on 2015-02-04 -> 2015-02-04)
+ 321: # 1318 SysFileTree wrong for files > 4096 MB
+             (entered by AvdP on 2014-12-02 -> 2019-12-22)
+ 322: # 1313 Time('offset') on ooRexx 4.1.3 Linux Not Handing Daylight Savings
+             (entered by Norbert on 2014-11-02 -> 2017-11-26)
+ 323: # 1312 .file~new('','/') fails
+             (entered by Erich on 2014-10-31 -> 2014-10-31)
+ 324: # 1311 Method and BIF charin() with large length parameter meke ooRexx crash
+             (entered by Erich on 2014-10-31 -> 2015-03-15)
+ 325: # 1308 segfault on makeString with no result object
+             (entered by Geoff Stevens on 2014-10-18 -> 2014-10-18)
+ 326: # 1306 UNINIT not getting called for copied objects.
+             (entered by Rick McGuire on 2014-10-15 -> 2014-10-15) ***TODO: [tests]
+ 327: # 1300 Object RUN, SETMETHOD, and UNSETMETHOD no longer real private.
+             (entered by Rick McGuire on 2014-10-12 -> 2017-03-31)
+ 328: # 1296 5.0.0 windows 32 installer from build machine includes bits of svn
+             (entered by Jon Wolfers on 2014-10-08 -> 2014-10-08)
+ 329: # 1288 parsing select with do end
+             (entered by Jon Wolfers on 2014-10-05 -> 2014-10-05)
+ 330: # 1287 Oodialog and oorexx 5.0
+             (entered by hex on 2014-10-05 -> 2014-10-06)
+ 331: # 1286 Class copy() methods can cause bad class state.
+             (entered by Rick McGuire on 2014-10-05 -> 2017-03-14)
+ 332: # 1283 List object will reassign indexes as the list grows.
+             (entered by Rick McGuire on 2014-09-25 -> 2014-09-25)
+ 333: # 1280 sysdumpvariables does not show the value of a stem (g.)
+             (entered by Walter Pachl on 2014-09-10 -> 2014-10-09)
+ 334: # 1279 Creating/Sorting Array Loop Crashes ooRexx Interpreter
+             (entered by Erich on 2014-09-06 -> 2014-09-22)
+ 335: # 1277 File-Read Loop Breaks Interpreter
+             (entered by Erich on 2014-08-21 -> 2015-03-15)
+ 336: # 1276 arrayIn causes memory leak
+             (entered by Yancy Fox on 2014-08-12 -> 2015-03-15)
+ 337: # 1271 SYSSTEMCOPY incorrect result on v4.2.0 (was OK on v4.1.2)
+             (entered by AvdP on 2014-07-04 -> 2014-10-07)
+ 338: # 1266 qualify() BIF Crashes Interpreter
+             (entered by Erich on 2014-06-11 -> 2022-07-24)
+ 339: # 1265 round() Method Returns Incorrect Result
+             (entered by Erich on 2014-06-11 -> 2015-03-15)
+ 340: # 1261 Array LAST() returns wrong info after DELETE()
+             (entered by Robert Schreiber on 2014-04-23 -> 2015-03-15)
+ 341: # 1259 Set/Bag hasIndex/hasItem at/index removeItem/remove allItems/allIndexes Performance
+             (entered by Erich on 2014-04-20 -> 2017-07-27)
+ 342: # 1257 lastItem Method Fails for Array
+             (entered by Erich on 2014-04-13 -> 2015-03-15)
+ 343: # 1256 rxCalcTan(90) raises Syntax
+             (entered by Walter Pachl on 2014-04-13 -> 2015-03-15)
+ 344: # 1252 oorexxtry.rex may crash on MACOSX
+             (entered by Rony G. Flatscher on 2014-03-31 -> 2015-03-15)
+ 345: # 1250 Compiling 4.2.0 on MacOSX
+             (entered by Rony G. Flatscher on 2014-03-17 -> 2015-03-15)
+ 346: # 1179 MAX() with 256 * k Arguments Gives Error; MAX() with >=257 Arguments Gives Wrong Result
+             (entered by Erich on 2013-05-28 -> 2015-06-01)
+ 347: # 1168 32-bit build of ooRexx v4.1.2 fails on System z/Linux
+             (entered by PaulD on 2013-04-04 -> 2021-01-31)
+ 348: # 1156 Problem tracing delimited strings
+             (entered by J. L. Turriff on 2013-01-21 -> 2017-10-21)
+ 349: # 1080 RXAPI memory not released at end
+             (entered by John Timmons on 2012-06-16 -> 2015-03-15)
+ 350: # 1045 bug in rxregexp when using alternatives
+             (entered by Anonymous on 2012-02-09 -> 2017-12-04)
+ 351: #  957 format(1.2345678E-12,,2) = 0.00000000000123
+             (entered by  on 2010-11-09 -> 2017-10-21)
+ 352: #  915 SysFileSearch not returning hit
+             (entered by robn on 2010-06-16 -> 2020-09-07)
+ 353: #  907 Compiled code tracebacks need to give method name indication
+             (entered by Rick McGuire on 2010-04-25 -> 2015-03-15)
+ 354: #  864 SysFileTree under win32 matches on long & short file names
+             (entered by jfaucher on 2009-12-13 -> 2019-12-22)
+ 355: #  834 OS X value() fails to delete variable from ENVIRONMENT
+             (entered by Mark Miesfeld on 2009-10-01 -> 2014-09-22)
+ 356: #  800 SysStemSort very,very slow ....
+             (entered by Zacharias Bumsty on 2009-08-28 -> 2012-08-14)
+ 357: #  582 query('timestamp') is 1 hr off on a day boundary
+             (entered by ykorenfeld on 2009-03-10 -> 2017-09-12)
+ 358: #  210 orxscrpt.dll loses state between ParseScriptText calls
+             (entered by Philippe Majerus on 2006-11-28 -> 2012-08-14)
+ 359: #  189 Destructor in MSIE running at the wrong time
+             (entered by Rony G. Flatscher on 2006-09-29 -> 2012-08-14)
+ 360: #  179 No GUID put into Windows registry for WSH
+             (entered by Terry on 2006-08-29 -> 2014-08-24)
+ 361: #   73 ooRexx 3.0.1 .wsc Samples Don't Work
+             (entered by Anonymous on 2005-05-16 -> 2012-08-14)
+
+
+  Requests For Enhancement
+  ------------------------
+  https://sourceforge.net/p/oorexx/feature-requests/nnn
+
+   1: #  808 Add an API to obtain the interpreter instance context from the other API context types.
+             (entered by Rick McGuire on 2022-08-14 -> 2022-09-03)
+   2: #  807 Add CMake target 'portable' to create a portable version of ooRexx
+             (entered by Rony G. Flatscher on 2022-08-02 -> 2022-08-02)
+   3: #  803 extensions to complex.cls
+             (entered by Walter on 2022-06-02 -> 2022-06-03) ***TODO: [tests]
+   4: #  802 Allow programmer to supply message override
+             (entered by Rony G. Flatscher on 2022-05-15 -> 33 minutes ago) ***TODO: [doc]
+   5: #  801 OLEObject: make attributes !PROGID and !CLSID available
+             (entered by Rony G. Flatscher on 2022-05-15 -> 31 minutes ago)
+   6: #  800 OLEObject: make hasOLEmethod availble
+             (entered by Rony G. Flatscher on 2022-05-15 -> 31 minutes ago)
+   7: #  799 OLEObject: add ErrorMessage() to OLE HRESULT
+             (entered by Rony G. Flatscher on 2022-05-15 -> 30 minutes ago)
+   8: #  797 Add 'E' option to CONDITION() BIF
+             (entered by Rick McGuire on 2022-01-24 -> 2022-09-07)
+   9: #  796 RexxInfo: allow to learn whether current interpreter is a debug or a release version
+             (entered by Rony G. Flatscher on 2021-12-06 -> 30 minutes ago)
+  10: #  793 Add Singleton Metaclass
+             (entered by Rony G. Flatscher on 2021-04-25 -> 40 minutes ago)
+  11: #  791 New Trace Control Function
+             (entered by taf on 2021-03-21 -> 2021-03-23)
+  12: #  790 Add methods to RexxInfo for the current executable and libraries
+             (entered by Erich on 2021-03-14 -> 2021-07-04)
+  13: #  789 Add makeString method for File, DateTime, and TimeSpan
+             (entered by Erich on 2021-03-14 -> 2021-03-14)
+  14: #  787 Relax allowed drive specifications for Rexxutil functions
+             (entered by Erich on 2020-12-06 -> 2020-12-06)
+  15: #  784 Allow comma form of conditional on GUARD WHEN
+             (entered by Rick McGuire on 2020-09-02 -> 2020-09-03)
+  16: #  777 Problems with ANSI Escape Sequences
+             (entered by Gil Barmwater on 2020-04-25 -> 2021-02-02)
+  17: #  773 Split 'rexxpg' into two books ...
+             (entered by Rony G. Flatscher on 2020-03-03 -> 38 minutes ago)
+  18: #  771 AutoErrorMode / SetErrorMode issue
+             (entered by Erich on 2019-12-23 -> 2020-02-16)
+  19: #  768 Add extension() method to File class
+             (entered by Erich on 2019-10-03 -> 2020-12-06)
+  20: #  764 Add a "request" type method to the .Validate class
+             (entered by Rick McGuire on 2019-08-14 -> 2019-11-23)
+  21: #  763 Add .DateTime support for ISO ordinal date format
+             (entered by Rick McGuire on 2019-07-31 -> 2021-02-05)
+  22: #  761 Allow 4 digit years for European, Ordered and USA date formats
+             (entered by Jon Wolfers on 2019-05-14 -> 2020-11-01)
+  23: #  760 Add ISO week number support to the .DateTime class
+             (entered by Rick McGuire on 2019-05-11 -> 2021-02-05)
+  24: #  758 Add a temporaryPath method to the File class
+             (entered by Erich on 2019-05-01 -> 2019-12-06)
+  25: #  756 Improve X2C performance
+             (entered by Erich on 2019-04-22 -> 2019-04-26)
+  26: #  755 Add a native API from of SendMessage that allows for changing the search order
+             (entered by Rony G. Flatscher on 2019-04-13 -> 2019-04-17)
+  27: #  754 'rexxc' binary (compiled/tokenized) data: please encode as plain text (7-Bit-ASCII) to allow it to be read as a string (e.g. from Java java.io.Reader)
+             (entered by Rony G. Flatscher on 2019-04-07 -> 2020-03-08) ***TODO: [tests]
+  28: #  752 Simplify security manager sample
+             (entered by Rick McGuire on 2019-04-05 -> 2019-04-07)
+  29: #  749 Pass the condition object as an argument with CALL ON
+             (entered by Rick McGuire on 2019-03-08 -> 2019-10-14)
+  30: #  745 SysTempFilename consolidation
+             (entered by Erich on 2019-03-03 -> 2020-04-01)
+  31: #  744 Allow optionally collection objects in lieu of stems in SysUtility functions like SysFileTree()
+             (entered by Rony G. Flatscher on 2019-02-22 -> 2020-12-06)
+  32: #  743 Allow COUNTER modifier in DO...OVER loops
+             (entered by Rony G. Flatscher on 2019-02-22 -> 2019-05-08)
+  33: #  742 Add a message formatting function
+             (entered by Rick McGuire on 2019-02-20 -> 2020-12-06)
+  34: #  740 Add semaphore classes
+             (entered by Rick McGuire on 2019-02-17 -> 2020-03-24)
+  35: #  739 SysFileSearch should have an explicit "Insensitive" option
+             (entered by Rick McGuire on 2019-02-09 -> 2019-04-07)
+  36: #  738 Allow .File class to clear readonly state
+             (entered by Rick McGuire on 2019-02-09 -> 2019-02-17)
+  37: #  737 Add a searchPath method to the .File class
+             (entered by Rick McGuire on 2019-02-08 -> 2019-11-24)
+  38: #  735 Add Variable References
+             (entered by Erich on 2019-02-02 -> 2019-02-23)
+  39: #  734 Add exception apis with throw type semantics.
+             (entered by Rick McGuire on 2019-01-13 -> 2019-02-24)
+  40: #  733 Add lastAccess and creationDate methods to the .File class.
+             (entered by Rick McGuire on 2018-12-31 -> 2019-01-17)
+  41: #  732 Implement a real beep() function for *ix.
+             (entered by Rick McGuire on 2018-12-30 -> 2021-02-02)
+  42: #  731 Add an rxapi service not available return code to the classic APIs.
+             (entered by Rick McGuire on 2018-12-22 -> 2018-12-22)
+  43: #  730 Allow ::CONSTANT specified as expression
+             (entered by Erich on 2018-12-10 -> 2019-01-18)
+  44: #  729 Changes to SysWinVer() and SysVersion()
+             (entered by Erich on 2018-12-10 -> 2020-03-08)
+  45: #  728 Eliminate need for a .def file to create an extension library.
+             (entered by Rick McGuire on 2018-12-08 -> 2018-12-15)
+  46: #  727 Add more specific "Method not found" error messages.
+             (entered by Rick McGuire on 2018-12-08 -> 2019-01-18)
+  47: #  726 Enhance delStr method compatibility
+             (entered by Erich on 2018-12-03 -> 2018-12-06)
+  48: #  725 Add shebang to compiled code
+             (entered by Erich on 2018-12-03 -> 2018-12-06)
+  49: #  724 Remove need for admin privileges for rxapi
+             (entered by Rick McGuire on 2018-12-02 -> 2018-12-03)
+  50: #  722 use .cls in the search order for ::requires loads
+             (entered by Rick McGuire on 2018-11-18 -> 2020-04-03)
+  51: #  721 Integrate latest ooDialog code into 5.0
+             (entered by Erich on 2018-10-27 -> 2021-02-02)
+  52: #  719 ADDRESS: Add the Synonyms SYSTEM and ENVIRONMENT for ""
+             (entered by Rony G. Flatscher on 2018-09-04 -> 2019-04-23)
+  53: #  716 Add a package scope for methods
+             (entered by Rick McGuire on 2018-04-25 -> 2018-12-14)
+  54: #  714 Add an API to allow command handlers to be added to an interpreter instance.
+             (entered by Rick McGuire on 2018-04-05 -> 2018-12-28)
+  55: #  713 Add a subkeyword trace line.
+             (entered by Rick McGuire on 2018-04-02 -> 2018-08-11)
+  56: #  712 Add additional information to the RexxHide popup.
+             (entered by Rick McGuire on 2018-03-09 -> 2018-03-15)
+  57: #  711 add a DATATYPE for internal whole number
+             (entered by Erich on 2018-03-04 -> 2018-03-15)
+  58: #  708 Allow object instances to be attached to package instances.
+             (entered by Rick McGuire on 2018-02-22 -> 2018-02-24)
+  59: #  707 Document the ArgUtil class
+             (entered by Rick McGuire on 2018-02-21 -> 2018-03-04)
+  60: #  705 SysFileTree() on Unix derrivates to short path length
+             (entered by Per Olov Jonsson on 2018-02-09 -> 2018-02-09)
+  61: #  703 Default Unix ADDRESS() environment should be 'sh'
+             (entered by Erich on 2017-11-26 -> 2017-11-26)
+  62: #  702 Extend the functionality of SysTextScreenSize function
+             (entered by LesK on 2017-11-17 -> 2017-11-21)
+  63: #  697 Remove .nil/.true/.false dependency on .environment
+             (entered by Erich on 2017-10-17 -> 2018-02-11)
+  64: #  696 isNil() method
+             (entered by Erich on 2017-10-17 -> 2017-10-29)
+  65: #  694 Global option to raise SYNTAX for any FAILURE condition
+             (entered by Erich on 2017-10-08 -> 2020-11-24)
+  66: #  693 Improve changeStr() performace
+             (entered by Erich on 2017-08-09 -> 2019-01-18)
+  67: #  691 Add native APIs for StringTable (equivalents to Directory)
+             (entered by Rony G. Flatscher on 2017-06-05 -> 2018-12-15)
+  68: #  689 Add SVN revision number to rexx -v
+             (entered by Erich on 2017-05-02 -> 2018-12-23)
+  69: #  688 Calling native library code is slow
+             (entered by Erich on 2017-03-28 -> 2018-03-20)
+  70: #  686 .Method/.Routine class method "newFile" do not allow to supply a context object
+             (entered by Rony G. Flatscher on 2017-01-27 -> 2017-02-17)
+  71: #  684 RexxInteger methods don't adhere to NUMERIC DIGITS setting
+             (entered by Erich on 2017-01-31 -> 2017-01-31)
+  72: #  683 modulo operator
+             (entered by Erich on 2017-01-14 -> 2017-12-14)
+  73: #  682 Provide a mechanism for resetting the current condition
+             (entered by Rick McGuire on 2017-01-07 -> 2017-02-18)
+  74: #  678 Stream Class add ~qualifylong method which will return the GetLongPathName
+             (entered by mdlueck on 2016-10-07 -> 2016-10-09)
+  75: #  677 Add maximum/minimum implementation values to .RexxInfo
+             (entered by Erich on 2016-09-28 -> 2016-10-12)
+  76: #  676 Extend ::OPTIONS .. ERROR to other conditions
+             (entered by Erich on 2016-09-28 -> 2020-11-25)
+  77: #  674 (caseless)changeStr should allow 0 as 'count' argument
+             (entered by Erich on 2016-09-01 -> 2016-09-02)
+  78: #  673 suggest to remove undocumented math functions from Windows rexxutil
+             (entered by Erich on 2016-04-24 -> 2016-04-25)
+  79: #  670 appendAll(), putAll(), fill(), empty() to return target collection as result
+             (entered by Erich on 2015-11-01 -> 2016-07-08)
+  80: #  669 Add fractional seconds support for Alarm and Ticker
+             (entered by Erich on 2015-10-26 -> 2016-04-28)
+  81: #  659 RxFtp allow write to log
+             (entered by Jon Wolfers on 2014-12-11 -> 2015-06-13)
+  82: #  654 Add an instruction that is the inverse of EXPOSE
+             (entered by Rick McGuire on 2014-10-29 -> 2015-05-22)
+  83: #  653 Add a Ticker object.
+             (entered by Rick McGuire on 2014-10-28 -> 2018-09-16)
+  84: #  652 Alarm Object - has it been successfully cancelled?
+             (entered by Jon Wolfers on 2014-10-27 -> 2016-07-07)
+  85: #  651 Add startsWith and endsWith methods to String class.
+             (entered by Rick McGuire on 2014-10-26 -> 2015-10-18)
+  86: #  650 Remove position restriction on match() and matchChar()
+             (entered by Rick McGuire on 2014-10-25 -> 2015-10-23)
+  87: #  649 Add "delegator" methods.
+             (entered by Rick McGuire on 2014-10-23 -> 2015-05-22)
+  88: #  648 Add a "findPackage" method to the package class.
+             (entered by Rick McGuire on 2014-10-21 -> 2016-04-29)
+  89: #  647 Add a defineMethods method to the Class class.
+             (entered by Rick McGuire on 2014-10-16 -> 2016-07-07)
+  90: #  646 Add a method to the alarm object to query the set alarm time.
+             (entered by Rick McGuire on 2014-10-15 -> 2015-06-13)
+  91: #  645 Allow an object to be attached to an alarm event.
+             (entered by Rick McGuire on 2014-10-15 -> 2015-06-13)
+  92: #  644 Allow direct triggering of alarm events.
+             (entered by Rick McGuire on 2014-10-15 -> 2015-10-18)
+  93: #  643 Allow arguments to be specified on a start/send operation
+             (entered by Rick McGuire on 2014-10-14 -> 2015-10-18)
+  94: #  642 Allow a message object to raise a HALT condition in a running message.
+             (entered by Rick McGuire on 2014-10-14 -> 2015-10-18)
+  95: #  641 Add a wait() method to the Message class
+             (entered by Rick McGuire on 2014-10-14 -> 2015-10-18)
+  96: #  640 Improve .Message notification mechanism
+             (entered by Rick McGuire on 2014-10-14 -> 2015-10-18)
+  97: #  639 xrange() to support more than one range
+             (entered by Erich on 2014-10-13 -> 2017-04-01)
+  98: #  638 Allow access to the "main" part of a package object.
+             (entered by Rick McGuire on 2014-10-13 -> 2015-06-25)
+  99: #  636 Add a scope method to the Method class.
+             (entered by Rick McGuire on 2014-10-10 -> 2015-10-18)
+ 100: #  634 Add a per-object storage management API.
+             (entered by Rick McGuire on 2014-10-08 -> 2019-01-26)
+ 101: #  633 Allow a parent context on a Package new method.
+             (entered by Rick McGuire on 2014-10-05 -> 2016-04-22)
+ 102: #  632 Add isAbstract, isConstant, and isAttribute to the method class.
+             (entered by Rick McGuire on 2014-10-05 -> 2015-10-18)
+ 103: #  631 Allow real abstract classes.
+             (entered by Rick McGuire on 2014-10-04 -> 2015-06-27)
+ 104: #  630 Package should have findPublicClass and findPublicRoutine
+             (entered by Rick McGuire on 2014-10-04 -> 2015-10-18)
+ 105: #  629 Add isMetaclass method to .Class
+             (entered by Rick McGuire on 2014-10-04 -> 2016-07-07)
+ 106: #  627 iif()-type method for .string
+             (entered by Erich on 2014-09-30 -> 2015-11-02)
+ 107: #  625 Add json class to ooRexx Distribution
+             (entered by Erich on 2014-09-29 -> 2016-08-09)
+ 108: #  623 Add "append" method to .string
+             (entered by Erich on 2014-09-29 -> 2016-07-08)
+ 109: #  622 Add a new parse source call type for a ::requires load process.
+             (entered by Rick McGuire on 2014-09-29 -> 2015-05-23)
+ 110: #  621 Add option to not run package prolog when loaded.
+             (entered by Rick McGuire on 2014-09-28 -> 2015-05-23)
+ 111: #  620 Have a package information directive.
+             (entered by Rick McGuire on 2014-09-28 -> 2015-05-23)
+ 112: #  619 Allow multiple strings on MutableBuffer append()
+             (entered by Rick McGuire on 2014-09-27 -> 2015-05-30)
+ 113: #  618 Add a class that contains methods for retrieving interpreter information.
+             (entered by Rick McGuire on 2014-09-27 -> 2015-06-12)
+ 114: #  616 Add an OF method to Map collections
+             (entered by Rick McGuire on 2014-09-25 -> 2015-07-04)
+ 115: #  615 Add a lighter weight version of Directory.
+             (entered by Rick McGuire on 2014-09-25 -> 2015-05-23)
+ 116: #  614 add a [] method to String and MutableBuffer classes
+             (entered by Rick McGuire on 2014-09-18 -> 2015-10-18)
+ 117: #  613 Syntactic sugar for array creation
+             (entered by Jon Wolfers on 2014-09-18 -> 2016-04-24)
+ 118: #  611 Add [] method to the Routine class.
+             (entered by Rick McGuire on 2014-09-11 -> 2016-04-29)
+ 119: #  607 Directory class should also have a removeEntry method.
+             (entered by Rick McGuire on 2014-07-21 -> 2016-07-01)
+ 120: #  606 Message class: please supply a method that indicates whether a result was returned
+             (entered by Rony G. Flatscher on 2014-07-20 -> 2015-10-18)
+ 121: #  605 Allow a FOR modifier on DO OVER loops.
+             (entered by Rick McGuire on 2014-07-10 -> 2015-05-27)
+ 122: #  604 Allow collections other than array to accept an initial size argument on new.
+             (entered by Rick McGuire on 2014-07-05 -> 2016-07-01)
+ 123: #  603 Add a GUARD ON/OFF capability to the MethodContext APIs.
+             (entered by Rick McGuire on 2014-07-04 -> 2018-12-07) ***TODO: [tests]
+ 124: #  602 Add a "REXX" package that all loaded packages have as a dependent package.
+             (entered by Rick McGuire on 2014-06-30 -> 2015-10-18)
+ 125: #  600 Add the NetRexx SELECT CASE instruction to ooRexx.
+             (entered by Rick McGuire on 2014-06-28 -> 2015-05-28)
+ 126: #  599 MutableBuffer could use a setText method.
+             (entered by Rick McGuire on 2014-06-19 -> 2016-04-28)
+ 127: #  598 Allow Properties files to be loaded using a .File object.
+             (entered by Rick McGuire on 2014-06-15 -> 2016-04-28)
+ 128: #  596 Add a package method to the Class class
+             (entered by Rick McGuire on 2014-06-14 -> 2016-07-07)
+ 129: #  595 Update samples for some of the newer features
+             (entered by Rick McGuire on 2014-06-10 -> 2014-09-25)
+ 130: #  590 Enhance the fillDrawing() method to accept a COLORREF
+             (entered by Mark Miesfeld on 2014-02-16 -> 2014-02-17)
+ 131: #  589 There is no way to fill a rectangle without getting an outline around it
+             (entered by Mark Miesfeld on 2014-02-16 -> 2014-02-17)
+ 132: #  588 There is no way to get a system brush in ooDialog
+             (entered by Mark Miesfeld on 2014-02-16 -> 2014-02-17)
+ 133: #  587 ooTest - add a way to deal with English language Windows tests
+             (entered by Mark Miesfeld on 2014-02-15 -> 18 minutes ago)
+ 134: #  586 ooTest - add a way to exclude a test group file from execution
+             (entered by Mark Miesfeld on 2014-02-15 -> 18 minutes ago)
+ 135: #  585 Test suite - it would be nice to have a 'log' option
+             (entered by Mark Miesfeld on 2014-02-09 -> 18 minutes ago)
+ 136: #  581 Add item data capability to combo box
+             (entered by Mark Miesfeld on 2014-01-30 -> 2014-01-30) ***TODO: [doc+test]
+ 137: #  580 Send proper args to the DRAW event handler.
+             (entered by Mark Miesfeld on 2014-01-06 -> 2014-01-08)
+ 138: #  579 Send Rexx dialog control object to event handling methods.
+             (entered by Mark Miesfeld on 2014-01-04 -> 2014-01-21)
+ 139: #  578 Accept string keywords instead of requiring numeric value in image related methods
+             (entered by Mark Miesfeld on 2013-12-28 -> 2013-12-28) ***TODO: [doc]
+ 140: #  577 Get an icon image from an image list
+             (entered by Mark Miesfeld on 2013-12-26 -> 2013-12-28)
+ 141: #  576 Add support for the 'split button'
+             (entered by Mark Miesfeld on 2013-12-25 -> 2013-12-25) ***TODO: [code+doc+test]
+ 142: #  575 Send the Rexx Tab object to tab control event handlers
+             (entered by Mark Miesfeld on 2013-12-25 -> 2013-12-30)
+ 143: #  574 Event connections should all have a 'willReply' argument
+             (entered by Mark Miesfeld on 2013-12-25 -> 2014-01-21)
+ 144: #  573 ResouceImage class, the new() method should only need 1 argument
+             (entered by Mark Miesfeld on 2013-12-24 -> 2013-12-29)
+ 145: #  572 ListView getImageList() / setImageList should accept string keyword for image list type
+             (entered by Mark Miesfeld on 2013-12-24 -> 2013-12-28)
+ 146: #  570 The system metric class should have values for the small and normal icons
+             (entered by Mark Miesfeld on 2013-12-24 -> 2013-12-28)
+ 147: #  569 Allow direct creation of dialog control windows.
+             (entered by Mark Miesfeld on 2013-12-21 -> 2013-12-21) ***TODO: [code+doc+test]
+ 148: #  568 Add a package option to have errors raised for NOVALUE situations.
+             (entered by Rick McGuire on 2013-12-19 -> 2015-06-12)
+ 149: #  553 Add the StatusBar control to ooDialog
+             (entered by Mark Miesfeld on 2013-09-21 -> 2014-01-25)
+ 150: #  552 Add the ToolBar control to ooDialog
+             (entered by Mark Miesfeld on 2013-09-12 -> 2013-09-21) ***TODO: [code+doc+test]
+ 151: #  551 Allow oosqlitebackup~new to accept a .File object as destination source
+             (entered by hex on 2013-09-09 -> 2013-09-10)
+ 152: #  550 Add the ReBar dialog control to ooDialog
+             (entered by Mark Miesfeld on 2013-08-30 -> 2013-09-21) ***TODO: [doc+test]
+ 153: #  545 Asset Directive
+             (entered by Jon Wolfers on 2013-05-16 -> 2016-04-27)
+ 154: #  544 Allow the registration of user defined SQL functions and aggregates
+             (entered by Mark Miesfeld on 2013-05-08 -> 2013-05-19) ***TODO: [doc]
+ 155: #  543 Add access to sqlite3_load_extension in ooSQLite
+             (entered by Mark Miesfeld on 2013-04-28 -> 2013-05-19) ***TODO: [doc]
+ 156: #  542 Support non-root interpreter installation and execution on Unix-like systems
+             (entered by mdlueck on 2013-04-27 -> 2018-12-21)
+ 157: #  541 Allow registration of user defined collations in ooSQLite
+             (entered by Staffan Tylen on 2013-04-26 -> 2013-05-19) ***TODO: [doc]
+ 158: #  482 Consistent cross-platform SysFileTree recursive behavior
+             (entered by mdlueck on 2012-08-28 -> 2019-12-22)
+ 159: #  476 Add positive whole number type to APIs.
+             (entered by Rick McGuire on 2012-08-07 -> 2016-07-07)
+ 160: #  464 Add a package name directive
+             (entered by Anonymous on 2012-06-22 -> 2015-06-13)
+ 161: #  451 add "contains" method to String Class
+             (entered by Anonymous on 2012-05-08 -> 2015-10-18)
+ 162: #  407 Could "I" be added to Date() formats?
+             (entered by Swifty on 2010-11-17 -> 2015-11-07)
+ 163: #  394 Add a NOVALUE switch to ::OPTIONS
+             (entered by Rick McGuire on 2010-05-13 -> 2015-06-12)
+ 164: #  389 Make expression value on ::CONSTANT optional.
+             (entered by Rick McGuire on 2010-04-20 -> 2015-06-13)
+ 165: #  353 Embedded Database
+             (entered by Anonymous on 2009-05-01 -> 2012-12-21) ***TODO: [doc]
+ 166: #  245 Allow message objects to be triggered more than once.
+             (entered by Rick McGuire on 2007-09-27 -> 2015-11-02)
+ 167: #  158 Add iteration over a supplier to DO/LOOP
+             (entered by Rick McGuire on 2007-04-19 -> 2015-06-13)
+ 168: #   61 Allow data directive statements in Rexx files.
+             (entered by Rick McGuire on 2005-04-29 -> 2016-04-28)
+ 169: #    4 Add ADDRESS WITH capability
+             (entered by Mark V on 2004-11-17 -> 2019-01-30)
+
+
+  Documentation Bugs
+  ------------------
+  https://sourceforge.net/p/oorexx/documentation/nnn
+
+   1: #  292 Could not find file "csvstream.cls" (Linux)
+             (entered by Till Winkler on 2022-06-15 -> 2022-06-27)
+   2: #  291 OLEObject: missing documentation for methods SEND, SENDWITH, CLASS, COPY
+             (entered by Rony G. Flatscher on 2022-05-15 -> 16 minutes ago)
+   3: #  288 ooDialog reference issues
+             (entered by Jon Wolfers on 2022-03-30 -> 2022-04-02)
+   4: #  284 Update the tool package used to build the ooRexx documentation on Windows
+             (entered by Gil Barmwater on 2021-08-08 -> 2021-08-08)
+   5: #  283 Possible hashbang line problem
+             (entered by Ruurd Idenburg on 2021-05-14 -> 2021-05-20)
+   6: #  282 rexxref - wrong text for SysToUnicode
+             (entered by AvdP on 2021-04-06 -> 2021-04-25)
+   7: #  280 Linux doesn't seem to honor file locks
+             (entered by Erich on 2016-08-23 -> 2021-03-02)
+   8: #  279 FindClass() finding classes it is not supposed to
+             (entered by Rony G. Flatscher on 2014-08-04 -> 2021-02-08)
+   9: #  278 REXXSTART references in REXXREF wrong
+             (entered by Gil Barmwater on 2020-12-24 -> 2020-12-25)
+  10: #  277 length of variable name
+             (entered by Walter on 2020-11-14 -> 2020-11-19)
+  11: #  275 typo in readme.pdf
+             (entered by AvdP on 2020-05-26 -> 2020-07-12)
+  12: #  274 rexxref review
+             (entered by Erich on 2020-06-21 -> 2020-06-21)
+  13: #  273 Errors building Winextensions
+             (entered by Gil Barmwater on 2020-04-01 -> 2020-04-01)
+  14: #  272 Issues with CSS for HTML versions of documents
+             (entered by Gil Barmwater on 2020-03-26 -> 2020-03-26)
+  15: #  271 rexxref documentation typo: "uninherut"
+             (entered by Marc on 2020-02-01 -> 2020-02-02)
+  16: #  270 Clean up DOCTYPE statements in common files
+             (entered by Gil Barmwater on 2020-01-15 -> 2020-01-15)
+  17: #  268 Miscellaneous documentation issues for oorexx 5
+             (entered by Shmuel (Seymour J.) Metz on 2019-09-16 -> 2021-02-03)
+  18: #  267 typo in Rexxref (LASTPOS)
+             (entered by AvdP on 2019-06-23 -> 2019-06-23)
+  19: #  265 Numbering of Section 1.12 of Reference is inconsistent
+             (entered by Gil Barmwater on 2019-04-23 -> 2019-04-23)
+  20: #  264 formatting error in rexxextensions.pdf
+             (entered by AvdP on 2019-04-19 -> 2019-04-19)
+  21: #  261 Diagram for Items method of Relation class wrong
+             (entered by Gil Barmwater on 2019-02-21 -> 2019-02-23)
+  22: #  260 Typo in StringTable description of []
+             (entered by Gil Barmwater on 2019-01-25 -> 2019-01-25)
+  23: #  259 Missing changes for revision to modification in RexxInfo class
+             (entered by Gil Barmwater on 2019-01-24 -> 2019-01-24)
+  24: #  258 Programmers Guide Updates
+             (entered by Gil Barmwater on 2018-02-07 -> 2019-03-01)
+  25: #  257 Wrong code example for "5.1.4.21. sendWith"
+             (entered by Rony G. Flatscher on 2018-01-13 -> 2018-02-09)
+  26: #  256 RAISE USER userconditoin
+             (entered by Rony G. Flatscher on 2012-08-09 -> 2017-10-21)
+  27: #  255 CSVStream (rexxExtensions) 1.6.2 CSVlinein
+             (entered by Jon Wolfers on 2017-10-04 -> 2017-10-04)
+  28: #  254 Security Manager documentation to be clarified
+             (entered by Erich on 2017-09-24 -> 2017-09-24)
+  29: #  253 Confusing Documentation on .LOCAL vs .ENVIRONMENT
+             (entered by Gil Barmwater on 2017-09-21 -> 2017-09-23)
+  30: #  252 No four trailing zeros in time("elapsed") and time("reset") output
+             (entered by Erich on 2017-09-12 -> 2017-09-12)
+  31: #  251 Little issues in "13.1 Calls to Security Manager"
+             (entered by Rony G. Flatscher on 2017-07-27 -> 2017-07-27)
+  32: #  250 .File renameTo has Windows/Unix commands reversed
+             (entered by Gil Barmwater on 2017-07-17 -> 2017-07-18)
+  33: #  249 ::Routine example 3.16 missing external keyword
+             (entered by Gil Barmwater on 2017-07-13 -> 2017-07-13)
+  34: #  248 incorrect command in diagram (rexxref 5.3.6.38. toString)
+             (entered by AvdP on 2017-07-07 -> 2017-07-11)
+  35: #  247 typo in rexxref (18.4. The RXQUEUE Filter)
+             (entered by AvdP on 2017-07-05 -> 2017-07-05)
+  36: #  246 Ad native API DecodeConditionInfo
+             (entered by Rony G. Flatscher on 2017-06-05 -> 2017-09-24)
+  37: #  245 (doc) rexxpg.pdf, section 8.5
+             (entered by Rony G. Flatscher on 2017-05-18 -> 2017-05-18)
+  38: #  244 incorrect error message 34.1
+             (entered by Walter on 2017-04-23 -> 2017-11-28)
+  39: #  242 Typographical error in INSTALL file
+             (entered by Mark Gaubatz on 2016-10-30 -> 2016-10-30)
+  40: #  241 Array~makestring
+             (entered by Walter on 2016-08-31 -> 2017-11-26)
+  41: #  240 Documentation Bug - Sorting Arrays
+             (entered by Sebastian on 2016-07-15 -> 2022-06-23)
+  42: #  239 Array Classs multiple delete
+             (entered by DangerDan on 2016-04-09 -> 2016-04-11)
+  43: #  238 Typo in ooDialog: choosen should be chosen
+             (entered by Walter on 2015-06-21 -> 2019-01-24)
+  44: #  236 SysGetSID required argument
+             (entered by DangerDan on 2015-05-27 -> 2015-05-27)
+  45: #  234 comp.lang.rexx: Lost ability to trace ::Routine dynamically
+             (entered by Erich on 2015-05-13 -> 2015-05-22)
+  46: #  233 IF/WHEN expression list
+             (entered by Walter on 2015-04-13 -> 2015-05-22)
+  47: #  232 1.13.5. Compound Symbols misuse of plural
+             (entered by Walter on 2014-12-10 -> 2015-05-22)
+  48: #  231 RxCalcCos(x,20) should raise syntax
+             (entered by Walter on 2014-11-04 -> 2016-08-07)
+  49: #  229 rexxref 7.4.49. RANDOM
+             (entered by Walter on 2014-10-26 -> 2019-04-27)
+  50: #  228 identitytable
+             (entered by Walter on 2014-10-12 -> 2015-05-28)
+  51: #  227 Object instancemethods doc is wrong.
+             (entered by Rick McGuire on 2014-10-10 -> 2016-08-13)
+  52: #  226 mutable buffer pos method - add length parameter
+             (entered by Walter on 2014-10-07 -> 2016-08-07)
+  53: #  225 Obsolete information in VALUE() BIF documentaiton.
+             (entered by Rick McGuire on 2014-09-26 -> 2015-05-22)
+  54: #  224 value bif does not raise the Novalue condition
+             (entered by Walter on 2014-09-26 -> 2015-05-22)
+  55: #  223 Syntax diagram for Object setMethod is wrong.
+             (entered by Rick McGuire on 2014-09-22 -> 2016-08-07)
+  56: #  222 ooRexx Reference Typos Corrected
+             (entered by Erich on 2014-09-12 -> 2016-08-07)
+  57: #  221 Wrong SVN Diagrams for "translate"
+             (entered by Erich on 2014-09-12 -> 2016-08-07)
+  58: #  220 Description of translate is incomplete
+             (entered by Walter Pachl on 2014-08-26 -> 2016-08-07)
+  59: #  218 Stream documentation does not mention that a .File object can be used to create a stream.
+             (entered by Rick McGuire on 2014-06-15 -> 2015-05-28)
+  60: #  216 Documentation for execio/hi/ts/te needs improvement
+             (entered by J. L. Turriff on 2014-04-28 -> 2016-08-19)
+  61: #  214 SysTextScreenSize()
+             (entered by John Timmons on 2014-04-03 -> 2016-08-07)
+  62: #  208 ooDialog - the .OEM class is not documented
+             (entered by Mark Miesfeld on 2013-12-28 -> 2013-12-28)
+  63: #  172 Operator precedence section needs clarification
+             (entered by John P. Hartmann on 2010-08-16 -> 2016-08-22)
+  64: #  169 [ oorexx-Patches-2954418 ] Add gethostname to rxsock
+             (entered by Brandon Cherry on 2010-02-19 -> 2016-08-22)
+  65: #  167 UNIX-compatibility comment
+             (entered by Jay Masuda on 2009-12-16 -> 2016-08-21)
+  66: #   63 5.4.14. The RegularExpression Class
+             (entered by Hagrinas on 2007-12-02 -> 2016-09-09)
+
+
+  Patches
+  -------
+  https://sourceforge.net/p/oorexx/patches/nnn
+
+   1: #  216 Extend OLE samples
+             (entered by Till Winkler on 2022-06-14 -> 2022-06-27)
+   2: #  211 Amended Readme for samples
+             (entered by Per Olov Jonsson on 2020-03-18 -> 2020-03-20)
+   3: #  210 Documentation for EventSemaphore and MutexSemaphore
+             (entered by Rony G. Flatscher on 2019-05-07 -> 2020-03-04)
+   4: #  208 Amended CMakeLists.txt for macOS/Darwin
+             (entered by Per Olov Jonsson on 2019-03-03 -> 2019-04-07)
+   5: #  206 Adjust shebang logic in CMakeLists.txt
+             (entered by  Rony G. Flatscher on 2018-12-06 -> 2018-12-06)
+   6: #  204 Performance enhancement for ::routine calls
+             (entered by  Rick McGuire on 2018-03-18 -> 2018-03-20)
+   7: #  203 Four patches needed OpenIndiana/SunOS/Solaris
+             (entered by Jason Martin on 2018-01-23 -> 2018-03-29)
+   8: #  201 PfnDliHook patch
+             (entered by Rony G. Flatscher on 2017-05-02 -> 2017-05-02)
+   9: #  199 json documentation
+             (entered by Rony G. Flatscher on 2016-08-08 -> 2018-03-27)
+  10: #  198 json.cls ooTest
+             (entered by Rony G. Flatscher on 2016-08-08 -> 2018-03-27)
+
+
+
+Windows
+=======
+
+  Miscellaneous
+  -------------
+
+  - The version of ooDialog distributed with ooRexx is updated to ooDialog
+    version 4.2.3.
+
+  - ooDialog has a separate release notes file that shows changes in
+    ooDialog.  The file: ooDialog_ReleaseNotes.txt is located with the other
+    ooRexx documentation in the distribution. The ooDialog.pdf manual also
+    lists all changes for the current version.
+
+
+Unix/Linux
+==========
+
+  none
+
+
