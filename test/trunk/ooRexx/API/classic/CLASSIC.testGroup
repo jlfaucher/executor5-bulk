@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -106,6 +106,30 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, t1~retc)
   self~assertNotEquals(0, t1~flag)
   self~assertNotSame(q1, nq1)
+
+  -- test return codes
+  RXQUEUE_STORAGE = 1
+  RXQUEUE_BADQNAME = 5
+
+  -- specified queue name too long for buffer size
+  t1~testcreatequeue("x"~copies(50), 40)
+  self~assertEquals(RXQUEUE_STORAGE, t1~retc)
+
+  -- returned queue name too long for buffer size
+  t1~testcreatequeue(, 10)
+  self~assertEquals(RXQUEUE_STORAGE, t1~retc)
+
+  -- queue name contains invalid characters
+  t1~testcreatequeue("C:")
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
+
+  -- SESSION is reserved
+  t1~testcreatequeue("SESSION")
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
+
+  -- queue name too long
+  t1~testcreatequeue("q"~copies(251))
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
 
 ::method 'test_02_open_queue'
   expose t1
