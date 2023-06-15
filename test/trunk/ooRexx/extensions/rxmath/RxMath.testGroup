@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -81,7 +81,7 @@ else
 
 ::method 'test_RxCalcSqrtB'
 -- Test syntax on precision value of 0
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905) -- Argument 2 must be a positive whole number
     rv = RxCalcSqrt(3,0)
 
 ::method 'test_RxCalcSqrtC'
@@ -126,7 +126,7 @@ else
 
 ::method 'testRxCalcExpD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcExp(.5,0)
 
 ::method 'testRxCalcExpE'
@@ -159,7 +159,7 @@ else
 
 ::method 'testRxCalcLogD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcLog(16,0)
 
 ::method 'testRxCalcLogE'
@@ -192,7 +192,7 @@ else
 
 ::method 'testRxCalcLog10D'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcLog10(16,0)
 
 ::method 'testRxCalcLog10E'
@@ -225,7 +225,7 @@ else
 
 ::method 'testRxCalcSinhD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcSinh(16,0)
 
 ::method 'testRxCalcSinhE'
@@ -258,7 +258,7 @@ else
 
 ::method 'testRxCalcCoshD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCosh(16,0)
 
 ::method 'testRxCalcCoshE'
@@ -291,7 +291,7 @@ else
 
 ::method 'testRxCalcTanhD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcTanh(16,0)
 
 ::method 'testRxCalcTanhE'
@@ -322,7 +322,7 @@ else
 
 ::method 'testRxCalcPowerD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcPower(6.13,3,0)
 
 ::method 'testRxCalcPowerE'
@@ -355,7 +355,7 @@ else
 
 ::method 'testRxCalcSinD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcSin(12,0)
 
 ::method 'testRxCalcSinE'
@@ -397,7 +397,7 @@ else
 
 ::method 'testRxCalcSinL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916) -- Argument 2 must be one of D, R, or G
     RxCalcSin(12,,'e')
 
 -- This set of unitTests is brought to you by the Sine Radians function
@@ -418,7 +418,7 @@ else
 
 ::method 'testRxCalcSin_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcSin(12,0,'r')
 
 ::method 'testRxCalcSin_rE'
@@ -460,7 +460,7 @@ else
 
 ::method 'testRxCalcSin_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcSin(12,,'e')
 
 -- This set of unitTests is brought to you by the Sine Grades function
@@ -483,7 +483,7 @@ else
 
 ::method 'testRxCalcSin_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcSin(12,0,'g')
 
 ::method 'testRxCalcSin_gE'
@@ -525,7 +525,7 @@ else
 
 ::method 'testRxCalcSin_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcSin(12,,'e')
 
 -- This set of unitTests is brought to you by the Cosine Degrees function
@@ -548,7 +548,7 @@ else
 
 ::method 'testRxCalcCosD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCos(12,0)
 
 ::method 'testRxCalcCosE'
@@ -590,7 +590,7 @@ else
 
 ::method 'testRxCalcCosL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCos(12,,'e')
 
 -- This set of unitTests is brought to you by the Cosine Radians function
@@ -613,7 +613,7 @@ else
 
 ::method 'testRxCalcCos_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCos(12,0,'r')
 
 ::method 'testRxCalcCos_rE'
@@ -655,7 +655,7 @@ else
 
 ::method 'testRxCalcCos_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCos(12,,'e')
 
 -- This set of unitTests is brought to you by the Cosine Grades function
@@ -678,7 +678,7 @@ else
 
 ::method 'testRxCalcCos_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCos(12,0,'g')
 
 ::method 'testRxCalcCos_gE'
@@ -720,7 +720,7 @@ else
 
 ::method 'testRxCalcCos_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCos(12,,'e')
 
 -- This set of unitTests is brought to you by the Tangent Degrees function
@@ -743,7 +743,7 @@ else
 
 ::method 'testRxCalcTanD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcTan(12,0)
 
 ::method 'testRxCalcTanE'
@@ -785,7 +785,7 @@ else
 
 ::method 'testRxCalcTanL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcTan(12,,'e')
 
 -- This set of unitTests is brought to you by the Tangent Radians function
@@ -808,7 +808,7 @@ else
 
 ::method 'testRxCalcTan_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcTan(12,0,'r')
 
 ::method 'testRxCalcTan_rE'
@@ -850,7 +850,7 @@ else
 
 ::method 'testRxCalcTan_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcTan(12,,'e')
 
 -- This set of unitTests is brought to you by the Tangent Grades function
@@ -873,7 +873,7 @@ else
 
 ::method 'testRxCalcTan_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcTan(12,0,'g')
 
 ::method 'testRxCalcTan_gE'
@@ -915,7 +915,7 @@ else
 
 ::method 'testRxCalcTan_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcTan(12,,'e')
 
 -- This set of unitTests is brought to you by the Cotangent Degrees function
@@ -938,7 +938,7 @@ else
 
 ::method 'testRxCalcCotanD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCotan(12,0)
 
 ::method 'testRxCalcCotanE'
@@ -980,7 +980,7 @@ else
 
 ::method 'testRxCalcCotanL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCotan(12,,'e')
 
 -- This set of unitTests is brought to you by the Cotangent Radians function
@@ -1002,7 +1002,7 @@ else
 
 ::method 'testRxCalcCotan_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCotan(12,0,'r')
 
 ::method 'testRxCalcCotan_rE'
@@ -1043,7 +1043,7 @@ else
 
 ::method 'testRxCalcCotan_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCotan(12,,'e')
 
 -- This set of unitTests is brought to you by the Cotangent Grades function
@@ -1066,7 +1066,7 @@ else
 
 ::method 'testRxCalcCotan_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcCotan(12,0,'g')
 
 ::method 'testRxCalcCotan_gE'
@@ -1108,7 +1108,7 @@ else
 
 ::method 'testRxCalcCotan_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcCotan(12,,'e')
 
 -- This set of unitTests is brought to you by the Pi function
@@ -1131,7 +1131,7 @@ else
 
 ::method 'testRxCalcPiD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcPi(0)
 
 ::method 'testRxCalcPiE'
@@ -1163,7 +1163,7 @@ else
 
 ::method 'testRxCalcArcSinD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcSin(.1526,0)
 
 ::method 'testRxCalcArcSinE'
@@ -1205,7 +1205,7 @@ else
 
 ::method 'testRxCalcArcSinL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcSin(.1526,,'e')
 
 -- This set of unitTests is brought to you by the Arcsine Radians function
@@ -1228,7 +1228,7 @@ else
 
 ::method 'testRxCalcArcSin_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcSin(.1526,0,'r')
 
 ::method 'testRxCalcArcSin_rE'
@@ -1270,7 +1270,7 @@ else
 
 ::method 'testRxCalcArcSin_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcSin(.1526,,'e')
 
 -- This set of unitTests is brought to you by the Arcsine Grades function
@@ -1293,7 +1293,7 @@ else
 
 ::method 'testRxCalcArcSin_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcSin(.1526,0,'g')
 
 ::method 'testRxCalcArcSin_gE'
@@ -1335,7 +1335,7 @@ else
 
 ::method 'testRxCalcArcSin_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcSin(.1526,,'e')
 
 -- This set of unitTests is brought to you by the ArcCosine Degrees function
@@ -1358,7 +1358,7 @@ else
 
 ::method 'testRxCalcArcCosD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcCos(.1526,0)
 
 ::method 'testRxCalcArcCosE'
@@ -1400,7 +1400,7 @@ else
 
 ::method 'testRxCalcArcCosL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcCos(.1526,,'e')
 
 -- This set of unitTests is brought to you by the ArcCosine Radians function
@@ -1423,7 +1423,7 @@ else
 
 ::method 'testRxCalcArcCos_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcCos(.1526,0,'r')
 
 ::method 'testRxCalcArcCos_rE'
@@ -1465,7 +1465,7 @@ else
 
 ::method 'testRxCalcArcCos_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcCos(.1526,,'e')
 
 -- This set of unitTests is brought to you by the ArcCosine Grades function
@@ -1488,7 +1488,7 @@ else
 
 ::method 'testRxCalcArcCos_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcCos(.1526,0,'g')
 
 ::method 'testRxCalcArcCos_gE'
@@ -1530,7 +1530,7 @@ else
 
 ::method 'testRxCalcArcCos_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcCos(.1526,,'e')
 
 -- ihere
@@ -1554,7 +1554,7 @@ else
 
 ::method 'testRxCalcArcTanD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcTan(.1526,0)
 
 ::method 'testRxCalcArcTanE'
@@ -1596,7 +1596,7 @@ else
 
 ::method 'testRxCalcArcTanL'
 -- Test supplying Degree as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcTan(.1526,,'e')
 
 -- This set of unitTests is brought to you by the ArcTangent Radians function
@@ -1619,7 +1619,7 @@ else
 
 ::method 'testRxCalcArcTan_rD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcTan(.1526,0,'r')
 
 ::method 'testRxCalcArcTan_rE'
@@ -1661,7 +1661,7 @@ else
 
 ::method 'testRxCalcArcTan_rL'
 -- Test supplying Radian as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcTan(.1526,,'e')
 
 -- This set of unitTests is brought to you by the ArcTangent Grades function
@@ -1684,7 +1684,7 @@ else
 
 ::method 'testRxCalcArcTan_gD'
 -- Test invalid low precision
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.905)
     rv = RxCalcArcTan(.1526,0,'g')
 
 ::method 'testRxCalcArcTan_gE'
@@ -1726,7 +1726,7 @@ else
 
 ::method 'testRxCalcArcTan_gL'
 -- Test supplying Grade as an invalid expression
-    self~expectSyntax('40.1')
+    self~expectSyntax(88.916)
     RxCalcArcTan(.1526,,'e')
 
 
