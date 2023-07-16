@@ -190,21 +190,15 @@ return testResult
   self~assertSame(300, result)
 
 ::method test_stacksize
-  -- we expect a minimum recursion depth of 5000 (arbitrary)
+  -- we expect a maximum recursion depth of at least 5000 (arbitrary)
   n = 0
   signal on syntax
-  call f
+  f:
+    n += 1
+    call f
 
   syntax:
-  self~assertTrue(n >= 5000, "minimum recursion depth expected to be 5000, found" n)
-  return
-
-  --@@ there may be an issue with unwinding the stack - takes ages for large n (when failing)
-  f:
-  n += 1
-  if n < 5000 then
-    call f
-  return n
+  self~assertTrue(n >= 5000, "maximum recursion depth expected to be at least 5000, found" n)
 
 
 ::method "test_1"
