@@ -757,7 +757,7 @@ all 3-letter trace prefixes:
   reply 1
   trace off
   -- before comparing trace output, we remove any trailing >I> Method ...
-  if t~lastItem~srip("l")~startsWith(">I> Method") then
+  if t~lastItem~strip("l")~startsWith(">I> Method") then
     t~remove(t~last)
   self~assertTraceOutput(.resources~reply, t, start)
 
