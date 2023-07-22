@@ -756,9 +756,11 @@ all 3-letter trace prefixes:
   start = .line; trace i
   reply 1
   trace off
+
   -- before comparing trace output, we remove any trailing >I> Method ...
-  if t~lastItem~strip("l")~startsWith(">I> Method") then
-    t~remove(t~last)
+  -- this will occur between the trace part of interest and the trailing "trace off"
+  if t[t~last - 1]~strip("l")~startsWith(">I> Method") then
+    t~remove(t~last - 1)
   self~assertTraceOutput(.resources~reply, t, start)
 
   ::resource reply end "  ::end"
