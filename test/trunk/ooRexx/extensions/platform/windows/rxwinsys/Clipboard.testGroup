@@ -134,7 +134,57 @@ loadErr:
     -- ... and assert that it is the same as what was put on their.
     self~assertEquals("This is only a test", text, 'Text retrieved from clipboard should equal text put on clipboard')
 
-::method 'test_08cleanUp'
+::method 'test_08copy_utf8'
+    text_utf8 = "J'❤️".endOfLine'le père'.endOfLine'Noël 🎅!'
+    .cp~copy(text_utf8, "UTF8")
+    self~assertTrue(.cp~isDataAvailable)
+
+::method 'test_09paste_utf8'
+    text_utf8 = "J'❤️".endOfLine'le père'.endOfLine'Noël 🎅!'
+    codepoints_utf8 = '4A 27 E29DA4 EFB88F 0D 0A 6C 65 20 70 C3A8 72 65 0D 0A 4E 6F C3AB 6C 20 F09F8E85 21'
+
+    self~assertEquals(text_utf8, .cp~paste("UTF8"))
+    self~assertEquals(codepoints_utf8~x2c, .cp~paste("UTF8"))
+
+    a_array = .cp~paste("UTF8")~makeArray
+    self~assertEquals(3, a_array~items)
+
+::method 'test_10copy_unicode'
+    text_utf8 = "J'❤️".endOfLine'le père'.endOfLine'Noël 🎅!'
+
+    error = SysToUnicode(text_utf8, "UTF8", , "text_utf16")
+    self~assertEquals(0, error, "SysToUnicode should not return an error")
+    text_utf16 = text_utf16.!text
+
+    .cp~copy(text_utf16, "UNICODE")
+    self~assertTrue(.cp~isDataAvailable)
+
+::method 'test_11paste_unicode'
+    text_utf8 = "J'❤️".endOfLine'le père'.endOfLine'Noël 🎅!'
+    codepoints_utf8 = '4A 27 E29DA4 EFB88F 0D 0A 6C 65 20 70 C3A8 72 65 0D 0A 4E 6F C3AB 6C 20 F09F8E85 21'
+
+    error = SysToUnicode(text_utf8, "UTF8", , "text_utf16")
+    self~assertEquals(0, error, "SysToUnicode should not return an error")
+    text_utf16 = text_utf16.!text
+    codepoints_utf16 = '4A00 2700 6427 0FFE 0D00 0A00 6C00 6500 2000 7000 E800 7200 6500 0D00 0A00 4E00 6F00 EB00 6C00 2000 3CD885DF 2100'
+
+    self~assertEquals(text_utf16, .cp~paste("UNICODE"))
+    self~assertEquals(codepoints_utf16~x2c, .cp~paste("UNICODE"))
+
+    self~assertEquals(text_utf8, .cp~paste("UTF8"))
+    self~assertEquals(codepoints_utf8~x2c, .cp~paste("UTF8"))
+
+    a_array = .cp~paste("UNICODE")~makeArray("0D00 0A00"x)
+    self~assertEquals(3, a_array~items)
+
+    a_array = .cp~paste("UTF8")~makeArray
+    self~assertEquals(3, a_array~items)
+
+::method 'test_12locale'
+    self~assertTrue(.cp~locale~isA(.String), 'The clipboard locale should be a String')
+    self~assertNotEquals("", .cp~locale)
+
+::method 'test_13cleanUp'
 -- Be nice and empty the clipboard.
     expected = 0
     self~assertEquals(expected, .cp~empty)
