@@ -69,7 +69,8 @@
 <listitem><para>makeArray</para></listitem>
 <listitem><para>paste</para></listitem>
 <listitem><para>empty</para></listitem>
-<listitem><para>isDataAvailable</para></listitem></itemizedlist>
+<listitem><para>isDataAvailable</para></listitem>
+<listitem><para>locale</para></listitem></itemizedlist>
 
 <section id="copywc"><title>copy</title>
 <indexterm><primary>copy method</primary>
@@ -85,6 +86,29 @@
 </mediaobject>
 
 <para>Empties the clipboard and copies the specified text to it.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is omitted or is an empty
+string, the text (which should be an ANSI string) is converted to Unicode by
+the system.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is "UNICODE", the text
+(which should be a UTF-16 string) is put as-is in the clipboard.</para>
+<para>For any other value of <emphasis role="italic">codepage</emphasis>,
+the text (which should be a string encoded in <emphasis role="italic">codepage
+</emphasis>) is converted to Unicode using the Rexx utility <computeroutput>
+SysToUnicode</computeroutput>. The arguments <emphasis role="italic">codepage
+</emphasis> and <emphasis role="italic">translateflags</emphasis> are passed to
+<computeroutput>SysToUnicode</computeroutput>.
+They are described in the ooRexx reference documentation.</para>
+
+<example id="ex.windowsclipboard-copy">
+<title>WindowsClipboard class - copy method</title>
+<programlisting>
+clipboard = .WindowsClipboard~new
+clipboard~copy("Noel")                              -- ANSI text
+clipboard~copy("4E00 6F00 EB00 6C00"x, "UNICODE")   -- UTF-16 text (stored as-is)
+clipboard~copy("Noël", "UTF8")                      -- SysToUnicode is used
+clipboard~copy("Noël", "UTF8", "ERR_INVALID_CHARS") -- SysToUnicode is used
+</programlisting>
+</example>
 </section>
 
 <section id="mkarwc"><title>makeArray</title>
@@ -105,6 +129,15 @@ in it, makeArray can be used to split up the string into individual
 lines. An array is returned containing those lines.</para>
 </section>
 
+<note><title>Note</title>
+<para>This method is limited to the default codepage.
+If you need to specify a codepage then use:
+</para>
+<programlisting>
+.WindowsClipboard~new~paste("UTF8")~makeArray
+</programlisting>
+</note>
+
 <section id="pastewc"><title>paste</title>
 <indexterm><primary>paste method</primary>
 <secondary>of WindowsClipboard class</secondary></indexterm>
@@ -119,6 +152,31 @@ lines. An array is returned containing those lines.</para>
 </mediaobject>
 
 <para>Retrieves the text data stored on the clipboard.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is omitted or is an empty
+string, the clipboard contents is converted from Unicode by the system and
+returned as an ANSI string.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is "UNICODE", the clipboard
+contents is returned as a UTF-16 string.</para>
+<para>For any other value of <emphasis role="italic">codepage</emphasis>, the
+clipboard contents is converted from Unicode using the Rexx utility
+<computeroutput>SysFromUnicode</computeroutput> and returned as a string encoded
+in <emphasis role="italic">codepage</emphasis>. The arguments
+<emphasis role="italic">codepage</emphasis>,
+<emphasis role="italic">mappingflags</emphasis> and
+<emphasis role="italic">defaultchar</emphasis> are passed to
+<computeroutput>SysFromUnicode</computeroutput>.
+They are described in the ooRexx reference documentation.</para>
+
+<example id="ex.windowsclipboard-paste">
+<title>WindowsClipboard class - paste method</title>
+<programlisting>
+clipboard = .WindowsClipboard~new
+text = clipboard~paste                              -- ANSI text
+text = clipboard~paste("UNICODE")                   -- UTF-16 (returned as stored)
+text = clipboard~paste("UTF8")                      -- SysFromUnicode is used
+text = clipboard~paste("CP1252", "DEFAULTCHAR","#") -- SysFromUnicode is used
+</programlisting>
+</example>
 </section>
 
 <section id="emptywc"><title>empty</title>
@@ -152,6 +210,28 @@ lines. An array is returned containing those lines.</para>
 
 <para>Returns 1 if the text data is available on the clipboard. If no data is
 available, 0 is returned.</para>
+</section>
+
+<section id="localewc"><title>locale</title>
+<indexterm><primary>locale method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>locale method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_locale.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the locale name associated with the text in the clipboard.</para>
+<para>For example: "de-DE_phoneb" where</para>
+<itemizedlist>
+<listitem>"de" is the primary language</listitem>
+<listitem>"DE" is the sublanguage (optional)</listitem>
+<listitem>"phoneb" is the sort order (optional)</listitem>
+</itemizedlist>
 </section>
 
 </chapter>
