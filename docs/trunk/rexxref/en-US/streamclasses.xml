@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1147,16 +1147,16 @@ that fails, the stream is opened for input only.
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>0</computeroutput> if successful in writing
-<emphasis role="italic">string</emphasis> to the output stream
-or <computeroutput>1</computeroutput> if
-an error occurs while writing the line. The stream advances the
-write pointer. If you omit <emphasis role="italic">string</emphasis>, the
-stream is closed.  If you specify
-<emphasis role="italic">line</emphasis>, this positions the write pointer
-before writing. If the stream is not already open, the stream
-attempts to open for reading and writing. If that fails, the stream is
-opened for output only.
+<para>Returns <literal>0</literal> if successful in writing
+<emphasis role="italic">string</emphasis> to the output stream,
+or <literal>1</literal> if an error occurs while writing the line.
+The stream advances the write pointer.
+If you specify <emphasis role="italic">line</emphasis>, this positions
+the write pointer before writing.
+If you omit both <emphasis role="italic">string</emphasis> and
+<emphasis role="italic">line</emphasis>, the stream is closed.
+If the stream is not already open, the stream attempts to open for reading
+and writing. If that fails, the stream is opened for output only.
 </para>
 </section>
 

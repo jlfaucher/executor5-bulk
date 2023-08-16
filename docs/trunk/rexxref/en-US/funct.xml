@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -3172,19 +3172,20 @@ instruction is also useful in certain cases.
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>0</computeroutput> if successful in writing
+<para>Returns <literal>0</literal> if successful in writing
 <emphasis role="italic">string</emphasis> to the character
-output stream <emphasis role="italic">name</emphasis>, or
-<computeroutput>1</computeroutput> if an error occurs while writing
-the line. (To understand the input and output functions, see
-<xref linkend="iostrms" />.)
-If you omit <emphasis role="italic">string</emphasis> but include
-<emphasis role="italic">line</emphasis>, only the write position
-is repositioned. If <emphasis role="italic">string</emphasis> is a null string,
-LINEOUT repositions the write position (if you include
-<emphasis role="italic">line</emphasis>).
-Otherwise, the stream is closed. LINEOUT adds platform-specific line-end
-characters to the end of <emphasis role="italic">string</emphasis>.</para>
+output stream <emphasis role="italic">name</emphasis>,
+or <literal>1</literal> if an error occurs while writing
+the line.
+(To understand the input and output functions, see <xref linkend="iostrms" />.)
+If you specify <emphasis role="italic">line</emphasis>, this positions
+the write pointer before writing.
+If you omit both <emphasis role="italic">string</emphasis> and
+<emphasis role="italic">line</emphasis>, the stream is closed.
+LINEOUT adds platform-specific
+<xref linkend="line-end" xrefstyle="template:line-end"/> characters to
+the end of <emphasis role="italic">string</emphasis>.
+</para>
 <para>If you omit <emphasis role="italic">name</emphasis>, the line is written
 to the default output stream STDOUT (usually the display).</para>
 <para>For persistent streams, a write position is maintained for each stream.
