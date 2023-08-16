@@ -59,53 +59,16 @@ else
 
 /*@@bug pending issues
 
-trace 2*3, trace (2*3), trace value 2*3 neither work as expected
-rexxref: "If interactive debugging is active and the option specified is a positive
-whole number (or an expression that evaluates to a positive whole number) ..."
-also rexxref: "The string or expression evaluates to ... A numeric option"
-trace 2*3
-+++ Interactive trace.  Error 21:   Invalid data on end of clause.
-+++ Interactive trace.  Error 21.906:  Data must not follow the TRACE setting; found "*".
-trace (2*3)
-+++ Interactive trace.  Error 24:   Invalid TRACE request.
-+++ Interactive trace.  Error 24.1:  TRACE request letter must be one of "ACEFILNOR"; found "6".
-trace value 2*3
-+++ Interactive trace.  Error 24:   Invalid TRACE request.
-+++ Interactive trace.  Error 24.1:  TRACE request letter must be one of "ACEFILNOR"; found "6".
-
 "trace i; nop; nop; nop" delays Ctrl+C on Windows
 "trace ?r; loop; nop; end;" once you press ENTER once, cannot Ctrl+C anymore
 
-"trace i; call r >a; r: use arg >v" trace prefix ">R>" not documented
-
-"raise user 999 description 'dddd'" should trace >K> DESCRIPTION
 "raise user 999 return 1" should trace >K> RETURN instead of RESULT
 "raise user 999 exit 1" should trace >K> EXIT instead of RESULT
-
-each trace input increases indent
-rexx -e "trace ?a; nop /* 1 */; nop /* 2 */; nop /* 3 */; nop /* 4 */;nop /* 5 */; nop /* 6 */
-     1 *-* nop /* 1 */;
-+++ Interactive trace. "Trace Off" to end debug, ENTER to continue. +++
-a=1
-a=1
-a=1
-a=1
-a=1
-trace 0
-     1 *-*             nop /* 2 */;
-same with INTERPRET keyword instruction, if a non-loop
-rexx -e "trace r; interpret 'do 2; nop; end;'; interpret 'do 2; nop; end';
-rexx -e "trace r; interpret 'nop; nop'; interpret 'nop; nop';
-
-
 
 strange: "trace i; a.[.line] = 1"
 
 message name isn't traced
  "trace i; >v~value = 1"
-
-all 3-letter trace prefixes:
- "a.0 = 1; address ! reverse(-.true rexx:String~null); parse var ! .; call r >a.; ::routine r; use arg >v.; ::options trace i"
 */
 
 ::method test_trace_option_invalid
@@ -217,10 +180,18 @@ all 3-letter trace prefixes:
     if line~left(7)~dataType("Whole") then do
       line = (start + line~left(7))~right(6) line~subStr(8)
     end
-    -- The IF test shows that actual trace output may have trailing blanks
-    -- (which may be a @@bug), so we strip trailing blanks for comparison.
-    if line \== actual[i]~strip("t") then
-      self~assertFail("trace output mismatch at line" i line msg)
+    if line~strip("l")~startsWith(">I> Method") then do
+    -- When we see a method entry we ignore the last token package name
+    -- e. g. >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
+      if line~left(line~wordIndex(9) - 1) \== actual[i]~left(actual[i]~wordIndex(9) - 1) then
+      self~assertFail("11 trace output mismatch at line" i line msg)
+    end
+    else do
+      -- The IF test shows that actual trace output may have trailing blanks
+      -- (which may be a @@bug), so we strip trailing blanks for comparison.
+      if line \== actual[i]~strip("t") then
+        self~assertFail("22 trace output mismatch at line" i line msg)
+    end
   end
 
 
@@ -305,41 +276,46 @@ all 3-letter trace prefixes:
   trace off
   self~assertTraceOutput(.resources~do, t, start)
 
-  --@@ looks like DO and LOOP do a double trace indent
   ::resource do end "  ::end"
      1 *-* do
      2 *-* end
      3 *-* do 2
-       >L>     "2"
-       >K>     "FOR" => "2"
+       >L>   "2"
+       >K>   "FOR" => "2"
      4 *-* end
      3 *-* do 2
      4 *-* end
      3 *-* do 2
      5 *-* do i = 1 to 3
-       >L>     "1"
-       >L>     "3"
-       >K>     "TO" => "3"
-       >=>     I <= "1"
+       >L>   "1"
+       >L>   "3"
+       >K>   "TO" => "3"
+       >=>   I <= "1"
      6 *-* end
      5 *-* do i = 1 to 3
        >V>     I => "1"
+       >>>     "1"
+       >>>     "2"
        >=>     I <= "2"
      6 *-* end
      5 *-* do i = 1 to 3
        >V>     I => "2"
+       >>>     "2"
+       >>>     "3"
        >=>     I <= "3"
      6 *-* end
      5 *-* do i = 1 to 3
        >V>     I => "3"
+       >>>     "3"
+       >>>     "4"
        >=>     I <= "4"
      7 *-* do item over 'a', 'b'
-       >L>     "a"
-       >A>     "a"
-       >L>     "b"
-       >A>     "b"
-       >>>     "an Array"
-       >K>     "OVER" => "an Array"
+       >L>   "a"
+       >A>   "a"
+       >L>   "b"
+       >A>   "b"
+       >>>   "an Array"
+       >K>   "OVER" => "an Array"
        >=>     ITEM <= "a"
      8 *-* end
      7 *-* do item over 'a', 'b'
@@ -512,8 +488,8 @@ all 3-letter trace prefixes:
 
   ::resource iterate end "  ::end"
      1 *-* do 2
-       >L>     "2"
-       >K>     "FOR" => "2"
+       >L>   "2"
+       >K>   "FOR" => "2"
      2 *-*   iterate
      1 *-* do 2
      2 *-*   iterate
@@ -532,8 +508,8 @@ all 3-letter trace prefixes:
 
   ::resource leave end "  ::end"
      1 *-* do 2
-       >L>     "2"
-       >K>     "FOR" => "2"
+       >L>   "2"
+       >K>   "FOR" => "2"
      2 *-*   leave
   ::end
 
@@ -550,20 +526,20 @@ all 3-letter trace prefixes:
 
   ::resource loop end "  ::end"
      1 *-* loop 2
-       >L>     "2"
-       >K>     "FOR" => "2"
+       >L>   "2"
+       >K>   "FOR" => "2"
      2 *-* end
      1 *-* loop 2
      2 *-* end
      1 *-* loop 2
      3 *-* loop i = 3 to 1 by -1 until i = 2
-       >L>     "3"
-       >L>     "1"
-       >K>     "TO" => "1"
-       >L>     "1"
-       >P>     "-" => "-1"
-       >K>     "BY" => "-1"
-       >=>     I <= "3"
+       >L>   "3"
+       >L>   "1"
+       >K>   "TO" => "1"
+       >L>   "1"
+       >P>   "-" => "-1"
+       >K>   "BY" => "-1"
+       >=>   I <= "3"
      4 *-* end
      3 *-* loop i = 3 to 1 by -1 until i = 2
        >V>     I => "3"
@@ -571,6 +547,8 @@ all 3-letter trace prefixes:
        >O>     "=" => "0"
        >K>     "UNTIL" => "0"
        >V>     I => "3"
+       >>>     "3"
+       >>>     "2"
        >=>     I <= "2"
      4 *-* end
      3 *-* loop i = 3 to 1 by -1 until i = 2
@@ -725,18 +703,19 @@ all 3-letter trace prefixes:
   start = .line; trace i
   call p
   signal end
-  p: raise user 999 array (1, 2) return
+  p: raise user 999 array (1, 2) description "desc" return 1
   end:
   trace off
   self~assertTraceOutput(.resources~raise, t, start)
 
-  --@@bug: "raise user 999 description 'dddd'" should trace >K> DESCRIPTION
   --@@bug: "raise user 999 return 1" should trace >K> RETURN instead of RESULT
   --@@bug: "raise user 999 exit 1" should trace >K> EXIT instead of RESULT
   ::resource raise end "  ::end"
      1 *-* call p
      3 *-*   p:
-     3 *-*   raise user 999 array (1, 2) return
+     3 *-*   raise user 999 array (1, 2) description "desc" return 1
+       >L>     "desc"
+       >K>     "DESCRIPTION" => "desc"
        >L>     "1"
        >A>     "1"
        >A>     "1"
@@ -744,6 +723,9 @@ all 3-letter trace prefixes:
        >A>     "2"
        >A>     "2"
        >K>     "ARRAY" => "an Array"
+       >L>     "1"
+       >K>     "RESULT" => "1"
+       >>>   "1"
      2 *-* signal end
      4 *-* end:
   ::end
@@ -757,16 +739,19 @@ all 3-letter trace prefixes:
   reply 1
   trace off
 
+/*
   -- before comparing trace output, we remove any trailing >I> Method ...
   -- this will occur between the trace part of interest and the trailing "trace off"
   if t[t~last - 1]~strip("l")~startsWith(">I> Method") then
     t~delete(t~last - 1)
+*/
   self~assertTraceOutput(.resources~reply, t, start)
 
   ::resource reply end "  ::end"
      1 *-* reply 1
        >L>   "1"
        >>>   "1"
+       >I> Method "TEST_TRACE_REPLY_REPLYASSERT" with scope "TRACE.TESTGROUP" in package "...".
   ::end
 
 -- RETURN is already tested with PROCEDURE
@@ -833,8 +818,8 @@ all 3-letter trace prefixes:
        >>>   "1"
        >=>   A <= "1"
      9 *-* select case a
-       >V>     A => "1"
-       >K>     "CASE" => "1"
+       >V>   A => "1"
+       >K>   "CASE" => "1"
     10 *-*   when 1
        >L>     "1"
        >>>     "1"
@@ -842,8 +827,8 @@ all 3-letter trace prefixes:
     10 *-*     then
     10 *-*       nop
     12 *-* select case a
-       >V>     A => "1"
-       >K>     "CASE" => "1"
+       >V>   A => "1"
+       >K>   "CASE" => "1"
     13 *-*   when 0
        >L>     "0"
        >>>     "0"
