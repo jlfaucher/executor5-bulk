@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2167,7 +2167,7 @@ notready:
   if \.RexxInfo~platform~caselessStartsWith("windows") then
     return
 
-  hidden = .TemporaryTestFile~new(self, "test_hidden")~create("hidden")
+  hidden = .TemporaryTestFile~new(, "test_hidden")~create("hidden")
   "attrib +h" hidden~absolutePath
   self~assertTrue(hidden~isHidden)
   s = .Stream~new(hidden)
@@ -2184,7 +2184,7 @@ notready:
 ::method test_open_parser
   -- we test token sequences matching the railroad diagrams, though many
   -- more permutations will also work
-  f = .TemporaryTestFile~new(self, "test_open_command_parser")
+  f = .TemporaryTestFile~new(, "test_open_command_parser")
   s = .Stream~new(f)
   do rw over "", "both", "read", "write"
     -- for READ neither APPEND nor REPLACE can be specified
@@ -2337,6 +2337,45 @@ notready:
   return .true
   syntax:
   return .false
+
+
+-- #1917 LINEIN fails after SEEK CHAR, LINEIN, SEEK LINE
+::method test_bug_1917
+  f = .TemporaryTestFile~new(, "test_bug_1917")
+  f~create(("first line", "second line", "third line"))
+  say "test_bug_1917" f~absolutePath
+  s = .Stream~new(f)
+
+  call read , 2
+  call read "linein"
+  call read "2 line"
+  call read "=2 line"
+  call read "+1 line"
+  call read ("3 line", "-1 line")
+  call read ("3 line", "-2 line", "+1 line")
+  call read ("+99 line", "2 line")
+  call read ("5 char", "2 line")
+  call read ("linein", "5 char", "2 line")
+  call read ("5 char", "linein 2", "2 line")
+  call read ("5 char", "linein", "2 line")
+  call read ("5 char", "linein"), 2
+  exit
+
+  read:
+  s~open
+  do c over arg(1)
+    select
+      when c = "linein" then s~linein
+      when c~abbrev("linein") then s~linein(c~subwords(2))
+      otherwise s~seek(c)
+    end
+  end
+  if arg(2, "exists") then
+    self~assertSame("second line", s~linein(arg(2)), arg(1)~makeArray~~append("("arg(2)")")~toString(, ", "))
+  else
+    self~assertSame("second line", s~linein, arg(1)~makeArray~toString(, ", "))
+  s~close
+  return
 
 
 ::options novalue syntax
