@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2017-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2017-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,105 +35,99 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
-  group~add(.LiteralsSingleQuote.testGroup)
-  group~add(.LiteralsDoubleQuote.testGroup)
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Literals.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
-
-::class LiteralsSingleQuote.testGroup subclass Literals.testGroup public
-::constant quote "'"
-
-::class LiteralsDoubleQuote.testGroup subclass Literals.testGroup public
-::constant quote '"'
-
+::requires 'ooTest.frm'
 
 ::class Literals.testGroup subclass ooTestCase public
 
-::method quoteHex
-  use strict arg string
-  quote = self~quote
-  return quote || string || quote || "x"
+::method q
+  return '"' || arg(1) || '"'
 
-::method quoteBin
-  use strict arg string
-  quote = self~quote
-  return quote || string || quote || "b"
+::method hex
+  return '"' || arg(1) || '"x'
+
+::method bin
+  return '"' || arg(1) || '"b'
+
+
+-- literal string tests
+
+::method test_string_range
+  all = xrange()
+  all = all~changeStr(.String~cr, "") -- remove CR
+  all = all~changeStr(.String~nl, "") -- remove LF
+  all = all~changeStr('1a'x, "") -- remove end-of-file
+  self~assertSame(all, self~runDynamicSource("return" self~q(all~changeStr('"', '""'))))
+
+  -- this works too, almost surprisingly .. but wouldn't on a "real" literal
+  all = xrange()
+  self~assertSame(all, self~runDynamicSource("return" self~q(all~changeStr('"', '""'))))
 
 
 -- literal hexadecimal string tests
 
-::method test_hexadecimal_blank
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex(" "))
+::method test_hexadecimal_null
+  self~assertSame("", ''x)
+  self~assertSame("", ""x)
 
-::method test_hexadecimal_tab
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex(.String~tab))
+-- Incorrect location of whitespace character in position .. in hexadecimal string
+::method test_hexadecimal_invalid_whitespace_1
+  self~assertSyntaxError((15.1, 1), self~hex(" "))
+::method test_hexadecimal_invalid_whitespace_2
+  self~assertSyntaxError((15.1, 1), self~hex(.String~tab))
+::method test_hexadecimal_invalid_whitespace_3
+  self~assertSyntaxError((15.1, 1), self~hex(" 01"))
+::method test_hexadecimal_invalid_whitespace_4
+  self~assertSyntaxError((15.1, 1), self~hex(.String~tab "01"))
+::method test_hexadecimal_invalid_whitespace_5
+  self~assertSyntaxError((15.1, 3), self~hex("01 "))
+::method test_hexadecimal_invalid_whitespace_6
+  self~assertSyntaxError((15.1, 3), self~hex("01" || .String~tab))
 
-::method test_hexadecimal_invalid_dot
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("."))
+-- Hexadecimal strings must be grouped in units that are multiples of two characters
+::method test_hexadecimal_invalid_group_1
+  self~assertSyntaxError(15.5, self~hex("1 1"))
+::method test_hexadecimal_invalid_group_2
+  self~assertSyntaxError(15.5, self~hex(1 || .String~tab || 1))
+::method test_hexadecimal_invalid_group_3
+  self~assertSyntaxError(15.5, self~hex("11 1"))
+::method test_hexadecimal_invalid_group_4
+  self~assertSyntaxError(15.5, self~hex("1 100"))
+::method test_hexadecimal_invalid_group_5
+  self~assertSyntaxError(15.5, self~hex("10 011"))
+::method test_hexadecimal_invalid_group_6
+  self~assertSyntaxError(15.5, self~hex("101 1 111"))
 
-::method test_hexadecimal_invalid_char
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("X"))
-
-::method test_hexadecimal_leading_blank
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex(" 41"))
-
-::method test_hexadecimal_leading_tab
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex(.String~tab || "41"))
-
-::method test_hexadecimal_trailing_blank
-   -- Incorrect location of whitespace character in position 3 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex("41 "))
-
-::method test_hexadecimal_trailing_tab
-   -- Incorrect location of whitespace character in position 3 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex("41" || .String~tab))
-
-::method test_hexadecimal_inner_blank_2_b_1
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.5, "s =" self~quoteHex("41 4"))
-
-::method test_hexadecimal_inner_tab_2_t_1
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.5, "s =" self~quoteHex("41" || .String~tab || "4"))
-
-::method test_hexadecimal_inner_blank_1_b_3
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.5, "s =" self~quoteHex("4 142"))
-
-::method test_hexadecimal_inner_tab_1_t_3
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.5, "s =" self~quoteHex("4" || .String~tab || "142"))
+-- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
+::method test_hexadecimal_invalid_char_1
+  self~assertSyntaxError(15.3, self~hex(.String~cr))
+::method test_hexadecimal_invalid_char_2
+  self~assertSyntaxError(15.3, self~hex(.String~nl))
+::method test_hexadecimal_invalid_char_3
+  self~assertSyntaxError(15.3, self~hex(.))
+::method test_hexadecimal_invalid_char_4
+  self~assertSyntaxError(15.3, self~hex("X"))
+::method test_hexadecimal_invalid_char_5
+  self~assertSyntaxError(15.3, self~hex("41-42"))
 
 ::method test_hexadecimal_single
    -- '0'x .. 'f'x
    n = 0
    do hex over "0123456789abcdef"~makeArray("")
-     self~assertSame(n~d2c, self~runDynamicSource("return" self~quoteHex(hex)))
+     self~assertSame(n~d2c, self~runDynamicSource("return" self~hex(hex)))
      n += 1
    end
    -- 'A'x .. 'F'x
    n = 10
    do hex over "ABCDEF"~makeArray("")
-     self~assertSame(n~d2c, self~runDynamicSource("return" self~quoteHex(hex)))
+     self~assertSame(n~d2c, self~runDynamicSource("return" self~hex(hex)))
      n += 1
    end
 
@@ -142,81 +136,80 @@ return testResult
    n = 0
    do first over "0123456789abcdef"~makeArray("")
      do second over "0123456789ABCDEF"~makeArray("")
-       self~assertSame(n~d2c, self~runDynamicSource("return" self~quoteHex(first || second)))
+       self~assertSame(n~d2c, self~runDynamicSource("return" self~hex(first || second)))
        n += 1
      end
    end
 
-::method test_hexadecimal_all_allowed
-   self~assertSame(.String~xdigit~x2c, '0123456789ABCDEFabcdef'x)
-
-
-::method test_hexadecimal_whitespace
+::method test_hexadecimal
    tab = .String~tab
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41 42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41  42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41   42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41" || tab || "42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41" || tab || tab || "42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41" || tab || tab || tab || "42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41 " || tab || "42")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteHex("41" || tab || " 42")))
+   self~assertSame("AB", "41 42"x)
+   self~assertSame("AB", "41  42"x)
+   self~assertSame("AB", "41   42"x)
+   self~assertSame("AB", self~runDynamicSource("return" self~hex("41" || tab || "42")))
+   self~assertSame("AB", self~runDynamicSource("return" self~hex("41" || tab || tab || "42")))
+   self~assertSame("AB", self~runDynamicSource("return" self~hex("41" || tab || tab || tab || "42")))
+   self~assertSame("AB", self~runDynamicSource("return" self~hex("41 " || tab || "42")))
+   self~assertSame("AB", self~runDynamicSource("return" self~hex("41" || tab || " 42")))
+
+   self~assertSame('04'x, "4"x)
+   self~assertSame("A", "41"x)
+   self~assertSame('00'x || "A", "041"x)
+   self~assertSame("AB", "4142"x)
+   self~assertSame('04'x || "AB", "441 42"x)
+   self~assertSame("ABC", "414243"x)
+
+   self~assertSame(.String~xdigit~x2c, '0123456789ABCDEFabcdef'x)
 
 
 -- literal binary string tests
 
-::method test_binary_blank
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin(" "))
+::method test_binary_null
+  self~assertSame("", ''x)
+  self~assertSame("", ""x)
 
-::method test_binary_tab
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin(.String~tab))
+-- Incorrect location of whitespace character in position .. in binary string
+::method test_binary_invalid_whitespace_1
+   self~assertSyntaxError((15.2, 1), self~bin(" "))
+::method test_binary_invalid_whitespace_2
+   self~assertSyntaxError((15.2, 1), self~bin(.String~tab))
+::method test_binary_invalid_whitespace_3
+   self~assertSyntaxError((15.2, 1), self~bin(" 0101"))
+::method test_binary_invalid_whitespace_4
+   self~assertSyntaxError((15.2, 1), self~bin(.String~tab "0101"))
+::method test_binary_invalid_whitespace_5
+   self~assertSyntaxError((15.2, 5), self~bin("0101 "))
+::method test_binary_invalid_whitespace_6
+   self~assertSyntaxError((15.2, 5), self~bin("0101" || .String~tab))
 
-::method test_binary_invalid_dot
-   -- Only 0, 1, and whitespace characters are valid in a binary string
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("."))
+-- Binary strings must be grouped in units that are multiples of two characters
+::method test_binary_invalid_group_1
+   self~assertSyntaxError(15.6, self~bin("1 1"))
+::method test_binary_invalid_group_2
+   self~assertSyntaxError(15.6, self~bin(1 || .String~tab || 1))
+::method test_binary_invalid_group_3
+   self~assertSyntaxError(15.6, self~bin("1111 1"))
+::method test_binary_invalid_group_4
+   self~assertSyntaxError(15.6, self~bin("1101 11"))
+::method test_binary_invalid_group_5
+   self~assertSyntaxError(15.6, self~bin("1011 1 1111"))
 
-::method test_binary_invalid_char
-   -- Only 0, 1, and whitespace characters are valid in a binary string
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("2"))
-
-::method test_binary_leading_blank
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin(" 0000"))
-
-::method test_binary_leading_tab
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin(.String~tab || "0000"))
-
-::method test_binary_trailing_blank
-   -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000 "))
-
-::method test_binary_trailing_tab
-   -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000" || .String~tab))
-
-::method test_binary_inner_blank_4_b_3
-   -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.6, "s =" self~quoteBin("0000 111"))
-
-::method test_binary_inner_tab_4_t_3
-   -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.6, "s =" self~quoteBin("0000" || .String~tab || "111"))
-
-::method test_binary_inner_blank_1_b_5
-   -- Incorrect location of whitespace character in position 2 in binary string
-   self~assertSyntaxError(15.6, "s =" self~quoteBin("0 11111"))
-
-::method test_binary_inner_tab_1_t_5
-   -- Incorrect location of whitespace character in position 2 in binary string
-   self~assertSyntaxError(15.6, "s =" self~quoteBin("0" || .String~tab || "11111"))
+-- Only 0, 1, and whitespace characters are valid in a binary string
+::method test_binary_invalid_char_1
+   self~assertSyntaxError(15.4, self~bin(.String~cr))
+::method test_binary_invalid_char_2
+   self~assertSyntaxError(15.4, self~bin(.String~nl))
+::method test_binary_invalid_char_3
+   self~assertSyntaxError(15.4, self~bin(.))
+::method test_binary_invalid_char_4
+   self~assertSyntaxError(15.4, self~bin("X"))
+::method test_binary_invalid_char_5
+   self~assertSyntaxError(15.4, self~bin("10-01"))
 
 ::method test_binary_single
    -- '0'b, '1'b
    do bin = 0 to 1
-     self~assertSame(bin~d2c, self~runDynamicSource("return" self~quoteBin(bin)))
+     self~assertSame(bin~d2c, self~runDynamicSource("return" self~bin(bin)))
    end
 
 ::method test_binary_nibble
@@ -226,7 +219,7 @@ return testResult
      do second = 0 to 1
        do third = 0 to 1
          do fourth = 0 to 1
-           self~assertSame(n~d2c, self~runDynamicSource("return" self~quoteBin(first || second || third || fourth)))
+           self~assertSame(n~d2c, self~runDynamicSource("return" self~bin(first || second || third || fourth)))
            n += 1
          end
        end
@@ -237,27 +230,31 @@ return testResult
   -- '1'b .. '111..(total of 64)..111'b
   numeric digits 20
   do power = 1 to 64
-    self~assertSame((2 ** power - 1)~d2c, self~runDynamicSource("return" self~quoteBin(1~copies(power))))
+    self~assertSame((2 ** power - 1)~d2c, self~runDynamicSource("return" self~bin(1~copies(power))))
   end
 
-::method test_binary_whitespace
+::method test_binary
    tab = .String~tab
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100 0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100  0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100   0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || "0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || tab || "0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || tab || tab || "0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100 " || tab || "0001")))
-   self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || " 0001")))
+   self~assertSame("A", "0100 0001"b)
+   self~assertSame("A", "0100  0001"b)
+   self~assertSame("A", "0100   0001"b)
+   self~assertSame("A", self~runDynamicSource("return" self~bin("0100" || tab || "0001")))
+   self~assertSame("A", self~runDynamicSource("return" self~bin("0100" || tab || tab || "0001")))
+   self~assertSame("A", self~runDynamicSource("return" self~bin("0100" || tab || tab || tab || "0001")))
+   self~assertSame("A", self~runDynamicSource("return" self~bin("0100 " || tab || "0001")))
+   self~assertSame("A", self~runDynamicSource("return" self~bin("0100" || tab || " 0001")))
 
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 0001 0100 0010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 0001  01000010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 00010100  0010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100   000101000010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("01000001 0100 0010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("01000001  01000010")))
-   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("010000010100  0010")))
+   self~assertSame("AB", "0100 0001 0100 0010"b)
+   self~assertSame("AB", "0100 0001  01000010"b)
+   self~assertSame("AB", "0100 00010100  0010"b)
+   self~assertSame("AB", "0100   000101000010"b)
+   self~assertSame("AB", "01000001 0100 0010"b)
+   self~assertSame("AB", "01000001  01000010"b)
+   self~assertSame("AB", "010000010100  0010"b)
+
+   self~assertSame(0, "00110000"b)
+   self~assertSame(0, "0110000"b)
+   self~assertSame(0, "110000"b)
 
 
-::options novalue error
+::options all syntax
