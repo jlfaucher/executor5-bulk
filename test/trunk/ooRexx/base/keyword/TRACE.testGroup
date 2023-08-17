@@ -184,13 +184,13 @@ message name isn't traced
     -- When we see a method entry we ignore the last token package name
     -- e. g. >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
       if line~left(line~wordIndex(9) - 1) \== actual[i]~left(actual[i]~wordIndex(9) - 1) then
-      self~assertFail("11 trace output mismatch at line" i line msg)
+      self~assertFail("trace output mismatch at line" i line msg)
     end
     else do
       -- The IF test shows that actual trace output may have trailing blanks
       -- (which may be a @@bug), so we strip trailing blanks for comparison.
       if line \== actual[i]~strip("t") then
-        self~assertFail("22 trace output mismatch at line" i line msg)
+        self~assertFail("trace output mismatch at line" i line msg)
     end
   end
 
@@ -731,27 +731,26 @@ message name isn't traced
   ::end
 
 -- trace REPLY keyword instruction
--- to work properly, tests using REPLY require the special test framework
--- marker "replyAssert"
-::method test_trace_reply_replyAssert
-  t = .TraceOutput~destination(.ArrayStream~new)
-  start = .line; trace i
+::method trace_reply unguarded
+  -- why does this require UNGUARDED for the reply thread to run?
+  expose trace_reply_start
+  trace_reply_start = .line; trace i
   reply 1
   trace off
-
-/*
-  -- before comparing trace output, we remove any trailing >I> Method ...
-  -- this will occur between the trace part of interest and the trailing "trace off"
-  if t[t~last - 1]~strip("l")~startsWith(">I> Method") then
-    t~delete(t~last - 1)
-*/
-  self~assertTraceOutput(.resources~reply, t, start)
+::method test_trace_reply
+  expose trace_reply_start
+  t = .TraceOutput~destination(.ArrayStream~new)
+  self~trace_reply
+  do i = 1 to 10 while t~items < 5
+    call SysSleep 0.001 -- wait for the REPLY thread to finish
+  end
+  self~assertTraceOutput(.resources~reply, t, trace_reply_start)
 
   ::resource reply end "  ::end"
      1 *-* reply 1
        >L>   "1"
        >>>   "1"
-       >I> Method "TEST_TRACE_REPLY_REPLYASSERT" with scope "TRACE.TESTGROUP" in package "...".
+       >I> Method "TRACE_REPLY" with scope "TRACE.TESTGROUP" in package "...".
   ::end
 
 -- RETURN is already tested with PROCEDURE
