@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1068,10 +1068,11 @@ A few of these are also used in parsing templates, and the equal sign
 <indexterm><primary>equal</primary>
 <secondary>sign</secondary>
 <tertiary>to indicate assignment</tertiary></indexterm>
-and the sequences <computeroutput>+= -= *= /= %= //= ||= &amp;= |= &amp;&amp;=</computeroutput>
-are also
-used to indicate assignment. Whitespace characters adjacent to operator
-characters are removed. Therefore, the following are identical in meaning:
+and the sequences <literal>+= -= *= /= %= //= ||= &amp;= |= &amp;&amp;= **=</literal>
+are also used to indicate assignment.
+Whitespace characters and standard Rexx comments adjacent to operator
+characters and within operator character sequences are ignored.
+Therefore, the following are identical in meaning:
 <example>
 <title>White space and numbers</title>
 <programlisting>
@@ -1079,6 +1080,7 @@ characters are removed. Therefore, the following are identical in meaning:
 345 >=123
 345 >= 123
 345 > = 123
+345 >/*not smaller*/ = 123
 </programlisting>
 </example>
 </para>
@@ -2558,8 +2560,9 @@ alphabetic characters translated to uppercase).</para>
 </programlisting>
 </example>
 </para>
-<para>Constant symbols, where the first character is a period and the second character
-is alphabetic, are <xref linkend="ensym" xrefstyle="template:environment symbols"/>
+<para>Constant symbols, where the first character is a period, which
+have at least one other character, and which are not a valid Rexx number,
+are <xref linkend="ensym" xrefstyle="template:environment symbols"/>
 and may have a value other than the symbol name.
 </para>
 </section>
