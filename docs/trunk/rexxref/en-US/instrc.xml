@@ -1621,7 +1621,8 @@ such as DO, LOOP, SELECT, or the IF instruction itself. A null clause is not an
 instruction, so putting an extra semicolon (or label) after THEN or ELSE is
 not equivalent to putting a dummy instruction (as it would be in C). The
 NOP instruction is provided for this purpose.</para></listitem>
-<listitem><para>The symbol THEN cannot be used within
+<listitem><para>Except when within a bracketed subexpression,
+the symbol THEN cannot be used within
 <emphasis role="italic">expression</emphasis>, because the
 keyword THEN is treated differently in that it need not start a clause. This
 allows the expression on the IF clause to be ended by THEN, without a semicolon
@@ -3303,7 +3304,8 @@ as DO, LOOP, IF, or the SELECT instruction itself.</para></listitem>
 semicolon (or
 label) after a THEN clause is not equivalent to putting a dummy instruction.
 The NOP instruction is provided for this purpose.</para></listitem>
-<listitem><para>The symbol THEN cannot be used within
+<listitem><para>Except when within a bracketed subexpression,
+the symbol THEN cannot be used within
 <emphasis role="italic">expression</emphasis>, because the
 keyword THEN is treated differently in that it need not start a clause. This
 allows the expression on the WHEN clause to be ended by the THEN without a
