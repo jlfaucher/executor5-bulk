@@ -5537,13 +5537,13 @@ no such object, it returns, by default, the string
 <example id="ex.bif-value-3">
 <title>Builtin function VALUE</title>
 <programlisting>
-/* Assume the environment name MYNAME identifies the string "Simon"    */
-name = value("MYNAME", ,"") /* Sends MYNAME message to the environment */
-name = .myname              /* Same as previous instruction            */
-say "Hello," name           /* Produces: "Hello, Simon"                */
-/* Assume the environment name NONAME does not exist.                  */
-name = value("NONAME", ,"") /* Sends NONAME message to the environment */
-say "Hello," name           /* Produces:  "Hello, .NONAME"             */
+-- assume the environment name MYNAME identifies the string "Simon"
+name = value("MYNAME", , "")       -- sends MYNAME message to the environment
+say "Hello," name                  -- "Hello, Simon"
+
+-- Assume the environment name NONAME does not exist
+name = value("NONAME", , "")       -- sends NONAME message to the environment
+say "Hello," name                  -- "Hello, .NONAME"
 </programlisting>
 </example>
 </para>
@@ -5551,9 +5551,9 @@ say "Hello," name           /* Produces:  "Hello, .NONAME"             */
 Include a <emphasis role="italic">newvalue</emphasis> and specify
 <emphasis role="italic">selector</emphasis> as the
 null string. The language processor sends the message
-<emphasis role="italic">name</emphasis> (with <computeroutput>=</computeroutput>
+<emphasis role="italic">name</emphasis> (with <literal>=</literal>
 appended) and the single argument <emphasis role="italic">newvalue</emphasis>
-to the current
+to the
 environment object. After receiving this message, the environment identifies
 the object <emphasis role="italic">newvalue</emphasis> by the name
 <emphasis role="italic">name</emphasis>.</para>
@@ -5561,11 +5561,8 @@ the object <emphasis role="italic">newvalue</emphasis> by the name
 <example id="ex.bif-value-4">
 <title>Builtin function VALUE</title>
 <programlisting>
-name = value("MYNAME","David","") /* Sends "MYNAME=("David") message  */
-/* to the environment.                                                */
-/* You could also use:                                                */
-/*   call value "MYNAME","David",""                                   */
-say "Hello," .myname              /* Produces:  "Hello, David"        */
+call value "MYNAME", "David", ""   -- sends MYNAME=("David") message to the environment
+say "Hello," value("MYNAME", , "") -- "Hello, David"
 </programlisting>
 </example>
 </para>
