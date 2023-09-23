@@ -406,102 +406,138 @@ platforms on which they are available.</para>
 </imageobject>
 </mediaobject>
 
-<para>Displays a Windows message box.</para>
-<para>RxMessageBox returns the selected message box push button. Possible values
-are: </para>
+<para>Displays a modal dialog box with a title, a message text,
+an optional icon, and a set of buttons.
+The dialog box is displayed using the Windows MessageBox() function.
+</para>
+<para>RxMessageBox returns one of the following integer values indicating
+which button the user clicked.
+</para>
 <variablelist>
 <varlistentry><term>1</term>
-<listitem><para>The OK push button was pressed
+<listitem><para>The <emphasis role="bold">OK</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
-<listitem><para>The CANCEL push button was pressed
+<listitem><para>The <emphasis role="bold">Cancel</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>3</term>
-<listitem><para>The ABORT push button was pressed
+<listitem><para>The <emphasis role="bold">Abort</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>4</term>
-<listitem><para>The RETRY push button was pressed
+<listitem><para>The <emphasis role="bold">Retry</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>5</term>
-<listitem><para>The IGNORE push button was pressed
+<listitem><para>The <emphasis role="bold">Ignore</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>6</term>
-<listitem><para>The YES push button was pressed
+<listitem><para>The <emphasis role="bold">Yes</emphasis> button was pressed
 </para></listitem></varlistentry>
 <varlistentry><term>7</term>
-<listitem><para>The NO push button was pressed
+<listitem><para>The <emphasis role="bold">No</emphasis> button was pressed
+</para></listitem></varlistentry>
+<varlistentry><term>10</term>
+<listitem><para>The <emphasis role="bold">Try Again</emphasis> button was pressed
+</para></listitem></varlistentry>
+<varlistentry><term>11</term>
+<listitem><para>The <emphasis role="bold">Continue</emphasis> button was pressed
 </para></listitem></varlistentry>
 </variablelist>
-<para>If a message box has a "CANCEL" button, the function returns the
-2 value if either the ESC key is pressed or the "CANCEL" button is
-selected.  If the message box has no "CANCEL" button, pressing ESC
-has no effect.</para>
+<para>If a message box has a <emphasis role="bold">Cancel</emphasis> button,
+the function returns the value 2 if either the ESC key is pressed or the
+<emphasis role="bold">Cancel</emphasis> button is selected.
+If the message box has no <emphasis role="bold">Cancel</emphasis> button,
+pressing ESC will have no effect unless an <emphasis role="bold">OK</emphasis>
+button is present.
+If an <emphasis role="bold">OK</emphasis> is displayed and the user presses ESC,
+the return value will be 1.
+</para>
+<para>If the Windows MessageBox() function fails, the return value is zero.
+</para>
 <variablelist>
+
 <varlistentry><term><emphasis role="italic">text</emphasis></term>
 <listitem><para>The message box text.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">title</emphasis></term>
-<listitem><para>The message box title.  The default title is &quot;Error!&quot;.
+<listitem><para>The message box title.  The default title is <literal>Error</literal>.
 </para></listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">button</emphasis></term>
-<listitem><para>The message box push button style. The allowed styles are:
+<listitem><para>The message box push button style.
 <variablelist>
-<varlistentry><term>"OK"</term>
-<listitem><para>A single OK push button.
+<varlistentry><term><literal>OK</literal></term>
+<listitem><para>The message box contains one push button: <emphasis role="bold">OK</emphasis>. This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>"OKCANCEL"</term>
-<listitem><para>An OK push button and a CANCEL push button.
+<varlistentry><term><literal>OKCANCEL</literal></term>
+<listitem><para>The message box contains two push buttons: <emphasis role="bold">OK</emphasis> and <emphasis role="bold">Cancel</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>"RETRYCANCEL"</term>
-<listitem><para>A RETRY push button and a CANCEL push button.
+<varlistentry><term><literal>RETRYCANCEL</literal></term>
+<listitem><para>The message box contains two push buttons: <emphasis role="bold">Retry</emphasis> and <emphasis role="bold">Cancel</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>"ABORTRETRYIGNORE"</term>
-<listitem><para>An ABORT push button, a RETRY push button and an IGNORE push
-button.</para></listitem></varlistentry>
-<varlistentry><term>"YESNO"</term>
-<listitem><para>A YES push button and a NO push button.
+<varlistentry><term><literal>ABORTRETRYIGNORE</literal></term>
+<listitem><para>The message box contains three push buttons: <emphasis role="bold">Abort</emphasis>, <emphasis role="bold">Retry</emphasis>, and <emphasis role="bold">Ignore</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>"YESNOCANCEL"</term>
-<listitem><para>A YES push button, a NO push button and a CANCEL push button.
+<varlistentry><term><literal>CANCELTRYCONTINUE</literal></term>
+<listitem><para>The message box contains three push buttons: <emphasis role="bold">Cancel</emphasis>, <emphasis role="bold">Try Again</emphasis>, and <emphasis role="bold">Continue</emphasis>.
+Use this message box button style instead of <literal>ABORTRETRYIGNORE</literal>.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>YESNO</literal></term>
+<listitem><para>The message box contains two push buttons: <emphasis role="bold">Yes</emphasis> and <emphasis role="bold">No</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>YESNOCANCEL</literal></term>
+<listitem><para>The message box contains three push buttons: <emphasis role="bold">Yes</emphasis>, <emphasis role="bold">No</emphasis>, and <emphasis role="bold">Cancel</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
-The default push button style is OK.</para>
+</para>
 </listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">icon</emphasis></term>
-<listitem><para>The message box icon style. The allowed styles are:
+<listitem><para>The message box icon. The default is <literal>NONE</literal>. Allowed icons are:
 <variablelist>
-<varlistentry><term>"NONE"</term>
+<varlistentry><term><literal>NONE</literal></term>
 <listitem><para>No icon is displayed.
 </para></listitem></varlistentry>
-<varlistentry><term>"HAND"</term>
-<listitem><para>A hand icon is displayed.
+<varlistentry><term><literal>INFORMATION</literal>, <literal>ASTERISK</literal></term>
+<listitem><para>A stop-sign icon appears in the message box.
 </para></listitem></varlistentry>
-<varlistentry><term>"QUESTION"</term>
-<listitem><para>A question mark icon is displayed.
+<varlistentry><term><literal>WARNING</literal>, <literal>EXCLAMATION</literal></term>
+<listitem><para>An exclamation-point icon appears in the message box.
 </para></listitem></varlistentry>
-<varlistentry><term>"EXCLAMATION"</term>
-<listitem><para>An exclamation point icon is displayed.
+<varlistentry><term><literal>ERROR</literal>, <literal>HAND</literal>, <literal>STOP</literal></term>
+<listitem><para>An icon consisting of a lowercase letter i in a circle appears in the message box.
 </para></listitem></varlistentry>
-<varlistentry><term>"ASTERISK"</term>
-<listitem><para>An asterisk icon is displayed.
-</para></listitem></varlistentry>
-<varlistentry><term>"INFORMATION"</term>
-<listitem><para>An information icon is displayed.
-</para></listitem></varlistentry>
-<varlistentry><term>"STOP"</term>
-<listitem><para>A stop icon is displayed.
-</para></listitem></varlistentry>
-<varlistentry><term>"QUERY"</term>
-<listitem><para>A query icon is displayed.
-</para></listitem></varlistentry>
-<varlistentry><term>"WARNING"</term>
-<listitem><para>A warning icon is displayed.
-</para></listitem></varlistentry>
-<varlistentry><term>"ERROR"</term>
-<listitem><para>An error icon is displayed.
+<varlistentry><term><literal>QUESTION</literal>, <literal>QUERY</literal></term>
+<listitem><para>A question-mark icon appears in the message box. This icon is no longer recommended.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem><para>More than one of the following options may be specified.
+If neither <literal>DEFBUTTON2</literal>, <literal>DEFBUTTON3</literal>,
+nor <literal>DEFBUTTON4</literal> is specified, the first button is the
+default button.
+Allowed options are:
+<variablelist>
+<varlistentry><term><literal>DEFBUTTON2</literal></term>
+<listitem><para>The second button is the default button.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>DEFBUTTON3</literal></term>
+<listitem><para>The third button is the default button.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>DEFBUTTON4</literal></term>
+<listitem><para>The fourth button is the default button.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>RIGHT</literal></term>
+<listitem><para>The message box text is right-justified.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>TOPMOST</literal></term>
+<listitem><para>The message box is placed above all non-topmost windows and
+stays above them, even when the window is deactivated.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>RxMessageBox</secondary>
@@ -513,9 +549,9 @@ The default push button style is OK.</para>
 <example id="ex.rxmessagebox">
 <title>RexxUtil &mdash; RxMessageBox</title>
 <programlisting>
-/* Give option to quit        */
-if RxMessageBox("Shall we continue", , "YesNo", "Question") = 7
-Then Exit                          /* quit option given, exit    */
+-- Give option to quit
+if RxMessageBox("Shall we continue?", "", "YesNo", "Question") = 7
+  then exit  -- "No" button clicked, exit
 </programlisting>
 </example>
 </section>
