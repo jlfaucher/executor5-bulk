@@ -43,211 +43,130 @@
     #
     #########################################################################
 -->
-<chapter><title>KVM Guest Operating Systems</title>
+<chapter><title>Guest Operating Systems</title>
 
-<section><title>Windows XP Professional w/SP2</title>
+<section><title>Overview of platforms and operating systems</title>
 
-<para>The following are the virtual machine configuration settings for
-Windows XP Professional.
+<para>ooRexx is built on both native platforms and in virtual machines. This
+is a listing of the platforms 2023-10-18:
 </para>
-
-<itemizedlist>
-<listitem><para>Typical device settings
-</para></listitem>
-<listitem><para>Guest operating system - Microsoft Windows XP Professional
-</para></listitem>
-<listitem><para>Name - Windows XP Professional
-</para></listitem>
-<listitem><para>Network configuration - Bridged networking
-</para></listitem>
-<listitem><para>Disk size - 10GiB, do not pre-allocate space, use the QCOW2 type
-</para></listitem>
-<listitem><para>Memory - 512MiB
-</para></listitem>
-</itemizedlist>
-
-<para>The following are the settings used during the installation of
-Windows XP Professional.
-</para>
-
-<itemizedlist>
-<listitem><para>Format the disk using NTFS
-</para></listitem>
-<listitem><para>Computer name - ORXWINXP
-</para></listitem>
-<listitem><para>Workgroup - OOREXX
-</para></listitem>
-</itemizedlist>
-
-<para>The following are the post installation steps and settings for
-Windows XP Professional.
-</para>
-
-<itemizedlist>
-<listitem><para>Create the buildorx account and make it an administrator
-</para></listitem>
-<listitem><para>Map drive letter (P:) to host PUBLIC share
-</para></listitem>
-<listitem><para>Install Putty and pscp
-</para></listitem>
-<listitem><para>Install Subversion
-</para></listitem>
-<listitem><para>Install Visual Studio .NET (Visual C++ 7.0)
-</para></listitem>
-<listitem><para>Update the system PATH to point to the Xerces
-shared location (P: drive)
-</para></listitem>
-<listitem><para>Update the system PATH to point to the Xalan
-shared location (P: drive)
-</para></listitem>
-</itemizedlist>
-
 </section>
 
-<section><title>Fedora 17</title>
-
-<para>The following are the virtual machine configuration settings for
-Fedora.
+<section><title>Overview of Physical Machines</title>
+<para>ooRexx is built on these platforms
 </para>
 
 <itemizedlist>
-<listitem><para>Typical device settings
-</para></listitem>
-<listitem><para>Guest operating system - Fedora
-</para></listitem>
-<listitem><para>Name - fedora17-i386
-</para></listitem>
-<listitem><para>Network configuration - Bridged networking
-</para></listitem>
-<listitem><para>Disk size - 10GB, do not pre-allocate space, use the QCOW2 type
-</para></listitem>
-<listitem><para>Memory - 512MiB
-</para></listitem>
+    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox, running macOS Catalina
+    </para></listitem>
+    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 ARMv7 Quad Core Processor, ARM 32 bit Running Raspbian Pi OS
+    </para></listitem>
+    <listitem><para>pos-Pi-3BPlus Raspberry 3B+, SoC: Broadcom BCM2837B0 quad-core A53 (ARMv8) 64-bit Running Raspberry Pi OS (Debian GNU/Linux 11 (Linux 5.15.76) on aarch64)
+    </para></listitem>
+    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM) i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, 64-bit operating system, x64-based processor
+    </para></listitem>
+    <listitem><para>ams-02 René's Raspberry Pi 4 Model B (aarch64) with Ubuntu 20.04.2
+    </para></listitem>
+    <listitem><para>ubuntu16 Erich's Ubuntu 16.04 agent
+    </para></listitem>
+    <listitem><para>Marks-M1-Mac Mark Hesslings M1 Mac running macOS Monterey 12.1 or later
+    </para></listitem>
 </itemizedlist>
-
-<para>The following are the settings used during the installation of
-Fedora.
-</para>
-
-<itemizedlist>
-<listitem><para>Create a standard disk layout
-</para></listitem>
-<listitem><para>Install all the development and Publishing tools
-</para></listitem>
-<listitem><para>Disable the firewall
-</para></listitem>
-<listitem><para>Disable SELinux
-</para></listitem>
-<listitem><para>Create the buildorx account
-</para></listitem>
-</itemizedlist>
-
-<para>The following are the post installation steps and settings for
-Fedora.
-</para>
-
-<itemizedlist>
-<listitem><para>Download and install the Fedora security updates.
-</para></listitem>
-<listitem><para>Next we need to generate the SSH public/private keys for the
-server.</para>
-<programlisting>
-# ssh-keygen
-</programlisting>
-<para>Be sure to just hit return for the passphrase prompt (we do NOT want
-a passphrase). Otherwise we cannot get true automation from our scripts.
-</para>
-<para>Copy the host's public key into our authorized keys file.</para>
-<programlisting>
-# scp buildorx@build.oorexx.org:/home/buildorx/.ssh/id_rsa.pub .ssh/authorized_keys
-</programlisting>
-<para>Now copy our public key to the host.</para>
-<programlisting>
-# scp .ssh/id_rsa.pub buildorx@build.oorexx.org:/home/buildorx/xxx
-</programlisting>
-<para>Now on the host (NOT the KVM guest!) copy that key to the authorized
-keys file.</para>
-<programlisting>
-# cat xxx >> .ssh/authorized_keys
-# rm xxx
-</programlisting>
-</listitem>
-</itemizedlist>
-
 </section>
 
-<section><title>Ubuntu 10.10</title>
-
-<para>The following are the virtual machine configuration settings for
-Ubuntu.
+<section><title>Overview of Windows VMs</title>
+<para>ooRexx is built on these platforms in 32 and 64 bit versions and installers prepared
 </para>
 
 <itemizedlist>
-<listitem><para>Typical device settings
-</para></listitem>
-<listitem><para>Guest operating system - Ubuntu
-</para></listitem>
-<listitem><para>Name - ubuntu1010-i386
-</para></listitem>
-<listitem><para>Version - Ubuntu 10.10
-</para></listitem>
-<listitem><para>Network configuration - Bridged networking
-</para></listitem>
-<listitem><para>Disk size - 10GiB, do not pre-allocate space, use the QCOW2 type
-</para></listitem>
-<listitem><para>Memory - 512MiB
-</para></listitem>
+    <listitem><para>pos-vbox-Windows7 VM with 1CPU, 2GB memory, 500GB SSD, build & test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows8 VM with 1CPU, 2GB memory, 500GB SSD, build & test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows10 VM with 1CPU, 2GB memory, 500GB SSD, build & test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows11 VM with 1CPU, 2GB memory, 100GB SSD, build & test 32 and 64-bit ooRexx
+    </para></listitem>
 </itemizedlist>
+</section>
 
-<para>The following are the settings used during the installation of
-Ubuntu.
+<section><title>Overview of macOS VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version and installers prepared
 </para>
 
 <itemizedlist>
-<listitem><para>Create the buildorx account
-</para></listitem>
-<listitem><para>Create a standard disk layout
-</para></listitem>
+    <listitem><para>pos-vbox-macOS-BigSur VM with 1 CPU, 4GB memory, 212 GB SSD, running
+        macOS 11.2.2 Big Sur build & test 64-bit ooRexx, .dmg package
+    </para></listitem>
+    <listitem><para>pos-vbox-macOS-Catalina with 1 CPU, 4GB memory, 166 GB SSD, running
+        macOS 10.15 Catalina, .dmg package
+    </para></listitem>
+    <listitem><para>pos-vbox-macOS-Monterey VM with 1 CPU, 8GB memory, 166 GB SSD, running
+        macOS 12.7 Monterey, .dmg package
+    </para></listitem>
 </itemizedlist>
+</section>
 
-<para>The following are the post installation steps and settings for
-Ubuntu 10.10.
+<section><title>Overview of Debian descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version and installers prepared
 </para>
 
 <itemizedlist>
-<listitem><para>Download and install the Ubuntu security updates.
-</para></listitem>
-<listitem><para>Next we need to generate the SSH public/private keys for the
-server.</para>
-<programlisting>
-# ssh-keygen
-</programlisting>
-<para>Be sure to just hit return for the passphrase prompt (we do NOT want
-a passphrase). Otherwise we cannot get true automation from our scripts.
-</para>
-<para>Copy the host's public key into our authorized keys file.</para>
-<programlisting>
-# scp buildorx@build.oorexx.org:/home/buildorx/.ssh/id_rsa.pub .ssh/authorized_keys
-</programlisting>
-<para>Now copy our public key to the host.</para>
-<programlisting>
-# scp .ssh/id_rsa.pub buildorx@build.oorexx.org:/home/buildorx/xxx
-</programlisting>
-<para>Now on the host (NOT the VMware guest!) copy that key to the authorized
-keys file.</para>
-<programlisting>
-# cat xxx >> .ssh/authorized_keys
-# rm xxx
-</programlisting>
-</listitem>
-<listitem><para>Use apt-get to install some additional tools.</para>
-<programlisting>
-# sudo apt-get install g++ gcc subversion autoconf automake1.9 debhelper \
-  fakeroot libtool sendmail mailutils bison
-</programlisting>
-</listitem>
+    <listitem><para>pos-vbox-Debian11 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .deb package
+    </para></listitem>
+    <listitem><para>pos-vbox-Ubuntu22 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .deb package
+    </para></listitem>
+    <listitem><para>pos-vbox-LinuxMint21 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .deb package
+    </para></listitem>
 </itemizedlist>
+</section>
 
+<section><title>Overview of RPM descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version and installers prepared
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-CentOS9 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .rpm package
+    </para></listitem>
+    <listitem><para>pos-vbox-Fedora38 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .rpm package
+    </para></listitem>
+    <listitem><para>pos-vbox-OpenSuse15 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx .rpm package
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Overview of BSD descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-FreeBSD13 VM with 1CPU, 2GB memory, 100GB SSD,
+        build & test 64-bit ooRexx .pkg package
+    </para></listitem>
+    <listitem><para>pos-vbox-OpenBSD7_2 VM with 1CPU, 2GB memory, 500GB SSD,
+        build & test 64-bit ooRexx no package
+    </para></listitem>
+    <listitem><para>pos-vbox-NetBSD9 VM with 1CPU, 2GB memory, 100GB SSD,
+        build & test 64-bit ooRexx no package
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>OpenIndiana VM</title>
+<para>ooRexx is built on this platforms in 64 bit version
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-OpenIndiana_2021.10 VM with 1CPU, 2GB memory,
+        100GB SSD, build & test 64-bit ooRexx no package
+    </para></listitem>
+</itemizedlist>
 </section>
 
 </chapter>
