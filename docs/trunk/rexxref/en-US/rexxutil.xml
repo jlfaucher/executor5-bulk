@@ -44,11 +44,8 @@
     #########################################################################
 -->
 <chapter id="rexxutil"><title>Rexx Utilities (RexxUtil)</title>
-<indexterm><primary>dynamic link library (RexxUtil)</primary></indexterm>
-<indexterm><primary>shared library (RexxUtil)</primary></indexterm>
-<indexterm><primary>dllfunctions</primary></indexterm>
-<para>RexxUtil is a Dynamic Link Library (DLL) package for Windows and *nix
-platforms; the package contains external Rexx functions. These functions:</para>
+<para>RexxUtil is a function package for Windows and Unix-like platforms.
+It contains functions to:</para>
 <itemizedlist>
 <listitem><para>Manipulate operating system files and directories</para>
 </listitem>
@@ -4098,31 +4095,10 @@ page.</para></listitem></varlistentry>
 </mediaobject>
 
 <para>Returns a version number that identifies the current level of the Rexx
-Utilities package. It can be used to verify the availability of certain
-functions.</para>
+Utilities package.
+</para>
 <para>Return code: The RexxUtil version number in the format
 <computeroutput>n.m.l</computeroutput>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<para>Because this function was not part of the original packaging, a sample
-logic to check for a certain level of RexxUTIL can look as follows:</para>
-<example id="ex.sysutilversion">
-<title>RexxUtil &mdash; SysUtilVersion</title>
-<programlisting>
-If RxFuncQuery("SysUtilVersion") = 1 |,
-   SysUtilVersion() &lt; "2.00" Then
-     Say "Your RexxUTIL.DLL is not at the current level"
-</programlisting>
-</example>
-<para>If a specific function should be used that was added at a later RexxUtil
-level a similar check can be performed by querying this function as follows:
-</para>
-<example id="ex.rxfuncquery-1">
-<title>RexxUtil &mdash; RxFuncQuery</title>
-<programlisting>
-If RxFuncQuery("SysSetFileDateTime") = 1 Then
-  Say "Your RexxUtil.DLL is not at the current level"
-</programlisting>
-</example>
 </section>
 
 <section id="utlSysversion"><title>SysVersion</title>
