@@ -2343,7 +2343,6 @@ notready:
 ::method test_bug_1917
   f = .TemporaryTestFile~new(, "test_bug_1917")
   f~create(("first line", "second line", "third line"))
-  say "test_bug_1917" f~absolutePath
   s = .Stream~new(f)
 
   call read , 2
