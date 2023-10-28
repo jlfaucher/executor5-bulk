@@ -1641,7 +1641,7 @@ with blanks on the right.
 <para>Character comparison and strict comparison operations are both
 case-sensitive, and the exact collating order might depend on the
 character set used for the implementation. In an ASCII environment,
-such as Windows and *nix, the ASCII character value of digits is lower than
+such as Windows and Unix-like systems, the ASCII character value of digits is lower than
 that of the alphabetic characters,
 and that of lowercase alphabetic characters is higher than that of uppercase
 alphabetic characters.</para>
@@ -3133,20 +3133,20 @@ The underlying operating system defines
 environments external to the Rexx program. The environments selected depend
 on the caller.
 The default environment is <literal>CMD</literal> on Windows and
-<literal>sh</literal> on Unix-based systems.
+<literal>sh</literal> on Unix-like systems .
 There are three aliases for the default environment, <literal>""</literal>
 (null string), <literal>COMMAND</literal> and <literal>SYSTEM</literal>.
 These environments execute commands through the standard command
 interpreter or system shell, which is <literal>cmd.exe</literal> on
-Windows and <literal>sh</literal> on Unix-based systems.
-On Unix-based systems alternate environments
+Windows and <literal>sh</literal> on Unix-like systems .
+On Unix-like systems alternate environments
 <literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
 <literal>ksh</literal>, <literal>tcsh</literal>, and <literal>zsh</literal>
 are available, which allow execution of commands through a shell named like
 the environment, if such a shell is installed on the system.
 </para>
 <para>An additional environment <literal>PATH</literal>&mdash;available on both
-Windows and Unix-based systems&mdash;provides an alternative to command
+Windows and Unix-like systems&mdash;provides an alternative to command
 interpreter- / shell-based environments.
 It executes commands directly, without the need for a command interpreter
 or shell by searching the environment variable <literal>PATH</literal>
@@ -3313,7 +3313,7 @@ environment.</para>
 </section>
 </section>
 
-<section id="windows-unix"><title>Using Rexx on Windows and Unix</title>
+<section id="windows-unix"><title>Using Rexx on Windows and Unix-like systems</title>
 
 <section id="windows-unix-calling"><title>Calling other Rexx scripts</title>
 <para></para>
@@ -3325,7 +3325,7 @@ CALL instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
 a new process and therefore does not share .environment, .local,
-or the Windows/Unix shell environment.
+or the Windows or Unix-like systems shell environment.
 <example>
 <title>Calling other Rexx scripts</title>
 <programlisting>

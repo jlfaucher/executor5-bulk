@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -3516,14 +3516,14 @@ On Windows, returns the case-sensitivity of the Windows system directory.
 <para>Returns the file system root elements, as an array of strings.
 On Windows, each of the drives is a root element in the format
 <literal>d:\</literal>.
-On Unix, there is just one root ( <literal>/</literal> ).
+On Unix-like systems, there is just one root ( <literal>/</literal> ).
 </para>
 <example>
 <title>File class</title>
 <programlisting>
 <![CDATA[
 say .File~listRoots~toString(, " ")   -- C:\ D:\ E:\ R:\ (e. g. on Windows)
-say .File~listRoots~toString(, " ")   -- / (Unix)
+say .File~listRoots~toString(, " ")   -- / (Unix-like system)
 ]]>
 </programlisting>
 </example>
@@ -3543,7 +3543,7 @@ say .File~listRoots~toString(, " ")   -- / (Unix)
 </mediaobject>
 
 <para>Returns the separator used for file search paths,
-"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix.
+"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix-like systems.
 </para>
 <para>See also instance method <xref linkend="mthFilePathSeparator" xrefstyle="select:title"/>.
 </para>
@@ -3600,7 +3600,8 @@ say .File~searchPath("rexx")         -- e. g. /usr/local/bin/rexx
 </imageobject>
 </mediaobject>
 
-<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
+<para>Returns the file name separator used by the file system
+("\" on Windows, "/" on Unix-like systems).
 </para>
 <para>This query method is available as both an instance and class method.
 </para>
@@ -3609,7 +3610,7 @@ say .File~searchPath("rexx")         -- e. g. /usr/local/bin/rexx
 <programlisting>
 <![CDATA[
 file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
--- "dir1/dir2/file" on Unix, "dir1\dir2\file" on Windows
+-- "dir1/dir2/file" on Unix-like systems, "dir1\dir2\file" on Windows
 ]]>
 </programlisting>
 </example>
@@ -3645,7 +3646,7 @@ On Unix-like systems it returns the value of the environment variable
 </title>
 <programlisting><![CDATA[
 say .File~temporaryPath    -- (Windows e.g.) C:\Users\USER~1\AppData\Local\Temp
-say .File~temporaryPath    -- (Unix e.g.) /tmp
+say .File~temporaryPath    -- (Unix-like system e.g.) /tmp
 ]]></programlisting></example></para>
 </section>
 
@@ -3791,8 +3792,8 @@ If the two paths are equal, 0 is returned. If the target path is larger, 1 is re
 <![CDATA[call directory .File~listRoots[1]
 file1 = .File~new("file", "dir")
 file2 = .File~new("FILE", "DIR")
-file1~compareTo(file2)    -- 0 on Windows (both Files denote the same path)
-file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
+file1~compareTo(file2)  -- 0 on Windows (both Files denote the same path)
+file1~compareTo(file2)  -- 1 on Unix-like system ("/dir/file" is greater than "/DIR/FILE")
 ]]>
 </programlisting>
 </example>
@@ -3916,7 +3917,7 @@ samples = .File~new("samples")               -- samples
 file = .File~new("file", "samples")          -- samples\file
 file = .File~new("file", samples)            -- c:\program files\oorexx\samples\file
 
-/* Unix */
+/* Unix-like system */
 file = .File~new("/opt/ooRexx/")             -- /opt/ooRexx
 'cd /opt/ooRexx'
 samples = .File~new("samples")               -- samples
@@ -4003,14 +4004,15 @@ directory which is hidden. Otherwise returns &false;.
 </para>
 <para>On Windows, a file or directory is hidden when its attribute FILE_ATTRIBUTE_HIDDEN is set.
 </para>
-<para>On Unix, a file or directory is hidden when its name starts with a period character (".") or when one of its parent
+<para>On Unix-like systems, a file or directory is hidden when its name starts
+with a period character (".") or when one of its parent
 directories has a name starting with a period character.
 </para>
 <example>
 <title>File class &mdash; isHidden method</title>
 <programlisting>
 <![CDATA[
-/* Unix, when file exists */
+/* Unix-like system, when file exists */
 say .File~new("/tmp/file")~isHidden             -- 0
 say .File~new("/tmp/.file")~isHidden            -- 1
 say .File~new("/tmp/.dir/file")~isHidden        -- 1
@@ -4334,7 +4336,7 @@ The file's extension is part of the name.
 say .File~new("c:\program files\oorexx\rexx.exe")~name   -- rexx.exe
 say .File~new("c:\")~name                                -- empty string
 
-/* On Unix */
+/* On Unix-like system */
 say .File~new("/usr/local/lib/rexx.img")~name            -- rexx.img
 say .File~new("/")~name                                  -- empty string
 ]]>
@@ -4368,7 +4370,7 @@ say .File~new("c:\program files\oorexx\rexx.exe")~parent   -- c:\program files\o
 say .File~new("c:\")~parent                                -- The NIL object
 say .File~new("c:")~parent                                 -- The NIL object
 
-/* On Unix */
+/* On Unix-like system */
 say .File~new("/opt/ooRexx/bin/rexx.img")~parent           -- /opt/ooRexx/bin
 say .File~new("/")~parent                                  -- The NIL object
 ]]>
@@ -4429,7 +4431,7 @@ the final separator (if any).
 </mediaobject>
 
 <para>Returns the separator used for file search paths,
-"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix.
+"<literal>;</literal>" on Windows and "<literal>:</literal>" on Unix-like systems.
 </para>
 <para>See also class method <xref linkend="mthFilePathSeparatorClsMth" xrefstyle="select:title"/>.
 </para>
@@ -4455,7 +4457,7 @@ The new name is <emphasis role="italic">dest</emphasis>.
 </para>
 <para>On Windows, this method calls the <function>MoveFile</function> API to perform the action.
 </para>
-<para>On Unix, this method calls the <function>rename</function> API to perform the action.
+<para>On Unix-like systems, this method calls the <function>rename</function> API to perform the action.
 </para>
 </section>
 
@@ -4472,7 +4474,8 @@ The new name is <emphasis role="italic">dest</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
+<para>Returns the file name separator used by the file system
+("\" on Windows, "/" on Unix-like systems).
 </para>
 <para>This query method is available as both an instance and class method.
 </para>
@@ -7946,7 +7949,7 @@ which returns the same information.
 <para><example>
 <title>RexxInfo class &mdash; caseSensitiveFiles method</title>
 <programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    -- 0 /* e. g. Windows */
-say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
+say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix-like system */
 ]]></programlisting></example></para>
 </section>
 
@@ -8037,15 +8040,16 @@ which both also return this date as the third to fifth token of their result.
 </imageobject></mediaobject>
 </para>
 <para>Returns the platform-specific directory separator used by the file system,
-"\" on Windows, and "/" on Unix platforms.
+"\" on Windows, and "/" on Unix-like systems.
 </para>
 <para>See also <classname>File</classname> method <xref linkend="mthFileSeparatorClsMth" xrefstyle="template:separator"/>,
 which provides the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; directorySeparator method</title>
-<programlisting><![CDATA[say .RexxInfo~directorySeparator    -- "\" /* Windows */
-say .RexxInfo~directorySeparator    -- "/" /* Unix */
+<programlisting><![CDATA[
+say .RexxInfo~directorySeparator    -- "\" /* Windows */
+say .RexxInfo~directorySeparator    -- "/" /* Unix-like system */
 ]]></programlisting></example></para>
 </section>
 
@@ -8068,8 +8072,9 @@ which provides the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; endofline method</title>
-<programlisting><![CDATA[say .RexxInfo~endofline    -- '0d 0a'x /* Windows */
-say .RexxInfo~endofline    -- '0a'x /* Unix */
+<programlisting><![CDATA[
+say .RexxInfo~endofline    -- '0d 0a'x /* Windows */
+say .RexxInfo~endofline    -- '0a'x /* Unix-like system */
 ]]></programlisting></example></para>
 </section>
 
@@ -8093,7 +8098,7 @@ interpreter.
 </title>
 <programlisting><![CDATA[
 say .RexxInfo~executable    -- (Windows e.g.) C:\Program Files\ooRexx\rexx.exe
-say .RexxInfo~executable    -- (Unix e.g.) /usr/local/bin/rexx
+say .RexxInfo~executable    -- (Unix-like system e.g.) /usr/local/bin/rexx
 ]]></programlisting></example></para>
 </section>
 
@@ -8288,7 +8293,7 @@ for the currently running Rexx interpreter.
 </title>
 <programlisting><![CDATA[
 say .RexxInfo~libraryPath    -- (Windows e.g.) C:\Program Files\ooRexx
-say .RexxInfo~libraryPath    -- (Unix e.g.) /usr/local/lib/
+say .RexxInfo~libraryPath    -- (Unix-like systems e.g.) /usr/local/lib/
 ]]></programlisting></example></para>
 </section>
 
@@ -8517,14 +8522,15 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </imageobject></mediaobject>
 </para>
 <para>Returns the platform-specific path separator used used for file search paths,
-";" on Windows, and ":" on Unix platforms.
+";" on Windows, and ":" on Unix-like systems.
 </para>
 <para>See also <classname>File</classname> method <xref linkend="mthFilePathSeparatorClsMth" xrefstyle="template:pathSeparator"/>.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; pathSeparator method</title>
-<programlisting><![CDATA[say .RexxInfo~pathSeparator    -- ";" /* Windows */
-say .RexxInfo~pathSeparator    -- ":" /* Unix */
+<programlisting><![CDATA[
+say .RexxInfo~pathSeparator    -- ";" (Windows)
+say .RexxInfo~pathSeparator    -- ":" (Unix-like system)
 ]]></programlisting></example></para>
 </section>
 
@@ -8546,7 +8552,8 @@ which returns the same information as its first token.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; platform method</title>
-<programlisting><![CDATA[say .RexxInfo~platform    -- WindowsNT
+<programlisting><![CDATA[
+say .RexxInfo~platform    -- WindowsNT
 say .RexxInfo~platform    -- LINUX
 ]]></programlisting></example></para>
 </section>

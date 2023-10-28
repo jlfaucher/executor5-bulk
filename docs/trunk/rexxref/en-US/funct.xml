@@ -351,7 +351,7 @@ used for editor macros.  This extension would be searched next.
 </para></listitem>
 <listitem><para>
 The default system extension, which is <literal>.REX</literal> on Windows,
-and both <literal>.rex</literal> and <literal>.REX</literal> on Unix-based systems.
+and both <literal>.rex</literal> and <literal>.REX</literal> on Unix-like systems.
 </para></listitem>
 <listitem><para>
 If the target file has not been located using any of the above extensions, the file name
@@ -360,7 +360,7 @@ is tried without an added extension.
 </orderedlist>
 <para>There are some file system considerations involved when searching for files.
 Windows file systems typically are case insensitive, so files can be located regardless of how
-the call is specified.  Unix-based systems typically have a case sensitive file system, so files must
+the call is specified.  Unix-like systems typically have a case sensitive file system, so files must
 be exact case matches in order to be located.  For these systems, each time a file name
 probe is attempted, the name will be tried in the case specified and also as a lower case
 name.  The check is not performed on the very last step that uses the file name without an extension to
@@ -668,7 +668,7 @@ removed from the result.
 <programlisting>
 ADDRESS()    ->    "CMD"   // default for Windows
 
-ADDRESS()    ->    "sh"    // default for Unix
+ADDRESS()    ->    "sh"    // default for Unix-like systems
 </programlisting>
 </example>
 </para>
@@ -1504,7 +1504,7 @@ a discussion of Rexx input and output.) If you omit
 <emphasis role="italic">name</emphasis>, the number
 of characters available in the default input stream (STDIN) is returned.</para>
 <para>The total number of characters remaining cannot be determined for some
-streams (for example, STDIN or Windows/Unix devices). For these streams, the CHARS function returns
+streams (for example, STDIN or Windows/Unix-like system devices). For these streams, the CHARS function returns
 <computeroutput>1</computeroutput> to indicate that data is present, or
 <computeroutput>0</computeroutput> if no data is present.
 <indexterm><primary>CHARS function</primary>
@@ -2649,7 +2649,7 @@ all characters following it are ignored.
 <varlistentry><term><option>Drive</option></term>
 <listitem><para>On Windows, returns the drive letter of the given
 <emphasis role="italic">filespec</emphasis>.
-On Unix, returns a null string (&quot;&quot;).
+On Unix-like systems, returns a null string (&quot;&quot;).
 </para></listitem></varlistentry>
 <varlistentry><term><option>Path</option></term>
 <listitem><para>Returns the directory path of the given
@@ -3781,7 +3781,7 @@ making it available to
 Rexx procedures.
 The <emphasis role="italic">module</emphasis> is the name of an
 external library where the native function is located.  In some
-environments, such as Unix-based systems, the library name is
+environments, such as Unix-like systems, the library name is
 case sensitive.
 The <emphasis role="italic">procedure</emphasis> is the name of
 the exported procedure inside of <emphasis role="italic">module</emphasis>.
@@ -5457,7 +5457,7 @@ NOVALUE condition is trapped. See
 <indexterm><primary>variable</primary>
 <secondary>external collections</secondary></indexterm>
 <section id="bifBValue-OSenvironment"><title>Operating System environment variables</title>
-<para>To use VALUE to manipulate Windows or Unix environment variables,
+<para>To use VALUE to manipulate Windows or Unix-like system environment variables,
 <emphasis role="italic">selector</emphasis> must be <literal>ENVIRONMENT</literal>.
 In this case, the variable
 <emphasis role="italic">name</emphasis> need not be a valid Rexx symbol.
@@ -5506,11 +5506,11 @@ variable "MYVAR" specify: value("MYVAR", .NIL, "ENVIRONMENT"). If you specify
 an empty string as the <emphasis role="italic">newvalue</emphasis> like in
 value("MYVAR", &quot;&quot;, "ENVIRONMENT")
 the value of the external environment variable is set to an
-empty string which on Windows and *nix is not the same as deleting the
+empty string which on Windows and Unix-like systems is not the same as deleting the
 environment variable.</para>
 
 <note><title>Note</title>
-<para>Any changes to Windows or Unix environment variables are not kept after
+<para>Any changes to Windows or Unix-like system environment variables are not kept after
 program termination.</para></note>
 </section>
 

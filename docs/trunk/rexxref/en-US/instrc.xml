@@ -186,8 +186,8 @@ processed in this way are trapped or traced.
 <para>The following evironments are available in ooRexx:
 <variablelist>
   <varlistentry>
-    <term><literal>sh</literal> (Unix only)</term>
-    <listitem><para>This is the default environment on Unix systems.
+    <term><literal>sh</literal> (Unix-like systems only)</term>
+    <listitem><para>This is the default environment on Unix-like systems.
       It uses <literal>sh</literal> as a shell program to execute the command.
       All shell features such as redirection or piping can be used.
     </para></listitem>
@@ -195,8 +195,8 @@ processed in this way are trapped or traced.
   <varlistentry>
     <term><literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
       <literal>ksh</literal>, <literal>tcsh</literal>, <literal>zsh</literal>
-      (Unix only)</term>
-    <listitem><para>These environments use alternate Unix shells
+      (Unix-like systems only)</term>
+    <listitem><para>These environments use alternate Unix-like system shells
       <literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
       <literal>ksh</literal>, <literal>tcsh</literal>, or <literal>zsh</literal>
       to execute the command.
@@ -216,7 +216,7 @@ processed in this way are trapped or traced.
   <varlistentry>
     <term><literal>command</literal>, <literal>system</literal>, <literal>""</literal></term>
     <listitem><para>These environment names are synonyms for the default environments
-      <literal>sh</literal> on Unix and <literal>cmd</literal> on Windows.
+      <literal>sh</literal> on Unix-like systems and <literal>cmd</literal> on Windows.
     </para></listitem>
   </varlistentry>
   <varlistentry>
@@ -392,9 +392,9 @@ items are ignored.
 <title>Instructions &mdash; ADDRESS</title>
 <programlisting>
 ADDRESS "CMD" 'dir "\Program Files"'            -- Windows
-ADDRESS "sh" "ls /usr/bin"                      -- Unix
+ADDRESS "sh" "ls /usr/bin"                      -- Unix-like system
 
-address "" "cat" with input using "single line" -- Unix: "single line"
+address "" "cat" with input using "single line" -- Unix-like system: "single line"
 address "" "ver" with output stem v.; say v.2   -- "Microsoft Windows ..."
 
 address "" with input using (a) output using (a)
@@ -1200,7 +1200,7 @@ value is returned.
 <indexterm><primary>bottom of program reached during execution
 </primary></indexterm>
 </para></listitem>
-<listitem><para>On Unix/Linux systems the returned value is limited to a
+<listitem><para>On Unix-like systems the returned value is limited to a
 numerical value between 0 and 255.
 </para></listitem>
 </orderedlist>
@@ -3053,7 +3053,7 @@ or internal function, all variables of the current generation are dropped
 <emphasis role="italic">expression</emphasis> is
 evaluated and before the result is used or assigned to RESULT.</para>
 <note><para>If the RETURN statement causes the program to return to the operating
-system on a Unix/Linux system the value returned is limited to a numerical
+system on a Unix-like systems the value returned is limited to a numerical
 value between 0 and 255 (an unsigned byte). If no
 <emphasis role="italic">expression</emphasis> is supplied then the default value
 returned to the operating system is zero.

@@ -44,7 +44,7 @@
     #########################################################################
 -->
 <chapter id="rexxutil"><title>Rexx Utilities (RexxUtil)</title>
-<para>RexxUtil is a function package for Windows and Unix-like platforms.
+<para>RexxUtil is a function package for Windows and Unix-like systems.
 It contains functions to:</para>
 <itemizedlist>
 <listitem><para>Manipulate operating system files and directories</para>
@@ -85,8 +85,8 @@ platforms on which they are available.</para>
 <entry morerows="1">Remarks</entry>
 </row>
 <row>
-<entry align="center">Windows</entry>
-<entry align="center">Unix</entry>
+<entry>Windows</entry>
+<entry>Unix-like</entry>
 </row>
 </thead>
 <tbody>
@@ -252,7 +252,7 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><xref linkend="utlSyslinver" xrefstyle="select:title"/></entry><entry>No</entry><entry>No*</entry>
-<entry>Linux only*</entry>
+<entry>*) Linux only</entry>
 </row>
 <row>
 <entry><xref linkend="utlSysloadrexxmacrospace" xrefstyle="select:title"/></entry><entry>Yes</entry><entry>Yes</entry>
@@ -725,7 +725,7 @@ call SysCls
 </example>
 </section>
 
-<section id="utlSyscreatepipe"><title>SysCreatePipe (Unix only)</title>
+<section id="utlSyscreatepipe"><title>SysCreatePipe (Unix-like systems only)</title>
 <indexterm><primary>SysCreatePipe</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysCreatePipe</secondary></indexterm>
@@ -1445,7 +1445,7 @@ then this option will be ignored.
 files that match the target mask are returned. The default mask is <literal>*****</literal>.
 This returns all files regardless of the settings (clear or set) of the Archive,
 Directory, Hidden, Read-Only, and System attributes. The target mask attributes
-must appear in the order <literal>ADHRS</literal>. This argument is Windows only. It is allowed but ignored on Unix-like operating
+must appear in the order <literal>ADHRS</literal>. This argument is Windows only. It is allowed but ignored on Unix-like
 systems.</para>
 <para>Target Mask Options
 </para>
@@ -1565,7 +1565,7 @@ end
 </example>
 </section>
 
-<section id="utlSysfork"><title>SysFork (Unix only)</title>
+<section id="utlSysfork"><title>SysFork (Unix-like systems only)</title>
 <indexterm><primary>SysFork</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysFork</secondary></indexterm>
@@ -1581,14 +1581,14 @@ end
 <para>Returns <computeroutput>0</computeroutput> to the spawned process.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>
-This is a complete working example. It can be cut and pasted into a file and executed on a Unix system.
+This is a complete working example. It can be cut and pasted into a file and executed on a Unix-like system.
 </para>
 <example id="ex.sysfork">
 <title>RexxUtil &mdash; SysFork</title>
 <programlisting>
 <![CDATA[
 
-/* Example Unix SysFork() and SysWait() */
+/* Example SysFork() and SysWait() */
 
   pid = SysFork()
 
@@ -1869,7 +1869,7 @@ specific.
 -- Windows: Cannot create a file when that file already exists.
 say SysGetErrorText(SysMkDir("\Users"))
 
--- Unix: File exists
+-- Unix-like system: File exists
 say SysGetErrorText(SysMkDir("/usr"))
 </programlisting>
 </example>
@@ -2027,7 +2027,7 @@ say SysGetLongPathName("\windows\explorer.exe")  -- \Windows\explorer.exe
 </section>
 
 
-<section id="utlSysgetmessage" revisionflag="changed"><title>&changed50;SysGetMessage (Unix only)</title>
+<section id="utlSysgetmessage" revisionflag="changed"><title>&changed50;SysGetMessage (Unix-like systems only)</title>
 <indexterm><primary>SysGetMessage</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetMessage</secondary></indexterm>
@@ -2093,7 +2093,7 @@ say SysGetMessage(485, "rexx.cat", "foo") -- Class "foo" not found.
 </section>
 
 
-<section id="utlSysgetmessagex" revisionflag="changed"><title>&changed50;SysGetMessageX (Unix only)</title>
+<section id="utlSysgetmessagex" revisionflag="changed"><title>&changed50;SysGetMessageX (Unix-like systems only)</title>
 <indexterm><primary>SysGetMessageX</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetMessageX</secondary></indexterm>
@@ -2362,7 +2362,7 @@ exit
 
 <para>Checks for the existence of a file.
 </para>
-<para>On Linux/Unix block devices are also considered to be regular files
+<para>On Unix-like systems block devices are also considered to be regular files
 by this function.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -2762,7 +2762,7 @@ SysSaveRexxMacroSpace must have created the file.
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">Unix:</emphasis></para>
+<para><emphasis role="bold">Unix-like systems:</emphasis></para>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/rexxutil/sysmkdir_unix.svg" scale="55" />
@@ -2779,7 +2779,7 @@ all intermediate directories must already exist.
 <listitem><para>The directory to be created.
 The directory name &wildcards_no_tilde_yes;.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">mode</emphasis> (Unix only)</term>
+<varlistentry><term><emphasis role="italic">mode</emphasis> (Unix-like systems only)</term>
 <listitem><para>The file permission bits of the new directory as a decimal
 number between 0 (octal 000) and 511 (octal 777).
 If not specified, <emphasis role="italic">mode</emphasis> defaults to 511
@@ -2851,7 +2851,7 @@ call SysMkDir "backup"
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">Unix</emphasis></para>
+<para><emphasis role="bold">Unix-like systems</emphasis></para>
 
 <mediaobject>
 <imageobject>
@@ -2903,7 +2903,7 @@ the process.
 <listitem><para>For Windows PPRIO: &quot;IDLE&quot;, &quot;NORMAL&quot;,
 &quot;HIGH&quot;, &quot;REALTIME&quot;,
 or &quot;UNKNOWN&quot;</para></listitem>
-<listitem><para>For Unix PPRIO: a number from -20 to +20.
+<listitem><para>For Unix-like systems PPRIO: a number from -20 to +20.
 </para></listitem>
 <listitem><para>For TPRIO: &quot;IDLE&quot;, &quot;LOWEST&quot;,
 &quot;BELOW_NORMAL&quot;, &quot;NORMAL&quot;, &quot;ABOVE_NORMAL&quot;,
@@ -2912,7 +2912,7 @@ or &quot;UNKNOWN&quot;</para></listitem>
 <listitem><para>For Windows PTIME or TTIME: the creation date and time, the
 amount of time that the process executed in kernel mode, and the amount of time
 that the process executed in user mode</para></listitem>
-<listitem><para>For Unix PTIME: the summary and the duration that the process
+<listitem><para>For Unix-like systems PTIME: the summary and the duration that the process
 executed in kernel mode, and the duration that the process executed in
 user mode</para></listitem></itemizedlist>
 </section>
@@ -3147,7 +3147,7 @@ say SysSearchPath("PATH", "rexx.exe")  -- (Windows e.g.) C:\Program Files\ooRexx
 <para>If both <emphasis role="italic">newdate</emphasis> and
 <emphasis role="italic">newtime</emphasis> are omitted, the
 last-modified timestamp is set to the current date and time, similar
-to what the Unix command <literal>touch</literal> does.
+to what the <literal>touch</literal> command on Unix-like systems does.
 </para>
 <para>If only one of the <emphasis role="italic">newdate</emphasis> and
 <emphasis role="italic">newtime</emphasis> arguments is supplied, the
@@ -4165,7 +4165,7 @@ If omitted, the current drive is used.
 </variablelist>
 </section>
 
-<section id="utlSyswait"><title>SysWait (Unix only)</title>
+<section id="utlSyswait"><title>SysWait (Unix-like systems only)</title>
 <indexterm><primary>SysWait</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWait</secondary></indexterm>
