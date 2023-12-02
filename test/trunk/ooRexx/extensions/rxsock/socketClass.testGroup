@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,17 +36,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Note: Since the socket class completely encapsulates the rxsock functions  */
-/*       the rxsock function can be completely tested using the sockets       */
-/*       class. Thus there is no need for a test group for the rxsock         */
-/*       functions.                                                           */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-
 parse source . . s
 group = .TestGroup~new(s)
 group~add(.SocketClass.testGroup)
@@ -56,15 +45,9 @@ testResult = suite~execute
 testResult~print
 return testResult
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.  You must require the ooTest framework file
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 ::requires 'socket.cls'
 
-/* class: SocketClass.testGroup - - - - - - - - - - - - - - - - - - - - - - - *\
-     The test case class must subclass ooTestCase.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "SocketClass.testGroup" public subclass ooTestCase
 
 ::constant host '127.0.0.1'
@@ -96,6 +79,83 @@ return testResult
    s~close()
    return
 
+
+-- getOption, setOption
+
+::method test_getoption_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Socket~new~getOption
+
+::method test_getoption_invalid_option
+  self~expectSyntax(93.914) -- Method argument 1 must be one of SO_...
+  .Socket~new~getOption("invalid-option")
+
+::method test_getoption_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Socket~new~getOption
+
+::method test_setoption_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Socket~new~setOption
+
+::method test_setoption_one_arg
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Socket~new~setOption(, .true)
+
+::method test_setoption_invalid_option
+  self~expectSyntax(93.914) -- Method argument 1 must be one of SO_...
+  .Socket~new~setOption("invalid-option", .true)
+
+::method test_setoption_invalid_value
+  self~expectSyntax(88.904) -- The value argument must be zero or a positive whole number
+  .Socket~new~setOption("so_keepalive", "")
+
+::method test_setoption_two_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Socket~new~setOption("so_keepalive", .true, "")
+
+-- SO_BROADCAST applies to DGRAM only
+::method test_option_broadcast
+  s = .Socket~new(, "SOCK_DGRAM")
+  -- default should be .false
+  self~assertFalse(s~getOption("SO_BROADCAST"))
+  -- set to .true
+  self~assertSame(0, s~setOption("SO_BROADCAST", .true)
+  self~assertTrue(s~getOption("SO_BROADCAST"))
+  s~close
+
+-- we expect these "boolean" options to work on all platforms
+::method test_options_boolean
+  s = .Socket~new
+  do opt over "debug", "dontroute", "keepalive", "oobinline", "reuseaddr"
+    option = "so_"opt
+    -- default is .false for all boolean options
+    self~assertFalse(s~getOption(option), option "default should be .false")
+    -- set option to true
+    self~assertSame(0, s~setOption(option, .true), option)
+    self~assertTrue(s~getOption(option), option "should be .true")
+    -- set back to .false
+    self~assertSame(0, s~setOption(option, .false), option)
+    self~assertFalse(s~getOption(option), option "should be .false")
+  end
+  self~assertSame(0, s~close)
+
+-- SO_LINGER expects two numbers (but socket.cls currently doesn't check)
+::method test_option_linger
+  s = .Socket~new
+  self~assertSame("0 0", s~getOption("SO_LINGER")) -- default should be 0 0
+  self~assertSame(0, s~setOption("SO_LINGER", "1 10"))
+  self~assertSame("1 10", s~getOption("SO_LINGER"))
+  s~close
+
+-- SO_ERROR can be queried, but cannot be set
+::method test_option_error
+  s = .Socket~new
+  self~assertNil(s~setOption("SO_ERROR", 0))
+  self~assertSame(0, s~getOption("SO_ERROR"))
+  s~close
+
+-- SO_RCVTIMEO, SO_SNDTIMEO
 ::method test_options_timeout
    s = .socket~new()
 
@@ -113,6 +173,32 @@ return testResult
    ms = s~getOption("SO_SNDTIMEO")
    self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
    s~close
+
+-- SO_RCVBUF, SO_SNDBUF
+::method xxxx_to_be_done__test_options_buffer
+  s = .Socket~new
+  size = 32768
+
+  s~close
+
+-- SO_TYPE can be queried, but cannot be set
+::method test_option_type
+  s = .Socket~new -- SOCK_STREAM is default
+  self~assertNil(s~setOption("SO_TYPE", 0))
+  self~assertSame("STREAM", s~getOption("SO_TYPE"))
+  s~close
+  s = .Socket~new(, "SOCK_DGRAM") -- DGRAM socket
+  self~assertSame("DGRAM", s~getOption("SO_TYPE"))
+  s~close
+
+-- SO_USELOOPBACK is unavailable on Linux and not supported for Winsock
+::method test_option_useloopback
+  s = .Socket~new
+  -- no meaningful test is possible
+  self~assertOneOrAnotherSame(.nil, 0, s~setOption("SO_USELOOPBACK", .true))
+  s~getOption("SO_USELOOPBACK")
+  s~close
+
 
 ::method test_004
    -- can we bind a socket?
