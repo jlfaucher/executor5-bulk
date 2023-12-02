@@ -92,7 +92,7 @@ return testResult
 
 ::method test_getoption_two_args
   self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
-  .Socket~new~getOption
+  .Socket~new~getOption("so_keepalive", "")
 
 ::method test_setoption_no_args
   self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
@@ -107,7 +107,7 @@ return testResult
   .Socket~new~setOption("invalid-option", .true)
 
 ::method test_setoption_invalid_value
-  self~expectSyntax(88.904) -- The value argument must be zero or a positive whole number
+  self~expectSyntax(93.907) -- The value argument must be zero or a positive whole number
   .Socket~new~setOption("so_keepalive", "")
 
 ::method test_setoption_two_args
@@ -120,7 +120,7 @@ return testResult
   -- default should be .false
   self~assertFalse(s~getOption("SO_BROADCAST"))
   -- set to .true
-  self~assertSame(0, s~setOption("SO_BROADCAST", .true)
+  self~assertSame(0, s~setOption("SO_BROADCAST", .true))
   self~assertTrue(s~getOption("SO_BROADCAST"))
   s~close
 
@@ -157,27 +157,39 @@ return testResult
 
 -- SO_RCVTIMEO, SO_SNDTIMEO
 ::method test_options_timeout
-   s = .socket~new()
+  s = .socket~new()
 
-   milliseconds = 300
-   self~assertSame(0, s~setOption("SO_RCVTIMEO", milliseconds))
-   -- there seems to some rounding/adjusting going on on Linux
-   -- we accept a delta of up to 10 ms
-   ms = s~getOption("SO_RCVTIMEO")
-   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_RCVTIMEO set to" milliseconds", get returns" ms)
+  milliseconds = 300
+  self~assertSame(0, s~setOption("SO_RCVTIMEO", milliseconds))
+  -- there seems to be some rounding/adjusting going on on Linux
+  -- we accept a delta of up to 10 ms
+  ms = s~getOption("SO_RCVTIMEO")
+  self~assertTrue((milliseconds - ms)~abs <= 10, "SO_RCVTIMEO set to" milliseconds", get returns" ms)
 
-   milliseconds = 9876
-   self~assertSame(0, s~setOption("SO_SNDTIMEO", milliseconds))
-   -- there seems to some rounding/adjusting going on on Linux
-   -- we accept a delta of up to 10 ms
-   ms = s~getOption("SO_SNDTIMEO")
-   self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
-   s~close
+  milliseconds = 9876
+  self~assertSame(0, s~setOption("SO_SNDTIMEO", milliseconds))
+  -- there seems to be some rounding/adjusting going on on Linux
+  -- we accept a delta of up to 10 ms
+  ms = s~getOption("SO_SNDTIMEO")
+  self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
+  s~close
 
 -- SO_RCVBUF, SO_SNDBUF
-::method xxxx_to_be_done__test_options_buffer
+::method test_options_buffer
   s = .Socket~new
-  size = 32768
+
+  size = 256
+  self~assertSame(0, s~setOption("SO_RCVBUF", size))
+  -- Linux doubles the value set and returns this doubled value with get
+  -- so we allow either the same size or the doubled size to be returned
+  sz = s~getOption("SO_RCVBUF")
+  self~assertOneOrAnother(size, size * 2, sz, "SO_RCVBUF size set to" size", get returns" sz)
+
+  size = 4000
+  self~assertSame(0, s~setOption("SO_SNDBUF", size))
+  -- allow either the same size or the doubled size to be returned
+  sz = s~getOption("SO_SNDBUF")
+  self~assertOneOrAnother(size, size * 2, sz, "SO_SNDBUF size set to" size", get returns" sz)
 
   s~close
 
@@ -195,7 +207,7 @@ return testResult
 ::method test_option_useloopback
   s = .Socket~new
   -- no meaningful test is possible
-  self~assertOneOrAnotherSame(.nil, 0, s~setOption("SO_USELOOPBACK", .true))
+  self~assertOneOrAnother(.nil, 0, s~setOption("SO_USELOOPBACK", .true))
   s~getOption("SO_USELOOPBACK")
   s~close
 
