@@ -127,7 +127,9 @@ return testResult
 -- we expect these "boolean" options to work on all platforms
 ::method test_options_boolean
   s = .Socket~new
-  do opt over "debug", "dontroute", "keepalive", "oobinline", "reuseaddr"
+  -- on Linux setting SO_DEBUG to true needs CAP_NET_ADMIN Capabilities,
+  -- else fails with Permission denied - so we don't test it here
+  do opt over "dontroute", "keepalive", "oobinline", "reuseaddr"
     option = "so_"opt
     -- default is .false for all boolean options
     self~assertFalse(s~getOption(option), option "default should be .false")
@@ -178,14 +180,18 @@ return testResult
 ::method test_options_buffer
   s = .Socket~new
 
-  size = 256
+  -- Linux doubles the value set for SO_RCVBUF and returns this doubled value
+  -- with get.  Also the minimum (doubled) value for SO_RCVBUF is 2304.
+  -- we test with 1300 and allow either the same or the doubled size to be returned
+  size = 1300
   self~assertSame(0, s~setOption("SO_RCVBUF", size))
-  -- Linux doubles the value set and returns this doubled value with get
-  -- so we allow either the same size or the doubled size to be returned
   sz = s~getOption("SO_RCVBUF")
   self~assertOneOrAnother(size, size * 2, sz, "SO_RCVBUF size set to" size", get returns" sz)
 
-  size = 4000
+  -- Linux doubles the value set for SO_SNDBUF and returns this doubled value
+  -- with get.  Also the minimum (doubled) value for SO_SNDBUF is 4608.
+  -- we test with 3000 and allow either the same or the doubled size to be returned
+  size = 3000
   self~assertSame(0, s~setOption("SO_SNDBUF", size))
   -- allow either the same size or the doubled size to be returned
   sz = s~getOption("SO_SNDBUF")
