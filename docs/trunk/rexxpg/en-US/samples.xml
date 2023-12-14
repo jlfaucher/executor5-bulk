@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -561,9 +561,6 @@ object:
 </itemizedlist>
 </para></listitem></varlistentry>
 
-<varlistentry><term>ole\oleinfo\oleinfo.rex</term>
-<listitem><para>This application is a "small" browser for OLE objects.
-</para></listitem></varlistentry>
 
 <varlistentry><term>ole\adsi\adsi1.rex</term>
 <listitem><para>Retrieves information about a computer with <emphasis role="italic">ADSI</emphasis>.
@@ -601,6 +598,28 @@ object:
 <listitem><para>This application demonstrates the use of the GetKnownMethods method.
 </para></listitem></varlistentry>
 
+
+<varlistentry><term><filename>ole\oleinfo\createOleInfo.rex</filename></term>
+<listitem><para>This utility creates a HTML-rendered documentation of the OLE/ActiveX
+Windows program with the supplied ProgId, CLSID or ooRexx OLEObject object and
+optionally displays the results in the default web browser.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\oleinfo\getOleConstants.rex</filename></term>
+<listitem><para>This utility creates an ooRexx program which stores all published
+constants of the OLE/ActiveX Windows program with the supplied ProgId or CLSID
+in an ooRexx directory that can be referenced with the environment symbol .ole.const
+from any program requiring it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\oleinfo\listProgIds.rex</filename></term>
+<listitem><para>This utility analyzes the Windows registry and lists all
+ProgIds, optionally with their CLSID.
+</para></listitem></varlistentry>
+
+
+
+
 <varlistentry><term>ole\wmi\accounts.rex</term>
 <listitem><para>This is a demo application for displaying all the accounts of the windows
 system with <emphasis role="italic">WMI</emphasis>. It also shows how to display all the properties of a <emphasis role="italic">WMI</emphasis>
@@ -630,6 +649,10 @@ WMI.
 
 
 <!-- samples\oodialog\winsystem: -->
+
+<varlistentry><term><filename>oodialog\oleinfo\oleinfo.rex</filename></term>
+<listitem><para>This sample is a "small" ooDialog (GUI) based browser for OLE objects.
+</para></listitem></varlistentry>
 
 <varlistentry><term>oodialog\winsystem\deskicon.rex</term>
 <listitem><para>A WindowsProgramManager class example.</para>
