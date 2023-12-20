@@ -50,52 +50,55 @@
 # ------------------------------------------------------------------------------
 */
 /* Change 2022-12-17 to prepare for 5.0.0 Beta -> Release candidate*/
-/* Change 2022-12-19 rexxgtk excluded from build and upload	*/
-/* Change 2022-12-19 .zip changed to -html.zip -> for Release candidate	*/
-/* Change needed also in doc2html.sh					*/
-/* Change 2022-12-25 to upload to 5.1.0beta				*/
-/* Change 2023-01-02 add 3 zipfiles containing all pdf+html files; svn	*/
-/* downloadpath and Sourceforge uploadpath MUST be provided from caller	*/
+/* Change 2022-12-19 rexxgtk excluded from build and upload */
+/* Change 2022-12-19 .zip changed to -html.zip -> for Release candidate */
+/* Change needed also in doc2html.sh                    */
+/* Change 2022-12-25 to upload to 5.1.0beta             */
+/* Change 2023-01-02 add 3 zipfiles containing all pdf+html files; svn  */
+/* downloadpath and Sourceforge uploadpath MUST be provided from caller */
+/* changes to support using the bld_orx tools (ooRexx programs) rather than */
+/* the shell scripts to build the documents; runs the shell scripts if all of */
+/* ooRexx programs are not present  */
 
 trace o
 
-/* Here is where we find the documentation source on sourceforge	*/
-/* Should be given as input to the script, fallback if not		*/
+/* Here is where we find the documentation source on sourceforge    */
+/* Should be given as input to the script, fallback if not      */
   if arg() < 1 then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/'
   else sfRoot = arg(1)~strip
 
-/* Here is where we upload the built documentation on sourceforge	*/
-/* Should be given as input to the script, fallback if not		*/
+/* Here is where we upload the built documentation on sourceforge   */
+/* Should be given as input to the script, fallback if not      */
   if arg() < 2 then    sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0beta'
   else sfdocfolder = arg(2)~strip
 
-/* These are the credentials for sourceforge upload, 
+/* These are the credentials for sourceforge upload,
    User must have RWED rights on sourceforge and have submitted his
-   ssh credentials to sf to make the scp command work without pw	*/
+   ssh credentials to sf to make the scp command work without pw    */
    sfuser      = 'perolovjonsson'
    sfIP        = 'frs.sourceforge.net:'
 
-/* docpath is the local copy of sfRoot					*/
+/* docpath is the local copy of sfRoot                  */
   res = SysFileTree('*.*', 'file', 'FO')
-  cwd = filespec('path',file.1)		-- trailing slash for cwd
-  docpath = cwd || 'oorexxdocSVN'	-- local copy
+  cwd = filespec('path',file.1)     -- trailing slash for cwd
+  docpath = cwd || 'oorexxdocSVN'   -- local copy
 
-/* this is where the build process puts the newly built documents	*/
+/* this is where the build process puts the newly built documents   */
   pdfpath   = cwd || 'pdf_files'
   htmlpath  = cwd || 'html_folders'
   zippath   = cwd || 'html_zipfiles'
 
-/* The revision file will be created if not existing			*/
+/* The revision file will be created if not existing            */
   revisionsFile = cwd || 'DocRevisions.txt'
   oldrevisionsFile = cwd || 'DocRevisions.old'
 
-/* These are all books that need to be checked				*/
-/* rexxgtk excluded from upload 2022-12-20				*/
-/* ooconsole excluded from upload 2023-01-01				*/
-/* to enable add this to list below and to DocRevisions.txt		*/
-  outArray = .array~of("oodguide r1", "oodialog r1", "oorexxbuild r1", "oosqlite r1", "ootest r1", "orxncurses r1", "readme r1", "rexxapi r1", "rexxextensions r1", "rexxpg r1", "rexxref r1", "rxftp r1", "rxmath r1", "rxsock r1", "unixextensions r1", "winextensions r1")
+/* These are all books that need to be checked              */
+/* rexxgtk excluded from upload 2022-12-20              */
+/* ooconsole excluded from upload 2023-01-01                */
+/* to enable add this to list below and to DocRevisions.txt     */
+   outArray = .array~of("oodguide r1", "oodialog r1", "oorexxbuild r1", "oosqlite r1", "ootest r1", "orxncurses r1", "readme r1", "rexxapi r1", "rexxextensions r1", "rexxpg r1", "rexxref r1", "rxftp r1", "rxmath r1", "rxsock r1", "unixextensions r1", "winextensions r1")
 
-/* These are the unix command used with full path			*/
+/* These are the unix command used with full path           */
   svncmd  = '/usr/local/bin/svn'
   bashcmd = '/bin/bash'
   scpcmd  = '/usr/bin/scp'
@@ -144,14 +147,25 @@ trace o
 
   if buildArray~items > 0 then
   do
-    do items over buildArray
 -- *3* Build those docs that needs rebuilding:
 -- *4* Upload the newly built docs to sourceforge
-      address '' bashcmd 'doc2pdf.sh' items
-      address '' scpcmd pdfpath || .file~separator || items || '.pdf' sfuser || '@' || sfIP || sfdocfolder
-      address '' bashcmd 'doc2html.sh' items
-      address '' scpcmd zippath || .file~separator || items || '-html.zip' sfuser || '@' || sfIP || sfdocfolder
-    end
+    if rexxReqs() then  -- Rexx programs are available to build documents
+      do a_doc over buildArray
+        call doc2pdf a_doc
+        address '' scpcmd pdfpath || .file~separator || a_doc || '.pdf' sfuser || '@' || sfIP || sfdocfolder
+        call doc2html   -- no argument means the same document
+        zip_source = htmlpath || .file~separator || a_doc || .file~separator
+        call sysfileDelete zip_source || '.DS_Store'
+        address '' zipcmd zippath || .file~separator || a_doc || '-html.zip' zip_source'.'
+        address '' scpcmd zippath || .file~separator || a_doc || '-html.zip' sfuser || '@' || sfIP || sfdocfolder
+      end
+    else                -- use the shell scripts
+      do a_doc over buildArray
+        address '' bashcmd 'doc2pdf.sh' a_doc
+        address '' scpcmd pdfpath || .file~separator || a_doc || '.pdf' sfuser || '@' || sfIP || sfdocfolder
+        address '' bashcmd 'doc2html.sh' a_doc
+        address '' scpcmd zippath || .file~separator || a_doc || '-html.zip' sfuser || '@' || sfIP || sfdocfolder
+      end
 
 -- Zip the whole shebang and upload in three further files. Use syntax from ooRexx4.1.3
     allfiles = 'ooRexx-' || filespec('name',sfdocfolder) || '-all.zip'
@@ -178,3 +192,40 @@ trace o
   end
 
 exit
+
+rexxReqs: procedure expose docpath cwd
+/* This function verifies that all the files needed by the ooRexx version of the
+    documentation build tools are available and returns .true if so.  Otherwise
+    it returns .false.  It also initializes the docpath property if docpath is
+    not set and creates the fo_files and log_files folders. */
+    theReqs = .resources[theReqs]   -- an array of file names
+    OK? = .true
+    do fn over theReqs while OK?
+        OK? &= .file~new(fn)~exists
+    end
+    if ok? then do
+        .context~package~loadPackage('doc_props.rex')
+        props = .doc.props
+        if props~getProperty('docpath') = '' then do    -- new props file
+            props~setProperty('docpath', docpath)       -- set docpath
+            props~setLogical('zip_HTML', .false)        -- don't use HTML2zip
+            .file~new(cwd || 'fo_files')~makeDir        -- create the folder
+            .file~new(cwd || 'log_files')~makeDir       -- create the folder
+            call save_props     -- rewrite the properties file
+        end
+    end
+    else
+        say 'Unable to locate' -
+            fn'; using the shell scrips to build the documents.'
+    return OK?
+
+::resource theReqs
+delTree.rex
+doc2fo.rex
+doc2HTML.rex
+doc2pdf.rex
+docprep.rex
+doc_props.rex
+fo2pdf.rex
+getdocrev.rex
+::END
