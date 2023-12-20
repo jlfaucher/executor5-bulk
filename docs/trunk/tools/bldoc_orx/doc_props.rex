@@ -47,7 +47,8 @@
         props = .properties~new
         props~setProperty('prop_fn', prop_fn)   -- save the name of the file
         -- set all the default values
-        props~setProperty('OS_type', .RexxInfo~platform)
+        OS_type = .RexxInfo~platform
+        props~setProperty('OS_type', OS_type)
         props~setProperty('dir_sep', .RexxInfo~directorySeparator)
         props~setProperty('docpath', '')
         props~setProperty('whichdoc', '')
@@ -61,8 +62,20 @@
         props~setProperty('fop_opts', '-Xmx1280M')
         props~setLogical('verbose', .false)
         props~setLogical('zip_HTML', .true)
-        props~setLogical('rexxref', .false)
-        props~setLogical('rexxapi', .false)
+        if OS_type~left(1) = 'D' then do    -- Darwin (MacOS)
+            subpath = '/local/etc/xml/catalog'
+            cat_loc1 = '/opt'subpath
+            cat_loc2 = '/usr'subpath
+            select
+                when .file~new(cat_loc1)~exists then
+                    XMLcat = cat_loc1
+                when .file~new(cat_loc2)~exists then
+                    XMLcat = cat_loc2
+                otherwise
+                    XMLcat = ''
+            end
+            props~setProperty('XMLcatalog', XMLcat)
+        end
         props~save(prop_fn)         -- save it in the properties file
     end
     .local~doc.props = props        -- put the properties collection in .local

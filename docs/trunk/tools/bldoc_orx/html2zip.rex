@@ -66,6 +66,7 @@
     if _ = '\' then       -- Windows
         address path 'powershell Compress-Archive' base_dir'*' zip_fullName
     else
-        address path 'zip -rq' zip_fullName base_dir'*'
+    --  address path 'zip -rq' zip_fullName base_dir'*'
+        address path 'zip -rq' zip_fullName ". -i" base_dir'*'
 
 ::requires doc_props.rex

@@ -58,7 +58,7 @@
         exit
     end
     -- the *.tmp files are now created only if needed in DOCPREP
-    -- get current date and time (needed later for PDF check)
+    -- get current date and time (needed later for HTML files check)
     start_time = .dateTime~new
     whichOS = props~getProperty('OS_type')~left(1)~upper
     env = 'ENVIRONMENT'
@@ -68,8 +68,11 @@
             xsl_cat = '.\DocBook_Files\docbook-xsl-nons-1.79.2\catalog.xml'
             call value 'xml_catalog_files', dtd_cat xsl_cat, env
         end
-        when whichOS \= 'L' then    -- Mac (Darwin)
-            call value 'XML_CATALOG_FILES', '/usr/local/etc/xml/catalog', env
+        when whichOS = 'D' then do  -- Mac (Darwin)
+            xml_cat = props~getProperty('XMLcatalog')
+            if xml_cat <> '' then
+                call value 'XML_CATALOG_FILES', xml_cat, env
+        end
         otherwise                   -- Linux has a default value
             nop
     end
@@ -111,9 +114,11 @@
     do aFile over theFiles
         if aFile~isDirectory then
             iterate
-        created_time = aFile~lastmodified -- a DateTime object
-        if start_time~compareTo(created_time) = -1 then -- aFile is newer
+        created_time = aFile~lastmodified   -- a DateTime object
+        if start_time~compareTo(created_time) = -1 then -- aFile is new
             fileCount += 1
+        else                                -- must be a left over file
+            aFile~delete
     end
     if fileCount = 0 then
         fileCount = 'No'

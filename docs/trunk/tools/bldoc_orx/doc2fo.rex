@@ -72,8 +72,11 @@
             xsl_cat = '.\DocBook_Files\docbook-xsl-nons-1.79.2\catalog.xml'
             call value 'xml_catalog_files', dtd_cat xsl_cat, env
         end
-        when whichOS \= 'L' then    -- Mac (Darwin)
-            call value 'XML_CATALOG_FILES', '/usr/local/etc/xml/catalog', env
+        when whichOS = 'D' then do  -- Mac (Darwin)
+            xml_cat = props~getProperty('XMLcatalog')
+            if xml_cat <> '' then
+                call value 'XML_CATALOG_FILES', xml_cat, env
+        end
         otherwise                   -- Linux has a default value
             nop
     end

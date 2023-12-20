@@ -144,24 +144,35 @@
                 end
                 when ext = 'ENT' then do
                     -- process the entities file, updating the VERSION and EDITION
-                    -- determine if this document needs these changes
-                    if props~getLogical(whichdoc~lower, .false) then do
+                    -- determine if this document doesn't need these changes
+                    if props~getLogical(whichdoc~lower, .true) then do
                         parse value getdocrev(whichdoc, docpath) with rev rdate
                         do j = 1 to theLines~items
-                            parse value theLines[j] with w1 w2 w3 .
-                            if w2 = "VERSION", w1 = "<!ENTITY" then do  -- VERSION
-                                if w3~countstr(".") > 2 then do -- has revision lvl
+                            aLine = theLines[j]
+                            parse var aLine w1 w2 w3 .
+                            if w2 = 'VERSION', w1 = '<!ENTITY' then do  -- VERSION
+                                if w3~countstr('.') > 2 then do -- has revision lvl
                                     -- remove the revision level
-                                    parse var w3 v1 "." v2 "." v3 "." .
-                                    w3 = v1"."v2"."v3'">'
+                                    parse var w3 v1 '.' v2 '.' v3 '.' .
+                                    w3 = v1'.'v2'.'v3'">'
                                     theLines[j] = w1 w2 w3
                                 end
                             end
-                            if w2 = "EDITION", w1 = "<!ENTITY" then do  -- EDITION
+                            if w2 = 'EDITION', w1 = '<!ENTITY' then do  -- EDITION
                                 if (w3~left(3) = '"0.') | ,   -- old format
                                    (w3~pos('(revision') > 0) then do
                                     w3 = '"'rdate '(revision' rev~substr(2)')">'
                                     theLines[j] = w1 w2 w3
+                                end
+                                needle = '(last revised on'
+                                if aLine~subword(3)~pos(needle) > 0 then do
+                                    -- newer format:
+-- <!ENTITY EDITION "2023.01.01 (last revised on 20221024 with r12526)">
+                                    words = aLine~makearray(' ')
+                                    words[3] = '"'date('I', , , '.')
+                                    words[7] = rdate
+                                    words[9] = rev')">'
+                                    theLines[j] = words~makestring(, ' ')
                                 end
                             end
                         end
