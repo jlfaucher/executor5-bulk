@@ -97,18 +97,29 @@
         .stream~new(fopcfg)~~arrayout(fopcfg_src)~close -- and write it out
     end
     fop = 'fop' -- fop is installed on non-Windows systems
+    foplvl = ''
+    Jenkins_fop = '/usr/local/bin/fop'
     if _ = '\' then do  -- Windows
         -- determine the (most recent) version of FOP available
         address cmd 'dir fop-* /ad /b /o-d' with output stem fopvers.
         if fopvers.0 > 0 then do
             fop = fopvers.1'\fop\fop.bat'   -- first item is newest/only version
-            foplvl = fopvers.1~substr(5)    -- numeric part; e.g. 2.6
+            foplvl = fopvers.1~substr(5)    -- numeric part; e.g. 2.8
         end
         else do
             say 'Unable to find Apache FOP.'
             say 'Make sure the SETUP command has run successfully.'
             exit
         end
+    end
+    else select
+        when SysSearchPath('PATH', fop) <> '' then
+            nop
+        when .file~new(Jenkins_fop)~exists then
+            fop = Jenkins_fop   -- fop on Jenkins
+        otherwise
+            say 'Unable to find Apache FOP.'
+            exit
     end
     say time() 'Creating' out_file 'from' in_file 'using Apache FOP' foplvl
     address "" fop '-c' fopcfg in_file out_file '2>'log_file with input normal
