@@ -53,6 +53,7 @@
 */
     parse arg doc .
     parse source . how .
+    _ = .file~separator
     svnURL = "https://svn.code.sf.net/p/oorexx/code-0/docs/trunk/"
     if how = "COMMAND" then
         docpath = arg(1)~word(2)
@@ -61,7 +62,8 @@
     if docpath = "" then
         docpath = value('docpath', , 'ENVIRONMENT') --is a working copy defined?
     -- use working copy if available
-    where = (docpath~strip("T", "\") = "")~?(svnURL, docpath"\")
+    docpath = docpath~strip("T", _)     -- remove trailing "slash" if there
+    where = (docpath = "")~?(svnURL, docpath||_)
     svncmd = "svn log" where || doc "-l 1"
     -- use the svn log command to get the most recent change information for
     --  the document

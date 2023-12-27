@@ -49,7 +49,7 @@
         -- set all the default values
         OS_type = .RexxInfo~platform
         props~setProperty('OS_type', OS_type)
-        props~setProperty('dir_sep', .RexxInfo~directorySeparator)
+        props~setProperty('dir_sep', .file~separator)
         props~setProperty('docpath', '')
         props~setProperty('whichdoc', '')
         props~setProperty('work_folder', 'work_folder')
