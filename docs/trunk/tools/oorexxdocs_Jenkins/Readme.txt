@@ -1,4 +1,4 @@
-This folder contains the rex script BuildandUploadDocs.rex
+This folder contains the rexx script BuildandUploadDocs.rex
 used by the Jenkins framwork to 
 (i) build the ooRexx documentation (if amended) using the existing documentation
 build tools, and
@@ -8,6 +8,15 @@ The script will check and build/upload only documents that have been
 amended. Further instructions and requirements are embedded in the script.
 
 Once launched the script will set up its own working environment. 
+
+As of 27.12.2023 the script can use the universal rexx build scripts from
+bldoc_orx folder rather than the shell scripts originally used.
+
+To use the rexx scripts rather than the shell scripts simply copy the
+content of the entire folder bldoc_orx to the DocBuild folder.
+
+Please note that on macOS a number of actions is necessary to install the
+necessary tools. See Readme.txt in the oorexxdocs_macOS folder for details.
 
 This script is intended for use by the developers only. Do not try this at home ;-)
 
@@ -33,6 +42,8 @@ SETUP
    and rename to ooRexxdocs-build, follow the instructions in the readme.txt file.
 
 2. Copy the items in folder oorexxdocs_Jenkins to ooRexxdocs-build
+
+2.5 *NEW* Copy the items in folder bldoc_orx to ooRexxdocs-build
 
 3. Do not forget to INSTALL the Liberation Fonts (step 7) before building
 

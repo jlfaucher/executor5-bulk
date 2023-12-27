@@ -41,24 +41,25 @@
 # Type: ooRexx script
 # Script with 4 stages for building documentation for ooRexx
 # 1:  If documentation source is existing -> svn update
-# 1a: otherwise download souce from sourceforge
+# 1a: otherwise download source from sourceforge
 # 2: Compare each documents revision with a local property file
 #    that is read and updated each time the script runs
 # 3: Build only those documents that have changes
 #    use existing build script
 # 4: Upload the newly built documents to sourceforge
+#
+# CHANGE 2023-12-20 Changes to support using the bld_orx tools
+# (ooRexx programs) rather than the shell scripts to build the documents;
+# runs the shell scripts if all of ooRexx programs are not present
+# Change 2023-01-02 add 3 zipfiles containing all pdf+html files;
+# svn downloadpath and Sourceforge uploadpath can be provided from caller
+# Change 2022-12-25 to upload to 5.1.0beta
+# Change 2022-12-19 .zip changed to -html.zip -> for Release candidate
+# Change needed also in doc2html.sh
+# Change 2022-12-19 rexxgtk excluded from build and upload
+# Change 2022-12-17 to prepare for 5.0.0 Beta -> Release candidate
 # ------------------------------------------------------------------------------
 */
-/* Change 2022-12-17 to prepare for 5.0.0 Beta -> Release candidate*/
-/* Change 2022-12-19 rexxgtk excluded from build and upload */
-/* Change 2022-12-19 .zip changed to -html.zip -> for Release candidate */
-/* Change needed also in doc2html.sh                    */
-/* Change 2022-12-25 to upload to 5.1.0beta             */
-/* Change 2023-01-02 add 3 zipfiles containing all pdf+html files; svn  */
-/* downloadpath and Sourceforge uploadpath MUST be provided from caller */
-/* changes to support using the bld_orx tools (ooRexx programs) rather than */
-/* the shell scripts to build the documents; runs the shell scripts if all of */
-/* ooRexx programs are not present  */
 
 trace o
 
