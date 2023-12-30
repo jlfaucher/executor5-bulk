@@ -98,7 +98,6 @@
     end
     fop = 'fop' -- fop is installed on non-Windows systems
     foplvl = ''
-    Jenkins_fop = '/usr/local/bin/fop'
     if _ = '\' then do  -- Windows
         -- determine the (most recent) version of FOP available
         address cmd 'dir fop-* /ad /b /o-d' with output stem fopvers.
@@ -112,15 +111,11 @@
             exit
         end
     end
-    else select
-        when SysSearchPath('PATH', fop) <> '' then
-            nop
-        when .file~new(Jenkins_fop)~exists then
-            fop = Jenkins_fop   -- fop on Jenkins
-        otherwise
+    else                -- non-Windows
+        if SysSearchPath('PATH', fop) = '' then do
             say 'Unable to find Apache FOP.'
             exit
-    end
+        end
     say time() 'Creating' out_file 'from' in_file 'using Apache FOP' foplvl
     address "" fop '-c' fopcfg in_file out_file '2>'log_file with input normal
     -- check that a (new) PDF has been created
