@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Build Machine Document XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -43,25 +43,29 @@
     #
     #########################################################################
 -->
-<chapter><title>Kernel Virtual Machine Setup Guide</title>
+<chapter><title>Virtual Machine Setup Guide</title>
 
-<section><title>KVM Installation</title>
+<section><title>Virtualbox Installation</title>
 
-<para>KVM should be installed as an option during the installation of Fedora.
-If you forgot then you can add it later via the Add/Remove Software
-Administrative option.
+<para>Virtualbox was installed on a machine running macOS as well as on a machine running Windows 10. Virtualbox is freely available from Oracle as Open Source Software under the terms of the GNU General Public License (GPL) version 3. See also https://www.virtualbox.org/ It is advisable to install the latest version of Virtualbox.
 </para>
 
 </section>
 
-<section><title>KVM Setup</title>
+<section><title>Virtualbox Setup</title>
 
-<para>There are only a few options to be concerned about in this area.
-The most interestting is the ability to specify a different logical
-volumn in which to place the guest OS images. It is usually a good idea
-not to use the default area as space in this area is usually limited.
-We chose to create a special partition (logical volumn) to hold all of our guest OS image
-files so we could better control the available space.
+<para>There are only a few options to be concerned about in this area. For many of the platforms there are ready-made images that work out-of-the-box having what should be a normal setup for a normal user. For some platforms it was necessary to build everything from scratch using an ISO image that could be loaded at boot-time.
+</para>
+
+<para>Once installed the virtual disks were moved to a separate 2TB physical SSD disk, thereby reducing the load on the systems disk.</para>
+
+</section>
+
+</section>
+
+<section><title>TCP/IP Setup for Virtual Machines</title>
+
+<para>For easier maintenance the Virtual Machines were set up to use a fixed IP range, controlled by the Router. Non-standard ports where the allocated to the VMs so that they can be reached both by the Jenkins Controller and by developers using the various platforms for testing purposes using ssh.
 </para>
 
 </section>
