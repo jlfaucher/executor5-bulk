@@ -1315,8 +1315,9 @@ Version:1.72
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="bookinfo/corpauthor"/>
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="info/corpauthor"/>
 
-<!-- Remove authors from title page as they are on page 2
-  <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="bookinfo/authorgroup/author"/> -->
+<!-- rgf 20221220
+  <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="bookinfo/authorgroup/author"/>
+-->
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="info/authorgroup/author"/>
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="bookinfo/author"/>
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="info/author"/>
