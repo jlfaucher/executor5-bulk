@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -70,6 +70,45 @@
 ::attribute shvvaluelen
 ::attribute shvcode
 ::attribute shvret
+
+
+::class Shv subclass shvblock public
+
+/*
+#define RXSHV_SET          0x00       /* Set var from given value    */
+#define RXSHV_FETCH        0x01       /* Copy value of var to buffer */
+#define RXSHV_DROPV        0x02       /* Drop variable               */
+#define RXSHV_SYSET        0x03       /* Symbolic name Set variable  */
+#define RXSHV_SYFET        0x04       /* Symbolic name Fetch variable*/
+#define RXSHV_SYDRO        0x05       /* Symbolic name Drop variable */
+#define RXSHV_NEXTV        0x06       /* Fetch "next" variable       */
+#define RXSHV_PRIV         0x07       /* Fetch private information   */
+*/
+::constant code (.StringTable~of(-
+  ('S', 0), ('F', 1), ('D', 2), -
+  ('s', 3), ('f', 4), ('d', 5), -
+  ('N', 6), ('P', 7)))
+
+::constant OK    ('00'~x2d) -- RXSHV_OK    0x00 /* Execution was OK            */
+::constant NEWV  ('01'~x2d) -- RXSHV_NEWV  0x01 /* Variable did not exist      */
+::constant LVAR  ('02'~x2d) -- RXSHV_LVAR  0x02 /* Last var trans via SHVNEXTV */
+::constant TRUNC ('04'~x2d) -- RXSHV_TRUNC 0x04 /* Truncation occurred-Fetch   */
+::constant BADN  ('08'~x2d) -- RXSHV_BADN  0x08 /* Invalid variable name       */
+::constant MEMFL ('10'~x2d) -- RXSHV_MEMFL 0x10 /* Out of memory failure       */
+::constant BADF  ('80'~x2d) -- RXSHV_BADF  0x80 /* Invalid funct code (shvcode)*/
+
+::method init
+  -- we must have at least a code and a name
+  use strict arg code, name, value = "", valuelen = 0
+  c = self~code[code]
+  self~shvcode = (c == .nil)~?(42, c) -- 42 is illegal
+  self~shvname = name;
+  self~shvvalue = value;
+  self~shvvaluelen = valuelen;
+  self~shvnamelen = 0;
+
+::method makeArray
+  return .Array~of(self)
 
 
 ::class TestMacroSpaceFuncs public
