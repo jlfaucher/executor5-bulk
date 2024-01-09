@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2020-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -77,7 +77,8 @@
     wf_name = props~getProperty('work_folder')  -- path to the work folder
     wfDir = .file~new(wf_name)~~makeDirs        -- file object for work_folder
     cc_srce = docpath||_'oorexx'_'en-US'        -- path to Common_Content source
-    cc_dest = wf_name||_'Common_Content'        -- path to Common_Content dest.
+    cc_name = 'Common_Content'                  -- folder name
+    cc_dest = wf_name||_||cc_name               -- path to Common_Content dest.
     fileList = .array~new                       -- for list of files copied
 
     destDir = .file~new(cc_dest)~~makeDir
@@ -105,7 +106,11 @@
     fileList~empty      -- clear the list of files copied
     do aFile over doc_source~listFiles
         if aFile~isDirectory then do
-        --  destDir = .file~new(wf_name)
+            /* if the original tool package (using shell scripts/bat files) had
+                been used against this SVN working copy, then a Common_Content
+                subfolder will exist and must NOT be copied.    */
+            if aFile~name = cc_name then
+                iterate
             call rxcopy aFile, wfDir, fileList, info?
             if info? then say fileList~toString
         end
@@ -224,18 +229,18 @@
             -- ensure dest directory exists
             destObj~makeDirs
             -- do we need to copy it?
-            destFile = destObj~absolutePath || dir_sep || srceObj~name
+            destFile = .file~new(destObj~absolutePath || dir_sep || srceObj~name)
             if chkDate? then do
                 srceDate = srceObj~lastModified
-                destDate = .file~new(destFile)~lastModified
+                destDate = destFile~lastModified
                 -- above may be .nil if destFile doesn't exist
                 select
                     when destDate == .nil then do
                         if info? then say 'No destination file'
                         cpy? = .true
                     end
-                    when srceDate > destDate then do
-                        if info? then say 'Newer source file'
+                    when srceDate <> destDate then do
+                        if info? then say 'Destination file not current'
                         cpy? = .true
                     end
                     otherwise
@@ -254,6 +259,8 @@
                 outFile = .stream~new(destFile)~~open(write replace)
                 outFile~~charOut(inData)~close
                 if info? then say 'Dest data written'
+                if chkDate? then    -- need to make the lastModified dates match
+                    destFile~lastModified = srceDate
                 fn_list~append(infile~qualify)
             end
         end
