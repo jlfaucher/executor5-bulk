@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -437,7 +437,7 @@ return .ooTestResult~new(5)~~addException(err)
   arr = .array~new(1)
   arr[1] = .ShvBlock~new()
   arr[1]~shvname = 'TEST1'
-  arr[1]~shvvalue = test1_val
+  arr[1]~shvvalue = test1
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
   arr[1]~shvcode = 4 -- RXSHV_SYFET
@@ -459,7 +459,7 @@ return .ooTestResult~new(5)~~addException(err)
   retc = TestFVariablePool(arr)
   self~assertEquals(0, retc)
   self~assertEquals(0, arr[1]~shvret)
-  self~assertEquals(test1, 'TEST1')
+  self~assertFalse(var(arr[1]~shvname))
 
 ::method 'test_34a_variablepool'
   test1 = 123 -- give this an existing value
@@ -482,9 +482,9 @@ return .ooTestResult~new(5)~~addException(err)
   retc = TestFVariablePool(arr)
   self~assertEquals(0, retc)
   self~assertEquals(0, arr[1]~shvret)
-  self~assertEquals(test1, 'TEST1')
+  self~assertFalse(var(arr[1]~shvname))
   self~assertEquals(0, arr[2]~shvret)
-  self~assertEquals(test2, 'TEST2')
+  self~assertFalse(var(arr[2]~shvname))
 
 ::method 'test_34b_variablepool'
   test1_val = 'my test string'
@@ -549,24 +549,6 @@ return .ooTestResult~new(5)~~addException(err)
   retc = TestFVariablePool(arr)
   self~assertEquals(8, retc)
   self~assertEquals(8, arr[1]~shvret)
-
-::method 'test_36_variablepool'
-  count = TestFNVariablePool()
-  self~assertEquals(1, count > -1) -- -1 is the error condition
-
-::method 'test_36a_variablepool'
-  test1 = 'xx'
-  count = TestFNVariablePool()
-  self~assertEquals(1, count > -1) -- -1 is the error condition
-
-::method 'test_36b_variablepool'
-  test1 = 'xx'
-  test2 = 'xx'
-  test3 = 'xx'
-  test4 = 'xx'
-  test5 = 'xx'
-  count = TestFNVariablePool()
-  self~assertEquals(1, count > -1) -- -1 is the error condition
 
 ::method 'test_37_variablepool'
   test1_val = 'my test string'
@@ -724,11 +706,11 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(1, arr[1]~shvret)
 
 ::method 'test_39c_variablepool'
-  test1_val = 'my test string'
+  test1 = 'my test string'
   arr = .array~new(1)
   arr[1] = .ShvBlock~new()
   arr[1]~shvname = '2TEST' -- invalid name!
-  arr[1]~shvvalue = test1_val
+  arr[1]~shvvalue = test1
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = test1~length
   arr[1]~shvcode = 1 -- RXSHV_FETCH
@@ -742,7 +724,7 @@ return .ooTestResult~new(5)~~addException(err)
   arr = .array~new(1)
   arr[1] = .ShvBlock~new()
   arr[1]~shvname = 'TEST1'
-  arr[1]~shvvalue = test1_val
+  arr[1]~shvvalue = test1
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
   arr[1]~shvcode = 1 -- RXSHV_FETCH
@@ -752,11 +734,11 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(4, arr[1]~shvret) -- make sure an error was generated
 
 ::method 'test_39e_variablepool'
-  test1_val = 'my test string'
+  test1 = 'my test string'
   arr = .array~new(1)
   arr[1] = .ShvBlock~new()
   arr[1]~shvname = '*****' -- really invalid name
-  arr[1]~shvvalue = test1_val
+  arr[1]~shvvalue = test1
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = test1~length
   arr[1]~shvcode = 1 -- RXSHV_FETCH
@@ -778,7 +760,7 @@ return .ooTestResult~new(5)~~addException(err)
   retc = TestFVariablePool(arr)
   self~assertEquals(0, retc)
   self~assertEquals(0, arr[1]~shvret)
-  self~assertEquals(test1, 'TEST1')
+  self~assertFalse(var(arr[1]~shvname))
 
 ::method 'test_40a_variablepool'
   test1 = 123 -- give this an existing value
@@ -801,9 +783,9 @@ return .ooTestResult~new(5)~~addException(err)
   retc = TestFVariablePool(arr)
   self~assertEquals(0, retc)
   self~assertEquals(0, arr[1]~shvret)
-  self~assertEquals(test1, 'TEST1')
+  self~assertFalse(var(arr[1]~shvname))
   self~assertEquals(0, arr[2]~shvret)
-  self~assertEquals(test2, 'TEST2')
+  self~assertFalse(var(arr[2]~shvname))
 
 ::method 'test_40b_variablepool'
   test1_val = 'my test string'
@@ -998,4 +980,380 @@ return .ooTestResult~new(5)~~addException(err)
   return qualify(filespec('Location', me)||file)
 
 
+-- for better readability below SHVBLOCK tests use SHV codes F/f, S/s, D/d, P, N
+-- like they are documented for z/OS and z/VM REXX
+-- not sure why ooRexx uses incompatible codes, e. g. SYFET 0x04 instead of "f"
 
+-- test SHVBLOCK return codes
+::method test_shv_rc
+  self~assertSame(.Shv~OK, TestFVariablePool(.Array~new(0)))
+  self~assertSame(.Shv~BADF, TestFVariablePool(.Shv~new("*", "")))
+
+  -- @@quirk or bug:
+  -- F ".NIL" returns BADN, but f ".nil" returns NEWV
+  self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("F", ".NIL")))
+  self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("f", ".nil")))
+
+-- test SHVBLOCK F/FETCH, direct interface
+::method test_shv_fetch_direct
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "NULL", "RANGE", "N", "LARGE", "VAR250"~left(250, "_")
+    shv = .Shv~new("F", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value(name), shv~shvvalue)
+  end
+
+  -- test stem.n
+  shv = .Shv~new("F", "STEM.tail")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame(stem.n, shv~shvvalue)
+
+  -- SHV is strictly string-only
+  shv = .Shv~new("F", "ARRAY")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame("an Array", shv~shvvalue)
+  shv = .Shv~new("F", "SELF")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame(self~objectName, shv~shvvalue)
+
+  -- fetching an unassigned variable returns NEWV
+  do name over "NOTSET", "STEM.N", "_!?"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("F", name)), name)
+  end
+
+  -- variables are not accessible from within a procedure
+  shv = .Shv~new("F", "N")
+  self~assertSame(.Shv~NEWV, procedureVariablePool(shv))
+
+  -- variable value truncation returns TRUNC
+  do name over "RANGE", "LARGE"
+    shv = .Shv~new("F", name, , 100) -- 100 is too small for RANGE and LARGE
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value(name)~left(100), shv~shvvalue)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("F", name)), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("F", "RC"), .Shv~new("F", "LARGE", , 100), .Shv~new("F", "N"), .Shv~new("F", "*")
+  self~assertSame(.Shv~NEWV + .Shv~TRUNC + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~TRUNC, shv[2]~shvret)
+  self~assertSame(.Shv~OK,    shv[3]~shvret)
+  self~assertSame(n,          shv[3]~shvvalue)
+  self~assertSame(.Shv~BADN,  shv[4]~shvret)
+
+  return
+
+  procedureVariablePool: procedure
+  use strict arg shv
+  return TestFVariablePool(shv)
+
+-- test SHVBLOCK f/SYFET, symbolic interface
+::method test_shv_fetch_symbolic
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "null", "Range", "n", "large", "stem.n", "var250"~left(250, "_")
+    shv = .Shv~new("f", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value(name), shv~shvvalue)
+  end
+
+  -- SHV is strictly string-only
+  shv = .Shv~new("f", "array")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame("an Array", shv~shvvalue)
+
+  -- variables not set return NEWV
+  do name over "NOTset", "stem.large", "_!?", "rc"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("f", name)), name)
+  end
+
+  -- variables are not accessible from within a procedure
+  shv = .Shv~new("f", "n")
+  self~assertSame(.Shv~NEWV, procedureVariablePool(shv))
+
+  -- variable value truncation returns TRUNC
+  do name over "range", "large"
+    shv = .Shv~new("f", name, , 100) -- 100 is too small for range and large
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value(name)~left(100), shv~shvvalue)
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("f", name)), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("f", "rc"), .Shv~new("f", "large", , 100), .Shv~new("f", "n"), .Shv~new("f", "*")
+  self~assertSame(.Shv~NEWV + .Shv~TRUNC + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~TRUNC, shv[2]~shvret)
+  self~assertSame(.Shv~OK,    shv[3]~shvret)
+  self~assertSame(n,          shv[3]~shvvalue)
+  self~assertSame(.Shv~BADN,  shv[4]~shvret)
+
+  return
+
+  procedureVariablePool: procedure
+  use strict arg shv
+  return TestFVariablePool(shv)
+
+-- test SHVBLOCK D/DROP, direct interface
+::method test_shv_drop_direct
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  -- test stem.n
+  shv = .Shv~new("D", "STEM.tail")
+  self~assertTrue(var("stem.n")) -- confirm variable exists
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertFalse(var("stem.n")) -- confirm variable was dropped
+
+  do name over "NULL", "RANGE", "N", "LARGE", "VAR250"~left(250, "_")
+    self~assertTrue(var(name), name) -- confirm variable exists
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("D", name)), name)
+    self~assertFalse(var(name), name) -- confirm variable was dropped
+  end
+
+  -- dropping an unassigned variable returns NEWV
+  do name over "NOTSET", "STEM.N", "_!?"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("D", name)), name)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("D", name)), name)
+  end
+
+  n = 0.123
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("D", "RC"), .Shv~new("D", "N"), .Shv~new("D", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertFalse(var("N"))
+
+-- test SHVBLOCK d/SYDRO, symbolic interface
+::method test_shv_drop_symbolic
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "null", "Range", "stem.n", "n", "large", "var250"~left(250, "_")
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("d", name)), name)
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("d", name)), name)
+    self~assertFalse(var(name), name)
+  end
+
+  -- dropping an unassigned variable returns NEWV
+  do name over "NOTset", "stem.n", "_!?", "rc"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("d", name)), name)
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("d", name)), name)
+  end
+
+  n = 0.123
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("d", "rc"), .Shv~new("d", "n"), .Shv~new("d", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertFalse(var("N"))
+
+-- test SHVBLOCK S/SET, direct interface
+::method test_shv_set_direct
+
+  vars = .StringTable~of( -
+   ("NULL", ""), ("RANGE", xrange()), ("N", "tail"), ("LARGE", "X"~copies(4 * 1024 + 1)), -
+    ("VAR250"~left(250, "_"), .250))
+  -- S will return NEWV first, OK on second try
+  do with index name item value over vars
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("S", name, value)), name)
+    self~assertSame(value, value(name))
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("S", name, value)), name)
+    self~assertSame(value, value(name))
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("S", name, "")), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("S", "RC", -1), .Shv~new("S", "N", "other"), .Shv~new("S", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertSame(-1, rc)
+  self~assertSame("other", n)
+
+-- test SHVBLOCK s/SYSET, symbolic interface
+::method test_shv_set_symbolic
+
+  vars = .StringTable~of( -
+   ("null", ""), ("range", xrange()), ("n", "tail"), ("large", "x"~copies(4 * 1024 + 1)), -
+   ("stem.n", "stem value"), ("var250"~left(250, "_"), .250))
+  -- S will return NEWV first, OK on second try
+  do with index name item value over vars
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("s", name, value)), name)
+    self~assertSame(value, value(name))
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("s", name, value)), name)
+    self~assertSame(value, value(name))
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("s", name, "")), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("s", "RC", -1), .Shv~new("s", "N", "other"), .Shv~new("s", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertSame(-1, rc)
+  self~assertSame("other", n)
+
+-- test SHVBLOCK P/PRIV, direct interface
+::method test_shv_private
+  parse source s
+  parse version v
+  private = .Stringtable~of( -
+   ("QUENAME", rxqueue("GET")), ("SOURCE", s), ("VERSION", v))
+  do with index name item value over private
+    shv = .Shv~new("P", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value, shv~shvvalue)
+  end
+
+  -- this method receives no args, so we test PARM and PARM.n by calling
+  -- method shv_private_args with one arg (our Array of SHVBLOCKs)
+  -- we use a chained request here
+  parms = .Shv~new("P", "PARM"), .Shv~new("P", "PARM.1"), .Shv~new("P", "PARM.2")
+  self~assertSame(.Shv~OK, self~shv_private_args(parms))
+  self~assertSame(1, parms[1]~shvvalue)
+  self~assertSame("an Array", parms[2]~shvvalue)
+  self~assertSame("", parms[3]~shvvalue) -- omitted args return nullstring
+
+  -- variable value truncation returns TRUNC
+  do with index name item value over private~~remove("QUENAME")
+    shv = .Shv~new("P", name, , 8) -- 8 is too small for SOURCE and VERSION
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value~left(8), shv~shvvalue)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "source", "P", "PARM.ALL", "ARG"
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("P", name)), name)
+  end
+
+
+::method shv_private_args
+  return TestFVariablePool(arg(1))
+
+-- test SHVBLOCK N/NEXTV, direct interface
+::method test_shv_next
+  shv = .Array~new(9)
+  do shv~size
+    shv~append(.Shv~new("N", ""))
+  end
+
+  -- we now have four variables defined: SELF, SUPER, SHV, and RESULT
+  -- we have n+1 SHVBLOCKs and the last one must be LVAR
+  self~assertSame(5, TestFNVariablePool(shv))
+  self~assertSame(.Shv~LVAR, shv[5]~shvret) -- last+1 SHVBLOCK must be LVAR
+  mustHave = "SELF", "SUPER", "SHV", "RESULT"
+  do i = 1 to mustHave~items
+    self~assertSame(.Shv~OK, shv[i]~shvret)
+    self~assertTrue(mustHave~hasItem(shv[i]~shvname), shv[i]~shvname)
+    mustHave~removeItem(shv[i]~shvname)
+    select case shv[i]~shvname
+      when "SHV"    then self~assertSame("an Array", shv[i]~shvvalue)
+      when "RESULT" then self~assertSame(9, shv[i]~shvvalue)
+      otherwise nop
+    end
+  end
+
+  -- call a procedure where not a single variable is defined
+  self~assertSame(1, procedureVariablePool(shv))
+  self~assertSame(.Shv~LVAR, shv[1]~shvret) -- last+1 SHVBLOCK must be LVAR
+  return
+
+  procedureVariablePool: procedure
+  return TestFNVariablePool(arg(1))
+
+
+::class Shv subclass shvblock
+
+/*
+#define RXSHV_SET          0x00       /* Set var from given value    */
+#define RXSHV_FETCH        0x01       /* Copy value of var to buffer */
+#define RXSHV_DROPV        0x02       /* Drop variable               */
+#define RXSHV_SYSET        0x03       /* Symbolic name Set variable  */
+#define RXSHV_SYFET        0x04       /* Symbolic name Fetch variable*/
+#define RXSHV_SYDRO        0x05       /* Symbolic name Drop variable */
+#define RXSHV_NEXTV        0x06       /* Fetch "next" variable       */
+#define RXSHV_PRIV         0x07       /* Fetch private information   */
+*/
+::constant code (.StringTable~of(-
+  ('S', 0), ('F', 1), ('D', 2), -
+  ('s', 3), ('f', 4), ('d', 5), -
+  ('N', 6), ('P', 7)))
+
+::constant OK    ('00'~x2d) -- RXSHV_OK    0x00 /* Execution was OK            */
+::constant NEWV  ('01'~x2d) -- RXSHV_NEWV  0x01 /* Variable did not exist      */
+::constant LVAR  ('02'~x2d) -- RXSHV_LVAR  0x02 /* Last var trans via SHVNEXTV */
+::constant TRUNC ('04'~x2d) -- RXSHV_TRUNC 0x04 /* Truncation occurred-Fetch   */
+::constant BADN  ('08'~x2d) -- RXSHV_BADN  0x08 /* Invalid variable name       */
+::constant MEMFL ('10'~x2d) -- RXSHV_MEMFL 0x10 /* Out of memory failure       */
+::constant BADF  ('80'~x2d) -- RXSHV_BADF  0x80 /* Invalid funct code (shvcode)*/
+
+::method init
+  -- we must have at least a code and a name
+  use strict arg code, name, value = "", valuelen = 0
+  c = self~code[code]
+  self~shvcode = (c == .nil)~?(42, c) -- 42 is illegal
+  self~shvname = name;
+  self~shvvalue = value;
+  self~shvvaluelen = valuelen;
+  self~shvnamelen = 0;
+
+::method makeArray
+  return .Array~of(self)
+
+
+::options all syntax
