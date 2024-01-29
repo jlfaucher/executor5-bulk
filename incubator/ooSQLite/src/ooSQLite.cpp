@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -11837,6 +11837,7 @@ RexxMethod3(int, oosqlext_registerBuiltin, RexxObjectPtr, dbConn, OPTIONAL_RexxO
                 return rc;
             }
         }
+        return SQLITE_OK;
     }
     else
     {

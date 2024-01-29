@@ -7,12 +7,12 @@
     #
     # Description: Open Object Rexx: ooSqlite XML file.
     #
-    # Copyright (c) 2013-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2013-2024, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -57,7 +57,7 @@
 <section id="sctMethodsOOSQLExtensions"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with ???
+  with ooSQLite extensions using the <computeroutput>ooSQLExtensions</computeroutput> class.
 </para>
 <table id="tblOOSQLExtensionsMethods" frame="all">
 <title>ooSQLExtensions Methods and Attributes</title>
@@ -77,11 +77,11 @@
 </row>
 <row>
 <entry><link linkend="atrLastErrCodeClsExt">lastErrCode</link></entry>
-<entry>.</entry>
+<entry>Returns the last error code recorded for this class.</entry>
 </row>
 <row>
 <entry><link linkend="atrLastErrMsgClsExt">lastErrMsg</link></entry>
-<entry>.</entry>
+<entry>Returns the error message for the last error code recorded for this class.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -89,7 +89,7 @@
 </row>
 <row>
 <entry><link linkend="mthAutoBuiltin">autoBuiltin</link></entry>
-<entry>.</entry>
+<entry>Makes builtin extensions automatic for all database connections.</entry>
 </row>
 <row>
 <entry><link linkend="mthAutoCollationNeeded">autoCollationNeeded</link></entry>
@@ -108,8 +108,8 @@
 <entry>.</entry>
 </row>
 <row>
-<entry><link linkend="mthCancelAutoBuiltin">CancelAutoBuiltin</link></entry>
-<entry>.</entry>
+<entry><link linkend="mthCancelAutoBuiltin">cancelAutoBuiltin</link></entry>
+<entry>Cancels builtin extension as automatic for all database connections.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetLibrary">getLibrary</link></entry>
@@ -121,7 +121,7 @@
 </row>
 <row>
 <entry><link linkend="mthListBuiltins">listBuiltins</link></entry>
-<entry>.</entry>
+<entry>Lists all builtin extensions.</entry>
 </row>
 <row>
 <entry><link linkend="mthLoadLibrary">loadLibrary</link></entry>
@@ -137,7 +137,7 @@
 </row>
 <row>
 <entry><link linkend="mthRegisterBuiltin">registerBuiltin</link></entry>
-<entry>.</entry>
+<entry>Registers builtin extensions with a database connection.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -148,18 +148,15 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>lastErrCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lastErrCode-----------------------------------------------------><
-
->>--lastErrCode = varName-------------------------------------------><
-
+>>--lastErrCode--------------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  Reflects the last error code set by for the <computeroutput>ooSQLPackage</computeroutput> object.
+  Reflects the last error code set for the <computeroutput>ooSQLExtensions</computeroutput> class.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">lastErrCode get</emphasis></term>
   <listitem>
   <para>
     The value of the <emphasis role="italic">lastErrCode</emphasis> attribute will be a SQLite result <link
@@ -167,43 +164,20 @@
     linkend="sctOOSQLiteSpecificResultCodes">codes</link>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    The programmer can not set the value of this attribute, it is set internally by the ooSQLite framework.
+    The <emphasis role="italic">lastErrCode</emphasis> and the
+    <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together.
+    The error message is always the message that goes with the error code.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The last error code attribute is similar to the <link linkend="atrLastErrMsgClsPack">lastErrMsg</link> attribute.
-    Its value is the last status code recorded by ooSQLite. The <emphasis role="italic">lastErrCode</emphasis> and the
-    <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
-    the message that goes with the error code.
-  </para>
-  <para>
-    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLPackage</link>, an
-    <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
-    linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
-    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
-    hold the last error message and code recorded by ooSQLite.
-  </para>
-  <para>
-    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
-    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
-    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
-    In general, these objects do not update the attributes after every method invocation.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
-    a database connection fails to open:
 <programlisting>
 <![CDATA[
-
-	dbName = 'ooFoods.rdbx'
+  dbName = 'ooFoods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
   -- Load the package and automatically register everything in the package for
@@ -229,51 +203,27 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>lastErrMsg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lastErrMsg-----------------------------------------------------><
-
->>--lastErrMsg = varName-------------------------------------------><
-
+>>--lastErrMsg---------------------------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects a human readable explanation, a message, of the last error code recorded
+  for the <computeroutput>ooSQLExtensions</computeroutput> object.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">lastErrMsg get:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">lastErrMsg get</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a string message that corresponds to the last error code.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">lastErrMsg set:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Anything?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The <emphasis role="italic">lastErrCode</emphasis> and the
+    <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together.
+    The error message is always the message that goes with the error code.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -284,56 +234,49 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>autoBuiltin</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoBuiltin(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--autoBuiltin(--+--------+--)----------------------------------------------><
+                  +--name--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Registers one or more ooSQLite builtin extensions as automatic.
+  This means that each time a database connection is opened, these builtin
+  extensions will be automatically registered for that connection.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
-  <para>
-    The arguments are:
-  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>name [optional]</term>
     <listitem>
     <para>
-      xx
+      A single extension name or an Array of extension names to be made automatic.
+      If this argument is omitted all builtin extensions are made automatic.
+      Name can also be the special keyword <literal>ALL</literal>, with case not
+      significant, in which case all builtin extensions are made automatic.
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite <link linkend="sctResultCode">result code</link>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    See also methods <link linkend="mthRegisterBuiltin">registerBuiltin</link>
+    and <link linkend="mthCancelAutoBuiltin">cancelAutoBuiltin</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Anything?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The extensions come from the SQLite source tree, and are statically
+    linked to the ooSQLite shared library.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -344,7 +287,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>autoCollationNeeded</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoCollationNeeded(--+--------+--)---------------------------------------------><
+>>--autoCollationNeeded(--+--------+--)--------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -405,7 +348,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>autoCollation (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoCollation(--+--------+--)---------------------------------------------><
+>>--autoCollation(--+--------+--)--------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -527,7 +470,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>autoPackage (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoPackage(--+--------+--)---------------------------------------------><
+>>--autoPackage(--+--------+--)----------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -587,56 +530,50 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>cancelAutoBuiltin</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cancelAutoBuiltin(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--cancelAutoBuiltin(--+--------+--)----------------------------------------><
+                        +--name--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Cancels one or more automatic ooSQLite builtin extensions.
+  Automatic means that each time a database connection is opened, the builtin
+  extensions is automatically registered for that connection.
+  This function undoes this automatic registration for the named builtin extensions.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
-  <para>
-    The arguments are:
-  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>name [optional]</term>
     <listitem>
     <para>
-      xx
+      A single extension name or an Array of extension names to be cancelled as
+      automatic.
+      If this argument is omitted all builtin extensions are cancelled as automatic.
+      Name can also be the special keyword <literal>ALL</literal>, with case not
+      significant, in which case all builtin extensions are cancelled as automatic.
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite <link linkend="sctResultCode">result code</link>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    See also method <link linkend="mthAutoBuiltin">autoBuiltin</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Anything?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The extensions come from the SQLite source tree, and are statically
+    linked to the ooSQLite shared library.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -647,7 +584,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>getLibrary (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getLibrary(--+--------+--)---------------------------------------------><
+>>--getLibrary(--+--------+--)-----------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -708,7 +645,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>getPackage (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getPackage(--+--------+--)---------------------------------------------><
+>>--getPackage(--+--------+--)-----------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -768,54 +705,77 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>listBuiltins</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--listBuiltins(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--listBuiltins(--+---------+--)--------------------------------------------><
+                   +--print--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a result set, in the current
+  <link linkend="atrRecordFormatClsOOSQLite">Result Set Format</link>,
+  listing all extensions builtin to ooSQLite.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
-  <para>
-    The arguments are:
-  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>print [optional]</term>
     <listitem>
     <para>
-      xx
+      If .true, the result set is printed to the console as it is produced.
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    A list of the builtin extensions available in this version of ooSQLite.
+    The result set has two columns:
+    <variablelist>
+      <varlistentry><term>name</term>
+      <listitem>
+      <para>
+        The builtin extension's name
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>description</term>
+      <listitem>
+      <para>
+        A short descriptive text for the builtin extension
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Anything?
+    The extensions come from the SQLite source tree, and are statically
+    linked to the ooSQLite shared library.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    This example ...
 <programlisting>
 <![CDATA[
+do extension over .ooSQLExtensions~listBuiltins
+  say extension~name~left(11) extension~description
+end
 
+/* Output might be:
+base64      Implements a base64() SQL function to convert between a blob and Base64 ..
+csv         Implements a virtual table for reading CSV files.
+ieee754     Implements SQL functions for IEEE 754 binary64 floating-point numbers.
+nextChar    Implements the next_char(A, T, F, W, C) SQL function.
+percentile  Implements the percentile(Y, P) SQL function.
+regExp      Implements a POSIX extended regular expression matcher for UTF-8.
+rot13       Implements a rot13() SQL function and a rot13 collating sequence.
+spellFix    Implements the spellfix1 virtual table that can search a vocabulary ..
+toType      Implements tointeger() and toreal() SQL functions.
+wholeNumber Implements the wholenumber virtual table that returns whole numbers ..
+*/
 ]]>
 </programlisting>
   </para>
@@ -829,7 +789,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>loadLibrary (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadLibrary(--+--------+--)---------------------------------------------><
+>>--loadLibrary(--+--------+--)----------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -890,7 +850,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>loadPackage (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadPackage(--+--------+--)---------------------------------------------><
+>>--loadPackage(--+--------+--)----------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -951,7 +911,7 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>resetAutoBuiltin (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--resetAutoBuiltin(--+--------+--)---------------------------------------------><
+>>--resetAutoBuiltin(--+--------+--)-----------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -1012,54 +972,70 @@
 <indexterm><primary>ooSQLExtensions class</primary><secondary>registerBuiltin (Class method)</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--registerBuiltin(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--registerBuiltin(--connection--+---------+--)-----------------------------><
+                                  +-,-name--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Registers one or more extensions builtin to ooSQLite with the specified
+  database connection.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
-  <para>
-    The arguments are:
-  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>connection [required]</term>
     <listitem>
     <para>
-      xx
+      An open, valid, database connection that the builtin extension is to be
+      registered with.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name [optional]</term>
+    <listitem>
+    <para>
+      A single extension name or an Array of extension names to be registered.
+      If this argument is omitted all builtin extensions are registered.
+      Name can also be the special keyword <literal>ALL</literal>, with case not
+      significant, in which case all builtin extensions are registered.
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite <link linkend="sctResultCode">result code</link>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    See also method <link linkend="mthAutoBuiltin">autoBuiltin</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Anything?
+    The extensions come from the SQLite source tree, and are statically
+    linked to the ooSQLite shared library.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    This example ...
 <programlisting>
 <![CDATA[
+mem = .ooSQLiteConnection~new(":memory:")
+.ooSQLExtensions~registerBuiltin(mem, "base64")
+do row over mem~exec("SELECT base64('SGVsbG8gd29ybGQh');", .true)
+  say row~allItems
+end
 
+/* Output
+Hello world!
+*/
 ]]>
 </programlisting>
   </para>

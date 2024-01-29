@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -536,9 +536,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlite3.h.
-::constant VERSION        "3.8.4.3"
-::constant VERSION_NUMBER 3008004
-::constant SOURCE_ID      "2014-04-03 16:53:12 a611fa96c4a848614efe899130359c9f6fb889c3"
+::constant VERSION        "3.40.1"
+::constant VERSION_NUMBER 3040001
+::constant SOURCE_ID      "2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5e82ad8197f38a24"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.

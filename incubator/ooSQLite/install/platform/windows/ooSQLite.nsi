@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* https://www.oorexx.org/license.html                                        */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -183,8 +183,8 @@ Section  doInstall
     Call RemoveFiles
   ${EndIf}
 
-  DetailPrint "********** Installing ooSQLite  **********"
   DetailPrint ""
+  DetailPrint "********** Installing ooSQLite  **********"
 
 
   ; Install the files
@@ -213,6 +213,7 @@ Section  doInstall
 
     ; Add the files ...
     File "${ExamplesDir}\*.rex"
+    File "${ExamplesDir}\*.csv"
     File "${ExamplesDir}\*.frm"
     File "${ExamplesDir}\ooFoods.rdbx"
 
@@ -270,6 +271,7 @@ Section  doInstall
 
 
     ; Create start menu shortcuts
+    DetailPrint ""
     DetailPrint "********** ooSQLite ${SHORTVERSION} Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
@@ -568,7 +570,6 @@ FunctionEnd
 Function RemoveFiles
 
   DetailPrint "******* Removing current ooSQLite files ******"
-  DetailPrint ""
 
   ; We probably do not need to delete these files, we could just over-write
   ; them
@@ -587,8 +588,8 @@ Function RemoveFiles
   ; For the short cuts, we delete any known short cuts created by any ooSQLite
   ; installation.  Each independent ooSQLite installation will create all
   ; relevant short cuts for that installation.
-  DetailPrint "******* Removing ooSQLite Start Menu short cuts ******"
   DetailPrint ""
+  DetailPrint "******* Removing ooSQLite Start Menu short cuts ******"
 
   Delete  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk"
   Delete  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite Reference.lnk"

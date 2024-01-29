@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooSqlite XML file.
     #
-    # Copyright (c) 2012-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2024, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -347,17 +347,15 @@
     second through nth items, where n is the number of records:
 <programlisting>
 <![CDATA[
+-- Set the result set format to an array of arrays:
+.ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
-  -- Set the result set format to an array of arrays:
-  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
+dbName = 'ooFoods.rdbx'
 
-	dbName = 'ooFoods.rdbx'
+dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  sql = 'SELECT * FROM foods ORDER BY name;'
-  resultSet = dbConn~exec(sql, .true)
-
+sql = 'SELECT * FROM foods ORDER BY name;'
+resultSet = dbConn~exec(sql, .true)
 ]]>
 </programlisting>
   </para>
@@ -429,23 +427,57 @@
     This example shows how to iterate over the compile-time options:
 <programlisting>
 <![CDATA[
-
-  opt = ''
-  do i = 1 while opt \== 'NULL'
-    opt = .ooSQLite~compileOptionGet(i)
-    say 'Compile option:' opt
-  end
-  say
+do i = 1
+  option = .ooSQLite~compileOptionGet(i)
+  if option = "NULL"
+    then leave
+  say 'Compile option:' option
+end
 
 /* Output might be:
-
-Compile option: CURDIR
+Compile option: ATOMIC_INTRINSICS=0
+Compile option: COMPILER=msvc-1928
+Compile option: DEFAULT_AUTOVACUUM
+Compile option: DEFAULT_CACHE_SIZE=-2000
+Compile option: DEFAULT_FILE_FORMAT=4
+Compile option: DEFAULT_FOREIGN_KEYS
+Compile option: DEFAULT_JOURNAL_SIZE_LIMIT=-1
+Compile option: DEFAULT_MMAP_SIZE=0
+Compile option: DEFAULT_PAGE_SIZE=4096
+Compile option: DEFAULT_PCACHE_INITSZ=20
+Compile option: DEFAULT_RECURSIVE_TRIGGERS
+Compile option: DEFAULT_SECTOR_SIZE=4096
+Compile option: DEFAULT_SYNCHRONOUS=2
+Compile option: DEFAULT_WAL_AUTOCHECKPOINT=1000
+Compile option: DEFAULT_WAL_SYNCHRONOUS=2
+Compile option: DEFAULT_WORKER_THREADS=0
 Compile option: ENABLE_COLUMN_METADATA
+Compile option: ENABLE_FTS3
+Compile option: ENABLE_FTS3_PARENTHESIS
+Compile option: ENABLE_FTS4
+Compile option: ENABLE_FTS5
 Compile option: ENABLE_MEMORY_MANAGEMENT
+Compile option: MALLOC_SOFT_LIMIT=1024
+Compile option: MAX_ATTACHED=10
+Compile option: MAX_COLUMN=2000
+Compile option: MAX_COMPOUND_SELECT=500
+Compile option: MAX_DEFAULT_PAGE_SIZE=8192
+Compile option: MAX_EXPR_DEPTH=1000
+Compile option: MAX_FUNCTION_ARG=127
+Compile option: MAX_LENGTH=1000000000
+Compile option: MAX_LIKE_PATTERN_LENGTH=50000
+Compile option: MAX_MMAP_SIZE=0x7fff0000
+Compile option: MAX_PAGE_COUNT=1073741823
+Compile option: MAX_PAGE_SIZE=65536
+Compile option: MAX_SQL_LENGTH=1000000000
+Compile option: MAX_TRIGGER_DEPTH=1000
+Compile option: MAX_VARIABLE_NUMBER=32766
+Compile option: MAX_VDBE_OP=250000000
+Compile option: MAX_WORKER_THREADS=8
+Compile option: MUTEX_W32
+Compile option: SYSTEM_MALLOC
 Compile option: TEMP_STORE=1
 Compile option: THREADSAFE=1
-Compile option: NULL
-
 */
 
 ]]>
@@ -511,24 +543,21 @@ Compile option: NULL
     This example checks several random compile-time options and displays if they were defined at compile time.
 <programlisting>
 <![CDATA[
-
-  names = .array~of('DEFAULT_AUTOVACUUM', 'THREADSAFE', 'TEMP_STORE', -
-                    '4_BYTE_ALIGNED_MALLOC', 'CURDIR', 'SQLITE_THREADSAFE')
-  do i = 1 to names~items
-    say 'Option' names[i] ':' .ooSQLite~compileOptionUsed(names[i])
-  end
+names = -
+ "DEFAULT_AUTOVACUUM", "THREADSAFE", "TEMP_STORE", -
+ "4_BYTE_ALIGNED_MALLOC", "CURDIR", "SQLITE_THREADSAFE"
+do name over names
+  say "Option" name ":" .ooSQLite~compileOptionUsed(name)
+end
 
 /* Output might be:
-
-Option DEFAULT_AUTOVACUUM : 0
+Option DEFAULT_AUTOVACUUM : 1
 Option THREADSAFE : 1
 Option TEMP_STORE : 1
 Option 4_BYTE_ALIGNED_MALLOC : 0
-Option CURDIR : 1
+Option CURDIR : 0
 Option SQLITE_THREADSAFE : 1
-
 */
-
 ]]>
 </programlisting>
   </para>
@@ -924,7 +953,7 @@ file is encrypted or is not a database
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The number of the library version in use, perhaps 3007013.
+    The number of the library version in use, perhaps 3040001.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1257,13 +1286,10 @@ Current memory used:     0
     This example displays the source ID for the currently running database engine:
 <programlisting>
 <![CDATA[
-
-  say 'Source ID:             ' .ooSQLite~sourceID
+say "Source ID:" .ooSQLite~sourceID
 
 /*  Output might be:
-
-Source ID:              2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc
-
+Source ID: 2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5e82ad8197f38a24
 */
 ]]>
 </programlisting>
@@ -1319,17 +1345,13 @@ Source ID:              2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839ea
     This example shows the equivalence of the two <computeroutput>ooSQLite</computeroutput> class methods:
 <programlisting>
 <![CDATA[
-
-  say 'Return from libVersion method:' .ooSQLite~libVersion
-  say 'Constant string value:        ' .ooSQLite~sqlite3Version
+say "Return from libVersion method:" .ooSQLite~libVersion
+say "Constant string value:        " .ooSQLite~sqlite3Version
 
 /* Output would be, depending on the exact library version of the embedded database engine:
-
-Return from libVersion method: 3.7.13
-Constant string value:         3.7.13
-
+Return from libVersion method: 3.40.1
+Constant string value:         3.40.1
 */
-
 ]]>
 </programlisting>
   </para>
@@ -1602,7 +1624,7 @@ Thread safe value: 1
           <varlistentry><term>LibVersion</term>
           <listitem>
           <para>
-            A version string similar to <computeroutput>3.7.13</computeroutput>. This is the embedded SQLite database
+            A version string similar to <computeroutput>3.40.1</computeroutput>. This is the embedded SQLite database
             engine version and is identical to the output from the <link linkend="mthLibVersion">libVersion</link>
             method.
           </para>
@@ -1610,7 +1632,7 @@ Thread safe value: 1
           <varlistentry><term>Number</term>
           <listitem>
           <para>
-            A version number, similar to <computeroutput>3007013</computeroutput>. This is the embedded SQLite database
+            A version number, similar to <computeroutput>3040001</computeroutput>. This is the embedded SQLite database
             engine version number and is identical to the output from the <link
             linkend="mthLibVersionNumber">libVersionNumber</link> method.
           </para>
@@ -1663,7 +1685,7 @@ ooSQLite: ooSQLite Version 1.0.0.7925 (64 bit)
 
 Rexx:     Open Object Rexx Version 4.2.0
 
-SQLite:   SQLite Library Version 3.7.13
+SQLite:   SQLite Library Version 3.40.1
           2012-06-11 02:05:22
 
 */
