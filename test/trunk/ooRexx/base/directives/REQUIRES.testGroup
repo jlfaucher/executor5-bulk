@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -347,11 +347,21 @@ return testResult
   -- this requires file without extension should resolve to .cls
   self~assertSame("cls", self~runDynamicSource(("return .c~extension", "::requires search_order_cls")))
 
+  -- avoid "Initial call of test container failed" for search_order_*.testGroup
+  do with index name item file over keep
+    file~delete
+  end
+
 ::method test_search_order_testGroup
   keep = self~createRequires("search_order_testgroup", ("testGroup", "rex", "other", ""))
 
   -- this requires file without extension should resolve to .testGroup
   self~assertSame("testGroup", self~runDynamicSource(("return .c~extension", "::requires search_order_testgroup")), "this ::REQUIRES search order tests fails when run from within the same directory, but works as expected otherwise")
+
+  -- avoid "Initial call of test container failed" for search_order_*.testGroup
+  do with index name item file over keep
+    file~delete
+  end
 
 ::method test_search_order_rex
   keep = self~createRequires("search_order_rex", ("rex", "other", ""))
