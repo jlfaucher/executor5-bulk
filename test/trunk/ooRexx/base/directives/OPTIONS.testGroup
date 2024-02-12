@@ -589,7 +589,6 @@ return testResult
   do traceObj over trace
     traceAsString~append(traceObj~makeString)
   end
-  -- self~assertSameList(traceExpected, trace, .Array~of("expected:")~appendAll(traceExpected)~~append("actual:")~appendAll(trace)~toString)
   self~assertSameList(traceExpected, traceAsString, .Array~of("expected:")~appendAll(traceExpected)~~append("actual:")~appendAll(traceAsString)~toString)
 
 -- [bugs:#1581] trace "all" crashes when the scope of a method is NIL
