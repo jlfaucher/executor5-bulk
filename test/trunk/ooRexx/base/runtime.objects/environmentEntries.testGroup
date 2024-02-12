@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -157,8 +157,12 @@ TRACEOUTPUT
   .Error~destination
   thirdLabel: line3 = .line
   -- only these two lines of trace output should have been captured
+  arrayStreamAsStringArray=.array~new
+  do traceObj over arrayStream
+     arrayStreamAsStringArray~append(traceObj~makeString)
+  end
   self~assertSameList(( -
-   line1~format(6) "*-* label:", line3~format(6) "*-* thirdLabel:"), arrayStream)
+   line1~format(6) "*-* label:", line3~format(6) "*-* thirdLabel:"), arrayStreamAsStringArray)
 
   -- back to default
   .Error~destination
