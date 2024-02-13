@@ -245,7 +245,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .InvocationTester~new
   tester~exitType = "DLL"
   tester~ioExit = "SKIP"
-  self~assertEquals("    47 *-* call trace OFF", tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0))~makeString)
+  self~assertEquals("    47 *-* call trace OFF", tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0)))
   tester~ioExit = "DEBUG"
   self~assertEquals("NOT RECEIVED", tester~callRexxStart(self~resolveTestProgram('tests/ioExitTrace.rex'), .array~new(0)))
 
