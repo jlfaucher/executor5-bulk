@@ -1,5 +1,8 @@
 The ooRexx project uses a free tool "RailDiagramGenerator" for creating its
-syntax diagrams from ebnf. It is located at: <https://www.bottlecaps.de/rr/ui>.
+syntax diagrams from ebnf.
+
+OUTDATED (20240315) It is located at: <https://www.bottlecaps.de/rr/ui>.
+It is located at (20240315): <https://rr.red-dove.com/ui>
 
 
 Those books that use syntax diagrams store them in: ${book}/en-US/images
