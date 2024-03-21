@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -55,7 +55,8 @@ instruction there are the following debugging aids.</para>
 program. Adding the prefix character ? to the TRACE instruction,
 the TRACE function, or TRACE keyword of the ::OPTIONS directive.  For example,
 <computeroutput>TRACE ?I</computeroutput>,
-<computeroutput>TRACE(?I)</computeroutput>, or <computeroutput>::OPTIONS TRACE ?I</computeroutput>) turns on interactive debugging
+<computeroutput>TRACE(?I)</computeroutput>, or
+<computeroutput>::OPTIONS TRACE ?I</computeroutput> turns on interactive debugging
 and indicates to the user that interactive
 debugging is active. Further TRACE instructions in the program are ignored,
 and the language processor pauses after nearly all instructions that are traced
@@ -175,20 +176,17 @@ cannot be reexecuted.</para>
 <indexterm><primary>RXTRACE environment variable</primary></indexterm>
 <para>When the interpreter starts, it
 checks the setting of the special environment variable,
-<emphasis role="italic">RXTRACE</emphasis>.
-If <emphasis role="italic">RXTRACE</emphasis> has been set to
-<computeroutput>ON</computeroutput> (not case-sensitive), each time when starting
+<literal>RXTRACE</literal>.
+If <literal>RXTRACE</literal> has been set to
+<literal>ON</literal> (not case-sensitive), each time when starting
 a new Rexx procedure, the
 interpreter starts in interactive debug mode as if the Rexx instruction
 <computeroutput>TRACE &apos;?R&apos;</computeroutput> had been the first interpretable
 instruction. All other settings
-of <emphasis role="italic">RXTRACE</emphasis> are ignored.
-<emphasis role="italic">RXTRACE</emphasis> is only checked when starting 
+of <literal>RXTRACE</literal> are ignored.
+<literal>RXTRACE</literal> is only checked when starting
 a new Rexx interpreter, it is not checked each time when starting
 a new Rexx procedure.</para>
-<para>Use the SET command to set or query an environment
-variable or query all environment variables. To delete an environment variable,
-use SET <emphasis role="italic">variable</emphasis>=.</para>
 </section>
 
 </chapter>
