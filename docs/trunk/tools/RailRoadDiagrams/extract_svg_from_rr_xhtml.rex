@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2023 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2023-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -44,12 +44,18 @@
    The formatting definitions will be replaced by the ones found in
    "rexxextensions\en-US\images\json_init.svg" as of 2023-02-04.
 
-   Cf: "Railroad-Diagram-Generator": <https://www.bottlecaps.de/rr/ui> (2023-02-04)
+   Cf: "Railroad-Diagram-Generator":
+          outdated: <https://www.bottlecaps.de/rr/ui> (2023-02-04)
+          latest:   <https://rr.red-dove.com/ui> (2024-03-16)
 
    Usage:
-      - create EBNF and download the svg as part of xhtml from <https://www.bottlecaps.de/rr/ui>
+      - create EBNF and download the svg as part of xhtml from <https://rr.red-dove.com/ui>
       - run this program, supply it the name of the downloaded xhtml file: all included
         svg definitions will be saved in separate svg files in the current directory
+   Changes:
+      - 20240316: changed the svg name needle from '<xhtml:a name="' to '<a name="'
+      - 20240323: now probing if '<xhtml:a' needle is available, if so it will get used,
+                  otherwise the '<a' needle (to support both encodings)
 */
 
 parse arg xhtml_fn
@@ -75,7 +81,12 @@ end
 ::routine parse_svgs
   use arg content
 
-  xhtmlOTag='<xhtml:a name="'
+  needle1='<xhtml:a name="'
+  needle2='<a name="'    -- rgf, 20240316
+  if content~pos(needle1)>0 then xhtmlOTag=needle1
+                            else xhtmlOTag=needle2
+  -- xhtmlOTag='<xhtml:a name="'
+  -- xhtmlOTag='<a name="'    -- rgf, 20240316
   svgOTag="<svg "
   svgETag="</svg>"
 
