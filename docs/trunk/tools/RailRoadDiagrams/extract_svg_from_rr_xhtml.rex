@@ -81,12 +81,9 @@ end
 ::routine parse_svgs
   use arg content
 
-  needle1='<xhtml:a name="'
-  needle2='<a name="'    -- rgf, 20240316
-  if content~pos(needle1)>0 then xhtmlOTag=needle1
-                            else xhtmlOTag=needle2
-  -- xhtmlOTag='<xhtml:a name="'
-  -- xhtmlOTag='<a name="'    -- rgf, 20240316
+  xhtmlOTag='<a name="'       -- default to newer xhtml
+  needle='<xhtml:a name="'    -- could still be in use
+  if content~pos(needle)>0 then xhtmlOTag=needle
   svgOTag="<svg "
   svgETag="</svg>"
 
