@@ -51,35 +51,72 @@
    Usage:
       - create EBNF and download the svg as part of xhtml from <https://rr.red-dove.com/ui>
       - run this program, supply it the name of the downloaded xhtml file: all included
-        svg definitions will be saved in separate svg files in the current directory
+        svg definitions will be saved in separate svg files in the same directory
+        where the xhtml file is located
    Changes:
       - 20240316: changed the svg name needle from '<xhtml:a name="' to '<a name="'
       - 20240323: now probing if '<xhtml:a' needle is available, if so it will get used,
                   otherwise the '<a' needle (to support both encodings)
+      - 20240324: - if no argument, then do a sysFileTree from current directory to locate
+                    all xhtml files and process them
+                  - if argument is a directory, then do a sysFileTree from that
+                    directory and its subdirectories to locate all xhtml files and process them
+                  - make sure that the extracted svg data is ended with CRLF by turning
+                    the data into a string array and back into a string defining CRLF
+                    to be used as the line delimiter
 */
 
 parse arg xhtml_fn
-if \sysFileExists(xhtml_fn) then
+if xhtml_fn="" | SysIsFileDirectory(xhtml_fn) then -- search directory and subdirectories
+do
+  if xhtml_fn="" then xhtml_fn="." -- default to current directory
+  qxhtml_fn=qualify(xhtml_fn"\.")
+  search=qxhtml_fn"\*.xhtml"
+  call sysFileTree search, "files.", "FOS"
+  say "searched" pp(search)", found" files.i "xhtml files to process"
+end
+else if \sysFileExists(xhtml_fn) then
 do
    say pp(xhtml_fn) "does not exist, aborting ..."
    exit -1
 end
-   -- read content
-s=.stream~new(xhtml_fn)~~open("read")
-content=s~charin(1,s~chars)
-s~close
-
-arrSvgs=parse_svgs(content)
-   -- create svg files
-say "extracted" pp(arrSvgs~items) "svg definitions from" pp(xhtml_fn)
-do counter c a over arrSvgs
-   fn=a[1]".svg"
-   say "creating svg file #" c":" pp(fn)
-   .stream~new(fn)~~open("replace")~~charout(a[2])~~close
+else  -- use single xhtml file only
+do
+   files.0=1
+   files.1=qualify(xhtml_fn)
 end
 
+prefix="    "
+say "processing the following xhtml file(s):"
+do counter c0 i=1 to files.0
+   say prefix "#" i~right(3)":" files.i
+end
+ruler="-"~copies(79)
+say ruler
+do counter c1 i=1 to files.0     -- iterate over stem
+   say "processing" pp(files.i) "..."
+      -- read content
+   s=.stream~new(files.i)~~open("read")
+   content=s~charin(1,s~chars)
+   s~close
+   arrSvgs=parse_svgs(content, prefix)   -- get array with extracted svg definitions
+   say "... extracted" pp(arrSvgs~items) "svg definitions from" pp(files.i)
+   say
+      -- create svg files
+   xhtml_dir=filespec("location",files.i)  -- get xhtml's directory
+   do counter c2 a over arrSvgs
+      fn=xhtml_dir || a[1]".svg"
+      say prefix"creating #" c2~right(4)":" pp(fn)
+      -- make sure we use only CRLF as eol for svg files
+      svgData=a[2]~makeArray ~makeString('L','0d0a'x)
+      .stream~new(fn)~~open("replace")~~charout(svgData)~~close
+   end
+   say ruler
+end
+
+
 ::routine parse_svgs
-  use arg content
+  use arg content, prefix=""
 
   xhtmlOTag='<a name="'       -- default to newer xhtml
   needle='<xhtml:a name="'    -- could still be in use
@@ -97,7 +134,7 @@ end
       parse var svgDef "<" <0 svgOpen '>' svgDef2
       res=svgOpen || '>' || str_svg_style_defs || svgDef2 || nl || svgETag
       arrSvgs~append( (svnName, res) )
-      say "extracted #" c":" pp(svnName)
+      say prefix || "extracted #" c~right(3)":" pp(svnName)
   end
   return arrSvgs
 
