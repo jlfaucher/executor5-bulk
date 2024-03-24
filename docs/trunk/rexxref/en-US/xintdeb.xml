@@ -13,7 +13,7 @@
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -187,6 +187,581 @@ of <literal>RXTRACE</literal> are ignored.
 <literal>RXTRACE</literal> is only checked when starting
 a new Rexx interpreter, it is not checked each time when starting
 a new Rexx procedure.</para>
+</section>
+
+
+<section id="xdebugmt"><title>&added51;Debugging Multithreaded Programs</title>
+<indexterm><primary>multithreaded programs</primary><secondary>debugging</secondary></indexterm>
+<indexterm><primary>debugging</primary><secondary>multithreaded programs</secondary></indexterm>
+<indexterm><primary>concurrency</primary><secondary>debugging</secondary></indexterm>
+<indexterm><primary>multithreading</primary><secondary>debugging</secondary></indexterm>
+
+<para>ooRexx allows for executing different parts of ooRexx programs on multiple threads of execution,
+even using different Rexx interpreter instances, within a single operating system process.  This
+makes it difficult and at times even impossible to debug such multithreaded programs without any
+additional information about the specific execution context.  Relevant information for debugging
+multithreaded programs may be: the Rexx interpreter instance that executes an invocation
+("activation") running on which operating system thread and whether a <xref linkend="xscope"
+xrefstyle="template:scope"/> lock is held for exclusive access of an object's attribute ("object
+variable") pool at that specific <xref linkend="xscope" xrefstyle="template:scope"/>.
+</para>
+
+<section id="xintdeb_explanations" revisionflag="added"><title>Multithreaded Additions to TRACE
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>additions to TRACE</secondary></indexterm>
+</title>
+<para>To ease debugging of multithreaded programs the execution context can be
+indicated with a <emphasis role="italic">"multithreaded trace prefix string"</emphasis>
+in square brackets
+(see also the class method
+<xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/> and
+the class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>" of the
+"<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject class"/>)
+in the following form, if the class attribute
+<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/> is set to "<literal>F</literal>" (full):</para>
+<para>"<literal>[R1 T2 I3 G A4 L5 *]</literal>", where
+</para>
+<itemizedlist>
+<listitem><para>"<literal>R1</literal>": "<literal>R</literal>" stands for Rexx interpreter instance
+and the number (a counter) indicates which of the instances executes the current
+invocation (activation).
+</para></listitem>
+<listitem><para>"<literal>T2</literal>": "<literal>T</literal>" stands for (operating system)
+thread and the number (a counter) indicates on which of the currently existing threads the
+activity gets executed.
+</para></listitem>
+<listitem><para>"<literal>I3</literal>": "<literal>I</literal>" stands for invocation (activation)
+and the number (a counter) indicates which invocation gets executed on that thread (activity).
+</para></listitem>
+</itemizedlist>
+
+<para>
+If currently tracing statements of methods then in addition the following information gets displayed:
+</para>
+<itemizedlist>
+<listitem><para>"<literal>G</literal>" or "<literal>U</literal>": this character indicates
+whether the method is defined to be guarded or unguarded (see
+<xref linkend="guamet" xrefstyle="select:title"/> in chapter <xref linkend="keyGuard" xrefstyle="select:title"/>).
+</para></listitem>
+<listitem><para>"<literal>A4</literal>": "<literal>A</literal>" stands for
+"attribute pool" (also known as "object variable dictionary")
+and the number (a counter) indicates which object variable dictionary
+of which <xref linkend="xscope" xrefstyle="template:scope"/>
+gets used in this invocation of the method.  Each object will
+have its own attribute pool which can be directly accessed by methods
+of the same <xref linkend="xscope" xrefstyle="template:scope"/>.
+Therefore the <literal>A</literal> indicator will refer to the same object and the same
+<xref linkend="xscope" xrefstyle="template:scope"/> if the number is the same.
+</para></listitem>
+<listitem><para>"<literal>L5</literal>": "<literal>L</literal>" stands for
+<xref linkend="xscope" xrefstyle="template:scope"/>
+<emphasis role="italic">lock count</emphasis> and the number (a counter)
+indicates how many object <xref linkend="xscope" xrefstyle="template:scope"/>
+lock reservations have taken place at that
+point in time. Whenever another
+<xref linkend="guamet" xrefstyle="template:guarded method"/> of the same
+<xref linkend="xscope" xrefstyle="template:scope"/> gets invoked the object's
+<xref linkend="xscope" xrefstyle="template:scope"/> lock count
+increases by one, upon return the object's
+<xref linkend="xscope" xrefstyle="template:scope"/> lock count decreases by one.
+</para></listitem>
+<listitem><para>"<literal>*</literal>" or "<literal> </literal>" (blank character):
+the asterisk indicates that the activity holds the object <xref linkend="xscope" xrefstyle="template:scope"/>
+lock. <xref linkend="guamet" xrefstyle="template:Guarded methods"/> are blocked, if they do not hold the
+object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+Methods in the unguarded state will never block.
+</para></listitem>
+</itemizedlist>
+
+<para>Notes:</para>
+<itemizedlist>
+<listitem><para>
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/>
+keyword instruction can be used within a method to
+change the state from guarded (synchronize on the object <xref linkend="xscope" xrefstyle="template:scope"/> lock) to
+unguarded (ignore the object scope lock) using unconditionally the keyword
+statement
+<xref linkend="guardonoff" xrefstyle="template:GUARD OFF"/>
+and vice versa (using unconditionally the keyword
+statement
+<xref linkend="guardonoff" xrefstyle="template:GUARD ON"/>).
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/> keyword statement can only execute after successfully
+acquiring the object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+The keyword instructions
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD ON someAttribute=someValue"/>"</emphasis>
+and
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD OFF someAttribute=someValue"/>"</emphasis>
+allow changing the state of the method
+to guarded or to unguarded depending on the value of
+an exposed attribute "someAttribute" which needs to get changed in another
+concurrently running method of the same <xref linkend="xscope" xrefstyle="template:scope"/>.
+Such attributes are known to be used as
+<emphasis role="italic">"control variables"</emphasis>
+to synchronize activities on different threads.
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/> keyword statement can only execute after successfully
+acquiring the object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+The "attribute pool" ("object variable dictionary") number represents a specific object at
+a specific <xref linkend="xscope" xrefstyle="template:scope"/>.
+</para></listitem>
+<listitem><para>
+Methods in the guarded state that do not possess the trailing asterisk
+are blocked, they are waiting for the object <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+Methods in the unguarded state are never blocked. If you wish to directly change the value of any exposed
+attribute in the same
+<xref linkend="xscope" xrefstyle="template:scope"/>
+then make sure that the changes take place in the guarded state to inhibit concurrent
+updates from other threads to inhibit inconsistent states. Alternatively, the
+ooRexx semaphore classes (<xref linkend="clsEventSemaphore" xrefstyle="select:title"/>,
+<xref linkend="clsMutexSemaphore" xrefstyle="select:title"/>) could be used for that purpose.
+</para></listitem>
+<listitem><para>
+The layout of the bracketed (multithreaded) prefix is intentionally designed to make
+parsing and analyzing the trace output of complex multithreaded ooRexx programs easy.
+</para></listitem>
+</itemizedlist>
+<para>
+Starting with ooRexx 5.1, each traced line will be represented with an instance of its new class
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>.
+Its class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>"
+is set to "<literal>N</literal>" (normal) by default.  If one needs the additional, multithreaded
+related trace information prefixed in square brackets then changing the class attribute
+"<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>"
+to "<literal>S</literal>" (standard) or to "<literal>F</literal>" (full, for complex multithreaded
+programs) will prepend it to each traced line.
+Each such <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/> instance
+will be sent as the argument to the <methodname>LINEOUT</methodname>
+message to the <literal>.traceOutput</literal> monitor object.
+As <literal>.traceOutput</literal> monitor needs a string value for display
+it will send the <methodname>request("STRING")</methodname> message to it, causing the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>'s
+<xref linkend="mthTraceObjectMakeString" xrefstyle="template:makeString"/>
+method to run and to return the string value that represents it.
+</para>
+<para>
+If one wishes to intercept the generated
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/> instances then
+one could take advantage of <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>'s
+class attribute <xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/>.
+</para>
+</section>
+
+
+<section id="xintdeb_examples" revisionflag="added"><title>Examples
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>examples</secondary></indexterm>
+</title>
+
+<para>This section first introduces an example in which a multithreaded program gets traced to
+demonstrate that multithreaded related information are needed in order to become able to
+analyze the trace. The same program will get altered to take advantage of the new profiling
+(probing) option which allows for collecting the generated <emphasis role="italic">traceObjectS</emphasis> and then use the
+different <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+options to format the <emphasis role="italic">traceObjectS</emphasis> accordingly. The third example
+demonstrates how one can use
+<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>.
+to freely format the trace line.
+</para>
+
+
+<section><title>Employing Normal TRACE for Debugging
+<indexterm><primary>debugging multithreaded programs</primary><secondary>examples</secondary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example creates multithreded parts using the
+<xref linkend="keyReply" xrefstyle="template:REPLY keyword instruction"/>.
+To introduce some
+entropy the
+<xref linkend="bifRandom" xrefstyle="template:RANDOM()-BIF"/>
+gets used for generating a random sleep time. The resulting trace output will
+not have any multithreading related information such that it becomes impossible to realize which
+statements get executed on which thread.
+<example id="ex.xintdeb_examples-normal">
+<title>Employing Normal (Default) TRACE
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  trace results         -- trace all statements
+  reply                 -- return & execute remainder on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
+  trace off             -- turn off tracing
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+
+::routine pp      -- "pretty print": enquotes argument in square brackets
+  trace results   -- trace statement and its result
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[    21 *-* reply                 -- return & execute remainder on new thread
+    21 *-* reply                 -- return andexecute remainder on new thread
+    21 *-* reply                 -- return & execute remainder on new thread
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
+    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.481"
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
+    23 *-* trace off             -- turn off tracing
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
+    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.458"
+       >>>   "0.495"
+    23 *-* trace off             -- turn off tracing
+    23 *-* trace off             -- turn off tracing
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+a TEST: I got created as: [# 2]
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 3]"
+a TEST: I got created as: [# 3]
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 1]"
+a TEST: I got created as: [# 1]
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+<section id="xintdeb_examples-profiling"><title>Exploiting TraceObject's Profiling/Probing and Formatting Capabilities
+<indexterm><primary>debugging multithreaded programs</primary><secondary>exploiting TraceObject capabilities</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>exploiting TraceObject capabilities</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>exploiting TraceObject capabilities</tertiary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example extends the previous one and demonstrates how to take advantage
+of the capabilities the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class offers:
+</para>
+<para>
+<itemizedlist>
+<listitem>
+<para>The class attribute option gets set to <literal>P</literal> (profiling/probing) which will
+cause ooRexx to not send the created
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+to <literal>.traceOutput</literal> such that no trace line will get displayed.
+</para>
+</listitem>
+<listitem>
+<para>The class attribute collector gets an array assigned such that each created
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+will be sent to it using the <methodname>APPEND</methodname> message.
+</para>
+</listitem>
+<listitem>
+<para>
+After the loop the main program sleeps for a second to wait long enough to be sure that all
+threads have completed and therefore all trace objects got generated and appended.
+</para>
+</listitem>
+<listitem>
+<para>
+Taking advantage of the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+formatting capabilities all trace objects collected in the array
+get displayed in a loop after setting the class attribute option to 'N' (normal), 'T' (thread),
+'S' (standard) and 'F' (full). This way the collected trace objects get formatted such that
+more and more multithreaded related information gets revealed in the trace line.
+</para>
+</listitem>
+</itemizedlist>
+<example id="ex.xintdeb_examples-profiling">
+<title>Exploiting TraceObject's Profiling/Probing Capability for Debugging a Multithreaded Program
+<indexterm><primary>debugging multithreaded programs</primary><secondary>profiling/probing option</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>profiling/probing option</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>profiling/probing option</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[
+.TraceObject~option="P" -- set to "Profiling" ("Probing") mode
+arr=.array~new          -- use an array to collect the traceObjects
+.TraceObject~collector=arr -- assign array
+do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+call sysSleep 1         -- wait for the threads to end
+say "arr~items:" arr~items "traceObjects collected"
+.TraceObject~collector=.nil   -- stop collecting the traceObjects
+say
+say "now displaying the collected traceObjects in different formats:"
+do counter c1 opt over "N", "T", "S", "F"
+   .TraceObject~option=opt
+   say "run #" c1", .TraceObject~option:" .TraceObject~option
+   do traceObj over arr
+      say traceObj      -- will cause makeString message to be sent
+   end
+   say "---"
+end
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  trace results         -- trace statement and its result
+  reply
+  sleepTime=random(1,500)/1000
+  trace off
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+
+::routine pp      -- "pretty print": enquotes argument in square brackets
+  trace results   -- trace statement and its result
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[a TEST: I got created as: [# 2]
+a TEST: I got created as: [# 3]
+a TEST: I got created as: [# 1]
+arr~items: 21 traceObjects collected
+
+now displaying the collected traceObjects in different formats:
+run # 1, .TraceObject~option: N
+    37 *-* reply
+    37 *-* reply
+    37 *-* reply
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-* sleepTime=random(1,500)/1000
+       >>>   "0.245"
+    39 *-* trace off
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-* sleepTime=random(1,500)/1000
+       >>>   "0.052"
+    39 *-* trace off
+       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-* sleepTime=random(1,500)/1000
+       >>>   "0.049"
+    39 *-* trace off
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 3]"
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 1]"
+---
+run # 2, .TraceObject~option: T
+    37 *-1* reply
+    37 *-1* reply
+    37 *-1* reply
+       >I2> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-2* sleepTime=random(1,500)/1000
+       >>2>   "0.245"
+    39 *-2* trace off
+       >I3> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-3* sleepTime=random(1,500)/1000
+       >>3>   "0.052"
+    39 *-3* trace off
+       >I4> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+    38 *-4* sleepTime=random(1,500)/1000
+       >>4>   "0.049"
+    39 *-4* trace off
+    45 *-3* return "[" || arg(1) || "]"
+       >>3>   "[# 2]"
+    45 *-4* return "[" || arg(1) || "]"
+       >>4>   "[# 3]"
+    45 *-2* return "[" || arg(1) || "]"
+       >>2>   "[# 1]"
+---
+run # 3, .TraceObject~option: S
+[T1   I1    G L1   *]     37 *-* reply
+[T1   I2    G L1   *]     37 *-* reply
+[T1   I3    G L1   *]     37 *-* reply
+[T2   I1    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[T2   I1    G L1   *]     38 *-* sleepTime=random(1,500)/1000
+[T2   I1    G L1   *]        >>>   "0.245"
+[T2   I1    G L1   *]     39 *-* trace off
+[T3   I2    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[T3   I2    G L1   *]     38 *-* sleepTime=random(1,500)/1000
+[T3   I2    G L1   *]        >>>   "0.052"
+[T3   I2    G L1   *]     39 *-* trace off
+[T4   I3    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[T4   I3    G L1   *]     38 *-* sleepTime=random(1,500)/1000
+[T4   I3    G L1   *]        >>>   "0.049"
+[T4   I3    G L1   *]     39 *-* trace off
+[T3   I4   ]              45 *-* return "[" || arg(1) || "]"
+[T3   I4   ]                 >>>   "[# 2]"
+[T4   I5   ]              45 *-* return "[" || arg(1) || "]"
+[T4   I5   ]                 >>>   "[# 3]"
+[T2   I6   ]              45 *-* return "[" || arg(1) || "]"
+[T2   I6   ]                 >>>   "[# 1]"
+---
+run # 4, .TraceObject~option: F
+[R1   T1   I1    G A1    L1   *]     37 *-* reply
+[R1   T1   I2    G A2    L1   *]     37 *-* reply
+[R1   T1   I3    G A3    L1   *]     37 *-* reply
+[R1   T2   I1    G A1    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[R1   T2   I1    G A1    L1   *]     38 *-* sleepTime=random(1,500)/1000
+[R1   T2   I1    G A1    L1   *]        >>>   "0.245"
+[R1   T2   I1    G A1    L1   *]     39 *-* trace off
+[R1   T3   I2    G A2    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[R1   T3   I2    G A2    L1   *]     38 *-* sleepTime=random(1,500)/1000
+[R1   T3   I2    G A2    L1   *]        >>>   "0.052"
+[R1   T3   I2    G A2    L1   *]     39 *-* trace off
+[R1   T4   I3    G A3    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
+[R1   T4   I3    G A3    L1   *]     38 *-* sleepTime=random(1,500)/1000
+[R1   T4   I3    G A3    L1   *]        >>>   "0.049"
+[R1   T4   I3    G A3    L1   *]     39 *-* trace off
+[R1   T3   I4   ]                    45 *-* return "[" || arg(1) || "]"
+[R1   T3   I4   ]                       >>>   "[# 2]"
+[R1   T4   I5   ]                    45 *-* return "[" || arg(1) || "]"
+[R1   T4   I5   ]                       >>>   "[# 3]"
+[R1   T2   I6   ]                    45 *-* return "[" || arg(1) || "]"
+[R1   T2   I6   ]                       >>>   "[# 1]"
+---
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+<section id="xintdeb_examples-set-make-string"><title>Exploiting TraceObject's setMakeString Method
+<indexterm><primary>debugging multithreaded programs</primary><secondary>exploiting TraceObject's setMakeString method</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>exploiting TraceObject's setMakeString method</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>exploiting TraceObject's setMakeString method</tertiary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example extends the previous one and demonstrates how to take advantage
+of the capabilities the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class offers, in this case its class method
+<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>:
+</para>
+<para>
+<itemizedlist>
+<listitem>
+<para>
+The program defines a method named "myMakeString" before any class directive which makes it a floating
+method. ooRexx will process all directives in the setup phase and if floating
+methods are encountered ooRexx will create a StringTable to store them under
+their names which can be accessed using the environment symbol .methods.
+</para>
+</listitem>
+<listitem>
+<para>
+The floating method "myMakeString" uses some of the entries of the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+instance supplied as its sole argument to create a trace string.
+</para>
+</listitem>
+<listitem>
+<para>
+In the main program (prolog) the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class method <xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/> is used to assign
+the "myMakeString" method retrieved from the floating .methods StringTable.
+</para>
+</listitem>
+</itemizedlist>
+<example id="ex.xintdeb_examples-set-make-string">
+<title>Exploiting TraceObject's setMakeString Method for Customizing the Trace Format
+<indexterm><primary>examples</primary><secondary>Multithreaded Program</secondary><tertiary>setMakeString</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>setMakeString</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[  -- fetch & assign floating method
+.TraceObject~setMakeString(.methods~myMakeString)
+do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+
+   -- method defined before class, hence a floating method put into
+   -- this program's (package) .methods StringTable by ooRexx
+::method myMakeString   -- using entries NR, THREAD, TIMESTAMP, TRACELINE
+  use arg traceObj      -- fetch traceObject argument to format
+  return "  |" right(traceObj~nr,3) -
+         "-" traceObj~timeStamp~timeOfDay~makeString~left(12)"|" -
+         traceObj~traceLine~insert(traceObj~thread,9)
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  trace results         -- trace all statements
+  reply                 -- return & execute remainder on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
+  trace off             -- turn off tracing
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+
+::routine pp      -- "pretty print": enquotes argument in square brackets
+  trace results   -- trace statement and its result
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[  |   1 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   2 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   3 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   4 - 16:43:12.378|        >I2> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   5 - 16:43:12.378|     32 *-2* sleepTime=random(1,750)/1000   -- get random sleep time
+  |   6 - 16:43:12.378|        >>2>   "0.457"
+  |   7 - 16:43:12.378|        >I3> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   8 - 16:43:12.378|        >I4> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   9 - 16:43:12.378|     33 *-2* trace off             -- turn off tracing
+  |  10 - 16:43:12.378|     32 *-3* sleepTime=random(1,750)/1000   -- get random sleep time
+  |  11 - 16:43:12.378|     32 *-4* sleepTime=random(1,750)/1000   -- get random sleep time
+  |  12 - 16:43:12.378|        >>3>   "0.103"
+  |  13 - 16:43:12.378|        >>4>   "0.109"
+  |  14 - 16:43:12.378|     33 *-3* trace off             -- turn off tracing
+  |  15 - 16:43:12.378|     33 *-4* trace off             -- turn off tracing
+  |  16 - 16:43:12.494|     39 *-3* return "[" || arg(1) || "]"
+  |  17 - 16:43:12.494|        >>3>   "[# 2]"
+a TEST: I got created as: [# 2]
+  |  18 - 16:43:12.494|     39 *-4* return "[" || arg(1) || "]"
+  |  19 - 16:43:12.494|        >>4>   "[# 3]"
+a TEST: I got created as: [# 3]
+  |  20 - 16:43:12.842|     39 *-2* return "[" || arg(1) || "]"
+  |  21 - 16:43:12.842|        >>2>   "[# 1]"
+a TEST: I got created as: [# 1]
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+</section>
+
+
 </section>
 
 </chapter>

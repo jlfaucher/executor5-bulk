@@ -11080,6 +11080,606 @@ is less than a day, the days field and the period separator will be omitted.
 </section>
 
 
+
+<!-- =============================================================== -->
+<!-- Class TraceObject (begin) ================================================== -->
+<section id="clsTraceObject" revisionflag="added"><title>&added51;TraceObject Class
+<indexterm><primary>TraceObject class</primary></indexterm>
+<indexterm><primary>class</primary><secondary>TraceObject class</secondary></indexterm>
+<indexterm><primary>concurrency</primary><secondary>TraceObject class</secondary></indexterm>
+</title>
+
+<para>
+A <classname>TraceObject</classname> is a subclass of
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+and therefore is a
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
+using unique character string indexes.  The items of a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+can be any valid Rexx object.
+<!--
+See also the
+<xref linkend="clsDirectory" xrefstyle="template:Directory class"/>, a
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
+similar to
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>,
+but with additional methods
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>
+and
+<xref linkend="mthDirectoryUnsetMethod" xrefstyle="select:title"/>.
+-->
+</para>
+
+
+<!-- rexxrefClassTable(TraceObject) -->
+<table id="ooRexxTraceObjectClass" frame="all" pgwide="1">
+<title>TraceObject Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">StringTable</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsStringTable" xrefstyle="template:StringTable class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">TraceObject</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="2">
+   <member><xref linkend="mthTraceObjectActivate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectCollectorGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectCollectorSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectCounterGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectOptionGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectOptionSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectSetMakeString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectUnsetMakeString" xrefstyle="select:title"/></member>
+  </simplelist>
+
+  <simplelist columns="2">
+   <member><xref linkend="mthTraceObjectCompareTo" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectMakeString" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- rexxrefClassTable(TraceObject) -->
+
+
+<para>By default the created <classname>TraceObject</classname> instance gets sent
+to the <literal>.traceOutput</literal> monitor for displaying its string value
+(the instance will get the <methodname>makeString</methodname> message sent and
+as a result returns a string representing it, cf.
+<xref linkend="mthTraceObjectMakeString" xrefstyle="template:makeString"/> and
+<xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/> below).
+</para>
+<para>For further information about debugging multithreaded programs using
+<xref linkend="keyTrace" xrefstyle="template:TRACE"/> and this class
+see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
+</para>
+
+
+<!-- Class TraceObject - method activate ********============================= -->
+<section id="mthTraceObjectActivate"><title>&added51;activate (Class Method)</title>
+<indexterm><primary>activate method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>activate method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+This class method initializes the class attributes. It sets the
+the class attribute <emphasis role="italic">option</emphasis> to <code>N</code> (normal),
+the class attribute <emphasis role="italic">collector</emphasis> to &nil; and
+the class attribute <emphasis role="italic">counter</emphasis> to <code>0</code>.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_activate.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para>See also <xref linkend="mthClassActivate" xrefstyle="select:title"/>
+in the <xref linkend="clsClass" xrefstyle="template:Class class"/>.
+</para>
+</section>
+
+<!-- Class TraceObject - method collector (get) ============================== -->
+<section id="mthTraceObjectCollectorGet"><title>&added51;collector (Class Method)</title>
+<indexterm><primary>collector method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>collector method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+<para>
+The <emphasis role="italic">collector</emphasis>
+class attribute controls whether created <emphasis role="italic">traceObjects</emphasis> get collected or not.
+If its value is set to &nil; (default) then <emphasis role="italic">traceObjects</emphasis> are not
+collected.
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_collector_get.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the current value of the class attribute
+<emphasis role="italic">collector</emphasis>.
+</para>
+</section>
+
+<!-- Class TraceObject - method collector (set) ============================== -->
+<section id="mthTraceObjectCollectorSet"><title>&added51;collector= (Class Method)</title>
+<indexterm><primary>collector= method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>collector= method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+<para>
+The class attribute <emphasis role="italic">collector</emphasis>
+controls whether created <emphasis role="italic">traceObjects</emphasis> get collected or not.
+If its value is set to &nil; (default) then <emphasis role="italic">traceObjects</emphasis> are not
+collected.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_collector_set.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the class attribute <emphasis role="italic">collector</emphasis>
+to the supplied object. if not &nil; then from that moment on the
+<member><xref linkend="mthTraceObjectNew" xrefstyle="layout:new"/></member>
+method will send newly created <emphasis role="italic">traceObject</emphasis> using the
+<methodname>APPEND</methodname> message to the collector object.
+</para>
+<note><title>Note</title>
+<para>
+Any <xref linkend="clsOrderedCollection" xrefstyle="template:OrderableCollection class"/>
+understands the <methodname>APPEND</methodname> message such that one can use e.g.
+the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderableCollection classes"/>
+<xref linkend="clsArray" xrefstyle="template:Array"/> or
+<xref linkend="clsList" xrefstyle="template:List"/>
+for collecting the <emphasis role="italic">traceObjects</emphasis>.
+</para></note>
+</section>
+
+<!-- Class TraceObject - method counter (get) ============================== -->
+<section id="mthTraceObjectCounterGet"><title>&added51;counter (Class Method)</title>
+<indexterm><primary>counter method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>counter method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+<para>
+This class attribute gets used to number each created <emphasis role="italic">traceObject</emphasis>
+in the <xref linkend="mthTraceObjectNew" xrefstyle="template:NEW"/> method.
+Its value represents the total number of <emphasis role="italic">traceObjects</emphasis> created so far.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_counter_get.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para>Returns the current value of the class attribute <emphasis role="italic">counter</emphasis>,
+which can be <code>0</code> if no instance has been created yet, otherwise the
+total number of created <emphasis role="italic">TraceObject</emphasis> instances.
+</para>
+</section>
+
+
+<!-- Class TraceObject - method makeStringImpl(set) ============================== -->
+<section id="mthTraceObjectMakeStringImpl"><title>&added51;makeStringImpl (Class Method)</title>
+<indexterm><primary>makeStringImpl method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeStringImpl method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+This class method implements the traceline formatting according to the current
+setting of the class attribute <xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_makestringimpl.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para><!-- for more distance to above image -->></para>
+
+<para>
+This class method requires a single <emphasis role="italic">traceObject</emphasis>
+as its argument and returns a string representing the traceline depending
+on the value of the class attribute <xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>:
+</para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="8*" />
+<tbody>
+<row><entry>"<literal>N</literal>"
+</entry>
+<entry><para>"normal", returns the entry <emphasis role="italic">"TRACELINE"</emphasis>
+</para></entry>
+</row>
+<row><entry>"<literal>T</literal>"
+</entry>
+<entry><para>"thread", the trace line will get formatted with the trace prefix getting
+the thread number (entry <emphasis role="italic">"THREAD"</emphasis>) inserted after
+the second character
+</para></entry>
+</row>
+<row><entry>"<literal>S</literal>"
+</entry>
+<entry><para>"standard",  the trace line will get formatted by prepending a bracketed
+string that indicates the thread and the invocation number, e.g.
+<code>"[T1   I2  ]"</code> (entries
+<emphasis role="italic">"THREAD"</emphasis> and
+<emphasis role="italic">"INVOCATION"</emphasis>)
+and if a method gets traced in addition whether it was defined
+<emphasis role="italic">guarded</emphasis> or
+<emphasis role="italic">unguarded</emphasis> (entry
+<emphasis role="italic">"ISGUARDED"</emphasis>),
+the object scope lock count (entry <emphasis role="italic">"SCOPELOCKCOUNT"</emphasis>) and
+whether the object scope lock is reserved (indicated by an asterisk,
+entry <emphasis role="italic">"HASSCOPELOCK"</emphasis>), e.g.
+<code>"[T1   I2   G L3   *]"</code>.
+</para></entry>
+</row>
+<row><entry>"<literal>F</literal>"
+</entry>
+<entry><para>"full", the trace line will get formatted by prepending a
+bracketed string that adds the Rexx instance in addition
+(entry <emphasis role="italic">"INTERPRETER"</emphasis>), e.g.
+<code>"[R1   T2   I3  ]"</code>
+and if a method gets traced in addition adds the
+<xref linkend="xscope" xrefstyle="template:scope's"/>
+attribute pool number
+(entry <emphasis role="italic">"ATTRIBUTEPOOL"</emphasis>), e.g.
+<code>"[R1   T2   I3   G A4   L5   *]"</code>.
+</para></entry>
+</row>
+<row><entry>"<literal>P</literal>"
+</entry>
+<entry><para>"profiling" ("probing"), no trace line will be shown, yet, each created
+<emphasis role="italic">traceObject</emphasis>
+will get appended to the class attribute
+<xref linkend="mthTraceObjectCollectorGet" xrefstyle="template:collector"/>
+if not &nil;.
+This allows post analyzing the execution of traced Rexx programs for many purposes.
+</para></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+
+<para>
+Using <xref linkend="mthTraceObjectSetMakeString" xrefstyle="select:title"/>
+one is able to replace this method with a customized method.
+See also  <xref linkend="xdebugmt" xrefstyle="select:title"/> and
+for an example see <xref linkend="xintdeb_examples-set-make-string" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class TraceObject - method new( ============================== -->
+<section id="mthTraceObjectNew"><title>&added51;new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>Creates and returns a new <emphasis role="italic">TraceObject</emphasis> instance,
+adds the trace context information to it and if the class attribute
+<xref linkend="mthTraceObjectCollectorGet" xrefstyle="template:collector"/>
+is not &nil; will send it the <methodname>APPEND</methodname> message with the newly created
+instance as the argument.
+</para>
+</section>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_new.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para>The trace infrastructure of ooRexx will create an instance for each trace line
+and store the following information with the following indexes:
+</para>
+
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="3*" />
+<tbody>
+<row><entry>"<literal>ATTRIBUTEPOOL</literal>"
+<indexterm><primary>ATTRIBUTEPOOL</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a number, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+prepends it with the letter <literal>A</literal>
+
+</para></entry>
+</row>
+<row><entry>"<literal>HASSCOPELOCK</literal>"
+<indexterm><primary>HASSCOPELOCK</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>&true;/&false;, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+uses an asterisk <literal>*</literal>, if &true;,
+a blank character else
+</para></entry>
+</row>
+<row><entry>"<literal>INTERPRETER</literal>"
+<indexterm><primary>INTERPRETER</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a number, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+prepends it with the letter <literal>R</literal>
+</para></entry>
+</row>
+<row><entry>"<literal>INVOCATION</literal>"
+<indexterm><primary>INVOCATION</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a number, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+prepends it with the letter <literal>I</literal>
+</para></entry>
+</row>
+<row><entry>"<literal>ISGUARDED</literal>"
+<indexterm><primary>ISGUARDED</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>&true;/&false;, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+uses the letter <literal>G</literal>, if &true;,
+the letter <literal>U</literal> else
+</para></entry>
+</row>
+<row><entry>"<literal>NR</literal>"
+<indexterm><primary>NR</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a squential number based based on
+the class attribute <xref linkend="mthTraceObjectCounterGet" xrefstyle="template:counter"/>
+(used for the default sorting)
+</para></entry>
+</row>
+<row><entry>"<literal>OPTION</literal>"
+<indexterm><primary>OPTION</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the option at creation time, e.g. <literal>N</literal> or <literal>S</literal>
+</para></entry>
+</row>
+<row><entry>"<literal>SCOPELOCKCOUNT</literal>"
+<indexterm><primary>SCOPELOCKCOUNT</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a number, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+prepends it with the letter <literal>L</literal>
+</para></entry>
+</row>
+<row><entry>"<literal>THREAD</literal>"
+<indexterm><primary>THREAD</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>a number, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+prepends it with the letter <literal>T</literal>
+</para></entry>
+</row>
+<row><entry>"<literal>TIMESTAMP</literal>"
+<indexterm><primary>TIMESTAMP</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the creation
+<xref linkend="clsDateTime" xrefstyle="template:DateTime"/>
+</para></entry>
+</row>
+<row><entry>"<literal>TRACELINE</literal>"
+<indexterm><primary>TRACELINE</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the trace line string used if the class attribute
+<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>
+is set to <literal>N</literal> (normal)
+</para></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+
+
+<!-- Class TraceObject - method opton (get) ============================== -->
+<section id="mthTraceObjectOptionGet"><title>&added51;option (Class Method)</title>
+<indexterm><primary>option method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>option method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+This class attribute controls how the formatting of the traced line should be carried out.
+See <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_option_get.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the current value of the class attribute
+<emphasis role="italic">option</emphasis>.
+</para>
+</section>
+
+
+<!-- Class TraceObject - method option (set) ============================== -->
+<section id="mthTraceObjectOptionSet"><title>&added51;option= (Class Method)</title>
+<indexterm><primary>option= method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>option= method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+This class attribute controls how the formatting of the traced line should be carried out.
+See <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>.
+</para>
+
+<para>This is the setter method for the class attribute <emphasis role="italic">option</emphasis>,
+only the first letter of the option values "Normal", "Thread", "Standard", "Full", and
+"Profiling" ("Probing") will be saved in uppercase.
+See <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_option_set.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+
+<para>Allows to set the class attribute <emphasis role="italic">option</emphasis>
+to one of:
+</para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row><entry>"<literal>N</literal>"
+</entry>
+<entry><para>normal trace line (entry <emphasis role="italic">"TRACELINE"</emphasis>)
+</para></entry>
+</row>
+<row><entry>"<literal>T</literal>"
+</entry>
+<entry><para>thread will be inserted into trace prefix
+</para></entry>
+</row>
+<row><entry>"<literal>S</literal>"
+</entry>
+<entry><para>standard multithreaded prefix prepended in square brackets to the trace line
+</para></entry>
+</row>
+<row><entry>"<literal>F</literal>"
+</entry>
+<entry><para>full multithreaded prefix prepended in square brackets to the trace line
+</para></entry>
+</row>
+<row><entry>"<literal>P</literal>"
+</entry>
+<entry><para>"profiling" ("probing"), each <emphasis role="italic">traceObject</emphasis> will
+get appended to the class attribute <xref linkend="mthTraceObjectCollectorGet" xrefstyle="template:collector"/>,
+but ooRexx will not send it to the <literal>.traceOutput</literal> monitor for displaying its string value.
+</para></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>For an example see <xref linkend="xintdeb_examples-profiling" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class TraceObject - method setMakeString ============================== -->
+<section id="mthTraceObjectSetMakeString"><title>&added51;setMakeString (Class Method)</title>
+<indexterm><primary>setMakeString method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setMakeString method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+This method allows the Rexx programmer to supply a customized <methodname>makeString</methodname>
+method that will be used to replace
+<xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>.
+The makeStringMethod argument can be either
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>a method object, or
+  </para>
+ </listitem>
+ <listitem>
+  <para>a string containing a method source line, or an Array of strings containing individual method source
+  lines (for these cases an equivalent method object is created).
+  </para>
+ </listitem>
+</itemizedlist>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_setmakestring.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+<para>The supplied method receives a single <emphasis role="italic">traceObject</emphasis>
+as an argument and must return a string.
+</para>
+<para>For an example see <xref linkend="xintdeb_examples-set-make-string" xrefstyle="select:title"/>.</para>
+</section>
+
+<!-- Class TraceObject - method unsetMakeString ============================== -->
+<section id="mthTraceObjectUnsetMakeString"><title>&added51;unsetMakeString (Class Method)</title>
+<indexterm><primary>unsetMakeString method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unsetMakeString method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+
+<para>
+Cancels the effect of all previous <methodname>setMakeString</methodname> invocations.
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_unsetmakestring.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</section>
+
+<!-- Class TraceObject - method compareTo ============================== -->
+<section id="mthTraceObjectCompareTo" revisionflag="added"><title>&added51;compareTo
+<indexterm><primary>attachment method</primary><secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>attachment method</secondary><tertiary>of TraceObject class</tertiary></indexterm>
+</title>
+<para>Implements the default sort order using the value of the <literal>NR</literal> entry which is the
+creation sequence number.
+</para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/traceobject_compareto.svg" scale="55"/>
+</imageobject></mediaobject>
+<para>
+Returns <code>-1</code>, <code>0</code> or <code>1</code>
+This method returns <code>-1</code> if the <emphasis role="italic">otherTraceObject</emphasis> is larger,
+<code>0</code> if the two objects are equal,
+and <code>1</code> if <emphasis role="italic">otherTraceObject</emphasis> is smaller than
+the receiving object
+(cf. method <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> in
+the <xref linkend="mthComparableCompareTo" xrefstyle="template:Comparable class"/>).
+</para>
+</section>
+
+<!-- Class TraceObject - method cancel ================================== -->
+<section id="mthTraceObjectMakeString" revisionflag="added"><title>&added51;makeString
+<indexterm><primary>makeString method</primary><secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of TraceObject class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/traceobject_makestring.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>This method will invoke the class method
+<xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+supplying the <emphasis role="italic">traceObject</emphasis> pointed to by the
+<code>self</code> variable as argument and returns its result.
+</para>
+</section>
+
+</section>
+<!--  Class TraceObject (end) =============================================================== -->
+<!-- =============================================================== -->
+
+
 <section id="clsValidate" revisionflag="added"><title>&added50;Validate Class</title>
 <indexterm><primary>Validate class</primary></indexterm>
 <indexterm><primary>class</primary>

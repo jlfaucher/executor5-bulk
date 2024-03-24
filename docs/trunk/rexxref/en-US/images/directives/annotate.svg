@@ -1,6 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="643" height="273">
          <defs>
             <style type="text/css">
+               @namespace "http://www.w3.org/2000/svg";
+               .line                 {fill: none; stroke: #1F1F1F;}
+               .bold-line            {stroke: #0A0A0A; shape-rendering: crispEdges; stroke-width:
+               2; }
+               .thin-line            {stroke: #0F0F0F; shape-rendering: crispEdges}
+               .filled               {fill: #1F1F1F; stroke: none;}
+               text.terminal         {font-family: Verdana, Sans-serif;
+               font-size: 12px;
+               fill: #0A0A0A;
+               font-weight: bold;
+               }
+               text.nonterminal      {font-family: Verdana, Sans-serif; font-style: italic;
+               font-size: 12px;
+               fill: #0D0D0D;
+               }
+               text.regexp           {font-family: Verdana, Sans-serif;
+               font-size: 12px;
+               fill: #0F0F0F;
+               }
+               rect, circle, polygon {fill: #1F1F1F; stroke: #1F1F1F;}
+               rect.terminal         {fill: #CCCCCC; stroke: #1F1F1F;}
+               rect.nonterminal      {fill: #E3E3E3; stroke: #1F1F1F;}
+               rect.text             {fill: none; stroke: none;}
+               polygon.regexp        {fill: #EFEFEF; stroke: #1F1F1F;}
+
+            </style>
+         </defs>
+
+         <defs>
+            <style type="text/css">
     @namespace "http://www.w3.org/2000/svg";
     .line                 {fill: none; stroke: #1F1F1F; stroke-width: 1;}
     .bold-line            {stroke: #0A0A0A; shape-rendering: crispEdges; stroke-width: 2;}
@@ -11,7 +41,7 @@
                             fill: #0A0A0A;
                             font-weight: bold;
                           }
-    text.nonterminal      {font-family: Verdana, Sans-serif; font-style: italic;
+    text.nonterminal      {font-family: Verdana, Sans-serif;
                             font-size: 12px;
                             fill: #0D0D0D;
                             font-weight: normal;
@@ -35,50 +65,39 @@
          <text class="terminal" x="39" y="37">::ANNOTATE</text>
          <rect x="175" y="19" width="96" height="32" rx="10"/>
          <rect x="173" y="17" width="96" height="32" class="terminal" rx="10"/>
-         <text class="terminal" x="183" y="37">ATTRIBUTE</text>
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#attribute" xlink:title="attribute"> -->
+         <text class="terminal" x="183" y="37">ATTRIBUTE</text><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#attribute" xlink:title="attribute">
             <rect x="291" y="19" width="74" height="32"/>
             <rect x="289" y="17" width="74" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="299" y="37">attribute</text><!-- </a> -->
-<rect x="175" y="63" width="64" height="32" rx="10"/>
+            <text class="nonterminal" x="299" y="37">attribute</text></a><rect x="175" y="63" width="64" height="32" rx="10"/>
          <rect x="173" y="61" width="64" height="32" class="terminal" rx="10"/>
-         <text class="terminal" x="183" y="81">CLASS</text>
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#class" xlink:title="class"> -->
+         <text class="terminal" x="183" y="81">CLASS</text><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#class" xlink:title="class">
             <rect x="259" y="63" width="52" height="32"/>
             <rect x="257" y="61" width="52" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="267" y="81">class</text><!-- </a> -->
-<rect x="175" y="107" width="94" height="32" rx="10"/>
+            <text class="nonterminal" x="267" y="81">class</text></a><rect x="175" y="107" width="94" height="32" rx="10"/>
          <rect x="173" y="105" width="94" height="32" class="terminal" rx="10"/>
-         <text class="terminal" x="183" y="125">CONSTANT</text>
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#constant" xlink:title="constant"> -->
+         <text class="terminal" x="183" y="125">CONSTANT</text><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#constant" xlink:title="constant">
             <rect x="289" y="107" width="74" height="32"/>
             <rect x="287" y="105" width="74" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="297" y="125">constant</text><!-- </a> -->
-<rect x="175" y="151" width="78" height="32" rx="10"/>
+            <text class="nonterminal" x="297" y="125">constant</text></a><rect x="175" y="151" width="78" height="32" rx="10"/>
          <rect x="173" y="149" width="78" height="32" class="terminal" rx="10"/>
-         <text class="terminal" x="183" y="169">METHOD</text>
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#method" xlink:title="method"> -->
+         <text class="terminal" x="183" y="169">METHOD</text><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#method" xlink:title="method">
             <rect x="273" y="151" width="68" height="32"/>
             <rect x="271" y="149" width="68" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="281" y="169">method</text><!-- </a> -->
-<rect x="175" y="195" width="84" height="32" rx="10"/>
+            <text class="nonterminal" x="281" y="169">method</text></a><rect x="175" y="195" width="84" height="32" rx="10"/>
          <rect x="173" y="193" width="84" height="32" class="terminal" rx="10"/>
          <text class="terminal" x="183" y="213">PACKAGE</text>
          <rect x="175" y="239" width="82" height="32" rx="10"/>
          <rect x="173" y="237" width="82" height="32" class="terminal" rx="10"/>
-         <text class="terminal" x="183" y="257">ROUTINE</text>
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#routine" xlink:title="routine"> -->
+         <text class="terminal" x="183" y="257">ROUTINE</text><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#routine" xlink:title="routine">
             <rect x="277" y="239" width="64" height="32"/>
             <rect x="275" y="237" width="64" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="285" y="257">routine</text><!-- </a> -->
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#name" xlink:title="name"> -->
+            <text class="nonterminal" x="285" y="257">routine</text></a><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#name" xlink:title="name">
             <rect x="445" y="19" width="56" height="32"/>
             <rect x="443" y="17" width="56" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="453" y="37">name</text><!-- </a> -->
-<!--  <a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#value" xlink:title="value"> -->
+            <text class="nonterminal" x="453" y="37">name</text></a><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#value" xlink:title="value">
             <rect x="521" y="19" width="54" height="32"/>
             <rect x="519" y="17" width="54" height="32" class="nonterminal"/>
-            <text class="nonterminal" x="529" y="37">value</text><!-- </a> -->
-<svg:path xmlns:svg="http://www.w3.org/2000/svg" class="line" d="m17 33 h2 m0 0 h10 m104 0 h10 m20 0 h10 m96 0 h10 m0 0 h10 m74 0 h10 m-230 0 h20 m210 0 h20 m-250 0 q10 0 10 10 m230 0 q0 -10 10 -10 m-240 10 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m64 0 h10 m0 0 h10 m52 0 h10 m0 0 h54 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m94 0 h10 m0 0 h10 m74 0 h10 m0 0 h2 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m78 0 h10 m0 0 h10 m68 0 h10 m0 0 h24 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m84 0 h10 m0 0 h106 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m82 0 h10 m0 0 h10 m64 0 h10 m0 0 h24 m60 -220 h10 m56 0 h10 m0 0 h10 m54 0 h10 m-170 0 l20 0 m-1 0 q-9 0 -9 -10 l0 -12 q0 -10 10 -10 m150 32 l20 0 m-20 0 q10 0 10 -10 l0 -12 q0 -10 -10 -10 m-150 0 h10 m0 0 h140 m-190 32 h20 m190 0 h20 m-230 0 q10 0 10 10 m210 0 q0 -10 10 -10 m-220 10 v14 m210 0 v-14 m-210 14 q0 10 10 10 m190 0 q10 0 10 -10 m-200 10 h10 m0 0 h180 m23 -34 h-3"/>
+            <text class="nonterminal" x="529" y="37">value</text></a><svg:path xmlns:svg="http://www.w3.org/2000/svg" class="line" d="m17 33 h2 m0 0 h10 m104 0 h10 m20 0 h10 m96 0 h10 m0 0 h10 m74 0 h10 m-230 0 h20 m210 0 h20 m-250 0 q10 0 10 10 m230 0 q0 -10 10 -10 m-240 10 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m64 0 h10 m0 0 h10 m52 0 h10 m0 0 h54 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m94 0 h10 m0 0 h10 m74 0 h10 m0 0 h2 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m78 0 h10 m0 0 h10 m68 0 h10 m0 0 h24 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m84 0 h10 m0 0 h106 m-220 -10 v20 m230 0 v-20 m-230 20 v24 m230 0 v-24 m-230 24 q0 10 10 10 m210 0 q10 0 10 -10 m-220 10 h10 m82 0 h10 m0 0 h10 m64 0 h10 m0 0 h24 m60 -220 h10 m56 0 h10 m0 0 h10 m54 0 h10 m-170 0 l20 0 m-1 0 q-9 0 -9 -10 l0 -12 q0 -10 10 -10 m150 32 l20 0 m-20 0 q10 0 10 -10 l0 -12 q0 -10 -10 -10 m-150 0 h10 m0 0 h140 m-190 32 h20 m190 0 h20 m-230 0 q10 0 10 10 m210 0 q0 -10 10 -10 m-220 10 v14 m210 0 v-14 m-210 14 q0 10 10 10 m190 0 q10 0 10 -10 m-200 10 h10 m0 0 h180 m23 -34 h-3"/>
          <polygon points="633 33 641 29 641 37"/>
-         <polygon points="633 33 625 29 625 37"/></svg>
+         <polygon points="633 33 625 29 625 37"/>
+</svg>
