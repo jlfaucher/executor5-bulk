@@ -11083,31 +11083,30 @@ is less than a day, the days field and the period separator will be omitted.
 
 <!-- =============================================================== -->
 <!-- Class TraceObject (begin) ================================================== -->
-<section id="clsTraceObject" revisionflag="added"><title>&added51;TraceObject Class
+<section id="clsTraceObject" revisionflag="added"><title>&added51;TraceObject Class</title>
 <indexterm><primary>TraceObject class</primary></indexterm>
 <indexterm><primary>class</primary><secondary>TraceObject class</secondary></indexterm>
 <indexterm><primary>concurrency</primary><secondary>TraceObject class</secondary></indexterm>
-</title>
 
 <para>
-A <classname>TraceObject</classname> is a subclass of
+The <classname>TraceObject</classname> class gets used to store trace related
+information including execution context information that may be helpful to
+trace and to
+<xref linkend="xintdeb" xrefstyle="template:debug"/>
+(<xref linkend="xdebugmt" xrefstyle="template:multithreaded"/>) programs.
+</para>
+<para>
+When <code>TRACE</code> is active
+(cf. <xref linkend="keyTrace" xrefstyle="template:TRACE keyword instruction"/> and
+<xref linkend="bifTrace" xrefstyle="template:TRACE() built-in-function (BIF)"/>) an
+instance of this class gets created by ooRexx and the traced context information gets filled in
+(cf. <xref linkend="mthTraceObjectNew" xrefstyle="template:new method"/>).
+</para>
+<para>
+The <classname>TraceObject</classname> class subclasses
 <xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
-and therefore is a
-<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
-using unique character string indexes.  The items of a
-<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
-can be any valid Rexx object.
-<!--
-See also the
-<xref linkend="clsDirectory" xrefstyle="template:Directory class"/>, a
-<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
-similar to
-<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>,
-but with additional methods
-<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>
-and
-<xref linkend="mthDirectoryUnsetMethod" xrefstyle="select:title"/>.
--->
+(a subclass of <xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>)
+using unique character strings for indexes.
 </para>
 
 
@@ -11177,7 +11176,7 @@ see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
 <tertiary>of TraceObject class</tertiary></indexterm>
 
 <para>
-This class method initializes the class attributes. It sets the
+This class method initializes the class attributes. It sets
 the class attribute <emphasis role="italic">option</emphasis> to <code>N</code> (normal),
 the class attribute <emphasis role="italic">collector</emphasis> to &nil; and
 the class attribute <emphasis role="italic">counter</emphasis> to <code>0</code>.
@@ -11238,16 +11237,16 @@ collected.
 </mediaobject>
 
 <para>Sets the class attribute <emphasis role="italic">collector</emphasis>
-to the supplied object. if not &nil; then from that moment on the
-<member><xref linkend="mthTraceObjectNew" xrefstyle="layout:new"/></member>
-method will send newly created <emphasis role="italic">traceObject</emphasis> using the
+to the supplied object. If object is not &nil; then from that moment on the
+<member><xref linkend="mthTraceObjectNew" xrefstyle="template:new"/></member>
+method will send newly created <emphasis role="italic">traceObjects</emphasis> using the
 <methodname>APPEND</methodname> message to the collector object.
 </para>
 <note><title>Note</title>
 <para>
-Any <xref linkend="clsOrderedCollection" xrefstyle="template:OrderableCollection class"/>
+Any <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
 understands the <methodname>APPEND</methodname> message such that one can use e.g.
-the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderableCollection classes"/>
+the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection classes"/>
 <xref linkend="clsArray" xrefstyle="template:Array"/> or
 <xref linkend="clsList" xrefstyle="template:List"/>
 for collecting the <emphasis role="italic">traceObjects</emphasis>.
@@ -11262,9 +11261,11 @@ for collecting the <emphasis role="italic">traceObjects</emphasis>.
 <secondary>counter method</secondary>
 <tertiary>of TraceObject class</tertiary></indexterm>
 <para>
-This class attribute gets used to number each created <emphasis role="italic">traceObject</emphasis>
-in the <xref linkend="mthTraceObjectNew" xrefstyle="template:NEW"/> method.
-Its value represents the total number of <emphasis role="italic">traceObjects</emphasis> created so far.
+This class attribute is used to assign a unique number to each newly created
+<emphasis role="italic">traceObject</emphasis>
+in the <xref linkend="mthTraceObjectNew" xrefstyle="template:new"/> method.
+Its value represents the total number of <emphasis role="italic">traceObjects</emphasis>
+created so far.
 </para>
 
 <mediaobject>
@@ -11297,7 +11298,6 @@ setting of the class attribute <xref linkend="mthTraceObjectOptionSet" xrefstyle
 <imagedata fileref="images/classes/traceobject_makestringimpl.svg" scale="55" />
 </imageobject>
 </mediaobject>
-<para><!-- for more distance to above image -->></para>
 
 <para>
 This class method requires a single <emphasis role="italic">traceObject</emphasis>

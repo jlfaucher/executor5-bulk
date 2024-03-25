@@ -201,19 +201,19 @@ even using different Rexx interpreter instances, within a single operating syste
 makes it difficult and at times even impossible to debug such multithreaded programs without any
 additional information about the specific execution context.  Relevant information for debugging
 multithreaded programs may be: the Rexx interpreter instance that executes an invocation
-("activation") running on which operating system thread and whether a <xref linkend="xscope"
-xrefstyle="template:scope"/> lock is held for exclusive access of an object's attribute ("object
-variable") pool at that specific <xref linkend="xscope" xrefstyle="template:scope"/>.
+("activation"), the operating system thread on which the activation is running,
+and whether a <xref linkend="xscope" xrefstyle="template:scope"/> lock
+is held for exclusive access of an object's attribute ("object variable") pool at that
+specific <xref linkend="xscope" xrefstyle="template:scope"/>.
 </para>
 
 <section id="xintdeb_explanations" revisionflag="added"><title>Multithreaded Additions to TRACE
 <indexterm><primary>debugging multithreaded programs</primary>
 <secondary>additions to TRACE</secondary></indexterm>
 </title>
-<para>To ease debugging of multithreaded programs the execution context can be
-indicated with a <emphasis role="italic">"multithreaded trace prefix string"</emphasis>
-in square brackets
-(see also the class method
+<para>To ease debugging of multithreaded programs the execution context
+will be displayed with a <emphasis role="italic">"multithreaded trace prefix string"</emphasis>
+in square brackets (see also the class method
 <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/> and
 the class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>" of the
 "<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject class"/>)
@@ -236,7 +236,7 @@ and the number (a counter) indicates which invocation gets executed on that thre
 </itemizedlist>
 
 <para>
-If currently tracing statements of methods then in addition the following information gets displayed:
+If currently tracing methods then in addition the following information gets displayed:
 </para>
 <itemizedlist>
 <listitem><para>"<literal>G</literal>" or "<literal>U</literal>": this character indicates
@@ -290,9 +290,9 @@ acquiring the object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
 </para></listitem>
 <listitem><para>
 The keyword instructions
-<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD ON someAttribute=someValue"/>"</emphasis>
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD ON WHEN someAttribute=someValue"/>"</emphasis>
 and
-<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD OFF someAttribute=someValue"/>"</emphasis>
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD OFF WHEN someAttribute=someValue"/>"</emphasis>
 allow changing the state of the method
 to guarded or to unguarded depending on the value of
 an exposed attribute "someAttribute" which needs to get changed in another
@@ -359,12 +359,13 @@ class attribute <xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:c
 
 <para>This section first introduces an example in which a multithreaded program gets traced to
 demonstrate that multithreaded related information are needed in order to become able to
-analyze the trace. The same program will get altered to take advantage of the new profiling
-(probing) option which allows for collecting the generated <emphasis role="italic">traceObjectS</emphasis> and then use the
+analyze the trace.
+The same program will get altered to take advantage of the new profiling
+(probing) option which allows for collecting the generated <emphasis role="italic">traceObjects</emphasis> and then use the
 different <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
-options to format the <emphasis role="italic">traceObjectS</emphasis> accordingly. The third example
-demonstrates how one can use
-<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>.
+options to format the <emphasis role="italic">traceObjectS</emphasis> accordingly.
+The third example demonstrates how one can use
+<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>
 to freely format the trace line.
 </para>
 
@@ -373,11 +374,10 @@ to freely format the trace line.
 <indexterm><primary>debugging multithreaded programs</primary><secondary>examples</secondary></indexterm>
 </title>
 <!-- example begin -->
-<para>This example creates multithreded parts using the
+<para>This example creates multithreaded parts using the
 <xref linkend="keyReply" xrefstyle="template:REPLY keyword instruction"/>.
-To introduce some
-entropy the
-<xref linkend="bifRandom" xrefstyle="template:RANDOM()-BIF"/>
+To introduce some entropy the
+<xref linkend="bifRandom" xrefstyle="template:RANDOM()"/> built-in function (BIF)
 gets used for generating a random sleep time. The resulting trace output will
 not have any multithreading related information such that it becomes impossible to realize which
 statements get executed on which thread.
@@ -460,14 +460,18 @@ class offers:
 <para>
 <itemizedlist>
 <listitem>
-<para>The class attribute option gets set to <literal>P</literal> (profiling/probing) which will
+<para>The class attribute
+<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>
+gets set to <literal>P</literal> (profiling/probing) which will
 cause ooRexx to not send the created
 <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
 to <literal>.traceOutput</literal> such that no trace line will get displayed.
 </para>
 </listitem>
 <listitem>
-<para>The class attribute collector gets an array assigned such that each created
+<para>The class attribute
+<xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/>
+gets an array assigned such that each created
 <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
 will be sent to it using the <methodname>APPEND</methodname> message.
 </para>
@@ -483,8 +487,10 @@ threads have completed and therefore all trace objects got generated and appende
 Taking advantage of the
 <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
 formatting capabilities all trace objects collected in the array
-get displayed in a loop after setting the class attribute option to 'N' (normal), 'T' (thread),
-'S' (standard) and 'F' (full). This way the collected trace objects get formatted such that
+get displayed in a loop after setting the class attribute option to <literal>N</literal> (normal),
+<literal>T</literal> (thread),
+<literal>S</literal> (standard) and
+<literal>F</literal> (full). This way the collected trace objects get formatted such that
 more and more multithreaded related information gets revealed in the trace line.
 </para>
 </listitem>
@@ -663,9 +669,12 @@ class offers, in this case its class method
 <listitem>
 <para>
 The program defines a method named "myMakeString" before any class directive which makes it a floating
-method. ooRexx will process all directives in the setup phase and if floating
-methods are encountered ooRexx will create a StringTable to store them under
-their names which can be accessed using the environment symbol .methods.
+method.
+ooRexx will process all directives in the setup phase and if floating
+methods are encountered ooRexx will create a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+to store them under
+their names which can be accessed using the environment symbol <literal>.methods</literal>.
 </para>
 </listitem>
 <listitem>
@@ -680,7 +689,8 @@ instance supplied as its sole argument to create a trace string.
 In the main program (prolog) the
 <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
 class method <xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/> is used to assign
-the "myMakeString" method retrieved from the floating .methods StringTable.
+the "myMakeString" method retrieved from the floating <literal>.methods</literal>
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>.
 </para>
 </listitem>
 </itemizedlist>
