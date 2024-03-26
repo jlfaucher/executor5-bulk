@@ -1,0 +1,339 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.TRACE_TraceObject.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class TRACE_TraceObject.testGroup subclass ooTestCase public
+
+::method setup    -- make sure we start out each test case with the defaults
+  .TraceObject~collector=.nil
+  .TraceObject~option='N'
+
+::method tearDown
+  -- Should a test case fail while a Monitor like .TraceOutput or .DebugInput
+  -- is redirected, this could trigger further test case failures.
+  -- The framework resets some of the Monitors for each test *group* run,
+  -- but we want to reset them here after each test *case* run.
+  .TraceOutput~destination(.Error)
+  .DebugInput~destination(.Input)
+  .Output~destination(.stdout)
+
+
+::method test_traceObject_option    -- assert valid options
+  self~assertSame('N', .traceObject~option)   -- initial value
+  do opt over 'T','S','F','P','N'
+     .traceObject~option=opt
+     self~assertSame(opt,.traceObject~option)
+  end
+
+::method test_traceObject_option_invalid
+  self~assertSyntaxError(93.914, ".traceObject~option='x'")
+  .traceObject~option='x'
+
+::method test_traceObject_collector
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("testRoutine",.resources~code4myTestTO)
+  clz =code~call        -- invoke, returns class object
+  t=clz~new~~test       -- now have the traceObjects created
+  call syssleep 0.1     -- let the threads end (they create trace lines)
+  .traceObject~collector=.nil -- stop collecting
+
+   -- get the source lines in trace line format; as the routine got
+   -- created at runtime from a resource the source lines are relative
+   -- to the resource (i.e. source lines start with number 1)
+  srcLines=17,18,22,23,27,28,33,34,37  -- array of source lines causing trace lines
+  tsk=code~package~findRoutine("getSourceLines")   -- get access to routine
+  traceLinesFromSource=tsk~call(srcLines) -- invoke the routine
+
+/*
+  say "traceLinesFromSource:"
+  say traceLinesFromSource
+  say "*-* "~copies(20)
+
+say "================ arr~items:" arr~items "================"
+say "arr:"
+do counter c1 el over arr
+      say "---" right(c1,3)":" el
+end
+say "================ arr~items:" arr~items "================"
+-- */
+
+  self~assertEquals(12,arr~items)   -- 12 TraceObjects in this test case
+
+   -- define data to create the trace lines for assertions
+   -- note: we do a 'startWith' on a *sorted* array such that potential differences
+   --       in the trace sequences from run to run can be safely ignored
+  traceLines='       >I> Method "TEST" with scope "MYTESTTO" in package', -
+             '       >I> Method "A" with scope "MYTESTTO" in package',    -
+             '       >I> Method "B" with scope "MYTESTTO" in package'
+
+   -- create sorted array with the produced trace lines
+  sortedProducedTraceLines=(traceLines~~appendAll(traceLinesFromSource))~sort
+   -- get and sort the collected trace lines
+   -- this test will also test the normal trace format ('P' implies 'N' when formatting)
+  traceObjTraceLines=extractTraceLines(arr)~sort
+  do counter c1 prodLine over sortedProducedTraceLines
+     str=traceObjTraceLines[c1]
+     self~assertTrue(str~startsWith(prodLine), "traceline" pp(str) "does not start with" pp(prodLine))
+  end
+
+  -- get a method related TraceObject and a routine related TraceObject
+  trObjMethod =.nil
+  trObjRoutine=.nil
+  do counter c1 obj over arr while trObjMethod~isNil | trObjRoutine~isNil
+     if trObjMethod~isNil, pos("a=",obj~traceLine)>0 then
+        trObjMethod=obj
+     else if trObjRoutine~isNil, pos('return ',obj~traceLine)>0 then
+        trObjRoutine=obj
+  end
+
+  routineEntries    ="INTERPRETER", "INVOCATION", "NR", "OPTION", "THREAD", "TIMESTAMP", "TRACELINE"
+  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "SCOPELOCKCOUNT"
+  methodEntries     =routineEntries~copy~~appendAll(methodAddedEntries)
+
+   -- trObjMethod: a TraceObject for a method
+  do idx over methodEntries      -- check that these entries exist
+     self~assertTrue(trObjMethod~hasEntry(idx), "#" .line "index" pp(idx) "for method missing")
+  end
+
+   -- trObjRoutine: a TraceObject for a routine
+  do idx over routineEntries     -- check that these entries exist
+     self~assertTrue(trObjRoutine~hasEntry(idx), "#" .line "index" pp(idx) "for routine missing")
+  end
+  do idx over methodAddedEntries -- check that these entries do not exist
+     self~assertFalse(trObjRoutine~hasEntry(idx), "#" .line "index" pp(idx) "not expected for routine")
+  end
+
+  -- check different properites expected on this test case' ThreadObjects
+  setNr           =.set~new      -- exactly 12
+  setThread       =.set~new      -- at least two threads
+  setOption       =.set~new      -- all should be 'P'
+  setInterpreter  =.set~new      -- all should be the same
+  setAttributePool=.set~new      -- there should be two
+  do trObj over arr
+     setNr           ~put(trObj~nr           )
+     setThread       ~put(trObj~thread       )
+     setOption       ~put(trObj~option       )
+     setInterpreter  ~put(trObj~interpreter  )
+     if \trObj~attributepool~isNil then   -- only available if for a method
+        setAttributePool~put(trObj~attributepool)
+  end
+  self~assertEquals(setNr~items, 12, "12 different TraceObjects expected, setNr~items:" setNr~items)
+  self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
+  self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
+  self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)
+  self~assertTrue(setInterpreter~items=1, "only one inteprpreter expected, setInterpreter~items:" setInterpreter~items)
+  self~assertTrue(setAttributePool~items=2, "exactly two attribute (object variable) pools expected, setAttributePool~items:" setAttributePool~items)
+
+  -- check standard formats 'T', 'S', 'F':
+  .TraceObject~option='T'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     ch=str[10]
+     self~assertTrue(Datatype(ch,"Number"), "option 'T' format implies a thread number at position 10, found:" ch)
+  end
+
+  .TraceObject~option='S'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     self~assertTrue(str~startsWith("[T"), "option 'S' format implies a bracketed multithreaded prefix, found:" str)
+
+     parse var str '[' mtPrefix ']' .
+     self~assertTrue(mtPrefix<>"","bracketed multithreaded trace prefix not found in" pp(str))
+
+     parse var mtPrefix t i g l h . -- extract
+     self~assertTrue(t[1]='T', "first indicator must start with 'T'(hread), found:" t[1] "str:" str)
+     self~assertTrue(i[1]='I', "second indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
+     if str~pos("return ")>0 then
+     do
+        self~assertTrue(mtPrefix~words=2,"a routine, hence mtPrefix must only contain two entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+     end
+     else
+     do
+        self~assertTrue(mtPrefix~words>=4,"a method, hence mtPrefix must contain either 4 or ore entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+        self~assertTrue(g[1]='G', "a method, third indicator must start with 'G'(uarded), found:" g[1] "str:" str)
+        self~assertTrue(l[1]='L', "a method, fourth indicator must start with 'L'(lock), found:" l[1] "str:" str)
+        hasLockChar?=(h='*' | h='')
+        self~assertTrue(hasLockChar?, "a method, fifth indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
+     end
+  end
+
+  .TraceObject~option='F'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     self~assertTrue(str~startsWith("[R"), "option 'F' format implies a bracketed multithreaded prefix, found:" str)
+
+     parse var str '[' mtPrefix ']' .
+     self~assertTrue(mtPrefix<>"","bracketed multithreaded trace prefix not found in" pp(str))
+
+     parse var mtPrefix r t i g a l h . -- extract
+     self~assertTrue(r[1]='R', "first indicator must start with 'T'(hread), found:" r[1] "str:" str)
+     self~assertTrue(t[1]='T', "second indicator must start with 'T'(hread), found:" t[1] "str:" str)
+     self~assertTrue(i[1]='I', "third indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
+     if str~pos("return ")>0 then
+     do
+        self~assertTrue(mtPrefix~words=3,"a routine, hence mtPrefix must only contain three entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+     end
+     else
+     do
+        self~assertTrue(mtPrefix~words>=6,"a method, hence mtPrefix must contain either 6 or more entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+        self~assertTrue(g[1]='G', "a method, fourth indicator must start with 'G'(uarded), found:" g[1] "str:" str)
+        self~assertTrue(a[1]='A', "a method, fifth indicator must start with 'A'(ttributepool), found:" A[1] "str:" str)
+        self~assertTrue(l[1]='L', "a method, sixth indicator must start with 'L'(lock), found:" l[1] "str:" str)
+        hasLockChar?=(h='*' | h='')
+        self~assertTrue(hasLockChar?, "a method, seventh indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
+     end
+  end
+
+  -- test setMakeString
+  .TraceObject~setMakeString(.resources~myMakeString)
+  do trObj over arr
+     str=trObj~makeString     -- returns strings of two numbers
+--     say "str:" pp(str)
+     parse var str a b
+     self~assertTrue(words(str)=2, "setMakeString(): expecting two words per returned string, however number of words found:" str~words)
+     self~assertTrue(Datatype(a,"Number"), "setMakeString(): first word" pp(a) "not a number")
+     self~assertTrue(Datatype(b,"Number"), "setMakeString(): second word" pp(b) "not a number")
+  end
+
+  .TraceObject~unsetMakeString   -- reset (uses default implementation)
+  .TraceObject~option='N'        -- reset to 'N'ormal
+  arrTraceLines=extractTraceLines(arr)~sort
+  do counter c1 prodLine over sortedProducedTraceLines
+     str=arrTraceLines[c1]
+     self~assertTrue(str~startsWith(prodLine), "traceline" pp(str) "does not start with" pp(prodLine))
+  end
+
+return
+
+produceTraceLines: procedure   -- create and return array of trace lines from the source line numbers
+  use arg arrLines
+  resArr=.array~new
+  do line over arrLines
+     resArr~append(line~right(6) "*-*" sourceLine(line)~strip('left'))
+  end
+  return resArr
+
+extractTraceLines: procedure  -- create and return array of the traceline entry
+  use arg arrTraceObj
+  resArr=.array~new
+  do traceObj over arrTraceObj
+      resArr~append(traceObj~makeString)
+  end
+  return resArr
+
+   /* ------------------------------------------------------------------------ */
+::resource myMakeString
+  use arg traceObj
+  return traceObj~nr traceObj~thread   -- return two numbers from traceObj to test
+::END
+   /* ------------------------------------------------------------------------ */
+
+
+   /* ------------------------------------------------------------------------ */
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  -- DO NOT insert or delete any lines in the following RESOURCE !
+::RESOURCE code4myTestTO
+  return .myTestTO      -- line # 1
+/* ---> do not edit (insert or delete) the following lines, baseline calcs above depend on this   */
+::routine getSourceLines public  -- expects an array of indexes pointing to the source lines caller is interested in
+  use arg lineArray        -- line # 4
+  resArr=.array~new
+  do line over lineArray
+-- say "#" .line": line="line "["sourceline(line)"]"
+     resArr~append(line~right(6) "*-*" sourceLine(line)~strip('left'))
+  end
+  return resArr            -- line # 10
+::class myTestTO
+::attribute baseline class -- stores line # of class init's assignment: a=19
+::method  init class
+  expose a b baseline
+  baseline=.line+2      -- method: # 15
+  trace all
+  a=19                  -- method: # 17
+  b=32                  -- method: # 18
+::method    a class
+  expose a
+  trace all
+  reply  a              -- method: # 22
+  a=a                   -- method: # 23
+::method    b class
+  expose b
+  trace all
+  reply  b              -- method: # 27
+  b=b                   -- method: # 28
+::attribute abc
+::method    test        -- method: abc=pp(19*32) is in baseline
+  expose    abc baseline srcLine1 srcLine2
+  trace all
+  reply                 -- method: # 33
+  abc=pp(.myTestTO~a*.myTestTO~b)   -- method: # 34
+::routine pp
+  trace all
+  return "["arg(1)"]"   -- routine: # 37
+/* <--- from now on editing is o.k. again  */
+::END
+   /* ------------------------------------------------------------------------ */
+
+
+
+::options all syntax error condition failure condition
+
