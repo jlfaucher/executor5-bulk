@@ -141,7 +141,7 @@ say "================ arr~items:" arr~items "================"
   end
 
   routineEntries    ="INTERPRETER", "INVOCATION", "NR", "OPTION", "THREAD", "TIMESTAMP", "TRACELINE"
-  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "SCOPELOCKCOUNT"
+  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "OBJECTID", "SCOPE", "SCOPELOCKCOUNT"
   methodEntries     =routineEntries~copy~~appendAll(methodAddedEntries)
 
    -- trObjMethod: a TraceObject for a method
@@ -333,6 +333,94 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
 ::END
    /* ------------------------------------------------------------------------ */
 
+
+::method test_object_and_scope
+   .traceObject~option='P'
+   arr=.array~new
+   .traceObject~collector=arr
+      -- load and run the code
+   .routine~new("myTestRoutine",.resources~myObjectScopeTestRoutine)~~call
+   .traceObject~collector=.nil
+
+   -- check expected tracelines
+   self~assertEquals(arr~items, 11)
+/* --
+say "arr~items:" arr~items":"
+say arr
+say "--"
+do i over arr
+   say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
+end
+-- */
+   -- get expected trace lines
+   traces=.resources~myObjectScopeTestRoutineTrace
+   do counter c1 traceObj over arr
+      actual    =traceObj~traceline -- get traceLine entry
+      predefined=traces[c1]         -- get expected traceLine
+      self~assertSame(actual,predefined,"traceObject #" c1": TRACELINE entry"  pp(actual) "does not match expected traceline:" pp(predefined))
+   end
+
+   -- expected
+   objectids=.array~of(.nil, "", "", .nil, .nil,   "",   "", .nil, .nil, "", "")
+   scopes   =.array~of(.nil, "", "", .nil, .nil, .nil, .nil, .nil, .nil, "", "")
+   -- in actual trace
+   do i=1 to arr~items
+      self~assertSame(arr[i]~objectId~isNil, objectids[i]~isNil, "TraceObject #" i "OBJECTID" arr[i]~objectid~string)
+      self~assertSame(arr[i]~scope   ~isNil,    scopes[i]~isNil, "TraceObject #" i "SCOPE" arr[i]~scope~string)
+   end
+
+
+/* ===> test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
+::resource myObjectScopeTestRoutine -- access via .resources possible
+   -- prolog: OBJECTID=.nil and SCOPE=.nil
+trace all
+t1=.test~new
+t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
+t1~m1float  -- OBJECTID, SCOPE=.nil
+t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
+t1~m1object -- OBJECTID, SCOPE=.TEST
+
+::method fm       -- a floating method (access via .methods possible)
+  expose info
+  trace all
+  a1=.context~name":" self~identityHash "(floating method)"
+  a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+
+::class test
+::method init
+  expose info
+  trace all
+  b=.context~name":" self~identityHash
+  info="initialized by .TEST's init"
+
+::attribute info get
+  expose info
+  trace all
+  return info
+
+::method setMethod1
+  use arg name, meth, scope
+  -- say .context~name":" self~identityHash
+  self~setMethod(name, meth, scope)
+::END
+
+::resource myObjectScopeTestRoutineTrace
+     3 *-* t1=.test~new
+    19 *-* b=.context~name":" self~identityHash
+    20 *-* info="initialized by .TEST's init"
+     4 *-* t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
+     5 *-* t1~m1float  -- OBJECTID, SCOPE=.nil
+    12 *-* a1=.context~name":" self~identityHash "(floating method)"
+    13 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+     6 *-* t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
+     7 *-* t1~m1object -- OBJECTID, SCOPE=.TEST
+    12 *-* a1=.context~name":" self~identityHash "(floating method)"
+    13 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+::END
+/* <=== test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
+
+::routine pp
+  return "["arg(1)"]"
 
 
 ::options all syntax error condition failure condition
