@@ -11089,24 +11089,21 @@ is less than a day, the days field and the period separator will be omitted.
 <indexterm><primary>concurrency</primary><secondary>TraceObject class</secondary></indexterm>
 
 <para>
-The <classname>TraceObject</classname> class gets used to store trace related
+The <classname>TraceObject</classname> class subclasses
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+(a <xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>)
+and uses unique character strings for its indexes.
+It gets used to store trace related
 information including execution context information that may be helpful to
-trace and to
-<xref linkend="xintdeb" xrefstyle="template:debug"/>
+trace and to <xref linkend="xintdeb" xrefstyle="template:debug"/>
 (<xref linkend="xdebugmt" xrefstyle="template:multithreaded"/>) programs.
 </para>
 <para>
 When <code>TRACE</code> is active
 (cf. <xref linkend="keyTrace" xrefstyle="template:TRACE keyword instruction"/> and
 <xref linkend="bifTrace" xrefstyle="template:TRACE() built-in-function (BIF)"/>) an
-instance of this class gets created by ooRexx and the traced context information gets filled in
-(cf. <xref linkend="mthTraceObjectNew" xrefstyle="template:new method"/>).
-</para>
-<para>
-The <classname>TraceObject</classname> class subclasses
-<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
-(a subclass of <xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>)
-using unique character strings for indexes.
+instance of this class gets created for each traced clause and the traced context information gets filled in
+(cf. <xref linkend="mthTraceObjectNew" xrefstyle="template:new"/> class method).
 </para>
 
 
@@ -11160,8 +11157,15 @@ to the <literal>.traceOutput</literal> monitor for displaying its string value
 as a result returns a string representing it, cf.
 <xref linkend="mthTraceObjectMakeString" xrefstyle="template:makeString"/> and
 <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/> below).
+The <classname>TraceObject</classname> class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/></emphasis>
+controls globally how the trace line gets formatted.
 </para>
-<para>For further information about debugging multithreaded programs using
+<para>The  <classname>TraceObject</classname> class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/></emphasis>
+can be used to collect all created <emphasis role="italic">traceObjects</emphasis> and analyze them
+programmatically at a later time.
+For further information about debugging multithreaded programs using
 <xref linkend="keyTrace" xrefstyle="template:TRACE"/> and this class
 see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
 </para>
@@ -11177,9 +11181,15 @@ see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
 
 <para>
 This class method initializes the class attributes. It sets
-the class attribute <emphasis role="italic">option</emphasis> to <code>N</code> (normal),
-the class attribute <emphasis role="italic">collector</emphasis> to &nil; and
-the class attribute <emphasis role="italic">counter</emphasis> to <code>0</code>.
+the class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/></emphasis>
+to <code>N</code> (normal),
+the class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/></emphasis>
+to &nil; and
+the class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectCounterGet" xrefstyle="template:counter"/></emphasis>
+to <code>0</code>.
 </para>
 
 <mediaobject>
@@ -11441,10 +11451,10 @@ uses the letter <literal>G</literal>, if &true;,
 the letter <literal>U</literal> else
 </para></entry>
 </row>
-<row><entry>"<literal>NR</literal>"
-<indexterm><primary>NR</primary><secondary>TraceObject</secondary></indexterm>
+<row><entry>"<literal>NUMBER</literal>"
+<indexterm><primary>NUMBER</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
-<entry><para>a sequential number based based on
+<entry><para>a sequential number based on
 the class attribute <xref linkend="mthTraceObjectCounterGet" xrefstyle="template:counter"/>
 (used for the default sorting)
 </para></entry>
@@ -11672,7 +11682,7 @@ Cancels the effect of all previous <methodname>setMakeString</methodname> invoca
 <indexterm><primary>attachment method</primary><secondary>of TraceObject class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>attachment method</secondary><tertiary>of TraceObject class</tertiary></indexterm>
 </title>
-<para>Implements the default sort order using the value of the <literal>NR</literal> entry which is the
+<para>Implements the default sort order using the value of the <literal>NUMBER</literal> entry which is the
 creation sequence number.
 </para>
 <mediaobject><imageobject>
