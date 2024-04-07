@@ -140,7 +140,7 @@ say "================ arr~items:" arr~items "================"
         trObjRoutine=obj
   end
 
-  routineEntries    ="INTERPRETER", "INVOCATION", "NR", "OPTION", "STACKFRAME", "THREAD", "TIMESTAMP", "TRACELINE"
+  routineEntries    ="INTERPRETER", "INVOCATION", "NUMBER", "OPTION", "STACKFRAME", "THREAD", "TIMESTAMP", "TRACELINE"
   methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "OBJECT", "SCOPE", "SCOPELOCKCOUNT"
   methodEntries     =routineEntries~copy~~appendAll(methodAddedEntries)
 
@@ -164,14 +164,14 @@ say "================ arr~items:" arr~items "================"
   setInterpreter  =.set~new      -- all should be the same
   setAttributePool=.set~new      -- there should be two
   do trObj over arr
-     setNr           ~put(trObj~nr           )
+     setNr           ~put(trObj~number       )
      setThread       ~put(trObj~thread       )
      setOption       ~put(trObj~option       )
      setInterpreter  ~put(trObj~interpreter  )
      if \trObj~attributepool~isNil then   -- only available if for a method
         setAttributePool~put(trObj~attributepool)
   end
-  self~assertEquals(setNr~items, 12, "12 different TraceObjects expected, setNr~items:" setNr~items)
+  self~assertEquals(12, setNr~items, "12 different TraceObjects expected, setNr~items:" setNr~items)
   self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
   self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
   self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)
@@ -281,7 +281,7 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
    /* ------------------------------------------------------------------------ */
 ::resource myMakeString
   use arg traceObj
-  return traceObj~nr traceObj~thread   -- return two numbers from traceObj to test
+  return traceObj~number traceObj~thread   -- return two numbers from traceObj to test
 ::END
    /* ------------------------------------------------------------------------ */
 
