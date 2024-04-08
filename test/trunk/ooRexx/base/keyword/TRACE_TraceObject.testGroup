@@ -141,7 +141,7 @@ say "================ arr~items:" arr~items "================"
   end
 
   routineEntries    ="INTERPRETER", "INVOCATION", "NUMBER", "OPTION", "STACKFRAME", "THREAD", "TIMESTAMP", "TRACELINE"
-  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "OBJECT", "SCOPE", "SCOPELOCKCOUNT"
+  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "SCOPELOCKCOUNT"
   methodEntries     =routineEntries~copy~~appendAll(methodAddedEntries)
 
    -- trObjMethod: a TraceObject for a method
@@ -365,9 +365,13 @@ end
    scopes   =.array~of(.nil, "", "", .nil, .nil, .nil, .nil, .nil, .nil, "", "")
    -- in actual trace
    do i=1 to arr~items
-      -- self~assertSame(arr[i]~objectId~isNil, objectids[i]~isNil, "TraceObject #" i "OBJECTID" arr[i]~objectid~string)
-      self~assertSame(arr[i]~object  ~isNil, objectids[i]~isNil, "TraceObject #" i "OBJECT" arr[i]~object~string)
-      self~assertSame(arr[i]~scope   ~isNil,    scopes[i]~isNil, "TraceObject #" i "SCOPE"  arr[i]~scope ~string)
+      stackFr   =arr[i]~stackFrame
+      type      =stackFr~type
+      obj       =stackFr~target
+      if type="METHOD" then scope=stackFr~executable~scope
+                       else scope=.nil
+      self~assertSame(objectids[i]~isNil, obj  ~isNil, "TraceObject #" i "OBJECT" obj  ~string)
+      self~assertSame(   scopes[i]~isNil, scope~isNil, "TraceObject #" i "SCOPE"  scope~string)
    end
 
 
