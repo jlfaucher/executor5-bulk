@@ -3673,7 +3673,7 @@ TRACE ?R
 </para>
 </section>
 
-<section id="tracfor"><title>The Format of Trace Output</title>
+<section id="tracfor" revisionflag="changed"><title>&changed51; The Format of Trace Output</title>
 <indexterm><primary>formatting</primary>
 <secondary>of output during tracing</secondary></indexterm>
 <para>Every clause traced appears with automatic
@@ -3720,10 +3720,24 @@ an indication of a syntax error when in interactive debugging.
 <secondary>>I></secondary></indexterm>
 <indexterm><primary>>I> tracing flag</primary></indexterm>
 </term>
-<listitem><para>Identifies an entry to a routine or method.  This
+<listitem><para>Identifies an entry to (invocation of) a routine or method.  This
 trace entry will only appear if tracing is enabled using the ::OPTIONS
 directive using TRACE A, TRACE R, TRACE I or TRACE L.
-</para></listitem></varlistentry>
+</para></listitem>
+</varlistentry>
+<varlistentry><term revisionflag="added"><computeroutput>&lt;I&lt;</computeroutput> &nbsp;&nbsp;&nbsp;&added51;
+<indexterm><primary>flag, tracing</primary>
+<secondary>&lt;I&lt;</secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>&lt;I&lt;</secondary></indexterm>
+<indexterm><primary>&lt;I&lt; tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies an exit (return) from an
+invocation of a routine or method.  This
+trace entry will only appear if tracing is enabled using the ::OPTIONS
+directive using TRACE A, TRACE R, TRACE I or TRACE L.
+</para></listitem>
+</varlistentry>
 <varlistentry><term><computeroutput>>K></computeroutput>
 <indexterm><primary>flag, tracing</primary>
 <secondary>>K></secondary></indexterm>
