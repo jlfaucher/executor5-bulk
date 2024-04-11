@@ -580,10 +580,14 @@ return testResult
   -- this is the expected trace output, including two leading spurious lines
   traceExpected = ( -
     '       >I> Routine "" in package "".', -
+    '       <I< Routine "" in package "".', -
     '       >I> Routine "" in package "".', -
     '       >I> Routine "R" in package "".', -
+    '       <I< Routine "R" in package "".', -
     '     4 *-*   lbl:', -
-    '       >I> Method "M" with scope "C" in package "".')
+    '       >I> Method "M" with scope "C" in package "".', -
+    '       <I< Method "M" with scope "C" in package "".', -
+    '       <I< Routine "" in package "".')
 
   traceAsString=.array~new
   do traceObj over trace
@@ -605,22 +609,36 @@ return testResult
     '    forward message "run"  ', -
     '::options trace "a"        '))
   r~call
+
+bShow=.false         -- set to .true to display actual trace
+if bShow=.true then  -- display trace
+do
+   do counter c1 traceObj over trace
+      say .line "#" c1~right(2)":" traceObj~makeString
+   end
+end
   /* this is the expected trace output:
-       >I> Routine "" in package "".
-       >I> Routine "" in package "".
-     1 *-* .c~r(.methods["FLOAT"])
-       >I> Method "R" with scope "C" in package "".
-     5 *-* forward message "run"
-       >I> Method "*UNNAMED*" with scope ".NIL" in package "".
+617 #  1:        >I> Routine "" in package "".
+617 #  2:        <I< Routine "" in package "".
+617 #  3:        >I> Routine "" in package "".
+617 #  4:      1 *-* .c~r(.methods["FLOAT"])
+617 #  5:        >I> Method "R" with scope "C" in package "".
+617 #  6:      5 *-* forward message "run"
+617 #  7:        >I> Method "*UNNAMED*" with scope ".NIL" in package "".
+617 #  8:        <I< Method "*UNNAMED*" with scope ".NIL" in package "".
+617 #  9:        <I< Method "R" with scope "C" in package "".
+617 # 10:        <I< Method "R" with scope "C" in package "".
+617 # 11:        <I< Routine "" in package "".
   */
   -- we're not expected to crash (that's what the bug report is about)
   -- but since we already collect the trace ouput, we can as well
   -- check a few things
-
-  -- the floating method's (missing) name is displayed as *UNNAMED*
-  self~assertTrue(trace[trace~last]~makeString~contains("*UNNAMED*"))
-  -- the floating method's scope is displayed as ".NIL"
-  self~assertTrue(trace[trace~last]~makeString~contains('".NIL"'))
+  do idx over 7, 8   -- test the 7th (>I>) and the 8th (<I<) entry
+     -- the floating method's (missing) name is displayed as *UNNAMED*
+     self~assertTrue(trace[idx]~makeString~contains("*UNNAMED*"))
+     -- the floating method's scope is displayed as ".NIL"
+     self~assertTrue(trace[idx]~makeString~contains('".NIL"'))
+  end
 
 
 ::class ArrayStream subclass OutputStream

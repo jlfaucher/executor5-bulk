@@ -348,6 +348,7 @@ message name isn't traced
      1 *-* exit 99
        >L>   "99"
        >>>   "99"
+       <I< Routine "trace_exit" in package "trace_exit".
   ::end
 
 -- trace EXPOSE keyword instruction
@@ -366,6 +367,7 @@ message name isn't traced
        >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "".
      1 *-* expose (list);
        >>>   "a b"
+       <I< Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "".
   ::end
 
 -- trace FORWARD keyword instruction
@@ -921,6 +923,7 @@ message name isn't traced
 
   ::resource entrypoint end "  ::end"
        >I> Routine "trace_other_entrypoint" in package "trace_other_entrypoint".
+       <I< Routine "trace_other_entrypoint" in package "trace_other_entrypoint".
   ::end
 
 -- three-letter trace prefix >M>

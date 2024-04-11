@@ -97,7 +97,8 @@ TRACEOUTPUT
   .error~lineOut
 
 ::method test_zzz_traceoutput_invalid
-  self~expectSyntax(97.1) -- Object .. does not understand message "LINEOUT"
+  -- self~expectSyntax(97.1) -- Object .. does not understand message "LINEOUT"
+  self~expectCondition("NOMETHOD")  -- since the new trace invocation exit
   .traceOutput~destination("") -- has no LINEOUT method
   trace r
   trace n
@@ -163,7 +164,7 @@ TRACEOUTPUT
   end
   self~assertSameList(( -
    line1~format(6) "*-* label:", line3~format(6) "*-* thirdLabel:"), arrayStreamAsStringArray)
-
+  trace off       -- otherwise <I< for returning from this method gets displayed
   -- back to default
   .Error~destination
   self~assertSame(.stderr, .Error~current)
