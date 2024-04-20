@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2702,6 +2702,7 @@ return testResult
 
 ::method test_format_bug_1474_as_reported
   numeric digits 19
+  signal off lostdigits -- u has more digits than the current precision
   u = 2.0493692807285326668E-22
   v = 0.295520207
   self~assertSame("                   6.056300340603371E-23", (u * v)~format(20, 15))
@@ -2722,6 +2723,7 @@ do i = 1 to 30
 end
 */
 ::method test_format_bug_1474_full
+  signal off lostdigits -- n has more digits than the current precision
   do case = 1 to 3
     select
       when case = 1 then do
@@ -2756,4 +2758,22 @@ end
   self~assertSame('1.00E+2', '99.999'~format(,2,,2))
 
 
-::options novalue error
+::method test_format_bug_1947
+
+  -- as reported
+  numeric digits 4
+  self~assertSame("0.001235", 123456789e-11~format)
+
+  -- test with more precision ranges and exponent ranges
+  signal off lostdigits -- n has more digits than the current precision
+  do d = 9 to 1 by -1
+    do e = 0 to -18 by -1
+      n = "123456789e" || e
+      numeric digits (d)
+      self~assertSame(n + 0, n~format)
+      numeric digits
+    end
+  end
+
+
+::options all syntax
