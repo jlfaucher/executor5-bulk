@@ -60,6 +60,9 @@ else
   .DebugInput~destination(.Input)
   .Output~destination(.stdout)
 
+  .TraceObject~option='N'
+  .TraceObject~collector=.nil
+  .TraceObject~unsetMakeString
 
 ::method test_traceObject_option    -- assert valid options
   self~assertSame('N', .traceObject~option)   -- initial value
@@ -339,8 +342,18 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
 ::END
    /* ------------------------------------------------------------------------ */
 
+::method test_setMakeString_with_method_object
+   returnValue="nixi, noxi"
+   m=.method~new("testMethod","return '"returnValue"'")
+   self~assertTrue(m~isA(.method), "is m an instance of .Method" )
+  to=.traceObject~new            -- create a TraceObject
+  .TraceObject~setMakeString(m)  -- assign the me
+  res=to~makeString
+  self~assertEquals(returnValue, res, "expecting m to always return:" returnValue)
+  .TraceObject~unsetMakeString
 
 ::method test_object_and_scope
+   -- .routine~new("myTestRoutine",.resources~myObjectScopeTestRoutine)~~call; say "<--"
    .traceObject~option='P'
    arr=.array~new
    .traceObject~collector=arr
@@ -382,9 +395,7 @@ end
    end
 
 
-/* ===> test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
 ::resource myObjectScopeTestRoutine -- access via .resources possible
-   -- prolog: OBJECTID=.nil and SCOPE=.nil
 trace all
 t1=.test~new
 t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
@@ -417,22 +428,23 @@ t1~m1object -- OBJECTID, SCOPE=.TEST
 ::END
 
 ::resource myObjectScopeTestRoutineTrace
-     3 *-* t1=.test~new
-    19 *-* b=.context~name":" self~identityHash
-    20 *-* info="initialized by .TEST's init"
+     2 *-* t1=.test~new
+    18 *-* b=.context~name":" self~identityHash
+    19 *-* info="initialized by .TEST's init"
        <I< Method "INIT" with scope "TEST" in package "myTestRoutine".
-     4 *-* t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
-     5 *-* t1~m1float  -- OBJECTID, SCOPE=.nil
-    12 *-* a1=.context~name":" self~identityHash "(floating method)"
-    13 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+     3 *-* t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
+     4 *-* t1~m1float  -- OBJECTID, SCOPE=.nil
+    11 *-* a1=.context~name":" self~identityHash "(floating method)"
+    12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
        <I< Method "M1FLOAT" with scope ".NIL" in package "myTestRoutine".
-     6 *-* t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
-     7 *-* t1~m1object -- OBJECTID, SCOPE=.TEST
-    12 *-* a1=.context~name":" self~identityHash "(floating method)"
-    13 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+     5 *-* t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
+     6 *-* t1~m1object -- OBJECTID, SCOPE=.TEST
+    11 *-* a1=.context~name":" self~identityHash "(floating method)"
+    12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
        <I< Method "M1OBJECT" with scope "TEST" in package "myTestRoutine".
        <I< Routine "myTestRoutine" in package "myTestRoutine".
 ::END
+
 /* <=== test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
 
 ::routine pp
