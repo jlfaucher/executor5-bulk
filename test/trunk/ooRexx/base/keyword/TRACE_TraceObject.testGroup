@@ -114,20 +114,21 @@ end
 say "================ arr~items:" arr~items "================"
 -- */
 
-  self~assertEquals(17,arr~items)   -- 12 TraceObjects in this test case
-
    -- define data to create the trace lines for assertions
    -- note: we do a 'startWith' on a *sorted* array such that potential differences
    --       in the trace sequences from run to run can be safely ignored
-  traceLines='       >I> Method "TEST" with scope "MYTESTTO" in package', -
-             '       >I> Method "A" with scope "MYTESTTO" in package',    -
-             '       >I> Method "B" with scope "MYTESTTO" in package',    -
-             '       <I< Method "TEST" with scope "MYTESTTO" in package', -
-             '       <I< Method "A" with scope "MYTESTTO" in package',    -
-             '       <I< Method "B" with scope "MYTESTTO" in package',    -
-             '       <I< Method "INIT" with scope "MYTESTTO" in package', -
-             '       <I< Routine "PP" in package "testRoutine"'
-
+traceLines= -
+             '       <I< Method "INIT" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Routine "PP" in package "testRoutine".'                        , -
+             '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "B" with scope "MYTESTTO" in package "testRoutine".'
 
    -- create sorted array with the produced trace lines
   sortedProducedTraceLines=(traceLines~~appendAll(traceLinesFromSource))~sort
@@ -180,7 +181,7 @@ say "================ arr~items:" arr~items "================"
      if \trObj~attributepool~isNil then   -- only available if for a method
         setAttributePool~put(trObj~attributepool)
   end
-  self~assertEquals(17, setNr~items, "17 different TraceObjects expected, setNr~items:" setNr~items)
+  self~assertEquals(20, setNr~items, "20 different TraceObjects expected, setNr~items:" setNr~items)
   self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
   self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
   self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)

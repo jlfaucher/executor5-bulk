@@ -180,9 +180,10 @@ message name isn't traced
     if line~left(7)~dataType("Whole") then do
       line = (start + line~left(7))~right(6) line~subStr(8)
     end
-    if line~strip("l")~startsWith(">I> Method") then do
-    -- When we see a method entry we ignore the last token package name
+    if line~strip("l")~startsWith(">I> Method") | line~strip("l")~startsWith("<I< Method") then do
+    -- When we see a method entry or exit we ignore the last token package name
     -- e. g. >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
+    -- e. g. <I< Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
       if line~left(line~wordIndex(9) - 1) \== actual[i]~left(actual[i]~wordIndex(9) - 1) then
       self~assertFail("trace output mismatch at line" i line msg)
     end
@@ -752,6 +753,7 @@ message name isn't traced
      1 *-* reply 1
        >L>   "1"
        >>>   "1"
+       <I< Method "TRACE_REPLY" with scope "TRACE.TESTGROUP" in package "...".
        >I> Method "TRACE_REPLY" with scope "TRACE.TESTGROUP" in package "...".
   ::end
 
