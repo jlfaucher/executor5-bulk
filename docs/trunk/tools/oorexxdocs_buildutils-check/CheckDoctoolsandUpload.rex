@@ -2,7 +2,7 @@
 /*
 # -----------------------------------------------------------------------------
 #
-# Copyright (c) 2023 Rexx Language Association. All rights reserved.
+# Copyright (c) 2024 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -38,13 +38,17 @@
 # ------------------------------------------------------------------------------
 #
 # Name: CheckDoctoolsandUpload.rex
-# Type: ooRexx script to check readme.txt in the docs/trunk/tools folder and upload
-# it to sourceforge if/when it is amended
+# Type: ooRexx script to check tools folder and Upload the newly added items
+# to sourceforge ooRexx web interface
 #
 # Sourceforge downloadpath sfRoot and uploadpath sftoolsfolder should be 
 # provided by the caller, the fallbacks are
-# sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools/'
-# sftoolsfolder = '/home/frs/project/oorexx/oorexx-docs-bildutils'
+# sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools'
+# sftoolsfolder = '/home/frs/projects/oorexx/files/oorexx-docs-buildutils'
+#
+# Currently there are (at least) two shortcomings in the script:
+# (i) it is only considering files, not folders
+# (ii) it is not removing files from sftoolsfolder deleted from sfRoot
 #
 # ------------------------------------------------------------------------------
 */
@@ -53,12 +57,12 @@ trace o
 
 /* Here is where we find the docbuild tools on sourceforge		*/
 /* Should be given as input to the script, fallback if not		*/
-  if arg() < 1 then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools/'
+  if arg() < 1 then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools'
   else sfRoot = arg(1)~strip
 
 /* Here is where we upload the built documentation on sourceforge	*/
 /* Should be given as input to the script, fallback if not		*/
-  if arg() < 2 then    sftoolsfolder = '/home/frs/project/oorexx/oorexx-docs-bildutils'
+  if arg() < 2 then    sftoolsfolder = '/home/frs/projects/oorexx/files/oorexx-docs-buildutils'
   else sftoolsfolder = arg(2)~strip
 
 /* These are the credentials for sourceforge upload, 
@@ -87,12 +91,17 @@ trace o
   outArray  = .array~new
   copyArray = .array~new
 
--- Get the SVN revision level of readme.txt  LOCALLY
--- if revision file does not exist -> create a dummy file first time with revision 1 (r1)
--- BEWARE OF CASE on readme.txt
+-- Get the SVN revision level of all documents LOCALLY
+-- if file does not exist -> create a dummy file first time with revision 1 (r1)
   if SysFileExists(revisionsFile) = .false then
   do
-    outarray~append('readme.txt r1')	
+    res = SysFileTree(toolspath || .File~separator || '*.*', 'file', 'FO')
+    do i=1 TO file.0
+      item = filespec('name',file.i)
+-- beware of pesky invisible files on macOS
+      if item = '.DS_Store' then iterate
+      outarray~append(item 'r1')	
+    end i
     q = .stream~new(revisionsFile)
     res = q~open('write replace')
     res = q~arrayout(outArray)
