@@ -1,4 +1,4 @@
-docs\trunk\tools (as of: 2023-01-04)
+docs\trunk\tools (as of: 2024-04-22)
 ------------------------------------
 
 To use the tools below start by checking out the complete documentation source:
@@ -7,7 +7,8 @@ svn co svn://svn.code.sf.net/p/oorexx/code-0/docs/trunk/ docSVN
 
 
 The tools directory is supposed to collect all utilities that can be used to
-create/change documentation parts.
+create/change documentation parts. IF you decide to add any tools to this folder
+make sure to update this file.
 
 - rexxpg/createClassHierarchy.rex:
 
@@ -77,32 +78,27 @@ create/change documentation parts.
                 updateEntityValues.rex -y 2022 -v "5.0 -> 5.1" -e "2022.12.25" -r 99999  ..
                 updateEntityValues.rex ..
 
+- bldoc_orx:
+
+        - contains the tools to build the ooRexx documentation; copy
+          the contents of this folder to a folder to be used for building the
+          documents and run setup.rex to complete the installation.
+
 - bldoc_win:
 
         - contains the tools to build the ooRexx documentation on Windows; copy
           the contents of this folder to a folder to be used for building the
           documents and run setup.rex to complete the installation.
 
-- oorexxdocs-macOS.zip
+- oorexxdocs_macOS
 
-        - contains the tools to build the ooRexx documentation on macOS; unzip and
-          copy the contents of this folder to a folder to be used for building the
-          documents and follow the instructions in WhatIsHere.txt. For a better
-          understanding of the build process reference is made to the read1st.txt
-          in the Windows build tools
-- oorexxdocs-Ubuntu.zip
-
-        - contains the tools to build the ooRexx documentation on macOS; unzip and
-          copy the contents of this folder to a folder to be used for building the
+        - contains the tools to build the ooRexx documentation on macOS; Copy
+          the contents of this folder to a folder to be used for building the
           documents and follow the instructions in WhatIsHere.txt. For a better
           understanding of the build process reference is made to the read1st.txt
           in the Windows build tools
 
-          Note: the tools for Linux are relying on an internet connection and are
-          considerably slower than on macOS or Windows. Proposals for amendments
-          are welcome.
-
-- JenkinsDocBuildTools.zip
+- oorexxdocs_Jenkins
 
         - contains an additional script to build the ooRexx documentation on
           a macOS Jenkins agent; Start by unzipping oorexxdocs_macOS and make
@@ -116,9 +112,19 @@ create/change documentation parts.
           amended. Instructions for use are embedded in the script.
           This script is intended for use by the developers only.
 
-ooRexx-docs-bildutils-check
+- oorexxdocs_bildutils-check
 
         - contains an additional script used by the Jenkins framework to 
           (i) see if any changes have been made to the readme.txt file and
           (ii) upload it to sourceforge when there are amendments.
           This script is intended for use by the developers only.
+
+- LiberationFonts
+
+        - contains the fonts used to build the documentation
+
+- RailRoadDiagrams
+
+        - The ooRexx project uses a free tool "RailDiagramGenerator" for creating
+          its syntax diagrams from ebnf. For more information read the
+          RailDiagramGenerator-readme.txt
