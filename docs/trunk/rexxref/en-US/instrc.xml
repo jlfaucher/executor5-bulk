@@ -3721,8 +3721,12 @@ an indication of a syntax error when in interactive debugging.
 <indexterm><primary>>I> tracing flag</primary></indexterm>
 </term>
 <listitem><para>Identifies an entry to (invocation of) a routine or method.  This
-trace entry will only appear if tracing is enabled using the ::OPTIONS
-directive using TRACE A, TRACE R, TRACE I or TRACE L.
+trace entry will appear if tracing is enabled using the ::OPTIONS
+directive using TRACE A, TRACE R, TRACE I or TRACE L. In addition it will appear
+if the TRACE A, TRACE R, TRACE I or TRACE L keyword instruction is the first statement
+in a routine or in a method (if the first instruction in a method is an EXPOSE keyword
+instruction then it must be immediately followed by a TRACE A, TRACE R, TRACE I or
+TRACE L keyword instruction in order to display this output).
 </para></listitem>
 </varlistentry>
 <varlistentry><term revisionflag="added"><computeroutput>&lt;I&lt;</computeroutput> &nbsp;&nbsp;&nbsp;&added51;
@@ -3732,10 +3736,8 @@ directive using TRACE A, TRACE R, TRACE I or TRACE L.
 <secondary>&lt;I&lt;</secondary></indexterm>
 <indexterm><primary>&lt;I&lt; tracing flag</primary></indexterm>
 </term>
-<listitem><para>Identifies an exit (return) from an
-invocation of a routine or method.  This
-trace entry will only appear if tracing is enabled using the ::OPTIONS
-directive using TRACE A, TRACE R, TRACE I or TRACE L.
+<listitem><para>Identifies an exit (return) from an invocation of a routine or method.  This
+trace entry will appear if tracing with TRACE A, TRACE R, TRACE I or TRACE L in effect.
 </para></listitem>
 </varlistentry>
 <varlistentry><term><computeroutput>>K></computeroutput>
