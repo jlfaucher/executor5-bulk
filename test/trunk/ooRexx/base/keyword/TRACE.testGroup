@@ -339,13 +339,27 @@ message name isn't traced
        >>>   "rc result"
   ::end
 
--- trace EXIT keyword instruction
+-- trace EXIT keyword instruction with TRACE I as first statement in routine, triggers "retro-trace"
 ::method test_trace_exit
   t = .TraceOutput~destination(.ArrayStream~new)
   .Routine~new("trace_exit", "trace i; exit 99")~call
   self~assertTraceOutput(.resources~exit, makeStringArray(t), 0)
 
   ::resource exit end "  ::end"
+       >I> Routine "trace_exit" in package "trace_exit".
+     1 *-* exit 99
+       >L>   "99"
+       >>>   "99"
+       <I< Routine "trace_exit" in package "trace_exit".
+  ::end
+
+-- trace EXIT keyword instruction with TRACE I as the second statement
+::method test_trace_exit_trace_i_second_statement
+  t = .TraceOutput~destination(.ArrayStream~new)
+  .Routine~new("trace_exit", "a=1;trace i; exit 99")~call
+  self~assertTraceOutput(.resources~exit_trace_i_second_statement, makeStringArray(t), 0)
+
+  ::resource exit_trace_i_second_statement end "  ::end"
      1 *-* exit 99
        >L>   "99"
        >>>   "99"

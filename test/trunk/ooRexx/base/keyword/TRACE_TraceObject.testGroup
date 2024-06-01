@@ -119,12 +119,16 @@ say "================ arr~items:" arr~items "================"
    --       in the trace sequences from run to run can be safely ignored
 traceLines= -
              '       <I< Method "INIT" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
              '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
              '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
              '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
              '       >I> Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
              '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
              '       <I< Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Routine "PP" in package "testRoutine".'                        , -
              '       <I< Routine "PP" in package "testRoutine".'                        , -
              '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
              '       >I> Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
@@ -181,7 +185,10 @@ traceLines= -
      if \trObj~attributepool~isNil then   -- only available if for a method
         setAttributePool~put(trObj~attributepool)
   end
-  self~assertEquals(20, setNr~items, "20 different TraceObjects expected, setNr~items:" setNr~items)
+
+-- say "indexes of trObj:" trObj~allIndexes~sort~makeString('L',' ')
+
+  self~assertEquals(24, setNr~items, "24 different TraceObjects expected, setNr~items:" setNr~items)
   self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
   self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
   self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)
@@ -196,7 +203,6 @@ traceLines= -
      ch=str[10]
      self~assertTrue(Datatype(ch,"Number"), "option 'T' format implies a thread number at position 10, found:" ch)
   end
-
   .TraceObject~option='S'
   do trObj over arr
      str=trObj~makeString
@@ -209,13 +215,13 @@ traceLines= -
      parse var mtPrefix t i g l h . -- extract
      self~assertTrue(t[1]='T', "first indicator must start with 'T'(hread), found:" t[1] "str:" str)
      self~assertTrue(i[1]='I', "second indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
-     if str~pos("return ")>0 | str~pos("<I< Routine")>0 then
+     if str~pos("return ")>0 | str~pos(">I> Routine")>0  | str~pos("<I< Routine")>0 then
      do
         self~assertTrue(mtPrefix~words=2,"a routine, hence mtPrefix must only contain two entries, but found"  mtPrefix~words "entry/ies in" pp(str))
      end
      else
      do
-        self~assertTrue(mtPrefix~words>=4,"a method, hence mtPrefix must contain either 4 or ore entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+        self~assertTrue(mtPrefix~words>=4,"a method, hence mtPrefix must contain either 4 or more entries, but found"  mtPrefix~words "entry/ies in" pp(str))
         self~assertTrue(g[1]='G', "a method, third indicator must start with 'G'(uarded), found:" g[1] "str:" str)
         self~assertTrue(l[1]='L', "a method, fourth indicator must start with 'L'(lock), found:" l[1] "str:" str)
         hasLockChar?=(h='*' | h='')
@@ -236,7 +242,7 @@ traceLines= -
      self~assertTrue(r[1]='R', "first indicator must start with 'T'(hread), found:" r[1] "str:" str)
      self~assertTrue(t[1]='T', "second indicator must start with 'T'(hread), found:" t[1] "str:" str)
      self~assertTrue(i[1]='I', "third indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
-     if str~pos("return ")>0 | str~pos("<I< Routine")>0  then
+     if str~pos("return ")>0 | str~pos(">I> Routine")>0  | str~pos("<I< Routine")>0  then
      do
         self~assertTrue(mtPrefix~words=3,"a routine, hence mtPrefix must only contain three entries, but found"  mtPrefix~words "entry/ies in" pp(str))
      end
@@ -308,7 +314,7 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
   use arg lineArray        -- line # 4
   resArr=.array~new
   do line over lineArray
--- say "#" .line": line="line "["sourceline(line)"]"
+ -- say "#" .line": line="line "["sourceline(line)"]"
      resArr~append(line~right(6) "*-*" sourceLine(line)~strip('left'))
   end
   return resArr            -- line # 10
@@ -322,22 +328,22 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
   b=32                  -- method: # 18
 ::method    a class
   expose a
-  trace all
+  trace all             -- since retro-trace will cause <I<
   reply  a              -- method: # 22
   a=a                   -- method: # 23
 ::method    b class
   expose b
-  trace all
+  trace all             -- since retro-trace will cause <I<
   reply  b              -- method: # 27
   b=b                   -- method: # 28
 ::attribute abc
 ::method    test        -- method: abc=pp(19*32) is in baseline
   expose    abc baseline srcLine1 srcLine2
-  trace all
+  trace all             -- since retro-trace will cause <I<
   reply                 -- method: # 33
   abc=pp(.myTestTO~a*.myTestTO~b)   -- method: # 34
 ::routine pp
-  trace all
+  trace all             -- since retro-trace will cause <I<
   return "["arg(1)"]"   -- routine: # 37
 /* <--- from now on editing is o.k. again  */
 ::END
@@ -363,15 +369,18 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
    .traceObject~collector=.nil
 
    -- check expected tracelines
-   self~assertEquals(arr~items, 15)
+   self~assertEquals(arr~items, 19)
 /* --
 say "arr~items:" arr~items":"
 say arr
 say "--"
 do i over arr
-   say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
+   -- say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
+   -- say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
+   say i
 end
--- */
+say "---"
+--*/
    -- get expected trace lines
    traces=.resources~myObjectScopeTestRoutineTrace
    do counter c1 traceObj over arr
@@ -379,11 +388,10 @@ end
       predefined=traces[c1]         -- get expected traceLine
       self~assertSame(actual,predefined,"traceObject #" c1": TRACELINE entry"  pp(actual) "does not match expected traceline:" pp(predefined))
    end
+   -- expected            1     2   3   4   5   6     7     8     9    10    11    12   13     14  15  16  17  18
+   objectids=.array~of(.nil, .nil, "", "", "", "", .nil, .nil,   "",   "",   "",   "", .nil, .nil, "", "", "", "")
+   scopes   =.array~of(.nil, .nil, "", "", "", "", .nil, .nil, .nil, .nil, .nil, .nil, .nil, .nil, "", "", "", "")
 
-
-   -- expected
-   objectids=.array~of(.nil, "", "", "", .nil, .nil,   "",   "",   "", .nil, .nil, "", "", "")
-   scopes   =.array~of(.nil, "", "", "", .nil, .nil, .nil, .nil, .nil, .nil, .nil, "", "", "")
    -- in actual trace
    do i=1 to arr~items
       stackFr   =arr[i]~stackFrame
@@ -406,20 +414,20 @@ t1~m1object -- OBJECTID, SCOPE=.TEST
 
 ::method fm       -- a floating method (access via .methods possible)
   expose info
-  trace all
+  trace all             -- since retro-trace will cause <I<
   a1=.context~name":" self~identityHash "(floating method)"
   a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
 
 ::class test
 ::method init
   expose info
-  trace all
+  trace all             -- since retro-trace will cause <I<
   b=.context~name":" self~identityHash
   info="initialized by .TEST's init"
 
 ::attribute info get
   expose info
-  trace all
+  trace all             -- since retro-trace will cause <I<
   return info
 
 ::method setMethod1
@@ -429,17 +437,21 @@ t1~m1object -- OBJECTID, SCOPE=.TEST
 ::END
 
 ::resource myObjectScopeTestRoutineTrace
+       >I> Routine "myTestRoutine" in package "myTestRoutine".
      2 *-* t1=.test~new
+       >I> Method "INIT" with scope "TEST" in package "myTestRoutine".
     18 *-* b=.context~name":" self~identityHash
     19 *-* info="initialized by .TEST's init"
        <I< Method "INIT" with scope "TEST" in package "myTestRoutine".
      3 *-* t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
      4 *-* t1~m1float  -- OBJECTID, SCOPE=.nil
+       >I> Method "M1FLOAT" with scope ".NIL" in package "myTestRoutine".
     11 *-* a1=.context~name":" self~identityHash "(floating method)"
     12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
        <I< Method "M1FLOAT" with scope ".NIL" in package "myTestRoutine".
      5 *-* t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
      6 *-* t1~m1object -- OBJECTID, SCOPE=.TEST
+       >I> Method "M1OBJECT" with scope "TEST" in package "myTestRoutine".
     11 *-* a1=.context~name":" self~identityHash "(floating method)"
     12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
        <I< Method "M1OBJECT" with scope "TEST" in package "myTestRoutine".
