@@ -47,10 +47,12 @@ else
 
 ::class TRACE_TraceObject.testGroup subclass ooTestCase public
 
+/* ========================================================================== */
 ::method setup    -- make sure we start out each test case with the defaults
   .TraceObject~collector=.nil
   .TraceObject~option='N'
 
+/* ========================================================================== */
 ::method tearDown
   -- Should a test case fail while a Monitor like .TraceOutput or .DebugInput
   -- is redirected, this could trigger further test case failures.
@@ -64,6 +66,7 @@ else
   .TraceObject~collector=.nil
   .TraceObject~unsetMakeString
 
+/* ========================================================================== */
 ::method test_traceObject_option    -- assert valid options
   self~assertSame('N', .traceObject~option)   -- initial value
   do opt over 'T','S','F','P','N'
@@ -71,10 +74,140 @@ else
      self~assertSame(opt,.traceObject~option)
   end
 
+/* ========================================================================== */
 ::method test_traceObject_option_invalid
   self~assertSyntaxError(93.914, ".traceObject~option='x'")
   .traceObject~option='x'
 
+/* ========================================================================== */
+  -- in methods an entry RECEIVER is available and should be equal to STACKFRAME~target
+::method test_receiver
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("test_receiver_program",.resources~test_receiver_program)
+  code~call
+  .traceObject~collector=.nil -- stop collecting
+
+  -- test for RECEIVER entry
+  do traceObject over arr
+     isMethod=traceObject~hasEntry("ATTRIBUTEPOOL")   -- this will be available in >I> and <I<
+     if isMethod then
+     do
+         self~assertTrue(traceObject~hasEntry("RECEIVER"))
+         self~assertSame(traceobject~receiver, traceObject~stackFrame~target, "receiver and StackFrame's target must be the same object")
+     end
+     else self~assertFalse(traceObject~hasEntry("RECEIVER"))
+  end
+
+
+::resource test_receiver_program
+   o=.test~new("someInitialValue")
+   d=one(o)
+
+   ::class test
+   ::method init
+     expose one
+     use arg one
+   ::attribute one
+
+   ::routine one
+     use arg o
+     return o~one
+   ::options trace a
+::END
+
+/* ========================================================================== */
+  -- check for variable referrals and assignments to variables
+::method test_variable
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("test_variable_program",.resources~test_variable_program)
+  code~call
+  .traceObject~collector=.nil -- stop collecting
+
+  -- test for RECEIVER entry
+  showTrace=.false      -- for debugging and seeing the trace output if resource's code changes
+  varCount=0
+  do counter c traceObject over arr
+     hasVarEntry=traceObject~hasEntry("VARIABLE")  -- .true=1 or .false=0
+     varCount+=hasVarEntry
+     if showTrace=.true then
+     do
+        line=traceObject~stackFrame~line
+        say "#" c~right(3)":" "VARIABLE?" pp(traceObject~hasEntry("VARIABLE")) "Line:" pp(line~right(2)) "|" traceObject
+     end
+  end
+  if showTrace=.true then say "line #" .line":" pp(varCount) "variable trace objects"
+
+  self~assertSame(6, varCount, "number of variable related trace objects")
+/*
+               traceLine:                          line:
+      var # 1: >=>   ONE <= "someInitialValue"      7
+      var # 2: >=>   O <= "a TEST"                  1
+      var # 3: >V>   O => "a TEST"                  2
+      var # 4: >=>   O <= "a TEST"                 11
+      var # 5: >V>   O => "a TEST"                 12
+      var # 6: >=>   D <= "someInitialValue"        2
+*/
+      -- vor TraceObjects that have VARIABLE entry: arrays of (traceline, line in source)
+  varTraceObj= ('>=>   ONE <= "someInitialValue"', 7), -
+               ('>=>   O <= "a TEST"',             1), -
+               ('>V>   O => "a TEST"',                   2), -
+               ('>=>   O <= "a TEST"',                  11), -
+               ('>V>   O => "a TEST"',                  12), -
+               ('>=>   D <= "someInitialValue"',   2)
+
+  counter=1
+  do traceObject over arr while counter<varCount   -- look for VARIABLE entry and check it out
+    if traceObject~hasEntry("VARIABLE") then
+    do
+       self~assertEquals(traceObject~traceLine,       varTraceObj[counter][1], "trace line")
+       self~assertEquals(traceObject~stackFrame~line, varTraceObj[counter][2], "source line number")
+       counter+=1
+    end
+  end
+
+
+
+::resource test_variable_program
+   o=.test~new("someInitialValue")
+   d=one(o)
+
+   ::class test
+   ::method init
+     expose one
+     use arg one
+   ::attribute one
+
+   ::routine one
+     use arg o
+     return o~one
+   ::options trace i    -- as of 20240625: only TRACE I will generate variable related traces
+::END
+
+
+
+/* ========================================================================== */
 ::method test_traceObject_collector
   self~assertNil(.traceObject~collector)  -- initial value
   arr=.array~new
@@ -349,6 +482,7 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
 ::END
    /* ------------------------------------------------------------------------ */
 
+/* ========================================================================== */
 ::method test_setMakeString_with_method_object
    returnValue="nixi, noxi"
    m=.method~new("testMethod","return '"returnValue"'")
@@ -460,6 +594,7 @@ t1~m1object -- OBJECTID, SCOPE=.TEST
 
 /* <=== test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
 
+/* ========================================================================== */
 ::routine pp
   return "["arg(1)"]"
 
