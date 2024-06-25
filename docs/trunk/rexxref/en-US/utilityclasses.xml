@@ -11480,6 +11480,12 @@ the class attribute <xref linkend="mthTraceObjectCounterGet" xrefstyle="template
 <entry><para>the option at creation time, e.g. <literal>N</literal> or <literal>S</literal>
 </para></entry>
 </row>
+<row><entry>"<literal>RECEIVER</literal>"
+<indexterm><primary>RECEIVER</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the receiver object for which the method runs
+</para></entry>
+</row>
 <!--
 <row><entry>"<literal>SCOPE</literal>"
 <indexterm><primary>SCOPE</primary><secondary>TraceObject</secondary></indexterm>
@@ -11523,6 +11529,40 @@ prepends it with the letter <literal>T</literal>
 <entry><para>the trace line string used if the class attribute
 <xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>
 is set to <literal>N</literal> (normal)
+</para></entry>
+</row>
+<row><entry>"<literal>VARIABLE</literal>"
+<indexterm><primary>VARIABLE</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the traced variable, where further information is available in the StringTable having
+the following entries:
+    <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+    <tgroup cols="2">
+    <colspec colnum="1" colwidth="1*" />
+    <colspec colnum="2" colwidth="3*" />
+    <tbody>
+    <row><entry>"<literal>NAME</literal>"
+    <indexterm><primary>NAME</primary><secondary>VARIABLE</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the name of the variable
+    </para></entry>
+    </row>
+    <row><entry>"<literal>VALUE</literal>"
+    <indexterm><primary>VALUE</primary><secondary>VARIABLE</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the value of the variable
+    </para></entry>
+    </row>
+    <row><entry>"<literal>ASSIGNMENT</literal>"
+    <indexterm><primary>ASSIGNMENT</primary><secondary>VARIABLE</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para><literal>.true</literal> if the value got assigned to the variable,
+          <literal>.false</literal> if the value was retrieved from the variable
+    </para></entry>
+    </row>
+    </tbody>
+    </tgroup>
+    </informaltable>
 </para></entry>
 </row>
 </tbody>
