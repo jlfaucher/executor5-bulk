@@ -176,8 +176,8 @@ message name isn't traced
     line = expected[i]
     -- Wherever our expected trace output has a relative line number
     -- (1, 2, ...) we replace it with an absolute line number calculated
-    -- as start + relative.
-    if line~left(7)~dataType("Whole") then do
+    -- as start + relative.       | adjust for tests (like using test_reply) that have absolute line numbers: assumed if line number is larger than 200
+    if line~left(7)~dataType("Whole"), line~left(7)<=200 then do
       line = (start + line~left(7))~right(6) line~subStr(8)
     end
     if line~strip("l")~startsWith(">I> Method") | line~strip("l")~startsWith("<I< Method") then do
@@ -363,7 +363,6 @@ message name isn't traced
      1 *-* exit 99
        >L>   "99"
        >>>   "99"
-       <I< Routine "trace_exit" in package "trace_exit".
   ::end
 
 -- trace EXPOSE keyword instruction
@@ -764,11 +763,10 @@ message name isn't traced
   self~assertTraceOutput(.resources~reply, makeStringArray(t), trace_reply_start)
 
   ::resource reply end "  ::end"
-     1 *-* reply 1
+   754 *-* reply 1
        >L>   "1"
        >>>   "1"
-       <I< Method "TRACE_REPLY" with scope "TRACE.TESTGROUP" in package "...".
-       >I> Method "TRACE_REPLY" with scope "TRACE.TESTGROUP" in package "...".
+   755 *-* trace off
   ::end
 
 -- RETURN is already tested with PROCEDURE

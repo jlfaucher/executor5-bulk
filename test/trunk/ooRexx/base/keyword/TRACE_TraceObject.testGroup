@@ -234,7 +234,7 @@ else
   tsk=code~package~findRoutine("getSourceLines")   -- get access to routine
   traceLinesFromSource=tsk~call(srcLines) -- invoke the routine
 
-/*
+/* --
   say "traceLinesFromSource:"
   say traceLinesFromSource
   say "*-* "~copies(20)
@@ -251,7 +251,6 @@ say "================ arr~items:" arr~items "================"
    -- note: we do a 'startWith' on a *sorted* array such that potential differences
    --       in the trace sequences from run to run can be safely ignored
 traceLines= -
-             '       <I< Method "INIT" with scope "MYTESTTO" in package "testRoutine".' , -
              '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
              '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
              '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
@@ -321,7 +320,7 @@ traceLines= -
 
 -- say "indexes of trObj:" trObj~allIndexes~sort~makeString('L',' ')
 
-  self~assertEquals(24, setNr~items, "24 different TraceObjects expected, setNr~items:" setNr~items)
+  self~assertEquals(23, setNr~items, "23 different TraceObjects expected, setNr~items:" setNr~items)
   self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
   self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
   self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)
