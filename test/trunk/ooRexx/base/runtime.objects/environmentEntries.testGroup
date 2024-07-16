@@ -97,8 +97,8 @@ TRACEOUTPUT
   .error~lineOut
 
 ::method test_zzz_traceoutput_invalid
-  -- self~expectSyntax(97.1) -- Object .. does not understand message "LINEOUT"
-  self~expectCondition("NOMETHOD")  -- since the new trace invocation exit
+  self~expectSyntax(97.1) -- Object .. does not understand message "LINEOUT"
+--  self~expectCondition("NOMETHOD")  -- since the new trace invocation exit
   .traceOutput~destination("") -- has no LINEOUT method
   trace r
   trace n
