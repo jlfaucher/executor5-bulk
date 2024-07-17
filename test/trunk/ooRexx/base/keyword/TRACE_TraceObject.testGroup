@@ -344,7 +344,7 @@ traceLines= -
      parse var str '[' mtPrefix ']' .
      self~assertTrue(mtPrefix<>"","bracketed multithreaded trace prefix not found in" pp(str))
 
-     parse var mtPrefix t i g l h . -- extract
+     parse var mtPrefix t i g a l h . -- extract
      self~assertTrue(t[1]='T', "first indicator must start with 'T'(hread), found:" t[1] "str:" str)
      self~assertTrue(i[1]='I', "second indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
      if str~pos("return ")>0 | str~pos(">I> Routine")>0  | str~pos("<I< Routine")>0 then
@@ -355,9 +355,10 @@ traceLines= -
      do
         self~assertTrue(mtPrefix~words>=4,"a method, hence mtPrefix must contain either 4 or more entries, but found"  mtPrefix~words "entry/ies in" pp(str))
         self~assertTrue(g[1]='G', "a method, third indicator must start with 'G'(uarded), found:" g[1] "str:" str)
-        self~assertTrue(l[1]='L', "a method, fourth indicator must start with 'L'(lock), found:" l[1] "str:" str)
+        self~assertTrue(a[1]='A', "a method, fourth indicator must start with 'A'(ttribute pool), found:" a[1] "str:" str)
+        self~assertTrue(l[1]='L', "a method, fifth indicator must start with 'L'(lock), found:" l[1] "str:" str)
         hasLockChar?=(h='*' | h='')
-        self~assertTrue(hasLockChar?, "a method, fifth indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
+        self~assertTrue(hasLockChar?, "a method, sixth indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
      end
   end
 
@@ -505,12 +506,14 @@ extractTraceLines: procedure  -- create and return array of the traceline entry
    self~assertEquals(arr~items, 19)
 /* --
 say "arr~items:" arr~items":"
-say arr
-say "--"
-do i over arr
-   -- say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
-   -- say pp(i~objectid~string) pp(i~scope~string) "|" pp(i)
-   say i
+do counter c i over arr
+   say c~right(2)":" i~traceline
+   tmp=i~stackframe~target    -- if target has a value, we are in a method
+   scope=.nil
+   if \tmp~isNil then         -- if target has a value, we are in a method
+       scope=i~stackframe~executable~scope   -- get method's scope
+   say pp(tmp~string) pp(scope~string) "|" pp(i)
+   say
 end
 say "---"
 --*/
@@ -521,9 +524,9 @@ say "---"
       predefined=traces[c1]         -- get expected traceLine
       self~assertSame(actual,predefined,"traceObject #" c1": TRACELINE entry"  pp(actual) "does not match expected traceline:" pp(predefined))
    end
-   -- expected            1     2   3   4   5   6     7     8     9    10    11    12   13     14  15  16  17  18
-   objectids=.array~of(.nil, .nil, "", "", "", "", .nil, .nil,   "",   "",   "",   "", .nil, .nil, "", "", "", "")
-   scopes   =.array~of(.nil, .nil, "", "", "", "", .nil, .nil, .nil, .nil, .nil, .nil, .nil, .nil, "", "", "", "")
+   -- expected            1     2   3   4   5   6     7     8     9    10    11    12   13     14  15  16  17  18   19
+   objectids=.array~of(.nil, .nil, "", "", "", "", .nil, .nil,   "",   "",   "",   "", .nil, .nil, "", "", "", "", .nil)
+   scopes   =.array~of(.nil, .nil, "", "", "", "", .nil, .nil, .nil, .nil, .nil, .nil, .nil, .nil, "", "", "", "", .nil)
 
    -- in actual trace
    do i=1 to arr~items
@@ -592,6 +595,74 @@ t1~m1object -- OBJECTID, SCOPE=.TEST
 ::END
 
 /* <=== test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
+
+
+
+
+
+/* ========================================================================== */
+::method test_caller_stack_frame
+-- test callerStackFrame correct
+
+traceLog=.array~new
+.traceObject~option='P'
+.traceObject~collector=traceLog
+
+callerName="testCallerStackFrame"
+r=.routine~new(callerName, .resources~test_caller_stackframe)
+do_the_work_stack_frame=r~call   -- note: this is a method call to an object!
+.traceObject~collector=.nil
+
+callerStackFrame=.nil
+do traceObj over traceLog  -- find invocation entry traceObject for routine "OHA"
+   if traceObj~traceLine~pos('>I> Routine "OHA"')>0 then
+   do
+       ohaCallerStackFrame=traceObj~callerStackFrame
+       leave
+   end
+end
+
+indices="EXECUTABLE", "LINE", "NAME", "TARGET", "TYPE"
+call compareStackFrames ohaCallerStackFrame, do_the_work_stack_frame, indices, self
+
+--> assert arguments~items the same!
+self~assertEquals(ohaCallerStackFrame~arguments~items, 0, "expecting 0 items")
+self~assertEquals(ohaCallerStackFrame~arguments~items, do_the_work_stack_frame~arguments~items, "arguments~items are different!")
+self~assertSame(ohaCallerStackFrame~traceLine    , "     5 *-* call oha   -- both statements in the same line!")
+self~assertSame(do_the_work_stack_frame~traceLine, "     5 *-* thisStackFrame=.context~stackframes[1];")
+exit
+
+   -- assert equality
+compareStackFrames: procedure
+   use arg ohaCallerStackFrame, do_the_work_stack_frame, indices, self
+   -- do idx over ohaCallerStackFrame~allindexes
+   do idx over indices -- ohaCallerStackFrame~allindexes
+--      say "idx:" idx~left(16,'.') "ohaCallerStackFrame value:" ohaCallerStackFrame~send(idx)
+--      say "                      do_the_work_stack_frame  :" do_the_work_stack_frame~send(idx)
+      self~assertSame(ohaCallerStackFrame~send(idx), do_the_work_stack_frame~send(idx), "caller's stackFrame" idx": not the same!")
+      say
+   end
+   return
+
+   -- attention: this test depends on the exact code of the following definition, do NOT edit!
+/* ---> do NOT edit the following RESOURCE lines */
+::RESOURCE test_caller_stackframe
+   -- this will be invoked as a method object, the stackFrame's name therefore will be CALL
+   return do_the_work() -- this will invoke 'call do_the_work', hence will be a(n internal) call
+
+::routine do_the_work
+   thisStackFrame=.context~stackframes[1]; call oha   -- both statements in the same line!
+   return thisStackFrame   -- caller's stack frame
+
+::routine oha           -- the trace invocation entry traceObject will have a CALLERSTACKFRAME entry
+   return
+
+::options trace label   -- create invocation entry and exit trace objects
+
+::END
+/* <--- from now on editing is o.k. again  */
+   /* ------------------------------------------------------------------------ */
+
 
 /* ========================================================================== */
 ::routine pp
