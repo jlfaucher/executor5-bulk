@@ -219,7 +219,7 @@ the class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template
 "<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject class"/>)
 in the following form, if the class attribute
 <xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/> is set to "<literal>F</literal>" (full):</para>
-<para>"<literal>[R1 T2 I3 G A4 L5 *]</literal>", where
+<para>"<literal>[R1 T2 I3 Gu A4 L5 *W]</literal>", where
 </para>
 <itemizedlist>
 <listitem><para>"<literal>R1</literal>": "<literal>R</literal>" stands for Rexx interpreter instance
@@ -241,6 +241,13 @@ If currently tracing methods then in addition the following information gets dis
 <itemizedlist>
 <listitem><para>"<literal>G</literal>" or "<literal>U</literal>": this character indicates
 whether the method is defined to be guarded or unguarded (see
+<xref linkend="guamet" xrefstyle="select:title"/> in chapter <xref linkend="keyGuard" xrefstyle="select:title"/>).
+</para></listitem>
+<listitem><para>"<literal>g</literal>", "<literal>u</literal>" or "<literal> </literal>" (blank character):
+this character indicates whether the method is currently executing in a state that is opposite of the method's
+definition, i.e., <literal>g</literal> for an unguarded method that is currently guarded, or,
+<literal>u</literal> for a guarded method that is currently unguarded, or blank else
+(see
 <xref linkend="guamet" xrefstyle="select:title"/> in chapter <xref linkend="keyGuard" xrefstyle="select:title"/>).
 </para></listitem>
 <listitem><para>"<literal>A4</literal>": "<literal>A</literal>" stands for
@@ -270,6 +277,9 @@ the asterisk indicates that the activity holds the object <xref linkend="xscope"
 lock. <xref linkend="guamet" xrefstyle="template:Guarded methods"/> are blocked, if they do not hold the
 object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
 Methods in the unguarded state will never block.
+</para></listitem>
+<listitem><para>"<literal>W</literal>" or "<literal> </literal>" (blank character):
+the capital W indicates that the method is waiting on the guard condition to turn &true;.
 </para></listitem>
 </itemizedlist>
 
@@ -405,42 +415,57 @@ end
   nr=self~class~nextNr  -- get & assign next serial number
 ::method show           -- instance method
   expose nr             -- access instance attribute "nr"
-  trace results         -- trace all statements
-  reply                 -- return & execute remainder on new thread
+  say "in" .context~name", before reply, nr="nr
+  trace results         -- trace results
+  reply                 -- return & execute rest on new thread
   sleepTime=random(1,750)/1000   -- get random sleep time
-  trace off             -- turn off tracing
   call sysSleep sleepTime  -- sleep
-  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+  say self": I got created as:" pp("#" nr)
 
-::routine pp      -- "pretty print": enquotes argument in square brackets
-  trace results   -- trace statement and its result
+::routine pp      -- "pretty print": enquote argument in brackets
+  trace results         -- will turn on invocation entry/exit
   return "[" || arg(1) || "]"
 ]]></programlisting></example>
 Running the above program may yield an output like:
-<programlisting><![CDATA[    21 *-* reply                 -- return & execute remainder on new thread
-    21 *-* reply                 -- return andexecute remainder on new thread
-    21 *-* reply                 -- return & execute remainder on new thread
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
-    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
-       >>>   "0.481"
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
-    23 *-* trace off             -- turn off tracing
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_normal.rex".
-    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
-    22 *-* sleepTime=random(1,750)/1000   -- get random sleep time
-       >>>   "0.458"
-       >>>   "0.495"
-    23 *-* trace off             -- turn off tracing
-    23 *-* trace off             -- turn off tracing
-    29 *-* return "[" || arg(1) || "]"
-       >>>   "[# 2]"
-a TEST: I got created as: [# 2]
+<programlisting><![CDATA[in SHOW, before reply, nr=1
+    22 *-* reply                 -- return & execute rest on new thread
+in SHOW, before reply, nr=2
+    22 *-* reply                 -- return & execute rest on new thread
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.654"
+in SHOW, before reply, nr=3
+    24 *-* call sysSleep sleepTime  -- sleep
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+    22 *-* reply                 -- return & execute rest on new thread
+       >>>   "0.672"
+    24 *-* call sysSleep sleepTime  -- sleep
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.369"
+    24 *-* call sysSleep sleepTime  -- sleep
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
     29 *-* return "[" || arg(1) || "]"
        >>>   "[# 3]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 3]"
 a TEST: I got created as: [# 3]
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
     29 *-* return "[" || arg(1) || "]"
        >>>   "[# 1]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 1]"
 a TEST: I got created as: [# 1]
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 2]"
+a TEST: I got created as: [# 2]
 ]]></programlisting></para>
 <!-- example end -->
 </section>
@@ -537,115 +562,166 @@ end
   nr=self~class~nextNr  -- get & assign next serial number
 ::method show           -- instance method
   expose nr             -- access instance attribute "nr"
-  trace results         -- trace statement and its result
-  reply
-  sleepTime=random(1,500)/1000
-  trace off
+  say "in" .context~name", before reply, nr="nr
+  trace results         -- trace results
+  reply                 -- return & execute rest on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
   call sysSleep sleepTime  -- sleep
-  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+  say self": I got created as:" pp("#" nr)
 
-::routine pp      -- "pretty print": enquotes argument in square brackets
-  trace results   -- trace statement and its result
+::routine pp      -- "pretty print": enquote argument in brackets
+  trace results         -- will turn on invocation entry/exit
   return "[" || arg(1) || "]"
 ]]></programlisting></example>
 Running the above program may yield an output like:
-<programlisting><![CDATA[a TEST: I got created as: [# 2]
+<programlisting><![CDATA[in SHOW, before reply, nr=1
+in SHOW, before reply, nr=2
+in SHOW, before reply, nr=3
 a TEST: I got created as: [# 3]
 a TEST: I got created as: [# 1]
-arr~items: 21 traceObjects collected
+a TEST: I got created as: [# 2]
+arr~items: 33 traceObjects collected
 
 now displaying the collected traceObjects in different formats:
 run # 1, .TraceObject~option: N
-    37 *-* reply
-    37 *-* reply
-    37 *-* reply
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-* sleepTime=random(1,500)/1000
-       >>>   "0.245"
-    39 *-* trace off
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-* sleepTime=random(1,500)/1000
-       >>>   "0.052"
-    39 *-* trace off
-       >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-* sleepTime=random(1,500)/1000
-       >>>   "0.049"
-    39 *-* trace off
-    45 *-* return "[" || arg(1) || "]"
-       >>>   "[# 2]"
+    38 *-* reply                 -- return & execute rest on new thread
+    38 *-* reply                 -- return & execute rest on new thread
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.563"
+    40 *-* call sysSleep sleepTime  -- sleep
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.614"
+    40 *-* call sysSleep sleepTime  -- sleep
+    38 *-* reply                 -- return & execute rest on new thread
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.237"
+    40 *-* call sysSleep sleepTime  -- sleep
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
     45 *-* return "[" || arg(1) || "]"
        >>>   "[# 3]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 3]"
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
     45 *-* return "[" || arg(1) || "]"
        >>>   "[# 1]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 1]"
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 2]"
 ---
 run # 2, .TraceObject~option: T
-    37 *-1* reply
-    37 *-1* reply
-    37 *-1* reply
-       >I2> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-2* sleepTime=random(1,500)/1000
-       >>2>   "0.245"
-    39 *-2* trace off
-       >I3> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-3* sleepTime=random(1,500)/1000
-       >>3>   "0.052"
-    39 *-3* trace off
-       >I4> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-    38 *-4* sleepTime=random(1,500)/1000
-       >>4>   "0.049"
-    39 *-4* trace off
-    45 *-3* return "[" || arg(1) || "]"
-       >>3>   "[# 2]"
+    38 *-1* reply                 -- return & execute rest on new thread
+    38 *-1* reply                 -- return & execute rest on new thread
+    39 *-2* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>2>   "0.563"
+    40 *-2* call sysSleep sleepTime  -- sleep
+    39 *-3* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>3>   "0.614"
+    40 *-3* call sysSleep sleepTime  -- sleep
+    38 *-1* reply                 -- return & execute rest on new thread
+    39 *-4* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>4>   "0.237"
+    40 *-4* call sysSleep sleepTime  -- sleep
+       >>4>   "0"
+    41 *-4* say self": I got created as:" pp("#" nr)
+       >I4> Routine "PP" in package "G:\test_show_off.rex".
     45 *-4* return "[" || arg(1) || "]"
        >>4>   "[# 3]"
+       <I4< Routine "PP" in package "G:\test_show_off.rex".
+       >>4>   "a TEST: I got created as: [# 3]"
+       >>2>   "0"
+    41 *-2* say self": I got created as:" pp("#" nr)
+       >I2> Routine "PP" in package "G:\test_show_off.rex".
     45 *-2* return "[" || arg(1) || "]"
        >>2>   "[# 1]"
+       <I2< Routine "PP" in package "G:\test_show_off.rex".
+       >>2>   "a TEST: I got created as: [# 1]"
+       >>3>   "0"
+    41 *-3* say self": I got created as:" pp("#" nr)
+       >I3> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-3* return "[" || arg(1) || "]"
+       >>3>   "[# 2]"
+       <I3< Routine "PP" in package "G:\test_show_off.rex".
+       >>3>   "a TEST: I got created as: [# 2]"
 ---
 run # 3, .TraceObject~option: S
-[T1   I1    G L1   *]     37 *-* reply
-[T1   I2    G L1   *]     37 *-* reply
-[T1   I3    G L1   *]     37 *-* reply
-[T2   I1    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[T2   I1    G L1   *]     38 *-* sleepTime=random(1,500)/1000
-[T2   I1    G L1   *]        >>>   "0.245"
-[T2   I1    G L1   *]     39 *-* trace off
-[T3   I2    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[T3   I2    G L1   *]     38 *-* sleepTime=random(1,500)/1000
-[T3   I2    G L1   *]        >>>   "0.052"
-[T3   I2    G L1   *]     39 *-* trace off
-[T4   I3    G L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[T4   I3    G L1   *]     38 *-* sleepTime=random(1,500)/1000
-[T4   I3    G L1   *]        >>>   "0.049"
-[T4   I3    G L1   *]     39 *-* trace off
-[T3   I4   ]              45 *-* return "[" || arg(1) || "]"
-[T3   I4   ]                 >>>   "[# 2]"
-[T4   I5   ]              45 *-* return "[" || arg(1) || "]"
-[T4   I5   ]                 >>>   "[# 3]"
-[T2   I6   ]              45 *-* return "[" || arg(1) || "]"
-[T2   I6   ]                 >>>   "[# 1]"
+[T1  I1  G  A1  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T1  I2  G  A2  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T2  I1  G  A1  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T2  I1  G  A1  L1  * ]        >>>   "0.563"
+[T2  I1  G  A1  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T3  I2  G  A2  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T3  I2  G  A2  L1  * ]        >>>   "0.614"
+[T3  I2  G  A2  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T1  I3  G  A3  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T4  I3  G  A3  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T4  I3  G  A3  L1  * ]        >>>   "0.237"
+[T4  I3  G  A3  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T4  I3  G  A3  L1  * ]        >>>   "0"
+[T4  I3  G  A3  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T4  I4 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T4  I4 ]                   45 *-* return "[" || arg(1) || "]"
+[T4  I4 ]                      >>>   "[# 3]"
+[T4  I4 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T4  I3  G  A3  L1  * ]        >>>   "a TEST: I got created as: [# 3]"
+[T2  I1  G  A1  L1  * ]        >>>   "0"
+[T2  I1  G  A1  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T2  I5 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T2  I5 ]                   45 *-* return "[" || arg(1) || "]"
+[T2  I5 ]                      >>>   "[# 1]"
+[T2  I5 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T2  I1  G  A1  L1  * ]        >>>   "a TEST: I got created as: [# 1]"
+[T3  I2  G  A2  L1  * ]        >>>   "0"
+[T3  I2  G  A2  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T3  I6 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T3  I6 ]                   45 *-* return "[" || arg(1) || "]"
+[T3  I6 ]                      >>>   "[# 2]"
+[T3  I6 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T3  I2  G  A2  L1  * ]        >>>   "a TEST: I got created as: [# 2]"
 ---
 run # 4, .TraceObject~option: F
-[R1   T1   I1    G A1    L1   *]     37 *-* reply
-[R1   T1   I2    G A2    L1   *]     37 *-* reply
-[R1   T1   I3    G A3    L1   *]     37 *-* reply
-[R1   T2   I1    G A1    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[R1   T2   I1    G A1    L1   *]     38 *-* sleepTime=random(1,500)/1000
-[R1   T2   I1    G A1    L1   *]        >>>   "0.245"
-[R1   T2   I1    G A1    L1   *]     39 *-* trace off
-[R1   T3   I2    G A2    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[R1   T3   I2    G A2    L1   *]     38 *-* sleepTime=random(1,500)/1000
-[R1   T3   I2    G A2    L1   *]        >>>   "0.052"
-[R1   T3   I2    G A2    L1   *]     39 *-* trace off
-[R1   T4   I3    G A3    L1   *]        >I> Method "SHOW" with scope "TEST" in package "G:\test_show_off.rex".
-[R1   T4   I3    G A3    L1   *]     38 *-* sleepTime=random(1,500)/1000
-[R1   T4   I3    G A3    L1   *]        >>>   "0.049"
-[R1   T4   I3    G A3    L1   *]     39 *-* trace off
-[R1   T3   I4   ]                    45 *-* return "[" || arg(1) || "]"
-[R1   T3   I4   ]                       >>>   "[# 2]"
-[R1   T4   I5   ]                    45 *-* return "[" || arg(1) || "]"
-[R1   T4   I5   ]                       >>>   "[# 3]"
-[R1   T2   I6   ]                    45 *-* return "[" || arg(1) || "]"
-[R1   T2   I6   ]                       >>>   "[# 1]"
+[R1   T1   I1    G  A1    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T1   I2    G  A2    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T2   I1    G  A1    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T2   I1    G  A1    L1   * ]        >>>   "0.563"
+[R1   T2   I1    G  A1    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T3   I2    G  A2    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T3   I2    G  A2    L1   * ]        >>>   "0.614"
+[R1   T3   I2    G  A2    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T1   I3    G  A3    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T4   I3    G  A3    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T4   I3    G  A3    L1   * ]        >>>   "0.237"
+[R1   T4   I3    G  A3    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T4   I3    G  A3    L1   * ]        >>>   "0"
+[R1   T4   I3    G  A3    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T4   I4   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T4   I4   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T4   I4   ]                         >>>   "[# 3]"
+[R1   T4   I4   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T4   I3    G  A3    L1   * ]        >>>   "a TEST: I got created as: [# 3]"
+[R1   T2   I1    G  A1    L1   * ]        >>>   "0"
+[R1   T2   I1    G  A1    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T2   I5   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T2   I5   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T2   I5   ]                         >>>   "[# 1]"
+[R1   T2   I5   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T2   I1    G  A1    L1   * ]        >>>   "a TEST: I got created as: [# 1]"
+[R1   T3   I2    G  A2    L1   * ]        >>>   "0"
+[R1   T3   I2    G  A2    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T3   I6   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T3   I6   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T3   I6   ]                         >>>   "[# 2]"
+[R1   T3   I6   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T3   I2    G  A2    L1   * ]        >>>   "a TEST: I got created as: [# 2]"
 ---
 ]]></programlisting></para>
 <!-- example end -->

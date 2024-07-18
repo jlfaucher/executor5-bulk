@@ -11342,10 +11342,17 @@ and if a method gets traced in addition whether it was defined
 <emphasis role="italic">guarded</emphasis> or
 <emphasis role="italic">unguarded</emphasis> (entry
 <emphasis role="italic">"ISGUARDED"</emphasis>),
+<literal>u</literal> if currently a guarded method is unguarded or
+<literal>g</literal> if currently an unguarded method is guarded or blank else,
+the <xref linkend="xscope" xrefstyle="template:scope's"/>
+attribute pool number
+(entry <emphasis role="italic">"ATTRIBUTEPOOL"</emphasis>),
 the object scope lock count (entry <emphasis role="italic">"SCOPELOCKCOUNT"</emphasis>) and
 whether the object scope lock is reserved (indicated by an asterisk,
-entry <emphasis role="italic">"HASSCOPELOCK"</emphasis>), e.g.
-<code>"[T1   I2   G L3   *]"</code>.
+entry <emphasis role="italic">"HASSCOPELOCK"</emphasis>)
+and if the method must wait on the guard condition to turn true (indicated by a <literal>W</literal>,
+entry <emphasis role="italic">"ISWAITING"</emphasis>), e.g.
+<code>"[T1  I2  Gu  A3  L5  *W]"</code>.
 </para></entry>
 </row>
 <row><entry>"<literal>F</literal>"
@@ -11353,12 +11360,8 @@ entry <emphasis role="italic">"HASSCOPELOCK"</emphasis>), e.g.
 <entry><para>"full", the trace line will get formatted by prepending a
 bracketed string that adds the Rexx instance in addition
 (entry <emphasis role="italic">"INTERPRETER"</emphasis>), e.g.
-<code>"[R1   T2   I3  ]"</code>
-and if a method gets traced in addition adds the
-<xref linkend="xscope" xrefstyle="template:scope's"/>
-attribute pool number
-(entry <emphasis role="italic">"ATTRIBUTEPOOL"</emphasis>), e.g.
-<code>"[R1   T2   I3   G A4   L5   *]"</code>.
+<code>"[R1   T2   I3  ]"</code>, and if a method gets traced, e.g.
+<code>"[R1   T2   I3   Gu A4   L5   *W]"</code>.
 </para></entry>
 </row>
 <row><entry>"<literal>P</literal>"
@@ -11418,7 +11421,65 @@ and store the following information with the following indexes:
 </entry>
 <entry><para>a number (identifier), <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
 prepends it with the letter <literal>A</literal>
-
+</para></entry>
+</row>
+<row><entry>"<literal>CALLERSTACKFRAME</literal>"
+<indexterm><primary>CALLERSTACKFRAME</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>the caller's
+<xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/> object information
+(created for an invocation entry) stored in a StringTable having the following entries:
+    <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+    <tgroup cols="2">
+    <colspec colnum="1" colwidth="1*" />
+    <colspec colnum="2" colwidth="3*" />
+    <tbody>
+    <row><entry>"<literal>ARGUMENTS</literal>"
+    <indexterm><primary>ARGUMENTS</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>an array of arguments
+    </para></entry>
+    </row>
+    <row><entry>"<literal>EXECUTABLE</literal>"
+    <indexterm><primary>EXECUTABLE</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the routine or method object that gets executed
+    </para></entry>
+    </row>
+    <row><entry>"<literal>LINE</literal>"
+    <indexterm><primary>LINE</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the current line number or &nil; (e.g., if compiled code)
+    </para></entry>
+    </row>
+    <row><entry>"<literal>NAME</literal>"
+    <indexterm><primary>NAME</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the name associated with the stack frame context
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TRACELINE</literal>"
+    <indexterm><primary>TRACELINE</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the traceline of the stack frame
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TYPE</literal>"
+    <indexterm><primary>TYPE</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>one of <literal>COMPILE</literal>, <literal>INTERNALCALL</literal>, <literal>INTERPRET</literal>,
+                        <literal>METHOD</literal>, <literal>PROGRAM</literal>, or <literal>ROUTINE</literal>
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TARGET</literal>"
+    <indexterm><primary>TARGET</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>if executable is a method routine, the object to which the message got sent to, or &nil; else
+    </para></entry>
+    </row>
+    </tbody>
+    </tgroup>
+    </informaltable>
 </para></entry>
 </row>
 <row><entry>"<literal>HASSCOPELOCK</literal>"
@@ -11451,6 +11512,14 @@ uses the letter <literal>G</literal>, if &true;,
 the letter <literal>U</literal> else
 </para></entry>
 </row>
+<row><entry>"<literal>ISWAITING</literal>"
+<indexterm><primary>ISWAITING</primary><secondary>TraceObject</secondary></indexterm>
+</entry>
+<entry><para>&true;/&false;, <xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/>
+uses a <literal>W</literal>, if &true; (object is waiting for guard lock condition to turn &true;),
+a blank character else (needs <literal>TRACE RESULT</literal> or <literal>TRACE INTERMEDIATES</literal> to be in effect)
+</para></entry>
+</row>
 <row><entry>"<literal>NUMBER</literal>"
 <indexterm><primary>NUMBER</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
@@ -11459,21 +11528,6 @@ the class attribute <xref linkend="mthTraceObjectCounterGet" xrefstyle="template
 (used for the default sorting)
 </para></entry>
 </row>
-<!--
-<row><entry>"<literal>OBJECT/literal>"
-<indexterm><primary>OBJECT/primary><secondary>TraceObject</secondary></indexterm>
-</entry>
-<entry><para>if a method then the receiving object gets stored.
-</para></entry>
-</row>
-<row><entry>"<literal>OBJECTID</literal>"
-<indexterm><primary>OBJECTID</primary><secondary>TraceObject</secondary></indexterm>
-</entry>
-<entry><para>if a method then the receiving object's
-<xref linkend="mthObjectIdentityHash" xrefstyle="template:identityHash"/> value,
-</para></entry>
-</row>
--->
 <row><entry>"<literal>OPTION</literal>"
 <indexterm><primary>OPTION</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
@@ -11486,15 +11540,6 @@ the class attribute <xref linkend="mthTraceObjectCounterGet" xrefstyle="template
 <entry><para>the receiver object for which the method runs
 </para></entry>
 </row>
-<!--
-<row><entry>"<literal>SCOPE</literal>"
-<indexterm><primary>SCOPE</primary><secondary>TraceObject</secondary></indexterm>
-</entry>
-<entry><para>if a method then its
-<xref linkend="mthMethodScope" xrefstyle="template:scope"/> value,
-</para></entry>
-</row>
--->
 <row><entry>"<literal>SCOPELOCKCOUNT</literal>"
 <indexterm><primary>SCOPELOCKCOUNT</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
@@ -11506,7 +11551,59 @@ prepends it with the letter <literal>L</literal>
 <indexterm><primary>STACKFRAME</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
 <entry><para>the trace line's
-<xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/> object.
+<xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/> object information
+stored in a StringTable having the following entries:
+    <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+    <tgroup cols="2">
+    <colspec colnum="1" colwidth="1*" />
+    <colspec colnum="2" colwidth="3*" />
+    <tbody>
+    <row><entry>"<literal>ARGUMENTS</literal>"
+    <indexterm><primary>ARGUMENTS</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>an array of arguments
+    </para></entry>
+    </row>
+    <row><entry>"<literal>EXECUTABLE</literal>"
+    <indexterm><primary>EXECUTABLE</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the routine or method object that gets executed
+    </para></entry>
+    </row>
+    <row><entry>"<literal>LINE</literal>"
+    <indexterm><primary>LINE</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the current line number or &nil; (e.g., if compiled code)
+    </para></entry>
+    </row>
+    <row><entry>"<literal>NAME</literal>"
+    <indexterm><primary>NAME</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the name associated with the stack frame context
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TRACELINE</literal>"
+    <indexterm><primary>TRACELINE</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the traceline of the stack frame
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TYPE</literal>"
+    <indexterm><primary>TYPE</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>one of <literal>COMPILE</literal>, <literal>INTERNALCALL</literal>, <literal>INTERPRET</literal>,
+                        <literal>METHOD</literal>, <literal>PROGRAM</literal>, or <literal>ROUTINE</literal>
+    </para></entry>
+    </row>
+    <row><entry>"<literal>TARGET</literal>"
+    <indexterm><primary>TARGET</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>if executable is a method routine, the object to which the message got sent to, or &nil; else
+    </para></entry>
+    </row>
+    </tbody>
+    </tgroup>
+    </informaltable>
 </para></entry>
 </row>
 <row><entry>"<literal>THREAD</literal>"
@@ -11534,8 +11631,9 @@ is set to <literal>N</literal> (normal)
 <row><entry>"<literal>VARIABLE</literal>"
 <indexterm><primary>VARIABLE</primary><secondary>TraceObject</secondary></indexterm>
 </entry>
-<entry><para>the traced variable, where further information is available in the StringTable having
-the following entries:
+<entry><para>the traced variable (needs <literal>TRACE INTERMEDIATES</literal> to be in
+effect), where further information is available in the StringTable having the following
+entries:
     <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
     <tgroup cols="2">
     <colspec colnum="1" colwidth="1*" />
