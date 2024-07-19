@@ -207,6 +207,71 @@ is held for exclusive access of an object's attribute ("object variable") pool a
 specific <xref linkend="xscope" xrefstyle="template:scope"/>.
 </para>
 
+<section id="xintdeb_un_guarded_meths" revisionflag="added"><title>About Debugging Guarded and Unguarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>debugging GUARDED and UNGUARDED methods</secondary></indexterm>
+</title>
+<para>While debugging multithreaded programs (c.f.  <xref linkend="xconcur" />, <xref
+linkend="keyGuard" />, <xref linkend="keyReply" />), it becomes important to realize whether a
+method is defined to be guarded or unguarded (see sub keywords GUARDED and UNGUARDED on the METHOD
+directive in <xref linkend="methd" />, and the methods SETGUARDED and SETUNGUARDED of the Method
+class in <xref linkend="clsMethod" />).
+</para>
+<section id="xintdeb_guarded_meths" revisionflag="added"><title>Rules for Running Guarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>rules for running GUARDED methods</secondary></indexterm>
+</title>
+<para>ooRexx ensures that guarded methods of the same scope (defined for the same class) cannot
+execute concurrently to protect access to its attribute pool (object variable pool).  To do so, a
+counter-based guard lock is maintained for each scope, which gets increased by one if a guarded
+method gets invoked and decreased by one upon return.  If a guarded method for the same scope gets
+invoked from another thread and the scope's guard lock counter is not zero, it gets blocked because
+another guarded method holding the guard lock is currently running in the same scope.  Once the
+scope's guard lock counter drops to 0 (no other guarded method runs currently), the blocked guarded
+method can acquire the guard lock, thereby increasing the guard lock counter to one and starting to
+run.
+</para>
+<itemizedlist>
+<listitem><para>Invoking a guarded method from the same thread will increase the guard lock counter
+by one and, upon return, will decrease it by one.  Invoking an unguarded method from the same thread
+will not change the guard lock counter.
+</para></listitem>
+<listitem><para>Invoking a guarded method from another thread for a scope in which a guarded method
+is currently running will block the invocation until the scope's guard lock counter drops to 0 (no
+other guarded method for the same scope is running anymore) and the guard lock becomes free.  In
+this situation, the blocked guarded method will succeed in acquiring the guard lock, increasing the
+guard lock counter to one, and starting running.
+</para></listitem>
+<listitem><para>If a REPLY keyword statement is processed in a currently guarded method, the
+remaining instructions of the guarded method will remain guarded.
+</para></listitem>
+<listitem><para>A GUARD ON keyword statement has no effect.
+</para></listitem>
+<listitem><para>A GUARD OFF keyword statement changes the guarded method to an unguarded method from
+that point on, in the process reducing the guard lock counter by one and removing the guard lock.
+</para></listitem>
+</itemizedlist>
+</section>
+<section id="xintdeb_unguarded_meths" revisionflag="added"><title>Rules for Running Unguarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>rules for running UNGUARDED methods</secondary></indexterm>
+</title>
+<itemizedlist>
+<listitem><para>Unguarded methods can always run concurrently with any other method of the same
+scope.
+</para></listitem>
+<listitem><para>If a REPLY keyword statement is processed in a currently unguarded method, the
+remainder of the invocation will continue on a different thread, also unguarded.
+</para></listitem>
+<listitem><para>A GUARD ON keyword statement changes the unguarded method to a guarded method from
+that point on, in the process increasing the guard lock counter by one and acquiring the guard lock.
+</para></listitem>
+<listitem><para>A GUARD OFF keyword statement has no effect.
+</para></listitem>
+</itemizedlist>
+</section>
+</section>
+
 <section id="xintdeb_explanations" revisionflag="added"><title>Multithreaded Additions to TRACE
 <indexterm><primary>debugging multithreaded programs</primary>
 <secondary>additions to TRACE</secondary></indexterm>
