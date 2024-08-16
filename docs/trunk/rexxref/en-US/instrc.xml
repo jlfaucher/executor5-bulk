@@ -3956,10 +3956,10 @@ The USE instruction can be used to
 </mediaobject>
 </para>
 
-<para>USE ARG retrieves the argument objects provided in a program, routine,
+<para>USE ARG retrieves the argument objects provided to a program, routine,
 function, or method and assigns them to variables,
 <xref linkend="varrefterm" xrefstyle="template:variable references"/>, or
-<xref linkend="mssg" xrefstyle="template:message term assignments"/>.
+<xref linkend="mssg" xrefstyle="template:assignment message terms"/>.
 </para>
 <para>Each <emphasis role="italic">name</emphasis> must be a valid variable
 name, a variable reference term, or an assignment message term.
@@ -4119,9 +4119,9 @@ while all other variables used in the method will become local variables.
 In contrast to this, USE LOCAL allows to explicitly declare local variables,
 while all other variables not listed on the USE LOCAL instruction will
 automatically become object variables.</para>
-<para>Each <emphasis role="italic">name</emphasis> must be a valid variable
-name.
-if no <emphasis role="italic">name</emphasis> is specified, all variables
+<para>Each <emphasis role="italic">name</emphasis> must be a simple variable
+name or a stem variable name. A compound variable is not allowed.
+If no <emphasis role="italic">name</emphasis> is specified, all variables
 will become object variables.
 </para>
 <para>If a USE LOCAL instruction is present, it must be the
