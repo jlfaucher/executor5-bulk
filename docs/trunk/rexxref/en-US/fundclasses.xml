@@ -2982,19 +2982,18 @@ have &nil; for their associated method.</para></note>
 <example id="ex.object-instancemethods">
 <title>Object class &mdash; instanceMethods method</title>
 <programlisting>
--- list all class methods of .String only
-say .String~instanceMethods(.String)~allIndexes   --> CR,NEW,NL,NULL,TAB
+-- count all class methods of .String only
+say .String~instanceMethods(.String)~allIndexes~items --> 17
 
 -- count all class methods of .String and its superclasses
--- 4 .String class methods, 32 .Object class methods, 34 .Class class methods
-say .String~instanceMethods~allIndexes~items      --> 70
+say .String~instanceMethods~allIndexes~items          --> 83
 
 
 -- count all instance methods of .String only
-say ''~instanceMethods(.String)~allIndexes~items  --> 116
+say ''~instanceMethods(.String)~allIndexes~items      --> 117
 
 -- count all instance methods of .String and its superclasses
-say ''~instanceMethods~allIndexes~items           --> 148
+say ''~instanceMethods~allIndexes~items               --> 150
 </programlisting>
 </example>
 </section>
@@ -5865,7 +5864,7 @@ No padding occurs for any portion of the returned string not within the
 boundaries of the receiving string.
 </para>
 <para>The <emphasis role="italic">n</emphasis> must be a positive whole number,
-and, if specified, <emphasis role="italic">length</emphasis> must be a
+and, if specified, <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
 <para>See also methods <xref linkend="mthStringSubChar" xrefstyle="select:title"/>
