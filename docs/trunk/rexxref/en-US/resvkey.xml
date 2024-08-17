@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -59,27 +59,12 @@ Examples of Rexx keywords are the WHILE keyword in a DO instruction and the
 THEN keyword, which acts as a clause terminator in this case, following an
 IF or WHEN clause.</para>
 <para>Apart from these cases, only simple symbols that are the first token in
-a clause and that are not followed by an &quot;=&quot; or &quot;:&quot; are
+a clause and that is
+not a <xref linkend="labels" xrefstyle="template:label"/>,
+not an <xref linkend="assigns" xrefstyle="template:assignment"/> or
+<xref linkend="extassigns" xrefstyle="template:extended assignment"/>, and
+not a <xref linkend="msgit" xrefstyle="template:message instruction"/>
+are
 checked to see if they are instruction keywords. The symbols can be freely
 used elsewhere in clauses without being understood as keywords.</para>
-<para>Be careful with host commands or subcommands with the same
-name as Rexx keywords. To avoid problems, enclose at least the command or
-subcommand in quotation marks. For example:</para>
-<programlisting>
-"DELETE" Fn"."Ext
-</programlisting>
-<indexterm><primary>NOVALUE condition</primary>
-<secondary>use of</secondary></indexterm>
-<para>You can then also use the SIGNAL ON NOVALUE condition to check the
-integrity of an executable.</para>
-<para>Alternatively, you can precede such command strings with two
-adjacent quotation marks to concatenate the null string to the beginning.
-For example:</para>
-<programlisting>
-""Erase Fn"."Ext
-</programlisting>
-<para>A third option is to enclose the entire expression, or the
-first symbol, in parentheses. For example:</para>
-<programlisting>(Erase Fn"."Ext)
-</programlisting>
 </chapter>
