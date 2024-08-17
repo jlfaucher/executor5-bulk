@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -519,54 +519,48 @@ say  4.9999 < 5     /* Displays "0"    */
 </example>
 </section>
 
-<section id="nudbr"><title>Limits and Errors when Rexx Uses Numbers Directly</title>
-<indexterm><primary>arithmetic</primary>
-<secondary>errors</secondary></indexterm>
+<section id="nudbr"><title>Whole Numbers</title>
 <indexterm><primary>numbers</primary>
 <secondary>use in the language</secondary></indexterm>
-<para> When Rexx uses numbers directly,
-that is, numbers that have not been involved in an arithmetic operation, they
-are rounded, if necessary, according to the setting of NUMERIC DIGITS.  The normal
-whole number limit depends on the default NUMERIC DIGITS setting.  The default setting is 9, making the normal whole
-number limit 999999999.
+<para>
+A <emphasis role="italic">whole number</emphasis> is a number that has no
+decimal part or a decimal part that is all zeros, and that the language
+processor would not usually express in exponential notation.
+That is, it has no more digits before the decimal point than the current
+setting of NUMERIC DIGITS.
 </para>
-<para>The following table shows which numbers must be whole numbers and what
-their limits are:</para>
+</section>
 
-<table frame="all">
-<title>Whole Number Limits</title>
-<tgroup cols="2">
-<tbody>
-<row>
-<entry>Power values (right-hand operand of the power operator)</entry>
-<entry>The platform whole number limit.</entry>
-</row>
-<row>
-<entry>Values of <emphasis role="italic">exprr</emphasis> and
-<emphasis role="italic">exprf</emphasis> in the DO instruction</entry>
-<entry>The platform whole number limit</entry>
-</row>
-<row>
-<entry>Values given for DIGITS or FUZZ in the NUMERIC instruction
+<section id="wholelimits"><title>Whole Number Limits</title>
+<indexterm><primary>numbers</primary>
+<secondary>limits</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>numeric arguments of</secondary></indexterm>
-</entry>
-<entry>The platform whole number limits  (Note: FUZZ must always be less than DIGITS.)</entry>
-</row>
-<row>
-<entry>Positional patterns in parsing templates</entry>
-<entry>The platform whole number limit</entry>
-</row>
-<row>
-<entry>Number given for <emphasis role="italic">option</emphasis> in the TRACE
-instruction</entry>
-<entry>The platform whole number limit</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
+<para>Whole numbers are restricted to the platform internal whole number limit,
+which is 9 digits on 32-bit systems, and 18 digits on 64-bit systems, when used
+<itemizedlist spacing="compact">
+<listitem><para>as length, index, count, or size arguments to built-in
+functions or object methods,
+</para></listitem>
+<listitem><para>as the right-hand operand of the power (<literal>**</literal>) operator,
+</para></listitem>
+<listitem><para>as the values of <emphasis role="italic">exprr</emphasis> and
+<emphasis role="italic">exprf</emphasis> in a DO or LOOP instruction,
+</para></listitem>
+<listitem><para>as values for the NUMERIC DIGITS or NUMERIC FUZZ keyword instruction,
+</para></listitem>
+<listitem><para>positional patterns for the PARSE keyword instruction, or
+</para></listitem>
+<listitem><para>as input for interactive TRACE debugging.
+</para></listitem>
+</itemizedlist>
+</para>
+</section>
 
-<para>When Rexx uses numbers directly, the following types of errors can occur:
+<section id="aritherrors"><title>Arithmetic Errors</title>
+<indexterm><primary>arithmetic</primary>
+<secondary>errors</secondary></indexterm>
+<para>Two types of errors may occur during arithmetic:
 </para>
 <itemizedlist>
 <listitem><para>Overflow or underflow.
