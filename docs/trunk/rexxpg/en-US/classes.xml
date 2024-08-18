@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -925,56 +925,77 @@ change the value of <literal>.rs</literal>. The initial value of <literal>.rs</l
 <para>
 <indexterm><primary>search order</primary>
 <secondary>for environment symbols</secondary></indexterm>
-When you
-use an environment symbol, Rexx performs a series of searches to see if the
-environment symbol has an assigned value. The search locations and their ordering
-are: </para>
-
+When you use an environment symbol, the language processor performs a
+series of searches to see if the environment symbol has an assigned value. The
+search locations and their ordering are:
 <orderedlist>
-
-<listitem><para>The classes and routines maintained in the current package by the interpreter.
-This package can be retrieved programmatically with the statement <code>.context~package</code>.
+<listitem><para>Constants <literal>.nil</literal>, <literal>.false</literal>; and <literal>.true</literal>.
 </para></listitem>
-
-<listitem><para>&added50;The current package <emphasis role="italic">local</emphasis> directory.
-The package local directory can be accessed programmatically with the statement <code>.context~package~local</code>.
+<listitem><para>The list of classes declared on
+::CLASS directives
+within the current program package or added to the current package using
+Package addClass method.
 </para></listitem>
-
-<listitem><para>The program local environment directory <literal>.local</literal>, which includes interpreter instance-specific
-objects such as the <literal>.input</literal> and <literal>.output</literal> objects. You can directly access the
-local environment directory by using the <literal>.local</literal> environment symbol.</para></listitem>
-
-<listitem><para>The global environment directory <literal>.environment</literal>, which includes all &quot;global&quot; Rexx
-objects such as the Rexx-supplied classes (for example, <literal>.Array</literal>) and constants
-such as <literal>.true</literal> and <literal>.false</literal>. You can directly access the global environment by
-using the <literal>.environment</literal> symbol or using the VALUE built-in function with a
-null string for the <emphasis role="italic">selector</emphasis> argument.</para></listitem>
-
-<listitem><para>Rexx defined symbols. Other simple environment symbols are reserved for
-use by Rexx for built-in objects.
+<listitem><para>The list of public classes declared on ::CLASS directives
+of other files included with a ::REQUIRES directive or added to the current
+Package instance using the Package addPackage method.
 </para></listitem>
+<listitem><para>The list of public Rexx supplied classes in the REXX package, like
+Object,
+String, or
+Array.
+</para></listitem>
+<listitem><para>The package local environment directory specific to the current package.
+You can access the package local environment directory through the
+Package local method
+with <code>.context~package~local</code>.
+</para>
+</listitem>
+<listitem><para>The local environment directory specific to the current
+interpreter instance. The local
+environment includes instance-specific
+objects such as the .INPUT and .OUTPUT objects. You can access the
+local environment directory by using the
+<literal>.LOCAL</literal> environment symbol.
+</para>
+</listitem>
+<listitem><para>The global environment directory.
+The global environment includes Rexx supplied objects like
+<literal>.endofline</literal> or the
+<literal>.RexxInfo</literal> object.
+You can access the global environment by using the
+<literal>.ENVIRONMENT</literal> environment symbol.
+Entries in the global environment directory can also be accessed via the
+<literal>VALUE</literal> built-in function
+by using a null string for the
+<emphasis role="italic">selector</emphasis> argument.</para></listitem>
+<listitem><para>Rexx defined symbols. Other simple environment symbols
+reserved for use by Rexx, including
+<literal>.RS</literal>,
+<literal>.LINE</literal>,
+<literal>.METHODS</literal>,
+<literal>.ROUTINES</literal>,
+<literal>.RESOURCES</literal>, and
+<literal>.CONTEXT</literal>.</para></listitem>
 </orderedlist>
+</para>
+<para>If an entry is not found for an environment symbol, then the default
+character string value is used.</para>
 
-<para>If an entry is not found for an environment symbol, the default character string value (uppercased) of the environment symbol is used including
-its leading dot. </para>
-
-<note>
-<para>You can place entries in the <code>.context~package~local</code>, <literal>.local</literal>
-and <literal>.environment</literal> directories for programs to use, but <literal>.local</literal> should be preferred over
-<literal>.environment</literal> to avoid accidentally overwriting system-defined values.
-To avoid conflicts with future Rexx-defined entries, it is recommended that entries you place in either
-of these directories include at least one period in the entry name.</para></note>
-<example>
-<title>.Local Object</title>
-
+<para>You can place entries in any of the three directories,
+the package local, the <literal>.LOCAL</literal>,
+and the <literal>.ENVIRONMENT</literal> directory, for programs to use,
+with package local preferred over <literal>.LOCAL</literal>, and
+and <literal>.LOCAL</literal> preferred over <literal>.ENVIRONMENT</literal>.
+To avoid conflicts with future Rexx defined entries, it is recommended
+that the entries that you place in any of these directories include at least one
+period in the entry name, for example:
 <programlisting>
-<![CDATA[
-/* establish a settings directory in the local environment directory */
-.local~setentry("my.settings", .directory~new)
-]]>
+-- establish settings directory
+.local~setEntry("MyProgram.settings", .directory~new)
 </programlisting>
+</para>
 
-</example>
 </section>
 </section>
 

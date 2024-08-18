@@ -2889,17 +2889,14 @@ The symbol may not be a valid Rexx number.  By default the value of an environme
 symbol is the string consisting of the characters of the symbol (translated
 to uppercase). If the symbol identifies an object in the current environment,
 its value is the mapped object.</para>
-<para>These are environment symbols:
+<para>These are examples of environment symbols:
 <example>
 <title>Environment symbols</title>
 <programlisting>
-.method    // A reference to the Rexx Method class
-
-.true      // The Rexx "true" object.  Has the value "1"
-
-.xyz       // Normally the value .XYZ
-
-.3DGlasses // Normally the value .3DGLASSES
+.method    -- A reference to the Rexx Method class
+.true      -- The Rexx "true" object.  Has the value "1"
+.xyz       -- Normally the value .XYZ
+.3DGlasses -- Normally the value .3DGLASSES
 </programlisting>
 </example>
 </para>
@@ -2925,30 +2922,30 @@ Package instance using the <xref linkend="mthPackageAddPackage" xrefstyle="selec
 </para></listitem>
 <listitem><para>The package local environment directory specific to the current package.
 You can access the package local environment directory through the
-<classname>Package</classname>
-<xref linkend="mthPackageLocal" xrefstyle="select:title"/> method.
+Package <xref linkend="mthPackageLocal" xrefstyle="select:title"/> method
+with <code>.context~package~local</code>.
 </para>
 </listitem>
 <listitem><para>The local environment directory specific to the current
 interpreter instance. The local
 environment includes instance-specific
-objects such as the .INPUT and .OUTPUT objects. You can directly access the
-local environment directory by using the <xref linkend="locenv" xrefstyle="template:.LOCAL environment symbol"/>.
+objects such as the .INPUT and .OUTPUT objects. You can access the
+local environment directory by using the
+<xref linkend="locenv" xrefstyle="template:.LOCAL"/> environment symbol.
 </para>
 </listitem>
 <listitem><para>The global environment directory.
 The global environment includes Rexx supplied objects like
 <xref linkend="ENDOFLINE" xrefstyle="template:.endofline"/> or the
 <xref linkend="rexxinfoEnv" xrefstyle="template:.RexxInfo object"/>.
-You can directly access the global environment by using the
-<xref linkend="envo" xrefstyle="template:.ENVIRONMENT environment symbol"/>.
+You can access the global environment by using the
+<xref linkend="envo" xrefstyle="template:.ENVIRONMENT"/> environment symbol.
 Entries in the global environment directory can also be accessed via the
-<xref linkend="bifValue" xrefstyle="template:VALUE built-in function"/>
+<xref linkend="bifValue" xrefstyle="template:VALUE"/> built-in function
 by using a null string for the
 <emphasis role="italic">selector</emphasis> argument.</para></listitem>
-<listitem><para>Rexx defined symbols. Other simple environment symbols are
-reserved for use by Rexx <xref linkend="oneof" xrefstyle="template:built-in environment objects"/>.
-The currently defined built-in objects are
+<listitem><para>Rexx defined symbols. Other simple environment symbols
+reserved for use by Rexx, including
 <xref linkend="rs" xrefstyle="template:.RS"/>,
 <xref linkend="linee" xrefstyle="template:.LINE"/>,
 <xref linkend="methe" xrefstyle="template:.METHODS"/>,
@@ -2960,18 +2957,19 @@ The currently defined built-in objects are
 <para>If an entry is not found for an environment symbol, then the default
 character string value is used.</para>
 
-<note><title>Note</title>
-<para>You can place entries in both the <literal>.LOCAL</literal>
-and the <literal>.ENVIRONMENT</literal> directories for programs to use.
+<para>You can place entries in any of the three directories,
+the package local, the <literal>.LOCAL</literal>,
+and the <literal>.ENVIRONMENT</literal> directory, for programs to use,
+with package local preferred over <literal>.LOCAL</literal>, and
+and <literal>.LOCAL</literal> preferred over <literal>.ENVIRONMENT</literal>.
 To avoid conflicts with future Rexx defined entries, it is recommended
-that the entries that you place in either directory include at least one
+that the entries that you place in any of these directories include at least one
 period in the entry name, for example:
 <programlisting>
-/* establish settings directory */
-.local~setentry("MyProgram.settings", .directory~new)
+-- establish settings directory
+.local~setEntry("MyProgram.settings", .directory~new)
 </programlisting>
 </para>
-</note>
 </section>
 </section>
 
