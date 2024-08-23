@@ -1008,8 +1008,10 @@ can be any instruction, including assignments,
 commands, message instructions, and keyword instructions (including any of
 the more complex constructs such as IF, SELECT, and the DO or LOOP instruction itself).
 </para></listitem>
-<listitem><para>The subkeywords WHILE, UNTIL, OVER, WITH, INDEX, and ITEM are reserved within a DO or LOOP
-instruction in that they act as expression terminators for other keywords.  Thus they
+<listitem>
+<para>Within DO or LOOP instructions that allow subkeywords
+WHILE, UNTIL, OVER, WITH, INDEX, or ITEM,  these subkeywords are reserved
+in that they act as expression terminators for other keywords.  Thus they
 cannot be used as symbols in any of the expressions.
 Similarly, TO, BY, and FOR cannot be used in
 <emphasis role="italic">expri</emphasis>,
@@ -1020,7 +1022,7 @@ Similarly, TO, BY, and FOR cannot be used in
 FOREVER is also reserved, but only if it immediately
 follows the keyword DO or LOOP and is not followed by an equal sign.
 However, parentheses around or within an expression can prevent these keywords from terminating an expression. For example,
-<example><title>Instructions &mdash; DO variable without parenthesis</title>
+<example><title>Instructions &mdash; DO variable without parentheses</title>
 <programlisting>
 do i = 1 while i &lt; until
    say i
@@ -1030,7 +1032,7 @@ end
 </para>
 <para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
 around the expression allows the variable UNTIL to be used:
-<example><title>Instructions &mdash; DO variable with parenthesis</title>
+<example><title>Instructions &mdash; DO variable with parentheses</title>
 <programlisting>
 do i = 1 while (i &lt; until)
    say i
