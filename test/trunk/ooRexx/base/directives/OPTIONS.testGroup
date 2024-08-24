@@ -147,8 +147,8 @@ return testResult
 -- OPTIONS ERROR tests
 
 ::method test_error_syntax_missing
-  -- 19.922:  String or symbol expected after ERROR keyword.
-  self~assertSyntaxError(19.922, "::options error")
+  -- 20.929:  Symbol expected after ERROR keyword
+  self~assertSyntaxError(20.929, "::options error")
 
 ::method test_error_syntax_invalid
   -- 25.927:  Unknown keyword following "ERROR"; found "INVALID".
@@ -200,8 +200,8 @@ return testResult
 */
 
 ::method test_failure_syntax_missing
-  -- 19.922:  String or symbol expected after FAILURE keyword.
-  self~assertSyntaxError(19.922, "::options failure")
+  -- 20.929:  Symbol expected after FAILURE keyword
+  self~assertSyntaxError(20.929, "::options failure")
 
 ::method test_failure_syntax_invalid
   -- 25.927:  Unknown keyword following "FAILURE"; found "INVALID".
@@ -244,8 +244,8 @@ return testResult
 -- OPTIONS LOSTDIGITS tests
 
 ::method test_lostdigits_syntax_missing
-  -- 19.922:  String or symbol expected after LOSTDIGITS keyword.
-  self~assertSyntaxError(19.922, "::options lostdigits")
+  -- 20.929:  Symbol expected after LOSTDIGITS keyword
+  self~assertSyntaxError(20.929, "::options lostdigits")
 
 ::method test_lostdigits_syntax_invalid
   -- 25.927:  Unknown keyword following "LOSTDIGITS"; found "INVALID".
@@ -297,8 +297,8 @@ return testResult
 -- OPTIONS NOSTRING tests
 
 ::method test_nostring_syntax_missing
-  -- 19.922:  String or symbol expected after NOSTRING keyword.
-  self~assertSyntaxError(19.922, "::options nostring")
+  -- 20.929:  Symbol expected after NOSTRING keyword
+  self~assertSyntaxError(20.929, "::options nostring")
 
 ::method test_nostring_syntax_invalid
   -- 25.927:  Unknown keyword following "NOSTRING"; found "INVALID".
@@ -332,8 +332,8 @@ return testResult
 -- OPTIONS NOTREADY tests
 
 ::method test_notready_syntax_missing
-  -- 19.922:  String or symbol expected after NOTREADY keyword.
-  self~assertSyntaxError(19.922, "::options notready")
+  -- 20.929:  Symbol expected after NOTREADY keyword
+  self~assertSyntaxError(20.929, "::options notready")
 
 ::method test_notready_syntax_invalid
   -- 25.927:  Unknown keyword following "NOTREADY"; found "INVALID".
@@ -365,8 +365,8 @@ return testResult
 -- OPTIONS ALL tests
 
 ::method test_all_syntax_missing
-  -- 19.922:  String or symbol expected after ALL keyword.
-  self~assertSyntaxError((19.922, "ALL"), "::options all")
+  -- 20.929:  Symbol expected after ALL keyword
+  self~assertSyntaxError((20.929, "ALL"), "::options all")
 
 ::method test_all_syntax_invalid
   -- 25.927:  Unknown keyword following "ALL"; found "INVALID".
@@ -503,7 +503,8 @@ return testResult
   self~assertSyntaxError(25.927, ("return abc.1.2", "::options novalue on"))
 
 ::method test_novalue_missing_value
-  self~assertSyntaxError(19.922, ("return abc.1.2", "::options novalue"))
+  -- 20.929:  Symbol expected after NOVALUE keyword
+  self~assertSyntaxError(20.929, ("return abc.1.2", "::options novalue"))
 
 
 -- OPTIONS (NO)PROLOG tests
