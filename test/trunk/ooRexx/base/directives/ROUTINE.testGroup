@@ -109,6 +109,10 @@ return testResult
   self~assertIsA(r, .routine)
   self~assertEquals(r[], rxcalcpi())
 
+::method testExternalNullstring
+  -- 99.917:  Incorrect external name specification
+  self~assertSyntaxError(99.917, "::routine foo external ''")
+
 ::method testExternalLibraryBadName
   self~assertSyntaxError(90.999, "::routine foo external 'LIBRARY rxmath RxCalxPiXXXXXX'")
 
