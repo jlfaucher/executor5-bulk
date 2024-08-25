@@ -3693,7 +3693,11 @@ TRACE ?R
 formatting (indentation) according to its logical depth of nesting, for example.
 Results, if requested, are indented by two extra spaces and are enclosed in
 double quotation marks so that leading and trailing whitespace characters are
-apparent. Any control codes in the data encoding (ASCII values less than "20"x)
+apparent. Any control codes in the data encoding (ASCII values less than
+<literal>'20'x</literal>, except
+tab <literal>'08'x</literal>,
+line-feed <literal>'0a'x</literal>, and
+carriage-return <literal>'0d'x</literal>
 are replaced by a question mark (?) to avoid screen interference. Results other
 than strings appear in the string representation obtained by sending them a
 <computeroutput>STRING</computeroutput> message. The resulting string is

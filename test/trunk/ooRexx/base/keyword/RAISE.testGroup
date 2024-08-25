@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,21 +35,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.RAISE.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  group = .TestGroup~new(fileSpec)
-  group~add(.RAISE.testGroup)
+::requires 'ooTest.frm'
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
-
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
-::class "RAISE.testGroup" subclass ooTestCase public
+::class RAISE.testGroup subclass ooTestCase public
 
 
 -- ANY ERROR FAILURE HALT LOSTDIGITS NOMETHOD NOMETHOD
@@ -110,8 +106,6 @@ syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
 
-  -- call dumpCO co  -- dump content of condition object (a directory)
-
   self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
@@ -159,8 +153,6 @@ syntax:
 syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
-
-  -- call dumpCO co  -- dump content of condition object (a directory)
 
   self~assertNotNull(co~additional)
 
@@ -210,8 +202,6 @@ syntax:
 syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
-
-  -- call dumpCO co  -- dump content of condition object (a directory)
 
   self~assertNotNull(co~additional)
 
@@ -265,8 +255,6 @@ syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
 
-  -- call dumpCO co  -- dump content of condition object (a directory)
-
   self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
@@ -315,8 +303,6 @@ syntax:
 syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
-
-  -- call dumpCO co  -- dump content of condition object (a directory)
 
   self~assertNotNull(co~additional)
 
@@ -370,8 +356,6 @@ syntax:
   co=condition("Object")      -- get condition object
   rgf_Sigl=SIGL               -- save signal line number
 
-  -- call dumpCO co  -- dump content of condition object (a directory)
-
   self~assertNotNull(co~additional)
 
   a=co~additional    -- get additional array
@@ -424,8 +408,6 @@ syntax:
   a.3="3B"
   a.0=3
   str="abc"
-
-  -- call dumpCO co  -- dump content of condition object (a directory)
 
   self~assertNotNull(co~additional)
 
@@ -484,6 +466,44 @@ syntax:
   raise UseR rGf
 
 
+-- test whether message inserts keep CR/LF unmasked, not masking as "?"
+-- as the reply thread runs without caller, we can raise SYNTAX
+-- without being taken down by it
+::method raise_insert_crlf unguarded
+  -- why does this require UNGUARDED for the reply thread to run?
+  reply
+  -- all chars in the first line should be masked with "?"
+  -- '09'x, '0d'x, and '0a'x should not be masked
+  raise syntax 98.900 array(xrange('00'x, '08'x, '0b'x, '0c'x, '0e'x, '1f'x) || .endofline || "second line")
+::method test_raise_insert_crlf
+  t = .TraceOutput~destination(.ArrayStream~new)
+  self~raise_insert_crlf
+  do i = 1 to 10 while t~items < 4
+    call SysSleep 0.001 -- wait for the REPLY thread to finish
+  end
+  -- we ignore these two leading lines:
+  --   nnn *-* raise syntax 98.900 ...
+  -- Error 98 running ...RAISE.testGroup line nnn:  Execution error.
+  self~assertSame("Error 98.900:  ?????????????????????????????" || .endofline || "second line.", t[3])
+
+-- ArrayStream allows to capture TRACE output to an Array
+-- we inherit from Stream just for the SAY method
+::class ArrayStream subclass Array inherit Stream
+::method init
+  expose line
+  line = 0
+::method lineOut
+  -- TraceObject changes break compatibility
+  -- need to convert arg(1) to string
+  self~append(arg(1)~makeString)
+  return 0
+::method lineIn
+  expose line
+  line += 1
+  if line > self~size then
+    raise notready
+  return self[line]
+
 
 ::routine do_it_in_a_routine        -- this routine is needed to test propagation of conditions
   signal on syntax
@@ -503,22 +523,4 @@ syntax:
   return
 
 
-
-::routine dumpCO
-  use arg co
-
-  say "co # entries:" co~items
-  do idx over co
-     o1=co~at(idx)
-     say pp(idx)~left(15)":" pp(o1)
-     if o1~hasmethod("items") then
-     do
-        say "   " "# entries:" o1~items
-        do idx2 over o1
-           say "   " pp(idx2)
-        end
-     end
-  end
-
-
-::options novalue error
+::options all syntax error condition failure condition
