@@ -2982,18 +2982,27 @@ have &nil; for their associated method.</para></note>
 <example id="ex.object-instancemethods">
 <title>Object class &mdash; instanceMethods method</title>
 <programlisting>
--- count all class methods of .String only
-say .String~instanceMethods(.String)~allIndexes~items --> 17
+-- if running under ooRexx 5.1.0
+-- list all class methods of .String only
+say .String~instanceMethods(.String)~allIndexes~sort~toString(,', ')
+    -- outputs:  ALNUM, ALPHA, BLANK, CNTRL, CR, DIGIT, GRAPH, LOWER, NEW, NL, NULL,
+    --           PRINT, PUNCT, SPACE, TAB, UPPER, XDIGIT
 
 -- count all class methods of .String and its superclasses
-say .String~instanceMethods~allIndexes~items          --> 83
-
+say .String~instanceMethods~allIndexes~items
+    -- outputs: 83
+    --             (17 .String class methods, 33 .Object class methods,
+    --              33 .Class class methods, i.e., without its NEW method)
 
 -- count all instance methods of .String only
-say ''~instanceMethods(.String)~allIndexes~items      --> 117
+say ''~instanceMethods(.String)~allIndexes~items
+    -- outputs: 117
 
 -- count all instance methods of .String and its superclasses
-say ''~instanceMethods~allIndexes~items               --> 150
+say ''~instanceMethods~allIndexes~items
+    -- outputs: 150
+    --             (117 .String instance methods, 32 .Object instance methods,
+    --              1 .Comparable instance method)
 </programlisting>
 </example>
 </section>
