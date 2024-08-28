@@ -208,7 +208,7 @@ message name isn't traced
   address 'invalid' ''
   address 'invalid' with output normal
   trace off
-  self~assertTraceOutput(.resources~address, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~address, t, start)
 
   ::resource address end "  ::end"
      1 *-* address
@@ -230,7 +230,7 @@ message name isn't traced
   arg
   arg 1 a .
   trace off
-  self~assertTraceOutput(.resources~arg, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~arg, t, start)
 
   ::resource arg end "  ::end"
      1 *-* arg
@@ -250,7 +250,7 @@ message name isn't traced
   call left 'abc', 1
   call on user 123
   trace off
-  self~assertTraceOutput(.resources~call, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~call, t, start)
 
   ::resource call end "  ::end"
      1 *-* call left 'abc', 1
@@ -275,7 +275,7 @@ message name isn't traced
   do item over 'a', 'b'
   end
   trace off
-  self~assertTraceOutput(.resources~do, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~do, t, start)
 
   ::resource do end "  ::end"
      1 *-* do
@@ -332,7 +332,7 @@ message name isn't traced
   start = .line; trace i
   drop (list)
   trace off
-  self~assertTraceOutput(.resources~drop, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~drop, t, start)
 
   ::resource drop end "  ::end"
      1 *-* drop (list)
@@ -343,7 +343,7 @@ message name isn't traced
 ::method test_trace_exit
   t = .TraceOutput~destination(.ArrayStream~new)
   .Routine~new("trace_exit", "trace i; exit 99")~call
-  self~assertTraceOutput(.resources~exit, makeStringArray(t), 0)
+  self~assertTraceOutput(.resources~exit, t, 0)
 
   ::resource exit end "  ::end"
        >I> Routine "trace_exit" in package "trace_exit".
@@ -357,7 +357,7 @@ message name isn't traced
 ::method test_trace_exit_trace_i_second_statement
   t = .TraceOutput~destination(.ArrayStream~new)
   .Routine~new("trace_exit", "a=1;trace i; exit 99")~call
-  self~assertTraceOutput(.resources~exit_trace_i_second_statement, makeStringArray(t), 0)
+  self~assertTraceOutput(.resources~exit_trace_i_second_statement, t, 0)
 
   ::resource exit_trace_i_second_statement end "  ::end"
      1 *-* exit 99
@@ -375,7 +375,7 @@ message name isn't traced
   m = .Method~new("", "expose (list); ::options trace i")
   self~setMethod("trace_expose", m, "OBJECT") -- give access to object variables
   self~trace_expose
-  self~assertTraceOutput(.resources~expose, makeStringArray(t), 0)
+  self~assertTraceOutput(.resources~expose, t, 0)
 
   ::resource expose end "  ::end"
        >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "".
@@ -394,7 +394,7 @@ message name isn't traced
   forward message 'trace_forward' to (self) class (self~class) arguments (1, 2) continue
   forward message 'trace_forward_ret' array ('a', , 'b') continue
   trace off
-  self~assertTraceOutput(.resources~forward, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~forward, t, start)
 
   -- all keywords TO, MESSAGE, CLASS, ARGUMENTS, and ARRAY are traced
   -- with >K>, and the return value is traced with >>>
@@ -434,7 +434,7 @@ message name isn't traced
   guard on
   guard off when v
   trace off
-  self~assertTraceOutput(.resources~guard, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~guard, t, start)
 
   ::resource guard end "  ::end"
      1 *-* guard on
@@ -456,7 +456,7 @@ message name isn't traced
   else
     nop
   trace off
-  self~assertTraceOutput(.resources~if, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~if, t, start)
 
   ::resource if end "  ::end"
      1 *-* if .true
@@ -480,7 +480,7 @@ message name isn't traced
   start = .line; trace i
   interpret 'a = 1'
   trace off
-  self~assertTraceOutput(.resources~interpret, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~interpret, t, start)
 
   ::resource interpret end "  ::end"
      1 *-* interpret 'a = 1'
@@ -500,7 +500,7 @@ message name isn't traced
     iterate
   end
   trace off
-  self~assertTraceOutput(.resources~iterate, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~iterate, t, start)
 
   ::resource iterate end "  ::end"
      1 *-* do 2
@@ -520,7 +520,7 @@ message name isn't traced
     leave
   end
   trace off
-  self~assertTraceOutput(.resources~leave, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~leave, t, start)
 
   ::resource leave end "  ::end"
      1 *-* do 2
@@ -538,7 +538,7 @@ message name isn't traced
   loop i = 3 to 1 by -1 until i = 2
   end
   trace off
-  self~assertTraceOutput(.resources~loop, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~loop, t, start)
 
   ::resource loop end "  ::end"
      1 *-* loop 2
@@ -584,7 +584,7 @@ message name isn't traced
   nop -- but they are traced when ...
   nop /* ... trailing a clause */
   trace off
-  self~assertTraceOutput(.resources~nop, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~nop, t, start)
 
   ::resource nop end "  ::end"
      3 *-* nop
@@ -600,7 +600,7 @@ message name isn't traced
   numeric form scientific
   numeric fuzz 0
   trace off
-  self~assertTraceOutput(.resources~numeric, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~numeric, t, start)
 
   ::resource numeric end "  ::end"
      1 *-* numeric digits (digits() + 1)
@@ -620,7 +620,7 @@ message name isn't traced
   start = .line; trace i
   options "string"
   trace off
-  self~assertTraceOutput(.resources~options, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~options, t, start)
 
   ::resource options end "  ::end"
      1 *-* options "string"
@@ -634,7 +634,7 @@ message name isn't traced
   start = .line; trace i
   parse value 1 2 3 with x y .
   trace off
-  self~assertTraceOutput(.resources~parse, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~parse, t, start)
 
   ::resource parse end "  ::end"
      1 *-* parse value 1 2 3 with x y .
@@ -661,7 +661,7 @@ message name isn't traced
   return a + 1
   end:
   trace off
-  self~assertTraceOutput(.resources~procedure, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~procedure, t, start)
 
   ::resource procedure end "  ::end"
      1 *-* a = 1
@@ -692,7 +692,7 @@ message name isn't traced
   pull a . c
   pull a
   trace off
-  self~assertTraceOutput(.resources~pull_push_queue, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~pull_push_queue, t, start)
 
   ::resource pull_push_queue end "  ::end"
      1 *-* push "1 2 3"
@@ -722,7 +722,7 @@ message name isn't traced
   p: raise user 999 array (1, 2) description "desc" return 1
   end:
   trace off
-  self~assertTraceOutput(.resources~raise, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~raise, t, start)
 
   --@@bug: "raise user 999 return 1" should trace >K> RETURN instead of RESULT
   --@@bug: "raise user 999 exit 1" should trace >K> EXIT instead of RESULT
@@ -760,7 +760,7 @@ message name isn't traced
   do i = 1 to 10 while t~items < 5
     call SysSleep 0.001 -- wait for the REPLY thread to finish
   end
-  self~assertTraceOutput(.resources~reply, makeStringArray(t), trace_reply_start)
+  self~assertTraceOutput(.resources~reply, t, trace_reply_start)
 
   ::resource reply end "  ::end"
    754 *-* reply 1
@@ -779,7 +779,7 @@ message name isn't traced
   say 1 || 2
   trace off
   .Output~destination
-  self~assertTraceOutput(.resources~say, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~say, t, start)
 
   ::resource say end "  ::end"
      1 *-* say 1 || 2
@@ -809,7 +809,7 @@ message name isn't traced
     otherwise nop
   end
   trace off
-  self~assertTraceOutput(.resources~select, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~select, t, start)
 
   -- @@bug #1850 but may well be intentional:
   -- END is traced when flow goes through OTHERWISE, but
@@ -861,7 +861,7 @@ message name isn't traced
   signal value "LBL2"; lbl2:
   signal on user 999 name user999
   trace off
-  self~assertTraceOutput(.resources~signal, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~signal, t, start)
 
   ::resource signal end "  ::end"
      1 *-* signal lbl1;
@@ -878,7 +878,7 @@ message name isn't traced
   t = .TraceOutput~destination(.ArrayStream~new)
   start = .line; trace i
   trace off
-  self~assertTraceOutput(.resources~trace, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~trace, t, start)
 
   ::resource trace end "  ::end"
      1 *-* trace off
@@ -890,7 +890,7 @@ message name isn't traced
   start = .line; trace i
   use arg a = .nil
   trace off
-  self~assertTraceOutput(.resources~use, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~use, t, start)
 
   ::resource use end "  ::end"
      1 *-* use arg a = .nil
@@ -910,7 +910,7 @@ message name isn't traced
   i = 1
   a = a.i.i.i.i
   trace off
-  self~assertTraceOutput(.resources~compound, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~compound, t, start)
 
   ::resource compound end "  ::end"
      1 *-* a. = ''
@@ -933,7 +933,7 @@ message name isn't traced
 
   t = .TraceOutput~destination(.ArrayStream~new)
   .Routine~new("trace_other_entrypoint", "::options trace i")~call
-  self~assertTraceOutput(.resources~entrypoint, makeStringArray(t), 0)
+  self~assertTraceOutput(.resources~entrypoint, t, 0)
 
   ::resource entrypoint end "  ::end"
        >I> Routine "trace_other_entrypoint" in package "trace_other_entrypoint".
@@ -946,7 +946,7 @@ message name isn't traced
   start = .line; trace i
   1~reverse
   trace off
-  self~assertTraceOutput(.resources~message, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~message, t, start)
 
   ::resource message end "  ::end"
      1 *-* 1~reverse
@@ -960,7 +960,7 @@ message name isn't traced
   start = .line; trace i
   a = rexx:Array
   trace off
-  self~assertTraceOutput(.resources~namespace, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~namespace, t, start)
 
   ::resource namespace end "  ::end"
      1 *-* a = rexx:Array
@@ -980,7 +980,7 @@ message name isn't traced
     use arg >v.
     return
   end:
-  self~assertTraceOutput(.resources~reference, makeStringArray(t), start)
+  self~assertTraceOutput(.resources~reference, t, start)
 
   ::resource reference end "  ::end"
      1 *-* call r >a.
@@ -1100,7 +1100,6 @@ message name isn't traced
    nnn *-*   call trace "off" -- stop all tracing
   */
   self~assertSame(4, t~items, "unexpected TRACE ?A output" t)
-  t=makeStringArray(t)
   self~assertSame("+++ *-* +++ Interactive *-*", -
    t[1]~word(1) t[2]~word(2) t[3]~subWord(1, 2) t[4]~word(2), -
    "unexpected TRACE ?A output" t)
@@ -1116,7 +1115,6 @@ message name isn't traced
   -- with no expressions, the expected TRACE ?R output is the same as
   -- above TRACE ?A output
   self~assertSame(4, t~items, "unexpected TRACE ?R output" t)
-  t=makeStringArray(t)
   self~assertSame("+++ *-* +++ Interactive *-*", -
    t[1]~word(1) t[2]~word(2) t[3]~subWord(1, 2) t[4]~word(2), -
    "unexpected TRACE ?R output" t)
@@ -1143,7 +1141,6 @@ message name isn't traced
        >A>     "off"
   */
   self~assertSame(11, t~items, "unexpected TRACE ?I output" t)
-  t=makeStringArray(t)
   self~assertSame("+++ *-* >V> >L> >A> >F> >A> +++ Interactive *-* >L> >A>", -
    t[1]~word(1) t[2]~word(2) t[3]~word(1) t[4]~word(1) t[5]~word(1) t[6]~word(1) -
    t[7]~word(1) t[8]~subWord(1, 2) t[9]~word(2) t[10]~word(1) t[11]~word(1), -
@@ -1162,7 +1159,7 @@ message name isn't traced
   nop /* 7 */
   trace off
   -- ignore entry trace output +++ "platform METHOD /path/to/TRACE.testGroup"
-  self~assertTraceOutput(.resources~trace_numeric_debug, makeStringArray(t)~section(2), start)
+  self~assertTraceOutput(.resources~trace_numeric_debug, t~section(2), start)
 
   ::resource trace_numeric_debug end "  ::end"
      1 *-* nop /* 1 */
@@ -1180,7 +1177,8 @@ message name isn't traced
   expose line
   line = 0
 ::method lineOut
-  self~append(arg(1))
+  parse arg line
+  self~append(line)
   return 0
 ::method lineIn
   expose line
@@ -1188,13 +1186,5 @@ message name isn't traced
   if line > self~size then
     raise notready
   return self[line]
-
-::routine makeStringArray  -- turn array of TraceObject instances in an array of strings
-  use arg inArray
-  outArray=.array~new
-  do traceObj over inArray
-     outArray~append(traceObj~makeString)
-  end
-  return outArray
 
 ::options all syntax error condition failure condition
