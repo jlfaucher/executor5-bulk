@@ -665,6 +665,99 @@ compareStackFrames: procedure
 
 
 /* ========================================================================== */
+::method test_caller_stack_frame_reply_start
+-- test callerStackFrame correct
+
+traceLog=.array~new
+.traceObject~option='P'
+.traceObject~collector=traceLog
+
+callerName="testCallerStackFrame_ReplyStart"
+r=.routine~new(callerName, .resources~test_caller_stackframe_reply_start_program)
+r~call         -- note: this is a method call to an object!
+.traceObject~collector=.nil
+
+/*
+-- show actual traceLog
+say "--->"
+do counter c traceObj over traceLog
+    say traceObj
+end
+say "<---"
+*/
+
+callerStackFrames=.list~new
+-- now analyze traceLog, first check whether expected sequence
+expectedTraceLog=.resources~test_caller_stackframe_reply_start_tracelog
+do counter c traceObj over traceLog
+   str=traceObj~makeString
+   self~assertEquals(str, expectedTraceLog[c])
+   if pos(">I>",str)>0 then
+      callerStackFrames~append(traceObj)  -- save traceObject which needs to have a CALLERSTACKFRAME entry
+end
+
+say "... checking callerStackFrames ..."
+countThreadId_in_CSF=0
+do csf over callerStackFrames
+   self~assertTrue(csf~hasEntry("CALLERSTACKFRAME"))
+   countThreadId_in_CSF+=csf~callerStackFrame~hasEntry("THREAD")
+end
+
+self~assertEquals(countThreadId_in_CSF,2)
+
+
+::resource test_caller_stackframe_reply_start_program
+   o=.test~new
+   o~count=2
+   o~m_reply
+   call syssleep 0.01
+   o~start("m_s")
+   o~m_wait
+
+   ::class test
+   ::method init
+     expose count
+     count=0
+
+   ::attribute count
+
+   ::method m_reply
+     expose count
+     reply
+     count-=1
+
+   ::method m_s
+     expose count
+     count-=1
+     call syssleep .01
+
+   ::method m_wait unguarded
+     expose count
+     guard on when count=0
+
+   ::options trace labels
+::END
+
+::resource test_caller_stackframe_reply_start_tracelog
+       >I> Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       <I< Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       >I> Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "INIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "INIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_WAIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_S" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_S" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_WAIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+::END
+
+
+
+/* ========================================================================== */
 ::routine pp
   return "["arg(1)"]"
 
