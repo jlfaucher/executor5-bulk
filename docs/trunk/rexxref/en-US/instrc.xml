@@ -1455,7 +1455,7 @@ that require exclusive use of the same variable pool can begin running.</para>
 <emphasis role="italic">expression</emphasis> evaluates
 to &false;,
 GUARD waits until another method assigns or drops
-an object variable (that is, a variable named on an EXPOSE instruction) used
+an object variable used
 in the WHEN <emphasis role="italic">expression</emphasis>.
 When an object variable changes, GUARD reevaluates
 the WHEN <emphasis role="italic">expression</emphasis>. If the
@@ -1473,6 +1473,15 @@ Evaluation will stop with the first &false; result and &false; will be
 returned as the condition result.
 If all of the <emphasis role="italic">expression</emphasis>s evaluate
 to &true;, then the condition result is also &true;.
+</para>
+<para>The <emphasis role="italic">expression</emphasis> or list of
+<emphasis role="italic">expression</emphasis>s
+can reference both local and object variables,
+but must reference at least one object variable exposed by a
+<xref linkend="keyUseLocal" xrefstyle="select:title"/> instruction or an
+<xref linkend="keyExpose" xrefstyle="select:title"/> instruction with a
+simple variable name (not a variable in parentheses representing a
+subsidiary list of variables).
 <indexterm><primary>GUARD instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1480,19 +1489,21 @@ to &true;, then the condition result is also &true;.
 <example>
 <title>Instructions &mdash; GUARD</title>
 <programlisting>
-<![CDATA[
-::method c
-  expose y
-  if y>0 then
-    return 1
-  else
-    return 0
-::method d
-  expose z
-  guard on when z>0
-  self~c    /* Reevaluated when Z changes  */
-  say "Method D"
-]]>
+c = .Concurrent~new
+c~work
+
+::class Concurrent
+::method init
+  expose ready
+  ready = .false
+  reply
+  call SysSleep 1 -- long-running initialization
+  ready = .true
+
+::method work unguarded
+  expose ready
+  guard on when ready -- wait until initialized
+  say "starting work"
 </programlisting>
 </example>
 </para>
@@ -3695,14 +3706,14 @@ Results, if requested, are indented by two extra spaces and are enclosed in
 double quotation marks so that leading and trailing whitespace characters are
 apparent. Any control codes in the data encoding (ASCII values less than
 <literal>'20'x</literal>, except
-tab <literal>'08'x</literal>,
+tab <literal>'09'x</literal>,
 line-feed <literal>'0a'x</literal>, and
-carriage-return <literal>'0d'x</literal>
-are replaced by a question mark (?) to avoid screen interference. Results other
+carriage-return <literal>'0d'x</literal>,
+are replaced by a question mark to avoid screen interference. Results other
 than strings appear in the string representation obtained by sending them a
-<computeroutput>STRING</computeroutput> message. The resulting string is
-enclosed in parentheses. The line number in the program precedes the first
-clause traced on any line. All lines displayed during tracing have a
+<methodname>STRING</methodname> message.
+The line number in the program precedes the traced clause.
+All lines displayed during tracing have a
 three-character prefix to identify the type of data being traced.  These can be:
 </para>
 <indexterm><primary>tracing</primary>
