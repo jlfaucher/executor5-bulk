@@ -3849,6 +3849,8 @@ Otherwise returns &false;.
 </para>
 <para>Returns the file's extension, the portion of the file name after
 the last dot.
+Returns the null string if the file name contains only one dot that is
+its first character.
 </para>
 <para>See also method <xref linkend="mthFileName" xrefstyle="select:title"/>.
 </para>
@@ -3858,7 +3860,8 @@ the last dot.
 </title>
 <programlisting><![CDATA[
 say .File~new("/usr/local/lib/rexx.img")~extension    -- img
-say .File~new("/")~name                               -- ""
+say .File~new("c:\windows")~extension                 -- ""
+say .File~new(".config")~extension                    -- ""
 ]]></programlisting></example></para>
 </section>
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -711,9 +711,21 @@ else
   shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
   found = .File~searchPath(shell)
   self~assertIsA(found, .File)
-  self~assertTrue(found~absolutePath~caselessEndsWith(shell))
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
 
 ::method test_searchPath_two_args
+  -- we assume that the default shell is in PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
+  path = value("PATH", ,"environment")
+  found = .File~searchPath(shell, path) -- PATH as a string
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
+
+  -- now second arg as an Array
+  found = .File~searchPath(shell, path~makeArray(.File~pathSeparator)) -- PATH as an Array
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
+
   -- searchPath will search for files with or without path
   -- if this file's path was /dir1/dir2/dir3/File.testgroup, we'd test
   -- searchPath("dir1/dir2/dir3/File.testgroup", "/")
@@ -730,52 +742,6 @@ else
     self~assertTrue(found~absolutePath~caselessEndsWith(components~lastItem))
     root~append(components~delete(1))
   end
-
-::method test_searchpath1
-
-  self~assertNil(.file~searchPath("*non existent filename*", "."))
-  self~assertNil(.file~searchPath("*non existent filename*", (".", "..")))
-
-  -- the following assumes the executable is on the path
-  executable = .RexxInfo~executable
-
-  currentPath = Value("PATH",,"ENVIRONMENT")
-
-  file = .file~searchPath(executable~name, currentPath)
-
-  self~assertIsA(file, .File)
-  self~assertEquals(executable~absolutePath, file~absolutePath, "this may fail if rexx is run directly from a build tree")
-
-  currentPath = currentPath~makeArray(.File~pathSeparator)
-
-  file = .file~searchPath(executable~name, currentPath)
-
-  self~assertIsA(file, .File)
-  self~assertEquals(executable~absolutePath, file~absolutePath)
-
-  loop i = 1 to currentPath~items
-     currentPath[i] = .File~new(currentPath[i])
-  end
-
-  file = .file~searchPath(executable~name, currentPath)
-
-  self~assertIsA(file, .File)
-  self~assertEquals(executable~absolutePath, file~absolutePath)
-
-  parse source . . thisFile
-  me = .file~new(thisFile)
-
-  filename = me~name
-  directory = me~parent
-
-  self~assertNotNil(.file~searchPath(filename, directory), "01 : Must be found because current dir is in path")
-  self~assertNotNil(.file~searchPath(filename, .array~of(.file~new(directory))), "01 : Must be found because current dir is in path")
-  self~assertNotNil(.file~searchPath(filename, ("dummy before", directory, "dummy after")), "02 : Must be found because current dir is in path")
-  self~assertNotNil(.file~searchPath(filename, ("dummy before", .file~new(directory), "dummy after")), "02 : Must be found because current dir is in path")
-
-  curdir = directory(directory)
-  self~assertNotNil(.file~searchPath(filename, "."), "04 : Must be found because current dir is searched")
-  call directory curdir -- restore
 
 
 -- parent/parentFile tests
@@ -856,12 +822,12 @@ else
   .File~new("")~extension("")
 
 ::method test_extension
-  do name over "", ".", "..", "a.", "a..", "a"
+  do name over "", ".", "..", "a.", "a..", "a", ".a"
       self~assertSame("", .File~new(name)~extension, "extension of" name)
       self~assertSame("", .File~new(name, "/")~extension, "extension of" name)
   end
 
-  do name over ".a", "..a", "a.b", "temp.txt", "a b.c", "file.d e"
+  do name over "..a", "a.b", "temp.txt", "a b.c", "file.d e"
       self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name)~extension, "extension of" name)
       self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name, "/")~extension, "extension of" name)
   end
