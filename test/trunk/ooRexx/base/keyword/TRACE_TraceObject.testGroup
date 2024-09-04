@@ -696,7 +696,7 @@ do counter c traceObj over traceLog
       callerStackFrames~append(traceObj)  -- save traceObject which needs to have a CALLERSTACKFRAME entry
 end
 
-say "... checking callerStackFrames ..."
+--say "... checking callerStackFrames ..."
 countThreadId_in_CSF=0
 do csf over callerStackFrames
    self~assertTrue(csf~hasEntry("CALLERSTACKFRAME"))
