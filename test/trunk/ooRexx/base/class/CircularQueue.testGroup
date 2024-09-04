@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -201,7 +201,7 @@ return testResult
    a=.array~of(3,4,5)               -- test sequence #1
    self~assertTrue(testSequence(u3, a))
 
-::method "test_QUEUE_unique"        -- sahananda 20080731
+::method "test_QUEUE_unique"
    u3=.CircularQueue~of(1,2,3)      -- queue of three elements
    a=.array~of(1,2,3)               -- test sequence #1
    self~assertTrue(testSequence(u3, a))
@@ -805,4 +805,80 @@ countSupplierItems: procedure
   return (tmp~items=0)                    -- if the same, then no items left
 
 
-::options novalue error
+-- delete
+
+::method test_circularqueue_delete
+  self~assertNil(.CircularQueue~new(1)~delete(1))
+  self~assertNil(.CircularQueue~of("a", 2, "c")~delete(4))
+
+  target = .CircularQueue~of("A","B","C")
+  self~assertEquals("B", target~delete(2))
+  self~assertEquals(3, target~size)
+  self~assertEquals(2, target~items)
+  self~assertSame("A,C", target~string)
+
+  target = .CircularQueue~of("A","B","C")
+  self~assertEquals("A", target~delete(1))
+  self~assertEquals(3, target~size)
+  self~assertEquals(2, target~items)
+  self~assertSame("B,C", target~string)
+
+  target = .CircularQueue~of("A","B","C")
+  self~assertEquals("C", target~delete(3))
+  self~assertEquals(3, target~size)
+  self~assertEquals(2, target~items)
+  self~assertSame("A,B", target~string)
+
+::method test_circularqueue_delete_no_arg
+  q = .CircularQueue~of(1, "two", 3)
+  self~expectSyntax("93.903")
+  q~delete
+
+::method test_circularqueue_delete_negative_arg
+  q = .CircularQueue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(-1)
+
+::method test_circularqueue_delete_zero_arg
+  q = .CircularQueue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(0)
+
+::method test_circularqueue_delete_nonnumeric_arg
+  q = .CircularQueue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete("")
+
+::method test_circularqueue_delete_two_args
+  q = .CircularQueue~of(1, "two", 3)
+  self~expectSyntax("93.902")
+  q~delete(1, 1)
+
+
+-- remove
+
+::method test_circularqueue_remove_no_arg
+  self~expectSyntax("93.903") -- Missing argument in method; argument 1 is required
+  .CircularQueue~new(0)~remove
+
+::method test_circularqueue_remove_arg_invalid
+  self~expectSyntax("93.907") -- Method argument 1 must be a positive whole number
+  .CircularQueue~new(0)~remove("")
+
+::method test_circularqueue_remove_two_args
+  self~expectSyntax("93.902") -- Too many arguments in invocation of method; 1 expected
+  .CircularQueue~new(0)~remove(1, 1)
+
+-- for CircularQueue, methods remove and delete are the same
+::method test_circularqueue_remove
+  self~assertNil(.CircularQueue~new(0)~remove(1))
+  self~assertNil(.CircularQueue~of("a", 2, "c")~remove(4))
+
+  target = .CircularQueue~of("a", "b", "c")
+  self~assertEquals("b", target~remove(2))
+  self~assertEquals(3, target~size)
+  self~assertEquals(2, target~items)
+  self~assertSame("a,c", target~string)
+
+
+::options all syntax
