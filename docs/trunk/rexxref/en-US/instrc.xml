@@ -96,8 +96,9 @@ and can be used as labels or as the names of variables (though this is generally
 not recommended).</para>
 <para><emphasis>Subkeywords</emphasis> are reserved within the clauses of
 individual instructions. For example, the symbols VALUE and WITH are subkeywords
-in the ADDRESS and PARSE instructions, respectively. For details, see the
-description of each instruction.</para>
+in the ADDRESS and PARSE instructions, respectively. For details, see
+<xref linkend="resvkey" />.
+</para>
 <para>Whitespace characters (blanks or horizontal tabs) adjacent to keywords
 separate the keyword from the subsequent token. One or more whitespace
 characters following VALUE are required to separate the
@@ -1008,42 +1009,7 @@ can be any instruction, including assignments,
 commands, message instructions, and keyword instructions (including any of
 the more complex constructs such as IF, SELECT, and the DO or LOOP instruction itself).
 </para></listitem>
-<listitem>
-<para>Within DO or LOOP instructions that allow subkeywords
-WHILE, UNTIL, OVER, WITH, INDEX, or ITEM,  these subkeywords are reserved
-in that they act as expression terminators for other keywords.  Thus they
-cannot be used as symbols in any of the expressions.
-Similarly, TO, BY, and FOR cannot be used in
-<emphasis role="italic">expri</emphasis>,
-<emphasis role="italic">exprt</emphasis>,
-<emphasis role="italic">exprb</emphasis>, or
-<emphasis role="italic">exprf</emphasis>.
-<indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
-FOREVER is also reserved, but only if it immediately
-follows the keyword DO or LOOP and is not followed by an equal sign.
-However, when used within terms like message terms or Variable Reference terms,
-or with parentheses around or within an expression,
-this can prevent these keywords from terminating an expression.
-For example,
-<example><title>Instructions &mdash; DO variable without parentheses</title>
-<programlisting>
-do i = 1 while i &lt; until
-   say i
-end
-</programlisting>
-</example>
-</para>
-<para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
-around the expression allows the variable UNTIL to be used:
-<example><title>Instructions &mdash; DO variable with parentheses</title>
-<programlisting>
-do i = 1 while (i &lt; until)
-   say i
-end
-</programlisting>
-</example>
-</para>
-</listitem>
+
 <listitem><para>The <emphasis role="italic">exprb</emphasis>
 option defaults to <computeroutput>1</computeroutput>,
 if relevant.</para></listitem>

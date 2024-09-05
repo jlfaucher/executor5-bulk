@@ -50,14 +50,32 @@
 <secondary>reservation of</secondary></indexterm>
 <indexterm><primary>reservation of keywords</primary></indexterm>
 <para>Keywords can be used as ordinary symbols in many unambiguous situations.
- The precise rules are given in this chapter.</para>
-<para>  The free syntax of Rexx implies that some symbols are reserved for use
-by the language processor in certain contexts.</para>
-<para>Within particular instructions, some symbols can be reserved to separate
+The precise rules are given in this chapter.
+</para>
+<para>The free syntax of Rexx implies that some symbols are reserved for use
+by the language processor in certain contexts.
+</para>
+<para>Within instructions like IF, DO, or SELECT, some symbols can be reserved to separate
 the parts of the instruction. These symbols are referred to as keywords.
 Examples of Rexx keywords are the WHILE keyword in a DO instruction and the
 THEN keyword, which acts as a clause terminator in this case, following an
-IF or WHEN clause.</para>
+IF or WHEN clause.
+</para>
+<para>While typically these reserved keywords act as expression terminators,
+using them within terms like message terms or Variable Reference terms,
+or with parentheses around or within the expression,
+can prevent these keywords from terminating the expression.
+</para>
+<para>Here is an example how in a DO loop a variable named UNTIL
+can still be used in a WHILE expression by putting parentheses around it.
+<example><title>Instructions &mdash; DO WHILE expression with parentheses</title>
+<programlisting>
+do i = 1 while (i &lt; until)
+   say i
+end
+</programlisting>
+</example>
+</para>
 <para>Apart from these cases, only simple symbols that are the first token in
 a clause and that is
 not a <xref linkend="labels" xrefstyle="template:label"/>,
