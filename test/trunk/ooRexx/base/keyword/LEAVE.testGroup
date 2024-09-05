@@ -214,33 +214,6 @@ return testResult
       End
    self~assertSame((i j k ci cj ck d), (4 1 1 3 3 17 23))
 
-::method "test_19"
-   self~expectSyntax(28.3)
-   c=0; i=0
-   Signal X0016
-   Do i=1 To 10
-   X0016: Leave i
-     End
-
-::method "test_20"
-   self~expectSyntax(28.1)
-   Call X0017
-   Signal Z0017
-   Do i=1 To 10
-   X0017: Leave                        /* iterate must fail              */
-     End
-   R0017: Return
-
-::method "test_21"
-   self~expectSyntax(28.1)
-   id='S0017A'; xrc=28
-   Do i=1 To 10
-   Call X0017A
-   Signal Z0017A
-   X0017A: Leave
-     End
-   R0017A: Return
-
 ::method "test_22"
    self~expectSyntax(28.3)
    c=0; i=0

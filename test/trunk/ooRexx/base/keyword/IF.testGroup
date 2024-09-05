@@ -199,22 +199,6 @@ return testResult
    r=r+1
    self~assertSame(r, 2)
 
-::method "test_26"
-   -- This test has deliberate syntax errors that are never executed
-   r1=1; r2=0;
-   x=-1
-   a51:x=x+1
-   If  x=0 ;   Then b511: Do; ; End;
-   self~assertTrue(1)
-   If  x=0     Then r1=0
-   r2=1
-   self~assertSame((r1 r2), (0 1))
-   r1=1; r2=0;
-   If  x=1 ;   Then b512: Do; ; End;
-   If  x=1     Then r1=0
-   r2=1
-   self~assertSame((r1 r2), (1 1))
-
 ::method "test_27"
    aa.=1
    Do i=1 to 2

@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,21 +35,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
-  group~add(.SIGNAL.testGroup)
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.SIGNAL.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  if group~isAutomatedTest then return group
+::requires 'ooTest.frm'
 
-  testResult = group~suite~execute~~print
-
-return testResult
-
-
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
-
-::class "SIGNAL.testGroup" subclass ooTestCase public
+::class SIGNAL.testGroup subclass ooTestCase public
 
 ::method "test_1"
    signal on syntax
@@ -268,3 +264,82 @@ return testResult
   syntax:
   self~assertNotSame("next clause", a)
 
+
+-- SIGNAL label tests
+
+::method test_no_label
+  -- String or symbol expected after SIGNAL keyword
+  self~assertSyntaxError(19.4, "signal")
+
+::method test_label_additional
+  -- Data must not follow the SIGNAL label name
+  self~assertSyntaxError(21.905, "signal lbl x")
+
+::method test_value_missing
+  -- Missing expression following VALUE keyword of a SIGNAL instruction
+  self~assertSyntaxError(35.915, "signal value")
+
+::method test_label_symbol_not_found
+  self~expectSyntax(16.1) -- Label "X" not found
+  signal x
+
+::method test_label_symbol
+  lbl = "FAIL"
+  signal lbl -- just a symbol, not a variable
+  fail: self~assertFail
+  lbl:
+
+::method test_label_literal
+  lbl = "FAIL"
+  signal "lbl" -- a literal, case-sensitive
+  lbl: "LBL": fail: self~assertFail
+  "lbl":
+
+::method test_label_literal_hex
+  lbl = "FAIL"
+  signal '41 42 43'x -- hex literal "ABC"
+  lbl: "abc": self~assertFail
+  abc:
+
+::method test_label_value_string
+  value = "ABC"
+  signal (value) -- an expression in parens
+  value: "abc": self~assertFail
+  '41 42 43'x:
+
+::method test_label_duplicate
+  signal lbl -- should transfer to first label found
+  nop; lbl: nop
+  return
+  lbl: self~assertFail
+
+::method test_label_if
+  if 0 then
+    signal fail
+  else
+    signal lbl -- ends IF
+  fail: self~assertFail
+  lbl:
+
+::method test_label_do
+  do 2
+    signal lbl -- ends DO
+  end
+  self~assertFail
+  lbl:
+
+::method test_label_select
+  select
+    when 0 then signal fail
+    otherwise signal lbl -- ends SELECT
+  end
+  fail: self~assertFail
+  lbl:
+
+::method test_label_interpret
+  interpret "signal lbl" -- ends INTERPRET
+  self~assertFail
+  lbl:
+
+
+::options all syntax
