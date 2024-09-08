@@ -1203,7 +1203,8 @@ changes are persistent even after RETURN or EXIT from the method.</para>
 visible to any other methods that share the same object variable scope. All
 other variables that a method uses are local to the method and are dropped on
 RETURN or EXIT. If an EXPOSE instruction is included, it must be the first
-instruction of the method.</para>
+instruction of the method and cannot be preceded by a label.
+</para>
 <para>If parentheses enclose a single <emphasis role="italic">name</emphasis>,
 then, after the variable <emphasis role="italic">name</emphasis> is exposed,
 the character string value of <emphasis role="italic">name</emphasis> is
