@@ -1,0 +1,3719 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chapOverview"><title>Brief Overview</title>
+<indexterm><primary>overview</primary></indexterm>
+<para>
+  ooDialog is a <emphasis role="italic">framework</emphasis> that aids ooRexx programmers in adding graphical elements
+  to their Rexx programs. The framework provides the base infrastructure, through a number of classes, that the
+  programmer builds on to quickly produce Windows dialogs. This book is a reference to the ooDialog classes, methods,
+  and utilities that make up the base infrastructure.
+</para>
+<para>
+  In general, the ooDialog framework simply provides the Rexx programmer with an interface to the Windows API, and
+  primarily to the part of the API that deals with dialogs and dialog controls. In almost all cases, the behavior of the
+  dialog and its controls is dictated by the Windows API. ooDialog has very little control of this. While this document
+  strives to be complete enough that a Rexx programmer, knowing very little of the Windows API, can effectively write
+  graphical programs in Rexx, it can never be as comprehensive as the actual Microsoft documentation. Therefore, the
+  Rexx programmer that needs, or desires, to go beyond the basic dialog and dialog behavior, will benefit greatly by
+  consulting the MSDN <xref linkend="defWindowsDoc"/>.
+</para>
+
+<section id="sctGettingStarted"><title>Getting Started</title>
+<para>
+  The ooDialog documentation should be divided into two parts - a tutorial and a reference. In the original
+  documentation accompanying IBM's Object Rexx, the documentation <emphasis role="bold">was</emphasis> in two parts.
+  Unfortunately, the tutorial portion mostly described how to use the
+  IBM Resource <link linkend="ovvResourceWorkshop">Workshop</link>. Because the tutorial section was primarily directed towards using the Resource Workshop, it does not
+  make much sense in the current context.
+</para>
+<para>
+  This book is primarily a reference that describes the classes and methods in detail. There is no tutorial contained
+  within the book. In ooDialog 4.2.0, a new document, the ooDialog User Guide has been started. It does contain a
+  tutorial section, but at this point it is still a work in progress. The User Guide is a good starting point for the
+  newcomer and will help to get started using ooDialog. In addition to the ooDialog User Guide, the sample ooDialog
+  programs that accompany the ooRexx distribution are probably the best additional source of help for learning how to
+  use ooDialog. However, there are also numerous snippets of example code in this book. In addition the
+  getting <link linkend="helpGettingHelp">help</link> section of this reference lists a number of resources for the
+  programmer with questions about ooDialog.
+</para>
+</section>
+
+<section id="sctTermDefs"><title>Definition of Terms</title>
+<para>
+  A collection of definitions and explanations for terms used in the ooDialog documentation. These terms may not be
+  familiar to the average Rexx programmer.
+</para>
+
+<section id="defClientArea" xreflabel="client area"><title>Client / Nonclient Area</title>
+<para>
+  The <emphasis role="italic">client area</emphasis> of a window is the part of a window where, normally, the window
+  does its active drawing. For a top-level window this is usually where an application displays its output. The title
+  bar, menu bar, window menu, minimize and maximize buttons, sizing border, and scroll bars are referred to
+  collectively as the window's <emphasis role="italic">nonclient</emphasis> area. The operating system manages most
+  aspects of the nonclient area. The application manages the appearance and behavior of its client area.
+</para>
+<para>
+  Dialogs are top-level windows, and the client area is the area where the dialog draws its controls. The nonclient
+  area is the border, title bar, etc.. For dialog controls, the client area is where the control draws itself. The
+  nonclient area would be the border of the control, if it has one.
+</para>
+</section>
+
+<section id="defColor" xreflabel="color number"><title>Color</title>
+<para>
+  Windows supports a method of specifying colors by using an index into a <emphasis role="italic">color palette</emphasis>,
+  see below. Palette color indexes are limited in number. The typical palette color indexes are 0 (black), 1 (dark red), 2
+  (dark green), 3 (dark yellow), 4 (dark blue), 5 (purple), 6 (blue grey), 7 (light grey), 8 (pale green), 9 (light blue), 10
+  (white), 11 (grey), 12 (dark grey), 13 (red), 14 (light green), 15 (yellow), 16 (blue), 17 (pink), 18 (turquoise).
+</para>
+</section>
+
+<section id="defColorPalette" xreflabel="color palette"><title>Color Palette</title>
+<para>
+  An array that contains color values identifying the colors that can currently be displayed or drawn on the output
+  device.
+</para>
+<para>
+  Color palettes are used by devices that can generate many colors but can only display or draw a subset of them at a
+  time. For such devices, Windows maintains a system palette to track and manage the current colors of the device.
+</para>
+<para>
+  Applications do not have direct access to this system palette. Instead, Windows associates a default palette with each
+  device context. Applications can use the colors in the default palette.
+</para>
+<para>
+  The default palette is an array of color values identifying the colors that can be used with a device context by
+  default. Windows associates the default palette with a context whenever an application creates a context for a device
+  that supports color palettes. The default palette ensures that colors are available for use by an application without
+  any further action. The default palette typically has 20 entries (colors), but the exact number of entries can vary
+  from device to device.  The colors in the default palette depend on the device. Display devices, for example, often
+  use the 16 standard colors of the VGA display and 4 other colors defined by Windows.
+</para>
+</section>
+
+<section id="defColorRef" xreflabel="COLORREF"><title>COLORREF</title>
+<para>
+  Windows uses a type named COLORREF to specify colors as RGB values. The RGB color model specifies a color by using a
+  number, 0 to 255, to represent each of the three primary colors, red, green, and blue. A COLORREF is a single number that
+  Windows will interpret as the 3 values for red, green, and blue. Many of the Windows APIs use a COLORREF as an argument
+  when working with colors.
+</para>
+<para>
+  ooDialog provides a number of methods to make it easy for the programmer to create a COLORREF number by specifying the 3
+  red, green, and blue values separately. Among these methods are the <xref linkend="mthColorRef"/> class method of the <xref
+  linkend="clsImage"/> class and the <xref linkend="mthRGB"/> method of the <xref linkend="clsCustomDraw"/> class.
+</para>
+</section>
+
+<section id="defConventionalHex" xreflabel="hexadecimal"><title>Conventional Hexadecimal Format</title>
+<para>
+  There are a number of methods in the ooDialog framework that have an argument that can be in numeric format, a whole
+  number, or in a <emphasis role="italic">conventional hexadecimal</emphasis> format. For the purposes of this
+  documentation this hexadecimal format is defined to be a Rexx string that begins with &quot;0x&quot; followed by a
+  maximum of 16 characters, which are only characters that represent hexadecimal numbers. I.e., &quot;0&quot; through
+  &quot;F&quot;. The following is meant to clarify this:
+</para>
+<programlisting>
+<![CDATA[
+-- Acceptable:
+"0xffff"
+"0XFFFF"
+"0x000012aB"
+"0xFFFF0000aaaa9999"
+"0x0"
+
+-- Incorrect:
+" 0xffff"              -- leading space
+"0XFZFF"               -- Z is not a hexadecimal symbol
+"000012ab"             -- second character must be x
+"0x0123456789ABCDEF1"  -- 17 characters
+"00x0"                 -- second character must be x, not 0
+]]>
+</programlisting>
+</section>
+
+<section id="defPoundDefine" xreflabel="definitions"><title>#define Statement</title>
+<para>
+  Define statements are often used in the C and C++ languages to define symbolic names for numerical values.  Because of
+  this, it is common in Windows programs with dialogs to define symbolic names for resource IDs.  Most Windows resource
+  editors use symbolic IDs, (some to a limited degree, others exclusively.)  Often the define statements are put in a
+  header file so they are available both to the resource compiler and to the program code.  The defines take the form
+  of: <computeroutput>#define symbolicName numericValue </computeroutput> as in this example:
+</para>
+<programlisting>
+<![CDATA[
+#define   ID_PUSHBUTTON1  413
+#define   ID_EDIT1        511
+#define   ID_LISTBOX1     602
+]]>
+</programlisting>
+</section>
+
+<section id="defDeviceContext" xreflabel="device context"><title>Device Context</title>
+<para>
+  A device context is associated with all windows that appear on the screen, such as a dialog or a dialog control. It
+  is a drawing area managed by a window.  A device context stores information about the graphic objects that are
+  displayed, such as bitmaps, lines, and pixels, and the tools used to display them, such as pens, brushes, and fonts. A
+  device context can be acquired for a dialog or a dialog control. It must be explicitly freed when the text or graphic
+  operations are completed.
+</para>
+</section>
+
+<section id="defDialogIcon" xreflabel="dialog icon"><title>Dialog Icon</title>
+<para>
+  The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
+  displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
+  role="italic">application</emphasis> icon.  The dialog icon is also used for the Task Bar display and in the AltTab
+  task switcher application.
+</para>
+<para>
+  The dialog icon for a specific dialog can be set when the dialog is run using one of the execute methods.  See the
+ <xref linkend="mthExecute"/> or <xref linkend="mthPopup"/> methods for example.  ooDialog provides
+  four icon images for use in dialogs.  Other, custom, icons can be used by including the icon in a binary (compiled)
+  resource, a resource script, or by using the <xref linkend="mthAddIconResource"/> method of the
+  UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
+  symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
+  should avoid using any of the <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> symbolic IDs reserved by
+  ooDialog. The IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be
+  used where a dialog icon ID is needed.
+</para>
+<table frame="all">
+<title>ooDialog Supplied Icons</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Description</entry>
+<entry>Symbolic ID</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>The default, the letters OOD</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+</row>
+<row>
+<entry>Dialog box image</entry>
+<entry>IDI_DLG_APPICON</entry>
+</row>
+<row>
+<entry>Fancier dialog box image</entry>
+<entry>IDI_DLG_APPICON2</entry>
+</row>
+<row>
+<entry>The ooRexx image</entry>
+<entry>IDI_DLG_OOREXX</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="defDialogUnit" xreflabel="dialog unit"><title>Dialog Unit</title>
+<para>
+  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
+  measurements are device independent. This allows a single template to be used to create the same dialog box for all
+  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
+  appearance on all screens despite differing resolutions and aspect ratios between screens.
+</para>
+<para>
+  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
+</para>
+<para>
+  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
+  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
+  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
+  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
+  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
+  pt font and are incorrect for a dialog using any other font.
+</para>
+<para>
+  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
+  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
+  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
+<programlisting>
+<![CDATA[
+xPixels = xDialogUnits * self~FactorX
+]]>
+</programlisting>
+  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will be
+  <xref linkend="ovvInaccurate"/>.
+</para>
+</section>
+
+<section id="defHandle" xreflabel="handle"><title>Handle</title>
+<para>
+  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
+  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
+  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
+  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
+  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
+</para>
+</section>
+
+<section id="defHeaderFile" xreflabel="file"><title>Header File</title>
+<para>
+  A common practice when programming applications in Windows that use dialogs and dialog resources is to place symbolic
+  defines in a separate file.  These files often have a .h extension and are usually called header files.  Windows
+  resource editors often manage a header file for the symbolic IDs automatically. (For instance Microsoft's dialog
+  editor creates, writes, and reads the resource ID header file completely on its own. The user does not need to take
+  any action other than including the file in her program.)
+</para>
+</section>
+
+<section id="defModalModeless" xreflabel="modal"><title>Modal and Modeless Dialogs</title>
+<para>
+  <indexterm><primary>Modal dialog</primary></indexterm>
+  <indexterm><primary>Modeless dialog</primary></indexterm>
+  Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
+  input to all other windows started by the program. The user can not switch to another window in the program without
+  closing the modal dialog. In ooDialog this is often all other dialogs started by the program. A <emphasis
+  role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
+  switch away from a modeless dialog and work with any of the other dialogs in the program.
+</para>
+<para>
+  Be aware that the original developers of ooDialog choose to not implement true modal dialogs. Rather, they implemented
+  a strategy where all dialogs are created as modeless dialog and the ooDialog framework keeps track of the last dialog
+  executed. This <emphasis role="italic">last executed</emphasis> dialog is then manually disabled to mimic the
+  behaviour of true modal dialogs. While this strategy is usually sufficient, it will sometimes cause the wrong dialog
+  to be disabled.
+</para>
+<para>
+  In the ooDialog framework use the <xref linkend="mthExecute"/> method to create modal dialogs and the
+ <xref linkend="mthPopup"/> or <xref linkend="mthPopupAsChild"/> methods to create
+  modeless dialogs.
+</para>
+</section>
+
+<section id="defPixel" xreflabel="pixel"><title>Pixel</title>
+<para>
+  Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
+  supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
+  Modern displays support much higher resolutions. 1600 by 1200 is common and displays with 2560x1600 are available.
+  Pixel values start at the top left corner of the main display, with that corner being (0,0). Prior to dual monitor
+  capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
+  virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
+  possible.
+</para>
+</section>
+
+<section id="defResourceEditor" xreflabel="resource editor"><title>Resource Editor</title>
+<para>
+  Resource editors are visual tools used to create a dialog <xref linkend="ovvDialogTemplate"/> in a text
+  file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
+  editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
+  are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
+  look of a dialog and reduce the amount of trial and error design inherent in using the
+  <xref linkend="clsUserDialog"/> class.
+</para>
+</section>
+
+<section id="defResourceId" xreflabel="resource ID"><title>Resource ID</title>
+<para>
+  A resource ID is the identification number of a dialog resource. There are several different types of dialog
+  resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
+  for your dialog.  An ID can be either numerical (for example, 1) or symbolic (for example, "IDOK").
+</para>
+<para>
+  IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
+  ID, when using <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs within the ooDialog framework it is
+  advisable to give all resources unique numerical IDs.
+</para>
+</section>
+
+<section id="defResourceScript" xreflabel="script"><title>Resource Script</title>
+<para>
+  Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
+  extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
+  resource script defines a dialog <xref linkend="ovvDialogTemplate"/>. The format of the text is defined
+  by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
+  compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
+  ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
+  basis of how a <xref linkend="clsRcDialog"/> works.
+</para>
+</section>
+
+<section id="defScreenCoordinates" xreflabel="coordinates"><title>Screen / Client Coordinates</title>
+<para>
+  Points on the screen are described as x and y coordinate pairs (x,y). The x coordinates increase to the right, y
+  coordinates increase towards the bottom. <emphasis role="italic">Screen</emphasis> and <emphasis
+  role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
+  coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
+  the screen. Client coordinates on the other hand have an origin of the upper left corner of the
+  <xref linkend="defClientArea"/> of the window.  Both screen and client coordinates are always given in the
+  device unit of the display, which for all practical purposes is a <xref linkend="defPixel"/>.
+</para>
+</section>
+
+<section id="defSymbolicId" xreflabel="symbolic"><title>Symbolic ID</title>
+<para>
+  A symbolic name is a constant symbol that uniquely identifies a specific entity in a program. Defining a symbolic name
+  for each numeric resource ID is often done in programs that work with resource IDs.  The symbolic name is then used
+  where ever a numeric resource ID is needed.  Symbolic names are easier to remember than numeric IDs and can make the
+  code easier to understand.
+</para>
+<para>
+  Symbolic names are most often used in compiled programs, where a preprocessor replaces each occurrence of the symbolic
+  name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
+  languages because there is no preprocessor step where substitutions can be made. However, ooDialog provides a robust
+  and useful <xref linkend="ovvSymbolicIDMechanism"/> for using symbolic IDs in ooDialog programs.
+  Programmers wishing to use symbolic resource IDs in their programs should be familiar with this
+  <xref linkend="ovvSymbolicIDMechanism"/>.
+</para>
+</section>
+
+<section id="defSysColor" xreflabel="system color"><title>SystemColor</title>
+<para>
+  The Windows operating system maintains a table of system colors for each display element. Display elements are the
+  parts of a window and the display that appear on the system display screen. The user can customize the color of each
+  display element, so each element is assigned a unique numeric and symbolic ID. Referring to one of the system colors
+  by its ID allows the programmer to use the correct color of a display element without having to know if the user has
+  customized the color for that element or not.
+</para>
+<para>
+  The following table lists the numeric and symbolic keyword for each display element. In the ooDialog framework, for
+  methods that work with the system colors, like <xref linkend="mthSetSysColor"/> or
+ <xref linkend="mthSetControlSysColor"/>, the system color can be specified using either its numeric
+  ID or its keyword. Note that the operating system symbol for each keyword actually is prefaced by COLOR_. I.e., the
+  actual symbol for 3DDKSHADOW is COLOR_3DDKSHADOW, for 3DFACE the symbol is COLOR_3DFACE, etc.. This table lists the
+  ooDialog keyword.
+</para>
+<table id="tblSysColors" frame="all">
+<title>System Color Elements</title>
+<tgroup cols="3">
+<colspec colwidth="1*" />
+<colspec colwidth="6*" />
+<colspec colwidth="6*" />
+<thead>
+<row>
+  <entry>ID</entry>
+  <entry>Symbol</entry>
+  <entry>Element</entry>
+</row>
+</thead>
+<tbody>
+<row>
+  <entry>21</entry>
+  <entry>3DDKSHADOW</entry>
+  <entry>Dark shadow for three-dimensional display elements.</entry>
+</row>
+<row>
+  <entry>15</entry>
+  <entry>3DFACE</entry>
+  <entry>Face color for three-dimensional display elements and for dialog box backgrounds.</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>3DHIGHLIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>3DHILIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>22</entry>
+  <entry>3DLIGHT</entry>
+  <entry>Light color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>16</entry>
+  <entry>3DSHADOW</entry>
+  <entry>Shadow color for three-dimensional display elements (for edges facing away from the light source).</entry>
+</row>
+<row>
+  <entry>10</entry>
+  <entry>ACTIVEBORDER</entry>
+  <entry>Active window border.</entry>
+</row>
+<row>
+  <entry> 2</entry>
+  <entry>ACTIVECAPTION</entry>
+  <entry>Active window title bar. Specifies the left side color in the color gradient of an active window's title bar if the gradient effect is enabled.</entry>
+</row>
+<row>
+  <entry>12</entry>
+  <entry>APPWORKSPACE</entry>
+  <entry>Background color of multiple document interface (MDI) applications.</entry>
+</row>
+<row>
+  <entry> 1</entry>
+  <entry>BACKGROUND</entry>
+  <entry>Desktop.</entry>
+</row>
+<row>
+  <entry>15</entry>
+  <entry>BTNFACE</entry>
+  <entry>Face color for three-dimensional display elements and for dialog box backgrounds.</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>BTNHIGHLIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>BTNHILIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>16</entry>
+  <entry>BTNSHADOW</entry>
+  <entry>Shadow color for three-dimensional display elements (for edges facing away from the light source).</entry>
+</row>
+<row>
+  <entry>18</entry>
+  <entry>BTNTEXT</entry>
+  <entry>Text on push buttons.</entry>
+</row>
+<row>
+  <entry> 9</entry>
+  <entry>CAPTIONTEXT</entry>
+  <entry>Text in caption, size box, and scroll bar arrow box.</entry>
+</row>
+<row>
+  <entry> 1</entry>
+  <entry>DESKTOP</entry>
+  <entry>Desktop.</entry>
+</row>
+<row>
+  <entry>27</entry>
+  <entry>GRADIENTACTIVECAPTION</entry>
+  <entry>Right side color in the color gradient of an active window's title bar if the gradient effect is enabled. ACTIVECAPTION specifies the left side color.</entry>
+</row>
+<row>
+  <entry>28</entry>
+  <entry>GRADIENTINACTIVECAPTION</entry>
+  <entry>Right side color in the color gradient of an inactive window's title bar. INACTIVECAPTION specifies the left side color.</entry>
+</row>
+<row>
+  <entry>17</entry>
+  <entry>GRAYTEXT</entry>
+  <entry>Grayed (disabled) text. This color is set to 0 if the current display driver does not support a solid gray color.</entry>
+</row>
+<row>
+  <entry>13</entry>
+  <entry>HIGHLIGHT</entry>
+  <entry>Item(s) selected in a control.</entry>
+</row>
+<row>
+  <entry>14</entry>
+  <entry>HIGHLIGHTTEXT</entry>
+  <entry>Text of item(s) selected in a control.</entry>
+</row>
+<row>
+  <entry>26</entry>
+  <entry>HOTLIGHT</entry>
+  <entry>Color for a hyperlink or hot-tracked item.</entry>
+</row>
+<row>
+  <entry>11</entry>
+  <entry>INACTIVEBORDER</entry>
+  <entry>Inactive window border.</entry>
+</row>
+<row>
+  <entry> 3</entry>
+  <entry>INACTIVECAPTION</entry>
+  <entry>Inactive window caption. Specifies the left side color in the color gradient of an inactive window's title bar if the gradient effect is enabled.</entry>
+</row>
+<row>
+  <entry>19</entry>
+  <entry>INACTIVECAPTIONTEXT</entry>
+  <entry>Color of text in an inactive caption.</entry>
+</row>
+<row>
+  <entry>24</entry>
+  <entry>INFOBK</entry>
+  <entry>Background color for tooltip controls.</entry>
+</row>
+<row>
+  <entry>23</entry>
+  <entry>INFOTEXT</entry>
+  <entry>Text color for tooltip controls.</entry>
+</row>
+<row>
+  <entry> 4</entry>
+  <entry>MENU</entry>
+  <entry>Menu background.</entry>
+</row>
+<row>
+  <entry>29</entry>
+  <entry>MENUHILIGHT</entry>
+  <entry>The color used to highlight menu items when the menu appears as a flat menu. The highlighted menu item is outlined with HIGHLIGHT.</entry>
+</row>
+<row>
+  <entry>30</entry>
+  <entry>MENUBAR</entry>
+  <entry>The background color for the menu bar when menus appear as flat menus. However, MENU continues to specify the background color of the menu popup.</entry>
+</row>
+<row>
+  <entry> 7</entry>
+  <entry>MENUTEXT</entry>
+  <entry>Text in menus.</entry>
+</row>
+<row>
+  <entry> 0</entry>
+  <entry>SCROLLBAR</entry>
+  <entry>Scroll bar gray area.</entry>
+</row>
+<row>
+  <entry> 5</entry>
+  <entry>WINDOW</entry>
+  <entry>Window background.</entry>
+</row>
+<row>
+  <entry> 6</entry>
+  <entry>WINDOWFRAME</entry>
+  <entry>Window frame.</entry>
+</row>
+<row>
+  <entry> 8</entry>
+  <entry>WINDOWTEXT</entry>
+  <entry>Text in windows.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+<section id="defSystemErrorCode" xreflabel="system error code"><title>System Error Code</title>
+<para>
+  The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating
+  system when an API fails. ooDialog provides an interface to the Windows APIs and when an error is detected many of
+  the ooDialog methods have some means of conveying the system error code to the programmer. The ooDialog programmer can
+  look up the meaning of a system error code in the MSDN <xref linkend="defWindowsDoc"/> to understand
+  better the cause of a failure.
+</para>
+<para>
+  ooDialog provides the <xref linkend="dotSystemErrorCode"/> environment entry as a means for the
+  Rexx programmer to determine the value of the system error code after a method has executed. Note that not all of the
+  Windows APIs set the system error code. And, likewise, not all of the ooDialog methods set the
+  <computeroutput>.systemErrorCode</computeroutput>.
+</para>
+</section>
+
+<section id="defWindowsDoc" xreflabel="documentation"><title>Windows Documentation</title>
+<para>
+  The term <emphasis role="italic">Windows documentation</emphasis> is used throughout the ooDialog reference to refer
+  to the Windows Operating System documentation provided by Microsoft.  The documentation is called the <emphasis
+  role="bold">MSDN Library</emphasis>.  The library is provided online for anyone to access. In addition, since May
+  2006, Microsoft has also provided free of charge the ISO images of the library installation program.  Anyone can
+  download the ISOs, burn them to a CD and install the library locally on their system.
+</para>
+<para>
+  It is not necessary for the ooDialog programmer to know or understand the underlying Windows API that ooDialog is
+  built on.  However, as programmers write more sophisticated ooDialog applications, it may prove helpful to look up
+  certain details in the MSDN Library. The information below is provided to help the ooDialog programmer locate the
+  MSDN Library, if they would like to. All things on the Internet change. The URLs listed here are accurate at the time
+  of this writing.
+</para>
+<para>
+  The online MSDN Library is currently located at:
+</para>
+<para>
+  http://msdn2.microsoft.com/en-us/library/default.aspx.
+</para>
+<para>
+  Directions to the downloadable ISO images of the MSDN Library have been posted on this blog entry:
+</para>
+<para>
+  http://blogs.msdn.com/robcaron/archive/2006/07/26/678897.aspx
+</para>
+<para>
+  A Google search using: <computeroutput>"Rob Caron" General Downloads MSDN Library</computeroutput> should also turn up
+  the blog entry.
+</para>
+</section>
+
+<section id="defPlatformSDK" xreflabel="SDK"><title>Windows Platform SDK</title>
+<para>
+  The <emphasis role="italic">Windows Platform SDK</emphasis> is provided free of charge by Microsoft.  The SDK is not
+  needed to write ooDialog programs.  However, combining the use of the documentation in the MSDN Library with the SDK
+  allows very sophisticated ooDialog programs to be written.  In general, the ooDialog framework takes care of the
+  low-level details needed to work with the Windows API.  However, there are a few generic ooDialog methods
+  that provide direct access to the Windows API.
+</para>
+<para>
+  As an example, the <xref linkend="mthAddUserMsg"/> method allows the programmer to connect any
+  Windows message sent to a dialog to a method in his ooDialog class.  To use this method, the programmer would go to
+  the MSDN library to look up details on the message and message parameters he is interested in.  He would then use the
+  Platform SDK to determine the numeric value of the Windows message and possibly the numeric values of its parameters.
+</para>
+<para>
+  This link provides some good information on the Platform SDK in general and also points the reader to where to get a
+  SDK.
+</para>
+<para>
+  http://en.wikipedia.org/wiki/Platform_SDK
+</para>
+<para>
+  Again, note that it is not at all necessary to obtain, or understand details concerning, the Platform SDK.  This
+  information is provided for those programmers that have reached the point where they think a method like
+  <computeroutput>addUserMessage</computeroutput> might help them and need some direction as to how to go about using
+  it.
+</para>
+</section>
+
+</section> <!-- End: Definition of Terms -->
+
+<section id="sctGeneralOODialog"><title>Common Concepts</title>
+<para>
+  Many concepts and behaviors in ooDialog, and statements about ooDialog are general in nature. This section gathers up
+  this information in one place.  Rather than repeating this information in every method or class description to which
+  it applies, the author will assume that the reader understands that the information is always applicable unless
+  specifically stated otherwise.
+</para>
+
+<section id="ovvDeprecated" xreflabel="deprecated"><title>Deprecated</title>
+<para>
+  PROVIDE TEXT
+</para>
+</section>
+
+<section id="ovvDialogTemplate" xreflabel="template"><title>Dialog Template</title>
+<para>
+  <indexterm><primary>Template, Dialog</primary></indexterm>
+  The <xref linkend="ovvUnderlying"/> dialog seen by the user is created by the operating system from a
+  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
+  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
+  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
+  textual representation can then be translated by software tools to the binary form of the template needed by the
+  operating system.
+</para>
+<para>
+  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
+  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
+  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a
+ <xref linkend="clsResDialog"/> to use a binary resource. Resource scripts, (usually a .rc file) supply the
+  dialog template in a text file. The programmer subclasses a <xref linkend="clsRcDialog"/> to create a
+  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
+  a <xref linkend="clsUserDialog"/> and then uses the <xref linkend="sctCreateMethods"/> methods of that class to create the
+  dialog template. The <computeroutput>UserDialog</computeroutput> object translates the program statements into the
+  in-memory dialog template required by the operating system. The
+  <computeroutput>RcDialog</computeroutput> object parses the resource script and converts the resource script
+  statements into an in-memory dialog template by invoking the proper methods of its superclass, the
+<computeroutput>UserDialog</computeroutput>.
+</para>
+</section>
+
+<section id="ovvEvents" xreflabel="event"><title>Events</title>
+<para>
+  The ooDialog framework facilitates the use of a type of programming often called <emphasis role="italic">event
+  driven programming</emphasis>. In event driven programming, the program usually does some initial set up and then
+  sits in some type of loop waiting to be signaled that an event just happened.  The Windows graphical windowing
+  system is designed to be programmed this way. The Windows operating system uses <emphasis
+  role="italic">messages</emphasis> to notify each window in the system of events specific to that window. Typically
+  events are generated by the user. For instance, clicking a button, typing a key, moving the mouse, all generate
+  events. The operating system notifies the window with the input focus of those events by sending <xref
+  linkend="ovvWindowMessages"/>s to the window. Note that some events are generated by the operating system itself. For
+  instance, when the user moves a window that uncovers a portion of a window beneath it, the operating system will send a
+  message to the underlying window notifying it that it needs to redraw the uncovered portion.
+</para>
+<para>
+  Once the basic set up for an ooDialog program is done, the dialog object basically sits there waiting for an
+  <emphasis role="italic">event</emphasis> of interest to happen. When the event happens, the program responds by
+  taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
+  framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
+  majority of the event connection methods are part of the <xref linkend="clsEventNotification"/>
+  class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
+  the method handles the event.
+</para>
+<variablelist>
+  <varlistentry id="ovvEventsDirectReply" xreflabel="directly"><term><emphasis role="bold">Directly Reply</emphasis></term>
+  <listitem>
+  <para>
+    Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
+    the reply is significant. Prior to the introduction of the C++ <link linkend="sctHistory">native</link> APIs, there was
+    <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
+    notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
+    system could not be used with this restriction. For instance, when a user selects a new tab in a
+    <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
+    tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
+  </para>
+  <para>
+    Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
+    SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
+    in ooDialog 4.2.0, the event handling methods in the Rexx dialog object can be directly invoked from the Windows
+    message processing loop. This allows the Rexx dialog object to reply directly to the notification message.
+  </para>
+  <para>
+    In addition, the underlying Windows message processing loop provides a form of synchronization in Windows
+    applications. Within the loop, a Windows application receives a message, processes it, then receives the next message,
+    processes it, and so on. In older ooDialog programs this synchronization was lost because ooDialog put the received
+    message on a queue, received the next message, put it on the queue, and continued. This meant that many messages could
+    be received in the processing loop before a single message was process by the ooDialog program. This loss of
+    synchronization caused ooDialog applications to perform poorly.
+  </para>
+  <para>
+    The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
+    also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
+    in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link> in the
+    <computeroutput>EventNotification</computeroutput> class documentation.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="ovvInaccurate" xreflabel="inaccurate"><title>factorX / factorY</title>
+<para>
+  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
+  <xref linkend="chpDialogObject"/> object were intended to provide a way to convert between <link
+  linkend="defPixel">pixels</link> and dialog <link linkend="defDialogUnit">units</link>, and vice versa. Although their
+  values may have been correct when ooDialog was originally <link linkend="sctHistory">designed</link>, in almost all cases
+  the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is not correct.
+</para>
+<para>
+  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> to convert between pixels and dialog units. This in turn makes all of
+  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
+  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
+  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
+</para>
+</section>
+
+<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
+<para>
+  The IBM Resource Workshop was a visual <xref linkend="defResourceEditor"/> included with IBM Object Rexx. The Resource
+  Workshop could not be contributed to the open source community and is therefore not a part of the
+  Open Object Rexx project.
+</para>
+<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
+  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
+  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
+  Workshop did. (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
+  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
+</para>
+</section>
+
+<section id="ovvNumbers" xreflabel="numbers"><title>Numbers in ooDialog:</title>
+<para>
+  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
+  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
+  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
+  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
+  method accepts fractional numbers for the argument.
+</para>
+</section>
+
+<section id="ovvPreDefinedSymbolicIDs"><title>Predefined Symbolic IDs</title>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and always available to the programmer. They are
+  placed in the either the <xref linkend="atrConstDir"/> attribute when an instance of a dialog class is
+  created, or in the global <xref linkend="dotConstDir"/>. Where they are placed is dependent on the
+ <xref linkend="mthUseGlobalConstDir"/> of the <computeroutput>.constDir</computeroutput>. All symbolic
+  names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog
+  programmer.
+</para>
+<para>
+  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign in their
+  programs.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Predefined by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Symbolic ID</entry>
+<entry>Numeric ID or Symbol</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>IDOK</entry>
+<entry>1</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCANCEL</entry>
+<entry>2</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDABORT</entry>
+<entry>3</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDRETRY</entry>
+<entry>4</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDIGNORE</entry>
+<entry>5</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDYES</entry>
+<entry>6</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDNO</entry>
+<entry>7</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCLOSE</entry>
+<entry>8</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDHELP</entry>
+<entry>9</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDTRYAGAIN</entry>
+<entry>10</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCONTINUE</entry>
+<entry>11</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDC_STATIC</entry>
+<entry>-1</entry>
+<entry>ID for static controls</entry>
+</row>
+<row>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon image</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para id="paraGenericResources">
+  The symbolic IDs in the table following IDC_STATIC are the IDs of some generic
+  <xref linkend="chapResources"/> that are bound to the oodialog.dll file.  They can be used in any ooDialog
+  program and are accessed using the <xref linkend="clsResourceImage"/> class. Programmers should
+  always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions of
+  ooDialog.
+</para>
+</section>
+
+<section id="ovvComctl32" xreflabel="Library"><title>Required Common Control Library (Comctl32) Version</title>
+<para>
+  The dialog control windows used in dialogs, List-Views, Edit, Tree-Views, etc., are supplied by Microsoft in the
+  common controls library. This is a DLL with the name comctl32.dll.  Every version of Windows is supplied with a common
+  controls library.  However, Microsoft has updated the library a number of times to provide enhanced functionality and
+  improved features
+</para>
+<para>
+  Each new version of the library is backwards compatible with previous versions, but, it will contain features not
+  available in older versions.  For instance, some of the List-View extended <link
+  linkend="varListControlExtendedStyles">styles</link> are only available with a 6.0, or later, version of the common
+  controls library.  ooDialog can only provide the features available in the version of the common controls library on the
+  system ooDialog is running on.
+</para>
+<para>
+  Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
+  available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method,
+ <xref linkend="mthComCtl32Version"/> that allows the programmer to determine the exact version of
+  the common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
+  features that are not available in all versions of the common control library are noted.  The minimum version of the
+  library that is needed is listed.  In general, at this time, all features of ooDialog are available on Windows XP
+  or later.  This may change in the future as Vista has common control features not available on XP.
+</para>
+</section>
+
+<section id="ovvRectangleCoordinates" xreflabel="rectangle"><title>Rectangle Coordinates</title>
+<para>
+  The ooDialog framework, and Windows itself, often use a <xref linkend="clsRect"/> object to specify
+  coordinates of a window, or a portion of a window. However, there are two different ways the rectangle is used. For
+  purposes of this documentation, the two types of rectangle are defined as a <emphasis role="bold">bounding</emphasis>
+  rectangle and a <emphasis role="bold">point/size</emphasis> rectangle.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bounding Rectangle:</emphasis></term>
+  <listitem>
+  <para>
+    In a <emphasis role="italic">bounding</emphasis> rectangle, the members of the <computeroutput>Rect</computeroutput>
+    object define the upper left point of the rectangle and the lower right point of the rectangle. That is, the
+    <emphasis role="italic">left</emphasis> and <emphasis role="italic">top</emphasis> attributes of the
+    <computeroutput>Rect</computeroutput> object are the (x,y) coordinates of the upper left corner of the rectangle and
+    the <emphasis role="italic">right</emphasis> and <emphasis role="italic">bottom</emphasis> attributes are the
+    (x1,y1) coordinates of the bottom right corner of the rectangle.
+  </para>
+  <para>
+    In this usage, the width of the rectangle is derived by subtracting the <emphasis role="italic">left</emphasis>
+    attribute from the <emphasis role="italic">right</emphasis> attribute and the height of the rectangle is derived by
+    subtracting the <emphasis role="italic">top</emphasis> attribute from the <emphasis role="italic">bottom</emphasis>
+    attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Point / Size Rectangle:</emphasis></term>
+  <listitem>
+  <para>
+    In a <emphasis role="italic">point / size</emphasis> rectangle, the members of the
+    <computeroutput>Rect</computeroutput> object define the upper left point of the rectangle and the size of the
+    rectangle. That is, the <emphasis role="italic">left</emphasis> and <emphasis role="italic">top</emphasis>
+    attributes of the <computeroutput>Rect</computeroutput> object are the (x,y) coordinates of the upper left corner of
+    the rectangle. The <emphasis role="italic">right</emphasis> attribute of the <computeroutput>Rect</computeroutput>
+    object is the width of the rectangle. The <emphasis role="italic">bottom</emphasis> attribute is the height of the
+    rectangle
+  </para>
+  <para>
+    In this usage, the x coordinate of lower right corner of the rectangle is derived by adding the <emphasis
+    role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> attributes. The y coordinate of the lower
+    corner of the rectangle is derived by adding the <emphasis role="italic">top</emphasis> and <emphasis
+    role="italic">bottom</emphasis> attributes.
+  </para>
+  </listitem></varlistentry>
+</variablelist> </section>
+
+<section id="ovvRequiredWindows" xreflabel="Requires"><title>Required Windows Version</title>
+<para>
+  The required Windows version is similar to the required Common Control <xref linkend="ovvComctl32"/> library version.
+  Later versions of the Windows operating system have dialog and dialog control features not available in earlier
+  versions of the operating system.
+</para>
+<para>
+  For instance, the <xref linkend="clsMonthCalendar"/> class has a number of methods that are only
+  available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
+  a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
+  method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
+  noted in their documentation.
+</para>
+<para>
+   The <xref linkend="clsOS"/> class supplies methods that allow the programmer to determine exactly which
+   operating system version the program is currently executing on. For programs that need to run on all versions of
+   Windows, the programmer must either avoid using methods not available on all versions, or test for the current
+   version and provide an alternative code path dependent on that version.  The  <xref linkend="mthIsAtLeastVista"/>
+   method of the <emphasis role="italic">OS</emphasis> class provides an example of this.
+</para>
+</section>
+
+<section id="ovvUnderlying" xreflabel="underlying"><title>Underlying Dialog Creation</title>
+<para>
+  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
+  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
+  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
+  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
+  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
+  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
+  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
+  by the operating system.
+</para>
+<para>
+  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
+  objects can only be used after the underlying Windows dialog has been created.  In general this means in the
+ <xref linkend="mthInitDialog"/> method or later in the life cycle of the dialog. In particular, the
+ <xref linkend="mthDefineDialog"/> method of the <xref linkend="clsUserDialog"/> class executes before the underlying
+  dialog is created. Therefore, any method that requires the underlying dialog to have been created can not work in the
+  <emphasis role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
+  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
+  had no effect.
+</para>
+<para>
+  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
+  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
+  implemented over time and may not yet be completed.
+</para>
+</section>
+
+<section id="ovvUndocumented"><title>Undocumented Items</title>
+<para>
+  ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
+  framework. Any of these items that are undocumented should not be used by the Rexx programmer. If the programmer does
+  use any undocumented features in the framework, he does so at his own risk. The framework strives to be backwards
+  compatible, but only for documented features. Undocumented features in the framework are intended for internal use
+  only and are subject to change, or even removal from the framework.
+</para>
+<para>
+  In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
+  caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
+  documented for internal use. These features are also subject to change.
+</para>
+</section>
+
+<section id="ovvSymbolicIDMechanism" xreflabel="mechanism"><title>Using Symbolic IDs in ooDialog:</title>
+<para>
+  ooDialog allows programmers to use <xref linkend="defSymbolicId"/> resource IDs in their programs. The
+  symbolic ID can be used for any argument in any method that requires a resource ID. Although this is mostly
+  transparent to the programmer, if the programmer is going to use symbolic IDs, he should understand the basics of the
+  mechanism allowing the use of symbolic IDs.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Resolving Symbolic IDs:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are symbolic names.
+    The value for the item at each index is the numeric value of the symbolic name. This gave rise to the object name of
+    <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
+    argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
+    simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the
+    constant directory object. If the argument matches an index in the object, the value of the index is used as the
+    numeric value of the resource ID. When the argument does not match an index in the constDir, the method fails.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">constDir Attribute:</emphasis></term>
+  <listitem>
+  <para>
+    Originally the constDir was implemented as an <xref linkend="atrConstDir"/> of the dialog object. Each
+    dialog object then has its own constDir, which was used to resolve symbolic IDs where needed in the methods of the
+    dialog. Each dialog control has a reference to its owner dialog, allowing the dialog object's constDir to be used to
+    resolve symbolic IDs for the methods of the control. This mechanism exists unchanged in the current ooDialog
+    framework.
+  </para>
+  <para>
+    However, as enhancements to ooDialog started to be made in version 4.0.0 and later, it became apparent that the
+    constDir attribute was not adequate. Classes such as the <xref linkend="clsMenu"/> classes and
+    <xref linkend="clsResourceImage"/> class also used resource IDs, but objects of these classes are
+    independent of any dialog object. Without access to a dialog object, there was no way in those classes to use symbolic
+    IDs. To fix this problem, ooDialog 4.2.0 added the global <computeroutput>.constDir</computeroutput> to the
+    mechanism for using symbolic IDs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir object:</emphasis></term>
+  <listitem>
+  <para>
+    The global <xref linkend="dotConstDir"/> works in the same way as the dialog object's constDir attribute.
+    When a symbolic ID needs to be resolved, it can be looked up in the global <computeroutput>.constDir</computeroutput>.
+    The integration of the global <computeroutput>.constDir</computeroutput> into the mechanism for resolving symbolic
+    IDs is done by allowing the programmer to specify how, or even if, the <computeroutput>.constDir</computeroutput>
+    should be used. The four choices are <emphasis role="italic">only</emphasis>, <emphasis
+    role="italic">first</emphasis>, <emphasis role="italic">last</emphasis>, or <emphasis
+    role="italic">never</emphasis>. The programmer specifies which of these strategies is to be used through one of the
+    methods of the <xref linkend="dotApplication"/>. (The
+    <computeroutput>.application</computeroutput> object is an instance of the
+ <xref linkend="clsApplicationManager"/> class.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="entConstDirStrategy" xreflabel="strategy"><term><emphasis role="bold">Global .constDir Usage
+  Strategies:</emphasis></term>
+  <listitem>
+  <para>
+    The four strategies work this way.
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Only:</emphasis></term>
+      <listitem>
+      <para>
+        With this strategy, symbolic IDs are only placed in the <computeroutput>.constDir</computeroutput> and only
+        looked up through that object. When a new dialog object is instantiated, rather than assign a newly instantiated
+        <computeroutput>.Directory</computeroutput> object to its constDir attribute, the global
+        <computeroutput>.constDir</computeroutput> is assigned to the attribute. This is by far the most efficient way to
+        use symbolic IDs in an ooDialog program.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">First:</emphasis></term>
+      <listitem>
+      <para>
+        When the ooDialog framework needs to resolve a symbolic ID, it will first try to resolve it using the
+        <computeroutput>.constDir</computeroutput>. If that fails, it will then try to resolve it using the constDir
+        attribute. If that then fails, the method will fail.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Last:</emphasis></term>
+      <listitem>
+      <para>
+        This is the reverse of the use <emphasis role="italic">first</emphasis> strategy. The ooDialog framework first
+        tries to resolve a symbolic ID in the constDir attribute. If that fails, the
+        <computeroutput>.constDir</computeroutput> is tried.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Never:</emphasis></term>
+      <listitem>
+      <para>
+        The <computeroutput>.constDir</computeroutput> is never used in the program. To preserve backwards compatibility,
+        this is the default.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Adding Symbols:</emphasis></term>
+  <listitem>
+  <para>
+    A few symbolic IDs are <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> by ooDialog and are always
+    present in the constant directory. These symbolic IDs can be used in any ooDialog program. Other than the
+    pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
+  </para>
+  <para>
+    The easiest way to add symbols is to have the ooDialog framework add the symbols itself from a file. Whenever
+    ooDialog parses a resource <xref linkend="defResourceScript"/> or a
+    header <xref linkend="defHeaderFile"/>, it automatically adds any symbol
+    <xref linkend="defPoundDefine"/>s it finds to a constant directory. Which constant directory is dependent
+    on the global <computeroutput>.constDir</computeroutput> usage strategy in effect.
+  </para>
+  <para>
+    Resource scripts are parsed whenever a <xref linkend="clsRcDialog"/>, or subclass, is instantiated.
+    In addition, all the ooDialog dialog classes accept a header file as an optional parameter when a new instance of a
+    dialog object is created. (See for example the <computeroutput>new</computeroutput> method in the
+    <xref linkend="mthNewDialogObject"/> object or the <xref linkend="mthNewClsUserDialog"/>
+    class.) If the programmer supplies the optional header file argument, the ooDialog framework automatically parses
+    the file and adds all defined symbols it finds in the file to a constant directory. Again, to be clear, which
+    constant directory the symbol is placed in is dependent on which <computeroutput>.constDir</computeroutput>
+    <xref linkend="entConstDirStrategy"/> the programmer has elected to use.
+  </para>
+  <para>
+    In practice, most resource scripts are written by <xref linkend="defResourceEditor"/>s and place the symbol definitions
+    in a separate header file. Therefore having the ooDialog framework read and parse a header file is the most practical way
+    to add symbols to a constant directory. In addition to using the optional header file argument in the <xref
+    linkend="mthNewDialogObject"/> method of a dialog, the ooDialog framework provides some additional methods for reading a
+    file and adding the symbol definitions to a constant directory. The dialog object has the <xref
+    linkend="mthParseIncludeFile"/> method. The <xref linkend="clsApplicationManager"/> class has several methods, which are
+    accessed through the <xref linkend="dotApplication"/>. These are: the <xref linkend="mthUseGlobalConstDir"/>, <xref
+    linkend="mthAddToConstDir"/>, <xref linkend="mthSetDefaults"/>, and <xref linkend="mthParseIncludeFile"/> methods.
+  </para>
+  <para>
+    Of course, symbolic IDs can also be added directly in the program as the following code snippet shows:
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method init
+  forward class (super) continue
+
+  self~constDir[IDC_GB] = 101
+  self~constDir[IDC_CB_REGINA] = 107
+  self~constDir[IDC_CB_REGINALD] = 111
+  self~constDir[IDC_CB_OOREXX] = 115
+
+...
+
+::method defineDialog
+
+  self~createGroupBox(IDC_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
+  self~createCheckBox(IDC_CB_REGINA, 30, 40, , , "GROUP", "Regina")
+  self~createCheckBox(IDC_CB_REGINALD, 30, 60, , , , "Reginald")
+  self~createCheckBox(IDC_CB_OOREXX, 30, 80, , , , "ooRexx")
+
+...
+
+::method ok
+
+  oorexxCB = self~newCheckBox(ID_CB_OOREXX)
+  if oorexxCB~checked then
+    say "You picked the right interpreter."
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Classes Requiring the Global .constDir for Symbolic IDs:</emphasis></term>
+  <listitem>
+  <para>
+    As explained previously, the dialog object's <xref linkend="atrConstDir"/> attribute allows programmers to use symbolic
+    IDs for arguments requiring resource IDs in the methods of the <xref linkend="chpDialogObject"/> object and the dialog
+    <xref linkend="chpDialogControlObject"/> object. However, the ooDialog framework contains other classes with methods
+    requiring resource IDs. The <xref linkend="clsMenu"/> classes and the <xref linkend="clsResourceImage"/> class are
+    examples of these classes. If the programmer wishes to use symbolic IDs in classes other than the dialog and dialog
+    control classes, then the global <computeroutput>.constDir</computeroutput> <emphasis role="bold">must</emphasis> be
+    used.
+  </para>
+  <para>
+    Programmers that do not want to use the <computeroutput>.constDir</computeroutput>, <emphasis
+    role="bold">must</emphasis> use numeric resource IDs for any argument requiring a resource ID in any of the classes
+    other than the dialog and dialog control classes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir Pros:</emphasis></term>
+  <listitem>
+  <para>
+    Using the global <computeroutput>.constDir</computeroutput> is by far the most efficient way to use symbolic IDs in
+    ooDialog programs.
+  </para>
+  <para>
+    Using the global <computeroutput>.constDir</computeroutput> allows large applications with many dialogs to read the
+    symbol file one time only.  When using the dialog object's <computeroutput>constDir</computeroutput> attribute, the
+    symbol file would need to be constantly re-read, once for each dialog.
+  </para>
+  <para>
+    Using the global <computeroutput>.constDir</computeroutput> allows the programmer to use symbolic IDs for any method
+    in any object that requires a resource ID.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir Cons:</emphasis></term>
+  <listitem>
+  <para>
+    The <computeroutput>.constDir</computeroutput> does have some restrictions. These restrictions may be a reason for
+    some programmers to prefer to not use the <computeroutput>.constDir</computeroutput>. Depending on one's point of
+    view, many of the cons could be viewed as pluses.
+  </para>
+  <para>
+    The indexes in the <computeroutput>.constDir</computeroutput> are case sensitive. However, this allows symbol
+    resolution to be more efficient and faster. Case sensitivity is not a problem if a distinctive naming scheme is used
+    for symbolic IDs where the symbol names would never be used for variable names, and the symbol names are never
+    quoted.
+  </para>
+  <para>
+    If a symbolic name can not be resolved, a syntax condition is raised. However, the only reason a symbol would not be
+    resolved is if the programmer used an incorrect symbol. The raised syntax condition would alert the programmer to an
+    error in the program early in the development cycle.
+  </para>
+  <para>
+    Since all symbolic IDs are in one constant directory, duplicate symbol names can not be used in different dialogs,
+    unless the duplicate symbol names are assigned a single numeric value. (In which case they are not actually
+    duplicates.) For example, take a program that has two different dialogs in it, each with an edit control in the
+    dialog. If the programmer's habit is to use a symbol of IDC_EDIT for edit controls, there could be a conflict if the
+    edit control in the first dialog, had a define like this: <computeroutput>#define IDC_EDIT  100</computeroutput> and
+    the edit control in the second dialog had a define like this: <computeroutput>#define IDC_EDIT
+    200</computeroutput>. The solution to this is too either use two different symbols for the two edit controls, or use
+    the same resource ID number for both edit controls.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="ovvWindowMessages" xreflabel="message"><title>Window Messages</title>
+<para>
+  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
+  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
+  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
+  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
+  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
+  WPARAM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
+  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
+  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
+</para>
+<para>
+  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
+  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
+  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
+  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
+  Windows <xref linkend="defWindowsDoc"/> to understand what both the WPARAM and LPARAM arguments
+  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
+  the numeric value of the window message ID. This could be done using a
+  Windows platform <xref linkend="defPlatformSDK"/>, or perhaps through a Google search.
+</para>
+<para>
+  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
+  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
+  and their return values themselves.
+</para>
+</section>
+
+</section> <!-- End: Common Concepts -->
+
+
+<section id="sctHistory"><title>History</title>
+<para>
+  ooDialog is a Windows only extension to Open Object Rexx and appeared in the first version of IBM's Object Rexx for
+  Windows. This section attempts to give a rough over-view of the history of ooDialog and continues with notes pertaining to
+  the sequential releases of ooDialog past ooDialog 4.1.2
+</para>
+
+
+<section id="sctPreHistory"><title>Prehistory Timeline</title>
+<para>
+  Object REXX for Windows NT &amp; 95 Interpreter Edition V1.0 was announced very early in 1997. It included ooDialog and
+  could run on Windows 95 and Windows NT 3.5. However, comments within the code and sections of code itself in ooDialog,
+  indicate that at one point ooDialog could run on Windows 3.0 and 3.1.
+</para>
+<para>
+  IBM announced and released several successive versions of Object Rexx for Windows over the following years. For
+  instance, Object REXX for Windows V2R1 was announced March 2001.  In May 2004, IBM announced its intention to
+  contribute the source code for Object Rexx to RexxLA, and the ooRexx project was born. It took the best part of a year
+  to work out the details and for the ooRexx developers to get the first version of ooRexx built and released. ooRexx
+  3.0, the first ooRexx release, took place on March 25th 2005.
+</para>
+<para>
+  From that point, the ooRexx team began regularly releasing new versions of ooRexx, up through the release of ooRexx
+  3.2.0 on November 5, 2007. After the release of 3.2.0, the ooRexx team concentrated on refactoring the interpreter and
+  on adding a new set of native APIs used to write extensions to the ooRexx interpreter.  The new APIs allowed the
+  passing ooRexx objects to the routines and methods used in extensions.  Previously, only strings could be passed to
+  external libraries. The refactored ooRexx interpreter and the new native APIs were introduced in ooRexx 4.0.0,
+  released in August 2009.
+</para>
+<para>
+  Up until that release in the middle of 2009, ooDialog remained virtually unchanged. The evolution of the Windows
+  operating system had passed it by. ooDialog was designed for Windows 3.1, or at the latest Windows 95. It still
+  referred to dialog controls such as the list-view as "new" controls. Despite the fact that the list-view control had
+  been in use for over a decade. Some controls were considered "advanced" in ooDialog, while in Windows itself they were
+  considered old news.
+</para>
+<para>
+  Much of the design of ooDialog was based on constraints that existed in Windows 3.1 and Windows 95 that no longer
+  existed in modern operating systems. For instance, the reason for having three separate ooDialog class files,
+  <computeroutput>OODPLAIN.CLS, OODIALOG.CLS, and OODWIN32.CLS</computeroutput>, and for providing the simpler
+  <computeroutput>PlainUserDialog</computeroutput> class was to have a smaller package that required less system
+  resources for ordinary user interfaces like the standard dialogs.  That reason is not as valid in modern times as it
+  was when ooDialog was being developed to run on Windows 3.1. Many of the programming techniques in the ooDialog
+  implementation were also outdated. The conversion of dialog units to pixels and vice versa in ooDialog is a good
+  example. While the technique must have worked in very early versions of Windows, it is completely wrong in Windows XP
+  and later.
+</para>
+<para>
+  The release of the new C++ native APIs in ooRexx 4.0.0 allowed much richer extensions to the Rexx interpreter to be
+  written. Extensions could be implemented that had access to the actual objects instantiated within the
+  interpreter. During the release of ooRexx 4.0.0, the internal work was started to convert ooDialog to use the C++
+  APIs. This work lead to the complete refactoring of the ooDialog code, and the effort to bring ooDialog up to the
+  level of Windows Vista and Windows 7 got started. New dialog controls were added along with new dialog objects and
+  methods. However, this work was done in the internal development source tree and was not ready for the 4.0.0, 4.0.1,
+  and 4.1.0 releases of ooRexx. Although ooDialog in those releases had some improvements and enhancements, they were
+  minor.
+</para>
+<para>
+  ooRexx 4.1.0 was released in December 2010. At that time, the internal work to convert ooDialog to the C++ APIs and
+  the refactoring of the ooDialog source code was complete, but the refactored ooDialog was not ready for release,
+  primarily because the documentation was not complete. The ooDialog distributed with ooRexx 4.1.0 was essentially the
+  same as the ooDialog distributed with ooRexx 4.0.0, with bug fixes and some small enhancements. A small bug fix
+  version of ooRexx 4.1.1 was released in March 2012. The ooDialog distributed in 4.1.1 is identical to the 4.1.0
+  ooDialog.
+</para>
+<para>
+  When the work of getting ooRexx 4.1.0 out the door was finished, some observations about ooDialog were made. One was
+  that previously no real versioning of ooDialog was done. The second was that each of the ooDialogs shipped with ooRexx
+  4.0.0, 4.0.1, and 4.1.0 only required an ooRexx 4.0.0 interpreter to work, while the refactored ooDialog in the
+  internal development source tree required an ooRexx 4.1.0 interpreter. The third observation was that, since ooDialog
+  is an extension to the Rexx interpreter, there is no reason why it could not be distributed independently of the
+  ooRexx interpreter. Finally, it had been observed from some comments made in bugs opened up against ooDialog, that
+  there were a few people who seemed to prefer to remain with an ooDialog that was designed for Windows 95, in essence
+  an ooDialog unchanged from the ooDialog shipped with ooRexx 3.2.0.
+</para>
+<para>
+  This lead to the decision to define a more formal versioning scheme for ooDialog and also to implement a means to
+  distribute ooDialog independently of the ooRexx distribution. The version string of ooDialog had already been defined
+  to be the version string of the ooRexx interpreter ooDialog was built under. A second part of the ooDialog version was
+  to be the ooDialog level. This is similar to the language level of the Rexx interpreter. The initial ooDialog levels
+  are listed in this table:
+</para>
+<table id="tblOODialogLevels" frame="all" pgwide='1'>
+<title>ooDialog Levels</title>
+<tgroup cols="3">
+<colspec align='left' colwidth='1*' />
+<colspec align='left' colwidth='1*' />
+<colspec align='left' colwidth='6*' />
+<thead>
+<row>
+<entry>Level</entry>
+<entry>Required Interpreter</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>4.0.0</entry>
+<entry>4.0.0</entry>
+<entry>ooDialog implementation using Rexx classic external routines and the 3.2.0 ooDialog code.</entry>
+</row>
+<row>
+<entry>4.1.0</entry>
+<entry>4.0.0</entry>
+<entry>ooDialog as shipped with ooRexx 4.0.0 with all bug fixes through ooRexx 4.1.2.</entry>
+</row>
+<row>
+<entry>4.2.0</entry>
+<entry>4.1.0</entry>
+<entry>Refactored ooDialog completely implemented with the C++ native API.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Level 4.0.0</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog code at level 4.0.0 is frozen. Since the implementing code uses the classic external routines and the
+    code itself is unchanged from the ooDialog shipped with ooRexx 3.2.0, ooDialog programs should behave
+    exactly as they did under the ooDialog shipped with ooRexx 3.2.0. The only difference is that the ooDialog code at
+    the 4.0.0 level can be compiled for a 64-bit ooRexx installation. No fixes, enhancements, or changes will be made
+    to the code.
+  </para>
+  <para>
+    ooDialog 4.0.0 is available as a separate download from SourceForge for users who would like to replace their
+    installed ooDialog with a 4.0.0 level ooDialog. It requires that the installed ooRexx is 4.0.0 or later. Although
+    the code is frozen, if a user can demonstrate an ooDialog program behaves differently using a 4.0.0 level ooDialog
+    than it did under an actual ooRexx 3.2.0 installation, a fix will be considered.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Level 4.1.0</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog at level 4.1.0 is the ooDialog that shipped with ooRexx 4.0.0, plus all bug fixes and changes up through
+    ooRexx 4.1.2. It is also provided as a separate download on SourceForge and also requires the installed ooRexx be
+    4.0.0 or later. This code is frozen, no changes will be made to the code. Bugs found in this code will be fixed in
+    upcoming releases of ooDialog.
+  </para>
+  <para>
+    It allows users that have not upgraded their ooRexx from 4.0.0 or 4.0.1 to pick up the bug fixes in ooDialog
+    included in the ooRexx distributions up through ooRexx 4.1.1. However, its primary purpose is for users who may be
+    unhappy with the future direction of ooDialog. It will provide a way for users to upgrade to future versions of
+    ooRexx and yet retain an unchanged ooDialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Level 4.2.0</emphasis></term>
+  <listitem>
+  <para>
+    This is the actively maintained ooDialog level. The level will be incremented in the future as circumstances
+    dictate. It requires an installed ooRexx of 4.1.0 or later. New versions of ooDialog at the 4.2.0 level will be
+    released as they become ready. It is available as a separate download from SourceForge and will also be the
+    ooDialog level shipped with future versions of ooRexx, (versions past ooRexx 4.1.2.)
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  Note that as of July 2012, all versions of ooDialog from level 4.0.0 on are available as independent installations and
+  are available for download from SourceForge. Any version of ooDialog can be installed independently to an ooRexx
+  installation, provided the ooRexx installation meets the minimum required for the ooDialog version.
+</para>
+
+</section> <!-- End Section Prehistory Timeline -->
+
+<section id="sct420Release"><title>ooDialog Release 4.2.0</title>
+<para>
+  ooDialog 4.2.0 was released in late August of 2012. It was the first major enhancement of ooDialog in over a decade. This
+  ooDialog has a lot of new and different things in it. In addition to the new dialog classes, new dialog control classes,
+  new methods on existing classes, it includes design changes intended to simplify areas of ooDialog
+  that seem to have been confusing in the past. Enhancements have been made that fix areas of ooDialog that have always
+  been broken. All ooDialog users should take a close look at these changes.
+</para>
+<para>
+  The over-all number of changes, enhancements, and new methods and classes are too numerous to list in minute detail.
+  The following lists the major areas of change.
+</para>
+
+<variablelist>
+  <varlistentry id="termMethodNameUnification"><term><emphasis role="bold">Unification of Method and Class Names</emphasis></term>
+  <listitem>
+  <para>
+    The Windows operating system provides an extremely large number of APIs to program GUI applications. To take
+    advantage of this, ooDialog needs to provide a large number of classes and methods in those classes. Over time, and
+    probably due to a number of different programmers working on ooDialog, this lead to a large number of similar, but
+    confusing method and class names.
+  </para>
+  <para>
+    In ooDialog 4.2.0 an effort has been made to unify the naming of methods and classes. To begin with, each dialog
+    control is named the same as it is in the Microsoft <xref linkend="defWindowsDoc"/>. An example
+    of this is the edit control. The name of the control is <emphasis role="italic">edit</emphasis>. Rather than call an
+    edit control an <emphasis role="italic">entry line</emphasis>, it is called an edit control. In addition, all dialog
+    controls are controls. Adding <emphasis role="italic">control</emphasis> to the control's name is redundant, and
+    confusing when it is done in some cases and not in other cases. A list-view is no longer called a ListControl, but
+    rather it is called a ListView, a tree-view is no longer called a TreeControl, it is called a TreeView.
+  </para>
+  <para>
+    Prior to 4.2.0, there were a large number of method names with the word <emphasis role="italic">connect</emphasis>
+    in them, with no rhyme or reason to the entire method name. To overcome this, a unified naming scheme has been
+    carried out. All methods with the name of a dialog control in them use the same name as Microsoft's documentation.
+    Method names with connect in them use a similar name for all methods that connect similar things. Methods that
+    connect a data attribute will have <emphasis role="italic">data</emphasis> in the name. Methods that connect an
+    event notification will have <emphasis role="italic">event</emphasis> in the name, etc..
+  </para>
+  <para>
+    The old names of these methods are now <xref linkend="apxDeprecated"/>, but still work. In order to
+    avoid conflicts with old, deprecated method names, certain groups of methods use a new verb in the name. All methods
+    that return an instantiated dialog control object begin with <emphasis role="italic">new</emphasis> and contain the
+    control name. I.e., <emphasis role="italic">newTreeView</emphasis>, <emphasis role="italic">newEdit</emphasis>, or
+    <emphasis role="italic">newTrackBar</emphasis>. All methods that create a dialog control in the dialog template of a
+    <computeroutput>UserDialog</computeroutput> now begin with the word <emphasis role="italic">create</emphasis> and
+    include the control name when a single control is being created. For example, <emphasis
+    role="italic">createListView</emphasis>, <emphasis role="italic">createUpDown</emphasis>, <emphasis
+    role="italic">createMonthCalendar</emphasis>. Similar naming changes are in methods connecting data attributes, in
+    methods connecting event notifications, etc..
+  </para>
+  <para>
+    The primary areas that should be looked at for this unification are the <xref linkend="sctCreateMethods"/> methods of
+    the UserDialog, methods concerned with connecting <link linkend="sctUnderstandingDataAttributes">data</link> attributes,
+    methods returning an <link linkend="sctInstantiateControls">instantiated</link> dialog control object, and methods that
+    <link linkend="sctMethodsEventNotification">connect</link> notifications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Simplification of Requires Statements</emphasis></term>
+  <listitem>
+  <para>
+    Prior to ooDialog 4.2.0 there were three different ooDialog class files:
+    <computeroutput>oodPlain.cls</computeroutput>, <computeroutput>ooDialog.cls</computeroutput>, and
+    <computeroutput>oodWin32.cls</computeroutput>. An ooDialog program would need to <emphasis
+    role="italic">require</emphasis> (using a <computeroutput>::requires</computeroutput> directive) one or more of
+    these class files, depending on what parts of the ooDialog framework were going to be used. It was often confusing
+    to users as to which files needed to be required. Breaking the ooDialog framework into three pieces served no real
+    purpose. In 4.2.0, the three files have been combined into a single file. All ooDialog programs only need to
+    <emphasis role="italic">require</emphasis> the <computeroutput>ooDialog.cls</computeroutput> file.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Simplification of Inherited Classes</emphasis></term>
+  <listitem>
+  <para>
+    Previously certain dialog controls were deemed <emphasis role="italic">advanced</emphasis> and to use those controls, or
+    even to use some features common to all controls, the programmer needed to inherit the
+    <computeroutput>AdvancedControls</computeroutput> class. This was often confusing, and again there was no real reason for
+    it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous millennium. To simplify
+    this, the need to inherit the <computeroutput>AdvancedControls</computeroutput> class has been eliminated. The methods to
+    work with all controls are part of the base <xref linkend="chpDialogObject"/> object. The <link
+    linkend="deprecatedAdvancedControls">AdvancedControls</link> class is deprecated.
+  </para>
+  <para>
+    In 4.2.0 the <link linkend="deprecatedMessageExtensions">MessageExtensions</link> class is also deprecated. Connecting
+    <xref linkend="ovvEvents"/> notifications to a method in the Rexx dialog is such a fundamental part of using a dialog
+    that the programmer should not need to do anything special. The methods to connect events are now all methods of the base
+    classes where they are needed. The methods to connect dialog events are part of the base
+    <xref linkend="chpDialogObject"/>, methods to connect menu events are part of the <xref linkend="clsMenu"/> class,
+    methods to connect mouse events are part of the <xref linkend="clsMouse"/> class, etc..
+  </para>
+  <para>
+    ooDialog 4.2.0 no longer makes a distinction between a <emphasis role="italic">plain</emphasis> dialog and a
+    <emphasis role="italic">dialog</emphasis>. The <link linkend="deprecatedPlainUserDialog">PlainUserDialog</link> is
+    deprecated and no longer needed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">True Call Backs from the Windows Message Loop</emphasis></term>
+  <listitem>
+  <para>
+    This is probably the most significant change in ooDialog 4.2.0. Prior to 4.2.0, window message
+    <xref linkend="ovvEvents"/> notifications were put into a queue to be dispatched at some later point
+    to the connected method in the Rexx dialog. But, the operating system expects a reply to its event messages, and the
+    reply allows the programmer to customize the behavior of the dialog. Because the programmer could not reply in any
+    way to the operating system, ooDialog was severely restricted in what it could support, compared to a normal Windows
+    application.
+  </para>
+  <para>
+    ooDialog 4.2.0 has been completely rewritten to use the C++ native APIs introduced in ooRexx 4.0.0. A primary
+    benefit of this is that now the ooDialog framework can directly invoke the connected event handling method in the
+    Rexx dialog and the programmer can directly reply to the operating system message. Further discussion on the
+    benefits of this is included in the section on <link linkend="sctCodingEventHandlers">coding</link> event handling
+    methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Correct Conversion of Dialog Units to Pixels</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework has always provided the <emphasis role="italic">factorX</emphasis> and <emphasis
+    role="italic">factorY</emphasis> attributes, whose intent was to convert between <xref linkend="defDialogUnit"/>s and
+    <xref linkend="defPixel"/>s. Unfortunately, the two attributes are based on a fallacy and are <xref
+    linkend="ovvInaccurate"/>. To compound the problem, many ooDialog methods internally use the attributes to convert
+    between dialog units and pixels, <emphasis role="italic">when no conversion is needed.</emphasis>
+  </para>
+  <para>
+    To fix this problem new methods, such as <xref linkend="mthDlgUnit2pixel"/>,
+    <xref linkend="mthPixel2dlgUnit"/>, etc., have been added that accurately convert between pixels and
+    dialog units. Methods that are inaccurate have had, matching, accurate, methods added to the ooDialog framework. The
+    accurate <xref linkend="mthGetRealPos"/> is added to match the inaccurate
+    <xref linkend="mthGetPos"/> method. The accurate <xref linkend="mthColumnWidthPX"/> is
+    added to match the inaccurate <xref linkend="mthColumnWidth"/>. The accurate
+    <xref linkend="mthMoveTo"/> is added to match the inaccurate <xref linkend="mthMove"/> method, and
+    so on.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes</emphasis></term>
+  <listitem>
+  <para>
+    New dialog classes have been added that implement true Windows property sheets, wizards, and dialogs that function
+    as controls. These classes replace the deprecated <link linkend="deprecatedCategoryDialog">CategoryDialog</link> and
+    <link linkend="deprecatedPropertySheet">PropertySheet</link> classes. The new dialogs are easier to use and easier to
+    understand because the pages of the dialogs are dialog objects that are programmed and behave using the same paradigm as
+    any other dialog.
+  </para>
+  <para>
+    These new dialog classes are available in ooDialog 4.2.0:
+  </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      <xref linkend="clsControlDialog"/>: Control dialogs work well as a dialog within a top-level
+      dialog. In essence, a <computeroutput>ControlDialog</computeroutput> functions as a dialog <emphasis
+      role="italic">control</emphasis> within the top-level dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsRcControlDialog"/>: A <computeroutput>ControlDialog</computeroutput> based
+      on the <computeroutput>RcDialog</computeroutput>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsResControlDialog"/>: A <computeroutput>ControlDialog</computeroutput>
+      based on the <computeroutput>ResDialog</computeroutput> dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsUserControlDialog"/>: A <computeroutput>ControlDialog</computeroutput>
+      based on the <computeroutput>UserDialog</computeroutput> dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsPropertySheetDialog"/>: The
+      <computeroutput>PropertySheetDialog</computeroutput> is an implementation of the Windows property sheet and the
+      Windows wizard. Unlike most ooDialog dialogs, the operating system does most of the management of these dialogs.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsPropertySheetPage"/>: <computeroutput>PropertySheetPage</computeroutput>
+      dialogs are used as the pages of property sheets and wizards.</para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsRcPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based on
+      the <computeroutput>RcDialog</computeroutput> dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsResPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based on
+      the <computeroutput>ResDialog</computeroutput> dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="clsUserPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based
+      on the <computeroutput>UserDialog</computeroutput> dialog.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Control Classes</emphasis></term>
+  <listitem>
+  <para>
+    Three new dialog control classes are available in ooDialog 4.2.0:
+    <itemizedlist>
+    <listitem>
+    <para>
+ <xref linkend="clsDateTimePicker"/>: A control that provides a simple interface with which to
+      exchange date and time information with the user.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsMonthCalendar"/>: A control that provides an easy to use interface which
+      allows users to select or enter dates. The control has the appearance of a typical calendar.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsUpDown"/>: A control that consists of a pair of arrow buttons that the user can
+      click to increment or decrement a value, such as a scroll position or a number displayed in a companion control.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+    The new control classes are fully implemented so that all the functionality of the control, up through Windows 7, is
+    available to the ooDialog programmer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Menu Classes</emphasis></term>
+  <listitem>
+  <para>
+    In ooDialog 4.2.0 menus are elevated to class objects. The menu classes more fully implement the functionality of
+    Windows menus, rather than just a small subset of the functionality as was done in ooDialog prior to 4.2.0. They
+    also make it easier for the programmer to create the menus needed for an application. These menu classes have been
+    added:
+    <itemizedlist>
+    <listitem>
+    <para>
+ <xref linkend="clsBinaryMenuBar"/>: A <computeroutput>MenuBar</computeroutput> created from a
+      binary resource, or by the programmer with the easy to use menu class methods.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsMenu"/>: The <computeroutput>Menu</computeroutput> class implements the large number
+      of methods that are the same for all menus.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsMenuBar"/>: A menu bar is often called the top-level menu. It is the bar positioned
+      just below the title bar of an application window or a dialog. The <computeroutput>MenuBar</computeroutput> class
+      implements the methods that are common to all menu bars.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsPopupMenu"/>: A menu bar contains submenus, and submenus can also contain
+      submenus. Submenus go by various names, including drop down menus, popup menus, context menus, and shortcut menus.
+      The <computeroutput>PopupMenu</computeroutput> class is an implementation of submenus, no matter which name it
+      goes by. Popup menus can be inserted into menu bars, or other submenus. They are also used as context menus. The
+      <computeroutput>PopupMenu</computeroutput> class implements the functionality of submenus, including the
+      functionality of true Windows context menus.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsScriptMenuBar"/>: A <computeroutput>MenuBar</computeroutput> whose menu
+      template is created by parsing a resource script, (usually a .rc file.) Similar to a
+ <xref linkend="clsRcDialog"/>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsSystemMenu"/>: The <computeroutput>SystemMenu</computeroutput> class represents
+      the Windows <emphasis role="italic">system</emphasis> menu, which is also known as the <emphasis
+      role="italic">window</emphasis> menu or the <emphasis role="italic">control</emphasis> menu.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsUserMenuBar"/>: A <computeroutput>MenuBar</computeroutput> whose menu
+      template is created by the programmer using the methods defined by the class. Similar to a
+      <xref linkend="clsUserDialog"/>.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Other New Classes</emphasis></term>
+  <listitem>
+  <para>
+    There are a number of new utility and helper classes available in ooDialog 4.2.0:
+    <itemizedlist>
+    <listitem>
+    <para>
+ <xref linkend="clsApplicationManager"/>: Used to set application wide defaults and to
+      perform tasks that effect the entire ooDialog application.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsDayState"/>: Represents the state of each day in a month. A helper class for the
+ <xref linkend="clsMonthCalendar"/> control.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsDayStates"/>: A sequential collection of
+      <computeroutput>DayState</computeroutput> objects. A helper class for the
+ <xref linkend="clsMonthCalendar"/> control.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsMouse"/>: Provides all the methods to work with and manipulate the mouse and the
+      mouse cursor.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsOS"/>: Provides methods for extracting information about the operating system the
+      program is currently executing on.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsSM"/>: The attributes of this class reflect the system metrics or configuration
+      settings of the computer the Rexx program is running on.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsSPI"/>: The attributes of this class reflect the system-wide parameters of the
+      computer the Rexx program is running on
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsVK"/>: The <computeroutput>VK</computeroutput> class allows the programmer to use
+      symbolic names in a program instead of the numeric value of the virtual key codes. Unlike the
+      <computeroutput>VirtualKeyCodes</computeroutput> class in <computeroutput>winsystm.cls</computeroutput> the
+      <computeroutput>VK</computeroutput> class has constants for every virtual key code. Another advantage of the
+      <computeroutput>VK</computeroutput> class is that the programmer does not need to require
+      <computeroutput>winsystm.cls</computeroutput> in his programs.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+ <xref linkend="clsWindow"/>: The <computeroutput>Window</computeroutput> class allows the invocation
+      of methods common to every window.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods on Existing Classes</emphasis></term>
+  <listitem>
+  <para>
+    Many, many new methods have been added to both the dialog and the dialog control classes. Too many to list
+    individually. The documentation for each class has been expanded to include a complete method table for the class at
+    the start of the class documentation. The reader can glance through the method table to see which methods the class
+    has, which will give her an idea of the new methods available to that class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Utility Objects</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog 4.2.0 includes three new utility objects.
+    <itemizedlist>
+    <listitem>
+    <para>
+      <xref linkend="dotApplication"/>: The <computeroutput>.application</computeroutput>
+      object is an instance of the <xref linkend="clsApplicationManager"/> class that is present
+      in all ooDialog programs. It is used by the programmer to manage application wide settings, behaviour, and
+      constants.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="dotConstDir"/>) object: Part of the <xref linkend="ovvSymbolicIDMechanism"/> allowing the use of <xref
+      linkend="defSymbolicId"/> IDs in ooDialog programs. The <computeroutput>.constDir</computeroutput> is the most
+      efficient way to use symbolic IDs.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <xref linkend="dotSystemErrorCode"/> object: Can be used, at times, to obtain additional
+      information when the invocation of a method generates an operating system error.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Use of Objects as Arguments and Return Values</emphasis></term>
+  <listitem>
+  <para>
+    Prior to ooRexx 4.0.0, all arguments to and returns from external functions had to be strings. Although stems could
+    also be used, working with them was difficult and inflexible within the external function implementation. With the
+    advent of ooRexx 4.0.0, it became very easy to use any ooRexx object as an argument to, or return from, the ooDialog
+    external library implementation. In addition, instance methods can be implemented directly in the external library.
+  </para>
+  <para>
+    In the ooDialog released with ooRexx 4.0.0 through ooRexx 4.1.1, a very limited use of passing and returning objects
+    was begun. In ooDialog 4.2.0 extensive use of passing objects is present in the new classes and methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Raising of Syntax Conditions</emphasis></term>
+  <listitem>
+  <para>
+    Up through ooDialog 3.2.0 there was very little error checking and reporting in the ooDialog framework. Because of
+    this many things appeared to the user to simply not work. In many cases, the programmer was using incorrect
+    arguments to methods, or using the method incorrectly. In addition, detectable errors reported by the operating
+    system were simply ignored.
+  </para>
+  <para>
+    In ooDialog 4.2.0 syntax conditions are raised when incorrect usage is detected. There is also the new
+    <xref linkend="dotSystemErrorCode"/> object which is set when the operating system reports an error.
+    This is of great benefit to the programmer, especially when writing new programs. Incorrect usage, pointed out by
+    syntax conditions raised the first time the programmer tests his code, allow the programmer to quickly fix mistakes
+    she is making in her code.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Completely New Example Programs</emphasis></term>
+  <listitem>
+  <para>
+    There are many completely new example programs in ooDialog 4.2.0. Many of the new programs demonstrate the new
+    features in ooDialog 4.2.0. The intent with the new examples is to have a range of programs from the simple to the
+    more complex, giving help to newcomers and providing examples of how to move on to more complex real-world
+    applications. The ooDialog programmer should be sure to look through the many programs under the
+    <computeroutput>samples\oodialog</computeroutput> directory tree.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Updating of Existing Example Programs</emphasis></term>
+  <listitem>
+  <para>
+    Almost every existing ooDialog example program has been updated. Deprecate methods and classes have been removed. An
+    attempt to better comment the examples has been made. Some examples used <emphasis role="italic">internal use
+    only</emphasis> methods and this has been corrected. In other examples, the use of questionable techniques has been
+    removed. Even experienced ooDialog programmers can probably gain insight from looking through the existing examples
+    they have seen in previous ooDialog releases.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Revision of the Documentation</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog reference, this book, has been almost completely rewritten. The old reference was often incomplete,
+    misleading, and in many cases simply wrong. A large effort has been made to expand incomplete areas and to correct
+    misleading or wrong information. That effort is not 100% complete and will need to be finished in future releases.
+    However, the documentation is very much improved. If there were areas in the previous documentation not well
+    understood, the ooDialog programmer is encouraged to reread those sections in this document.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Classes and Methods</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog 4.2.0 has introduced the concept of <emphasis role="italic">deprecated</emphasis> methods and classes. All
+    <xref linkend="apxDeprecated"/> classes and methods are listed in <emphasis role="italic">Appendix
+    A</emphasis>. The deprecated classes and methods are no longer documented. When writing new code, the programmer
+    should not use anything deprecated. Wherever possible in existing code, deprecated classes and methods should be
+    replaced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Backwards Compatibility</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog implementation has been largely rewritten and refactored. Every effort has been made to maintain
+    backwards compatibility. If a case is found where backwards compatibility is broken, it is likely that it was not
+    intentional, and the case should be brought up with the developers. The <emphasis role="italic">Getting
+    <link linkend="helpGettingHelp">Help</link> and Submitting Feedback</emphasis> section of this book contains a list of
+    numerous venues through which feedback can be submitted, or questions raised.
+  </para>
+  <para>
+    There may be a very few areas where maintaining backwards compatibility is not consistent with the intent to move
+    ooDialog past Windows 3.1 and on to Windows 7. If such an area is discovered, the ooDialog developers welcome any
+    reasoned discussion concerning how to deal with that area. Ultimately, the individual programmer may have to decide
+    if the benefits of moving ooDialog into the 21st century outweigh any effort to change existing code.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section ooDialog Release 4.2.0 -->
+
+<section id="sct421Release"><title>ooDialog Release 4.2.1</title>
+<para>
+  ooDialog 4.2.1 was released in January 2013. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.1 from
+  ooDialog 4.2.0.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bug Fixes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The following bugs were fixed in this release. The bug fix numbers can be used to look up details concerning the bug on
+    SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #1116 Debug print outs left in ooDialog 4.2.0
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1117 Method handler passed wrong argument for TreeView EXPANDING event
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1121 ooDialog appcrash running forward class(super) continue
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1124 ooDialog - failed to locate .h file message incorrect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1126 ooDialog - args sent to the HELP event handler incorrect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1128 ooDialog UtilityClasses.cls: typo
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1138 MessageDialog: Failure in system service
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1141 ooDialog - connecting system menu command events can fail
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1145 TimedMessage dialog remains on screen after ok() method is invoked
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1146 Return code from ListView::deleteColumn() not as documented
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1147 SingleSelection class
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1149 Potential crash in ooDialog connectKeyPress() method
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The following Request for Feature Ehancements were implemented in the release. Details concerning the enhancements can be
+    looked up on SourceForge using the listed tracker item numbers.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #42 OODialog List Control Class (report) format individual lines
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #130 OODialog List Control Class Activate sort headers
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #419 Add Tooltip control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #420 Would like to have an AddButtonStem method.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #478 ooDialog - List-view could use a way to work with a complete row
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #483 ooDialog setColor and dialog background improvements
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #484 ooDialog setColor methods should not be restricted to the 19 palette indexes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #485 Treeview itemData
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #486 ooDialog - the TreeView Expanding event should allow a veto
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #487 ooDialog - It would be nice if the TreeView class had a way to do custom sorting
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #488 ooDialog - TreeView class needs a itemText method
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #489 ooDialog - TreeView class should support info tips
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #490 ooDialog - ListView class should support info tips
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #493 ooDialog - TreeView begin / end label editing could be improved
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #494 ooDialog - ListView begin / end label editing could be improved
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #495 ooDialog TreeView control has missing styles
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #496 ooDialog TreeView methods to determine area occupied by an item
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #499 ooDialog connectTreeViewEvent CHANGING veto
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #501 The ListView class should have an easy way to switch views
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Functionality in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    An implementation that allows access to the Custom Draw facility in Microsoft's Common Control library has been added.
+  </para>
+  <para>
+    Custom Draw allows, for example, the programmer to specify the text and background colors for individual rows in a
+    ListView, even for individual columns in the row. The programmer can specify the font of the text for individual
+    list-view items. Etc., etc..
+  </para>
+  <para>
+    The CustomDraw class has been added to ooDialog and is the means to access the Custom Draw facilities.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New ListView support classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsLvItem"/> class: Represents a single list-view item. The attributes of the LvItem are the attributes
+    of the underlying Windows list-view item.
+  </para>
+  <para>
+    <xref linkend="clsLvSubItem"/> class: Represents a single list-view subitem. The attributes of the LvSubItem are the
+    attributes of the underlying Windows list-view subitem.
+  </para>
+  <para>
+    <xref linkend="clsLvFullRow"/> class: List-view items can contain subitems. This is most apparent in the row view of a
+    list-view where the subitems are displayed in columns next to the item. However, the subitems, once added to an item,
+    are always present, even if the list-view is in another view, such as icon view.
+  </para>
+  <para>
+    The LvFullRow class represents the list-view item and all its subitems. LvFullRow objects can be used to insert an item
+    and all data associated with the item into a list-view at one time.
+  </para>
+  <para>
+    <xref linkend="clsLvCustomDrawSimple"/> class: The LvCustomDrawSimple class is used in conjunction with the custom draw
+    facility for ListView controls.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New dialog classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsCustomDraw"/> class: The CustomDraw class is a new mixin class. Dialogs in ooDialog can inherit this
+    class, which then gives the dialog the ability to access the custom draw facility.
+  </para>
+  <para>
+    The ListView and TreeView controls can register for custom draw.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New dialog control classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsToolTip"/> class: Tooltip controls are pop-up windows that display text. Typically the text describes
+    a <emphasis role="italic">tool</emphasis>. A <emphasis role="italic">tool</emphasis> is either a window or an
+    application defined area within a window.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New utility classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsTvCustomDrawSimple"/> class: The TvCustomDrawSimple class is used in conjunction with the custom draw
+    facility for TreeView controls.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the PlainBaseDialog class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetTextSizeTitleBar"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthUseVersion"/>.
+    </para>
+    <para>
+      <xref linkend="mthUsingVersion"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthAddFullRow"/>
+    </para>
+    <para>
+      <xref linkend="mthInsertFullRow"/>
+    </para>
+    <para>
+      <xref linkend="mthPrependFullRow"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFind"/>
+    </para>
+    <para>
+      <xref linkend="mthGetItemDataClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthItemTextClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthRemoveItemDataClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthSetItemDataClsTreeView"/>
+  </para>
+  </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the SM (system metrics) class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="atrCxSize"/>
+    </para>
+  <para>
+      <xref linkend="atrCxSmIcon"/>.
+    </para>
+    <para>
+      <xref linkend="atrCyMenu"/>.
+  </para>
+  </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetColor"/>
+    </para>
+    <para>
+      <xref linkend="mthSetSysColor"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogExtensions class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetControlColor"/>.
+    </para>
+    <para>
+      <xref linkend="mthSetControlSysColor"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthInsertClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthItemInfoClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthModifyClsTreeView"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the EventNotification class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthConnectListViewEvent"/>
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      the KEYDOWNEX event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the BEGINEDIT event is enhanced
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the ENDEDIT event is enhanced
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      <xref linkend="mthConnectTreeViewEvent"/>
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      the KEYDOWNEX event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the BEGINEDIT event is enhanced
+    </para>
+    </listitem>
+    <listitem>
+  <para>
+      the ENDEDIT event is enhanced
+  </para>
+    </listitem>
+    </itemizedlist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New samples in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ListView\customDrawListView.rex</computeroutput>: The customDrawListView example
+    demonstrates how to change the text, text color, and background color of individual rows in a list-view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ListView\columnIcons.rex</computeroutput>: The columnIcons.rex example demonstrates how
+    to use the new LvFullRow class and how to use icons in the columns of list-view items in report view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\toolTip.rex</computeroutput>: The toolTip.rex example demonstrates the basics
+    of using ToolTips in ooDialog.  It includes the usage of a number of the ToolTip methods.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\customPositionToolTip.rex</computeroutput>: The customPositionToolTip.rex
+    example shows how to use the ToolTip class to do custom positioning of the info tips provided by the tree-view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\manageControlTool.rex</computeroutput>: The manageControlTool.rex example shows
+    how to use some advanced features of the ToolTip class to provide completely customized ToolTips for a dialog control.
+    This example uses a tree-view control, but the techniques could be applied to any dialog control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced samples in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\TreeView\treeViewCustomDraw.rex</computeroutput>: The oodtree.rex example has been
+    renamed to the treeViewCustomDraw.rex and enhanced.  The example has been more fully commented, uses custom draw for the
+    tree-view control, and has a number of small bugs fixed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation changes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The ListView Control chapter in the ooDialog Reference Manual has been partially reviewed and corrected for accuracy.
+    Parts of the chapter have been updated to match the format and style that was introduced in the rework of the manual
+    done for ooDialog 4.2.0
+  </para>
+  <para>
+    The TreeView Control chapter in the ooDialog Reference Manual has been partially reviewed and corrected for accuracy.
+    Parts of the chapter have been updated to match the format and style that was introduced in the rework of the manual done
+    for ooDialog 4.2.0
+  </para>
+  <para>
+    The documentation for the connectListViewEvent and connectTreeViewEvent methods have been enhanced.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section ooDialog Release 4.2.1 -->
+
+<section id="sct422Release"><title>ooDialog Release 4.2.2</title>
+<para>
+  ooDialog 4.2.2 was released in March 2013. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.2 from 4.2.1.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bug Fixes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    The following bugs were fixed in this release. The bug fix numbers can be used to look up details concerning the bug on
+    SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #1153 Deprecated CategoryDialog dialogs do not work in ooDialog 4.2.1
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1154 setColor() method produces incorrect results
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1166 Naming a DlgAreaU object 'b' causes the object to fail
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Bug Fixes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    The following documentation bugs were fixed in this release. The bug fix numbers can be used to look up details
+    concerning the bug on SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #196 ooDialog - mapWindowPoints() was never documented
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    The following Request for Feature Ehancements were implemented in the release. Details concerning the enhancements can be
+    looked up on SourceForge using the listed tracker item numbers.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #249 Add support for generalized resizable dialogs
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #352 Fix document StateIndicator / ProgressIndicator
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #370 Replace ooDialog WinTimer with a waitable time
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #417 ooDialog public routines and icon resource
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #504 It would be nice to be able to store a user value as part of the LvFullRow object
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #505 Would like a way to prevent Enter from closing dialog when in single-line edit control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #506 Allow modifying a list-view item and all its subitems at once
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #507 ooDialog - Modify the text of a list-view item and all its subitems at one time
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #512 Add setWindowStyleRaw to match WindowBase getWindowStyleRaw
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #513 Need access to the ListView_GetItemRect ListView_GetIndexItemRect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #514 It would be interesting to temporarily change the parent window of a dialog control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #515 Would like to connect list-view begin and end scroll events
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #517 Add a way to access the child controls of a combo box
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #518 Need to work with an edit control that is not a direct child of the dialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #519 Would like the ListView hitTestInfo to return the subitem index
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #520 folder selection dialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #521 It would be useful to create a LvFullRow from an array of text values
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #522 Add item to list-view using array to specify the text of the item / subitem(s)
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #524 Standard dialogs should work no matter what the application wide setting of auto detect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #525 The TreeView find() should allow some options
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #526 Get the message text associated with Windows error codes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #528 Get the list box item under a point
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #529	Add methods to determine type of combo box from Rexx code
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #530	Want to be be able to calculate the rectangle occupied by a combo box item
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #531	Combo box methods to set the minimum number of items shown in list
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #532	Set the cue banner text for a combo box
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #534	Key status
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #535 Treeview expand/collapse button replacement
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #536 popupAsChild support for PropertySheets
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Funtionality in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    Methods have been added to various classes that allow the embedding of either an edit control or a combo box control in
+    the subitem fields of a list-view.  This functionality allows the in-place editing of the subitems in a list-view item.
+  </para>
+  <para>
+    Work has been done that allows any type of ooDialog dialog to be made resizable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsResizingAdmin"/> class: The ResizingAdmin class is a new mixin class. Dialogs that inherit this class
+    are automatically made resizable.  Any ooDialog dialog class can inherit the mixin class. By default, all controls in
+    the dialog are sized in proportion to the change in size of the dialog. Methods of the ResizingAdmin class allow the
+    programmer to customize how the controls in the dialog are sized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Utility Classes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsBrowseForFolder"/> class: The ooDialog BrowseForFolder class provides access to the Windows
+    BrowseForFolder COM object. It gives the Rexx programmer the ability to put up a standard dialog that allows the user to
+    select a folder. It is somewhat similar the fileNameDialog() routine, except it is possible to select a folder.
+    Something that has not been possible in ooDialog previously. The programmer has access to the full set of customizations
+    in the COM object.
+  </para>
+  <para>
+    <xref linkend="clsSimpleFolderBrowse"/> class: The SimpleFolderBrowse class also provides access to the Windows
+    BrowseForFolder COM object, however it is designed to be very simple to use. Only the most common customization features
+    are provided.
+  </para>
+  <para>
+    <xref linkend="clsKeyboard"/> class: The Keyboard class addresses the receiving and processing of keyboard input.
+  </para>
+  <para>
+    <xref linkend="clsProgressDialog"/> class: A ProgressDialog object is used to show a dialog containing a ProgressBar, an
+    optional message, an optional status line, and an optional Cancel button. The dialog shows the progress a lengthy task
+    is making to the user.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Public Routines in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="rtnSimpleFolderBrowse"/> routine: This routine provides a shortcut access to the
+    SimpleFolderBrowse dialog class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the ApplicationManager class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthDefaultIcon"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ComboBox class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetCueClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetComboBoxInfo"/>
+    </para>
+    <para>
+      <xref linkend="mthGetEditControl"/>
+    </para>
+    <para>
+      <xref linkend="mthGetFirstVisibleClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetItemHeightClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetMinVisible"/>
+    </para>
+    <para>
+      <xref linkend="mthIsDropDown"/>
+    </para>
+    <para>
+      <xref linkend="mthIsDropDownList"/>
+    </para>
+    <para>
+      <xref linkend="mthIsGrandchildClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthIsSimpleClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthSetCueClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthSetItemHeightClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthSetMinVisible"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetParentClsDialogControl"/>
+    </para>
+    <para>
+      <xref linkend="mthSetWindowThemeClsDialogControl"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DlgUtil class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthErrMsg"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the Edit class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthIsGrandchildClsEdit"/>
+    </para>
+    <para>
+      <xref linkend="mthWantReturn"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListBox class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthHitTestInfoClsListBox"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthAddRowFromArray"/>.
+    </para>
+    <para>
+      <xref linkend="mthGetItemRect"/>.
+    </para>
+    <para>
+      <xref linkend="mthGetSubitemRect"/>.
+    </para>
+    <para>
+      <xref linkend="mthModifyFullRow"/>.
+    </para>
+    <para>
+      <xref linkend="mthSetFullRowText"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the LvFullRow class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFromArray"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the PropertySheetDialog class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthPopupAsChildClsPSD"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the Rect class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthCopyClsRect"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the WindowBase class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetStyleRaw"/>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">In the LvFullRow class:</emphasis></term>
+      <listitem>
+      <para>
+        <xref linkend="atrUserDataClsLvFr"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">In the PlainBaseDialog class:</emphasis></term>
+      <listitem>
+      <para>
+        <xref linkend="atrDlgID"/>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the Button class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetIdealSize"/>: A new optional parameter, wantWidth, is added. If this argument is
+      specified, the operating system will calculate the ideal height of the button with the specified width. This
+      functionality is not available in the operating system until Vista or later.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the EventNotification class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthConnectListViewEvent"/>: New events added.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      The BEGINSCROLL event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The ENDSCROLL event is added.
+    </para>
+    </listitem>
+    </itemizedlist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthHitTestInfoClsListView"/>: Enhanced to return the subitem index, instead of 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFind"/>: Enhanced to allow starting the search from any parent tree-view item.
+      Enhanced to allow searching for an abbreviation of the tree-view item label.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Public Routines in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="rtnWinTimer"/>: The WinTimer() public routine was originally implemented in a way that caused it consume
+    100% of the CPU in a busy loop. The routine has been re-implemented in a way that keeps the behaviour of the routine the
+    same, without the high CPU use. The CPU use while waiting on the timer is now 0%.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Methods in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the Treeview class:</emphasis></term>
+    <listitem>
+    <para>
+      <emphasis role="italic">hitTest</emphasis>: This method is deprecated. Use the<xref
+      linkend="mthHitTestInfoClsTreeView"/> method instead.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Samples in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    These 3 examples demonstrate how to embed a control in a list-view when it is in report view and use the control to do
+    in-place subitem editing.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\dropDownComboBox.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\dropDownListComboBox.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\editControl.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    These 3 examples demonstrate inheriting the ResizingAdmin class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\augmentedResize.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\basicResize.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example shows how to use the new ProgressDialog class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\addManyRows.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates the BrowseForFolder class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\browsePrinters.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates the SimpleBrowseForFolder class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\simpleFolderBrowse.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates general ooDialog programming techniques by putting up a <emphasis role="italic">stop
+    watch</emphasis> dialog.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\stopWatch.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Samples in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    This example is an enhanced version of the old oostddlg.rex. It has a completely graphical interface and no longer uses
+    'say' statements.  It also uses the defaultIcon() method to set the default icon for the program.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\oodStandardDialogs.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example is an enhanced version of the old oostdfct.rex. It has a completely graphical interface and no longer uses
+    'say' statements.  It also uses the defaultIcon() method to set the default icon for the program.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\oodStandardRoutines.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    These 2 examples are copied from the
+    <computeroutput>oodialog\propertySheet.tabControls\PropertySheetDemo.rex</computeroutput> and
+    <computeroutput>oodialog\propertySheet.tabControls\TabDemo.rex</computeroutput> examples and enhanced to be resizable.
+    The old and new examples can be compared to see both how to make a dialog resizable and how the appearance of the old and
+    new versions contrast.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\PropertySheetDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\TabDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Changes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    All new methods, new classes, new functionality, etc., are fully documented. Other than that there are no major changes
+    to the documentation.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section ooDialog Release 4.2.2 -->
+
+<section id="sct423Release"><title>ooDialog Release 4.2.3</title>
+<para>
+  ooDialog 4.2.3 was released in ??? YYYY. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.3 from 4.2.2.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bug Fixes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    The following bugs were fixed in this release. The bug fix numbers can be used to look up details concerning the bug on
+    SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #1175 Incorrect super class initialization can bypass DynamicDialog init
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1176 ooDialog - the SingleSelection class has the potential of not executing
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1198 ooDialog installer aborts if oodialog.pdf does not exist
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1204 When parsing a .rc file ooDialog does not recognize some control statements
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Bug Fixes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    The following documentation bugs were fixed in this release. The bug fix numbers can be used to look up details
+    concerning the bug on SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #201 getTextAlign(), getTextExtent(), setTextAlign() not documented
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #202 ooDialog Reference 4.2.3 - Text errors in Section 8.1 Method Table
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    The following Request for Feature Ehancements were implemented in the release. Details concerning the enhancements can be
+    looked up on SourceForge using the listed tracker item numbers.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #508 ooDialog - index for tree-view state images
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #537 Add FIle Open Dialog to allow more options than available with the FileNameDialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #540 Add a stand alone ooDialog program launcher
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #549 The setColor() method does not work well with comboboxes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #554 Enhance stand alone ooDialog installer to use components
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #555 .OpenFileDialog set the 'CANCEL' button label
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #556 Would like access to the Win32 UpdateWindow() API
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #559 ooDialog - add a convenience function to help locate resource files
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Miscellaneous Fixes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    Fixed a problem detecting some controls in the .rc files produced by some resource editors. Combo box, edit, list box,
+    and scroll bar.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Funtionality in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    The stand alone ooDialog installer now allows the user to choose to skip the installation of the documentation and / or
+    the example programs. This matches the ooRexx installation where the documentation and sample programs do not have to be
+    installed.
+  </para>
+  <para>
+    An ooDialog executable, <link linkend="chpOoDialogExe">ooDialog.exe</link>, has been added to the
+    distribution.  The executable will run ooDialog programs in a manner similar to rexxhide, provides command line
+    information on the version of ooDialog installed, and can be used to set up file types and associations for ooDialog
+    programs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsCommonItemDialog"/>
+  </para>
+  <para>
+    <xref linkend="clsOpenFileDialog"/>
+  </para>
+  <para>
+    <xref linkend="clsSaveFileDialog"/>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Utility Classes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+    <para>
+      <xref linkend="clsComConstants"/>
+    </para>
+  <para>
+    <xref linkend="clsCommonDialogEvents"/>
+  </para>
+  <para>
+    <xref linkend="clsCommonDialogCustomizations"/>
+  </para>
+  <para>
+    <xref linkend="clsShellItemFilter"/>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Public Routines in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="rtnLocate"/>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>In the <computeroutput>ApplicationManager</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthRequiredOS"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>ComboBox</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthRemoveFullColor"/>
+    </para>
+    <para>
+      <xref linkend="mthSetFullColor"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>DlgUtil</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetGUID"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>TreeView</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetStateImage"/>
+    </para>
+    <para>
+      <xref linkend="mthSetStateImage"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>WindowBase</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthUpdateWindow"/>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>In the <computeroutput>ApplicationManager</computeroutput> class:</term>
+      <listitem>
+      <para>
+        <xref linkend="atrSrcDir"/>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>In the <computeroutput>TreeView</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetImageListClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthSetImageListClsTreeView"/>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Public Routines in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    None.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Methods in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    None.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Samples in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    Demonstrates what the 3 types of combo boxes look like.  Shows how to use the removeFullColor() and setFullColor()
+    methods of the ComboBox class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ComboBox\comboBoxTypes.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    Shows how to implement an incremental search feature for the items in a list box and over-ride the list box control's
+    internal incremental search.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ListBox\incrementalSearch.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to use the .DlgUtil's genGUID() method. Also provides a simple application that can be used to
+    generate GUIDs for any use.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\genGUID.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing a number of different uses of both the Open File Dialog and the Save File Dialog.  Demonstrates the
+    most common usage patterns.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\openSaveFileDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to use the Common Item Dialog in file save mode. This example shows 2 things.  1.) How to use a
+    filter with the dialog. This is done with the .ShellItemFilter class.  2.) How to connect event notifications.  This is
+    done with the .CommonDialogEvents class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\saveFileWithFilter.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to embed controls in a list view to allow in-place subitem editing.  The example also demonstrates
+    the ResizingAdmin and BrowseForFolder classes.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ListView\subitem.editing\importList.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Samples in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    All of the samples have been enhanced so that they can locate any needed resource files no matter which directory they
+    are executed from.  This allows them to run correctly if, for example, they are dragged and dropped on ooDialog.exe.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Changes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    All changes in ooDialog 4.2.3 have been fully documented. Other than that, only small progress has been made in reviewing
+    older sections of the reference manual for accuracy.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section ooDialog Release 4.2.3 -->
+
+</section> <!-- End Section History -->
+
+
+<section id="sctCurrentRelease"><title>Current Release</title>
+<para>
+  The current release of ooDialog is 4.2.4. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.4 from 4.2.3.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bug Fixes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    The following bugs were fixed in this release. The bug fix numbers can be used to look up details concerning the bug on
+    SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    *
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    *
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Bug Fixes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    The following documentation bugs were fixed in this release. The bug fix numbers can be used to look up details
+    concerning the bug on SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    *
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    The following Request for Feature Ehancements were implemented in the release. Details concerning the enhancements can be
+    looked up on SourceForge using the listed tracker item numbers.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    *
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    *
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Funtionality in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Utility Classes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Public Routines in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>In the XX class:</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the YY class:</term>
+    <listitem>
+    <para>
+      yy
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>In the XX class:</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>In the XX class:</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Public Routines in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Methods in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>In the ZZ class:</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Samples in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\xxx.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Samples in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\xxx.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Changes in ooDialog 4.2.4:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section Current Release -->
+
+
+<section id="sctOODialogFuture"><title>Future</title>
+<indexterm><primary>future directions</primary></indexterm>
+<para>
+  The current future direction of ooDialog is to update ooDialog to take full advantage of the Windows 7 functionality
+  for graphical interfaces, related to dialogs. This includes adding more of the missing dialog controls, such as tool bars,
+  status bars, ip address controls, etc.. It also includes updating existing dialog controls to the full functionality
+  available to them in Windows 7.
+</para>
+<para>
+  There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
+  future releases. The <xref linkend="clsImage"/> and <xref linkend="clsImageList"/> classes
+  to name just a few. Work will continue on extending those types of classes. In addition work will be done on
+  implementing features requested by ooDialog programmers.
+</para>
+<para>
+  Work will continue on improving the ooDialog reference manual. Sections that were not reviewed for this release will
+  be reviewed and corrected. It is intended that the ooDialog User Guide will continue to be improved.
+</para>
+<para>
+  The users of ooDialog can take part in directing the future of ooDialog through discussion on the Users Mailing List
+  and by opening requests for enhancements at the SourceForge ooRexx project. Users can subscribe to the oorexx-users
+  mailing list on the <ulink url="http://sourceforge.net/mail/?group_id=119701"> <citetitle>ooRexx Mailing List
+  Subscriptions</citetitle></ulink> page. Requests for ooDialog features can be made on the
+  <ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733"><citetitle>ooRexx Feature
+  Requests</citetitle></ulink> page.
+</para>
+</section> <!-- End Section Current Release -->
+
+
+<section id="reference"><title>ooDialog Class Reference</title>
+<para>
+  The classes provided by ooDialog form a hierarchy as shown in The <link linkend="fig52">Hierarchy</link> of ooDialog
+  Classes. <emphasis role="bold"><emphasis role="italic">Unfortunately</emphasis></emphasis> this section is very out of
+  date. It will be updated in a future version of the ooDialog reference.
+</para>
+
+<figure id="fig52"><title>The Hierarchy of ooDialog Classes</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rxou0s12.jpg" scale="40" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rxou0s24.jpg" scale="40" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>The classes are: </para>
+<variablelist>
+<varlistentry><term>PlainBaseDialog, BaseDialog</term>
+<listitem><para>Base methods regardless of whether the dialog is implemented as a binary
+resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
+<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
+BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
+are not listed separately but are listed in BaseDialog or UserDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>UserDialog</term>
+<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
+elements, such as push buttons, check boxes, radio buttons, entry lines, and
+list boxes.
+</para></listitem></varlistentry>
+<varlistentry><term>ResDialog</term>
+<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
+file (.DLL).
+</para></listitem></varlistentry>
+<varlistentry><term>TimedMessage</term>
+<listitem><para>Class to show a message window for a defined duration.
+</para></listitem></varlistentry>
+<varlistentry><term>InputBox</term>
+<listitem><para>Class to dynamically define a dialog with a message, one entry line,
+and two push buttons (OK, Cancel).
+</para></listitem></varlistentry>
+<varlistentry><term>PasswordBox</term>
+<listitem><para>Similar to InputBox, but keystrokes in the entry line are shown as asterisks
+(*).
+</para></listitem></varlistentry>
+<varlistentry><term>IntegerBox</term>
+<listitem><para>Similar to InputBox, but only numeric data can be entered in the entry
+line.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiInputBox</term>
+<listitem><para>Similar to InputBox, but with multiple entry lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ListChoice</term>
+<listitem><para>Class to dynamically define a dialog with a list box, where one line
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiListChoice</term>
+<listitem><para>Similar to ListChoice, but more than one line can be selected and returned
+to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckList</term>
+<listitem><para>Class to dynamically define a dialog with a group of check boxes, which
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>SingleSelection</term>
+<listitem><para>Class to dynamically define a dialog with a group of radio buttons,
+where one can be selected and returned.
+</para></listitem></varlistentry>
+<varlistentry><term>Dialog</term>
+<listitem><para>Subclass of UserDialog for simple dialogs. You can change the default
+dialog style from UserDialog to ResDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>AnimatedButton</term>
+<listitem><para>Class to implement an animated button within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>DialogControl</term>
+<listitem><para>Class to implement methods that are common to all dialogs and dialog
+controls.
+</para></listitem></varlistentry>
+<varlistentry><term>TreeView</term>
+<listitem><para>Class to implement a tree to display the list of items in a dialog in
+a hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>ListView</term>
+<listitem><para>Class to implement a list-view to display the items in a dialog as a
+collection.
+</para></listitem></varlistentry>
+<varlistentry><term>ProgressBar</term>
+<listitem><para>Class to implement a progress indicator within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>Trackbar</term>
+<listitem><para>Class to implement a slider or trackbar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>Tab</term>
+<listitem><para>Class to implement tabs, which can be compared to dividers in a notebook
+or labels in a file cabinet.
+</para></listitem></varlistentry>
+<varlistentry><term>Static</term>
+<listitem><para>Class to query and modify static controls, such as static text, group
+boxes, and frames.
+</para></listitem></varlistentry>
+<varlistentry><term>Edit</term>
+<listitem><para>Class to query and modify edit controls, which are also called entry
+lines.
+</para></listitem></varlistentry>
+<varlistentry><term>Button</term>
+<listitem><para>Class to implement push buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>RadioButton</term>
+<listitem><para>Class to implement radio buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckBox</term>
+<listitem><para>Class to implement check boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ListBox</term>
+<listitem><para>Class to implement list boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ComboBox</term>
+<listitem><para>Class to implement a combo box, which combines a list box with an edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>ScrollBar</term>
+<listitem><para>Class to implement a scroll bar within a dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</chapter>

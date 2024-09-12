@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="spvard"><title>Special Variables</title>
+<para>A special variable can be set automatically during processing of a Rexx
+program. There are five special variables: </para>
+<variablelist>
+<varlistentry><term>RC
+<indexterm><primary>RC (return code)</primary>
+<secondary>special variable</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>RC</tertiary></indexterm>
+<indexterm><primary>RC special variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>RC</tertiary></indexterm>
+</term>
+<listitem><para>  is
+set to the return code from any executed command (including those submitted
+with the ADDRESS instruction). After the trapping of ERROR or FAILURE
+conditions, it is also set to the command return code. When the SYNTAX
+condition is trapped, RC is set to the syntax error number (1-99). RC is
+unchanged when any other condition is trapped.
+<note><title>Note</title>
+<para>Commands executed manually during
+interactive tracing do not change the value of RC.</para></note>
+</para></listitem></varlistentry>
+<varlistentry><term>RESULT
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>RESULT</tertiary></indexterm>
+<indexterm><primary>RESULT special variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>RESULT</tertiary></indexterm>
+</term>
+<listitem>
+<para>is set by a <xref linkend="keyReturn" xrefstyle="select:title"/> instruction
+in a subroutine that has been called, or a method that was activated by a message
+instruction, if the RETURN instruction specifies an expression.
+If the RETURN instruction has no expression, RESULT is dropped (becomes uninitialized).
+Note that an
+<xref linkend="keyExit" xrefstyle="select:title"/> or
+<xref linkend="keyReply" xrefstyle="select:title"/> instruction also sets RESULT.
+</para></listitem></varlistentry>
+<varlistentry><term id="xself">SELF
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>SELF</tertiary></indexterm>
+<indexterm><primary>SELF special variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>SELF</tertiary></indexterm>
+</term>
+<listitem><para>  is set when a method is activated. Its value is the object
+that forms the execution context for the method (that is, the receiver object
+of the activating message). You can use SELF to:
+<itemizedlist>
+<listitem><para>Run a method in an object in which a method is already running.
+For example, a Find_Clues method is running in an object called Mystery_Novel.
+When Find_Clues finds a clue, it sends a Read_Last_Page message to Mystery_Novel:
+<programlisting>
+self~Read_Last_Page
+</programlisting>
+</para></listitem>
+<listitem><para>Pass references about an object to the methods of other
+objects. For example, a Sing method is running in object Song. The code
+<computeroutput>Singer2~Duet(self)</computeroutput> would give the Duet method
+access to the same Song.</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+<varlistentry><term>SIGL
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>SIGL</tertiary></indexterm>
+<indexterm><primary>SIGL special variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>SIGL</tertiary></indexterm>
+</term>
+<listitem><para>  is
+set to the line number of the last instruction that caused a transfer of control
+to a label (that is, any SIGNAL, CALL, internal function call, or trapped
+condition). See <xref linkend="consigl" />.
+</para></listitem></varlistentry>
+<varlistentry><term id="xsuper">SUPER
+<indexterm><primary>special</primary>
+<secondary>variable</secondary>
+<tertiary>SUPER</tertiary></indexterm>
+<indexterm><primary>SUPER special variable</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>variables</secondary>
+<tertiary>SUPER</tertiary></indexterm>
+</term>
+<listitem><para>is
+set when a method is activated. Its value is the class object that is the
+usual starting point for a superclass method lookup for the SELF object. This
+is the first immediate superclass of the class that defined the method currently
+running. (See <xref linkend="xclass" />.)
+If the current method was defined by a class in the direct inheritance chain,
+SUPER will always refer
+to the immediate superclass of that class.
+If the current method
+is defined by a mixin class, the SUPER variable will always be the superclass of the mixin class.
+</para>
+<para>The special variable SUPER lets you
+call a method in the superclass of an object. For example, the following Savings
+class has INIT methods that the Savings class, Account class, and Object class
+define. </para>
+<example><title>Using the SUPER variable</title>
+<programlisting>
+::class Account
+
+::method INIT
+expose balance
+use arg balance
+self~init:super          /* Forwards to the Object INIT method  */
+
+::method TYPE
+return "an account"
+
+::method name attribute
+
+::class Savings subclass Account
+
+::method INIT
+expose interest_rate
+use arg balance, interest_rate
+self~init:super(balance) /* Forwards to the Account INIT method */
+
+::method type
+return "a savings account"
+</programlisting>
+</example>
+<para>When the INIT method of the Savings
+class is called, the variable SUPER is set to the Account class object. The
+instruction: </para>
+<programlisting>
+self~init:super(balance) /* Forwards to the Account INIT method */
+</programlisting>
+<para>calls the INIT method of the Account class rather than recursively
+calling the INIT method of the Savings class. When the INIT method of the
+Account class is called, the variable SUPER is assigned to the Object class.
+</para>
+<example><title>Forwarding an event</title>
+<programlisting>
+self~init:super          /* Forwards to the Object INIT method  */
+</programlisting>
+</example>
+<para>calls the INIT method that the Object class defines.</para>
+</listitem></varlistentry>
+</variablelist>
+<para>You can alter these variables like any other variable, but the language
+processor continues to set RC, RESULT, and SIGL automatically when appropriate.
+The EXPOSE, PROCEDURE, USE and DROP instructions also affect these variables.
+</para>
+<para>Rexx also supplies functions that indirectly affect the execution
+of a program. An example is the name that the program was called by and the
+source of the program (which are available using the PARSE SOURCE instruction).
+In addition, PARSE VERSION makes available the language version and date of
+Rexx implementation that is running. The built-in functions ADDRESS, DIGITS,
+FUZZ, FORM, and TRACE return other settings that affect the execution of a
+program.</para>
+</chapter>

@@ -1,0 +1,3612 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="clsEdit" xreflabel="Edit"><title>Edit Controls</title>
+<indexterm><primary>Edit class</primary></indexterm>
+<para>
+  An edit control is a rectangular window that allows the user to enter and edit text using the keyboard. Edit controls
+  have two line styles, single-line and multiline.
+</para>
+<para>
+  When the edit control has the focus it displays a blinking line called the caret that marks the insertion point in the
+  control. The insertion point can be changed using the keyboard or the mouse. Text can be selected, also using the
+  keyboard or mouse.
+</para>
+<para>
+  The <computeroutput>Edit</computeroutput> class provides methods to work with and manipulate the underlying
+  Windows edit dialog control which it represents. It is a concrete subclass of the dialog <xref
+  linkend="chpDialogControlObject"/> object and therefore has all methods of the of the dialog control object.
+</para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with edit controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="tmthNewEdit"/> method of the
+    <xref linkend="chpDialogObject"/> object to retrieve a new Edit object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically define an edit in a <xref linkend="clsUserDialog"/> class, use the
+ <xref linkend="mthCreateEdit"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying edit control to
+    a method in the Rexx dialog object use the <xref linkend="mthConnectEditEvent"/>()
+    method.
+  </para> </listitem></varlistentry>
+</variablelist> </para>
+
+<section id="sctMethodsEdit"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with Edit objects, including the pertinent methods from other classes:
+</para>
+<table id="tblEditMethods" frame="all">
+<title>Important Edit Methods</title>
+<tgroup cols="2">
+<colspec colwidth="5*" /><colspec colwidth="16*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="tmthNewEdit"/></entry>
+<entry>Returns a new <computeroutput>Edit</computeroutput> object for the edit control with the specified ID.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateEdit"/></entry>
+<entry>Creates an edit control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
+</row>
+<row>
+<entry><xref linkend="tmthConnectEditEvent"/></entry>
+<entry>Connects an edit control event notification to a method in the Rexx dialog object</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrPasswordChar"/></entry>
+<entry>Set or get the password character for an edit control with the PASSWORD style.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddStyleClsEdit"/></entry>
+<entry>Adds one or more edit control styles to the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCanUndo"/></entry>
+<entry>Determines if there are any actions in the undo queue of the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClearText"/></entry>
+<entry>Deletes the currently selected text from the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCopyText"/></entry>
+<entry>Copies the currently selected text to the clipboard in text format.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCutText"/></entry>
+<entry>Deletes the currently selected text in the edit control and copies it to the clipboard.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDisableInternalResize"/></entry>
+<entry>Prevents the edit control from internally resizing itself when its owner dialog is resized.</entry>
+</row>
+<row>
+<entry><xref linkend="mthEnsureCaretVisibility"/></entry>
+<entry>Scrolls the edit control until the caret (cursor) is visible.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFirstVisibleLine"/></entry>
+<entry>Retrieves the index of the first visible line, or the first visible character, in an edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCueClsEdit"/></entry>
+<entry>Retrieves the cue text, or the empty string if there is no cue set.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetLine"/></entry>
+<entry>Retrieves the text of the specified line.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMargins"/></entry>
+<entry>Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetRectClsEdit"/></entry>
+<entry>Returns the edit control's current formatting rectangle as a <computeroutput>.Rect</computeroutput> object</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetStyle"/></entry>
+<entry>Returns the edit control's current style as a blank delimited list of style keywords.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHideBalloon"/></entry>
+<entry>Hides the balloon information window displayed by the <emphasis role="italic">showBalloon</emphasis> method.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsGrandchildClsEdit"/></entry>
+<entry>Notifies the ooDialog framework that this edit control is a grandchild of the dialog and configures the underlying edit control to send four event notifications to the dialog, rather than its direct parent.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsModified"/></entry>
+<entry>Determines if the text in the edit control has been modified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsSingleLine"/></entry>
+<entry>Determines if this edit control is a single line or a multi-line edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLineFromIndex"/></entry>
+<entry>Gets the line index of the line that contains the specified character index.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLineIndex"/></entry>
+<entry>Determines the one-based character index of the first character in the line specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLineLength"/></entry>
+<entry>Returns the length, in characters, of the specified line in an edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLines"/></entry>
+<entry>Determines the number of lines in a multiline edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLineScroll"/></entry>
+<entry>Scrolls the text horizontally and vertically in a multiline edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthMargins"/></entry>
+<entry>Returns the left and right margins of the edit control as a <computeroutput>String</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNoContextMenu"/></entry>
+<entry>Removes the edit control's internal context menu.</entry>
+</row>
+<row>
+<entry><xref linkend="mthPasteText"/></entry>
+<entry>Copies the content of the clipboard to the edit control at the current caret position.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveStyleClsEdit"/></entry>
+<entry>Removes one or more edit control styles from the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReplaceSelText"/></entry>
+<entry>Replaces the text selection in an edit control with the specified text.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReplaceStyleClsEdit"/></entry>
+<entry>Removes and adds one or more edit control styles in one operation.</entry>
+</row>
+<row>
+<entry><xref linkend="mthScrollCommand"/></entry>
+<entry>Scrolls the text vertically in a multiline edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectClsEdit"/></entry>
+<entry>Used to change the text selection and / or the position of the cursor</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectedClsEdit"/></entry>
+<entry>Returns a <computeroutput>String</computeroutput> object containing the start and end of the text selection.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelection"/></entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing the start and end of the text selection.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetCueClsEdit"/></entry>
+<entry>Sets the text for the <emphasis role="italic">cue</emphasis> banner.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetLimit"/></entry>
+<entry>Sets the maximum number of characters the user can type in to the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMargins"/></entry>
+<entry>Sets the left and right margins of the edit control as specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetModified"/></entry>
+<entry>Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetReadOnly"/></entry>
+<entry>Adds or removes the read only style for the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetRectClsEdit"/></entry>
+<entry>Sets the edit control's current formatting rectangle using a <computeroutput>.Rect</computeroutput> object</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTabStops"/></entry>
+<entry>Sets the tab stops for text copied into a multi-line edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthShowBalloon"/></entry>
+<entry>Displays an informational window, a balloon tip, for the edit control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthTabEquals"/></entry>
+<entry>An alias for the <emphasis role="italic">setTabStops</emphasis> method.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUndo"/></entry>
+<entry>Undoes the last edit control operation in the edit control's undo queue.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWantReturn"/></entry>
+<entry>Connects the <emphasis role="italic">Enter</emphasis> keypress to a method in the Rexx dialog and prevents the edit control from sending the keypress to the dialog manager, which closes the dialog.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewEdit" xreflabel="newEdit"><title>newEdit (dialog object method)</title>
+<para>
+  Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
+  by using the <xref linkend="mthNewEdit"/> method of the dialog <xref linkend="chpDialogObject"/> object. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newEdit(--id--)------------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newEdit() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateEdit" xreflabel="createEdit"><title>createEdit (UserDialog method)</title>
+<para>
+  An edit control can be added to the dialog template for a <xref linkend="clsUserDialog"/>
+  dialog through the <xref linkend="mthCreateEdit"/> method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
+                                         +-,-style-+  +-,-attributeName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createEdit() [UserDialog method] -->
+
+
+<section id="tmthConnectEditEvent" xreflabel="connectEditEvent"><title>connectEditEvent (dialog object method)</title>
+<para>
+  To connect event notifications from an edit control use the <xref linkend="mthConnectEditEvent"/> method of the
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--connectEditEvent(--id--,--event--+----------------+--)-----><
+                                     +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectEditEvent() [EventNotification method] -->
+
+
+<section id="atrPasswordChar" xreflabel="passwordChar"><title>passwordChar (Attribute)</title>
+<indexterm><primary>passwordChar</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>passwordChar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--passwordChar---------------------------------><
+
+>>--passwordChar = varName-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">passwordChar</emphasis> attribute reflects the password character for a password edit
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">passwordChar get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current password character for the edit control, if it is set, otherwise the empty string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">passwordChar set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the password character for the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The password character only has meaning if the edit control has the PASSWORD style, otherwise it is ignored.
+    Multiline edit controls don't support the PASSWORD style or getting and setting the password character.
+  </para>
+  <para>
+    When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
+    character to the default. This is an asterisk for earlier versions of Common Control <xref linkend="ovvComctl32"/>, a
+    solid circle for Comctl32 version 6.0 and later.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::passwordChar() [attribute]  -->
+
+
+<section id="mthAddStyleClsEdit" xreflabel="addStyle"><title>addStyle</title>
+<indexterm><primary>addStyle</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>addStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addStyle(--style--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds one or more edit control styles to the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry id="argsAddStyle"><term>style [required]</term>
+      <listitem>
+      <para>
+        A list of 1 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>UPPER     </member>
+          <member>LOWER      </member>
+          <member>NUMBER    </member>
+          <member>WANTRETURN</member>
+          <member>OEM       </member>
+          <member>TAB       </member>
+          <member>GROUP     </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>UPPER</term>
+          <listitem>
+          <para>
+            Converts all characters to uppercase as they are typed into the edit control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LOWER</term>
+          <listitem>
+          <para>
+            Converts all characters to lowercase as they are typed into the edit control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NUMBER</term>
+          <listitem>
+          <para>
+            Only allows digits to be typed into the edit control. If the user types an non-digit character an
+            information balloon is displayed informing the user that only digits are allowed. This style does not
+            prevent the user from pasting non-digits into the control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WANTRETURN</term>
+          <listitem>
+          <para>
+            This keyword only effects multi-line edit controls. With this style when a user hits the enter key the line
+            break characters are inserted into the text buffer. Without the style, when the user hits enter the default
+            push button of the dialog is pressed.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OEM</term>
+          <listitem>
+          <para>
+            Converts text entered in the edit control from the Windows character set to the OEM character set and then
+            back again to the Windows character set. This ensures proper character conversion in certain circumstances.
+            Microsoft states that this style is most useful when edit controls contain file names that will be used with
+            file systems that do not support Unicode. For further details see the
+            Windows <xref linkend="defWindowsDoc"/> provided by Microsoft.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+          <para>
+            Adds the <xref linkend="wstabstop"/> style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            Adds the <xref linkend="wsgroup"/> style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The positive numeric value of the edit control's previous style.
+  </para>
+  <para>
+    It is possible, but very unlikely, that a negative number is returned. See the remarks.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
+  </para>
+  <para>
+    If an operating system error occurs, this method returns the negated value of the system error code. However, this
+    method also sets <computeroutput>.systemErrorCode</computeroutput> if there is an error.
+  </para>
+  <para>
+    The negative number return is a hold over from earlier versions of ooDialog before
+    <computeroutput>.systemErrorCode</computeroutput> was introduced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the syntax to add the number, tabstop, and group styles to an edit control.
+<programlisting>
+<![CDATA[
+
+  ec = dlg~newEdit(IDC_EDIT_PARTNUMBERS)
+  ec~addStyle("NUMBER TAB GROUP")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::addStyle() -->
+
+
+<section id="mthCanUndo" xreflabel="canUndo"><title>canUndo</title>
+<indexterm><primary>canUndo</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>canUndo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--canUndo--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if there are any actions in the undo queue of the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is <computeroutput>.true</computeroutput> if there are actions in the undo queue, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the undo queue is not empty, the <xref linkend="mthUndo"/> method can be used to undo the most recent
+    operation.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::canUndo() -->
+
+
+<section id="mthClearText" xreflabel="clearText"><title>clearText</title>
+<indexterm><primary>clearText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>clearText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clearText------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Deletes (clears) the current selected text, if any, from the edit control
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the <emphasis role="italic">clearText</emphasis> method is used to delete the selected text, the deletion can
+    be undone using the <xref linkend="mthUndo"/> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::clearText() -->
+
+<section id="mthCopyText" xreflabel="copyText"><title>copyText</title>
+<indexterm><primary>copyText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>copyText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--copyText-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Copies the currently selected text in the edit control to the clipboard, in text format.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::copyText() -->
+
+
+<section id="mthCutText" xreflabel="cutText"><title>cutText</title>
+<indexterm><primary>cutText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>cutText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cutText(--+--------+--)----------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+   Deletes (cuts) the currently selected text, if any, in the edit control and copies the deleted text to the clipboard
+   in text format.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The deletion performed by the <emphasis role="italic">cutText</emphasis> method can be undone by using the
+ <xref linkend="mthUndo"/> method.  To delete the currently selected text without placing that text on the
+    clipboard, use the <xref linkend="mthClearText"/> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::cutText() -->
+
+
+<section id="mthDisableInternalResize" xreflabel="disableInternalResize"><title>disableInternalResize</title>
+<indexterm><primary>disableInternalResize</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>disableInternalResize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disableInternalResize(--+-----------+--)-----><
+                            +--disable--+
+]]>
+</programlisting>
+
+<para>
+  The edit control, internally, resizes itself in response to its parent dialog being resized.  There are times when
+  this behavior may not be desired. The <emphasis role="italic">disableInternalResize</emphasis> method can be used to
+  disable the behavior.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>disable [optional]</term>
+      <listitem>
+      <para>
+        <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>. If true, disable the edit
+        control's internal resizing.  If false, re-enable the behavior, if it has been disabled.  The default is
+        <computeroutput>.true</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on success, false on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the programmer is resizing the edit control himself in response to the resizing of the dialog, the edit
+    control's internal resizing may get in the way. That behavior of the edit control can be suppressed by using the
+    <emphasis role="italic">disableInternalResize</emphasis> method. The programmer can disable / re-enable the internal
+    resizing of the edit control as often and whenever he wants.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/> method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>. The following codes may be set. They
+    are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
+      <listitem>
+      <para>
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to disable internal
+        resizing when it was already disabled, or asked to re-enable the behavior when it is not disabled to begin
+        with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_SIGNAL_REFUSED (156)</emphasis></term>
+      <listitem>
+      <para>
+        The recipient process has refused the signal. <emphasis role="bold">Meaning:</emphasis> The method tried to
+        disable or re-enable the internal resizing, but failed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <computeroutput>samples/oodialog/dlgAreaUDemoTwo.rex</computeroutput> example program shows a resizable dialog.
+    In this example, the program waits until the user is finished sizing the dialog before it updates the size and
+    position of the dialog controls. The eliminates the flicker seen when the dialog controls are resized continually as
+    the dialog is resized. In this program, the edit control has its internal resizing disabled, since it defeats the
+    purpose of the program:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  self~newEdit(IDC_EDIT)~disableInternalResize
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::disableInternalResize() -->
+
+
+<section id="mthEnsureCaretVisibility" xreflabel="ensureCaretVisibility"><title>ensureCaretVisibility</title>
+<indexterm><primary>ensureCaretVisibility</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>ensureCaretVisibility</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ensureCaretVisibility------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Scrolls the position of the caret so that it is visible in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::ensureCaretVisibility() -->
+
+
+<section id="mthFirstVisibleLine" xreflabel="firstVisibleLine"><title>firstVisibleLine</title>
+<indexterm><primary>firstVisibleLine</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>firstVisibleLine</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--firstVisibleLine-----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the index of the first visible line in a multiline edit control or the first visible character in a
+  single-line edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the first visible line or first visible character depending on the type of the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
+  <para>
+    As in all methods of the <computeroutput>Edit</computeroutput> class, both the line index and the character index
+    are one-based indexes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+  edit = self~newEdit(IDC_EDIT)
+
+  index = edit~firstVisibleLine
+  if edit~isSingleLine then do
+    say 'The first visible character in the edit control is at index:' index
+  else
+    say 'The first visible line in the edit control is at index:' index
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::firstVisibleLine() -->
+
+
+<section id="mthGetCueClsEdit" xreflabel="getCue"><title>getCue</title>
+<indexterm><primary>getCue</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCue---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the cue text, or the empty string if there is no cue set. The cue text is set with the
+ <xref linkend="mthSetCueClsEdit"/> method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the text of the cue banner on success. The empty string is returned if the cue is not set, or on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Cue text provides a visual hint to the user as to the purpose of the edit control. For example the text of an edit
+    control that is used to begin a search might have the cue text: <emphasis role="italic">Enter search
+    here</emphasis>. The cue is displayed in gray text. Once some text is entered into the edit box, the cue no longer
+    displays.
+  </para>
+  <para>
+    Normally when the user clicks the on the edit control, the cue text goes away. However on Windows Vista and later
+    this behavior can be changed so that the cue text remains until the user actually types some characters in the edit
+    control.
+  </para>
+  <para>
+    It is not possible to set a cue on a multiline edit control.
+  </para>
+  <para>
+    On Windows XP the <emphasis role="italic">getCue</emphasis> method does not work, it will always return the empty
+    string. This is the operating system behavior, it has nothing to do with ooDialog. On Windows Vista and later it
+    correctly returns the cue text.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getCue() -->
+
+
+<section id="mthGetLine" xreflabel="getLine"><title>getLine</title>
+<indexterm><primary>getLine</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getLine</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getLine(--lineIndex--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the text of the specified line.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required arguments is:
+    <variablelist>
+      <varlistentry><term>lineIndex [required]</term>
+      <listitem>
+      <para>
+        The one-based index of the line whose text is desired. This argument can be 0 to specify the current
+        line.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the line specified on success. On error, the empty string is returned. Remember that the line specified
+    may actually have no text. The programmer can check <computeroutput>.systemErrorCode</computeroutput> to determine
+    if the return is an error indication or not.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The carriage return and line-feed characters are not included in the returned string. The current line is the line
+    with the caret in it.
+  </para>
+  <para>
+    In earlier releases of ooDialog the <emphasis role="italic">getLine</emphasis> method required an optional, second,
+    argument if the length of the text in a line was greater than 255 characters. This argument is no longer required,
+    or used, in any circumstances. For backwards compatibility, the argument is accepted, but completely ignored. The
+    complete line of text is returned no matte how long it may be.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>. The following error code is set by
+    the ooDialog framework on error.
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
+      <listitem>
+      <para>
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> Indicate that <emphasis
+        role="italic">lineIndex</emphasis> is not valid, it is greater than the number of lines in the edit control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints to the screen the text in the edit control with the
+    <xref linkend="defSymbolicId"/> ID of <computeroutput>IDC_EDIT_COPYRIGHT</computeroutput>
+<programlisting>
+<![CDATA[
+
+  ec = self~newEdit(IDC_EDIT_COPYRIGHT)
+
+  do i = 1 to ec~lines
+     say ec~getLine(i)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getLine() -->
+
+
+<section id="mthGetMargins" xreflabel="getMargins"><title>getMargins</title>
+<indexterm><primary>getMargins</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getMargins</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMargins-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput>
+  object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a <computeroutput>Directory</computeroutput> object. The directory has the width of the left margin in
+    the <emphasis role="italic">left</emphasis> index and the width of the right margin in the <emphasis
+    role="italic">right</emphasis> index. Both values are in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is from a hypothetical application where the user can increase or decrease the margins in an edit
+    control by clicking on a '+' or a '-' minus button.
+<programlisting>
+<![CDATA[
+
+::method onButtonClick unguarded
+  expose editControl
+  use arg info, handle
+
+  id = .DlgUtil~loWord(info)
+  margins = editControl~getMargins
+
+  if id == self~constDir[IDC_PB_PLUS] then do
+    if margins~left < 100 then margins~left += 2
+    if margins~right < 100 then margins~right += 2
+  end
+  else if id == self~constDir[IDC_PB_MINUS] then do
+    if margins~left > 2 then margins~left -= 2
+    if margins~right > 2 then margins~right -= 2
+  end
+  else do
+    return 0
+  end
+
+  editControl~setMargins(margins~left, margins~right)
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getMargins() -->
+
+
+<section id="mthGetRectClsEdit" xreflabel="getRect"><title>getRect</title>
+<indexterm><primary>getRect</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRect--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the current formatting rectangle of the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    These method uses no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return from the <emphasis role="italic">getRect</emphasis> method is a <computeroutput>.Rect</computeroutput>
+    object containing the coordinates for the formatting rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The visibility of the text in an edit control is dependent on its window rectangle and its formatting rectangle. The
+    window rectangle is the client area of the window containing the edit control. The formatting rectangle is an
+    artificial construct maintained by the operating system and used to format the text. The formatting rectangle can be
+    set to be larger than the window rectangle, which will limit what can be seen of the text. Or the formatting
+    rectangle can be made smaller than the window rectangle, which will create more white space around the text.
+  </para>
+  <para>
+    The coordinates of an edit control's formatting rectangle can be set through the
+ <xref linkend="mthSetRectClsEdit"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints the formatting rectangle of an edit control:
+<programlisting>
+<![CDATA[
+
+::method showFormattingRect private
+  use strict arg editCtrl
+
+  fRect = editCtrl~getRect
+  say "Formatting rectangle: ("fRect~left',' fRect~top',' fRect~right',' fRect~bottom')'
+
+/* Output might be for instance:
+
+   Formatting rectangle: (2, 1, 562, 421)
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getRect() -->
+
+
+<section id="mthGetStyle" xreflabel="getStyle"><title>getStyle</title>
+<indexterm><primary>getStyle</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStyle-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the edit control's current style as a blank delimited list of style keywords.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string consisting of blank delimited style keywords. The possible keywords are:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>VISIBLE    </member> <member>HIDDEN  </member> <member>TAB       </member> <member>NOTAB      </member>
+      <member>DISABLED   </member> <member>ENABLED </member> <member>GROUP     </member> <member>HSCROLL    </member>
+      <member>VSCROLL    </member> <member>PASSWORD</member> <member>MULTILINE </member> <member>AUTOSCROLLH</member>
+      <member>AUTOSCROLLV</member> <member>READONLY</member> <member>WANTRETURN</member> <member>NUMBER     </member>
+      <member>UPPER      </member> <member>LOWER   </member> <member> RIGHT    </member> <member>CENTER     </member>
+      <member>OEM        </member> <member>LEFT    </member>
+      <member>KEEPSELECTION</member>
+    </simplelist>
+  </para>
+  <para>
+    The meaning of these style keywords is documented in the <xref linkend="mthCreateEdit"/> method.
+  </para>
+  <para>
+    It is possible, but very unlikely, that a negative number is returned. See the remarks.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If an operating system error occurs, this method returns the negated value of the system error code. However, this
+    method also sets <computeroutput>.systemErrorCode</computeroutput> if there is an error.
+  </para>
+  <para>
+    The negative number return is a hold over from earlier versions of ooDialog before
+    <computeroutput>.systemErrorCode</computeroutput> was introduced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries the edit control's current style. If it has the NUMBER only style, it is removed.
+<programlisting>
+<![CDATA[
+
+  ec = dlg~newEdit(IDC_EDIT)
+
+  style = editControl~getStyle
+  if style~wordPos("NUMBER") <> 0 then
+    ec~removeStyle("NUMBER")
+  ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getStyle() -->
+
+
+<section id="mthHideBalloon" xreflabel="hideBalloon"><title>hideBalloon</title>
+<indexterm><primary>hideBalloon</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>hideBalloon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hideBalloon----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Hides the balloon information window displayed by the <xref linkend="mthShowBalloon"/> method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 if the method fails.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system will dismiss the balloon window automatically after 10 seconds with no programmer
+    intervention. The <emphasis role="italic">hideBalloon</emphasis> method can be used to dismiss the ballon before the
+    10 seconds is up.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    For an example see the showBalloon <link linkend="exampleShowBalloon">example</link>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIsGrandchildClsEdit" xreflabel="isGrandchild"><title>isGrandchild</title>
+<indexterm><primary>isGrandchild</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>isGrandchild</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isGrandchild(--+------------+--+------------+--)------------><
+                   +-,-mthName--+  +-,-wantTab--+
+]]>
+</programlisting>
+
+<para>
+  Notifies the ooDialog framework that this edit control is a grandchild of the dialog and configures the underlying edit
+  control to send four event notifications to the dialog, rather than its direct parent. The edit control must be a
+  single-line edit control.
+</para>
+<para>
+  The four events that the grandchild notifies the Rexx dialog of are the RETURN, ESCAPE, TAB keydown events, and the
+  KILLFOCUS event. See the Remarks section for more details.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>mthName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog that is connected to the four event notifications sent by the grandchild. If
+      this argument is omitted, the default method name is <emphasis role="italic">onEditGrandchildEvent</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wantTab [optional]</term>
+    <listitem>
+    <para>
+      By default, the TAB keydown notification is not sent to the dialog. If the <emphasis role="italic">wantTab</emphasis>
+      argument is true then the <emphasis role="italic">mthName</emphasis> method is also invoked for the TAB keydown event.
+      The default for this argument is false and the TAB keydown event does not cause the method to be invoked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally dialog controls are child windows of the dialog window. Historically, in older versions of ooDialog, this was
+    always the case. However, since ooDialog 4.2.0, there have begun to be some cases where the programmer can gain access to
+    dialog controls that are not the direct child of the dialog. The <xref linkend="mthSetParentClsDialogControl"/> method can be used to
+    change the parent window of a dialog control to a parent window other than the dilaog window. When the other window is a
+    dialog control, this makes the control window a grandchild of the dialog. Some dialog controls create their own child
+    dialog controls and enhancements to ooDialog have begun to give the Rexx programmer access to these child dialog
+    controls. These are also grandchildren of the dialog.
+  </para>
+  <para>
+    A dialog control sends its event notifications to its direct parent, never to its grandparent. The <emphasis
+    role="italic">isGrandchild</emphasis> method of the <computeroutput>Edit</computeroutput> control is a special case
+    method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
+    will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
+    RETURN and ESCAPE keydown events. These events occur when the user types the return, or enter, key, the escape key, or
+    the tab key. The fourth event is the KILLFOCUS event. The event occurs when the edit control loses the focus.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the parent of an edit control to be a list-view. It then invokes <emphasis
+    role="italic">isGrandchild</emphasis> so that the <emphasis role="italic">onEditGrandchildEvent</emphasis> method will be
+    invoked in the Rexx dialog for the KILLFOCUS, RETURN keydown, and ESCAPE keydown events:
+<programlisting>
+<![CDATA[
+
+  list = self~newListView(IDC_LISTVIEW)
+
+  edit = self~newEdit(IDC_EDIT)
+  edit~setParent(list)
+  edit~isGrandchild
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::isGrandchild() -->
+
+
+<section id="mthIsModified" xreflabel="isModified"><title>isModified</title>
+<indexterm><primary>isModified</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>isModified</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isModified-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the text in the edit control has been modified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the edit control's modified flag is set, otherwise
+    <computeroutput>.false</computeroutput> .
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system automatically sets the modification flag to false when the edit control is created. If the user
+    changes the control's text, then the operating system sets the flag to true.  The
+ <xref linkend="mthSetModified"/> method can be used to set the flag to true or false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example saves the file in the edit control when the user ends the dialog by using the <emphasis
+    role="italic">Ok</emphasis> button.
+<programlisting>
+<![CDATA[
+
+  ::method ok unguarded
+
+  if self~newEdit(IDC_EDIT_FILE)~isModified then self~saveFile
+  return self~ok:super
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::isModified() -->
+
+
+<section id="mthIsSingleLine" xreflabel="isSingleLine"><title>isSingleLine</title>
+<indexterm><primary>isSingleLine</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>isSingleLine</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isSingleLine---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if this edit control is a single line or a multi-line edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if this edit control is a single line edit control and
+    <computeroutput>.false</computeroutput> if it is a multi-line edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Some methods are not applicable for single line edit controls, or behave differently between single line and
+    multi-line edit controls. For instance, the <xref linkend="mthSetTabStops"/> method does nothing
+    for a single line edit control. The <emphasis role="italic">isSingleLine</emphasis> method allows the programmer to
+    write generic code for an edit control by checking which type of edit control the code is dealing with.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+::method setAppDefaultTabs private
+  use strict arg editControl
+
+  if editControl~isSingleLine then return .false
+
+  editControl~setTabStops(.array~of(10, 20, 30, 40))
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::isSingleLine() -->
+
+
+<section id="mthLineFromIndex" xreflabel="lineFromIndex"><title>lineFromIndex</title>
+<indexterm><primary>lineFromIndex</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineFromIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lineFromIndex(--+-------------+--)-----------><
+                    +--charIndex--+
+]]>
+</programlisting>
+
+<para>
+  Gets the line index of the line that contains the character at the specified character index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>charIndex [optional]</term>
+      <listitem>
+      <para>
+        The non-negative, one-based, character index of the character whose line index is needed.
+      </para>
+      <para>
+        If <emphasis role="italic">charIndex</emphasis> is 0, then this method retrieves the current line index, or, if
+        there is a selection, the line containing the beginning of the current selection. The current line is the line
+        the caret is on. The default if <emphasis role="italic">charIndex</emphasis> is omitted is 0.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based line index containing the specified character. If the <emphasis role="italic">charIndex</emphasis> is
+    beyond the end of the text in the edit control, the index of the last line is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example puts some text into a multiline edit control and then displays the line index that contains the
+    character at index 55.
+<programlisting>
+<![CDATA[
+
+msg = "It is easy to learn and easy to use." || .endOfLine || -
+      "Have fun with it!"
+
+edit = self~newEdit(200)
+edit~setText(msg)
+
+say "Character 55 is contained in line" edit~lineFromIndex(55)
+
+/* Output would be:
+
+Character 55 is contained in line 2
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lineFromIndex() -->
+
+
+<section id="mthLineIndex" xreflabel="lineIndex"><title>lineIndex</title>
+<indexterm><primary>lineIndex</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lineIndex(--+---------+--)-------------------><
+                +--index--+
+]]>
+</programlisting>
+
+<para>
+  Determines the one-based character index of the first character in the line specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>line [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the line whose character index needs to be determined. If <emphasis
+        role="italic">line</emphasis> is 0 then the character index of the first character in the current line is
+        returned.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based character index for the first character in the line specified. 0 is returned on error. In
+    particular, 0 is returned if <emphasis role="italic">line</emphasis> is greater than the number of lines in the edit
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The character index is the one-based index of the character from the beginning of the edit control. This includes
+    characters like line feed and carriage return that are not displayed on the screen. The current line is the line the
+    caret is on.
+  </para>
+  <para>
+    This method is intended for multiline edit controls, but it works for single line edit controls, returning 1 when
+    <emphasis role="italic">line</emphasis> is 1 or 0 and returning 0 for any other value of <emphasis
+    role="italic">line</emphasis>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleLineIndex"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets the text for edit control with the <xref linkend="defSymbolicId"/> id of
+    IDC_EDIT and displays the number of text lines (3), the starting index of the second line (carriage return, 0x0d,
+    and line feed, 0x0a, which mark a line break, are also considered to be characters), and the length of the third
+    line:
+
+<programlisting>
+<![CDATA[
+
+editControl = self~newEdit(IDC_EDIT)
+
+text = "It is easy to learn and easy to use." || '0d0a'x || -
+       "Have fun with it!"                    || '0d0a'x || -
+       "But don't over do it."
+
+editControl~setText(text)
+
+say "Number of lines:" editControl~lines
+say "Line 2 begins at index" editControl~lineIndex(2)
+say "Length of 3rd line:" editControl~lineLength(3)
+
+/* Output would be:
+
+Number of lines: 3
+Line 2 begins at index 39
+Length of 3rd line: 21
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lineIndex() -->
+
+
+<section id="mthLineLength" xreflabel="lineLength"><title>lineLength</title>
+<indexterm><primary>lineLength</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineLength</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lineLength(--+---------+--)------------------><
+                 +--index--+
+]]>
+</programlisting>
+
+<para>
+  Returns the length, in characters, of the specified line in an edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the line whose length is needed. This argument can also be 0, see the remarks.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the number of characters in the line specified. On error -1. In particular, -1 is returned if <emphasis
+    role="italic">lineIndex</emphasis> is greater than the number of lines in the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The length of the line does not include the carriage return and line-feed characters at the end of the line.
+  </para>
+  <para>
+    If <emphasis role="italic">lineIndex</emphasis> is 0 the return changes in this fashion:
+  </para>
+  <para>
+    If there is no selection, the number of characters in the current line is returned. The current line is the line
+    with the caret in it.
+  </para>
+  <para>
+    If there is a selection, this method returns the number of unselected characters on lines containing selected
+    characters.
+  </para>
+  <para>
+    For example, if the selection started at the fourth character on one line through the next line up through the
+    fourth character from the end of the line, the return value would be 6. The first 3 characters on the first line and
+    the last 3 on the next line.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example demonstrates some uses of line length:
+<programlisting>
+<![CDATA[
+
+  ec = self~newEdit(IDC_EDIT_INTRODUCTION)
+
+  text = "ooRexx is a great programming language." || .endOfLine || -
+         "It is easy to learn and easy to use."    || .endOfLine || -
+         "Have fun with it!"                       || .endOfLine || -
+         "But don't over do it."
+
+  ec~setText(text)
+
+  say "Number of lines:" edit~lines
+
+  -- The user has the caret on the 3rd line with no selection:
+  say "Number of characters in current line:" ec~lineLength
+  say "Number of characters in line 4:" ec~lineLength(4)
+  say "Number of characters in line 5:" ec~lineLength(5)
+
+  -- Now say the user has started a selection on the i of 'is' on the second
+  -- line and extended the selection up through the space preceding the 'it'
+  -- ont the 3rd line:
+  say "Number of unselected characters in lines with a selection:" ec~lineLength
+
+  /* Output would be:
+
+  Number of lines: 4
+  Number of characters in current line: 17
+  Number of characters in line 4: 21
+  Number of characters in line 5: -1
+  Number of unselected characters in lines with a selection: 6
+  */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lineLength() -->
+
+
+<section id="mthLines" xreflabel="lines"><title>lines</title>
+<indexterm><primary>lines</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lines</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lines----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the number of lines in a multiline edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the number of lines in the edit control. If there is no text in the control the return is 1. The
+    return will never be less than 1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">lines</emphasis> method returns the total number of text lines, not just the number of
+    visible lines. If the dialog is resizable, the number of lines can change when the size of the edit control changes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">lineIndex</emphasis> <link linkend="exampleLineIndex">example</link> uses the <emphasis
+    role="italic">lines</emphasis> method
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lines() -->
+
+
+<section id="mthLineScroll" xreflabel="lineScroll"><title>lineScroll</title>
+<indexterm><primary>lineScroll</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineScroll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lineScroll(--cChars--,--cLines--)------------><
+
+]]>
+</programlisting>
+
+<para>
+  Scrolls the text horizontally and vertically in a multiline edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>cChars [required]</term>
+      <listitem>
+      <para>
+        The number of characters to scroll horizontally. Positive numbers scroll the text to the left and negative
+        numbers scroll the text to the right
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cLines [required]</term>
+      <listitem>
+      <para>
+        The number of lines to scroll vertically. Positive numbers scroll the text up and negative numbers scroll the
+        text do down.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The method always returns 0 for a multiline edit control. It returns 1 for a single-line edit control to indicate
+    that this method does not apply to single-line edit controls.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The edit control does not scroll vertically past the last line of text. If the current line, plus the number of
+    lines specified by <emphasis role="italic">cLines</emphasis>, exceed the total number of lines in the edit control,
+    the last line of the edit control is scrolled to bottom of the edit control. The <emphasis
+    role="italic">lineScroll</emphasis> method can, however, be used to scroll horizontally past the last character of a
+    line, but it will not scroll past the width of the longest line in the edit control
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example scrolls an edit control by 50 characters and 35 lines:
+<programlisting>
+<![CDATA[
+
+  edit~scroll(50, 35)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lineScroll() -->
+
+
+<section id="mthMargins" xreflabel="margins"><title>margins</title>
+<indexterm><primary>margins</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>margins</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--margins--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the left and right margins of the edit control as a <computeroutput>String</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the left and right margins, separated by a space. The values are in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">margins</emphasis> method is exactly equivalent to the
+ <xref linkend="mthGetMargins"/> method. The values returned will be exactly the same whichever method is
+    used.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::margins() -->
+
+
+<section id="mthNoContextMenu" xreflabel="noContextMenu"><title>noContextMenu</title>
+<indexterm><primary>noContextMenu</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>noContextMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noContextMenu(--+--------+--)----------------><
+                    +--undo--+
+]]>
+</programlisting>
+
+<para>
+  Removes the edit control's internal context menu. If the context menu was removed, it can be restored.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>undo [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">undo</emphasis> is <computeroutput>.true</computeroutput> the edit control's context
+        menu is restored. If <computeroutput>.false</computeroutput> the context menu is removed. The default is
+        <computeroutput>.false</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    <computeroutput>.true</computeroutput> on success, otherwise <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Edit controls have a built-in context menu that allows the user to move text between the edit control and the
+    clipboard. The context menu appears when the user right-clicks the control. The commands in the context menu include
+    Undo, Cut, Copy, Paste, Delete, and Select All.
+  </para>
+  <para>
+    However, if the Rexx programmer wants to use his own context menu through the
+ <xref linkend="clsPopupMenu"/> class, the built-in menu will prevent that. Removing the built-in menu
+    through the <emphasis role="italic">noContextMenu</emphasis> allows the programmer to replace the built-in menu with
+    their own context menu. If the context menu is removed and the programmer does not supply a context menu, then no
+    context menu is displayed when the user right-clicks on the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+ <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>. The following codes may be set. They
+    are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
+      <listitem>
+      <para>
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to remove the edit
+        control's context menu when it was already removed, or asked to restore the edit control's context menu when it
+        was not removed to begin with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_SIGNAL_REFUSED (156)</emphasis></term>
+      <listitem>
+      <para>
+        The recipient process has refused the signal. <emphasis role="bold">Meaning:</emphasis> The method tried to
+        remove, or restore, the context menu, but failed.  This is unlikely.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::noContextMenu() -->
+
+
+<section id="mthPasteText" xreflabel="pasteText"><title>pasteText</title>
+<indexterm><primary>pasteText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pasteText------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Copies the current content of the clipboard to the edit control at the current caret position.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The paste operation only occurs if the current content of the clipboard is in text format.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::pasteText() -->
+
+
+<section id="mthRemoveStyleClsEdit" xreflabel="removeStyle"><title>removeStyle</title>
+<indexterm><primary>removeStyle</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>removeStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeStyle(--style--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes one or more edit control styles from the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>style [required]</term>
+      <listitem>
+      <para>
+        A list of 1 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>UPPER     </member>
+          <member>LOWER      </member>
+          <member>NUMBER    </member>
+          <member>WANTRETURN</member>
+          <member>OEM       </member>
+          <member>TAB       </member>
+          <member>GROUP     </member>
+        </simplelist>
+      </para>
+      <para>
+        The <link linkend="argsAddStyle">argument</link> list for the <xref linkend="mthAddStyleClsEdit"/> method details
+        the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents the meaning of all the edit
+        control style keywords.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The positive numeric value of the edit control's previous style.
+  </para>
+  <para>
+    It is possible, but very unlikely, that a negative number is returned. See the remarks.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
+  </para>
+  <para>
+    If an operating system error occurs, this method returns the negated value of the system error code. However, this
+    method also sets <computeroutput>.systemErrorCode</computeroutput> if there is an error.
+  </para>
+  <para>
+    The negative number return is a hold over from earlier versions of ooDialog before
+    <computeroutput>.systemErrorCode</computeroutput> was introduced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the syntax to remove the lower and the tabstop styles from an edit control.
+<programlisting>
+<![CDATA[
+
+  ec = dlg~newEdit(IDC_EDIT_SHIPPING_CODES)
+  ec~removeStyle("LOWER GROUP")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::removeStyle() -->
+
+
+<section id="mthReplaceSelText" xreflabel="replaceSelText"><title>replaceSelText</title>
+<indexterm><primary>replaceSelText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>replaceSelText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replaceSelText(--text--+-----------+--)------><
+                           +-,-canUndo-+
+]]>
+</programlisting>
+
+<para>
+  Replaces the text selection in an edit control with the specified text.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text used for replacement.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>canUndo [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput> the replacement can be undone. If
+      <computeroutput>.false</computeroutput>, the replacement can not be undone. The default is
+      <computeroutput>.true</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <emphasis role="italic">replaceSelText</emphasis> to replace only a portion of the text in an edit control.
+    To replace all of the text, use the <xref linkend="mthSetText"/> method.
+  </para>
+  <para>
+    If there is no selection, the replacement text is inserted at the cursor.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+  edit = self~newEdit(IDC_EDIT_INTERPRETER)
+
+  edit~setText("Object Rexx is a hybrid language.")
+  edit~select(17, 25)
+
+  edit~replaceSelText("n interpreted")
+  say edit~getText
+
+/* output would be:
+
+  Object Rexx is an interpreted language.
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::replaceSelText() -->
+
+
+<section id="mthReplaceStyleClsEdit" xreflabel="replaceStyle"><title>replaceStyle</title>
+<indexterm><primary>replaceStyle</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>replaceStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replaceStyle(--removedStyle--,--addedStyle--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes and adds one or more edit control styles in one operation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>removedStyle [required]</term>
+      <listitem>
+      <para>
+        One or more of the edit control style keywords. The allowable keywords are the same for <emphasis
+        role="italic">removedStyle</emphasis> and <emphasis role="italic">addedStyle</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>addedStyle [required]</term>
+      <listitem>
+      <para>
+        One or more of the edit control style keywords. The allowable keywords are the same for <emphasis
+        role="italic">removedStyle</emphasis> and <emphasis role="italic">addedStyle</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Style keywords</emphasis></term>
+      <listitem>
+      <para>
+        A list of 1 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>UPPER     </member>
+          <member>LOWER      </member>
+          <member>NUMBER    </member>
+          <member>WANTRETURN</member>
+          <member>OEM       </member>
+          <member>TAB       </member>
+          <member>GROUP     </member>
+        </simplelist>
+      </para>
+      <para>
+        The <link linkend="argsAddStyle">argument</link> list for the <xref linkend="mthAddStyleClsEdit"/> method details
+        the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents the meaning of all the edit control style keywords.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The positive numeric value of the edit control's previous style.
+  </para>
+  <para>
+    It is possible, but very unlikely, that a negative number is returned. See the remarks.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
+  </para>
+  <para>
+    If an operating system error occurs, this method returns the negated value of the system error code. However, this
+    method also sets <computeroutput>.systemErrorCode</computeroutput> if there is an error.
+  </para>
+  <para>
+    The negative number return is a hold over from earlier versions of ooDialog before
+    <computeroutput>.systemErrorCode</computeroutput> was introduced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following would change an edit control from one that only allows numbers to one that uppercases all letters
+    entered, while removing the tabstop style and adding the group style.
+<programlisting>
+<![CDATA[
+
+  ed = dlg~newEdit(IDC_EDIT_MIXED)
+  ec~replaceStyle("NUMBER TAB", "UPPER GROUP")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::removeStyle() -->
+
+
+<section id="mthScrollCommand" xreflabel="scrollCommand"><title>scrollCommand</title>
+<indexterm><primary>scrollCommand</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>scrollCommand</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--scrollCommand(--+-------+--+----------------+--)-----------><
+                    +--cmd--+  +-,-repetitions--+
+]]>
+</programlisting>
+
+<para>
+  Scrolls the text vertically in a multiline edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>cmd [optional]</term>
+      <listitem>
+      <para>
+        Exactly one of the following keywords, case is not significant. The default if this argument is omitted is UP.
+        If an unrecognized keyword is used, then UP is substituted for the keyword.
+      </para>
+      <para>
+        <simplelist type='vert' columns='4'>
+          <member>UP      </member>
+          <member>DOWN    </member>
+          <member>PAGEUP  </member>
+          <member>PAGEDOWN</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>UP</term>
+          <listitem>
+          <para>
+            The edit control is scrolled up one line.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DOWN</term>
+          <listitem>
+          <para>
+            The edit control is scrolled down one line.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PAGEUP</term>
+          <listitem>
+          <para>
+            The edit control is scrolled up one page.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PAGEDOWN</term>
+          <listitem>
+          <para>
+            The edit control is scrolled down one page.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>repetitions [optional]</term>
+      <listitem>
+      <para>
+        The number of times to perform the scroll command. The default is 1.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the value returned by the operating system.
+  </para>
+  <para>
+    The operating system packs the success indicator (<computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>) in the high-word of the return. The low-word contains the number of lines
+    scrolled. Use the <xref linkend="mthSHiWord"/> and <xref linkend="mthSLoWord"/> methods to
+    extract these values
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For the UP and PAGEUP commands, the number of lines scrolled by the operating system is negative. Be sure to use the
+    <emphasis role="italic">signed</emphasis> version of the loWord method, <xref linkend="mthSLoWord"/>, to get the correct
+    value.
+  </para>
+  <para>
+    When the <emphasis role="italic">repetitions</emphasis> argument is used, ooDialog issues the scroll command in a
+    loop for the number of <emphasis role="italic">repetitions</emphasis> specified. The returned value is then the return
+    from issuing the last command. Because of this, the return when the <emphasis role="italic">repetitions</emphasis>
+    argument is used is not meaningful. For instance, when using this invocation: <computeroutput>ret =
+    editControl~scrollCommand("PAGEUP", 15)</computeroutput> when the edit control only has 4 pages of text will
+    indicate that the command failed and that 0 lines were scrolled.
+  </para>
+  <para>
+    The method has no effect on single-line edit controls.
+  </para>
+  <para>
+    Please <emphasis role="bold">note</emphasis>, older versions of the ooDialog documentation also listed the LEFT,
+    RIGHT, PAGELEFT, and PAGERIGHT commands for this method. These command keywords are misleading, the text can only be
+    scrolled vertically with this method. LEFT is the same as UP, RIGHT is the same as DOWN, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that scrolls the text in the edit control all the way to the top. The method is
+    connected to a <emphasis role="italic">Home</emphasis> menu item in the application.
+<programlisting>
+<![CDATA[
+
+::method onHomeMenuItem
+  expose editControl
+
+  success = .true
+  do while success
+    ret = editControl~scrollCommand("PAGEUP")
+    success = .DlgUtil~sHiWord(ret)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::scrollCommand() -->
+
+
+<section id="mthSelectClsEdit" xreflabel="select"><title>select</title>
+<indexterm><primary>select</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>select</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--select(--+---------+--+--------+--)----------><
+             +--start--+  +-,-end--+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">select</emphasis> method selects text, and sets the position of the cursor, within the
+  edit control. See the remarks section for more detail on how the <emphasis role="italic">start</emphasis> and
+  <emphasis role="italic">end</emphasis> values effect the behavior.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>start [optional]</term>
+      <listitem>
+      <para>
+        Specifies a one-based character position in the selection, normally the starting position of the selection. See
+        the remarks section because the actual behavior is dependent on the value of both <emphasis
+        role="italic">start</emphasis> and <emphasis role="italic">end</emphasis>. If omitted the default is 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>end [optional]</term>
+      <listitem>
+      <para>
+        Specifies a one-based character position in the selection, normally the ending position of the selection. See
+        the remarks section because the actual behavior is dependent on the value of both <emphasis
+        role="italic">start</emphasis> and <emphasis role="italic">end</emphasis>. If omitted the default is 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">start</emphasis> value can be greater than the <emphasis role="italic">end</emphasis>
+    value. The lower of the two values specifies the character position of the first character in the selection. The
+    higher value specifies the position of the first character beyond the selection. The cursor is placed at the
+    position of the first character beyond the selection, provided one of the other special cases does not apply.
+  </para>
+  <para>
+    If the starting position equals the ending position, no text is selected and the cursor position is set to the
+    character specified by the <emphasis role="italic">start</emphasis> argument. If the ending index is 0 and the
+    starting index is 1, the entire text is selected and the cursor is placed at the position immediately following the
+    end of the text.
+  </para>
+  <para>
+    If <emphasis role="italic">start</emphasis> is 0, the <emphasis role="italic">end</emphasis>
+    argument is ignored, any selection is removed, and the cursor is not moved.
+  </para>
+  <para>
+    Notice that if both arguments are omitted, the default values for <emphasis role="italic">start</emphasis> and
+    <emphasis role="italic">end</emphasis> will result in all of the text being selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <xref linkend="mthSelectedClsEdit"/> method's example.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::select() -->
+
+
+<section id="mthSelectedClsEdit" xreflabel="selected"><title>selected</title>
+<indexterm><primary>selected</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>selected</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selected-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a <computeroutput>String</computeroutput> object containing the starting and ending position of the text
+  selection in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based character position of the start and end of the current selection, separated by a blank.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the starting position equals the ending position, no text is selected and the position specifies the current
+    cursor position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the ending position specifies the position of the first character
+    <emphasis role="italic">beyond</emphasis> the selection, not the last character position in the selection. All the
+    text is selected if the starting position is 1 and the ending position is 1 greater than the length of the text in
+    the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A simple example:
+<programlisting>
+<![CDATA[
+
+  edit = self~newEdit(IDC_EDIT)
+
+  parse value edit~selected with start end
+  if start == end then do
+    say "There is no text selected"
+  end
+  else do
+    say "Starting character position of the selection is" start
+    say "Last character position of the selection is" end - 1
+  end
+
+  edit~select(1, 0)  -- Selects all the text.
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::selected() -->
+
+
+<section id="mthSelection" xreflabel="selection"><title>selection</title>
+<indexterm><primary>selection</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selection------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a <computeroutput>Directory</computeroutput> object containing the starting and ending position of the text
+  selection in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A <computeroutput>Directory</computeroutput> object with the indexes <emphasis role="italic">startChar</emphasis>
+    and <emphasis role="italic">endChar</emphasis>. The <emphasis role="italic">startChar</emphasis> index is the
+    one-based character position of the first character in the selection. The <emphasis role="italic">endChar</emphasis>
+    index is the one-based character position of the first position past the end of the selection.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the starting position equals the ending position, no text is selected and the position specifies the current
+    cursor position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the ending position specifies the position of the first character
+    <emphasis role="italic">beyond</emphasis> the selection, not the last character position in the selection. All the
+    text is selected if the starting position is 1 and the ending position is 1 greater than the length of the text in
+    the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A simple example:
+<programlisting>
+<![CDATA[
+
+  s = self~newEdit(IDC_EDIT)~selection
+
+  if s~startChar == s~endChar then do
+    say "There is no text selected"
+  end
+  else do
+    say "Starting character position of the selection is" s~startChar
+    say "Last character position of the selection is" s~endChar - 1
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::selection() -->
+
+
+<section id="mthSetCueClsEdit" xreflabel="setCue"><title>setCue</title>
+<indexterm><primary>setCue</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCue(--text--+---------+--)----------------><
+                   +-,-show--+
+]]>
+</programlisting>
+
+<para>
+  Sets the text for <emphasis role="italic">cue</emphasis> banner text.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text for the cue. This string must be 255 characters or less in length.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>show [optional]</term>
+      <listitem>
+      <para>
+        Whether the text show disappear when the edit control gains the focus, or whether it should still show. The
+        default is <computeroutput>.false</computeroutput> the text disappears when the edit control gains the focus. If
+        <emphasis role="italic">show</emphasis> is <computeroutput>.true</computeroutput>, on Windows Vista or later the
+        cue text will remain until the user enters some characters into the edit control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Zero on success, one on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Cue text provides a visual hint to the user as to the purpose of the edit control. For example the text of an edit
+    control that is used to begin a search might have the cue text: <emphasis role="italic">Enter search
+    here</emphasis>. The cue is displayed in gray text. Once some text is entered into the edit box, the cue no longer
+    displays.
+  </para>
+  <para>
+    Normally when the user clicks the on the edit control, the cue text goes away. However on Windows Vista and later
+    this behavior can be changed so that the cue text remains until the user actually types some characters in the edit
+    control.
+  </para>
+  <para>
+    It is not possible to set a cue on a multiline edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+ <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setCue() -->
+
+
+<section id="mthSetLimit" xreflabel="setLimit"><title>setLimit</title>
+<indexterm><primary>setLimit</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setLimit</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setLimit(--count--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the maximum number of characters the user can type in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>count required</term>
+      <listitem>
+      <para>
+        A non-negative number that is the limit for the number of characters a user can type into the edit control. See
+        the remarks for the meaning of 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the text limit is the number of characters the user can type in the edit control. The limit does not
+    effect any text already entered in the edit control. It also does not effect the length of the text that the
+ <xref linkend="mthSetText"/> method can copy into the edit control. If a program uses <emphasis
+    role="italic">setText</emphasis> to copy more text into the edit control than the text limit, the user can edit the
+    entire contents of the edit control.
+  </para>
+  <para>
+    If <emphasis role="italic">count</emphasis> is 0, then the limit for single line edit controls is set to
+    2,147,483,647 characters and for multiline edit controls it is set to 4,294,967,295 characters.
+  </para>
+  <para>
+    Before the <emphasis role="italic">setLimit</emphasis> method is used, the default for the text limit of an edit
+    control is 32,767 characters.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setLimit() -->
+
+
+<section id="mthSetMargins" xreflabel="setMargins"><title>setMargins</title>
+<indexterm><primary>setMargins</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setMargins</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMargins(--+--------+--+----------+--)-----><
+                 +--left--+  +-,-right--+
+]]>
+</programlisting>
+
+<para>
+  Sets the left and right margins of the edit control as specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>left [optional]</term>
+      <listitem>
+      <para>
+        Specifies the left margin in pixels. If this argument is omitted, the left margin is not changed. If both the
+        <emphasis role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> arguments are omitted, the
+        margins are set to a narrow margin calculated from the font info of the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>right [optional]</term>
+      <listitem>
+      <para>
+        Specifies the right margin in pixels. If this argument is omitted, the right margin is not changed. If both the
+        <emphasis role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> arguments are omitted, the
+        margins are set to a narrow margin calculated from the font info of the edit control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">setMargins</emphasis> method will cause the edit control to redraw itself to reflect the
+    new margins. If both arguments are omitted, the method causes the edit control to calculate a narrow left and right
+    margin based on the font of the edit control. If no font is set for the edit control, this margin is set to 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+  editControl = self~newEdit(IDC_EDIT_LICENSE)
+
+  editControl~setMargins(10, 5)
+  m = editControl~getMargins
+  say "The new left margin is" m~left "and the new right margin is" m~right
+
+/* Output would be:
+
+The new left margin is 10 and the new right margin is 5
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setMargins() -->
+
+
+<section id="mthSetModified" xreflabel="setModified"><title>setModified</title>
+<indexterm><primary>setModified</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setModified</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setModified(--+---------+--)-----------------><
+                  +--state--+
+]]>
+</programlisting>
+
+<para>
+  Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or
+  <computeroutput>.false</computeroutput> .
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>state [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">state</emphasis> is <computeroutput>.true</computeroutput> the modified flag is
+        set to true. If <emphasis role="italic">state</emphasis> is <computeroutput>.false</computeroutput> the flag is
+        set to false.  The default is <computeroutput>.true</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system automatically sets the modification flag to false when the edit control is created. If the user
+    changes the control's text, then the operating system sets the flag to true.  The
+ <xref linkend="mthSetModified"/> method can be used to determine the current state of the flag.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+::method saveLicense
+
+    /* Write the license to a file for the user */
+    self~writeLicense
+
+    e = self~newEdit(IDC_EDIT_LICENSE)~setModified(.false)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setModified() -->
+
+
+<section id="mthSetReadOnly" xreflabel="setReadOnly"><title>setReadOnly</title>
+<indexterm><primary>setReadOnly</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setReadOnly</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setReadOnly(--+------+--)--------------------><
+                  +-mode-+
+]]>
+</programlisting>
+
+<para>
+  Adds or removes the read only style for the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>mode [optional]</term>
+    <listitem>
+    <para>
+      <computeroutput>.true</computeroutput> adds the read only style and <computeroutput>.false</computeroutput>
+      removes the read only style. If the argument is omitted, the read only style is added.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, and 1 if the method fails.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When an edit control has the read only style, the user can not modify the text in the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setReadOnly() -->
+
+
+<section id="mthSetRectClsEdit" xreflabel="setRect"><title>setRect</title>
+<indexterm><primary>setRect</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRect(--rect--+-----------+--)-------------><
+                    +-,-redraw--+
+]]>
+</programlisting>
+
+<para>
+  Sets the formatting rectangle for the edit control, or resets it to the default.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>rect [required.]</term>
+      <listitem>
+      <para>
+        A <xref linkend="clsRect"/> object that contains the new coordinates for the formatting rectangle,
+        or 0. If <emphasis role="italic">rect</emphasis> is 0, the formatting rectangle is reset to its default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>redraw [optional]</term>
+      <listitem>
+      <para>
+        True or false, indicating if the edit control should redraw itself or not. The default is true. When <emphasis
+        role="italic">redraw</emphasis> is true, the edit control immediately redraws itself after changing the
+        formatting rectangle. When false, the redrawing is not done.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The visibility of the text in an edit control is dependent on its window rectangle and its formatting rectangle. The
+    window rectangle is the client area of the window containing the edit control. The formatting rectangle is an
+    artificial construct maintained by the operating system and used to format the text. The formatting rectangle can be
+    set to be larger than the window rectangle, which will limit what can be seen of the text. Or the formatting
+    rectangle can be made smaller than the window rectangle, which will create more white space around the text.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the current formatting rectangle, then decreases its size by 4 pixels.  The edit control is
+    signaled to redraw itself.
+<programlisting>
+<![CDATA[
+
+::method addMoreBorder private
+  use strict arg editCtrl
+
+  fRect = editCtrl~getRect
+  fRect~left    -= 4
+  fRect~top     -= 4
+  fRect~right   -= 4
+  fRect~bottom -= 4
+
+  -- Second argument is not needed, .true is the default.
+  editCtrl~setRect(fRect, .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setRect() -->
+
+
+<section id="mthSetTabStops" xreflabel="setTabStops"><title>setTabStops</title>
+<indexterm><primary>setTabStops</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setTabStops</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTabStops(--tabStops--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the tab stops for text copied into a multi-line edit control.
+</para>
+<para>
+  When text is copied to the control, any tab character in the text causes space to be generated up to
+ the next tab stop.  This method is ignored if the edit control is a single-line edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The single argument is:
+  <variablelist>
+  <varlistentry><term>tabStops</term>
+  <listitem>
+  <para>
+    An array containing the tab stops.  Each tab stop is a positive number expressed in dialog template
+    units.  If the array contains no elements, default tab stops are set at every 32 dialog template
+    units.
+  </para>
+  <para>
+    If the array contains only 1 element at index 1, tab stops are set at every n dialog template units,
+    where n is the distance at index 1.
+  </para>
+  <para>
+    Otherwise, tab stops are set to the numbers contained in the array.
+  </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if all tab stops were set, otherwise false.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The array must contain all positive numbers (or be an empty array to set the default tab stops.)
+ 	  Also, the array must not be sparse, i.e., it must not skip any array indexes.
+  </para>
+  <para>
+    The operating system will not do negative tab stops.  I.e. you can not do 15 35 20.  Also, note that
+    when specifying an array of more than 1 tap stop, each tab stop is the absolute position of the tab
+    stop, not the distance between the tab stops.
+  </para>
+  <para>
+    Under normal circumstances there is no way for a user to enter a tab character by typing in a
+    multi-line edit control.  The edit control would need to be sub-classed and this is not provided by
+    ooDialog. However, the user could use copy and paste to paste in text with tabs.  And, text placed in
+    the edit control by the programmer, (for example by using the <xref linkend="mthSetText"/>
+    method,) can also contain tabs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthShowBalloon" xreflabel="showBalloon"><title>showBalloon</title>
+<indexterm><primary>showBalloon</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>showBalloon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--showBalloon(--title,--text--+----------+--)--><
+                                +-,--icon--+
+]]>
+</programlisting>
+
+<para>
+  Displays a balloon tip information window for the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>title [required]</term>
+      <listitem>
+      <para>
+        A title for the balloon window.  Titles are limited to 99 characters total in length.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text of the balloon window.  This text is limited to 1023 characters in length. The programmer can use line
+        break characters to control the formatting of the text.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        Used to specify which icon is displayed on the title line.  The default is the informational icon. The following
+        keywords can be used to specify another icon, or no icon.  Only the first letter of the keyword is needed and
+        case is insignificant:
+        <variablelist>
+          <varlistentry><term>ERROR</term>
+          <listitem>
+          <para>
+            The error icon is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WARN</term>
+          <listitem>
+          <para>
+            The warning icon is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NONE</term>
+          <listitem>
+          <para>
+            No icon is displayed.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 if the method fails.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
+  <para>
+    Balloon tip windows are similar in appearance to the balloon captions used in comic books to display the dialog of
+    the characters. They are also similar, but not the same, as tool tips. For an edit control the balloon tip looks
+    like it is attached to the control.
+  </para>
+  <para>
+    The balloon is displayed for 10 seconds and then goes away. The programmer can also dismiss the balloon sooner
+    using the <xref linkend="mthHideBalloon"/> method. Typically balloon windows are used to convey
+    information to the user without having to put up a message box that the user then needs to dismiss manually.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleShowBalloon"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following code snippet could come from a fictitious inventory program.  An edit control is used to enter a
+    product ID.  If the user clicks on the edit control a ballon tip is shown displaying extended product information.
+    (In a real application, the extended information might be based on what the user had entered in the edit control.)
+  </para>
+  <para>
+    Text is set in the edit control to give the user a 'cue' that she can click on the edit control for extra
+    information.  When the ballon tip is shown, it will automatically be dismissed after 10 seconds.  This application
+    connects a notification for the lost focus event.  When the edit control loses focus, the ballon tip is hidden by
+    the program.
+
+<programlisting>
+<![CDATA[
+  ...
+
+::method defineDialog
+
+  ...
+
+  self~createStaticText(200, 10, 125, 150, 10, , "Enter product ID:")
+  self~createEdit(IDC_ENTRYLINE, 10, 135, 150, 10, "AUTOSCROLLH", "cEntry")
+
+  ...
+
+::method initDialog
+  expose editControl hwndEditControl
+
+  editControl = self~newEdit(IDC_ENTRYLINE)
+  hwndEditControl = editControl~hwnd
+
+  self~connectEditEvent(IDC_ENTRYLINE, GOTFOCUS, "onFocus")
+  self~connectEditEvent(IDC_ENTRYLINE, LOSTFOCUS, "onLostFocus")
+
+  editControl~setCue("Click here for extended product information")
+
+  -- Capture the mouse activate messages: WM_MOUSEACTIVATE message == 0x0021
+  self~addUserMsg(onMouseActivate, "0x0021", "0xFFFFFFFF", 0, 0, 0, 0)
+
+  ...
+
+::method onMouseActivate
+  expose editControl hwndEditControl
+
+  if self~getFocus == hwndEditControl then do
+    title = "Extended Product Information"
+    text = "Product ID:"   || "9"x    || "4538-D32"       || .endOfLine || -
+           "In stock:"     || "9"x    || "789"            || .endOfLine || -
+           "Back ordered:" || "9"x    || "No"             || .endOfLine || -
+           "EOL:"          || "0909"x || "January 2008"   || .endOfLine || -
+           "Client:"       || "0909"x || "AT&T"           || .endOfLine || .endOfLine -
+           "Notes: This product has served a limited number of customers" -
+           "and should be considered archaic.  It will be replaced by a"   -
+           "superior product line."
+
+    editControl~showBalloon(title, text, "e");
+  end
+
+::method onLostFocus
+  expose editControl
+
+  -- When the edit control loses the focus, dismiss the balloon.
+  editControl~hideBalloon
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthTabEquals" xreflabel="tab ="><title>tab=</title>
+<indexterm><primary>tab=</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>tab=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tab = tabStops-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">tab =</emphasis> method is an alias for the
+ <xref linkend="mthSetTabStops"/> method.  It behaves exactly the same except there is no return
+  value.
+</para>
+</section>
+
+
+<section id="mthUndo" xreflabel="undo"><title>undo</title>
+<indexterm><primary>undo</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--undo-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Undoes the last edit control operation in the edit control's undo queue.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is always <computeroutput>.true</computeroutput> from a single-line edit control. For a multiline edit
+    control, the return is <computeroutput>.true</computeroutput> if the operation succeeded, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    As long as there is no intervening edit operation, an undo operation can also be undone. For example you could
+    restore some deleted text with the first invocation of the <emphasis role="italic">undo</emphasis> method, and then
+    remove the text again with a second invocation of the <emphasis role="italic">undo</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::undo() -->
+
+<section id="mthWantReturn" xreflabel="wantReturn"><title>wantReturn</title>
+<indexterm><primary>wantReturn</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>wantReturn</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wantReturn(--+--------------+--)-------------><
+                 +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Connects the <emphasis role="italic">Enter</emphasis> keypress to a method in the Rexx dialog and prevents the edit control
+  from sending the keypress to the dialog manager, which closes the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog that will be invoked when the user press the enter key in the single-line
+      edit control. If this argument is omitted, the method name is set to <emphasis role="italic">onReturn</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default in Windows dialogs, when the user presses the enter key, the default button is pressed. Normally the default
+    button is the Ok button and the dialog is closed. Usually, it is not a good idea to try and change this behavior. Most
+    Windows users become to depend on the behavior.
+  </para>
+  <para>
+    However, in rare cases, the programmer may want to change this behavior. Microsoft itself, sometimes changes this
+    behavior, as can be seen when in-place editing of list-view labels is done. When the user is editing a list-view label
+    in-place, hitting the enter key does not close the dialog, but instead accepts the current text as what the user wants.
+    The <emphasis role="italic">wantReturn</emphasis> method can be used in those circumstances.
+  </para>
+  <para>
+    A method is always connected to the Enter keypress, and invoking the <emphasis role="italic">wantReturn</emphasis> method
+    always prevents the Enter keypress from pressing the default button. If the programmer does not need to do anything in
+    the event handling method, she can simply return 0 immediately from the method.
+  </para>
+  <para>
+    This method is only for single-line edit controls. If the edit control is a multi-line edit control, the <emphasis
+    role="italic">wantReturn</emphasis> method fails and returns false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example invokes the <emphasis role="italic">wantReturn</emphasis> method. Note that the optional <emphasis
+    role="italic">methodName</emphasis> argument is not used. Therefore the <emphasis role="italic">onReturn</emphasis>
+    method will be connected:
+<programlisting>
+<![CDATA[
+
+::method setUpItemEdit private
+  expose list itemEdit
+
+  itemEdit~wantReturn
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="evtEditWANTRETURN" xreflabel="WANTRETURN"><title>wantReturn Event Handler</title>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>WANTRETURN</tertiary></indexterm>
+<para>
+  The event handler for the want return event is invoked when the user presses the Enter, sometimes called the Return, key
+  when the connected, single-line, edit control has the focus.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onWantReturn unguarded
+  use arg ctrlID, editControlObj
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>ctrlID</term>
+    <listitem>
+    <para>
+      The resource <link linkend="defResourceId">ID</link> of the edit control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>editControlObj</term>
+    <listitem>
+    <para>
+      The Rexx Edit control object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return a value, but the operating system ignores the value of the return, so any value is okay.
+    Returning 0 is a good choice.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows an event handler for the return event. The dialog has a single-line entry field that lets the
+    user type in record number and advance to that record. Hitting enter signals that the user wants to advance to record
+    entered in the edit control.
+  </para>
+  <para>
+    Note that the processing of retrieving the new record could, theoretically, be lengthy. So, the event handler replies
+    early to prevent the dialog from appearing hung while the processing going on:
+
+<programlisting>
+<![CDATA[
+
+::method onReturn unguarded
+  expose list currentItem dbMgr
+  use arg id, editObj
+
+  itemIndex = editObj~getText
+  max = list~items
+
+  reply 0
+
+  msg = ''
+  if itemIndex < 1 then msg = 'List-view record item can not be less than 1'
+  else if itemIndex > max then msg = 'List-view record item can not be greater than' max
+
+  if msg \== '' then do
+    editObj~setText(currentItem)
+    editObj~showBalloon('Entry Error', msg, 'ERROR')
+    return
+  end
+
+  oldItem = currentItem
+  currentItem = itemIndex - 1
+
+  lvRow = list~getItemData(currentItem)
+  rec = dbMgr~getRecordForID(lvRow~userData)
+
+  if rec == .nil then do
+    say 'Failed to get new record' -- TODO need message box
+    currentItem = oldItem
+    editObj~setText(currentItem)
+    return
+  end
+
+  self~setRecordFields(rec)
+  self~setNavigateButtons
+
+  self~setStateToUnchanged
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End wantReturn Event Handler -->
+
+</section>  <!-- End Edit::wantReturn() -->
+
+
+</chapter>

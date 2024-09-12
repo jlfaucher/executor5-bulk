@@ -1,0 +1,1893 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="clsDateTimePicker" xreflabel="DateTimePicker"><title>Date Time Picker Controls</title>
+<indexterm><primary>DateTimePicker class</primary></indexterm>
+<para>
+   A date and time picker (DTP) control provides a simple interface with which to exchange date and time information
+   with a user. For example, with a DTP control you can ask the user to enter a date and then easily retrieve the
+   selection.
+</para>
+<note><title>Note</title><para>
+  Windows does not support dates prior to 1601. Trying to set a date prior to 1601, programmatically, will raise a
+  syntax condition.
+</para>
+<para>
+  The control is based on the Gregorian calendar, which was introduced in 1753. The date and time picker control will
+  not calculate dates that are consistent with the Julian calendar.
+</para></note>
+<para>
+  The client area of a date and time picker (DTP) control displays date or time information, or both, and acts as the
+  interface through which users modify the information. The date can be selected from a calendar, or by using an up-down
+  control. The time can be changed by typing in fields that are defined by the control's Format <link
+  linkend="sctDTPFormatStrings">Strings</link>. The control can optionally display a check box. When it
+  is checked, the value in the control is considered valid and can be retrieved.  When not checked, the control's date
+  and time is not valid.
+</para>
+<para>
+  The <computeroutput>DateTimePicker</computeroutput> class provides methods to get and set the date and time in the
+  underlying DTP control, along with methods to manipulate the control. It is a concrete subclass of the dialog <xref
+  linkend="chpDialogControlObject" /> object and therefore has all methods of the of the dialog control object.
+</para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with DTP controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="mthNewDateTimePicker"/> method of the <xref linkend="chpDialogObject" /> to retrieve a date and
+    time picker object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically add a date and time picker to a <xref linkend="clsUserDialog"/> use the
+ <xref linkend="mthCreateDateTimePicker"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To receive notification of date and time picker events use the <xref linkend="mthConnectDateTimePickerEvent"/> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+
+<section id="sctDTPFormatStrings"><title>Format Strings</title>
+<para>
+  Date and time picker controls rely on a <emphasis role="italic">format</emphasis> string to display the date and time.
+  The format string defines how the date and time is displayed. There are 4 preset format strings that are assigned with
+  4 of the date and time styles. If the preset format strings are not adequate, the programmer can define his own format
+  string and assign it to the date and time picker through the <xref linkend="mthSetFormat"/> method.
+</para>
+<para>
+  The 4 preset format strings and their associated styles are in the following table:
+<table id="tblDTPPresetFormats" frame="all"> <title>DTP Preset Formats</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="5*" />
+<thead>
+<row>
+<entry>Style</entry>
+<entry>Format</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LONG</entry>
+<entry>The format displays like: Wednesday, June 22, 2011.</entry>
+</row>
+<row>
+<entry>SHORT</entry>
+<entry>The format displays like: 6/22/11.</entry>
+</row>
+<row>
+<entry>CENTURY</entry>
+<entry>The format displays like: 6/22/2011.</entry>
+</row>
+<row>
+<entry>TIME</entry>
+<entry>The format displays like: 5:31:42 PM.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  DTP format strings consist of a series of elements that represent a particular piece of information and define its
+  display format. The elements are displayed in the order they appear in the format string. Custom formats give the
+  programmer greater flexibility within a program. They allow the programmer to specify the order in which the control
+  will display fields of information. The format string can include body text as well as callback fields for requesting
+  information from the user.
+</para>
+<para>
+  Date and time format elements are replaced by the actual date and time. The following table shows the date and time
+  elements and a description of what they produce:
+<table id="tblDTPPFormatElementss" frame="all"> <title>DTP Format Elements</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="5*" />
+<thead>
+<row>
+<entry>Element</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>d</entry>
+<entry>The one- or two-digit day</entry>
+</row>
+<row>
+<entry>dd</entry>
+<entry>The two-digit day. Single-digit day values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>ddd</entry>
+<entry>The three-character weekday abbreviation.</entry>
+</row>
+<row>
+<entry>dddd</entry>
+<entry>The full weekday name.</entry>
+</row>
+<row>
+<entry>h</entry>
+<entry>The one- or two-digit hour in 12-hour format.</entry>
+</row>
+<row>
+<entry>hh</entry>
+<entry>The two-digit hour in 12-hour format. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>H</entry>
+<entry>The one- or two-digit hour in 24-hour format.</entry>
+</row>
+<row>
+<entry>HH</entry>
+<entry>The two-digit hour in 24-hour format. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>m</entry>
+<entry>The one- or two-digit minute. </entry>
+</row>
+<row>
+<entry>mm</entry>
+<entry>The two-digit minute. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>M</entry>
+<entry>The one- or two-digit month number.</entry>
+</row>
+<row>
+<entry>MM</entry>
+<entry>The two-digit month number. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>MMM</entry>
+<entry>The three-character month abbreviation.</entry>
+</row>
+<row>
+<entry>MMMM</entry>
+<entry>The full month name.</entry>
+</row>
+<row>
+<entry>t</entry>
+<entry>The one-letter AM/PM abbreviation (that is, AM is displayed as <emphasis role="italic">A</emphasis>.)</entry>
+</row>
+<row>
+<entry>tt</entry>
+<entry>The two-letter AM/PM abbreviation (that is, AM is displayed as <emphasis role="italic">AM</emphasis>.)</entry>
+</row>
+<row>
+<entry>yy</entry>
+<entry>The last two digits of the year (that is, 2011 would be displayed as <emphasis role="italic">11</emphasis>.)</entry>
+</row>
+<row>
+<entry>yyyy</entry>
+<entry>The full year (that is, 2011 would be displayed as <emphasis role="italic">2011</emphasis>.)</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  Body text can be added to the format string by enclosing it in single quotes. Spaces and punctuation marks do not need
+  to be quoted. <emphasis role="bold">Note:</emphasis> <emphasis role="italic">Nonformat characters that are not
+  delimited by single quotes will result in unpredictable display by the DTP control.</emphasis> To include a single
+  quote in the body text, use two consecutive single quotes.
+</para>
+<para>
+  <emphasis role="bold">Examples:</emphasis>
+
+<programlisting>
+<![CDATA[
+
+  dtp = self~newDateTimePicker(IDC_DTP)
+
+  formatStr = "'Today is: 'hh':'m':'s dddd MMM dd', 'yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Today is: 04:22:31 Wednesday Mar 02, 2011
+  */
+
+  formatStr = "'Don''t forget' MMM dd',' yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Don't forget Mar 02, 2011
+  */
+
+  -- Quotes for the comma are not needed so this
+  -- is also valid and produces the same output:
+  formatStr = "'Don''t forget' MMM dd, yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Don't forget Mar 02, 2011
+  */
+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End section Format Strings -->
+
+<section id="sctDTPCallback"><title>Callback Fields</title>
+<para>
+  The date and time picker control supports <emphasis role="italic">call back fields</emphasis> within the
+  <link linkend="sctDTPFormatStrings">format</link> strings. The call back fields allow the programmer to display custom
+  information at the point of the call back field by allowing the control to query the application for information. For
+  instance, the control can query the application for what text to display in the call back field or the maximum length
+  the display text in a field will be.
+</para>
+<para>
+  The queries are done through <xref linkend="ovvEvents"/> notification messages from the control.
+  Specifically, the FORMAT and FORMATQUERY events connected using the <xref linkend="mthConnectDateTimePickerEvent"/>. The
+  programmer must respond to the event notification to ensure that the custom information is displayed properly. The response
+  comes from the <xref linkend="evtDateTimePickerFORMAT"/> and <xref linkend="evtDateTimePickerFORMATQUERY"/> event handlers.
+</para>
+<para>
+  Call back fields are declared using one or more capital <emphasis role="bold">X</emphasis> characters (ASCII Code 88)
+  in the format string. Unique callback fields are created by repeating the <emphasis role="bold">X</emphasis>
+  character. Thus, the format string: <computeroutput>"XX dddd MMM dd', 'yyy XXX"</computeroutput> contains two call
+  back fields. <emphasis role="bold">XX</emphasis> and <emphasis role="bold">XXX</emphasis>. When the FORMAT and
+  FORMATQUERY notifications are sent, they include the format string element that defined the call back field so that
+  the programmer can tell which call back field the notification is for.
+</para>
+
+</section>  <!-- End section Callback Fields -->
+
+<section id="sctMethodsDateTimePicker"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with DateTimePicker objects, including the pertinent methods from other classes:
+</para>
+<table id="tblDateTimePickerMethods" frame="all">
+<title>DateTimePicker Methods and Attributes</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="tmthNewDateTimePicker"/></entry>
+<entry>Obtains a DateTimePicker object that represents a date and time picker control in a dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateDateTimePicker"/></entry>
+<entry>Creates a DateTimePicker control in an <xref linkend="clsUserDialog"/>.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthConnectDateTimePickerEvent"/></entry>
+<entry>Connects DateTimePicker event notifications to a Rexx dialog method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthCloseMonthCal"/></entry>
+<entry>Closes the drop down month calendar if it is dropped down</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetDateTime"/></entry>
+<entry>Retrieves the currently selected date and time for the DTP and returns it as a <computeroutput>DateTime</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetIdealSizeClsDTP"/></entry>
+<entry>Gets the size needed to display the date time picker control without clipping.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetInfo"/></entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object with information about the date time picker.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMonthCal"/></entry>
+<entry>Returns the <xref linkend="clsMonthCalendar"/> object for a date and time picker's (DTP) child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMonthCalColor"/></entry>
+<entry>Retrieves the color for the given portion of DTP control's child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMonthCalFont"/></entry>
+<entry>Gets the font that the DTP control's child month calendar control is currently using.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMonthCalStyle"/></entry>
+<entry>Retrieves the style keywords of the date and time picker's child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetRangeClsDTP"/></entry>
+<entry>Gets the current minimum and maximum allowable times for a date and time picker (DTP) control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDateTime"/></entry>
+<entry>Sets the date and time for the DTP control to that specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFormat"/></entry>
+<entry>Sets the display of a date and time picker (DTP) control based the specified format string.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMonthCalColor"/></entry>
+<entry>Sets the color for the specified portion of the DTP control's child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMonthCalFont"/></entry>
+<entry>Sets the font to be used by the date and time picker control's child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMonthCalStyle"/></entry>
+<entry>Sets the style for the DTP control's child month calendar control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetRangeClsDTP"/></entry>
+<entry>Sets the minimum and maximum allowable dates / times for the date time picker control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewDateTimePicker" xreflabel="newDateTimePicker"><title>newDateTimePicker (dialog object method)</title>
+<para>
+  <computeroutput>DateTimePicker</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <xref
+  linkend="mthNewDateTimePicker"/> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newDateTimePicker(--id--)---------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newDateTimePicker() (dialog object method) -->
+
+
+<section id="tmthCreateDateTimePicker" xreflabel="createDateTimePicker">
+<title>createDateTimePicker (UserDialog method)</title>
+<para>
+  A date and time picker control can be added to the dialog template of a <xref linkend="clsUserDialog" />) through the
+  <xref linkend="mthCreateDateTimePicker"/> method. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>-createDateTimePicker(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
+                                                  +-,--style-+ +-,--attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createDateTimePicker() (UserDialog method) -->
+
+
+<section id="tmthConnectDateTimePickerEvent" xreflabel="connectDateTimePickerEvent">
+<title>connectDateTimePickerEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a DTP control use the <xref linkend="mthConnectDateTimePickerEvent"/> method of the
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--connectDateTimePickerEvent(--id-,-evt--+----------+-+------------+-)------><
+                                           +-,--mName-+ +-,-wilReply-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End EventNotification::connectDateTimePickerEvent() (dialog object method) -->
+
+
+<section id="mthCloseMonthCal" xreflabel="closeMonthCal"><title>closeMonthCal</title>
+<indexterm><primary>closeMonthCal</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>closeMonthCal</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--closeMonthCal--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Closes the drop down month calendar control of the date time picker.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method causes the date time picker to destroy the month calendar control and to send the DTN_CLOSEUP
+    notification (the <xref linkend="evtDateTimePickerCLOSEUP"/> event notification) that the drop-down has been closed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::closeMonthCal() -->
+
+<section id="mthGetDateTime" xreflabel="getDateTime"><title>getDateTime</title>
+<indexterm><primary>getDateTime</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getDateTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDateTime----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the currently selected date and time for the DTP and returns it as a <computeroutput>DateTime</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+     Returns a <computeroutput>DateTime</computeroutput> object representing the current selected date and time of the
+     DTP control. May return the .nil object if the DTP control has the SHOWNONE style and is in the <emphasis
+     role="italic">no date</emphasis> state. It is possible that an error may occur within the underlying DTP control
+     itself. If this is detected, 0 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the DTP has the SHOWNONE style, the control includes a check box allowing the user to indicate that <emphasis
+    role="italic">no</emphasis> date is selected. In this case the <computeroutput>.nil</computeroutput> object is
+    returned to indicate that no date is selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/> if an error occurs within the underlying DTP
+    control. The system error code is set this way by the ooDialog framework:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_MESSAGE (1002)</emphasis></term>
+      <listitem>
+      <para>
+        The window cannot act on the sent message. <emphasis role="bold">Meaning:</emphasis> The underlying DTP control
+        returned an error rather than the selected data and time.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getDateTime() -->
+
+<section id="mthGetIdealSizeClsDTP" xreflabel="getIdealSize"><title>getIdealSize</title>
+<indexterm><primary>getIdealSize</primary><secondary>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getIdealSize(--size--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the size needed to display the date time picker control without clipping.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>size [required] [in / out]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsSize"/> object in which the ideal size is returned.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true always because the method always succeeds.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a longish format for a DTP control and then resizes the control to its ideal size:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  format = 'dddd MMMM d, yyyy - h:mm tt'
+  dtp~setFormat(format)
+
+  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
+  dtp~setDateTime(time)
+
+  ideal = .Size~new
+  dtp~getIdealSize(ideal)
+
+  dtp~resizeTo(ideal)
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getIdealSize() -->
+
+<section id="mthGetInfo" xreflabel="getInfo"><title>getInfo</title>
+<indexterm><primary>getInfo</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getInfo--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a <computeroutput>Directory</computeroutput> object with information about the date time picker.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <computeroutput>Directory</computeroutput> object whose indexes contain information concerning the DTP
+    control. The indexes of the <computeroutput>Directory</computeroutput> object will be:
+  </para>
+  <variablelist>
+    <varlistentry><term>CHECKRECT</term>
+    <listitem>
+    <para>
+      This index is a <xref linkend="clsRect"/> object that contains the location of the check box allowing
+      the user to have no date selected. This check box is only present when the DTP control has the SHOWNONE style.
+      When the check box is not present, the coordinates of the rectangle will be all zeros.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CHECKSTATE</term>
+    <listitem>
+    <para>
+      A localized string describing the state of the check box allowing the user to have no date selected. This check
+      box is only present when the DTP control has the SHOWNONE style. The operating system associates one or more
+      states with any object at any given time.
+    </para>
+    <para>
+      The string at index CHECKSTATE is the string the operating system returns to describe an object's state.
+      Microsoft's documentation is a little vague on exactly what the string will be. However, from testing it appears
+      the string will be <emphasis role="italic">invisible</emphasis> when the check box is not present. When the check
+      box is present, it appears the string will be <emphasis role="italic">checked</emphasis> or <emphasis
+      role="italic">normal</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BUTTONRECT</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that contains the location of the button that shows the drop down
+      calendar when the user clicks on it. (Or closes the month calendar if the user clicks on it when the month
+      calendar is already open.) This button is not present if the DTP control has the UPDOWN style, in which case the
+      coordinates of the rectangle will be all zeros.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BUTTONSTATE</term>
+    <listitem>
+    <para>
+      The BUTTONSTATE index is similar to the CHECKSTATE index. Its value is a localized string describing the state of
+      the button for the drop down month calendar. When the DTP control has the UPDOWN style and the button is not
+      present, the string is <emphasis role="italic">invisible</emphasis>. When the month calendar is showing the state
+      of the button is <emphasis role="italic">pressed</emphasis>, when it is not showing the state will be either
+      <emphasis role="italic">normal</emphasis> or <emphasis role="italic">unavailable</emphasis>. The state is
+      <emphasis role="italic">unavailable</emphasis> if the DTP control has the SHOWNONE style and no date is currently
+      selected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>EDIT</term>
+    <listitem>
+    <para>
+      This index will either be an <xref linkend="clsEdit"/> object, or <computeroutput>.nil</computeroutput>,
+      depending on whether the DTP control currently has a child edit control or not. The DTP control will only have an
+      edit control when the DTP control has the CANPARSE style. The CANPARSE style allows the user to edit within the client
+      area of the control when they press the F2 key, or single click on the client area of the DTP control when the
+      control already has the focus. The child edit control is only present when the user is actively editing.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DROPDOWN</term>
+    <listitem>
+    <para>
+      This index will either be a <xref linkend="clsMonthCalendar"/> object, or
+      <computeroutput>.nil</computeroutput>, depending on whether the DTP control currently has a child month calendar
+      control or not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>UPDOWN</term>
+    <listitem>
+    <para>
+      This index will either be an <xref linkend="clsUpDown"/> object, or
+      <computeroutput>.nil</computeroutput>, depending on whether the DTP control currently has a child updown control
+      or not. The up down control will only exist when the DTP control has the UPDOWN style. With the UPDOWN style, the
+      normal drop down month calendar is replaced by an up down control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example connects the <computeroutput>F3</computeroutput> key to the dialog. When the user presses the
+    <computeroutput>F3</computeroutput> key, the current DTP control information is displayed:
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  self~createDateTimePicker(200,  10, 7, 280, 15, "BORDER SHORT SHOWNONE")
+  ...
+
+::method initDialog
+  expose dateTime
+
+  dateTime = self~newDateTimePicker(IDC_DTP_BIRTHDAY);
+  dateTime~setFormat("XX 'is on: 'hh':'mm':'ss dddd MMM dd', 'yyyy XXX")
+
+  self~connectKeyPress(onF3, .VK~f3)
+  ...
+
+::method onF3 unguarded
+  expose dateTime
+
+  info = dateTime~getInfo
+  say 'CheckRect:  ' info~checkRect
+  say 'CheckState: ' info~checkState
+  say 'ButtonRect: ' info~buttonRect
+  say 'ButtonState:' info~buttonState
+  say 'DropDown:   ' info~dropDown
+  say 'Edit:       ' info~edit
+  say 'UpDown:     ' info~upDown
+  say
+
+/* As the user presses F3 at various times the output could be:
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  checked
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: normal
+DropDown:    The NIL object
+Edit:        The NIL object
+UpDown:      The NIL object
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  checked
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: pressed
+DropDown:    a MonthCalendar
+Edit:        The NIL object
+UpDown:      The NIL object
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  normal
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: unavailable
+DropDown:    The NIL object
+Edit:        The NIL object
+UpDown:      The NIL object
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getInfo() -->
+
+<section id="mthGetMonthCal" xreflabel="getMonthCal"><title>getMonthCal</title>
+<indexterm><primary>getMonthCal</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCal</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCal----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the <xref linkend="clsMonthCalendar"/> object for a date and time picker's (DTP) child
+  month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A <computeroutput>MonthCalendar</computeroutput> object for the underlying child month calendar, if the child
+    control exists, otherwise the <computeroutput>.nil</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="bold">Note:</emphasis> The following information mostly applies to Windows XP and earlier. For
+    Windows Vista and later the date and time picker control has the <xref linkend="mthSetMonthCalStyle"/> and
+    <xref linkend="mthGetMonthCalStyle"/> methods to directly manipulate the month calendar control's styles.
+  </para>
+  <para>
+    Obtaining the month calendar control allows the programmer to change its style or appearance. For instance the
+    <xref linkend="mthSetFirstDayOfWeek"/> day of the week could be changed or the <emphasis
+    role="italic">Go To Today</emphasis> could be removed by setting the NOTODAY style.
+  </para>
+  <para>
+    DTP controls do not create a static month calendar control. Rather, they create the month calendar when needed and
+    destroy the month calendar as soon as it is not needed. The <xref linkend="evtDateTimePickerDROPDOWN"/> notification is
+    sent after the DTP creates the month calendar and the <xref linkend="evtDateTimePickerCLOSEUP"/> notification is sent
+    when the month calendar is destroyed.
+  </para>
+  <para>
+    After the underlying month calendar control is destroyed, Rexx month calendar object is no longer valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example will work on any version of Windows that ooDialog supports. It gets the month calendar for the DTP
+    control and changes the first day of the week to Friday. The <emphasis role="italic">Today</emphasis> selection is
+    also removed. This is an example of a <xref linkend="evtDateTimePickerDROPDOWN"/> event handler. Note that no reference
+    is kept for the month calendar. The object will be invalid as soon as the user closes the drop down:
+<programlisting>
+<![CDATA[
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dt = self~newDateTimePicker(IDC_DTP);
+  monthCal = dt~getMonthCal
+  monthCal~setFirstDayOfWeek('Friday')
+  monthCal~addStyle("NOTODAY")
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCal() -->
+
+<section id="mthGetMonthCalColor" xreflabel="getMonthCalColor"><title>getMonthCalColor</title>
+<indexterm><primary>getMonthCalColor</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCalColor(--calendarPart--)-----------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the color for the given portion of DTP control's child month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>calendarPart [required]</term>
+    <listitem>
+    <para>
+      A single keyword specifying which part of the calendar to get the color for, case is not significant. The valid
+      keywords are:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BACKGROUND  </member>
+        <member>MONTHBK     </member>
+        <member>TEXT        </member>
+        <member>TITLEBK     </member>
+        <member>TITLETEXT   </member>
+        <member>TRAILINGTEXT</member>
+        <member></member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BACKGROUND</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed between months.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MONTHBK</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed within the month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display text within a month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLEBK</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed in the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLETEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display text within the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRAILINGTEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display header day and trailing day text. Header and trailing days are the days
+          from the previous and following months that appear on the current month calendar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns a COLORREF representing the color setting for the part of the month calendar control specified.
+    returns CLR_INVALID on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is essentially the same as the <xref linkend="mthGetColor"/> method of the <xref linkend="clsMonthCalendar"/>
+    class, except that DTP control is asked to get the color from its child month calendar.
+  </para>
+  <para>
+    The <xref linkend="clsImage"/> class has a number of convenience methods for working with COLORREFs,
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
+  </para>
+  <para>
+    The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
+    <computeroutput>.Image~colorRef(CLR_INVALID)</computeroutput>. (An error is not very likely.)
+  </para>
+  <para>
+    Note that many of the underlying dialog controls ignore their color settings when visual themes are enabled, unless
+    the theme is Windows Classic. This is the case for the month calendar control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCalColor() -->
+
+
+<section id="mthGetMonthCalFont" xreflabel="getMonthCalFont"><title>getMonthCalFont</title>
+<indexterm><primary>getMonthCalFont</primary></indexterm>
+<indexterm><primary>DateTimePicker</primary><secondary>getMonthCalFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCalFont------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the font that the DTP control's child month calendar control is currently using.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a <xref linkend="defHandle"/> to the font, the same return as the <xref linkend="mthGetFont"/> or <xref
+    linkend="mthCreateFontEx"/> methods of the <xref linkend="chpDialogObject"/> object would return.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Classic. This is the case for the month calendar control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCalFont() -->
+
+<section id="mthGetMonthCalStyle" xreflabel="getMonthCalStyle"><title>getMonthCalStyle</title>
+<indexterm><primary>getMonthCalStyle</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCalStyle-----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the style keywords of the date and time picker's child month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not have any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A list of <xref linkend="clsMonthCalendar"/> style keywords separated by spaces. The list may be
+    empty, otherwise it will contain one or more of the following keywords.
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>DAYSTATE   </member>
+      <member>MULTI      </member>
+      <member>NOTODAY    </member>
+      <member>NOCIRCLE   </member>
+      <member>WEEKNUMBERS</member>
+      <member>NOTRAILING </member>
+      <member>SHORTDAYS  </member>
+      <member>NOSELCHANGE</member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DAYSTATE</term>
+      <listitem>
+      <para>
+        The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
+        information about which days should be displayed in bold. For the DTP control's child month calendar, this style
+        is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
+        handler to the child month calendar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MULTI</term>
+      <listitem>
+      <para>
+        This style allows the user to select a range of dates within the control. By default, the maximum range is one
+        week. The programmer changes the maximum range that can be selected by using the <xref linkend="mthSetMaxSelection"/>
+        method. Again, this style is not relevant for the DTP control's child month calendar control. The DTP control
+        only supports a specific date, a range of dates is not supported.
+      </para> </listitem></varlistentry>
+      <varlistentry><term>NOTODAY</term>
+      <listitem>
+      <para>
+        The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOCIRCLE</term>
+      <listitem>
+      <para>
+        The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+        the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>WEEKNUMBERS</term>
+      <listitem>
+      <para>
+        The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+        Microsoft as the first week that contains at least four days.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTRAILING</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Windows Vista or later only</emphasis>. This style disables displaying the dates from the
+        previous / next month in the current calendar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHORTDAYS</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Windows Vista or later only</emphasis>. With this style, the month calendar uses the
+        shortest day name for the label of the day of the week column header.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOSELCHANGE</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Windows Vista or later only</emphasis>. With this style the selection does not change when
+        the user navigates to the next or previous month in the calendar. This style is needed for the user to be able
+        to select a range greater than what is currently displayed. This style is also not relevant for
+        the same reasons as given for the MULTI style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleGetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a simple exploratory program that could be written to see what the default style for the DTP
+    control's child month calendar is. Note that, in the author's experience, the child month calendar does not have any
+    styles set.
+  </para>
+  <para>
+    For an expanded version of this example, see the <link linkend="exampleSetMonthCalStyle">example</link> for the
+    <xref linkend="mthSetMonthCalStyle"/> method.
+
+<programlisting>
+<![CDATA[
+
+/*
+ * Simple test program to display the DTP control's month calendar's initial
+ * style.
+ */
+
+  if \ .OS~isAtLeastVista then do
+    say "Sorry this example program is for Windows Vista or later."
+    return 99
+  end
+
+  .application~useGlobalConstDir('O')
+  .constDir[IDC_DTP] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP")
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~createCenter(200, 100, 'Dialog', , , 'MS Shell Dlg 2', 8)
+
+::method defineDialog
+
+  self~createDateTimePicker(IDC_DTP,  10, 7, 180, 15, "SHORT")
+  self~createPushButton(IDOK, 140, 74, 50, 14, "DEFAULT", "Ok")
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dtp = self~newDateTimePicker(IDC_DTP)
+  say "Style:" dtp~getMonthCalStyle
+  return 0
+
+/* Output will be: */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCalStyle() -->
+
+<section id="mthGetRangeClsDTP" xreflabel="getRange"><title>getRange</title>
+<indexterm><primary>getRange</primary><secondary>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange(--range--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the current minimum and maximum allowable times for a date and time picker (DTP) control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>range [required] [in / out]</term>
+    <listitem>
+    <para>
+      An <computeroutput>Array</computeroutput> object in which the minimum and maximum times are returned as
+      <computeroutput>DateTime</computeroutput> objects.  The minimum time will be at index 1 and the maximum at index
+      2. If either index is set to zero, then no corresponding limit is set for the date time picker control.
+    </para> </listitem></varlistentry>
+  </variablelist> </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return will be a keyword indicating the result.  See the Remarks section for possible keywords.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned keyword will be exactly one of: <computeroutput>none, min, max, both, error</computeroutput> describing
+    which limit(s) are set. The <emphasis role="italic">error</emphasis> keyword would indicate an error occurred with
+    the DTP control, but that is very unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method designed to display the current range of the DTP control:
+<programlisting>
+<![CDATA[
+
+::method showRange
+  expose dtp
+
+  min_max = .array~new(2)
+  keyword = dtp~getRange(min_max)
+
+  select
+    when keyword == 'none' then do
+      say "There are no minimum or maximum times set for the DTP control."
+    end
+
+    when keyword == 'min' then do
+      say "The minimum time for the DTP control is:" min_max[1]'.'
+      say 'There is no maximum time set.'
+    end
+
+    when keyword == 'max' then do
+      say "The maximum time for the DTP control is:" min_max[2]'.'
+      say 'There is no minimum time set.'
+    end
+
+    when keyword == 'both' then do
+      say "The minimum time for the DTP control is:" min_max[1]'.'
+      say "The maximum time for the DTP control is:" min_max[2]'.'
+    end
+
+    when keyword == 'error' then do
+      say 'An unexplained error occurred.'
+    end
+
+    otherwise do
+      -- This is not possible
+      nop
+    end
+  end
+  -- End select
+
+/*  Output might for instance be:
+
+The minimum time for the DTP control is: 2011-01-01T00:00:00.000000.
+The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getRange() -->
+
+<section id="mthSetDateTime" xreflabel="setDateTime"><title>setDateTime</title>
+<indexterm><primary>setDateTime</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setDateTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDateTime(--dateTime--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the date and time for the DTP control to that specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>dateTime [required]</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that specifies the date and time to set the DTP to. However, if
+      the DTP control has the SHOWNONE style, the <emphasis role="italic">dateTime</emphasis> argument can be the
+      <computeroutput>.nil</computeroutput> object to set the DTP control to the <emphasis role="italic">no
+      date</emphasis> state.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the DTP control has the SHOWNONE style, it is possible to have no date currently selected. The control displays
+    a check box that is automatically selected whenever a date is picked or entered. If the check box is subsequently
+    deselected, the application cannot retrieve the date from the control because, in essence, the control has no date.
+    The <emphasis role="italic">no date</emphasis> state can be set with the <emphasis
+    role="italic">setDateTime</emphasis> method and queried by using the <xref linkend="mthGetDateTime"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the date and time of the DTP control to March 1st, 2011 at 10:00 am:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
+  dtp~setDateTime(time)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setDateTime() -->
+
+<section id="mthSetFormat" xreflabel="setFormat"><title>setFormat</title>
+<indexterm><primary>setFormat</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setFormat</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFormat(--format--)------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the display of a date and time picker (DTP) control based the specified <link
+  linkend="sctDTPFormatStrings">format</link> string.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>format [required]</term>
+    <listitem>
+    <para>
+      A <link linkend="sctDTPFormatStrings">format</link> string that dictates how the DTP control formats the data and time
+      in its display.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates a format string and then sets the DTP to use it:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  format = 'dddd MMMM d, yyyy - h:mm tt'
+  dtp~setFormat(format)
+
+/* Display will look like this, for example, depending on exact
+   date and time:
+
+Monday October 24, 2011 - 11:52 AM
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setFormat() -->
+
+<section id="mthSetMonthCalColor" xreflabel="setMonthCalColor"><title>setMonthCalColor</title>
+<indexterm><primary>setMonthCalColor</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthCalColor(--which--,--color--)--------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the color for the specified portion of the DTP control's child month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>which [required]</term>
+    <listitem>
+    <para>
+      Specifies which part of the calendar will have its color set. Exactly one of the following keywords must be used,
+      case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BACKGROUND  </member>
+        <member>MONTHBK     </member>
+        <member>TEXT        </member>
+        <member>TITLEBK     </member>
+        <member>TITLETEXT   </member>
+        <member>TRAILINGTEXT</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BACKGROUND</term>
+        <listitem>
+        <para>
+          Set the background color displayed between months.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MONTHBK</term>
+        <listitem>
+        <para>
+          Set the background color displayed within the month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display text within a month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLEBK</term>
+        <listitem>
+        <para>
+          Set the background color displayed in the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLETEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display text within the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRAILINGTEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display header day and trailing day text. Header and trailing days are the days
+          from the previous and following months that appear on the current month calendar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>color [required]</term>
+    <listitem>
+    <para>
+      The color, specified as a COLORREF, to set the specified calendar part.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns the previous color, as a COLORREF, for the part of the month calendar control specified.
+    Returns CLR_INVALID on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="clsImage"/> class has a number of convenience methods for working with COLORREFs,
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
+  </para>
+  <para>
+    The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
+    <computeroutput>.Image~colorRef(CLR_INVALID)</computeroutput>. (An error is not very likely.)
+  </para>
+  <para>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Classic. This is the case for the month calendar control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setMonthCalColor() -->
+
+
+<section id="mthSetMonthCalFont" xreflabel="setMonthCalFont"><title>setMonthCalFont</title>
+<indexterm><primary>setMonthCalFont</primary></indexterm>
+<indexterm><primary>DateTimePicker</primary><secondary>setMonthCalFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthCalFont(--newFont--+-----------+--)--><
+                               +-,-redraw--+
+]]>
+</programlisting>
+
+<para>
+  Sets the font to be used by the date and time picker control's child month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>newFont [required]</term>
+    <listitem>
+    <para>
+      The new font for the child month calendar. One way to obtain a font is though the <xref linkend="mthCreateFontEx"/>
+      method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>redraw [optional]</term>
+    <listitem>
+    <para>
+      Specifies whether the month calendar control should redraw itself immediately upon setting the font. The default
+      is true, which causes the control to redraw itself immediately.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Classic. This is the case for the month calendar control.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setMonthCalFont() -->
+
+<section id="mthSetMonthCalStyle" xreflabel="setMonthCalStyle"><title>setMonthCalStyle</title>
+<indexterm><primary>setMonthCalStyle</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthCalStyle(--style--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the style for the DTP control's child month calendar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>style [required]</term>
+    <listitem>
+    <para>
+      A list of <xref linkend="clsMonthCalendar"/> style keywords separated by spaces. The list may
+      be empty. This will revert the month calendar to its default style. Otherwise, it can contain one or more of the
+      following keywords.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DAYSTATE   </member>
+        <member>MULTI      </member>
+        <member>NOTODAY    </member>
+        <member>NOCIRCLE   </member>
+        <member>WEEKNUMBERS</member>
+        <member>NOTRAILING </member>
+        <member>SHORTDAYS  </member>
+        <member>NOSELCHANGE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DAYSTATE</term>
+        <listitem>
+        <para>
+          The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
+          information about which days should be displayed in bold. For the DTP control's child month calendar, this style
+          is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
+          handler to the child month calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTI</term>
+        <listitem>
+        <para>
+          This style allows the user to select a range of dates within the control. By default, the maximum range is one
+          week. The programmer changes the maximum range that can be selected by using the <xref
+          linkend="mthSetMaxSelection"/> method. Again, this style is not relevant for the DTP control's child month calendar
+          control. The DTP control only supports a specific date, a range of dates is not supported.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTODAY</term>
+        <listitem>
+        <para>
+          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOCIRCLE</term>
+        <listitem>
+        <para>
+          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+          the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WEEKNUMBERS</term>
+        <listitem>
+        <para>
+          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+          Microsoft as the first week that contains at least four days.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTRAILING</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+          from the previous / next month in the current calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHORTDAYS</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+          shortest day name for the label of the day of the week column header.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSELCHANGE</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+          change when the user navigates to the next or previous month in the calendar. This style is needed for the
+          user to be able to select a range greater than what is currently displayed. This style is also not relevant for
+          the same reasons as given for the MULTI style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is a list of style keywords, (see the <emphasis role="italic">style</emphasis> argument above,)
+    defining the style the child month calendar had previously.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is a stand-alone program. It is a slightly expanded version of the <emphasis
+    role="italic">getMonthCalStyle</emphasis> <link linkend="exampleGetMonthCalStyle">example</link>.
+<programlisting>
+<![CDATA[
+
+/*
+ * Simple test program to set and show the DTP control's month calendar's
+ * initial style.
+ */
+
+  .application~useGlobalConstDir('O')
+  .constDir[IDC_DTP] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP")
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~createCenter(200, 100, 'Dialog', , , 'MS Shell Dlg 2', 8)
+
+::method defineDialog
+
+  self~createDateTimePicker(IDC_DTP,  10, 7, 180, 15, "SHORT")
+  self~createPushButton(IDOK, 140, 74, 50, 14, "DEFAULT", "Ok")
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+  self~connectDateTimePickerEvent(IDC_DTP, "CLOSEUP", onDropDown)
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  if .OS~isAtLeastVista then do
+    dtp~setMonthCalStyle("NOCIRCLE NOTRAILING")
+  end
+
+::method onDropDown unguarded
+  expose dtp
+  use arg idFrom, hwndFrom
+
+  if \ .OS~isAtLeastVista then do
+    mc = dtp~getMonthCal
+    mc~replaceStyle('DAYSTATE MULTI WEEKNUMBERS', "NOCIRCLE NOTODAY")
+  end
+
+  if .OS~isAtLeastVista then do
+    say "Style:" dtp~getMonthCalStyle
+  end
+  else do
+    say "Style (Windows 2000 or XP):" mc~getStyle
+  end
+  return 0
+
+/* Output on Vista or later will be:
+
+Style: NOCIRCLE NOTRAILING
+
+Output on Windows 2000 or XP:
+
+Style (Windows 2000 or XP): NOCIRCLE NOTODAY
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setMonthCalStyle() -->
+
+<section id="mthSetRangeClsDTP" xreflabel="setRange"><title>setRange</title>
+<indexterm><primary>setRange</primary><secondary>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--dateTimes--)----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the minimum and maximum allowable dates / times for the date time picker control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>dateTimes [required]</term>
+    <listitem>
+    <para>
+      An array of <computeroutput>DateTime</computeroutput> objects used to set the minimum and maximum dates. The
+      <computeroutput>DateTime</computeroutput> object at index 1 sets the minimum date and the
+      <computeroutput>DateTime</computeroutput> object at index 2 sets the maximum date.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on success, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The array must contain at least one of the indexes. If it contains neither, an exception is raised. If one of the
+    array indexes is empty, then the corresponding date is not set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example restricts the range of the DTP control to the year 2011:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  min = .DateTime~fromUsaDate('01/01/11')
+  max = .DateTime~fromISODate('2011-12-31T23:59:59.999999')
+
+  dtp~setRange(.array~of(min, max))
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setRange() -->
+
+</chapter>  <!-- End DateTimePicker class -->
+

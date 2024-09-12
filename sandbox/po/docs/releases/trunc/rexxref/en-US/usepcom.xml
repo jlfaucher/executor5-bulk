@@ -1,0 +1,465 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="usepcom"><title>Useful Services</title>
+<para>The following section describes useful commands and services.</para>
+
+<section id="wincom"><title>Windows Commands</title>
+<variablelist>
+<varlistentry><term>COPY</term>
+<listitem><para>copies files.
+</para></listitem></varlistentry>
+<varlistentry><term>DELETE</term>
+<listitem><para>deletes files.
+</para></listitem></varlistentry>
+<varlistentry><term>DIR</term>
+<listitem><para>displays disk directories.
+</para></listitem></varlistentry>
+<varlistentry><term>ERASE</term>
+<listitem><para>erases files.
+</para></listitem></varlistentry>
+<varlistentry><term>MODE</term>
+<listitem><para>controls input and output device characteristics.
+</para></listitem></varlistentry>
+<varlistentry><term>PATH</term>
+<listitem><para>defines or displays the search path for commands and Rexx
+programs. See also <xref linkend="xsearcho" />.
+</para></listitem></varlistentry>
+<varlistentry><term>SET</term>
+<listitem><para>displays or changes Windows environment variables.
+See also <xref linkend="bifValue" />.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="lincom"><title>Linux Commands</title>
+<para>Most Commonly used commands are:</para>
+<variablelist>
+<varlistentry><term>cp</term>
+<listitem><para>copies files and directories.
+</para></listitem></varlistentry>
+<varlistentry><term>mv</term>
+<listitem><para>moves files and directories.
+</para></listitem></varlistentry>
+<varlistentry><term>rm</term>
+<listitem><para>removes files and directories.
+</para></listitem></varlistentry>
+<varlistentry><term>ls</term>
+<listitem><para>displays files and directories.
+</para></listitem></varlistentry>
+<varlistentry><term>echo $path</term>
+<listitem><para>defines or displays the search path for commands and Rexx
+programs. See also <xref linkend="xsearcho" />.
+</para></listitem></varlistentry>
+<varlistentry><term>env</term>
+<listitem><para>displays or changes Linux environment variables.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Any other Linux command can be used. For a description of these commands,
+see the respective Linux documentation (for example, man-pages).</para>
+</section>
+
+<section id="subhan"><title>Subcommand Handler Services</title>
+<para>For a complete subcommand handler description, see the
+<citetitle pubwork="book">Open Object Rexx: Application Programming Interfaces</citetitle>.
+</para>
+
+<section id="rxsbc"><title>The RXSUBCOM Command</title>
+<indexterm><primary>RXSUBCOM command</primary></indexterm>
+<para>The RXSUBCOM command registers, drops, and queries Rexx subcommand
+handlers. A Rexx procedure or script file can use RXSUBCOM to register
+dynamic-link library subcommand
+handlers. Once the subcommand handler is registered, a Rexx program can send
+commands to the subcommand handler with the Rexx ADDRESS instruction. For
+example, Rexx Dialog Manager programs use RXSUBCOM to register the ISPCIR
+subcommand handler. </para>
+<example>
+<title>Command RXSUBCOM &mdash; REGISTER option</title>
+<programlisting>
+"RXSUBCOM REGISTER ISPCIR ISPCIR ISPCIR"
+Address ispcir
+</programlisting>
+</example>
+<para>See <xref linkend="keyAddress" /> for details of the ADDRESS
+instruction.</para>
+
+<section id="subreg"><title>RXSUBCOM REGISTER</title>
+<indexterm><primary>REGISTER keyword</primary>
+<secondary>in a RXSUBCOM command</secondary></indexterm>
+<para>RXSUBCOM REGISTER registers a dynamic-link library subcommand handler.
+This command makes a command environment available to Rexx.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/register.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Parameters:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">envname</emphasis></term>
+<listitem><para>The subcommand handler name. The Rexx ADDRESS instruction uses
+<emphasis role="italic">envname</emphasis> to send commands to the subcommand
+handler. </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">dllname</emphasis></term>
+<listitem><para>The name of the dynamic-link library file containing the
+subcommand handler routine.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">procname</emphasis></term>
+<listitem><para>The name of the dynamic-link library procedure within
+<emphasis role="italic">dllname</emphasis> that Rexx calls as a subcommand
+handler.</para></listitem></varlistentry>
+</variablelist>
+<para>Return codes:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The command environment has been registered.
+</para></listitem></varlistentry>
+<varlistentry><term>10</term>
+<listitem><para>A duplicate registration has occurred. An
+<emphasis role="italic">envname</emphasis> subcommand
+handler in a different dynamic-link library has already been registered. Both
+the new subcommand handler and the existing subcommand handler can be used.
+</para></listitem></varlistentry>
+<varlistentry><term>30</term>
+<listitem><para>The registration has failed. Subcommand handler
+<emphasis role="italic">envname</emphasis> in
+library <emphasis role="italic">dllname</emphasis> is already registered.
+</para></listitem></varlistentry>
+<varlistentry><term>1002</term>
+<listitem><para>RXSUBCOM was unable to obtain the memory necessary to register
+the subcommand handler.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A parameter is missing or incorrectly specified.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="subdrop"><title>RXSUBCOM DROP</title>
+<indexterm><primary>DROP keyword</primary>
+<secondary>in a RXSUBCOM command</secondary></indexterm>
+<para>RXSUBCOM DROP deregisters a subcommand handler.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/drop.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">envname</emphasis></term>
+<listitem><para>The name of the subcommand handler.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">dllname</emphasis></term>
+<listitem><para>The name of the dynamic-link file containing the subcommand
+handler routine.</para></listitem></varlistentry>
+</variablelist>
+<para>Return codes:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The subcommand handler was successfully deregistered.
+</para></listitem></varlistentry>
+<varlistentry><term>30</term>
+<listitem><para>The subcommand handler does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term>40</term>
+<listitem><para>The environment was registered by a different process as
+RXSUBCOM_NONDROP.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A parameter is missing or specified incorrectly.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="subqury"><title>RXSUBCOM QUERY</title>
+<indexterm><primary>QUERY keyword</primary>
+<secondary>in a RXSUBCOM command</secondary></indexterm>
+<para>RXSUBCOM QUERY checks the existence of a subcommand handler. The query
+result is returned.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/query.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">envname</emphasis></term>
+<listitem><para>The name of the subcommand handler.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">dllname</emphasis></term>
+<listitem><para>The name of the dynamic-link file containing the subcommand
+handler routine.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return codes:</emphasis></para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The subcommand handler is registered.
+</para></listitem></varlistentry>
+<varlistentry><term>30</term>
+<listitem><para>The subcommand handler is not registered.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A parameter is missing or specified incorrectly.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="subload"><title>RXSUBCOM LOAD</title>
+<indexterm><primary>LOAD keyword</primary>
+<secondary>in a RXSUBCOM command</secondary></indexterm>
+<para>RXSUBCOM LOAD loads a subcommand handler dynamic-link library.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/load.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">envname</emphasis></term>
+<listitem><para>The name of the subcommand handler.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">dllname</emphasis></term>
+<listitem><para>The name of the dynamic-link file containing the subcommand
+handler routine.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return codes:</emphasis></para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The dynamic-link library was located and loaded successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>50</term>
+<listitem><para>The dynamic-link library was not located or could not be loaded.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A parameter is missing or incorrectly specified.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+</section>
+
+<section id="rxq"><title>The RXQUEUE Filter</title>
+<indexterm><primary>RXQUEUE filter</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/rxqueue.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The RXQUEUE filter usually operates on the default queue named <literal>SESSION</literal>.
+However, if an environment variable named RXQUEUE exists, the RXQUEUE value
+is used for the queue name.</para>
+<para>For a full description of Rexx queue services for applications programming,
+see <xref linkend="xtlque" />.</para>
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">queuename</emphasis></term>
+<listitem><para>The name of the named Rexx queue to stack or queue items to.
+If no <emphasis role="italic">queuename</emphasis> is given, <literal>SESSION</literal> is used.
+</para></listitem></varlistentry>
+<varlistentry><term>/FIFO</term>
+<listitem><para>queues items from STDIN first in, first out (FIFO) on the Rexx queue.
+This is the default.</para></listitem></varlistentry>
+<varlistentry><term>/LIFO</term>
+<listitem><para>stacks items from STDIN last in, first out (LIFO) on the Rexx
+queue.</para></listitem></varlistentry>
+<varlistentry><term>/CLEAR</term>
+<listitem><para>removes all lines from the Rexx queue.
+</para></listitem></varlistentry>
+</variablelist>
+<para>
+  RXQUEUE takes output lines from another program and places them on a Rexx queue. There is currently a limit of 65472
+  characters for a single line. If a line contains more characters than the limit, those characters are discarded.
+</para>
+<para>
+  A Rexx procedure can use RXQUEUE to capture operating system command and program output for processing. RXQUEUE can
+  direct output to any Rexx queue, either FIFO (first in, first out) or LIFO (last in, first out).
+</para>
+<para>RXQUEUE uses the environment variable RXQUEUE for the default queue name.
+When RXQUEUE does not have a value, RXQUEUE uses <literal>SESSION</literal> for the queue name.
+</para>
+<para>The following example obtains the Windows version number with RXQUEUE:
+</para>
+<example>
+<title>Command RXQUEUE</title>
+<programlisting>
+/* Sample program to show simple use of RXQUEUE */
+/* Find out the Windows version number, using the  */
+/* VER command.  VER produces two lines of      */
+/* output; one blank line, and one line with the*/
+/* format "The Windows Version is n.nn"            */
+
+"VER |RXQUEUE"         /* Put the data on the Queue      */
+pull .                 /* Get and discard the blank line */
+Pull . "VERSION" number "]" /* The bracket is required for
+Windows 95, not for Windows NT */
+Say "We are running on Windows Version" number
+</programlisting>
+</example>
+<para>Note that the syntax of the version string that is returned
+by Windows can vary, so the parsing syntax for retrieving the version number
+may be different.</para>
+<para>The following example processes output from the DIR command:</para>
+<example>
+<title>Command RXQUEUE</title>
+<programlisting>
+/* Sample program to show how to use the RXQUEUE filter */
+/* This program filters the output from a DIR command,  */
+/* ignoring small files.  It displays a list of the     */
+/* large files, and the total of the sizes of the large */
+/* files.                                               */
+
+size_limit = 10000            /* The dividing line      */
+/* between large and small*/
+size_total = 0                /* Sum of large file sizes*/
+NUMERIC DIGITS 12             /* Set up to handle very  */
+/* large numbers          */
+
+/* Create a new queue so that this program cannot       */
+/* interfere with data placed on the queue by another   */
+/* program.                                             */
+
+queue_name = rxqueue("Create")
+Call rxqueue "Set", queue_name
+
+"DIR /N | RXQUEUE" queue_name
+
+/* DIR output starts with five header lines             */
+Do 5
+Pull .                     /* discard header line    */
+End
+
+/* Now all the lines are file or directory lines,       */
+/* except for one at the end.                           */
+
+Do queued() - 1               /* loop for lines we want */
+Parse Pull . . size . name ./* get one name and size */
+/* If the size field says "&lt;DIR>", we ignore this    */
+/* line.                                             */
+If size &lt;> "&lt;DIR>" Then
+/* Now check size, and display                    */
+If size > size_limit Then Do
+Say format(size,12) name
+size_total = size_total + size
+End
+End
+
+Say "The total size of those files is" size_total
+
+/* Now we are done with the queue.  We delete it, which */
+/* discards the line remaining in it.                   */
+
+Call rxqueue "DELETE", queue_name
+</programlisting>
+</example>
+</section>
+
+<section id="xnosorc"><title>Distributing Programs without Source</title>
+<indexterm><primary>programs without source</primary></indexterm>
+<indexterm><primary>sourceless programs</primary></indexterm>
+<para>Open Object Rexx comes with a utility called <literal>rexxc</literal>.
+You can use this utility to produce versions of
+your programs that do not include the original program source. You can use
+these programs to replace any Rexx program file that includes the source,
+with the following restrictions: </para>
+<orderedlist>
+<listitem><para>The <xref linkend="bifSourceline" xrefstyle="select:title"/>
+built-in function returns <literal>0</literal> for the number of
+lines in the program and raises an error for all attempts to retrieve a line.
+</para></listitem>
+<listitem><para>A sourceless program may not be traced.
+The <xref linkend="keyTrace" xrefstyle="select:title"/> instruction
+runs without error, but no tracing of instruction lines, expression results,
+or intermediate expression values occurs.</para></listitem>
+</orderedlist>
+<para>The syntax of the <literal>rexxc</literal> utility is:</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/rexxc.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>If you specify the <emphasis role="italic">outputfile</emphasis>,
+the language processor processes
+the <emphasis role="italic">inputfile</emphasis>
+and writes the executable version of the program to
+the <emphasis role="italic">outputfile</emphasis>. If the
+<emphasis role="italic">outputfile</emphasis> already exists, it is
+replaced.</para>
+<para>If the language processor detects a syntax error while processing the
+program,
+it reports the error and stops processing without creating a new output file.
+If you omit the <emphasis role="italic">outputfile</emphasis>, the language
+processor performs a syntax
+check on the program without writing the executable version to a file.</para>
+<para>You can use the <literal>-s</literal> option to suppress
+the display of the information about the interpreter used,
+and the <literal>-e</literal> option to create the
+<emphasis role="italic">outputfile</emphasis> in base64-encoded format,
+suitable when a 7-bit encoding is required.
+</para>
+<para>On Windows, the <literal>-s</literal> and <literal>-e</literal> options can
+alternatively be specified as <literal>/s</literal> and <literal>/e</literal>.
+</para>
+
+<note><title>Note</title>
+<para>You can use the in-storage capabilities of the RexxStart programming
+interface to process the file image of the output file.</para>
+</note>
+
+</section>
+
+</chapter>

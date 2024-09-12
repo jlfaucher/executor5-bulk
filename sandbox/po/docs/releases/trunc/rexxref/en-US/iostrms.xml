@@ -1,0 +1,725 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="iostrms"><title>Input and Output Streams</title>
+<indexterm><primary>default</primary>
+<secondary>character streams</secondary></indexterm>
+<indexterm><primary>external character streams</primary></indexterm>
+<indexterm><primary>line input and output</primary></indexterm>
+<indexterm><primary>files</primary></indexterm>
+<indexterm><primary>input and output</primary>
+<secondary>model</secondary></indexterm>
+<indexterm><primary>input and output</primary>
+<secondary>streams</secondary></indexterm>
+<indexterm><primary>output</primary>
+<secondary>to the user</secondary></indexterm>
+<indexterm><primary>input from the user</primary></indexterm>
+<indexterm><primary>serial input and output</primary></indexterm>
+<indexterm><primary>stream</primary></indexterm>
+<indexterm><primary>typewriter input and output</primary></indexterm>
+<indexterm><primary>persistent input and output</primary></indexterm>
+<indexterm><primary>user input and output</primary></indexterm>
+<para>Rexx defines Stream class methods to handle input and output and maintains
+the I/O functions for input and output externals. Using a mixture of Rexx
+I/O methods and Rexx I/O functions can cause unpredictable results. For example,
+using the LINEOUT method and the LINEOUT function on the same persistent stream
+object can cause overlays.</para>
+<para>When a Rexx I/O function creates a stream object, the language processor
+maintains the stream object. When a Rexx I/O method creates a stream object,
+it is returned to the program to be maintained. Because of this, when Rexx
+I/O methods and Rexx I/O functions referring to the same stream are in the
+same program, there are two separate stream objects with different read and
+write pointers. The program needs to synchronize the read and write pointers
+of both stream objects, or overlays occur.</para>
+<para>To obtain a stream object (for example,
+<computeroutput>MYFIL</computeroutput>), you could use: </para>
+<example>
+<title>Obtaining a stream object</title>
+<programlisting>
+MyStream = .stream~new("MYFIL")
+</programlisting>
+</example>
+<para>You can manipulate stream objects with character or line methods: </para>
+<indexterm><primary>character input and output</primary></indexterm>
+<example>
+<title>Performing input on a stream object</title>
+<programlisting>
+nextchar = MyStream~charin()
+nextline = MyStream~linein()
+</programlisting>
+</example>
+<para>In addition to stream objects, the language processor defines an external
+data queue object for interprogram communication. This queue object understands
+line functions only.</para>
+<para>A stream object
+can have a variety of sources or destinations including files, serial interfaces,
+displays, or networks. It can be
+<indexterm><primary>transient input and output</primary></indexterm>
+transient or dynamic, for example, data sent
+or received over a serial interface, or persistent in a static form, for
+example, a disk file.</para>
+<para>Housekeeping for stream objects
+(opening and closing files, for example) is not explicitly part of the language
+definition. However, Rexx provides methods, such as CHARIN and LINEIN, that
+are independent of the operating system and include housekeeping. The COMMAND
+<indexterm><primary>COMMAND method</primary></indexterm>
+method provides the <emphasis role="italic">stream_command</emphasis>
+argument for those situations
+that require more granular access to operating system interfaces.</para>
+
+<section id="inpout"><title>The Input and Output Model</title>
+<indexterm><primary>model of input and output</primary></indexterm>
+<para>The model of input and output for Rexx consists of the following logically
+distinct parts: </para>
+<itemizedlist>
+<listitem><para>One or more input stream objects</para></listitem>
+<listitem><para>One or more output stream objects</para></listitem>
+<listitem><para>One or more external data queue objects</para></listitem>
+</itemizedlist>
+<para>The Rexx methods, instructions, and built-in routines manipulate these
+elements as follows.</para>
+
+<section id="cinstm"><title>Input Streams</title>
+<indexterm><primary>character input streams</primary></indexterm>
+<indexterm><primary>input streams</primary></indexterm>
+<para>Input to Rexx programs is in the form of a serial character stream generated
+by user interaction or has the characteristics of one generated this way.
+You can add characters to the end of some stream objects asynchronously; other
+stream objects might be static or synchronous.</para>
+<para>The methods and instructions you can use on input stream objects are:
+</para>
+<itemizedlist>
+<listitem><para>CHARIN
+<indexterm><primary>CHARIN method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method&mdash;reads input stream objects as characters.</para></listitem>
+<listitem><para>LINEIN
+<indexterm><primary>LINEIN method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method&mdash;reads input stream objects as lines.</para></listitem>
+<listitem><para>PARSE PULL and PULL instructions&mdash;read the default input stream
+object
+<indexterm><primary>PARSE PULL method</primary>
+<secondary>role in input and output</secondary></indexterm>
+<indexterm><primary>PULL method</primary>
+<secondary>role in input and output</secondary></indexterm>
+(<computeroutput>.INPUT</computeroutput>), if the external data queue is empty.
+PULL is the same as PARSE UPPER PULL.</para></listitem>
+<listitem><para>PARSE LINEIN instruction&mdash;reads lines from the default input
+stream
+<indexterm><primary>PARSE LINEIN method</primary>
+<secondary>role in input and output</secondary></indexterm>
+object regardless of the state of the external data queue. Usually, you can
+use PULL or PARSE PULL to read the default input stream object.</para>
+</listitem></itemizedlist>
+<para>In a persistent stream object, the Rexx language processor maintains a
+current read position.
+<indexterm><primary>read position in a stream</primary></indexterm>
+For a persistent stream: </para>
+<itemizedlist>
+<listitem><para>The CHARS
+<indexterm><primary>CHARS method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method returns the number of characters currently available in an input stream
+object from the read position through the end of the stream (including any
+line-end characters).</para></listitem>
+<listitem><para>The LINES
+<indexterm><primary>LINES method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method determines if any data remains between the current read position and
+the end of the input stream object.</para></listitem>
+<listitem><para>You can move the read position to an arbitrary point in the
+stream object with:
+<itemizedlist>
+<listitem><para>The SEEK or POSITION method of the Stream class</para>
+</listitem>
+<listitem><para>The COMMAND method's SEEK or POSITION argument</para>
+</listitem>
+<listitem><para>The <emphasis role="italic">start</emphasis>
+argument of the CHARIN method</para></listitem>
+<listitem><para>The <emphasis role="italic">line</emphasis>
+argument of the LINEIN method</para></listitem>
+</itemizedlist>
+When the stream object is opened, this position is the start of the
+stream.</para></listitem>
+</itemizedlist>
+<para>In a transient stream, no read position is available. For a transient
+stream:</para>
+<itemizedlist>
+<listitem><para>The CHARS and LINES methods attempt to determine if data is
+present in the input stream object. These methods return the value
+<computeroutput>1</computeroutput> for a device if data is
+waiting to be read or a determination cannot be made. Otherwise,
+these methods return <computeroutput>0</computeroutput>.</para></listitem>
+<listitem><para>The SEEK and POSITION methods of the Stream class and the
+COMMAND method's <computeroutput>SEEK</computeroutput> and
+<computeroutput>POSITION</computeroutput> arguments are not applicable to
+transient streams.</para></listitem>
+</itemizedlist>
+</section>
+
+<section id="coutstm"><title>Output Streams</title>
+<indexterm><primary>character output streams</primary></indexterm>
+<indexterm><primary>write position in a stream</primary></indexterm>
+<para>Output stream methods provide for output from a Rexx program. Output
+stream methods are: </para>
+<itemizedlist>
+<listitem><para>SAY instruction&mdash;writes
+<indexterm><primary>SAY instruction</primary>
+<secondary>role in output</secondary></indexterm>
+to the default output stream object (<computeroutput>.OUTPUT</computeroutput>).
+</para></listitem>
+<listitem><para>CHAROUT
+<indexterm><primary>CHAROUT method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method&mdash;writes in character form to either the default or a specified
+output stream object.</para></listitem>
+<listitem><para>LINEOUT
+<indexterm><primary>LINEOUT method</primary>
+<secondary>role in input and output</secondary></indexterm>
+method&mdash;writes in lines to either the default or a specified output stream
+object.</para></listitem></itemizedlist>
+<para>LINEOUT and SAY write <xref linkend="line-end" xrefstyle="template:line-end"/> characters at the end of each line.
+Depending
+on the operating system or hardware, other modifications or formatting can
+be applied; however, the output data remains a single logical line.</para>
+<para>The Rexx language processor maintains the current write position in a stream.
+It is separate from the current read position. Write positioning is usually
+at the end of the stream (for example, when the stream object is first opened),
+so that data can be appended to the end of the stream. For persistent stream
+objects, you can set the write position to the beginning of the stream to
+overwrite existing data by giving a value of
+<computeroutput>1</computeroutput> for the CHAROUT
+<emphasis role="italic">start</emphasis> argument or the LINEOUT
+<emphasis role="italic">line</emphasis> argument. You can also use
+the CHAROUT <emphasis role="italic">start</emphasis> argument, the LINEOUT
+<emphasis role="italic">line</emphasis> argument, the
+SEEK or POSITION method, or the COMMAND method's
+<computeroutput>SEEK</computeroutput> or
+<computeroutput>POSITION</computeroutput> <emphasis role="italic">stream_command</emphasis> to direct sequential output
+to some arbitrary point in the stream. </para>
+
+<note><title>Note</title>
+<para>Once data is in a transient
+output stream object (for example, a network or serial link), it is no longer
+accessible to Rexx.</para></note>
+</section>
+
+<section id="xtlque"><title>External Data Queue</title>
+<indexterm><primary>external data queue</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>queue</primary>
+<secondary>session</secondary></indexterm>
+<para>Rexx provides queuing services entirely separate from interprocess
+communications queues.</para>
+<para>The external data
+queue is a list of character strings that only line operations can access.
+It is external to Rexx programs in that other Rexx programs can have access
+to the queue.</para>
+<para>The external data queue forms a Rexx-defined channel of communication
+between programs. Data in the queue is arbitrary; no characters have any
+special meaning or effect.</para>
+<para>Apart from the explicit Rexx operations described here, no detectable
+change to the queue occurs while a Rexx program is running, except when
+control leaves the program and is manipulated by external means (such as when
+an external command or routine is called).</para>
+<para>There are two kinds of queues in Rexx. Both kinds are accessed and
+processed by name.</para>
+
+<section id="unnqu"><title>Unnamed Queues</title>
+<indexterm><primary>queue</primary>
+<secondary>unnamed</secondary></indexterm>
+<para>One unnamed queue is automatically provided for
+each Rexx program in operation. Its name is always &quot;QUEUE:&quot;, and the
+language processor creates it when Rexx is called and no queue is currently
+available. All processes that are children of the process that created the
+queue can access it as long as the process that created it is still running.
+However, other processes cannot share the same unnamed queue. The queue is
+deleted when the process that created it ends.</para>
+</section>
+
+<section id="namqu"><title>Named Queues</title>
+<indexterm><primary>QUEUE instruction</primary>
+<secondary>role in input and output</secondary></indexterm>
+<indexterm><primary>queue</primary>
+<secondary>named</secondary></indexterm>
+<para>Your program creates (and
+deletes) named queues. You can name the queue yourself
+or leave the naming to the language processor. Your program must know the
+name of the queue to use a named queue. To obtain the name of the queue, use
+the RXQUEUE function: </para>
+<programlisting>
+previous_queue=rxqueue("set",newqueuename)
+</programlisting>
+<para>This sets the new queue name and returns the name of the previous queue.
+</para>
+<para>The following Rexx instructions manipulate the queue: </para>
+<itemizedlist>
+<listitem><para>PULL or PARSE PULL&mdash;reads a string from the head of the queue.
+If the queue is empty, these instructions take input from .INPUT.</para>
+</listitem>
+<listitem><para>PUSH&mdash;stacks a line on top of the queue (LIFO).</para>
+</listitem>
+<listitem><para>QUEUE&mdash;adds a string to the tail of the queue (FIFO).</para>
+</listitem>
+</itemizedlist>
+<para>Rexx functions that manipulate QUEUE: as a device name are:</para>
+<itemizedlist>
+<listitem><para>LINEIN("QUEUE:")--reads a string from the head of the queue.
+If the queue is empty the program waits for an entry to be placed on the
+queue.</para></listitem>
+<listitem><para>LINEOUT("QUEUE:","string")--adds a string to the
+tail of the queue (FIFO).</para></listitem>
+<listitem><para>QUEUED&mdash;returns
+<indexterm><primary>QUEUED function</primary>
+<secondary>role in input and output</secondary></indexterm>
+the number of items remaining in the queue.</para></listitem>
+</itemizedlist>
+<para>Here is an example of using a queue:</para>
+
+<example>
+<title>Sample Rexx Procedure Using a Queue</title>
+<programlisting>
+/*                                                                            */
+/* push/pull WITHOUT multiprogramming support                                 */
+/*                                                                            */
+push date() time()                                /* push date and time       */
+do 1000                                           /* let&apos;s pass some time     */
+  nop                                             /* doing nothing            */
+end                                               /* end of loop              */
+pull a b                                          /* pull them                */
+say "Pushed at " a b ", Pulled at " date() time() /* say now and then         */
+
+/*                                                                            */
+/*              push/pull WITH multiprogramming support                       */
+/*        (no error recovery, or unsupported environment tests)               */
+/*                                                                            */
+newq = RXQUEUE("Create")                          /* create a unique queue    */
+oq = RXQUEUE("Set",newq)                          /* establish new queue      */
+push date() time()                                /* push date and time       */
+do 1000                                           /* let&apos;s spend some time    */
+  nop                                             /* doing nothing            */
+end                                               /* end of loop              */
+pull a b                                          /* get pushed information   */
+say "Pushed at " a b ", Pulled at " date() time() /* tell user                */
+call RXQUEUE "Delete",newq                   /* destroy unique queue created  */
+call RXQUEUE "Set",oq               /* reset to default queue (not required)  */
+</programlisting>
+</example>
+<para>Special considerations:</para>
+<itemizedlist>
+<listitem><para>External programs that must communicate with a
+Rexx procedure through
+defined data queues can use the Rexx-provided queue or the queue that QUEUE:
+references (if the external program runs in a child process), or they can
+receive the data queue name through some interprocess communication technique,
+including argument passing, placement on a prearranged logical queue, or the
+use of usual interprocess communication mechanisms (for example, pipes, shared
+memory, or IPC queues).</para></listitem>
+<listitem><para>Named queues are available across the entire system. Therefore,
+the names of queues must be unique within the system. If a queue named
+<computeroutput>anyque</computeroutput> exists,
+using the following function: </para>
+<programlisting>
+newqueue = RXQUEUE("Create", "ANYQUE")
+</programlisting>
+<para>results in an error.</para></listitem></itemizedlist>
+</section>
+
+<section id="multcon"><title>Multiprogramming Considerations</title>
+<para>The top-level Rexx program in a process tree
+owns an unnamed queue. However,
+any child process can modify the queue at any time. No specific process or
+user owns a named queue. The operations that affect the queue are atomic&mdash;the
+subsystem serializes the resource so that no data integrity problems can occur.
+However, you are responsible for the synchronization of requests so that two
+processes accessing the same queue get the data in the order it was placed
+on the queue.</para>
+<para>A specific process owns (creates) an unnamed queue. When that process
+ends, the language processor deletes the queue. Conversely, the named queues
+created with <computeroutput>RxQueue("Create",&nbsp;queuename)</computeroutput>
+exist until you
+explicitly delete them. The end of a program or procedure that created a named
+queue does not force the deletion of the private queue. When the process that
+created a queue ends, any data on the queue remains until the data is read
+or the queue is deleted. (The function call
+<computeroutput>RxQueue("Delete",&nbsp;queuename)</computeroutput>
+deletes a queue.)</para>
+<para>If a data queue is deleted by its creator, a procedure, or a program, the
+items in the queue are also deleted.</para>
+</section>
+</section>
+
+<section id="defstr"><title>Default Stream Names</title>
+<indexterm><primary>standard input and output</primary></indexterm>
+<para>A stream name can be a file, a queue, a pipe, or any device that supports
+character-based input and output. If the stream is a file or device, the name
+can be any valid file specification.</para>
+<para>Windows and Unix-like systems define three default streams: </para>
+<itemizedlist>
+<listitem><para>stdin (file descriptor 0) - standard input</para></listitem>
+<listitem><para>stdout (file descriptor 1) - standard output</para></listitem>
+<listitem><para>stderr (file descriptor 2) - standard error (output)</para>
+</listitem></itemizedlist>
+<para>Rexx provides .INPUT and .OUTPUT public objects.
+They default to the default
+input and output streams of the operating system. The appropriate default
+stream object is used when the call to a Rexx I/O function includes no stream
+name. The following Rexx statements write a line to the default output stream
+of the operating system: </para>
+<programlisting>
+Lineout(,"Hello World")
+.Output~lineout("Hello World")
+</programlisting>
+<para>Rexx reserves the names <computeroutput>STDIN</computeroutput>,
+<computeroutput>STDOUT</computeroutput>, and
+<computeroutput>STDERR</computeroutput> to allow Rexx functions to refer to
+these stream objects. The checks for these names are not case-sensitive;
+for example, <computeroutput>STDIN</computeroutput>,
+<computeroutput>stdin</computeroutput>, and
+<computeroutput>sTdIn</computeroutput> all refer to the standard input
+stream object. If you need to access a file with one of these names,
+qualify the name with a directory specification, for example,
+<computeroutput>\stdin</computeroutput>.</para>
+<para>Rexx also provides access to arbitrary file descriptors that are already
+open when Rexx is called. The stream name used to access the stream object
+is <computeroutput>HANDLE:x</computeroutput>.
+<computeroutput>x</computeroutput> is the number of the
+file descriptor you wish to use. You can use
+<computeroutput>HANDLE:x</computeroutput> as
+any other stream name; it can be the receiver of a Stream class method. If
+the value of <computeroutput>x</computeroutput> is not a valid file descriptor,
+the first I/O operation to that object fails.</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Once you close a <computeroutput>HANDLE:x</computeroutput>
+stream object, you cannot reopen it.</para></listitem>
+<listitem><para><computeroutput>HANDLE:x</computeroutput> is reserved.
+If you wish to access a file or device with this name, include a directory
+specification before the name. For example,
+<computeroutput>\HANDLE:x</computeroutput> accesses the file HANDLE:x in the
+current directory.</para></listitem>
+<listitem><para>Programs that use the .INPUT and .OUTPUT public objects are
+independent of the operating environment.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="positio"><title>Line versus Character Positioning</title>
+<indexterm><primary>stream</primary>
+<secondary>character positioning</secondary></indexterm>
+<indexterm><primary>stream</primary>
+<secondary>line positioning</secondary></indexterm>
+<para>Rexx lets you move the read or write position of a persistent stream
+object to any location within the stream. You can specify this location in terms
+of characters or lines.</para>
+<para>Character positioning is based upon the view of a stream as a
+simple collection of bytes of data. No special meaning is given to any single
+character. Character positioning alone can move the stream pointer. For example:
+</para>
+<programlisting>
+MyStream~charin(10,0)
+</programlisting>
+<para>moves the stream pointer so that the tenth character in MyStream is the
+next character read. But this does not return any data. If MyStream is opened
+for reading or writing, any output that was previously written but is still
+buffered is eliminated. Moving the write position always causes any buffered
+output to be written.</para>
+<para>Line positioning
+views a stream as a collection of lines of data. There are two ways of
+positioning by lines. If you open a stream in binary mode and specify a
+record length of <emphasis role="italic">x</emphasis> on the open, a line
+break occurs every <emphasis role="italic">x</emphasis> characters.
+Line positioning in this case is an extension of character positioning. For
+example, if you open a stream in binary mode with record length 80, then the
+following two lines are exactly equivalent. </para>
+<programlisting>
+MyStream~command(position 5 read line)
+MyStream~command(position 321 read char)
+</programlisting>
+<para>Remember that streams and other Rexx objects are indexed starting with
+one rather than zero.</para>
+<para>The second way of positioning by lines is for non-binary streams.
+<xref linkend="line-end" xrefstyle="template:Line-end"/>
+characters separate lines in non-binary streams. Because the line separator
+is contained within the stream, ensure accurate line positioning. For example,
+it is possible to change the line number of the current read position by writing
+extra line-end characters ahead of the read position or by overwriting existing
+line-end characters. Thus, line positioning in a non-binary stream object
+has the following characteristics: </para>
+<itemizedlist>
+<listitem><para>To do line positioning, it is necessary to read the stream in
+circumstances such as switching from character methods to line methods or
+positioning from the end of the stream.</para></listitem>
+<listitem><para>If you rewrite a stream at a point prior to the read position,
+the line number of the current read position could become inaccurate.</para>
+</listitem>
+</itemizedlist>
+<para>Note that for both character and line positioning, the index starts with
+one rather than zero. Thus, character position 1 and line position 1 are
+equivalent, and both point to the top of the persistent stream object. The
+Rexx I/O processing uses certain optimizations for positioning. These require
+that no other process is writing to the stream concurrently and no other
+program uses or manipulates
+the same low-level drive, directory specification, and file name that the
+language processor uses to open the file. If you need to work with a stream
+in these circumstances, use the system I/O functions.</para>
+</section>
+</section>
+
+<section id="impl"><title>Implementation</title>
+<indexterm><primary>stream</primary>
+<secondary>function overview</secondary></indexterm>
+<para>Usually, the dialog between a Rexx program and you as the user takes place
+on a line-by-line basis and is, therefore, carried out with the SAY, PULL,
+or PARSE PULL instructions. This technique considerably enhances the usability
+of many programs, because they can be converted to programmable dialogs by
+using the external data queue to provide the input you generally type. Use
+the PARSE LINEIN instruction only when it is necessary to bypass the external
+data queue.</para>
+<para>When a dialog is not on a line-by-line basis, use the serial interfaces
+the CHARIN and CHAROUT methods provide. These methods are important for input
+and output in transient stream objects, such as keyboards, printers, or network
+environments.</para>
+<para>Opening and closing of persistent stream objects, such as files, is
+largely automatic. Generally the first CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT,
+or LINES message sent to a stream object opens that stream object. It remains
+open until you explicitly close it with a CHAROUT or LINEOUT or until the
+program ends. Using the LINEOUT method with only the name of a stream object
+(and no output <emphasis role="italic">string</emphasis> or
+<emphasis role="italic">line</emphasis>) closes the named stream object.
+The Stream class also provides OPEN and CLOSE methods and the COMMAND method,
+which can explicitly open or close a stream object.</para>
+<para>If you open a stream with the CHARIN, CHAROUT, LINEIN, or LINEOUT methods,
+it is opened for both reading and writing, if possible. You can use the OPEN
+method or the COMMAND method to open a stream for read-only or write-only
+operations.</para>
+</section>
+
+<section id="strmf"><title>Operating System Specifics</title>
+<para>The COMMAND method of the Stream class determines the state of an input
+or output stream object and carries out specific operations (see
+<xref linkend="mthStreamCommand" />).
+It allows Rexx programs to open and close selected stream objects for read-only,
+write-only, or read and write operations, to move the read and write position
+within a stream object, to control the locking and buffering characteristics,
+and to obtain information (such as the size and the date of the last update).
+</para>
+</section>
+
+<section id="examp"><title>Examples of Input and Output</title>
+<para>In most circumstances, communication with a user running a Rexx program
+uses the default input and output stream objects. For a question and answer
+dialog, the recommended technique is to use the SAY and PULL instructions
+on the .INPUT and .OUTPUT objects. (You can use PARSE PULL if case-sensitive
+input is needed.)</para>
+<para>It is generally necessary to write to, or read from, stream objects other
+than the default. For example, the following program copies the contents of
+one stream to another.</para>
+<indexterm><primary>FILECOPY example program</primary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>FILECOPY program</secondary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>of program</secondary></indexterm>
+<example>
+<title>FILECOPY program</title>
+<programlisting>
+/* FILECOPY.CMD */
+/* This routine copies, as lines, the stream or     */
+/* file that the first argument names to the stream */
+/* or file the second argument names. It is assumed */
+/* that the name is not an object, as it could be   */
+/* if it is passed from another Rexx program.       */
+
+parse arg inputname, outputname
+
+inputobject = .stream~new(inputname)
+outputobject = .stream~new(outputname)
+
+signal on notready
+
+do forever
+  outputobject~lineout(inputobject~linein)
+end
+exit
+
+notready:
+return
+</programlisting>
+</example>
+<para>As long as lines remain in the named input stream, a line is read and is
+then immediately written to the named output stream. This program is easy
+to change so that it filters the lines before writing them.</para>
+<para>The following example illustrates how character and line operations can
+be mixed in a communications program. It converts a character stream into
+lines.</para>
+<indexterm><primary>COLLECTOR example program</primary></indexterm>
+<indexterm><primary>examples</primary>
+<secondary>COLLECTOR program</secondary></indexterm>
+<indexterm><primary>programs</primary>
+<secondary>examples</secondary></indexterm>
+<example>
+<title>COLLECT program</title>
+<programlisting>
+/* COLLECT.CMD */
+/* This routine collects characters from the stream */
+/* the first argument names until a line is         */
+/* complete, and then places the line on the        */
+/* external data queue.                             */
+/* The second argument is a single character that   */
+/* identifies the end of a line.                    */
+parse arg inputname, lineendchar
+inputobject = .stream~new(inputname)
+
+buffer=""      /* zero-length character accumulator */
+do forever
+  nextchar=inputobject~charin
+  if nextchar=lineendchar then leave
+  buffer=buffer||nextchar          /* add to buffer */
+  end
+queue buffer /* place it on the external data queue */
+</programlisting>
+</example>
+<para>Here each line is built up in a variable called
+<computeroutput>BUFFER</computeroutput>. When
+the line is complete (for example, when the user presses the Enter key) the
+loop ends and the language processor places the contents of
+<computeroutput>BUFFER</computeroutput> on
+the external data queue. The program then ends.</para>
+</section>
+
+<section id="stmerr"><title>Errors during Input and Output</title>
+<indexterm><primary>stream errors</primary></indexterm>
+<indexterm><primary>input, errors during</primary></indexterm>
+<indexterm><primary>error</primary>
+<secondary>during stream input and output</secondary></indexterm>
+<indexterm><primary>NOTREADY condition</primary>
+<secondary>raised by stream errors</secondary></indexterm>
+<indexterm><primary>NOTREADY condition</primary>
+<secondary>condition trapping</secondary></indexterm>
+<indexterm><primary>output</primary>
+<secondary>errors during</secondary></indexterm>
+<para>The Rexx language offers considerable flexibility in handling errors
+during input or output. This is provided in the form of a NOTREADY condition
+that the CALL ON and SIGNAL ON instructions can trap. The STATE and DESCRIPTION
+methods can elicit further information.</para>
+<para>When an error occurs during an input or output operation, the function
+or method called usually continues without interruption (the output method
+returns a nonzero count). Depending on the nature of the operation, a program
+has the option of raising the NOTREADY condition. The NOTREADY condition is
+similar to the ERROR and FAILURE conditions associated with commands in that
+it does not cause a terminating error if the condition is raised but is not
+trapped. After NOTREADY has been raised, the following possibilities exist:
+</para>
+<itemizedlist>
+<listitem><para>If the NOTREADY condition is not trapped, processing continues
+without interruption. The NOTREADY condition remains in the OFF state.</para>
+</listitem>
+<listitem><para>If SIGNAL ON NOTREADY traps the NOTREADY condition, the
+NOTREADY condition is raised. Processing of the current clause stops
+immediately, and the SIGNAL takes place as usual for condition traps.</para>
+</listitem>
+<listitem><para>If CALL ON NOTREADY traps the NOTREADY condition, the NOTREADY
+condition is raised, but execution of the current clause is not halted. The
+NOTREADY condition is put into the delayed state,
+<indexterm><primary>delayed state</primary>
+<secondary>of NOTREADY condition</secondary></indexterm>
+and processing continues until the
+end of the current clause. While processing continues, input methods that
+refer to the same stream can return the null string and output methods can
+return an appropriate count, depending on the form and timing of the error.
+At the end of the current clause, the CALL takes place as usual for condition
+traps.</para></listitem>
+<listitem><para>If the NOTREADY condition is in the DELAY state (CALL ON
+NOTREADY traps the NOTREADY condition, which has already been raised),
+processing continues, and the NOTREADY condition remains in the DELAY state.
+</para></listitem>
+</itemizedlist>
+<para>After the NOTREADY condition has been raised and is in DELAY state, the
+<computeroutput>&quot;O&quot;</computeroutput> option of the CONDITION function
+returns the stream object being processed when the stream error occurred.</para>
+<para>The STATE method of the Stream
+<indexterm><primary>State method</primary></indexterm>
+class returns the stream object state as <computeroutput>ERROR</computeroutput>,
+<computeroutput>NOTREADY</computeroutput>,
+or <computeroutput>UNKNOWN</computeroutput>. You can obtain additional
+information by using the DESCRIPTION method of the Stream class.</para>
+
+<note><title>Note</title>
+<para><computeroutput>SAY .OUTPUT</computeroutput> and
+<computeroutput>PULL .INPUT</computeroutput> never raise the NOTREADY condition.
+However, the STATE and DESCRIPTION methods can return NOTREADY.</para></note>
+</section>
+
+<section id="sumrexx"><title>Summary of Rexx I/O Instructions and Methods</title>
+<para>The following lists Rexx I/O instructions and methods: </para>
+<itemizedlist spacing="compact">
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCharIn" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCharOut" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamChars" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamClose" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCommand" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamDescription" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamFlush" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLineIn" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLineOut" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLines" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamMakeArray" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamOpen" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyParseLinein"/><!-- @@xreflabel --></para></listitem>
+<listitem><para>instruction <xref linkend="keyParsePull"/><!-- @@xreflabel --></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamPosition" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyPull" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyPush" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamQualify" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamQuery" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyQueue" xrefstyle="select:title"/></para></listitem>
+<listitem><para>built-in function <xref linkend="bifQueued" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keySay" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamSeek" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamState" xrefstyle="select:title"/></para></listitem>
+</itemizedlist>
+</section>
+</chapter>

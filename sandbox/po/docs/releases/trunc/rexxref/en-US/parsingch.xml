@@ -1,0 +1,1282 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="parsingch"><title>Parsing</title>
+<indexterm><primary>parsing</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>conceptual overview of parsing</primary></indexterm>
+<para>The parsing instructions are
+<xref linkend="keyArg" xrefstyle="select:title"/>,
+<xref linkend="keyParse" xrefstyle="select:title"/>, and
+<xref linkend="keyPull" xrefstyle="select:title"/>.
+</para>
+<para>The data to be parsed is a source string.
+<indexterm><primary>parsing</primary>
+<secondary>source string</secondary></indexterm>
+<indexterm><primary>source</primary>
+<secondary>string</secondary></indexterm>
+Parsing splits the data in a source string and assigns pieces  of it to the
+variables named in a template. A template is a model specifying
+how to split the source string. The simplest kind of template consists of
+a list of variable names. Here is an example: </para>
+<programlisting>
+variable1 variable2 variable3
+</programlisting>
+<indexterm><primary>template</primary>
+<secondary>definition</secondary></indexterm>
+<para>This kind of template parses the source string into whitespace-delimited
+words. More complicated templates contain patterns in addition to variable
+names:
+</para>
+<indexterm><primary>string</primary>
+<secondary>patterns</secondary>
+<tertiary>description</tertiary></indexterm>
+<variablelist>
+<varlistentry><term>String patterns
+<indexterm><primary>parsing</primary>
+<secondary>patterns</secondary>
+<tertiary>string</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>string patterns</secondary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>string</secondary></indexterm>
+</term>
+<listitem><para>Match the characters in the source string to specify where
+it is to be split. (See
+<xref linkend="parspat" /> for details.)
+</para></listitem></varlistentry>
+<varlistentry><term>Positional patterns
+<indexterm><primary>parsing</primary>
+<secondary>patterns</secondary>
+<tertiary>positional</tertiary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>positional</secondary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>description</secondary></indexterm>
+</term>
+<listitem><para>Indicate the character positions at which the source string is
+to be split. (See
+<xref linkend="xpospat" />
+for details.)
+</para></listitem></varlistentry>
+</variablelist>
+<para>Parsing is essentially a two-step process: </para>
+<orderedlist>
+<listitem><para>Parse the source string into appropriate substrings using
+patterns.</para></listitem>
+<listitem><para>Parse each substring into words.</para></listitem>
+</orderedlist>
+
+<section id="simtem"><title>Simple Templates for Parsing into Words</title>
+<para>Here is a parsing instruction:</para>
+<indexterm><primary>examples</primary>
+<secondary>simple templates, parsing</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>simple template</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>into words</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>positional patterns</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>selecting words</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>word parsing</secondary>
+<tertiary>description and examples</tertiary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>parsing</secondary>
+<tertiary>examples</tertiary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>in parsing</secondary></indexterm>
+<example>
+<title>Parsing templates</title>
+<programlisting>
+parse value "time and tide" with var1 var2 var3
+</programlisting>
+</example>
+<para>The template
+in this instruction is: <computeroutput>var1 var2 var3</computeroutput>.
+The data to be parsed is between the keywords
+<computeroutput>PARSE VALUE</computeroutput> and the keyword
+<computeroutput>WITH</computeroutput>, the source string
+<computeroutput>time and tide</computeroutput>. Parsing divides the source
+string into whitespace-delimited words and assigns them to the variables named
+in the template as follows:
+</para>
+<programlisting>
+var1="time"
+var2="and"
+var3="tide"
+</programlisting>
+<para>In this example, the source string to be parsed is a literal string,
+<computeroutput>time and tide</computeroutput>. In the next example, the source
+string is a variable.</para>
+<example>
+<title>Parse value</title>
+<programlisting>
+/* PARSE VALUE using a variable as the source string to parse    */
+string="time and tide"
+parse value string with var1 var2 var3           /* same results */
+</programlisting>
+</example>
+<para id="pvalex">PARSE VALUE does not convert lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> in
+the source string to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
+If you want to convert characters to uppercase, use PARSE UPPER VALUE. See
+<xref linkend="xupper" /> for
+a summary of the effect of parsing instructions on the case.</para>
+<para>Note that if you specify the CASELESS option on a PARSE instruction, the
+string comparisons during the scanning operation are made independently of
+the alphabetic case. That is, a letter in uppercase is equal to the same letter
+in lowercase.</para>
+<para>All of the parsing instructions assign the parts of a source string to
+the variables named in a template. There are various parsing instructions
+because of the differences in the nature or origin of source strings. For
+a summary of all the parsing instructions, see
+<xref linkend="parsum" />.</para>
+
+<para>The PARSE VAR instruction is similar to PARSE VALUE except
+that the source string to be parsed is always a variable. In PARSE VAR, the
+name of the variable containing the source string follows the keywords
+<computeroutput>PARSE VAR</computeroutput>. In the next example, the variable
+<computeroutput>stars</computeroutput> contains
+the source string. The template is
+<computeroutput>star1 star2 star3</computeroutput>.</para>
+
+<example>
+<title>Parse var</title>
+<programlisting>
+/* PARSE VAR example                                             */
+stars="Sirius Polaris Rigil"
+parse var stars star1 star2 star3             /* star1="Sirius"  */
+/* star2="Polaris" */
+/* star3="Rigil"   */
+</programlisting>
+</example>
+<para>All variables in a template receive new values. If there are more
+variables in the template than words in the source string, the leftover
+variables receive null (empty) values. This is true for the entire parsing:
+for parsing into words with simple templates and for parsing with templates
+containing patterns. Here is an example of parsing into words:</para>
+<programlisting>
+/* More variables in template than (words in) the source string  */
+satellite="moon"
+parse var satellite Earth Mercury               /* Earth="moon"  */
+/* Mercury=""    */
+</programlisting>
+<para>If there are more words in the source string than variables in the
+template, the last variable in the template receives all leftover data.
+Here is an example:</para>
+<programlisting>
+/* More (words in the) source string than variables in template  */
+satellites="moon Io Europa Callisto..."
+parse var satellites Earth Jupiter              /* Earth="moon"  */
+/* Jupiter="Io Europa Callisto..."*/
+</programlisting>
+
+<para>Parsing
+<indexterm><primary>blanks</primary>
+<secondary>in parsing, treatment of</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>treatment of blanks</secondary></indexterm>
+<indexterm><primary>whitespace</primary>
+<secondary>in parsing, treatment of</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>treatment of whitespace</secondary></indexterm>
+into words removes
+leading and trailing whitespace characters from each word before it is assigned
+to a variable. The exception to this is the word or group of words assigned to
+the last variable. The last variable in a template receives leftover data,
+preserving extra leading and trailing whitespace characters. Here is an example:
+</para>
+<example>
+<title>Parse var</title>
+<programlisting>
+/* Preserving extra blanks                                       */
+solar5="Mercury Venus  Earth   Mars     Jupiter  "
+parse var solar5 var1 var2 var3 var4
+/* var1  ="Mercury"                                              */
+/* var2  ="Venus"                                                */
+/* var3  ="Earth"                                                */
+/* var4  ="  Mars     Jupiter  "                                 */
+</programlisting>
+</example>
+<para>In the source string,
+<indexterm><primary>parsing</primary>
+<secondary>string patterns</secondary>
+<tertiary>literal string patterns</tertiary></indexterm>
+<computeroutput>Earth</computeroutput> has two leading blanks. Parsing
+removes both of them (the word-separator blank and the extra blank) before
+assigning <computeroutput>var3="Earth"</computeroutput>.
+<computeroutput>Mars</computeroutput> has three leading blanks.
+Parsing removes one word-separator blank and keeps the other two leading blanks.
+It also keeps all five blanks between
+<computeroutput>Mars</computeroutput> and
+<computeroutput>Jupiter</computeroutput> and
+both trailing blanks after <computeroutput>Jupiter</computeroutput>.</para>
+<para>Parsing removes no whitespace characters if the template contains only one
+variable. For example:
+</para>
+<programlisting>
+parse value "   Pluto   " with var1        /* var1="   Pluto   "*/
+</programlisting>
+
+<section id="parseterm"><title>Message Term Assignments</title>
+<para>In addition to assigning values to variables, the PARSE instruction also
+allows any message term value that can be used on the left side of an assignment
+instruction (See <xref linkend="assinmt" />).
+For example:</para>
+<example>
+<title>Parse with Message Terms Assignments</title>
+<programlisting>
+string = "1 one two 3 4"
+a = .Array~new
+d = .Directory~new
+parse var string n a[n] a[n + 1] d~three d~four
+-- a[1] = one
+-- a[2] = two
+-- d~three = 3
+-- d~four = 4
+</programlisting>
+</example>
+</section>
+
+<section id="placeh"><title>The Period as a Placeholder</title>
+<indexterm><primary>. (period)</primary>
+<secondary>as placeholder in parsing</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>period as placeholder</secondary></indexterm>
+<indexterm><primary>period</primary>
+<secondary>as placeholder in parsing</secondary></indexterm>
+<para>  A period in a template is
+a placeholder. It is used instead of a variable name, but it receives no data.
+It is useful as a &quot;dummy variable&quot; in a list of variables or to
+collect unwanted information at the end of a string. And it saves the overhead
+of unneeded variables.</para>
+<para>The period in the first example is a placeholder. Be sure to separate
+adjacent periods with whitespace; otherwise, an error results.</para>
+<indexterm><primary>examples</primary>
+<secondary>period as a placeholder</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>period as a placeholder</tertiary></indexterm>
+<example>
+<title>Period placeholder</title>
+<programlisting>
+/* Period as a placeholder                                       */
+stars="Arcturus Betelgeuse Sirius Rigil"
+parse var stars . . brightest .            /* brightest="Sirius" */
+
+/* Alternative to period as placeholder                          */
+stars="Arcturus Betelgeuse Sirius Rigil"
+parse var stars drop junk brightest rest   /* brightest="Sirius" */
+</programlisting>
+</example>
+</section>
+</section>
+
+<section id="parspat"><title>Templates Containing String Patterns</title>
+<indexterm><primary>parsing</primary>
+<secondary>patterns</secondary>
+<tertiary>string</tertiary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>string</secondary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>absolute</secondary></indexterm>
+<para> A string pattern matches characters
+in the source string to indicate where to split it. A string pattern can be
+either of the following: </para>
+<indexterm><primary>string</primary>
+<secondary>patterns</secondary>
+<tertiary>literal</tertiary></indexterm>
+<variablelist>
+<varlistentry><term>Literal string pattern</term>
+<listitem><para>One or more characters within quotation marks.
+</para></listitem></varlistentry>
+<varlistentry><term>Variable string pattern</term>
+<listitem><para>A variable within parentheses with no plus
+(<computeroutput>+</computeroutput>), minus
+(<computeroutput>-</computeroutput>), or equal sign
+(<computeroutput>=</computeroutput>) before the left parenthesis. (See
+<xref linkend="varpat" /> for details.)
+</para></listitem></varlistentry>
+</variablelist>
+<para>Here are two templates, a simple template and a template containing a
+literal string pattern:</para>
+<programlisting>
+var1 var2          /* simple template                            */
+var1 ", " var2     /* template with literal string pattern       */
+</programlisting>
+<indexterm><primary>literal</primary>
+<secondary>patterns</secondary></indexterm>
+<para>The literal string pattern is: <computeroutput>", "</computeroutput>.
+This template puts characters: </para>
+<itemizedlist>
+<listitem><para>From the start of the source string up to (but not including) the
+first character of the match (the comma) into <computeroutput>var1</computeroutput>
+</para></listitem>
+<listitem><para>Starting with the character after the last character of the
+match (the character after the blank that follows the comma) and ending with
+the end of the string into
+<computeroutput>var2</computeroutput></para></listitem>
+</itemizedlist>
+<para>A template with a string pattern can omit some of the data in a source
+string when assigning data to variables. The next two examples contrast simple
+templates with templates containing literal string patterns. </para>
+<indexterm><primary>examples</primary>
+<secondary>templates containing string patterns</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>templates containing string patterns</tertiary></indexterm>
+<example>
+<title>Template string patterns</title>
+<programlisting>
+/* Simple template                                               */
+name="Smith, John"
+parse var name ln fn                     /* Assigns: ln="Smith," */
+/*          fn="John"   */
+</programlisting>
+</example>
+<para>Notice that the comma remains (the variable
+<computeroutput>ln</computeroutput> contains
+<computeroutput>"Smith,"</computeroutput>). In the next example the template
+is <computeroutput>ln ", " fn</computeroutput>. This removes the comma.</para>
+<example>
+<title>Template string patterns</title>
+<programlisting>
+/* Template with literal string pattern                          */
+name="Smith, John"
+parse var name ln ", " fn                /* Assigns: ln="Smith"  */
+                                         /*          fn="John"   */
+</programlisting>
+</example>
+<para>First, the language processor scans the source string for ", ".
+It splits the source string at that point. The variable
+<computeroutput>ln</computeroutput> receives
+data starting with the first character of the source string and ending with
+the last character before the match. The variable
+<computeroutput>fn</computeroutput> receives data
+starting with the first character after the match and ending with the end
+of string.</para>
+
+<para>A template with a string pattern omits data in the source string
+that matches the pattern. (There is a special case (see
+<xref linkend="parcmb" />)
+in which a template with a string pattern does not omit matching data in the
+source string.) The pattern <computeroutput>", "</computeroutput> (with a blank)
+is used instead of <computeroutput>","</computeroutput> (no blank) because,
+without the blank in the pattern, the variable
+<computeroutput>fn</computeroutput> receives "&nbsp;John" (including a blank).
+</para>
+<para>If the source string does not contain a match for a string pattern, any
+variables preceding the unmatched string pattern get all the data in question.
+Any variables after that pattern receive the null string.</para>
+<para>A null string is never found.  It always matches the end of the source
+string.</para>
+</section>
+
+<section id="xpospat"><title>Templates Containing Positional (Numeric) Patterns</title>
+<indexterm><primary>parsing</primary>
+<secondary>patterns</secondary>
+<tertiary>positional</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>positional patterns</secondary>
+<tertiary>absolute</tertiary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>positional</secondary></indexterm>
+<para> A positional pattern is a
+number that identifies the character position at which the data in the source
+string is to be split. The number must be a whole number.</para>
+<para>An absolute positional pattern is:  </para>
+<itemizedlist>
+<listitem><para>A number with
+no plus (<computeroutput>+</computeroutput>)  or minus
+(<computeroutput>-</computeroutput>) sign preceding it or with
+an equal sign (<computeroutput>=</computeroutput>)
+<indexterm><primary>equal</primary>
+<secondary>sign</secondary>
+<tertiary>in parsing templates</tertiary></indexterm>
+preceding it.</para></listitem>
+<listitem><para>An expression in parentheses with an equal sign before the left
+parenthesis. (See <xref linkend="varpat" />
+for details on variable positional patterns.)</para></listitem>
+</itemizedlist>
+<para>The number specifies the absolute character position at which the source
+string is to be split.</para>
+<para>Here is a template with absolute positional patterns: </para>
+<programlisting>
+variable1 11 variable2 21 variable3
+</programlisting>
+<para>The numbers <computeroutput>11</computeroutput> and
+<computeroutput>21</computeroutput> are absolute positional patterns.
+The number <computeroutput>11</computeroutput> refers to the 11th position in
+the input string, <computeroutput>21</computeroutput> to the 21st position.
+This template puts characters:</para>
+<itemizedlist>
+<listitem><para>1 through 10 of the source string into
+<computeroutput>variable1</computeroutput></para></listitem>
+<listitem><para>11 through 20 into <computeroutput>variable2</computeroutput>
+</para></listitem>
+<listitem><para>21 to the end into <computeroutput>variable3</computeroutput>
+</para></listitem></itemizedlist>
+<para>Positional patterns are probably most useful for working with a file of
+records, such as: </para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/filerecord.png" />
+</imageobject>
+</mediaobject>
+
+<para>The following example uses this record structure:  </para>
+<indexterm><primary>examples</primary>
+<secondary>templates containing positional patterns</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>templates containing positional patterns</tertiary></indexterm>
+<example>
+<title>Parsing stems</title>
+<programlisting>
+/* Parsing with absolute positional patterns in template         */
+record.1="Clemens   Samuel    Mark Twain          "
+record.2="Evans     Mary Ann  George Eliot        "
+record.3="Munro     H.H.      Saki                "
+do n=1 to 3
+  parse var record.n lastname 11 firstname 21 pseudonym
+  If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
+end                         /* Says "By George!" after record 2  */
+</programlisting>
+</example>
+<para>The source string is split at character position 11 and at position 21.
+The language processor assigns characters 1 to 10 to
+<computeroutput>lastname</computeroutput>,
+characters 11 to 20 to <computeroutput>firstname</computeroutput>, and
+characters 21 to 40 to <computeroutput>pseudonym</computeroutput>.</para>
+<para>The template could have been:</para>
+<programlisting>
+1 lastname 11 firstname 21 pseudonym
+</programlisting>
+<para>instead of </para>
+<programlisting>
+lastname 11 firstname 21 pseudonym
+</programlisting>
+<para>Specifying <computeroutput>1</computeroutput> is optional.</para>
+<indexterm><primary>= (equal sign)</primary>
+<secondary>in parsing template</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>equal sign</secondary></indexterm>
+<para>Optionally, you can put an equal sign
+<indexterm><primary>equal</primary>
+<secondary>sign</secondary>
+<tertiary>in parsing templates</tertiary></indexterm>
+before a number in a
+template. An equal sign is the same as no sign before a number in a template.
+The number refers to a particular character position in the source string.
+These two templates are equal: </para>
+<programlisting>
+lastname  11 first  21 pseudonym
+</programlisting>
+<programlisting>
+lastname =11 first =21 pseudonym
+</programlisting>
+<para>  A <emphasis role="italic">relative positional pattern</emphasis>
+<indexterm><primary>parsing</primary></indexterm>
+<indexterm><primary>relative positional pattern</primary>
+<secondary>positional patterns</secondary>
+<tertiary>relative</tertiary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>relative</secondary></indexterm>
+is a number with a plus (<computeroutput>+</computeroutput>) or
+minus (<computeroutput>-</computeroutput>) sign preceding it. It can also be a
+variable within parentheses, with a plus (<computeroutput>+</computeroutput>)
+or minus (<computeroutput>-</computeroutput>) sign preceding the left
+parenthesis; for details see
+<xref linkend="varpat" />.</para>
+<para>The number specifies the relative character position at which the source
+string is to be split. The plus or minus indicates movement right or left,
+respectively, from the start of the string (for the first pattern) or from
+the position of the last match. The position of the last match is the first
+character of the last match. Here is the same example as for absolute positional
+patterns done with relative positional patterns: </para>
+<example>
+<title>Parsing with relative positional patterns</title>
+<programlisting>
+/* Parsing with relative positional patterns in template         */
+record.1="Clemens   Samuel    Mark Twain          "
+record.2="Evans     Mary Ann  George Eliot        "
+record.3="Munro     H.H.      Saki                "
+do n=1 to 3
+  parse var record.n lastname +10 firstname + 10 pseudonym
+  If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
+end                                             /* same results  */
+</programlisting>
+</example>
+<para>Whitespace characters between the sign and the number are insignificant.
+Therefore,
+<computeroutput>+10</computeroutput> and
+<computeroutput>+&nbsp;10</computeroutput> have the same meaning. Note that
++0 is a valid relative positional pattern.</para>
+<para>Absolute and relative positional patterns are interchangeable except in
+the special case
+(see <xref linkend="parcmb" />) when a
+string pattern precedes a
+variable name and a positional pattern follows the variable name. The templates
+from the examples of absolute and relative positional patterns give the same
+results.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/templates1.png" />
+</imageobject>
+</mediaobject>
+
+<para>With positional patterns, a matching operation can back up to an earlier
+position in the source string. Here is an example using absolute positional
+patterns: </para>
+<programlisting>
+/* Backing up to an earlier position (with absolute positional)  */
+string="astronomers"
+parse var string 2 var1 4 1 var2 2 4 var3 5 11 var4
+say string "study" var1||var2||var3||var4
+/* Displays: "astronomers study stars"                           */
+</programlisting>
+<para>The absolute positional pattern <computeroutput>1</computeroutput> backs
+up to the first character in the source string.</para>
+<para>With relative positional patterns, a number preceded by a minus sign backs
+up to an earlier position. Here is the same example using relative positional
+patterns: </para>
+<programlisting>
+/* Backing up to an earlier position (with relative positional)  */
+string="astronomers"
+parse var string 2 var1 +2 -3 var2 +1 +2 var3 +1 +6 var4
+say string "study" var1||var2||var3||var4      /* same results   */
+</programlisting>
+<para>In the previous example, the relative positional pattern
+<computeroutput>-3</computeroutput> backs
+up to the first character in the source string.</para>
+<para>The templates in the previous two examples are equivalent.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/templates2.png" />
+</imageobject>
+</mediaobject>
+
+<para>  You can use templates with positional
+patterns to make several assignments: </para>
+<programlisting>
+/* Making several assignments                                    */
+books="Silas Marner, Felix Holt, Daniel Deronda, Middlemarch"
+parse var books 1 Eliot 1 Evans
+/* Assigns the (entire) value of books to Eliot and to Evans.    */
+</programlisting>
+
+<para>  A <emphasis role="italic">length positional pattern</emphasis>
+<indexterm><primary>parsing</primary></indexterm>
+<indexterm><primary>length positional pattern</primary>
+<secondary>positional patterns</secondary>
+<tertiary>length</tertiary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>length</secondary></indexterm>
+is a number with a (<computeroutput>&gt;</computeroutput>) or
+(<computeroutput>&lt;</computeroutput>) preceding it. It can also be an
+expression within parentheses, with a (<computeroutput>&gt;</computeroutput>)
+or (<computeroutput>&lt;</computeroutput>) preceding the left
+parenthesis; for details see
+<xref linkend="varpat" />.</para>
+<para>The number specifies the length at which the source
+string is to be split, relative to the current position.. The &gt; or &lt; indicates movement right or left,
+respectively, from the start of the string (for the first pattern) or from
+the position of the last match. The position of the last match is the first
+character of the last match. Here is the same example as for relative positional
+patterns done with length positional patterns: </para>
+<example>
+<title>Parsing with relative positional patterns</title>
+<programlisting>
+/* Parsing with relative positional patterns in template         */
+record.1="Clemens   Samuel    Mark Twain          "
+record.2="Evans     Mary Ann  George Eliot        "
+record.3="Munro     H.H.      Saki                "
+do n=1 to 3
+  parse var record.n lastname &gt;10 firstname &gt;10 pseudonym
+  If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
+end                                             /* same results  */
+</programlisting>
+</example>
+<para>Whitespace characters between the trigger and the number are
+insignificant. Therefore,
+<computeroutput>&gt;10</computeroutput> and
+<computeroutput>&gt;&nbsp;10</computeroutput> have the same meaning. Note that
+&gt;0 &lt;0 and are valid length positional pattern.</para>
+<para>The &gt; length pattern and the + relative positional pattern are interchangeable except in
+the special case of the value 0.  A &gt;0 pattern will split the string into a null string and leave
+the match position unchanged.  This is particularly useful for parsing off length-qualified fields
+from a string.</para>
+<example>
+<title>Parsing with length patterns</title>
+<programlisting>
+/* Parsing with length patterns in template         */
+line = "04Mark0005Twain"
+parse var line len +2 first &gt;(len) len +2 middle &gt;(len) len +2 last &gt;(len)
+say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "" "Twain"
+
+/* parsing with relative patterns only */
+parse var line len +2 first +(len) len +2 middle +(len) len +2 last +(len)
+say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "05Twain" "Twain"
+</programlisting>
+</example>
+<para>The &lt; length pattern will move the position the indicated position to the left, and split
+the string between the original position and the movement position.  At of the operation, the current
+position is returned to the original position.  This movement is equivalent to using a negative relative
+pattern followed by a positive relative pattern for the same length.  This operation allows for easy
+extraction of characters that precede a string match.</para>
+<example>
+<title>Parsing with length patterns</title>
+<programlisting>
+/* Parsing with length patterns in template         */
+parse value '12345.6789' with '.' digit &lt;1    -- digit -> "5"
+
+/* parsing with relative patterns only */
+parse value '12345.6789' with '.' -1 digit +1    -- digit -> "5"
+</programlisting>
+</example>
+
+<section id="patwd"><title>Combining Patterns and Parsing into Words</title>
+<indexterm><primary>parsing</primary>
+<secondary>combining patterns and parsing into words</secondary>
+<tertiary>string</tertiary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>combined with parsing into words</secondary></indexterm>
+<para>If a template contains patterns that divide the source string into sections
+containing several words, string and positional patterns divide the source
+string into substrings. The language processor then applies a section of the
+template to each substring, following the rules for parsing into words.
+<indexterm><primary>examples</primary>
+<secondary>combining string pattern and parsing into words</secondary>
+</indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>combining string pattern and parsing into words</tertiary>
+</indexterm>
+<example>
+<title>Combining string patterns</title>
+<programlisting>
+/* Combining string pattern and parsing into words               */
+name="    John      Q.   Public"
+parse var name fn init "." ln        /* Assigns: fn="John"       */
+/*          init="     Q"                                        */
+/*          ln="   Public"                                       */
+</programlisting>
+</example>
+</para>
+<para>The pattern divides the template into two sections:
+<itemizedlist spacing="compact">
+<listitem><para><computeroutput>fn init</computeroutput></para></listitem>
+<listitem><para><computeroutput>ln</computeroutput></para></listitem>
+</itemizedlist>
+</para>
+<para>The matching pattern splits the source string into two substrings:
+<itemizedlist spacing="compact">
+<listitem><para><computeroutput>
+"&nbsp;&nbsp;&nbsp;&nbsp;John&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q"
+</computeroutput></para></listitem>
+<listitem><para><computeroutput>
+"&nbsp;&nbsp;&nbsp;Public"
+</computeroutput></para></listitem>
+</itemizedlist>
+</para>
+<para>The language processor parses these substrings into words based on the
+appropriate template section.</para>
+<para><computeroutput>John</computeroutput> has three leading blanks. All are
+removed because parsing into words removes leading and trailing blanks except
+from the last variable.</para>
+<para><computeroutput>Q</computeroutput> has six leading blanks. Parsing
+removes one word-separator blank and keeps the rest because
+<computeroutput>init</computeroutput> is the last variable in that
+section of the template.</para>
+<para>For the substring <computeroutput>"&nbsp;&nbsp;&nbsp;Public"</computeroutput>, parsing
+assigns the entire string into <computeroutput>ln</computeroutput>
+without removing any blanks. This is because <computeroutput>ln</computeroutput>
+is the only variable in this section of the template.
+(For details about treatment of whitespace characters, see
+<xref linkend="simtem" />.)
+<indexterm><primary>examples</primary>
+<secondary>combining positional pattern and parsing into words</secondary>
+</indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>combining positional patterns with parsing into words</tertiary>
+</indexterm>
+<example>
+<title>Combining positional patterns</title>
+<programlisting>
+/* Combining positional patterns with parsing into words         */
+string="R E X X"
+parse var string var1 var2 4 var3 6 var4   /* Assigns: var1="R"  */
+/*          var2="E"                                             */
+/*          var3=" X"                                            */
+/*          var4=" X"                                            */
+</programlisting>
+</example>
+</para>
+<para>The pattern divides the template into three sections: </para>
+<itemizedlist spacing="compact">
+<listitem><para><computeroutput>var1 var2</computeroutput></para></listitem>
+<listitem><para><computeroutput>var3</computeroutput></para></listitem>
+<listitem><para><computeroutput>var4</computeroutput></para></listitem>
+</itemizedlist>
+<para>The matching patterns split the source string into three substrings that
+are individually parsed into words: </para>
+<itemizedlist spacing="compact">
+<listitem><para><computeroutput>"R E"</computeroutput></para></listitem>
+<listitem><para><computeroutput>" X"</computeroutput></para></listitem>
+<listitem><para><computeroutput>" X"</computeroutput></para></listitem>
+</itemizedlist>
+<para>The variable <computeroutput>var1</computeroutput> receives
+<computeroutput>"R"</computeroutput>; <computeroutput>var2</computeroutput>
+receives <computeroutput>"E"</computeroutput>. Both
+<computeroutput>var3</computeroutput> and <computeroutput>var4</computeroutput>
+receive <computeroutput>"&nbsp;X"</computeroutput> (with a blank before the
+<computeroutput>X</computeroutput>) because each is the only variable
+in its section of the template. (For details on treatment of whitespace
+characters, see
+<xref linkend="simtem" />.)</para>
+</section>
+</section>
+
+<section id="varpat"><title>Parsing with Variable Patterns</title>
+<indexterm><primary>assignment</primary>
+<secondary>several assignments</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>string patterns</secondary>
+<tertiary>variable string patterns</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>several assignments</secondary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>patterns</secondary>
+<tertiary>variable</tertiary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>patterns, parsing with</secondary>
+<tertiary>string</tertiary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>string patterns</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>reference</secondary></indexterm>
+<para> You might want
+to specify a pattern by using the value of a variable or expression instead of a fixed string
+or number. You do this by placing an expression in parentheses.
+</para>
+<para>The template in the next parsing instruction contains the following
+literal string pattern <computeroutput>".&nbsp;"</computeroutput>.
+<programlisting>
+parse var name fn  init ". " ln
+</programlisting>
+</para>
+<para>Here is how to specify that pattern as a variable string pattern:
+<indexterm><primary>parentheses</primary>
+<secondary>in parsing templates</secondary></indexterm>
+<programlisting>
+strngptrn=". "
+parse var name fn init (strngptrn) ln
+</programlisting>
+</para>
+<para>If no equal, plus sign, minus sign, &gt;, or &lt; precedes the parenthesis that is before
+the variable name, the character string value of the variable is then treated
+as a string pattern. The expression can reference variables that have been set earlier in
+the same template.
+<indexterm><primary>examples</primary>
+<secondary>using a variable as a string pattern</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>using a variable as a string pattern</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>variable patterns</secondary>
+<tertiary>string</tertiary></indexterm>
+<example>
+<title>Combining variables in patterns</title>
+<programlisting>
+/* Using a variable as a string pattern                          */
+/*  The variable (delim) is set in the same template             */
+SAY "Enter a date (mm/dd/yy format). =====> " /* assume 11/15/98 */
+pull date
+parse var date month 3 delim +1 day +2 (delim) year
+/* Sets: month="11"; delim="/"; day="15"; year="98"  */
+</programlisting>
+</example>
+</para>
+
+<para>If an equal, a plus, a minus sign, &gt; or &lt; precedes the left parenthesis, the
+value of the expression is treated as an absolute, relative positional, or length positional pattern.
+The value of the expression must be a positive whole number or zero.</para>
+<para>The expression can reference variables that have been set earlier in the same template.
+In the following example, the first two fields specify the starting-character
+positions of the last two fields.
+<indexterm><primary>examples</primary>
+<secondary>using an expression as a positional pattern</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>using an expression as a positional pattern</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>positional patterns</secondary>
+<tertiary>variable</tertiary></indexterm>
+<indexterm><primary>positional patterns</primary>
+<secondary>variable</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>positional patterns</secondary></indexterm>
+<indexterm><primary>variable</primary>
+<secondary>patterns, parsing with positional</secondary></indexterm>
+<example>
+<title>Combining variables and positional patterns</title>
+<programlisting>
+/* Using a variable as a positional pattern                      */
+dataline = "12 26 .....Samuel ClemensMark Twain"
+parse var dataline pos1 pos2 6 =(pos1) realname =(pos2) pseudonym
+/* Assigns: realname="Samuel Clemens"; pseudonym="Mark Twain"    */
+</programlisting>
+</example>
+</para>
+
+<para>The positional pattern <computeroutput>6</computeroutput> is needed in
+the template for the following reason: Word parsing occurs after the language
+processor divides the source string into substrings using patterns. Therefore,
+the positional pattern <computeroutput>=(pos1)</computeroutput> cannot be
+correctly interpreted as <computeroutput>=12</computeroutput> until after the
+language processor has split the string at column
+6 and assigned the whitespace-delimited words <computeroutput>12</computeroutput>
+and <computeroutput>26</computeroutput> to
+<computeroutput>pos1</computeroutput> and
+<computeroutput>pos2</computeroutput>, respectively.</para>
+</section>
+
+<section id="xupper"><title>Using UPPER, LOWER, and CASELESS</title>
+<indexterm><primary>CASELESS subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>UPPER subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>LOWER subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<para> Specifying UPPER
+<indexterm><primary>parsing</primary>
+<secondary>UPPER, use of</secondary></indexterm>
+on any of the PARSE instructions converts lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> to
+uppercase <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>
+before parsing.</para>
+<para>The ARG instruction is a short form of PARSE UPPER ARG. The PULL
+instruction is a short form of PARSE UPPER PULL. If you do not desire uppercase
+translation, use PARSE ARG instead of ARG or PARSE UPPER ARG, and PARSE PULL
+instead of PULL or PARSE UPPER PULL.</para>
+<para> Specifying
+LOWER on any of the PARSE instructions converts uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>
+to lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+before parsing.</para>
+<para>Specifying CASELESS means the comparisons during
+parsing are independent of the case&mdash;that is, a letter in uppercase is
+equal to the same letter in lowercase.</para>
+</section>
+
+<section id="parsum"><title>Parsing Instructions Summary</title>
+<indexterm><primary>instructions</primary>
+<secondary>parsing, summary</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>summary of instructions</secondary></indexterm>
+<indexterm><primary>summary</primary>
+<secondary>parsing instructions</secondary></indexterm>
+<para>All parsing instructions assign parts of the source
+string to the variables named in the template. The following table summarizes
+where the source string comes from.</para>
+
+<table frame="all">
+<title>Parsing Source Strings</title>
+<indexterm><primary>ARG subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>PULL subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>LINEIN subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>SOURCE subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VALUE subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VAR subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<indexterm><primary>VERSION subkeyword</primary>
+<secondary>in a PARSE instruction</secondary></indexterm>
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="3*" />
+<thead>
+<row>
+<entry>Instruction</entry>
+<entry>Where the source string comes from</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+ARG
+</entry>
+<entry>Arguments you list when you call the program or arguments in the call
+to a subroutine or function.</entry>
+</row>
+<row>
+<entry>
+PARSE ARG
+</entry>
+<entry>Arguments you list when you call the program or arguments in the call
+to a subroutine or function.</entry>
+</row>
+<row>
+<entry>PARSE LINEIN</entry>
+<entry>Next line in the default input stream.</entry>
+</row>
+<row>
+<entry>
+PULL
+</entry>
+<entry>The string at the head of the external data queue. (If the queue is
+empty, it uses default input, typically the terminal.)</entry>
+</row>
+<row>
+<entry>
+PARSE PULL
+</entry>
+<entry>The string at the head of the external data queue. (If the queue is
+empty, it uses default input, typically the terminal.)</entry>
+</row>
+<row>
+<entry>PARSE SOURCE</entry>
+<entry>System-supplied string giving information about the executing program.
+</entry>
+</row>
+<row>
+<entry>PARSE VALUE</entry>
+<entry>Expression between the keywords VALUE and WITH in the instruction.
+</entry>
+</row>
+<row>
+<entry>PARSE VAR <emphasis role="italic">name</emphasis></entry>
+<entry>Parses the value of <emphasis role="italic">name</emphasis>.</entry>
+</row>
+<row>
+<entry>PARSE VERSION</entry>
+<entry>System-supplied string specifying the language, language level, and
+(three-word) date.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="parsinginst"><title>Parsing Instructions Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>parsing instructions</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>parsing instructions</tertiary></indexterm>
+<para>All examples in this section parse source strings into words.</para>
+<para>ARG </para>
+<example>
+<title>ARG with source string named in Rexx program invocation</title>
+<programlisting>
+/* ARG with source string named in Rexx program invocation       */
+/*  Program name is PALETTE.  Specify 2 primary colors (yellow,  */
+/*   red, blue) on call.   Assume call is: palette red blue      */
+arg var1 var2                /* Assigns: var1="RED"; var2="BLUE" */
+If var1&lt;>"RED" &amp; var1&lt;>"YELLOW" &amp; var1&lt;>"BLUE" then signal err
+If var2&lt;>"RED" &amp; var2&lt;>"YELLOW" &amp; var2&lt;>"BLUE" then signal err
+total=length(var1)+length(var2)
+SELECT;
+  When total=7 then new="purple"
+  When total=9 then new="orange"
+  When total=10 then new="green"
+Otherwise new=var1                         /* entered duplicates */
+END
+Say new; exit                              /* Displays: "purple" */
+
+Err:
+say &apos;Input error--color is not "red" or "blue" or "yellow"&apos;; exit
+</programlisting>
+</example>
+<para>ARG converts alphabetic characters to uppercase before parsing. An example
+of ARG with the arguments in the CALL to a subroutine is in
+<xref linkend="parsmul" />.</para>
+<para>PARSE ARG is similar to ARG except that PARSE ARG
+does not convert alphabetic characters to uppercase before parsing.</para>
+<para>PARSE LINEIN </para>
+<example>
+<title>PARSE LINEIN</title>
+<programlisting>
+parse linein "a=" num1 "c=" num2     /* Assume: 8 and 9          */
+sum=num1+num2                        /* Enter: a=8 b=9 as input  */
+say sum                              /*  Displays: "17"          */
+</programlisting>
+</example>
+<para>PARSE PULL </para>
+<example>
+<title>PARSE PULL</title>
+<programlisting>
+PUSH "80 7"                /* Puts data on queue                 */
+parse pull fourscore seven /* Assigns: fourscore="80"; seven="7" */
+SAY fourscore+seven        /* Displays: "87"                     */
+</programlisting>
+</example>
+<para>PARSE SOURCE </para>
+<example>
+<title>PARSE SOURCE</title>
+<programlisting>
+parse source sysname .
+Say sysname                         /* Possibly Displays:        */
+                                    /* "Windows"                 */
+</programlisting>
+</example>
+<para>PARSE VAR examples are throughout the chapter, starting
+with <xref linkend="parsingch" />.</para>
+<para>PARSE VERSION </para>
+<example>
+<title>PARSE VERSION</title>
+<programlisting>
+parse version . level .
+say level                /* Displays: "6.02" */
+</programlisting>
+</example>
+<para>PULL is similar to PARSE PULL except that PULL converts
+alphabetic characters to uppercase before parsing.</para>
+</section>
+
+<section id="advto"><title>Advanced Topics in Parsing</title>
+<indexterm><primary>parsing</primary>
+<secondary>advanced topics</secondary></indexterm>
+<para>This section includes parsing several strings and flow charts illustrating
+a conceptual view of parsing.</para>
+
+<section id="parsmul"><title>Parsing Several Strings</title>
+<indexterm><primary>comma</primary>
+<secondary>in parsing template list</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>several strings</secondary></indexterm>
+<para>Only ARG and PARSE ARG can have more than one source string. To parse
+several strings, you can specify several comma-separated templates. Here is
+an example:</para>
+<indexterm><primary>, (comma)</primary>
+<secondary>in parsing template list</secondary></indexterm>
+<programlisting>
+parse arg template1, template2, template3
+</programlisting>
+<para>This instruction consists of the keywords PARSE ARG and three
+comma-separated templates. For an ARG instruction, the source strings to be
+parsed come from arguments you specify when you call a program or CALL a
+subroutine or function. Each comma is an instruction to the parser to move on
+to the next string.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>parsing multiple strings in a subroutine</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>parsing multiple strings in a subroutine</tertiary></indexterm>
+<example>
+<title>Parsing variable strings</title>
+<programlisting>
+/* Parsing several strings in a subroutine                       */
+num="3"
+musketeers="Porthos Athos Aramis D&apos;Artagnan"
+CALL Sub num,musketeers  /* Passes num and musketeers to sub     */
+SAY total; say fourth /* Displays: "4" and " D&apos;Artagnan"         */
+EXIT
+
+Sub:
+  parse arg subtotal, . . . fourth
+  total=subtotal+1
+  RETURN
+</programlisting>
+</example>
+<para>Note that when a Rexx program is started as a command, only one argument
+string is recognized. You can pass several argument strings for parsing if:
+</para>
+<itemizedlist>
+<listitem><para>One Rexx program calls another Rexx program with the CALL
+instruction or a function call</para></listitem>
+<listitem><para>Programs written in other languages start a Rexx program</para>
+</listitem></itemizedlist>
+<para>If there are more templates than source strings, each variable in a
+leftover template receives a null string. If there are more source strings
+than templates, the language processor ignores leftover source strings. If a
+template is empty (two subsequent commas) or contains no variable names,
+parsing proceeds to the next template and source string.</para>
+</section>
+
+<section id="parcmb"><title>Combining String and Positional Patterns</title>
+<indexterm><primary>combining string and positional patterns</primary>
+</indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>combining string and positional patterns</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>special case</secondary></indexterm>
+<indexterm><primary>special</primary>
+<secondary>parsing case</secondary></indexterm>
+<para>There is a special case in which absolute and relative positional patterns
+do not work identically. Parsing with a template containing a string pattern
+skips the data in the source string that matches the pattern (see
+<xref linkend="parspat" />).
+But a template containing the sequence string pattern, variable name, and
+relative position pattern does not skip the matching data. A relative positional
+pattern moves relative to the first character matching a string pattern. As
+a result, assignment includes the data in the source string that matches the
+string pattern.  </para>
+<indexterm><primary>examples</primary>
+<secondary>combining string and positional patterns</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>examples</secondary>
+<tertiary>combining string and positional patterns</tertiary></indexterm>
+<example>
+<title>Combining string and positional patterns</title>
+<programlisting>
+/* Template containing string pattern, then variable name, then  */
+/*  relative positional pattern does not skip any data.          */
+string="REstructured eXtended eXecutor"
+parse var string var1 3 junk "X" var2 +1 junk "X" var3 +1 junk
+say var1||var2||var3 /* Concatenates variables; displays: "REXX" */
+</programlisting>
+</example>
+<para>Here is how this template works:</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/templates3.png" />
+</imageobject>
+</mediaobject>
+</section>
+
+<section id="conov"><title>Conceptual Overview of Parsing</title>
+<indexterm><primary>steps in parsing</primary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>conceptual overview</secondary></indexterm>
+<para>The following figures are to help you understand the concept of parsing.
+</para>
+<para>The figures include the following terms: </para>
+<variablelist>
+<varlistentry><term>string start</term>
+<listitem><para>is the beginning of the source string (or substring).
+</para></listitem></varlistentry>
+<varlistentry><term>string end</term>
+<listitem><para>is the end of the source string (or substring).
+</para></listitem></varlistentry>
+<varlistentry><term>length</term>
+<listitem><para>is the length of the source string.
+</para></listitem></varlistentry>
+<varlistentry><term>match start</term>
+<listitem><para>is in the source string and is the first character of the match.
+</para></listitem></varlistentry>
+<varlistentry><term>match end</term>
+<listitem><para>is in the source string. For a string pattern, it is the first
+character after the end of the match. For a positional pattern, it is the same
+as match start.
+</para></listitem></varlistentry>
+<varlistentry><term>match position</term>
+<listitem><para>is in the source string. For a string pattern, it is the first
+matching character. For a positional pattern, it is the position of the
+matching character. </para></listitem></varlistentry>
+<varlistentry><term>token</term>
+<listitem><para>is a distinct syntactic element in a template, such as a
+variable, a period, a pattern, or a comma.
+</para></listitem></varlistentry>
+<varlistentry><term>value</term>
+<listitem><para>is the numeric value of a positional pattern. This can be either
+a constant or the resolved value of a variable.
+</para></listitem></varlistentry>
+</variablelist><para>  </para>
+
+<figure><title>Conceptual Overview of Parsing</title>
+<indexterm><primary>overview of parsing</primary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>steps</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>conceptual overview</secondary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/parseconcepts1.png" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure><title>Conceptual View of Finding Next Pattern</title>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>conceptual overview</secondary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/parseconcepts2.png" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure><title>Conceptual View of Word Parsing</title>
+<indexterm><primary>parsing</primary>
+<secondary>patterns</secondary>
+<tertiary>word parsing, conceptual overview</tertiary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>word parsing</secondary>
+<tertiary>conceptual overview</tertiary></indexterm>
+<indexterm><primary>patterns in parsing</primary>
+<secondary>conceptual overview</secondary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>parsing</secondary>
+<tertiary>conceptual view</tertiary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/parseconcepts3.png" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<note><title>Note</title>
+<para>The figures do not include error cases.</para></note>
+</section>
+</section>
+</chapter>

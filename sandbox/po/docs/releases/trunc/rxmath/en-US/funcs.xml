@@ -1,0 +1,702 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxmath.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object RexxMath Library Functions XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Functions</title>
+<para>
+  Most function names in the Rexx Mathematical Functions package are similar to the names of their
+  corresponding mathematical functions. Note that in ooRexx 4.0.0 and later, the
+  <computeroutput>MathLoadFuncs()</computeroutput> and <computeroutput>MathDropFuncs()</computeroutput>
+  are nops.
+</para>
+<itemizedlist>
+<listitem><para>MathLoadFuncs()</para></listitem>
+<listitem><para>MathDropFuncs()</para></listitem>
+<listitem><para>RxCalcSqrt()   </para></listitem>
+<listitem><para>RxCalcExp()    </para></listitem>
+<listitem><para>RxCalcLog()    </para></listitem>
+<listitem><para>RxCalcLog10()  </para></listitem>
+<listitem><para>RxCalcSinH()   </para></listitem>
+<listitem><para>RxCalcCosH()   </para></listitem>
+<listitem><para>RxCalcTanH()   </para></listitem>
+<listitem><para>RxCalcPower()  </para></listitem>
+<listitem><para>RxCalcSin()    </para></listitem>
+<listitem><para>RxCalcCos()    </para></listitem>
+<listitem><para>RxCalcTan()    </para></listitem>
+<listitem><para>RxCalcCotan()  </para></listitem>
+<listitem><para>RxCalcPi()     </para></listitem>
+<listitem><para>RxCalcArcSin() </para></listitem>
+<listitem><para>RxCalcArcCos() </para></listitem>
+<listitem><para>RxCalcArcTan() </para></listitem>
+</itemizedlist>
+
+<section><title>MathLoadFuncs()</title>
+<indexterm><primary>MathLoadFuncs (nop)</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_mathloadfuncs.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Beginning with ooRexx 4.0.0 this function is basically a nop. Use:
+<programlisting>
+::requires 'rxmath' LIBRARY
+</programlisting>
+  to gain access to the functions in the package.
+</para>
+<para>
+  However, if this function is called with a single, string, parameter, the copyright information is
+  printed.
+</para>
+</section>
+
+<section><title>MathDropFuncs()</title>
+<indexterm><primary>MathDropFuncs (nop)</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_mathdropfuncs.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+  This function is a nop in ooRexx 4.0.0 and later.  It does nothing.
+</para>
+</section>
+
+<section><title>RxCalcSqrt()</title>
+<indexterm><primary>RxCalcSqrt</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSqrt</secondary></indexterm>
+<indexterm><primary>square root of a number</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcsqrt.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the absolute value of the square root of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number whose square root you wish to calculate.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcExp()</title>
+<indexterm><primary>RxCalcExp</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcExp</secondary></indexterm>
+<indexterm><primary>exponential</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcexp.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the exponential function of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the exponential function.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcLog()</title>
+<indexterm><primary>RxCalcLog</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcLog</secondary></indexterm>
+<indexterm><primary>natural logarithm</primary></indexterm>
+<indexterm><primary>logarithm, natural</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalclog.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the natural logarithm (base e) of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the natural logarithm.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcLog10()</title>
+<indexterm><primary>RxCalcLog10</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcLog10</secondary></indexterm>
+<indexterm><primary>base 10 logarithm</primary></indexterm>
+<indexterm><primary>logarithm, base 10</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalclog10.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the base 10 logarithm of number.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the base 10 logarithm.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcSinH()</title>
+<indexterm><primary>RxCalcSinH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSinH</secondary></indexterm>
+<indexterm><primary>hyperbolic sine of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic sine of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcsinh.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the hyperbolic sine of <emphasis role="italic">number</emphasis>.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic sine.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCosH()</title>
+<indexterm><primary>RxCalcCosH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCosH</secondary></indexterm>
+<indexterm><primary>hyperbolic cosine of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic cosine of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalccosh.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the hyperbolic cosine of <emphasis role="italic">number</emphasis>.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic cosine.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcTanH()</title>
+<indexterm><primary>RxCalcTanH</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcTanH</secondary></indexterm>
+<indexterm><primary>hyperbolic tangent of a number</primary></indexterm>
+<indexterm><primary>number, hyperbolic tangent of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalctanh.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the hyperbolic tangent of <emphasis role="italic">number</emphasis>.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which you wish to calculate the hyperbolic tangent.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcPower()</title>
+<indexterm><primary>RxCalcPower</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcPower</secondary></indexterm>
+<indexterm><primary>raise a number to a power</primary></indexterm>
+<indexterm><primary>number to a power, raise a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcpower.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para> Returns the value of mathematical expression number1 raised to the power of
+exponent number2.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number1</parameter></term>
+      <listitem><para>The mathematical expression to be raised to the power of exponent
+      number2.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>number2</parameter></term>
+      <listitem><para>The exponent to which number1 is to be raised.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcSin()</title>
+<indexterm><primary>RxCalcSin</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcSin</secondary></indexterm>
+<indexterm><primary>sine value of a number</primary></indexterm>
+<indexterm><primary>number, sine value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcsin.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the sine value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCos()</title>
+<indexterm><primary>RxCalcCos</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCos</secondary></indexterm>
+<indexterm><primary>cosine value of a number</primary></indexterm>
+<indexterm><primary>number, cosine value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalccos.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the cosine value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcTan()</title>
+<indexterm><primary>RxCalcTan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcTan</secondary></indexterm>
+<indexterm><primary>tangent value of a number</primary></indexterm>
+<indexterm><primary>number, tangent value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalctan.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the tangent value for number, where number is the angle size, expressed in
+degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcCotan()</title>
+<indexterm><primary>RxCalcCotan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcCotan</secondary></indexterm>
+<indexterm><primary>cotangent value of a number</primary></indexterm>
+<indexterm><primary>number, cotangent value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalccotan.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the cotangent value for number, where number is the angle size, expressed
+in degree [D], radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the angle size is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the angle size is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcPi()</title>
+<indexterm><primary>RxCalcPi</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcPi</secondary></indexterm>
+<indexterm><primary>value of pi</primary></indexterm>
+<indexterm><primary>pi, value of</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcpi.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the value of pi.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcSin()</title>
+<indexterm><primary>RxCalcArcSin</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcSin</secondary></indexterm>
+<indexterm><primary>arcsine value of a number</primary></indexterm>
+<indexterm><primary>number, arcsine value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcarcsin.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para> Returns the arcsine of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which the arcsine is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcCos()</title>
+<indexterm><primary>RxCalcArcCos</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcCos</secondary></indexterm>
+<indexterm><primary>arccosine value of a number</primary></indexterm>
+<indexterm><primary>number, arccosine value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcarccos.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the arccosine of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which the arccosine is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section><title>RxCalcArcTan()</title>
+<indexterm><primary>RxCalcArcTan</primary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>RxCalcArcTan</secondary></indexterm>
+<indexterm><primary>arctangent value of a number</primary></indexterm>
+<indexterm><primary>number, arctangent value of a</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_rxcalcarctan.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the arctangent of number, where the result can be expressed in degree [D],
+radian [R], or grade [G] units.</para>
+<para>Parameters:</para>
+<variablelist>
+   <varlistentry>
+      <term><parameter>number</parameter></term>
+      <listitem><para>The number for which the arctangent is to be calculated.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><parameter>precision</parameter></term>
+      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
+      the calling Rexx activity is used. Precision is limited to 16 digits.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>D</option></term>
+      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>R</option></term>
+      <listitem><para>Indicates that the result is expressed in radians.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><option>G</option></term>
+      <listitem><para>Indicates that the result is expressed in grades.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+</chapter>

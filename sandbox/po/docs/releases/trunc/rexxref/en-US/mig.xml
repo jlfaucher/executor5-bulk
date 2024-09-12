@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<appendix id="mig"><title>Migration</title>
+<para>This appendix lists some differences between Open Object Rexx 5.0
+and earlier versions of Open Object Rexx.</para>
+
+<section id="changed"><title>Incompatible ooRexx features</title>
+<para>Functions or features which have been changed in ooRexx 5.0 in a way
+that will lead to incompatibilities with prior versions.
+</para>
+
+<section id="changed.systempfilename"><title>RexxUtil SysTempFileName</title>
+<para><xref linkend="utlSystempfilename" xrefstyle="select:title"/>
+on Unix-like platforms now behaves identically to SysTempFileName on Windows.
+It no longer uses only the first five characters of the file name part of the
+template, appending a random string to make it unique.
+It also no more prepends an operating system-chosen writable path if no path
+is given in the template.
+Instead it now uses the same filler-based mechanism as the Windows version
+does.
+</para>
+<para>Existing ooRexx programs using SysTempFileName on Unix-like
+platforms will need to be amended.
+</para>
+</section>
+
+</section>
+
+
+<section id="deprecated"><title>Deprecated Rexx features</title>
+<para>In exceptional circumstances, ooRexx may deprecate functions or features,
+which means the use of these functions is discouraged, documentation is no
+longer provided, and bug reports against deprecated functions will not be
+accepted.
+Reasons for deprecation include broken functionality, features that were
+never officially documented, or functions no longer required.
+</para>
+<para>Although existing code using deprecated functions is expected to continue
+to work as-is, you are strongly encouraged to migrate to the replacement
+functionality, as these functions may be removed from future releases of the
+interpreter.
+</para>
+
+<section id="deprecated.semaphore"><title>RexxUtil Semaphore functions</title>
+<para>The following RexxUtil functions related to
+semaphore-processing have been deprecated.
+<simplelist columns="2">
+ <member>SysCloseEventSem</member>
+ <member>SysCloseMutexSem</member>
+ <member>SysCreateEventSem</member>
+ <member>SysCreateMutexSem</member>
+ <member>SysOpenEventSem</member>
+ <member>SysOpenMutexSem</member>
+ <member>SysPostEventSem</member>
+ <member>SysPulseEventSem</member>
+ <member>SysReleaseMutexSem</member>
+ <member>SysRequestMutexSem</member>
+ <member>SysResetEventSem</member>
+ <member>SysWaitEventSem</member>
+</simplelist>
+</para>
+<para>They have been superseded by the new
+<xref linkend="ooRexxEventSemaphoreClass" xrefstyle="select:title"/> and
+<xref linkend="ooRexxMutexSemaphoreClass" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="deprecated.loaddrop"><title>RexxUtil SysLoadFuncs/SysDropFuncs</title>
+<para>The RexxUtil functions SysLoadFuncs and SysDropFuncs have been deprecated.
+Since ooRexx 4.0.0 these functions do nothing.
+</para>
+</section>
+
+<section id="deprecated.options"><title>::OPTIONS NOVALUE ERROR directive</title>
+<para>The ::OPTIONS NOVALUE ERROR directive has been deprecated.
+It was renamed to <xref linkend="optionsd" xrefstyle="select:title"/>
+NOVALUE SYNTAX.
+</para>
+</section>
+
+<section id="deprecated.argutil"><title>Class ArgUtil</title>
+<para>The ArgUtil class and all of it methods have been deprecated.
+It has been superseded by <xref linkend="clsValidate" xrefstyle="select:title"/>.
+</para>
+</section>
+
+</section>
+
+</appendix>

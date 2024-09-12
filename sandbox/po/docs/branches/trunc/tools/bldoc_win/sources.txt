@@ -1,0 +1,104 @@
+Sources for the tools in this package
+-------------------------------------
+
+This package contains multiple tools and files which were collected from various
+locations.  In most cases they are being used unmodified but in others, changes
+have been made.  This file provides information on where the tools were found in
+case the user needs further documentation about them.
+
+Fonts
+-----
+
+The style sheets supplied by Publican call for the use of two sets of fonts that
+were developed by RedHat - Liberation Sans and Liberation Mono.  These font
+packages are available here:
+https://www.fontsquirrel.com/fonts/liberation-sans
+https://www.fontsquirrel.com/fonts/liberation-mono
+The unzipped contents of both are provided in the Liberation Fonts sub-folder.
+
+XSLTPROC
+--------
+
+This is the transform tool whose home page is here:
+http://xmlsoft.org/XSLT/xsltproc2.html
+A link on that page takes you to the page where the Windows binaries can be
+downloaded: https://www.zlatkovic.com/projects/libxml/
+There are actually four packages that are required: libxlt, libxml, iconv and
+zlib.  As a convenience, the unzipped versions of those packages are included as
+sub-folders of this package.  Each of them has a bin\ directory containing the
+executables that must be accessible.  Rather than adding them to the path, the
+contents have been copied to the main package directory.  No changes were made.
+
+FOP
+---
+
+This is the Apache tool used to create the PDF whose home page is here:
+https://xmlgraphics.apache.org/fop/2.4/
+The unzipped version of this package is included as a sub-folder.  As the
+program is run by executing a .bat file, nothing needed to be copied in order to
+make it accessible.  No changes were made.
+
+DocBook DTD and Style Sheets
+----------------------------
+
+The transform process needs access to the DocBook DTD and the DocBook style
+sheets.  While these can be retrieved when needed over the Internet, performance
+can be improved by up to a factor of 100 by accessing them locally.  The DTD
+files are at http://www.oasis-open.org/docbook/xml/4.5/docbook-xml-4.5.zip and
+the unzipped version is included as a sub-folder.  The style sheets are at
+https://github.com/docbook/xslt10-stylesheets/releases/download/release/1.79.2/
+in the docbook-xsl-nons-1.79.2.zip file.  The unzipped version is also included
+as a sub-folder.  No changes were made to either of these packages.
+
+In addition to the unmodified style sheets, there are four style sheets that are
+copied from the Publican tools located in our SVN repository on Source Forge:
+https://sf.net/projects/oorexx/files/oorexx-docs-bildutils/publican_obsolete
+The file PublicanWindows.zip contains a directory Publican\xsl\ and from it the
+files defaults.xsl, pdf.xsl, html.xsl, and xhtml-common.xsl have been copied.
+Defaults.xsl is unchanged but pdf.xsl has been modified 1) to remove a
+Publican-supplied fix for a problem with footnotes since it is now fixed by
+DocBook itself, 2) to turn off using extensions for table columns as we are not
+using Perl, 3) to add templates for the removal of leading and trailing blank
+lines from our examples, 4) to add a parameter to set the depth for the Table Of
+Contents to 3 in order to match the historical look of our documents, 5) to turn
+off hyphenation since it is not honored, 6) to update the import statements to
+point to GitHub rather than SourceForge and 7) to remove the statement that adds
+the authors to the title page as they also appear on page 2.  The html.xsl file
+has been modified 1) to import the chunkfast.xsl file rather than chunk.xsl in
+order to improve performance on the larger documents, 2) to add a parameter to
+suppress the messages produced as each individual HTML file is produced, and 3)
+to update the import statements to point to GitHub rather than SourceForge.
+Finally, the xhtml-common.xsl file has been modified 1) to supply the title for
+the web pages which had been passed as a parameter by Publican, 2) to turn off
+using extensions for table columns as we are not using Perl, 3) to turn off
+scaling of images as they are now SVG format, and 4) to remove a section
+referring to Publican that was inserted into the Web pages.
+
+Configuration File for FOP
+--------------------------
+
+In order for FOP to find the graphics files that it is to include in the PDF, it
+needs information that is supplied in a configuration file, fop.cfg.  This file
+also tells it to determine the fonts that are available for use on the system so
+it will use the Liberation fonts if they have been installed.  This file was
+created based on the sample fop.xconf provided in the fop package.
+
+Command Files
+-------------
+
+In order to simply the execution of the tools and hide the specific syntax they
+require, several command files were written.  Their use is described in the file
+read1st.txt.
+
+ooRexx Programs
+---------------
+
+Four small ooRexx programs were written to 1) automate the installation of the
+packages for the Fonts, XSLTPROC, the DocBook DTD, the Docbook style sheets and
+FOP, 2) to check that the creation of either the PDF or the HTML files was
+successful and 3) to optionally create a Zip file of all the HTML files and
+graphics.  The first is setup.rex and is normally run only once at installation.
+The command files run the next two - chk4pdf.rex and chk4html.rex - so that
+accurate messages are produced when the command files terminate. The last is
+zip2html.rex and it is either run after the HTML files are successfully created
+or by chk4html.rex automatically if the environment variable zip_html is set.
