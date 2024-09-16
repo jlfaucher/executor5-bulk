@@ -2,7 +2,7 @@
 /*
 # -----------------------------------------------------------------------------
 #
-# Copyright (c) 2022-2023 Rexx Language Association. All rights reserved.
+# Copyright (c) 2022-2024 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -48,6 +48,7 @@
 #    use existing build script
 # 4: Upload the newly built documents to sourceforge
 #
+# Change 2024-09-15 Buggfix, now accept two parameters on the command line
 # CHANGE 2023-12-20 Changes to support using the bld_orx tools
 # (ooRexx programs) rather than the shell scripts to build the documents;
 # runs the shell scripts if all of ooRexx programs are not present
@@ -61,17 +62,31 @@
 # ------------------------------------------------------------------------------
 */
 
-trace o
+--  sandbox test paths for next release, sfdocfolder must be created first on sourceforge
+--  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/sandbox/po/docs/branches/5.1/trunk'
+--  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/sandbox/po/docs/releases/5.1.0/trunk'
 
-/* Here is where we find the documentation source on sourceforge    */
-/* Should be given as input to the script, fallback if not      */
-  if arg() < 1 then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/'
-  else sfRoot = arg(1)~strip
+--  real paths for 5.1.0, which one should we chose
+--  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk'
+--  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk'
 
-/* Here is where we upload the built documentation on sourceforge   */
-/* Should be given as input to the script, fallback if not      */
-  if arg() < 2 then    sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0beta'
-  else sfdocfolder = arg(2)~strip
+--  real path for Sourceforge, create manually and delete after test (staged 3 days)
+--  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0'
+
+  parse arg input1 input2
+
+/* Here is where we find the documentation source on sourceforge	*/
+/* Should be given as input to the script, fallback if not		*/
+  if input1 = '' then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/'
+  else sfRoot = input1~strip
+
+/* Here is where we upload the built documentation on sourceforge	*/
+/* Should be given as input to the script, fallback if not		*/
+  if input2 = '' then sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0beta'
+  else sfdocfolder = input2~strip
+
+say 'Debug sfRoot' sfRoot
+say 'Debug sfdocfolder' sfdocfolder
 
 /* These are the credentials for sourceforge upload,
    User must have RWED rights on sourceforge and have submitted his

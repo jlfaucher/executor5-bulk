@@ -31,7 +31,7 @@ With "Jenkins" is meant the Web service for building & testing used, to be found
 
 https://build.oorexx.org/
 
-Currently the documentation is built on macOS Catalina (10.15), the utilities in this folder are used on top of what is installed from oorexxdocs_macOS folder
+Currently the documentation is built on macOS Sonoma (14.6.1), the utilities in this folder are used on top of what is installed from oorexxdocs_macOS folder
 
 Should there be a need to move to another platform this can serve as a template.
 
@@ -52,19 +52,20 @@ SETUP
 
 5. In Jenkins, create a "Project" called ooRexxdocs-build
 
-6. In Jenkins use this url for svn
-   https://svn.code.sf.net/p/oorexx/code-0/docs/trunk oorexxdocSVN
-   For a Release version use this (or similar)
-   https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0.0
+6. In Jenkins use this url for the svn plugin
+   https://svn.code.sf.net/p/oorexx/code-0/docs/trunk oorexxdocTEMP
+   NOTE: the svn plugin is used merely to start the build, the build script
+   then uses svn from the command line
 
-7. The Jenkins build steps use the rexx script BuildandUploadDocs.rex
-   # This script will build the ooRexx documentation
-   # Only books that have been changed will be built
-   # PDF and HTML versions of each book is built
-   export PATH=~/Applications/ooRexx5/bin:$PATH
-   rexx -v
-   which rexx
-   rexx BuildandUploadDocs.rex
+7. The Jenkins Build Steps use the rexx script BuildandUploadDocs.rex
+   In the Build Steps then use
+   svn.code.sf.net/p/oorexx/code-0/docs/trunk for a build from trunk.
+   For a release version use this (or similar)
+   svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0/trunk
+   svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0.0/trunk
+   BuildandUploadDocs.rex will build the ooRexx documentation
+   - Only books that have been changed will be built
+   - PDF and HTML versions of each book are built
 
 8. BuildandUploadDocs.rex uses scp to upload the documentation to Sourceforge
    - The user must have R/W (admin) rights on Sourceforge.
