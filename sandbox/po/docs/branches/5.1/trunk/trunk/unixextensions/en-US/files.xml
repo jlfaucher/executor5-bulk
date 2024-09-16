@@ -1,0 +1,740 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "unixextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Unix Extensions XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="files"><title id="files.title">File and File System Functions</title>
+
+<para>This chapter covers the available file and file system functions.</para>
+
+
+<section id="utlSysAccess"><title>SysAccess</title>
+<indexterm><primary>SysAccess</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysaccess.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Checks to see if the user has access permissions on a file.</para>
+<para>This function uses the <filename>access()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name to check access permissions.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The access permissions to check on the file. Must be a decimal number.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success (all access rights available) or -1 on an error.</para>
+<example id="sysgetaccess">
+<title>SysGetAccess</title>
+<programlisting>
+<![CDATA[
+/* do others have write permission on the file? */
+
+retc = SysAccess("/home/dashley/temp.txt", 2)
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysChmod"><title>SysChmod</title>
+<indexterm><primary>SysChmod</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschmod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the mode bits of a file.</para>
+<para>This function uses the <filename>chmod()</filename>
+C API to perform the action.</para>
+<para>You must be the owner of the file or root in order for this function
+to be successful.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name to to modify the mode bits.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The new and complete list of bits. Note that it is not
+possible to unset bits with this function except through this argument.
+This parameter must be a decimal number.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success (all access rights available) or -1 on an error.</para>
+<example id="syschmod">
+<title>SysChmod</title>
+<programlisting>
+<![CDATA[
+/* set the mode bits on a file */
+
+retc = SysChmod("/home/dashley/temp.txt", "rwxrwxr-x")
+retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysChown"><title>SysChown</title>
+<indexterm><primary>SysChown</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Change the user and group ownership attributes of a file.</para>
+<para>This function uses the <filename>chown()</filename>
+C API to perform the action.</para>
+<para>You must be the owner of the file or root in order for this function
+to be successful.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file to change.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">uid</emphasis></term>
+<listitem><para>The new numerical user id.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">gid</emphasis></term>
+<listitem><para>The new numerical group id.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="syschown">
+<title>SysChown</title>
+<programlisting>
+<![CDATA[
+/* change the ownership attributes of a file */
+
+call SysChown "/home/username/myfile", 501, 530
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysChroot"><title>SysChroot</title>
+<indexterm><primary>SysChroot</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschroot.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Change the root directory of the current process.</para>
+<para>This function uses the <filename>chroot()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The new root subdirectory base path.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="syschroot">
+<title>SysChroot</title>
+<programlisting>
+<![CDATA[
+/* change the ownership attributes of a file */
+
+call SysChroot "/home/username/"
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysClose"><title>SysClose</title>
+<indexterm><primary>SysClose</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Close the specified file handle.</para>
+<para>This function uses the <filename>close()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fh</emphasis></term>
+<listitem><para>The file handle to be closed.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="sysclose">
+<title>SysClose</title>
+<programlisting>
+<![CDATA[
+/* close filehandle 0 */
+
+call SysClose 0
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysEuidaccess"><title>SysEuidaccess (not available on all systems)</title>
+<indexterm><primary>SysEuidaccess</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syseuidaccess.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Checks to see if the effective user has access permissions on a file.</para>
+<para>This function uses the <filename>euidaccess()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name to check access permissions.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The access permissions to check on the file. Must be a decimal number.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success (all access rights available) or -1 on an error.</para>
+<example id="syseuidaccess">
+<title>SysEuidaccess</title>
+<programlisting>
+<![CDATA[
+/* do others have write permission on the file? */
+
+retc = SysEuidaccess("/home/dashley/temp.txt", 2)
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysGetdirlist"><title>SysGetdirlist</title>
+<indexterm><primary>SysGetdirlist</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysgetdirlist.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an ooRexx array of the file/directory name(s) contained in a subdirectory.</para>
+<para>The returned array will contain ALL file and subdirectory
+names including files usually not
+displayed (hidden files/directories). The ooRexx array list of files is NOT sorted.
+The array will be empty if an error occurs opening the subdirectory.</para>
+<para>This function uses the <filename>opendir()</filename>,
+<filename>closedir()</filename> and <filename>readdir()</filename>
+C APIs to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The subdirectory to be listed.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns an ooRexx array.</para>
+<example id="sysgetdirlist">
+<title>SysGetdirlist</title>
+<programlisting>
+<![CDATA[
+/* get the subdirectory entries */
+
+arr = SysGetdirlist("./")
+do entry over arr
+   say entry
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysLchown"><title>SysLchown</title>
+<indexterm><primary>SysLchown</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syslchown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Change the user and group ownership attributes of a symbolic link.</para>
+<para>This function uses the <filename>lchown()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file to change.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">uid</emphasis></term>
+<listitem><para>The new numerical user id.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">gid</emphasis></term>
+<listitem><para>The new numerical group id.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="syslchown">
+<title>SysLchown</title>
+<programlisting>
+<![CDATA[
+/* change the ownership attributes of a symbolic link */
+
+call SysLchown "/home/username/myfile", 501, 530
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysLink"><title>SysLink</title>
+<indexterm><primary>SysLink</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syslink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Create a symbolic (hard) link.</para>
+<para>This function uses the <filename>link()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">targetpath</emphasis></term>
+<listitem><para>The new path/filename that will become the hard link.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="syslink">
+<title>SysLink</title>
+<programlisting>
+<![CDATA[
+/* create a new link */
+
+call SysLink "/pub", "/home/username/myownpublink"
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysMkdirUnix"><title>SysMkdirUnix</title>
+<indexterm><primary>SysMkdir</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysmkdirunix.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<note>
+<para>This function has been renamed from <literal>SysMkdir</literal> to <literal>SysMkdirUnix</literal>
+due to a name collision with the <literal>rexxutil</literal> function <literal>SysMkDir</literal>.
+</para>
+</note>
+<para>Create a subdirectory.</para>
+<para>This function uses the <filename>mkdir()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The new subdirectory name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The mode (decimal number) for the new subdirectory.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="sysmkdir">
+<title>SysMkdir</title>
+<programlisting><![CDATA[
+/* create a new subdir */
+
+retc = SysMkdirUnix("./pub", b2d("111111101"))
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysRmdirUnix"><title>SysRmdirUnix</title>
+<indexterm><primary>SysRmdir</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysrmdirunix.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<note>
+<para>This function has been renamed from <literal>SysRmdir</literal> to <literal>SysRmdirUnix</literal>
+due to a name collision with the <literal>rexxutil</literal> function <literal>SysRmDir</literal>.
+</para>
+</note>
+<para>Remove a subdirectory.</para>
+<para>This function uses the <filename>rmdir()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The subdirectory to remove.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="sysRmdir">
+<title>SysRmdir</title>
+<programlisting><![CDATA[
+/* remove a subdir */
+
+retc = SysRmdirUnix("./pub")
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysStat"><title>SysStat</title>
+<indexterm><primary>SysStat</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysstat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns information about a file.</para>
+<para>This function uses the <filename>stat64()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem><para>An option specifying the information to return.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"DEVICE"</term>
+<listitem><para>The file's owning device id.
+</para></listitem></varlistentry>
+<varlistentry><term>"INODE"</term>
+<listitem><para>The inode number.
+</para></listitem></varlistentry>
+<varlistentry><term>"PERMISSIONS"</term>
+<listitem><para>The permissions in a 10 character string similar to that produced by the
+shell command "ls -l".
+</para></listitem></varlistentry>
+<varlistentry><term>"NUMBERLINKS"</term>
+<listitem><para>The number of links to the file.
+</para></listitem></varlistentry>
+<varlistentry><term>"UID"</term>
+<listitem><para>The file's owner numerical user id.
+</para></listitem></varlistentry>
+<varlistentry><term>"GID"</term>
+<listitem><para>The file's numerical group id.
+</para></listitem></varlistentry>
+<varlistentry><term>"REALDEV"</term>
+<listitem><para>The file's real device id (if any).
+</para></listitem></varlistentry>
+<varlistentry><term>"SIZE"</term>
+<listitem><para>The file's size in bytes.
+</para></listitem></varlistentry>
+<varlistentry><term>"ACCESS"</term>
+<listitem><para>The file's last access timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+<varlistentry><term>"MODIFIED"</term>
+<listitem><para>The file's last modified timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+<varlistentry><term>"CHANGED"</term>
+<listitem><para>The file's last changed timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns information specified by the <emphasis>option</emphasis>.</para>
+<example id="sysStat">
+<title>SysStat</title>
+<programlisting>
+<![CDATA[
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysStat("/home/dashley/temp.txt", "n")  -->  1
+SysStat("/home/dashley/temp.txt", "u")  -->  500
+SysStat("/home/dashley/temp.txt", "g")  -->  500
+SysStat("/home/dashley/temp.txt", "s")  -->  427
+SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysSymlink"><title>SysSymlink</title>
+<indexterm><primary>SysSymlink</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syssymlink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Create a symbolic (soft) link.</para>
+<para>This function uses the <filename>symlink()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">targetpath</emphasis></term>
+<listitem><para>The new path/filename that will become the soft link.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="sysSymlink">
+<title>SysSymlink</title>
+<programlisting>
+<![CDATA[
+/* create a new symlink */
+
+call SysSymlink "/pub", "/home/username/myownpublink"
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysUmask"><title>SysUmask</title>
+<indexterm><primary>SysUmask</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysumask.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Set the umask.</para>
+<para>This function uses the <filename>umask()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">umask</emphasis></term>
+<listitem><para>The new umask. This MUST be a decimal number (not octal).
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysUmask">
+<title>SysUmask</title>
+<programlisting>
+<![CDATA[
+/* set the umask */
+
+call SysUmask 2
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysUname"><title>SysUname</title>
+<indexterm><primary>SysUname</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysuname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns system information.</para>
+<para>This function uses the <filename>uname()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">opt</emphasis></term>
+<listitem><para>An option specifying the information to return.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"SYSTEM"</term>
+<listitem><para>The system name. This is the default option if none is specified.
+</para></listitem></varlistentry>
+<varlistentry><term>"NODE"</term>
+<listitem><para>The system node (or default host) name.
+</para></listitem></varlistentry>
+<varlistentry><term>"RELEASE"</term>
+<listitem><para>The system release name.
+</para></listitem></varlistentry>
+<varlistentry><term>"VERSION"</term>
+<listitem><para>The system version.
+</para></listitem></varlistentry>
+<varlistentry><term>"MACHINE"</term>
+<listitem><para>The system machine type.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns information specified by the <emphasis>option</emphasis>.</para>
+<example id="sysUname">
+<title>SysUname</title>
+<programlisting>
+<![CDATA[
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysUname()      -->  Linux
+SysUname("s")   -->  Linux
+SysUname("n")   -->  bugs.ibm.com
+SysUname("r")   -->  2.6.31.6-166.fc12.i686
+SysUname("v")   -->  #1 SMP Wed Dec 9 11:14:59 EST 2009
+SysUname("m")   -->  i686
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysUnLink"><title>SysUnLink</title>
+<indexterm><primary>SysLink</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysunlink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes a hard link.</para>
+<para>This function uses the <filename>unlink()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file to be removed.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns zero on success and -1 on an error.</para>
+<example id="sysUnlink">
+<title>SysUnlink</title>
+<programlisting>
+<![CDATA[
+/* remove a link */
+
+call SysUnLink "/home/username/myownpublink"
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysWordexp"><title>SysWordexp</title>
+<indexterm><primary>SysWordexp</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syswordexp.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Performs a shell-like expansion of the input expression and returns the result in an
+array. This function will expand the characters "*", "?" and "~" (the tilde).
+</para>
+<para>This function uses the <filename>wordexp()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">exp</emphasis></term>
+<listitem><para>The expression to expand.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns an array of the expanded results.</para>
+<example id="sysWordexp">
+<title>SysWordexp</title>
+<programlisting>
+<![CDATA[
+/* process an expansion */
+
+arr = SysWordexp("./*.txt"
+do mem over arr
+   say mem
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+</chapter>
+

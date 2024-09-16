@@ -1,0 +1,698 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2013-2022, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chpOoDialogExe" xreflabel="ooDialog.exe"><title>The ooDialog Executable</title>
+<indexterm><primary>ooDialog executable</primary></indexterm>
+<para>
+  The distribution of ooDialog includes an executable file, named: <computeroutput>ooDialog.exe</computeroutput>. This
+  executable file is located in the same directory as the <computeroutput>oodialog.dll</computeroutput> and
+  <computeroutput>ooDialog.cls</computeroutput> files. In the typical installation of ooRexx or ooDialog, this directory will
+  be in the PATH which allows ooDialog.exe to be accessed from anywhere on the computer.
+</para>
+
+<section id="sctOverView"><title>OverView</title>
+<indexterm><primary>ooDialog executable</primary><secondary>overview</secondary></indexterm>
+
+<para>
+  The ooDialog executable provides a number of enhancements and services to use along with the ooDialog framework. These
+  range from the simplistic to the relatively complex. There is no need, or requirement, to ever run the executable if the
+  ooDialog user is not interested in any of the features provided by <computeroutput>ooDialog.exe</computeroutput>. That is,
+  currently, there are no dependencies on <computeroutput>ooDialog.exe</computeroutput> in the ooDialog framework.
+</para>
+<para>
+  The following briefly lists and describes the functionality provided by the ooDialog executable:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Displays information about the installed ooDialog:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog.exe can be used to display simple version information for the installed ooDialog framework. It also will display
+    more detailed information for the ooDialog installation such as the build date, 32 or 64 bit, debug or release, version
+    of ooRexx that is in use, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Executes ooRexx programs without a console window:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog.exe can be used as a replacement for rexxhide.exe to execute ooRexx programs without a secondary console
+    window popping up. ooDialog.exe has a few enhancements that may make it more suitable to use than rexxhide.exe.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Serves as a drop target for drag and dropping ooRexx programs:</emphasis></term>
+  <listitem>
+  <para>
+    ooRexx programs can be dragged and dropped on ooDialog.exe, or a short cut to ooDialog.exe, to execute them.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Configures file associations for ooDialog and the PATHEXT</emphasis></term>
+  <listitem>
+  <para>
+    For users not familiar with setting up file types and associations, ooDialog.exe can present a graphical user interface
+    to configure file types and associate them with the executable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End OverView section -->
+
+
+<section id="sctOodExeCLO"><title>ooDialog.Exe Command Line Options</title>
+<indexterm><primary>ooDialog executable</primary><secondary>command line options</secondary></indexterm>
+
+<para>
+  One of the simplest features ooDialog.exe provides is to display information about the current installation of ooDialog.
+  Since the installation of ooDialog has been decoupled from the installation of ooRexx, the version of ooRexx no longer has
+  any relation to the installed version of ooDialog. ooDialog.exe can be executed from a command prompt, using the
+  <computeroutput>-v</computeroutput> option, to quickly determine the version of the installed ooDialog:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -v
+ooDialog 4.2.4.9574
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+<para>
+  If ooDialog.exe is executed from a command prompt with no options, or if it is double-clicked in Explorer, it opens an
+  informational window that displays the ooDialog version and other details concerning the executable and its purpose.
+  Executing ooDialog.exe from a command prompt with the <computeroutput>-h</computeroutput> option displays the syntax for
+  ooDialog.exe. For example:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -h
+Syntax:
+
+    ooDialog [option flags] [programName] [arg1 arg2 ... argN]
+
+option flags:
+  -h        Show this, the short help text.
+  /?        Same as -h.
+  -H        Show the long help text.
+  --help    If from a console window, show the long help.
+  -s        Display the ooDialog Setup dialog.
+  -v        Print the short version string.
+  -V        Print the long version string.
+  --version If from a console window, print the long version string.
+
+programName:
+  The first argument that does not begin with '-' is taken as the name
+  of a Rexx program to be executed.
+
+arg1 ... argN:
+  Arguments 1 through N are passed on to programName.
+
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+<para>
+  Executing ooDialog.exe from a command prompt with the <computeroutput>--version</computeroutput> option displays more
+  detailed information concerning the ooDialog version, along with the version of ooRexx that ooDialog is running under. For
+  example:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog --version
+
+ooDialog: ooDialog Version 4.2.4.9574 (64 bit) - Internal Test Version
+          Built Nov 27 2013 07:38:21
+          Copyright (c) IBM Corporation 1995, 2004.
+          Copyright (c) RexxLA 2005-2013.
+          All Rights Reserved.
+
+Rexx:     Open Object Rexx Version 4.2.0
+
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+
+</section> <!-- End oodExeCLO section -->
+
+
+<section id="sctOodExePL"><title>ooDialog.Exe as a Program Launcher</title>
+<indexterm><primary>ooDialog executable</primary><secondary>program launcher</secondary></indexterm>
+
+<para>
+  A primary use of ooDialog.exe is to execute ooDialog programs without displaying a secondary console window. This is very
+  much like the rexxhide.exe program that comes with the Windows ooRexx distribution. The ooRexx interpreter (rexx.exe) is
+  built as a console application. This is what gives the interpreter access to the standard input and output streams. Which
+  in turn allows the <emphasis role="italic">say</emphasis> instruction to write text to the console and the <emphasis
+  role="italic">pull</emphasis> instruction to retrieve text the user has typed.
+</para>
+<para>
+  Because it is a console application, whenever rexx.exe starts, the operating system creates a console window if it is not
+  already being executed from a console window. For a purely graphical application, as most ooDialog programs are, this
+  secondary console window can be an annoyance. The ooDialog executable, (and rexxhide.exe,) are built as a windowed
+  application and internally use the ooRexx naive API to start an instance of the interpreter to execute the Rexx program.
+  Because they are built as a windowed application, no console window is created by the operating system.
+</para>
+<para>
+  One drawback that rexxhide.exe has, is that since it is built as a windowed application with no console window, all text
+  normally written to the console is lost. This includes the error condition text written when a condition is raised. Because
+  of this Rexx programs run under rexxhide.exe just silently end if a problem in the program raises a condition. This can be
+  frustrating because the program will just terminate and there is no way to know why.
+</para>
+<para>
+  The ooDialog executable has been enhanced to help with this situation. If a condition is raised and the Rex program is
+  terminated, ooDialog.exe traps the condition text and then displays it in a window when the interpreter terminates.
+</para>
+
+<note><title>Note</title>
+  <para>
+    This discussion on using ooDialog.exe as a program launcher mostly refers to launching ooDialog programs. However,
+    ooDialog.exe will execute any ooRexx program. It is not restricted to launching only ooDialog programs.
+  </para>
+</note>
+
+<para>
+  There are a number of ways to launch ooDialog programs using ooDialog.exe:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">direct invocation:</emphasis></term>
+  <listitem>
+  <para>
+    From a command prompt simply use ooDialog.exe instead of rexx.exe:
+<programlisting>
+<![CDATA[
+/* Instead of this: */
+
+C:\Rexx>rexx.exe ooRexx\ooRexxTry.rex
+
+/* Use this: */
+
+C:\Rexx>ooDialog.exe ooRexx\ooRexxTry.rex
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">within a shortcut or Start menu item:</emphasis></term>
+  <listitem>
+  <para>
+    Typically, people create a short cut to an ooDialog program using rexxhide.exe. Then, double-clicking the short cut in
+    Explorer launches the ooDialog program with no console Window. The ooRexx installer has set up these types of short cuts
+    for ooDialog example programs for years. In the short cut, ooDialog.exe can be used instead of rexxhide.exe:
+<programlisting>
+<![CDATA[
+/* The ooRexx installer has set up a Start menu item to the ooDialog sample.rex program like this: */
+
+Target type:      Application
+Target location:  ooRexx
+Target:           C:\Rexx\ooRexx\rexxhide.exe "C:\Rexx\ooRexx\samples\oodialog\sample.rex"
+Start in:         C:\Rexx\ooRexx\samples\oodialog\
+
+/* Use this for the short cut instead: */
+
+Target type:      Application
+Target location:  ooRexx
+Target:           C:\Rexx\ooRexx\ooDialog.exe "C:\Rexx\ooRexx\samples\oodialog\sample.rex"
+Start in:         C:\Rexx\ooRexx\samples\oodialog\
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">with drag and drop:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog executable is drag and drop enabled. That is, ooDialog.exe can serve as a drop target. In Explorer when an
+    ooDialog program file is dragged and dropped on the ooDialog.exe icon, the ooDialog program will execute without a
+    secondary console window. A common use of this ability would be to create a short cut to ooDialog.exe on the desktop and
+    drag and drop ooDialog programs on the short cut.
+  </para>
+  <para>
+    This snapshot of a portion of a user's Desktop shows a short cut icon to ooDialog.exe. ooDialog programs such as
+    <computeroutput>columnIcons.rex</computeroutput> can be dragged from Explorer and dropped on the short cut, which
+    launches the ooDialog program.
+    <figure id="figDesktopIcon"><title>Drag and Drop Scenario</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodDesktopIcon.jpg" scale="80" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">using file types and associations:</emphasis></term>
+  <listitem>
+  <para>
+    Probably one of the best ways to use ooDialog.exe to execute ooDialog programs is through the use of file type
+    associations. Once a file type has been created for ooDialog.exe, and an extension associated with that file type,
+    double-clicking on any file with the extension will execute the ooDialog program.
+  </para>
+  <para>
+    The figure below shows a user's system where a file type has been created for ooDialog.exe and the extension <emphasis
+    role="italic">.ood</emphasis> is associated with that file type. Double-clicking on
+    <computeroutput>columnIcons.ood</computeroutput> has executed that ooDialog program.
+    <figure id="figFileAssociation"><title>.ood Extension Associated with ooDialog.exe</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodFileAssociation.jpg" scale="60" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    Although it is not discernible from the figure itself, the created file type on the user's system is
+    <computeroutput>ooRexx.ooDialog.1</computeroutput>. File types and associations are relatively easy to create and manage
+    from the command prompt, or through Explorer. People familar will file type associations will recognize that the
+    following displays the file type and association from the system in the figure above:
+<programlisting>
+<![CDATA[
+C:\Rexx>ftype ooRexx.ooDialog.1
+ooRexx.ooDialog.1="C:\Rexx\ooRexx\ooDialog.exe" "%1" %*
+
+C:\Rexx>assoc .ood
+.ood=ooRexx.ooDialog.1
+
+C:\Rexx>
+]]>
+</programlisting>
+    For people not familar with creating file types and associations, ooDialog.exe can be used to configure file associations
+    for the system through a graphical user interface. This use of ooDialog.exe is explained in the next section
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section> <!-- End oodExePL section -->
+
+
+<section id="sctOodExeFA"><title>ooDialog.Exe Configure File Associations</title>
+<indexterm><primary>ooDialog executable</primary><secondary>configure file associations</secondary></indexterm>
+
+<para>
+  Windows has promoted a scheme to identify the type of a file through the file name extension of the file. (The extension
+  part of a file name is everything following the last dot in the file name.) Different types of files are then associated
+  with the program that uses the file. When a file type and its association are made known to the operating system, when the
+  user interacts with a known file type, the operarting system will start the program that uses the file directly. For
+  instance, text files can be associated with the user's favorite editor. Double-clicking on a text file will then start the
+  editor will the file ready to edit.
+</para>
+<para>
+  The <emphasis role="italic">Configure ooDialog Services</emphasis> dialog is used to start the process of configuring file
+  associations for ooDialog.exe:
+  <figure id="figConfigServices"><title>Configure Services Dialog</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodConfigureServices.jpg" scale="80" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+  Future versions of ooDialog may have the ability to configure more services than just file associations, in which case this
+  dialog will be expanded to allow that configuration. Currently, only file associations are configured through this dialog.
+</para>
+<para>
+  The configure services dialog can be brought up in two ways. From a command prompt, the <emphasis
+  role="italic">-s</emphasis> option will immediately start the dialog:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -s
+
+C:\Rexx>
+]]>
+</programlisting>
+  Starting ooDialog.exe with no arguments, either from the command prompt or by double-clicking ooDialog.exe, brings up the
+  information display window:
+  <figure id="figInformationWindow"><title>ooDialog Information Window</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodInformationWindow.jpg" scale="60" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+  Check the <emphasis role="italic">Configure other ooDialog services</emphasis> check box. The <emphasis
+  role="italic">Close</emphasis> button's label will change to <emphasis role="italic">Continue</emphasis> and clicking the
+  button starts the configure services dialog.
+</para>
+<para>
+  The configure services dialog can be used to configure file type associations and the PATHEXT environment variable for
+  either the current user, or for all users. Any user can configure file associations or environment variables for herself or
+  himself. With the heightened security procedures introduced in Windows Vista and later, users can no longer set
+  configurations of all users, unless they do so from an elevated process. By default the configure services dialog will be
+  set to configure for the current user. If this is changed to all users, and the current process is not elevated, the UAC
+  shield icon will be placed on the <emphasis role="italic">Configure</emphasis> button to indicate that the task requires
+  administrator credentials. If <emphasis role="italic">Configure</emphasis> is clicked, the Credential UI will be displayed
+  to obtain the credentials.
+</para>
+<para>
+  This is shown below. Note that the lower left quadrant of the dialog displays the security status of the running process.
+  In this case the process is shown as <emphasis role="italic">not</emphasis> elevated. Changing the All Users file
+  associations would required that the process be elevated.
+  <figure id="figElevatedDialog"><title>Elevation Required</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodElevatedDialog.jpg" scale="80" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+</para>
+<para>
+  When the <emphasis role="italic">For All Users</emphasis> radio
+  button was selectd, the UAC shield icon was added to the <emphasis role="italic">Configure</emphasis> button. If the user
+  of the dialog changes the selected radio button to the <emphasis role="italic">For Current User</emphasis> button, the
+  shield icon would be removed. At this point, if the dialog user clicks the <emphasis role="italic">Configure</emphasis>
+  button, the Credential UI will be displayed. If the user enters the proper password for an Administrator, the Configure
+  File Associations is displayed. Otherwise, it is not displayed.
+</para>
+<para>
+  Once the <emphasis role="italic">scope</emphasis> (the current user or all users) of the task is selected using the radio
+  buttons, the user of the dialog proceeds by clicking the <emphasis role="italic">Configure</emphasis> button. As hinted at,
+  the user of the dialog can only work with one scope at a time. However, when the selected scope is configured, the user
+  will be returned to the configure user services dialog, and could then select to configure the other scope if desired.
+</para>
+<para>
+  This figure shows the dialog that is used to configure file associations for ooDialog.exe and the use of the
+  dialog is explained in the following text:
+  <figure id="figConfigFileAssociations"><title>Drag and Drop Scenario</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodConfigureFileAssociations.jpg" scale="70" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+</para>
+<para>
+  To better explain how to use the dialog to configure the file associations, and or the PATHEXT, each part of the dialog
+  will be discussed in turn. <emphasis role="bold">Note:</emphasis> it is important to keep in mind that file associations
+  for all users and the current user are merged together by the operating system. Therefore the file associations in effect
+  for any user are those registered for all users and those registered just for herself or himself. However, the operating
+  system does not merge the PATHEXT. If there is a PATHEXT defined for the current user, the operating system <emphasis
+  role="italic">replaces</emphasis> the all users PATHEXT with the PATHEXT defined by the current user.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Upper Third Portion:</emphasis></term>
+  <listitem>
+  <para>
+    The upper third of the dialog is an informational display only. It shows the scope of the current task, the process
+    execution status, if ooDialog.exe is, or is not, registered as a file type, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The Register Button:</emphasis></term>
+  <listitem>
+  <para>
+    The large register button is used to register, or un-register, the ooDialog program file type. The label of the button
+    changes to reflect the current status of the registration. If the file type is currently registered, the button is used
+    to un-register it. If the file type is not registered, the button is used to register the file type.
+  </para>
+  <para>
+    The registration or un-registration takes place immediately when the button is clicked. If the ooDialog program type is
+    un-registered, all extensions associated with the file type, for the current scope, are un-associated at the same time.
+    File extensions associated in the other scope can not be changed, the dialog can only work with one scope at a time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">File Association Extension / Add:</emphasis></term>
+  <listitem>
+  <para>
+    This edit box and push button are used to add a file extension to the currently associated types. Type the extension in
+    the edit box and click the <emphasis role="italic">Add</emphasis> button. The association takes place immediately. The
+    extension can be entered with or without the dot (<computeroutput>.</computeroutput>) character.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="vleFileAssociationListBoxes"><term><emphasis role="bold">File Association List Boxes:</emphasis></term>
+  <listitem>
+  <para>
+    There are two list boxes used to display file association file extensions. The <emphasis
+    role="italic">Currently Associated</emphasis> list box shows all file extensions associated with the ooDialog Program
+    file type. The <emphasis role="italic">Suggested Extensions</emphasis> list box is initially filled with a few suggested
+    extensions. This is provided as a convenience for the user of the dialog, there is no requirement that suggested
+    extensions be used.
+  </para>
+  <para>
+    The list boxes can be in either dual column or single column mode. Recall that the operating system merges the file
+    associations for all users and the current user. Because of this, if the ooDialog program file type is registered in
+    either scope, (all users or the current user,) any associated file extension will work, no matter what scope it is
+    associated in. This is reflected in the dual column mode. Every file extension in the currently associated list box is in
+    effect for the user of the dialog. Each item in the list box has two columns. The first column shows the status for All
+    Users, the second column shows the status for the Current User.
+  </para>
+  <para>
+    The <emphasis role="italic"><emphasis role="bold">+</emphasis></emphasis> character is used to show that the extension is
+    associated in that scope. The <emphasis role="italic"><emphasis role="bold">-</emphasis></emphasis> character is used to
+    show that the extension is not registered in that scope.
+  </para>
+  <para>
+    The <link linkend="figDualColumnExample">dual column</link> figure shows how to interpret the information displayed in
+    the dialog. The Scope field shows that the task is currently configuring for All Users. The File Type is Registered field
+    shows that the ooDialog Program file type is registered. The following fields show the file type is not registered
+    for all users, but is registered for the current user. That is, the file type is not registered for the current scope of
+    the task.
+  </para>
+  <para>
+    The items in the currently associated list box show the <emphasis role="italic">ood</emphasis> extension is not
+    associated for all users / is associated for the current user, (<computeroutput>- * .ood</computeroutput>). The <emphasis
+    role="italic">rxd</emphasis> extension is the inverse, associated for all users, not associated for the current user
+    (<computeroutput>* - .rxd</computeroutput>).
+    <figure id="figDualColumnExample"><title>Dual Column Example</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodDualColumnExample.jpg" scale="70" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    The <emphasis role="italic">Add</emphasis> and <emphasis role="italic">Remove</emphasis> buttons between the two list
+    boxes are used to move the selected extension in one list box to the other. If an extension is selected in the <emphasis
+    role="italic">Suggested Extensions</emphasis> list box and the add button clicked, the extension is immediately
+    associated, in the current scope.
+  </para>
+  <para>
+    Likewise, if an extension is selected in the <emphasis role="italic">Currently Associated</emphasis> list box and the
+    <emphasis role="italic">Remove</emphasis> button is clicked then the extension is immediately un-associated. The <emphasis
+    role="italic">Remove</emphasis> button is the only way to un-associate an extension using the dialog.
+  </para>
+  <para>
+    Bear in mind that actions taken in the dialog are always only in relation to the current scope. For example in the
+    figure, if the .ood extension in the currently associated list box is selected and the remove button is clicked, nothing
+    will happen.  The .ood extension is not associated in the current scope, so it can not be un-associated. The .ood
+    extension is associated for the current user, but the dialog is not working on that scope, so again that can not be
+    changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Single / Double Column View:</emphasis></term>
+  <listitem>
+  <para>
+    These two radio buttons are used to switch between dual column view, explained above, and single column view. In single
+    column view the current registry values are shown only as they relate to the current scope. If the <link
+    linkend="figDualColumnExample">dual column</link> figure were to be switched to single column view, it would appear like
+    this:
+    <figure id="figSingleColumnExample"><title>Single Column Example</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodSingleColumnExample.jpg" scale="70" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+    Note that the .ood extension is not associated for all users, so it does not appear in the currently associated list box.
+    In some ways the single column view may be less confusing. But, for file associations, it does not present a true
+    picture. The .ood extension is listed in the suggested extensions list box, but there is no real reason to associate it.
+    Since .ood is associated for the current user, when the operating system merges the file associations for all users and
+    the current user, it becomes associated in effect. Switching between the two views may be the best way to understand the
+    current associations.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT related dialog controls:</emphasis></term>
+  <listitem>
+  <para>
+    The PATHEXT related dialog controls allow the user of the dialog to add or remove extensions from the PATHEXT environment
+    variable, and / or to re-order the extensions in PATHEXT. The operating system uses this environment variable to
+    determine if a file is an executable file from its name. If a file's name has an extension in the PATHEXT, then the
+    operating system treats the file as an executable program rather than a data file. Files whose extension is in the
+    PATHEXT are also executed by typing their file name, without the extension, on the command prompt.
+  </para>
+  <para>
+    This functionality of editing the PATHEXT variable is added as a convenience for the dialog user. The behavior of this
+    functionality is similar to the functionality of configuring the file type associations for ooDialog.exe, but also has
+    some differences. Keep the following points in mind when working with the PATHEXT in the dialog:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    The purpose of editing PATHEXT in the dialog is to allow the dialog user to easily add an associated extension to the
+    PATHEXT. For instance if the extension <computeroutput>.ood</computeroutput> is associated with the ooDialog file type,
+    then adding that extension to the PATHEXT will allow any ooDialog programs with the extension to be executed by
+    ooDialog.exe automatically if the file name, with or without the extension, is typed on the command line.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Unlike file association changes which take place immediately, no changes to the PATHEXT are saved until the <emphasis
+    role="italic">Done</emphasis> button is clicked. In addition, the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box must be checked at the time the button is clicked. This is done to ensure the dialog user really intends for
+    the changes to be made.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Unlike file associations, the operating system does not merge the All Users PATHEXT and the Current User's PATHEXT
+    values. If the current user sets a PATHEXT value, it <emphasis role="italic">replaces</emphasis> the All Users PATHEXT
+    for that user.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    A poorly formed PATHEXT value can cause the system to behave erratically. For instance if PATHEXT did not contain the
+    <computeroutput>.EXE</computeroutput> extension, programs might not be able to be executed. For this reason, the dialog
+    will not remove the .exe, .cmd, .com, and .bat extensions from PATHEXT. The only exception to this is if the scope is the
+    Current User, the dialog will allow the user to completely delete the PATHEXT variable for the Current User. The All
+    Users PATHEXT can not be deleted through the dialog.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Like the file associations list boxes, the PATHEXT list box can be displayed in dual or single column view. The <link
+    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes explains how the two views
+    work and how to interpret the list box items. However, since the operating system does not merge the All Users and
+    Current Users PATHEXT values, the single column view may be easier to use when editing the PATHEXT.
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT Extension / Add:</emphasis></term>
+  <listitem>
+  <para>
+    The PATHEXT edit box and Add button are similar in use to the File Association Extension edit box and Add button. The
+    dialog user types the extension in the edit box and clicks the <emphasis role="italic">Add</emphasis> button to add a
+    file extension to the PATHEXT list box for the current scope. The dot character may or may not be used. If the extension
+    entered in the edit box does not start with a dot character, one is added. The extension is also upper-cased. Other than
+    that, no attempt is made to validate the entry typed by the dialog user.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT List Box:</emphasis></term>
+  <listitem>
+  <para>
+    The PATHEXT list box is initially filled with information that depicts the current PATHEXT for All Users and the PATHEXT
+    for the Current User. The Current User PATHEXT may not exist, in fact that is relatively common. The dialog user can
+    make changes to the PATHEXT in the current scope by interacting with the PATHEXT list box and its related buttons. The
+    list box will always reflect how the PATHEXT will be saved, if the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box is checked and the <emphasis role="italic">Done</emphasis> button is pressed. The <link
+    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes describes how to interpret
+    the list box items. For the PATHEXT, it is probably easier to interpret what the PATHEXT value will be saved as in single
+    column view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT List Box Buttons:</emphasis></term>
+  <listitem>
+  <para>
+    This figure shows the buttons surrounding the PATHEXT list box that are used to edit the PATHEXT
+    <figure id="figPathExtButtons"><title>PATHEXT Editing Buttons</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodPATHEXTButtons.jpg" scale="100" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    The figure shows that the current scope of the dialog is the Current User. The PATHEXT list box is in single column view,
+    so the list box items reflect exactly which extensions, and their order, will be written to the PATHEXT for the Current
+    User, if the user were to save the PAThEXT.
+  </para>
+  <para>
+    The upper <emphasis role="italic">Add</emphasis> button has already been described. If the user has typed an extension in
+    the edit box, the <emphasis role="italic">Add</emphasis> button will add that extension to the list box. The <emphasis
+    role="italic">Add --></emphasis> button on the left serves a similar function. If an item in the <emphasis
+    role="italic">Currently Registered</emphasis> list box is selected, clicking the <emphasis role="italic">Add
+    --></emphasis> will add it to the list box.
+  </para>
+  <para>
+    The Up and Down arrow buttons are used to re-order the extensions. If an item in the list box is selected, clicking the
+    Up arrow button will move the item up one position. Clicking the Down arrow button moves the item down one position.
+    Clicking the X button deletes the currently selected item from the PATHEXT.
+  </para>
+  <para>
+    The Hammer and Cresent Wrench button is only present when the scope is the Current User. Clicking this button deletes the
+    Current Users PATHEXT completely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Update the PATHEXT when done Check Box:</emphasis></term>
+  <listitem>
+  <para>
+    As mentioned above, the PATHEXT is not changed, not updated, until the dialog is closed with the <emphasis
+    role="italic">Done</emphasis> button. If and only if the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box is checked, the new PATHEXT value, as defined by the dialog user while interacting with the dialog, is written
+    to the registry.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Done Button:</emphasis></term>
+  <listitem>
+  <para>
+    Clicking the <emphasis role="italic">Done</emphasis> button closes the dialog. Since all file association changes are
+    written to the registry as the dialog user makes them, clicking the <emphasis role="italic">Done</emphasis> button and
+    using the <computeroutput>Esc</computeroutput> key to close the dialog are essentially the same. The only time using the
+    <emphasis role="italic">Done</emphasis> button is of importance is if the dialog user wants changes to the PATHEXT to be
+    saved. In this case, the  <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box must be checked and the <emphasis role="italic">Done</emphasis> button must be used to close the dialog. If the
+    check box is checked, but the user closes the dialog with the <computeroutput>Esc</computeroutput> key, any PATHEXT
+    changes are discarded.
+  </para>
+  <para>
+    When the <emphasis role="italic">Done</emphasis> button is clicked, before the new PATHEXT is actually written, a message
+    box will display exactly how the PATHEXT will saved. This message box gives the user of the dialog one last chance to
+    confirm that she wants the PATHEXT to be changed.
+  </para>
+  <para>
+    Clicking <emphasis role="italic">Yes</emphasis> writes the new PATHEXT value to the registry. Clicking <emphasis
+    role="italic">No</emphasis> discards any changes and closes the dialog. Clicking <emphasis
+    role="italic">Cancel</emphasis> returns to the configure file associations dialog allowing the dialog user to retry
+    making changes to PATHEXT.
+    <figure id="figPATHEXTDone"><title>Change PATHEXT Confirmation</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodPATHEXTDone.jpg" scale="100" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End oodExeFA section -->
+
+</chapter> <!-- End ooDialog Executable -->
+

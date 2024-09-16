@@ -1,0 +1,2698 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="clsComboBox" xreflabel="ComboBox"><title>Combo Box Controls</title>
+<indexterm><primary>ComboBox class</primary></indexterm>
+<para>
+  There are 3 types of combo boxes.
+</para>
+<itemizedlist id="listComboBoxTypes">
+<listitem><para>Simple combo boxes</para></listitem>
+<listitem><para>Drop-down combo boxes</para></listitem>
+<listitem><para>Drop-down list combo boxes</para></listitem>
+</itemizedlist>
+<para>
+  A combo box consists of a list and a selection field. The list presents options that can be selected and the selection
+  field displays the current selection.
+</para>
+<para>
+  In simple and drop-down combo boxes the selection field is an edit control and can be used to enter
+  text not available in the list, or to edit existing text. In a drop-down list combo box, the list is a list box
+  control and the use can only select the items in the list box. In drop-down and drop-down list combo boxes the list only
+  appears when the user opens it. In a simple combo box the list is always visible.
+</para>
+<para>
+  The <computeroutput>ComboBox</computeroutput> class provides methods to query and modify combo box controls.
+</para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with combo box controls:
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="mthNewComboBox"/> method of the <xref linkend="chpDialogObject"/> object to retrieve a combo
+    box object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a combo box in the dialog template of a <xref linkend="clsUserDialog"/> use
+    the <xref linkend="mthCreateComboBox"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying combo box control to a method in
+    the Rexx dialog object use the <xref linkend="mthConnectComboBoxEvent"/> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="sctMethodsComboBox"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with ComboBox objects, including the pertinent methods from other classes:
+</para>
+<table id="tblComboBoxMethods" frame="all">
+<title>ComboBox Methods and Attributes</title>
+<tgroup cols="2">
+<colspec colwidth="6*" />
+<colspec colwidth="16*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="tmthNewComboBox"/></entry>
+<entry>Obtains a ComboBox object that represents a combo box control in a dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateComboBox"/></entry>
+<entry>Creates a combo box control in an <xref linkend="clsUserDialog"/>.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthConnectComboBoxEvent"/></entry>
+<entry>Connects ComboBox event notifications to a Rexx dialog method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddClsComboBox"/></entry>
+<entry>Adds a new item to the list of this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddDirectoryClsComboBox"/></entry>
+<entry>Adds file names in a given directory to the items of this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCloseDropDown"/></entry>
+<entry>Closes the drop-down list of this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDeleteClsComboBox"/></entry>
+<entry>Removes an item from the list of this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDeleteAllClsComboBox"/></entry>
+<entry>Removes all list items from this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFindClsComboBox"/></entry>
+<entry>Searches this combo box for a list item containing the specified text or prefix.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCueClsComboBox"/></entry>
+<entry>Retrieves the cue banner text for this combo box, or the empty string if there is no cue set.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetComboBoxInfo"/></entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing information about this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetEditControl"/></entry>
+<entry>Returns a Rexx <computeroutput>Edit</computeroutput> object that represents the child edit control used by this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFirstVisibleClsComboBox"/></entry>
+<entry> Determines the one-based index of the top item in the drop-down list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetHorizontalExtentClsComboBox"/></entry>
+<entry>Gets the value of the horizontal extent for the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemDataClsComboBox"/></entry>
+<entry>Retrieves the item data associated with the specified comboBox item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemHeightClsComboBox"/></entry>
+<entry>Determines the height of the list items or the height of the selection field in this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMinVisible"/></entry>
+<entry>Retrieves the minimum number of visible items that must be displayed in the drop-down list of this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTextClsComboBox"/></entry>
+<entry>Gets the text of the list item at the specified position in this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInsertClsComboBox"/></entry>
+<entry>Inserts a new item into the list of the combo box after the specified item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsDropDown"/></entry>
+<entry>Determines if this combo box is a drop-down combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsDropDownList"/></entry>
+<entry>Determines if this combo box is a drop-down list combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsDropDownOpen"/></entry>
+<entry>Determines if the list of this combo box is dropped down.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsGrandchildClsComboBox"/></entry>
+<entry>Notifies the ooDialog framework that this combo box control is a grandchild of the dialog and configures the underlying combo box control to send four event notifications to the dialog, rather than its direct parent.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsSimpleClsComboBox"/></entry>
+<entry>Determines if this combo box is a simple combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthItemsClsComboBox"/></entry>
+<entry>Retrieves the number of items in the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthModifyClsComboBox"/></entry>
+<entry>Changes the text of the list item at the specified position in the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOpenDropDown"/></entry>
+<entry>Drops down the list of the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveFullColor"/></entry>
+<entry>Reverts the color for this combo box to its default, if the <xref linkend="mthSetFullColor"/> method has previously been invoked on this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveItemDataClsComboBox"/></entry>
+<entry>Removes and returns the item data associated with the specified comboBox item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectClsComboBox"/></entry>
+<entry>Selects the list entry that matches the specified text.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectedClsComboBox"/></entry>
+<entry>Retrieves the text of the currently selected item in the combo box list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectedIndexClsComboBox"/></entry>
+<entry>Retrieves the index of the currently selected item in the combo box list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSelectIndexClsComboBox"/></entry>
+<entry>Selects the list item at the specified index.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetCueClsComboBox"/></entry>
+<entry>Sets the cue banner text for this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetEditSelection"/></entry>
+<entry>Selects the specified text range in the edit control of the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFullColor"/></entry>
+<entry>Sets the complete color of this combo box, this includes both the selection field and the list parts of the comb box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetHorizontalExtentClsComboBox"/></entry>
+<entry>Sets the width, in pixels, that the combo box's list box can be scrolled horizontally.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemDataClsComboBox"/></entry>
+<entry>Sets the item data associated for the specified comboBox item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemHeightClsComboBox"/></entry>
+<entry>Sets the height of the list items or the selection field in this combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMinVisible"/></entry>
+<entry>Sets the minimum number of visible items in the drop-down list of a combo box.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewComboBox" xreflabel="newComboBox"><title>newComboBox (dialog object method)</title>
+<para>
+  <computeroutput>ComboBox</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  role="italic">new</emphasis> method. Rather, a combo box object is obtained by using the <xref
+  linkend="mthNewComboBox" /> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newComboBox(--id--)---------------------------><
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newComboBox() (dialog object method) -->
+
+
+<section id="tmthCreateComboBox" xreflabel="createComboBox"><title>createComboBox (UserDialog method)</title>
+<para>
+  A combo box control can be created in the dialog template of a <xref linkend="clsUserDialog"/> through the
+  <xref linkend="mthCreateComboBox"/> method. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>-createComboBox(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--)----><
+                                            +-,--style-+ +-,--attrName-+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createComboBox() (UserDialog method) -->
+
+
+<section id="tmthConnectComboBoxEvent" xreflabel="connectComboBoxEvent">
+<title>connectComboBoxEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a combo box  control use the <xref linkend="mthConnectComboBoxEvent" /> method of
+  the <xref linkend="chpDialogObject"/> object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>-connectComboBoxEvent(--id--,--event--+----------------+--)------------------><
+                                        +--,-methodName--+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End EventNotification::connectComboBoxEvent() (dialog object method) -->
+
+
+<section id="mthAddClsComboBox" xreflabel="add"><title>add</title>
+<indexterm><primary>add</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>add</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--add(--listEntry--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">add</emphasis> method adds a new item to the combo box list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>listEntry [required]</term>
+      <listitem>
+      <para>
+        The item to add to the list.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based index of the new item. On error, a value less than 1.
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the combo box does not have the SORT style, the new item is added to the end of the list. If it does have the
+    SORT style, the item is inserted into the list in its correct alphabetical position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the Microsoft documentation says that adding an item to a comb box with
+    the SORT style causes the list of items to be re-sorted. This does not appear to be correct. Rather, it looks like
+    the operating system simply picks the correct insertion point for the new item and leaves the rest of the list
+    alone.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="mthFindClsComboBox"/> <link linkend="exampleFindClsComboBox">example</link> uses the <emphasis
+    role="italic">add</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddDirectoryClsComboBox" xreflabel="addDirectory"><title>addDirectory</title>
+<indexterm><primary>addDirectory</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>addDirectory</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addDirectory(--filePattern--+-------------------+--)--------><
+                                +-,-fileAttributes--+
+]]>
+</programlisting>
+
+<para>
+  Adds the names of all files matching <emphasis role="italic">filePattern</emphasis> that have the optionally specified
+  file attributes to the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>filePattern [required]</term>
+      <listitem>
+      <para>
+        A file name pattern of files to search for. For example, <computeroutput>C:\Program Files\*.exe</computeroutput>, or
+        <computeroutput>C:\temp\*.txt</computeroutput>. The <emphasis role="italic">fileAttributes</emphasis> argument can
+        be used to further restrict the types of files searched for. All matching file names are added to the combo box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fileAttributes [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. The keywords specify the
+        file attributes the files must possess in order to be added to the combo box:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>READWRITE</member>
+          <member>READONLY </member>
+          <member>HIDDEN   </member>
+          <member>SYSTEM   </member>
+          <member>DIRECTORY</member>
+          <member>ARCHIVE  </member>
+          <member>EXCLUSIVE</member>
+          <member>DRIVES   </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>READWRITE</term>
+          <listitem>
+          <para>
+            Includes read write files with no additional attributes. This is the default if the <emphasis
+          role="italic">fileAttributes</emphasis> argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>READONLY</term>
+          <listitem>
+          <para>
+            Includes read-only files.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            Includes hidden files.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SYSTEM</term>
+          <listitem>
+          <para>
+            Includes system files.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DIRECTORY</term>
+          <listitem>
+          <para>
+            Includes subdirectories. The subdirectory names are enclosed in square brackets ([ ]) when they are added
+            to the combo box.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ARCHIVE</term>
+          <listitem>
+          <para>
+            Includes archived files.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXCLUSIVE</term>
+          <listitem>
+          <para>
+            Includes only the files with the specified attributes. By default, read write files are listed even if
+            READWRITE is not specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DRIVES</term>
+          <listitem>
+          <para>
+            Mapped drives are also added to the list. The drives names are added in the form [-D-], where D is the
+            drive letter.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the file name added last to the combo box, or less than 1 if an error occurred.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">filePattern</emphasis> argument can be a file name, relative path, or absolute path. It
+    can contain the normal file name wildcard characters. Absolute paths can begin with a drive letter or use Universal
+    Naming Convention (UNC).  I.e. <computeroutput>D:\</computeroutput> or
+    <computeroutput>\\server\share</computeroutput>.
+  </para>
+  <para>
+    If a file or directory name matches the file pattern and has the attributes specified by <emphasis
+    role="italic">fileAttributes</emphasis> it is added to the list displayed by the combo box.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the operating system searches for and adds the files to the combo box.
+    What files are found and how they are displayed is up to the operating system. ooDialog has no control over that.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example puts the names of all the read/write files with extension
+    <computeroutput>.rex</computeroutput> in the <computeroutput>C:\work.ooRexx</computeroutput> directory into the
+    combo box:
+
+<programlisting>
+<![CDATA[
+
+  cb = self~newComboBox(IDC_CB_FILES)
+  self~addDirectory("C:\work.ooRexx\*.rex", "READWRITE")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCloseDropDown" xreflabel="closeDropDown"><title>closeDropDown</title>
+<indexterm><primary>closeDropDown</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>closeDropDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--closeDropDown--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Closes the drop-down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  simple combo boxes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDeleteClsComboBox" xreflabel="delete"><title>delete</title>
+<indexterm><primary>delete</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>delete</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--delete(--+---------+--)----------------------><
+             +--index--+
+]]>
+</programlisting>
+
+<para>
+  Removes an item from the list in the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  </para>
+    <variablelist>
+    <varlistentry><term>index [optional]</term>
+    <listitem>
+    <para>
+      The one-based index of the item to delete from the list. If this argument is omitted, the currently selected item
+      is deleted.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items remaining in the list. -1 is returned if <emphasis role="italic">index</emphasis> is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If <emphasis role="italic">index</emphasis> is omitted and there is no selected item, no item is deleted and -1 is
+    returned.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDeleteAllClsComboBox" xreflabel="deleteAll"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>deleteAll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deleteAll------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Removes all items from the list in a combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthFindClsComboBox" xreflabel="find"><title>find</title>
+<indexterm><primary>find</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>find</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--find(--textOrPrefix--+--------------+--+---------+--)-------><
+                         +-,-startIndex-+  +-,-exact-+
+]]>
+</programlisting>
+
+<para>
+  Finds the index of the combo box item that matches the specified text.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>textOrPrefix [required]</term>
+      <listitem>
+      <para>
+        The text of the item to search for.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>startIndex [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the item preceding the item to start the search at. If the search reaches the end of the
+        items  without a match, the search continues with the first item until all items have been examined.  When this
+        argument is omitted, or 0, the search starts with the first item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>exact [optional]</term>
+      <listitem>
+      <para>
+        Whether to do an exact match or not. If this argument is not omitted, and is either
+        <computeroutput>.true</computeroutput> or the keyword EXACT, then an exact search is performed. Otherwise, the
+        search is not exact. See the Remarks section for the meaning of exact and not exact.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item when found, otherwise 0 if the item is not found.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The search for <emphasis role="italic">textOrPrefix</emphasis> is <emphasis role="bold">always</emphasis> case
+    insensitive. If the <emphasis role="italic">exact</emphasis> argument does not specify an exact match, then the
+    search is for an item beginning with the text specified. Otherwise, the characters of the item, including blanks,
+    must match the specified text exactly.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleFindClsComboBox"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This, somewhat contrived, example demonstrates how the arguments to <emphasis role="italic">find</emphasis> control
+    the search:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose comboBox
+
+  comboBoxItems = .array~of("San Diego", "New York", "Los Angeles",  -
+                            "Detroit", "Tampa Bar", "Billings",      -
+                            "San Francisco", "new orleans", "San Antonio")
+
+
+  comboBox = self~newComboBox(IDC_CBO_ONE)
+  do i over comboBoxItems
+    comboBox~add(i)
+  end
+
+::method search private
+  expose comboBox
+
+  self~report(comboBox~find("San"),                    comboBox)
+  self~report(comboBox~find("San", 1),                 comboBox)
+  self~report(comboBox~find("San", 7),                 comboBox)
+
+  self~report(comboBox~find("New", , .true),           comboBox)
+  self~report(comboBox~find("New", , .false),          comboBox)
+  self~report(comboBox~find("New Orleans", , "exact"), comboBox)
+
+
+::method report private
+  use strict arg index, comboBox
+
+  if index = 0 then say "Not found"
+  else say comboBox~getText(index)
+
+/* Output would be:
+
+San Diego
+San Francisco
+San Antonio
+Not found
+New York
+new orleans
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::find() -->
+
+<section id="mthGetCueClsComboBox" xreflabel="getCue"><title>getCue</title>
+<indexterm><primary>getCue</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCue---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the cue banner text for this combo box, or the empty string if there is no cue set.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the cue for this combo box, or the empty string if no cue is set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The cue banner is text that is displayed in the edit control, or selection field, of a combo box when there is no item
+    currently selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="bold">Requires Windows Vista or later</emphasis>.
+  </para>
+  <para>
+    Raises syntax errors if incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a simple cue for a combo box and then reads it back:
+<programlisting>
+<![CDATA[
+
+  comboBox = self~newComboBox(IDC_COMBOBOX)
+
+  comboBox~setCue("Select a city")
+
+  say 'Cue set:' comboBox~getCue
+
+/* Output would be:
+
+   Cue set: Select a city
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getCue() -->
+
+<section id="mthGetComboBoxInfo" xreflabel="getCombBoxInfo"><title>getCombBoxInfo</title>
+<indexterm><primary>getCombBoxInfo</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getCombBoxInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCombBoxInfo-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a <computeroutput>Directory</computeroutput> object containing information about this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments with this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On error the <computeroutput>.nil</computeroutput> object is returned. On success a
+   <computeroutput>Directory</computeroutput> object is returned whose indexes contain information concerning this combo box.
+   The directory object will have the following indexes set to the values indicated:
+  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">TEXTOBJ:</emphasis></term>
+    <listitem>
+    <para>
+      For simple and drop-down combo boxes this index contains the Rexx <xref linkend="clsEdit"/>  object that
+      represents the child edit control of the combo box. Drop-down list combo boxes do not have a child edit control, and this
+      index will contain the Rexx combo box object itself. (The operating system returns the combo box for this value.)
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">LISTBOXOBJ:</emphasis></term>
+    <listitem>
+    <para>
+      A Rexx <xref linkend="clsListBox"/> object that represents the child list box control of the combo box.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">TEXTRECT:</emphasis></term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that contains the coordinates of the edit control. For drop-down list controls, the
+      Microsoft documentation does not specify what the returned coordinates are, but experimentation shows that it seems to
+      be the area that the edit control occupies in simple of drop-down combo boxes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">BUTTONRECT:</emphasis></term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that contains the coordinates of the button that contains the drop-down arrow.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">BUTTONSTATE:</emphasis></term>
+    <listitem>
+    <para>
+      A keyword that indicates the button state. The keyword will be exactly one of the following words:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>notpressed</member>
+        <member>absent    </member>
+        <member>pressed   </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>notpressed</term>
+        <listitem>
+        <para>
+          The button exists and it is not pressed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>absent</term>
+        <listitem>
+        <para>
+          There is no button. This would be the case for the simple combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>pressed</term>
+        <listitem>
+        <para>
+          The button exists and it is pressed.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that prints out the information for a simple combo box:
+<programlisting>
+<![CDATA[
+
+::method printInfo
+    expose cbSimple
+
+    d = cbSimple~getComboBoxInfo
+    say 'Simple Combo Box'
+    say '  Button rect: ' d~buttonRect
+    say '  Text rect:   ' d~textRect
+    say '  Text object: ' d~textObj
+    say '  List object: ' d~listBoxObj
+    say '  Button state:' d~buttonState
+    say
+
+/* Output might be for example: */
+
+Simple Combo Box
+  Button rect:  a Rect (1, 1, -1, -1)
+  Text rect:    a Rect (3, 3, 101, 18)
+  Text object:  an Edit
+  List object:  a ListBox
+  Button state: absent
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getCombBoxInfo() -->
+
+
+<section id="mthGetEditControl" xreflabel="getEditControl"><title>getEditControl</title>
+<indexterm><primary>getEditControl</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getEditControl</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getEditControl-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a Rexx <computeroutput>Edit</computeroutput> object that represents the child edit control used by this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns an <computeroutput>Edit</computeroutput> object that represents the edit control used by this combo box. Returns
+    the <computeroutput>.nil</computeroutput> object on error. Note that drop-down list combo boxes do not have an edit
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned edit control is a grandchild of the dialog so the <xref linkend="mthConnectEditEvent"/> method can not
+    connect any events to the Rexx dialog. Dialog controls only send their notifications to their direct parent. However, the
+    <xref linkend="mthIsGrandchildClsEdit"/> method can be used to set up special handling so that a few events can be
+    intercepted and used to invoke a method in the Rexx dialog.
+  </para>
+  <para>
+    Because drop-down list combo boxes do not have a child edit control, this method does not work with drop-down list combo
+    boxes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the child edit control of the combo box so that the application can manipulate the edit control. It
+    also uses the <xref linkend="mthIsGrandchildClsEdit"/> so that the application can monitor some of the edit control's
+    event notifications:
+<programlisting>
+<![CDATA[
+
+  cb = self~newComboBox(IDC_CB)
+
+  edit = cb~getEditControl
+  edit~isGrandchild
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getEditControl() -->
+
+<section id="mthGetFirstVisibleClsComboBox" xreflabel="getFirstVisible"><title>getFirstVisible</title>
+<indexterm><primary>getFirstVisible</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getFirstVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFirstVisible------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines the one-based index of the top item in the drop-down list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item at the top of the list on success. O is returned on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Initially the item with index 1 is at the top of the list. However, if the user has scrolled the list, the top index may
+    no longer number 1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example calculates the top y coordinate of the item under the mouse by subtracting the top index from the index of
+    the item under the mouse and multiplying that by the individual height:
+<programlisting>
+<![CDATA[
+
+  topIndex = comboBox~getFirstVisible
+  r = lbRect~copy
+  r~top = (currentItem - topIndex) * itemHeight
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getFirstVisible() -->
+
+<section id="mthGetHorizontalExtentClsComboBox" xreflabel="getHorizontalExtent"><title>getHorizontalExtent</title>
+<indexterm><primary>getHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getHorizontalExtent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getHorizontalExtent--------------------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the width that the list box of the combo box can be scrolled horizontally.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is the width in pixels of the horizontal extent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is only applicable if the combo box has a horizontal scroll bar. A scroll bar can be added explicitly by
+    using the WS_HSCROLL style with the combo box definition in the resource script for a <xref linkend="clsRcDialog"/>
+    or a <xref linkend="clsResDialog"/>, or by using the HSCROLL style in the <xref
+    linkend="mthCreateComboBox"/> method of a <xref linkend="clsUserDialog"/>.
+  </para>
+  <para>
+    In addition, a horizontal scroll bar is added implicitly if the CBS_DISABLENOSCROLL style is used in the resource
+    script. (Or the DISABLENOSCROLL style in the <emphasis role="italic">createComboBox</emphasis> method.)
+  </para>
+  <para>
+    When the <xref linkend="ovvUnderlying"/> combo box is created, it has its horizontal extend set to
+    0. The <xref linkend="mthSetHorizontalExtentClsComboBox"/> method can be used to change
+    this value.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getHorizontalExtent() -->
+
+<section id="mthGetItemDataClsComboBox" xreflabel="getItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemData(--+--------+--)------------------><
+                  +--index-+
+]]>
+</programlisting>
+<para>
+  Gets the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item to retrieve the item data from.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns the item data associated with the specified item, or the .nil object if there is no data
+   associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any, or
+    all, of the comboBox items. The data value can be any ooRexx object. The data value is set using
+    the <xref linkend="mthSetItemDataClsComboBox"/> method. If needed the data value can be removed from a list-view item through
+    the <xref linkend="mthRemoveItemDataClsComboBox"/> method. Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the data stored for the selected combooBox item and says it's string value.
+    The data can be any ooRexx object
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  ...
+  self~connectComboBoxEvent(100, "SELCHANGE", "onSelChange")
+  ...
+
+::method onSelChange                                               unguarded
+use arg info, hwnd, id, notifyCode, comboBox
+  idx = comboBox~selectedIndex
+  if idx > 0
+  then say idx':' comboBox~getItemData(idx)
+RETURN 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getItemData() -->
+
+<section id="mthGetItemHeightClsComboBox" xreflabel="getItemHeight"><title>getItemHeight</title>
+<indexterm><primary>getItemHeight</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemHeight(--+--------------------+--)----><
+                    +--getSelectionField-+
+]]>
+</programlisting>
+
+<para>
+  Determines the height of the list items or the height of the selection field in this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+  </para>
+  <variablelist>
+    <varlistentry><term>getSelectionField [optional]</term>
+    <listitem>
+    <para>
+      If true get the selection field height, if false get the list items height. The
+     default is false, get the item height.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the height, in pixels, of the specified component. On error returns -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the height of the combo box items and increases it by 2 pixels:
+<programlisting>
+<![CDATA[
+
+  itemHeight = comboBox~getItemHeight
+  itemHeight += 2
+  comboBox~setItemHeight(itemHeight)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getItemHeight() -->
+
+<section id="mthGetMinVisible" xreflabel="getMinVisible"><title>getMinVisible</title>
+<indexterm><primary>getMinVisible</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getMinVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMinVisible--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the minimum number of visible items that must be displayed in the drop-down list of this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the minimum number of visible items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the number of items in the drop-down list is greater than the minimum, the combo box uses a scrollbar. Unless the
+    combo box has the no integral height style, the drop-down will be sized so that it can accommodate the minimum number of
+    items. By default, 30 is the minimum setting for the combo box.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries the current minimum visible setting, and then changes it to 10:
+<programlisting>
+<![CDATA[
+
+  say 'Current minimum visible setting:' comboBox~getMinVisible
+  comboBox~setMinVisible(10)
+  say 'New minimum visible setting is: ' comboBox~getMinVisible
+
+/*  Output would be:
+
+Current minimum visible setting: 30
+New minimum visible setting is:  10
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getMinVisible() -->
+
+
+<section id="mthGetTextClsComboBox" xreflabel="getText"><title>getText</title>
+<indexterm><primary>getText</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getText(--index--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the text of the item at the specified index in the combo box list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The one-based index of a combo box item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the combo box item at the specified index. If <emphasis role="italic">index</emphasis> is not valid or
+    an error occurs, the empty string is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="mthFindClsComboBox"/> <link linkend="exampleFindClsComboBox">example</link> uses the <emphasis
+    role="italic">getText</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthInsertClsComboBox" xreflabel="insert"><title>insert</title>
+<indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insert(--+-------+--,--item--)---------------><
+             +-index-+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new item into the list of the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
+        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
+        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
+        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
+        item
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>item [required]</term>
+      <listitem>
+      <para>
+      	The item to add to the list.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike the <xref linkend="mthAddClsComboBox"/> method, if the combo box has the SORT style, the <emphasis
+    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
+    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
+    error.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIsDropDown" xreflabel="isDropDown"><title>isDropDown</title>
+<indexterm><primary>isDropDown</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isDropDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDropDown-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines if this combo box is a drop-down combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this combo box is a drop-down combo box, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">drop-down</emphasis> combo box.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isDropDown() -->
+
+
+<section id="mthIsDropDownList" xreflabel="isDropDownList"><title>isDropDownList</title>
+<indexterm><primary>isDropDownList</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isDropDownList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDropDownList-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines if this combo box is a drop-down list combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this combo box is a drop-down list combo box, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">drop-down list</emphasis> combo box.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isDropDownList() -->
+
+
+<section id="mthIsDropDownOpen" xreflabel="isDropDownOpen"><title>isDropDownOpen</title>
+<indexterm><primary>isDropDownOpen</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isDropDownOpen</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDropDownOpen-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines whether the list box of the combo box is dropped down.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the list box is dropped down, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIsGrandchildClsComboBox" xreflabel="isGrandchild"><title>isGrandchild</title>
+<indexterm><primary>isGrandchild</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isGrandchild</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isGrandchild(--+------------+--+------------+--)------------><
+                   +-,-mthName--+  +-,-wantTab--+
+]]>
+</programlisting>
+
+<para>
+  Notifies the ooDialog framework that this combo box control is a grandchild of the dialog and configures the underlying
+  combo box control to send four event notifications to the dialog, rather than its direct parent.
+</para>
+<para>
+  The four events that the grandchild notifies the Rexx dialog of are the RETURN, ESCAPE, TAB keydown events, and the
+  KILLFOCUS event. See the Remarks section for more details.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>mthName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog that is connected to the four event notifications sent by the grandchild. If
+      this argument is omitted, the default method name is <emphasis role="italic">onComboBoxGrandchildEvent</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wantTab [optional]</term>
+    <listitem>
+    <para>
+      By default, the TAB keydown notification is not sent to the dialog. If the <emphasis role="italic">wantTab</emphasis>
+      argument is true then the <emphasis role="italic">mthName</emphasis> method is also invoked for the TAB keydown event.
+      The default for this argument is false and the TAB keydown event does not cause the method to be invoked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally dialog controls are child windows of the dialog window. Historically, in older versions of ooDialog, this was
+    always the case. However, since ooDialog 4.2.0, there have begun to be some cases where the programmer can gain access to
+    dialog controls that are not the direct child of the dialog. For instance, the <xref linkend="mthSetParentClsDialogControl"/> method can
+    be used to change the parent window of a dialog control to a parent window other than the dilaog window. When the other
+    window is a dialog control, this makes the control window a grandchild of the dialog. Some dialog controls create their
+    own child dialog controls and enhancements to ooDialog have begun to give the Rexx programmer access to these child
+    dialog controls. These are also grandchildren of the dialog.
+  </para>
+  <para>
+    A dialog control sends its event notifications to its direct parent, never to its grandparent. The <emphasis
+    role="italic">isGrandchild</emphasis> method of the <computeroutput>ComboBox</computeroutput> control is a special case
+    method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
+    will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
+    RETURN, and ESCAPE keydown events. These events occur when the user types the return, (or enter,) key, the escape key, or
+    the tab key. The fourth event is the KILLFOCUS event. This event occurs when the combo box control loses the focus.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this method will probably only work properly for drop-down list combo boxes.
+    The simple and drop-down combo boxes have a child edit control that receives the keyboard focus rather than the combo box.
+    For simple and drop-down combo boxes, the programmer should be get the edit control using the <xref
+    linkend="mthGetEditControl"/> method and then use the <computeroutput>Edit</computeroutput> class <xref
+    linkend="mthIsGrandchildClsEdit"/> method on the edit object rather than the <emphasis
+    role="italic">isGrandchild</emphasis> method on the combo box object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the parent of a combo box to be a list-view. It then invokes <emphasis
+    role="italic">isGrandchild</emphasis> so that the <emphasis role="italic">onComboBoxGrandchildEvent</emphasis> method
+    will be invoked in the Rexx dialog for the KILLFOCUS, RETURN keydown, and ESCAPE keydown events:
+<programlisting>
+<![CDATA[
+
+  list = self~newListView(IDC_LISTVIEW)
+  cb   = self~newComboBox(IDC_COMBOBOX)
+
+  cb~setParent(list)
+  cb~isGrandChild
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isGrandchild() -->
+
+<section id="mthIsSimpleClsComboBox" xreflabel="isSimple"><title>isSimple</title>
+<indexterm><primary>isSimple</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isSimple</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isSimple-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines if this combo box is a simple combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this combo box is a drop-down list combo box, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">simple</emphasis> combo box.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isSimple() -->
+
+
+<section id="mthItemsClsComboBox" xreflabel="items"><title>items</title>
+<indexterm><primary>items</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>items</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--items----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the number of items in the combo box list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items in the combo box list, or -1 on error. An error is very unlikely.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthModifyClsComboBox" xreflabel="modify"><title>modify</title>
+<indexterm><primary>modify</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>modify</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--modify(--+--------+--,--newText--)-----------><
+             +--index-+
+]]>
+</programlisting>
+
+<para>
+  Replaces the text for the item at the specified index with <emphasis role="italic">newText</emphasis>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The index of the list item whose text is to be replaced. If this argument is omitted, then the currently
+        selected item has its text replaced. When this argument is omitted and there is no currently selected text then
+        nothing is done and -1 is returned.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>newText [required]</term>
+      <listitem>
+      <para>
+        The new text for the item at the specified index.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item whose text has been replaced, or less than 1 to indicate an error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Because this method uses the <xref linkend="mthInsertClsComboBox"/> method to change the text at the
+    specified index, if the combo box has the SORT style, the <emphasis role="italic">modify</emphasis> method will not
+    cause the combo box to insert the new text in its alphabetical order in the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new text is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
+    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
+  </para> </listitem></varlistentry>
+</variablelist> </section>  <!-- End ComboBox::modify() -->
+
+<section id="mthOpenDropDown" xreflabel="openDropDown"><title>openDropDown</title>
+<indexterm><primary>openDropDown</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>openDropDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--openDropDown---------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Shows the drop-down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  simple combo boxes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRemoveFullColor" xreflabel="removeFullColor"><title>removeFullColor</title>
+<indexterm><primary>removeFullColor</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>removeFullColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeFullColor------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reverts the color for this combo box to its default, if the <xref linkend="mthSetFullColor"/> method has previously been
+  invoked on this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">setFullColor</emphasis> method has not previously been invoked for this combo box, then
+    the method does nothing and false is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example restores the combo box to its default colors after it had been set to some custom colors:
+<programlisting>
+<![CDATA[
+::method initDialog
+    ...
+    mediumSpringGreen =  .Image~colorRef(0, 238, 118)
+    fireBrickRed      =  .Image~colorRef(205, 38, 38)
+
+    cbDropDown = self~getComboBox(IDC_CB_DROPDOWN)
+    cbDropDown~setFullColor(mediumSpringGreen, fireBrickRed)
+    ...
+
+::method restoreComboBox private
+    expose cpDropDown
+
+    cbDropDown~removeFullColor
+    return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::removeFullColor() -->
+
+<section id="mthRemoveItemDataClsComboBox" xreflabel="RemoveItemData"><title>removeItemData</title>
+<indexterm><primary>removeItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>removeItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeItemData(--+--------+--)---------------><
+                     +--index-+
+]]>
+</programlisting>
+<para>
+  Removes and returns the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item whose data value is being removed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns the item data value associated with the specified item, or .nil if there is no data
+   associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any, or
+    all, of the comboBox items. The data value can be any ooRexx object. The data value is set using
+    the <xref linkend="mthSetItemDataClsComboBox"/> method. The data value can be retrieved without
+    removing it from a list-view item through the <xref linkend="mthGetItemDataClsComboBox"/> method.
+    Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::RemoveItemData() -->
+
+
+<section id="mthSelectClsComboBox" xreflabel="select"><title>select</title>
+<indexterm><primary>select</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>select</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--select(--itemText--)-------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the selected item in the list of the combo box to the first item whose text matches <emphasis
+  role="italic">itemText</emphasis>
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>itemText [required]</term>
+      <listitem>
+      <para>
+        The text to use in searching for the matching item to select.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item selected, or zero if no match was found. 0 is also returned if an error occurs
+    within the <xref linkend="ovvUnderlying"/> combo box , but that is unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The search for <emphasis role="italic">itemText</emphasis> is always case insensitive. The search starts with the
+    first item in the list and the first item whose beginning characters match <emphasis
+    role="italic">itemText</emphasis> is selected. For example, if <emphasis role="italic">itemText</emphasis> is
+    <computeroutput>san</computeroutput> then the item <computeroutput>San Diego</computeroutput> would be a match.
+  </para>
+  <para>
+    If no match is found, or if an error occurs, the selection remains unchanged.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example fills a combo box with items and then selects an item.
+  </para>
+  <para>
+    Notice that the result(s) as specified in the code comments, are dependent on the combo box not having the SORT
+    style. If the combo box does have the sort style, then in both cases <emphasis role="italic">new orleans</emphasis>
+    would be selected.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose comboBox
+
+  comboBoxItems = .array~of("San Diego", "New York", "Los Angeles",  -
+                            "Detroit", "Tampa Bar", "Billings",      -
+                            "San Francisco", "new orleans", "San Antonio")
+
+
+  comboBox = self~newComboBox(IDC_CBO_ONE)
+  do i over comboBoxItems
+    comboBox~add(i)
+  end
+
+  comboBox~select("new") -- Selects New York
+
+  /* On the other hand this would select new orleans */
+  -- comboBox~select("NEW O")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::select() -->
+
+
+<section id="mthSelectedClsComboBox" xreflabel="selected"><title>selected</title>
+<indexterm><primary>selected</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>selected</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selected-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the text of the currently selected item in the list of the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the selected item, or the empty string if no item is selected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSelectedIndexClsComboBox" xreflabel="selectedIndex"><title>selectedIndex</title>
+<indexterm><primary>selectedIndex</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>selectedIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selectedIndex--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines the index of the currently selected item in the list of the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the currently selected list item, or 0 if there is no selected item.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSelectIndexClsComboBox" xreflabel="selectIndex"><title>selectIndex</title>
+<indexterm><primary>selectIndex</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>selectIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selectIndex(--+---------+--)-----------------><
+                  +--index--+
+]]>
+</programlisting>
+
+<para>
+  Sets the currently selected item in the list of the comboBox to the index specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the item to be selected.
+      </para>
+      <para>
+        If this argument is omitted, or is 0, the selection is cleared. I.e., the result will be that no item is
+        selected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the return is the one-based index of the selected item, which is 0 if the selection has been cleared. On
+    error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a new item is selected, if necessary, the new item in the list is scrolled into view. The text in the selection
+    field will change to reflect the new selected item. Any previous selection in the list is removed.
+  </para>
+  <para>
+    If <emphasis role="italic">index</emphasis> is greater than the number of items in the list, the selection is
+    cleared and -1 is returned. If <emphasis role="italic">index</emphasis> is negative, then -1 is returned and the
+    selection remains unchanged.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::selectIndex() -->
+
+<section id="mthSetCueClsComboBox" xreflabel="setCue"><title>setCue</title>
+<indexterm><primary>setCue</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCue(--banner--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the cue banner text for this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>banner [required]</term>
+    <listitem>
+    <para>
+      The text for the banner. The text can not be longer than 255 characters in length.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The cue banner is text that is displayed in the edit control, or selection field, of a combo box when there is no item
+    currently selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="bold">Requires Windows Vista or later</emphasis>.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a simple cue for a combo box and then reads it back:
+<programlisting>
+<![CDATA[
+
+  comboBox = self~newComboBox(IDC_COMBOBOX)
+
+  comboBox~setCue("Select a city")
+
+  say 'Cue set:' comboBox~getCue
+
+/* Output would be:
+
+   Cue set: Select a city
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setCue() -->
+
+
+<section id="mthSetEditSelection" xreflabel="setEditSelection"><title>setEditSelection</title>
+<indexterm><primary>setEditSelection</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setEditSelection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setEditSelection(--+--------------+--+-------------+--)-----><
+                       +--startIndex--+  +-,-endIndex--+
+]]>
+</programlisting>
+
+<para>
+  Sets the selection in the edit control portion of a <link linkend="listComboBoxTypes">simple</link> or drop-down combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>startIndex [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the starting character for the selection. If <emphasis
+        role="italic">startIndex</emphasis> is 0, the selection, if any, is removed. The default value for <emphasis
+        role="italic">startIndex</emphasis> is 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>endIndex [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the last character in the selection. If <emphasis role="italic">endIndex</emphasis> is 0
+        all text in the edit control is selected. The default value if <emphasis role="italic">endIndex</emphasis> is
+        omitted is 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 on success and 1 on error. In particular, if this method is used with a drop-down list combo
+    box, 1 is returned. Other errors could occur within the <xref linkend="ovvUnderlying"/> combo box,
+    but they are unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the value of <emphasis role="italic">startIndex</emphasis> is 0, the value of <emphasis
+    role="italic">endIndex</emphasis> is ignored. This implies that if <emphasis role="italic">startIndex</emphasis> is
+    omitted, the selection is always removed.
+  </para>
+  <para>
+    If <emphasis role="italic">endIndex</emphasis> is 0 and the value of <emphasis role="italic">startIndex</emphasis>
+    is not omitted and is not 0, then all text in the edit control is selected and the actual value of <emphasis
+    role="italic">startIndex</emphasis> is not relevant.
+  </para>
+  <para>
+    <emphasis role="italic">endIndex</emphasis> can be less than <emphasis role="italic">startIndex</emphasis>. If both
+    arguments are positive then text is selected, but the selection is exclusive of the staring and ending indexes. For
+    example this code:
+
+<programlisting>
+<![CDATA[
+
+  cb = self~newComboBox(200)
+  ret = cb~setEditSelection(8, 3)
+
+]]>
+</programlisting>
+
+    will select characters 4 through 7 inclusive.  Provided there are at least 7 characters in the edit control of
+    course.
+  </para>
+  <para>
+    The outcome of other variations of <emphasis role="italic">endIndex</emphasis> being less than <emphasis
+    role="italic">startIndex</emphasis> are deterministic, but the results are left as an exercise for the reader.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setEditSelection() -->
+
+
+<section id="mthSetFullColor" xreflabel="setFullColor"><title>setFullColor</title>
+<indexterm><primary>setFullColor</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setFullColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFullColor(--+-----------+--+------------+--+---------------+--)---------><
+                   +--bkColor--+  +-,-fgColor--+  +-,-isSysColor--+
+]]>
+</programlisting>
+
+<para>
+  Sets the complete color of this combo box, this includes both the selection field and the list parts of the comb box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>bkColor [optional]</term>
+    <listitem>
+    <para>
+      Specifies the background color for the combo box. If this arugment is omitted, the background color of the combo box is
+      not changed. See the remarks for the details on how colors are specified. If both the <emphasis
+      role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments are omitted, this method
+      returns false and does not do anything.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fgColor [optional]</term>
+    <listitem>
+    <para>
+      Specifies the foreground color for the combo box. If this arugment is omitted, the foreground color of the combo box is
+      not changed. See the remarks for the details on how colors are specified. If both the <emphasis
+      role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments are omitted, this method
+      returns false and does not do anything.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isSysColor [optional]</term>
+    <listitem>
+    <para>
+      The colors can be either regular colors or system colors, but both the foreground and the background colors must be
+      the same type. The <emphasis role="italic">isSysColor</emphasis> argument is used to specify that the colors are system
+      colors. By default, the <emphasis role="italic">bkColor</emphasis> and <emphasis role="italic">fgColor</emphasis>
+      arguments are assumed to be regular colors specified as a <xref linkend="defColorRef"/>. If <emphasis
+      role="italic">isSysColor</emphasis> is true then the colors are assumed to be system colors.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success and false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Since a combo box is not a single control, but rather is composed of several different controls, the <xref
+    linkend="mthSetColor"/> and <xref linkend="mthSetSysColor"/> methods do not work well with a combo box. Typically only the
+    selection field is colored and the color for the list part of the combo box is left unchanged. The <emphasis
+    role="italic">setFullColor</emphasis> method is used to set the color for all of the combo box.
+  </para>
+  <para>
+    Regular colors are specified as a <xref linkend="defColorRef"/> value, not as a palette <xref linkend="defColor"/>. To
+    ensure that the COLORREF value is correct, be sure to use one of the ooDialog methods that returns a COLORREF, such as
+    the <xref linkend="mthColorRef"/> class method of the <xref linkend="clsImage"/> class.
+  </para>
+  <para>
+    System colors are specified to the operating by an unique whole number ID. To specify a system color to the <emphasis
+    role="italic">setFullColor</emphasis> method, the programmer can either use the unique whole number ID known to the
+    operating system or a keyword, case insensitive. The keywords, a brief description, and the matching whole number IDs can
+    be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+  </para>
+  <para>
+    The <emphasis role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments must both be
+    system color IDs or both be COLORREF values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the color for a drop down combo box to light green on red:
+<programlisting>
+<![CDATA[
+  mediumSpringGreen =  .Image~colorRef(0, 238, 118)
+  fireBrickRed      =  .Image~colorRef(205, 38, 38)
+
+  cbDropDown = self~getComboBox(IDC_CB_DROPDOWN)
+  cbDropDown~setFullColor(mediumSpringGreen, fireBrickRed)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setFullColor() -->
+
+
+<section id="mthSetHorizontalExtentClsComboBox" xreflabel="setHorizontalExtent"><title>setHorizontalExtent</title>
+<indexterm><primary>setHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setHorizontalExtent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setHorizontalExtent(--pixels--)--------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the width, in pixels, that the combo box's list box can be scrolled horizontally.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>pixels [required]</term>
+      <listitem>
+      <para>
+        Specifies the scrollable width, in pixels, of the combo box's list box.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method works whether or not the combo box has a horizontal scroll bar. However, if the combo box does not have
+    a scroll bar, the user will see no difference. A scroll bar can be added explicitly by using the WS_HSCROLL style
+    with the combo box definition in the resource script for a <xref linkend="clsRcDialog"/> or a <xref
+    linkend="clsResDialog"/>, or by using the HSCROLL style in the <xref linkend="mthCreateComboBox"/> method of a <xref
+    linkend="clsUserDialog"/>.
+  </para>
+  <para>
+    In addition, a horizontal scroll bar is added implicitly if the CBS_DISABLENOSCROLL style is used in the resource
+    script. (Or the DISABLENOSCROLL style in the <emphasis role="italic">createComboBox</emphasis> method.)
+  </para>
+  <para>
+    When the width of the list box in the combo box is equal to or greater than the horizontal extent value, the
+    horizontal scroll bar is hidden. If there are items in the combo box that are wider than the width of the list box,
+    the user will not be able to see all of the item. In this case, the horizontal extent needs to be set by the
+    programmer to a higher value.
+  </para>
+  <para>
+    When the width of the list box in the combo box is smaller than the value of the horizontal extent, the horizontal
+    scroll bar will horizontally scroll items in the list box.
+  </para>
+  <para>
+    Note that if the combo box has the DISABLENOSCROLL style, instead of hiding the horizontal scroll bar when the width
+    of the list box is equal to or greater than the horizontal extent, the scroll bar is disabled.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example calculates the width in pixels of the longest item added to the combo box. If this width is longer than
+    the width of the combo box, then the horizontal extent is set to that width.  Otherwise the horizontal extent is not
+    changed. This will have no effect unless the combo box has a horizontal scroll bar, see the Remarks section.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose comboBox comboBoxItems
+
+  longest = .Size~new
+
+  comboBox = self~newComboBox(IDC_CBO_ONE)
+  do i over comboBoxItems
+    comboBox~add(i)
+
+    size = self~getTextSizePx(i)
+    if size~width > longest~width then longest = size
+  end
+
+  -- Be sure we have a 1 pixel space at the end of the longest item.
+  longest~width += 1
+
+  if comboBox~pixelCX < longest~width then do
+    comboBox~setHorizontalExtent(longest~width)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setHorizontalExtent() -->
+
+<section id="mthSetItemDataClsComboBox" xreflabel="setItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemData(--+--------+--)------------------><
+                  +--index-+
+]]>
+</programlisting>
+<para>
+  Sets the item data associated with the specified comboBox item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the item the data value is associated with.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The data value to store for the list-view item. This can be any Rexx object. (Recall that in
+      ooRexx numbers and strings are also objects.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+   Returns true on success, false on error. An error is unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The comboBox control allows the user (the Rexx programmer) to associate a data value with any,
+    or all, of the comboBox items. The data value can be any ooRexx object. The data value can be
+    retrieved without removing it from a list-view item through the <xref linkend="mthGetItemDataClsComboBox"/> method,
+    or it can be retrieved and removed through the <xref linkend="mthRemoveItemDataClsComboBox"/> method.
+    Storing a user value for each item can be useful in any number of ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setItemData() -->
+
+<section id="mthSetItemHeightClsComboBox" xreflabel="setItemHeight"><title>setItemHeight</title>
+<indexterm><primary>setItemHeight</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemHeight(--height--+----------------------+--)---------><
+                            +-,-setSelectionField--+
+]]>
+</programlisting>
+
+<para>
+  Sets the height of the list items or the selection field in this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>height [required]</term>
+    <listitem>
+    <para>
+      The height, in pixels, to set the specified component. <emphasis role="italic">height</emphasis> must be a non-negative
+      whole number or a syntax condition is raised.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>setSelectionField [optional]</term>
+    <listitem>
+    <para>
+      By default this method sets the height of the combo box items in the list. If <emphasis
+      role="italic">setSelectionField</emphasis> is true, the height of the selection field is set.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success. Returns -1 if <emphasis role="italic">height</emphasis> is not valid. The Microsoft documentation
+    does not specify exactly what invalid means. Some simple testing shows that the operating system will not accept very
+    large numbers. Exactly where the cut off is could be determined by the programmer if needed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The selection field height in a combo box is set independently of the height of the list items. The programmer must
+    ensure that the height of the selection field is not smaller than the height of a particular list item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the height of the combo box items, increases it by 2 pixels, and sets that as the height of the items:
+<programlisting>
+<![CDATA[
+
+  itemHeight = comboBox~getItemHeight
+  itemHeight += 2
+  comboBox~setItemHeight(itemHeight)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setItemHeight() -->
+
+
+<section id="mthSetMinVisible" xreflabel="setMinVisible"><title>setMinVisible</title>
+<indexterm><primary>setMinVisible</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setMinVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMinVisible(--number--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the minimum number of visible items in the drop-down list of a combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>number [required]</term>
+    <listitem>
+    <para>
+      The new setting for the minimum number of visible items in the drop-down list.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the number of items in the drop-down list is greater than the minimum, the combo box uses a scrollbar. Unless the
+    combo box has the no integral height style, the drop-down will be sized so that it can accommodate the minimum number of
+    items. By default, 30 is the minimum setting for the combo box.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries the current minimum visible setting, and then changes it to 10:
+<programlisting>
+<![CDATA[
+
+  say 'Current minimum visible setting:' comboBox~getMinVisible
+  comboBox~setMinVisible(10)
+  say 'New minimum visible setting is: ' comboBox~getMinVisible
+
+/*  Output would be:
+
+Current minimum visible setting: 30
+New minimum visible setting is:  10
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setMinVisible() -->
+
+
+</chapter>

@@ -1,0 +1,1701 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oosqlite.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooSqlite XML file.
+    #
+    # Copyright (c) 2012-2024, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<section id="clsOOSQLite"><title>The ooSQLite Class</title>
+<indexterm><primary>ooSQLite class</primary></indexterm>
+<para>
+  The methods of the <computeroutput>ooSQLite</computeroutput> class consist entrirely of class methods. These are
+  utility methods that primarily deal with application-wide or process-wide settings, and the database engine itself,
+  rather than specific databases.
+</para>
+
+<section id="sctMethodsOOSQLite"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with the database engine using the <computeroutput>ooSQLite</computeroutput> class
+</para>
+<table id="tblOOSQLiteMethods" frame="all">
+<title>ooSQLite Methods and Attributes</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrRecordFormatClsOOSQLite">recordFormat</link></entry>
+<entry>Sets or queries the default, process-wide format for returned result sets.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNullClsOOSQLite"/></entry>
+<entry>Reflects the default representation for the SQL NULL value that is returned by the interpreter for database values that are NULL.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCompileOptionGet">compileOptionGet</link></entry>
+<entry>Returns the name of the <emphasis role="italic">nth</emphasis> compile time option if the option was used during the build of ooSQLite.</entry>
+</row>
+<row>
+<entry><link linkend="mthCompileOptionUsed">compileOptionUsed</link></entry>
+<entry>Determines if the named compile-time option was used during the build of ooSQLite.</entry>
+</row>
+<row>
+<entry><link linkend="mthComplete">complete</link></entry>
+<entry>Determines if the specified text seems to be a complete SQL statement.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnquote">enquote</link></entry>
+<entry>Converts the supplied Rexx value(s) into SQL literals.</entry>
+</row>
+<row>
+<entry><link linkend="mthErrStr">enquote</link></entry>
+<entry>Retrieves the English language descriptive string for a result code.</entry>
+</row>
+<row>
+<entry><link linkend="mthLibVersion">libVersion</link></entry>
+<entry>Returns the embedded SQLite library version as a string.</entry>
+</row>
+<row>
+<entry><link linkend="mthLibVersionNumber">libVersionNumber</link></entry>
+<entry>Returns the embedded SQLite library version as a number..</entry>
+</row>
+<row>
+<entry><link linkend="mthMemoryHighWater">memoryHighWater</link></entry>
+<entry>Returns the maximum value of the number of bytes of memory malloced but not freed (memory in use) of the database engine since the high-water mark was last reset.</entry>
+</row>
+<row>
+<entry><link linkend="mthMemoryUsed">memoryUsed</link></entry>
+<entry>Returns the number of bytes of memory currently in use by the database engine.</entry>
+</row>
+<row>
+<entry><link linkend="mthReleaseMemory">releaseMemory</link></entry>
+<entry>Causes the database engine to attempt to free the specified number of bytes of heap memory by deallocating non-essential memory.</entry>
+</row>
+<row>
+<entry><link linkend="mthSoftHeapLimit64">softHeapLimit64</link></entry>
+<entry>Imposes a limit on the heap size, or queries the current size.</entry>
+</row>
+<row>
+<entry><link linkend="mthSourceID">sourceID</link></entry>
+<entry>Returns the embedded SQLite library source ID string.</entry>
+</row>
+<row>
+<entry><link linkend="mthSqlite3Version">sqlite3Version</link></entry>
+<entry>Returns the value of the SQLite C code <computeroutput>sqlite3_version[]</computeroutput> string constant.</entry>
+</row>
+<row>
+<entry><link linkend="mthStatus">status</link></entry>
+<entry>Retrieves runtime status information about the performance of the database engine, and optionally resets various highwater marks.</entry>
+</row>
+<row>
+<entry><link linkend="mthThreadSafe">threadSafe</link></entry>
+<entry>Tests to see if the currently running database engine is using a library that is thread safe.</entry>
+</row>
+<row>
+<entry><link linkend="mthVersion">version</link></entry>
+<entry>Produces a version string in the format specified.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+<section id="atrNullClsOOSQLite" xreflabel="null"><title>null (Attribute)</title>
+<indexterm><primary>null</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>null</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--null-----------------------------------------><
+
+>>--null = nullObj-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the default representation for the SQL NULL value that is returned by the interpreter for database values that are
+  NULL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">null get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current default object the interpreter uses for the SQL NULL value. If the programmer has not changed this
+    attribute, its value is the <computeroutput>.nil</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">null set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to either the <computeroutput>.nil</computeroutput> object, or some alternative <emphasis
+    role="italic">string</emphasis> value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default, ooSQLite uses the <computeroutput>.nil</computeroutput> object to represent the SQL NULL value. Queries for
+    values stored in the database will return the <computeroutput>.nil</computeroutput> object for any value that is SQL
+    NULL. However, by changing the value of the <emphasis role="italic">null</emphasis> attribute, the Rexx programmer can
+    change the value the interpreter returns for NULL. Typically this would be done when the returned values are going to be
+    displayed as text and the programmer would prefer to work with a string directly. Perhaps the value <emphasis
+    role="italic">NULL</emphasis>, or <emphasis role="italic">no
+    value</emphasis> would be assigned.
+  </para>
+  <para>
+    The <emphasis role="italic">null</emphasis> attribute of the <computeroutput>ooSQLite</computeroutput> class is the
+    default value used for the entire application.  The <xref linkend="atrNullClsOOSQLiteConnection"/> attribute of the
+    <computeroutput>ooSQLiteConnection</computeroutput> object can be used to change the value on a database connection only.
+    Likewise the <xref linkend="atrNullClsOOSQLiteStmt"/> attribute of the <computeroutput>ooSQLiteStmt</computeroutput> can
+    be used to change the value for a single statement only.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this attribute does not affect the value the programmer must use to assign a
+    SQL NULL to the database. The programmer must use the <computeroutput>.nil</computeroutput> object for that.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    This attribute is provided by ooSQLite, there is no similar feature provided by SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the <emphasis role="italic">null</emphasis> attribute of the <computeroutput>ooSQLite</computeroutput>
+    class to <emphasis role="italic">empty</emphasis>. This allows the application to invoke the <emphasis
+    role="italic">left</emphasis> method on the returned value without having to check that the return is the
+    <computeroutput>.nil</computeroutput> object. Note that invoking the <emphasis role="italic">left</emphasis> method on
+    the <computeroutput>.nil</computeroutput> object will raise a syntax condition:
+<programlisting>
+<![CDATA[
+
+  .ooSQLite~null = 'empty'
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  stmt = .ooSQLiteStmt~new(dbConn, sql)
+
+  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say '='~copies(80)
+
+  do while stmt~step == stmt~ROW
+    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::nullObj() [attribute]  -->
+
+<section id="atrRecordFormatClsOOSQLite"><title>recordFormat (Attribute)</title>
+<indexterm><primary>recordFormat</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>recordFormat</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--recordFormat---------------------------------><
+
+>>--recordFormat-=-varName-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets or queries the default format for any result set produced by ooSQLite. The default format on startup is <link
+  linkend="sctOOSQLiteSpecific">OO_ARRAY_OF_DIRECTORIES</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">recordFormat get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of this attribute is one of the ooSQLite Result Set Format <link
+    linkend="sctOOSQLiteSpecific">Constants</link> that define how a result set is formatted. The default format can be
+    over-ridden at the database <link linkend="clsOOSQLiteConnection">connection</link>, <link
+    linkend="clsOOSQLiteStmt">statment</link>, or method level. If not over-ridden, all returned result sets for the
+    entire process will have the format specified by this attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">recordFormat set:</emphasis></term>
+  <listitem>
+  <para>
+    The default format of a record set can be changed by setting this attribute to one of the ooSQLite Result Set Format
+    <link linkend="sctOOSQLiteSpecific">Constants</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    There are currently 4 formats defined:
+    <itemizedlist>
+    <listitem>
+    <para>
+      OO_ARRAY_OF_DIRECTORIES - The result set is returned in an <computeroutput>Array</computeroutput> object. Each
+      row (each record) in the result set is an item in that array. The rows 1 through N in the result set are the items
+      1 through N in the array. Each row (each record) is a <computeroutput>Directory</computeroutput> object. The
+      directory object has a single item for each column in the row, where the index of the item is the name of the
+      column and the value at that index is the value of the column.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      OO_ARRAY_OF_ARRAYS - The result set is returned in an <computeroutput>Array</computeroutput> object. Each row
+      (each record) in the result set is an item in that array. Each item in the array is also an array. The first item
+      in the array is an array of the column names for a row, with column name 1 through column name N as item 1 through
+      N in the array. Each row in the result set is an array of the column values for the row, in column order. The
+      first row in the result set will be the second item in the array. Thus the rows 1 through R in the result set will
+      have indexes 2 through R + 1 in the array.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      OO_STEM_OF_STEMS - The result set is returned in a <computeroutput>Stem</computeroutput> object. Each row (each
+      record) in the result set is also a stem. The stem for a row has a single tail for each column in the row, where
+      the tail is the name of the column and the value of that tail is the value of the column. The returned stem has
+      tails 0 through N, N equal to the number of rows in the result set. The value at tail 0 is the count of rows in
+      the result set. The values at tail 1 through N are the stems for row 1 through N in the result set..
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      OO_CLASSIC_STEM - The result set is returned in a <computeroutput>Stem</computeroutput> object. The returned stem has
+      tails 0 through N, N equal to the number of rows in the result set. The value at tail 0 is the count of rows in the
+      result set. Each tail 1 through N are compound tails that represent the rows in the result set. Each compound tail is
+      the row number combined with a column name in the row. The value at that compound tail is the value of the named column
+      in that row. E.g., for a result set that contains the 3 columns, <computeroutput>id</computeroutput>,
+      <computeroutput>name</computeroutput>, and <computeroutput>type_id</computeroutput>, the values for row 1 in the result
+      set would be at the stem variables <computeroutput>stm.1.id</computeroutput>,
+      <computeroutput>stm.1.name</computeroutput>, and <computeroutput>stm.1.type_id</computeroutput>.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+    The format for a result set can also be set for an individual database connection. Use the
+   <computeroutput>ooSQLiteConnection</computeroutput> object's <link
+   linkend="atrRecordFormatClsConn">recordFomat</link> attribute, or the <emphasis role="italic">defFormat</emphasis>
+   argument in the <link linkend="mthNewClsOOSQLiteConnection">new</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This attribute is provided by ooSQLite, there is no similar feature provided by SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the default format for a result set to be an array of records where each record in the array is
+    an array of the column values. The first item in the array is an array of the column names, and the records are the
+    second through nth items, where n is the number of records:
+<programlisting>
+<![CDATA[
+-- Set the result set format to an array of arrays:
+.ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
+
+dbName = 'ooFoods.rdbx'
+
+dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+sql = 'SELECT * FROM foods ORDER BY name;'
+resultSet = dbConn~exec(sql, .true)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::recordFormat() [attribute]  -->
+
+<section id="mthCompileOptionGet"><title>compileOptionGet</title>
+<indexterm><primary>compileOptionGet</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>compileOptionGet</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--compileOptionGet(--nth--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the name of the <emphasis role="italic">nth</emphasis> compile time option if the option was used during the
+  build of ooSQLite. Returns the string <emphasis role="italic">NULL</emphasis> if the <emphasis
+  role="italic">nth</emphasis> compile time option was not used.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>nth [required]</term>
+      <listitem>
+      <para>
+        <emphasis role="italic">nth</emphasis> is the index of the compile time option. The database engine has a list
+        of options that were set at compile time, 1 through N. This argument specifies which N is geing queried.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The name of the <emphasis role="italic">nth</emphasis> compile time option, or <emphasis
+    role="italic">NULL</emphasis> if <emphasis role="italic">nth</emphasis> is out of range.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">compileOptionGet</emphasis> method allows one to iterate over the compile-time options
+    that were defined during the build of the SQLite database engine. This is done by starting with index 1 and
+    incrementing the index at each iteration until the string <emphasis role="italic">NULL</emphasis> is returned. This
+    produces a list of the compile-time options that were specified at build time.
+  </para>
+  <para>
+    For most purposes, SQLite can be built just fine using the default compilation options. However, if required,
+    compile-time options can be used to omit SQLite features (resulting in a smaller compiled library size) or to change
+    the default values of some parameters. ooSQLite is built using just a few compile-time options.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">compileOptionGet</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/compileoption_get.html">sqlite3_compileoption_get</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how to iterate over the compile-time options:
+<programlisting>
+<![CDATA[
+do i = 1
+  option = .ooSQLite~compileOptionGet(i)
+  if option = "NULL"
+    then leave
+  say 'Compile option:' option
+end
+
+/* Output might be:
+Compile option: ATOMIC_INTRINSICS=0
+Compile option: COMPILER=msvc-1928
+Compile option: DEFAULT_AUTOVACUUM
+Compile option: DEFAULT_CACHE_SIZE=-2000
+Compile option: DEFAULT_FILE_FORMAT=4
+Compile option: DEFAULT_FOREIGN_KEYS
+Compile option: DEFAULT_JOURNAL_SIZE_LIMIT=-1
+Compile option: DEFAULT_MMAP_SIZE=0
+Compile option: DEFAULT_PAGE_SIZE=4096
+Compile option: DEFAULT_PCACHE_INITSZ=20
+Compile option: DEFAULT_RECURSIVE_TRIGGERS
+Compile option: DEFAULT_SECTOR_SIZE=4096
+Compile option: DEFAULT_SYNCHRONOUS=2
+Compile option: DEFAULT_WAL_AUTOCHECKPOINT=1000
+Compile option: DEFAULT_WAL_SYNCHRONOUS=2
+Compile option: DEFAULT_WORKER_THREADS=0
+Compile option: ENABLE_COLUMN_METADATA
+Compile option: ENABLE_FTS3
+Compile option: ENABLE_FTS3_PARENTHESIS
+Compile option: ENABLE_FTS4
+Compile option: ENABLE_FTS5
+Compile option: ENABLE_MEMORY_MANAGEMENT
+Compile option: MALLOC_SOFT_LIMIT=1024
+Compile option: MAX_ATTACHED=10
+Compile option: MAX_COLUMN=2000
+Compile option: MAX_COMPOUND_SELECT=500
+Compile option: MAX_DEFAULT_PAGE_SIZE=8192
+Compile option: MAX_EXPR_DEPTH=1000
+Compile option: MAX_FUNCTION_ARG=127
+Compile option: MAX_LENGTH=1000000000
+Compile option: MAX_LIKE_PATTERN_LENGTH=50000
+Compile option: MAX_MMAP_SIZE=0x7fff0000
+Compile option: MAX_PAGE_COUNT=1073741823
+Compile option: MAX_PAGE_SIZE=65536
+Compile option: MAX_SQL_LENGTH=1000000000
+Compile option: MAX_TRIGGER_DEPTH=1000
+Compile option: MAX_VARIABLE_NUMBER=32766
+Compile option: MAX_VDBE_OP=250000000
+Compile option: MAX_WORKER_THREADS=8
+Compile option: MUTEX_W32
+Compile option: SYSTEM_MALLOC
+Compile option: TEMP_STORE=1
+Compile option: THREADSAFE=1
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::compileOptionGet() -->
+
+<section id="mthCompileOptionUsed"><title>compileOptionUsed</title>
+<indexterm><primary>compileOptionUsed</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>compileOptionUsed</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--compileOptionUsed(--name--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines if the named compile-time option was used during the build of ooSQLite.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>name [required]</term>
+      <listitem>
+      <para>
+        The name of the SQLite compile-time option to check. The <emphasis role="italic">SQLITE_</emphasis> prefix may
+        be omitted. I.e., <emphasis role="italic">SQLITE_THREADSAFE</emphasis> and <emphasis
+        role="italic">THREADSAFE</emphasis> will produce the same result.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the name option was used, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For most purposes, SQLite can be built just fine using the default compilation options. However, if required,
+    compile-time options can be used to omit SQLite features (resulting in a smaller compiled library size) or to change
+    the default values of some parameters. ooSQLite is built using just a few compile-time options.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">compileOptionUsed</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/compileoption_get.html">sqlite3_compileoption_used</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example checks several random compile-time options and displays if they were defined at compile time.
+<programlisting>
+<![CDATA[
+names = -
+ "DEFAULT_AUTOVACUUM", "THREADSAFE", "TEMP_STORE", -
+ "4_BYTE_ALIGNED_MALLOC", "CURDIR", "SQLITE_THREADSAFE"
+do name over names
+  say "Option" name ":" .ooSQLite~compileOptionUsed(name)
+end
+
+/* Output might be:
+Option DEFAULT_AUTOVACUUM : 1
+Option THREADSAFE : 1
+Option TEMP_STORE : 1
+Option 4_BYTE_ALIGNED_MALLOC : 0
+Option CURDIR : 0
+Option SQLITE_THREADSAFE : 1
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::compileOptionUsed() -->
+
+
+<section id="mthComplete"><title>complete</title>
+<indexterm><primary>complete</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>complete</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--complete(--text--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Determines if the specifie text seems to form a complete SQL statement.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text to check.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Reurns 0 if the text is incomplete and 1 if the text seems complete. Note that the database engine allocates some
+    memory when this method is executed. If memory allocation fails, the database engine will return the NOMEM constant.
+    This is very unlikely to happen.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is useful during command-line input to determine if the currently entered text seems to form a complete
+    SQL statement or if additional input is needed before sending the text into ooSQLite for parsing. A statement is
+    judged to be complete if it ends with a semicolon token and is not a prefix of a well-formed CREATE TRIGGER
+    statement. Semicolons that are embedded within string literals or quoted identifier names or comments are not
+    independent tokens (they are part of the token in which they are embedded) and thus do not count as a statement
+    terminator. Whitespace and comments that follow the final semicolon are ignored.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">complete</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/complete.html">sqlite3_complete</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example show some possible output of using this method:
+<programlisting>
+<![CDATA[
+
+  text = 'SELECT * from foods'
+  say 'Is "'text'" a complete SQL statement?' .ooSQLite~complete(text)
+
+  text = 'SELECT * from foods;'
+  say 'Is "'text'" a complete SQL statement?' .ooSQLite~complete(text)
+
+  say 'Value of NOMEM constant:' .ooSQLite~NOMEM
+
+/* Output:
+
+Is "SELECT * from foods" a complete SQL statement? 0
+Is "SELECT * from foods;" a complete SQL statement? 1
+Value of NOMEM constant: 7
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::complete() -->
+
+<section id="mthEnquote"><title>enquote</title>
+<indexterm><primary>enquote</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>enquote</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enquote(--+----------+--)--------------------><
+              +--values--+
+]]>
+</programlisting>
+
+<para>
+  Converts the supplied Rexx value(s) into SQL literals. This method is useful to help construct SQL statements. The
+  specified Rexx object(s) are converted to SQL literals by adding single quotes to the beginning and end of the string
+  value of the object, escaping single quotes within the string value of the object, and changing the
+  <computeroutput>.nil</computeroutput> object to SQL NULL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>values [optional]</term>
+      <listitem>
+      <para>
+        A Rexx object, or an array of Rexx objects, to be converted to SQL literals. If this argument is omitted then
+        <emphasis role="italic">NULL</emphasis> is returned.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The string value of the specified object(s) as a SQL literal, or a comma separated list, of SQL literals.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">enquote</emphasis> methods accepts a single argument, <emphasis
+    role="italic">values</emphasis>. If <emphasis role="italic">values</emphasis> is an array whose <emphasis
+    role="italic">size</emphasis> is N, then each item at index 1 through N is converted to a SQL literal. Any index 1
+    through N that is not assigned an item is converted to SQL NULL. Likewise, if an item 1 through N is the
+    <computeroutput>.nil</computeroutput> object, that item is converted to SQL NULL. All other items are converted to
+    the string value of the item, with a single quote added to the front and end of the string. If the string value
+    contains any single quotes, those single quotes are escaped. If N is greater than 1, then each converted value is
+    added to the returned string with a comma used as a separator.
+  </para>
+  <para>
+    If <emphasis role="italic">values</emphasis> is not an array, then it is taken to be a single value to be converted,
+    and is converted in the same manner as a single item in an array is converted, as described above. This implies that
+    if <emphasis role="italic">values</emphasis> is omitted altogether, it is converted to SQL NULL.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">enquote</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/mprintf.html">sqlite3_mprintf</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how the <emphasis role="italic">enquote</emphasis> method can be used to create SQL INSERT
+    statements that are not prone to SQL Injection flaws:
+<programlisting>
+<![CDATA[
+
+  r1 = .array~new(4)
+  r1[1] = "Tom"
+  r1[2] = "Hanks"
+  r1[4] = "male"
+
+  r2 = .array~of("Mike", , "555-9988", .nil)
+
+  sql1 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLite~enquote(r1)");"
+  sql2 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLite~enquote(r2)");"
+
+  say sql1
+  say sql2
+
+/*  Output would be:
+
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Tom', 'Hanks', NULL, 'male');
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Mike', NULL, '555-9988', NULL);
+
+*/
+]]>
+</programlisting>
+    This example shows a conversion for a single string that has an apostrophe within it:
+<programlisting>
+<![CDATA[
+
+str = "It's a happy day!"
+say .ooSQLite~Enquote(str)
+
+/*  Output would be:
+
+'It''s a happy day!'
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::enquote() -->
+
+<section id="mthErrStr"><title>errStr</title>
+<indexterm><primary>errStr</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>errStr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--errStr(--resultCode--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the English language descriptive string for a result code.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>resultCode [required]</term>
+    <listitem>
+    <para>
+      One of the result <link linkend="sctResultCode">code</link> constants, or one of the ooSQLite specific result <link
+      linkend="sctOOSQLiteSpecificResultCodes">code</link>, whose descriptive sting is to be retrieved.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the descriptive, English language, string for the specified <emphasis role="italic">result code</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is useful for getting the description of a result code without needing a <link
+    linkend="clsOOSQLiteConnection">ooSQLiteConnection</link> or <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link> object.
+    The <link linkend="mthErrMsg">errMsg</link> method will return the descriptive string for the most recent result code
+    associated with the database connection. The <emphasis role="italic">errStr</emphasis> method can be used at any time to
+    get the descriptive string for a result code.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">errStr</emphasis> method is similar to that of the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errstr</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is a small snippet of code to print out the description of the first 27 result codes. Inspection of the
+    <computeroutput>ooSQLite.cls</computeroutput> file shows us that the first 27 result code constants are in numerically
+    consecutive order:
+<programlisting>
+<![CDATA[
+
+  first = .ooSQLite~OK
+  last  = .ooSQLite~NOTADB
+
+  do i = first to last
+    say .ooSQLite~errStr(i)
+  end
+  say
+
+/* Output would be:
+
+not an error
+SQL logic error or missing database
+unknown error
+access permission denied
+callback requested query abort
+database is locked
+database table is locked
+out of memory
+attempt to write a readonly database
+interrupted
+disk I/O error
+database disk image is malformed
+unknown operation
+database or disk is full
+unable to open database file
+locking protocol
+table contains no data
+database schema has changed
+string or blob too big
+constraint failed
+datatype mismatch
+library routine called out of sequence
+large file support is disabled
+authorization denied
+auxiliary database format error
+bind or column index out of range
+file is encrypted or is not a database
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::errStr() -->
+
+<section id="mthLibVersion"><title>libVersion</title>
+<indexterm><primary>libVersion</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>libVersion</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--libVersion-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the embedded SQLite library version as a string.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the library version number as a string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method can be used to determine exactly which version of the SQLite database engine is in use. It can also be
+    used to verify that the <emphasis role="italic">ooSQLite.cls</emphasis> file matches the compiled library file,
+    (oosqlite.dll, oosqlite.so, or oosqlite.dylib depending on the operating system.) The value returned by this method
+    should be exactly equal to the the compile-time version <link linkend="sctCompileTimeVersion">VERSION</link>
+    constant. If it is not, the ooSQLite installation is incorrect.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">libVersion</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/libversion.html">sqlite3_libversion</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example checks that <computeroutput>ooSQLite.cls</computeroutput> is loading the correct library and aborts if
+    it is not:
+<programlisting>
+<![CDATA[
+
+  if .ooSQLite~libVersion() \== .ooSQLiteConstants~VERSION then do
+    say 'The ooSQLite class file and library file do NOT match.'
+    say 'The ooSQLite extension is not installed correctly on this system.'
+    say 'Aborting application.'
+    return 99
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::libVersion() -->
+
+
+<section id="mthLibVersionNumber"><title>libVersionNumber</title>
+<indexterm><primary>libVersionNumber</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>libVersionNumber</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--libVersionNumber-----------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the embedded SQLite library version as a number.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of the library version in use, perhaps 3040001.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is similar to the <link linkend="mthLibVersion">libVersion</link> method, returning a whole number
+    rather than a dotted version string.
+  </para>
+  <para>
+    The value returned by this method should be exactly equal to the the compile-time version <link
+    linkend="sctCompileTimeVersion">VERSION_NUMBER</link> constant.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">libVersionNumber</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/libversion.html">sqlite3_libversion_number</ulink> API.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::libVersionNumber() -->
+
+
+<section id="mthMemoryHighWater"><title>memoryHighWater</title>
+<indexterm><primary>memoryHighWater</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>memoryHighWater</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--memoryHighWater(--+---------+--)-------------><
+                      +--reset--+
+]]>
+</programlisting>
+
+<para>
+  Returns the maximum value of the number of bytes of memory malloced but not freed (memory in use) of the database
+  engine since the high-water mark was last reset.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>reset [optional]</term>
+      <listitem>
+      <para>
+        True if the high-water mark should be reset, false if it should not be reset. The default if the argument is
+        omitted is false.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The highest amount of memory used by the database engine, since any previous reset, in bytes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The memory high-water mark is reset to the current number of bytes of memory in use, if and only if the <emphasis
+    role="italic">reset</emphasis> arg true. The value returned by this method is the high-water mark prior to the
+    reset if a reset is done.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">memoryHighWater</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/memory_highwater.html">sqlite3_memory_highwater</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the effect of using / not using the <emphasis role="italic">reset</emphasis> argument:
+<programlisting>
+<![CDATA[
+
+  say
+  say 'Memory high water:        ' .ooSQLite~memoryHighWater
+  say 'Memory high water:        ' .ooSQLite~memoryHighWater
+  say 'Memory high water (reset):' .ooSQLite~memoryHighWater(.true)
+  say 'Memory high water:        ' .ooSQLite~memoryHighWater
+  say
+
+/* Output might be:
+
+Memory high water:         93664
+Memory high water:         93664
+Memory high water (reset): 93664
+Memory high water:         91712
+
+-- Note that the return when the reset is done is the current high wated mark, not the
+-- value after the reset.
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::memoryHighWater() -->
+
+
+<section id="mthMemoryUsed"><title>memoryUsed</title>
+<indexterm><primary>memoryUsed</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>memoryUsed</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--memoryUsed-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the number of bytes of memory currently in use by the database engine. That is, the number of bytes allocated
+  and not yet freed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The amount of memory the database is currently using, in bytes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">memoryUsed</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/memory_highwater.html">sqlite3_memory_used</ulink> API.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::memoryUsed() -->
+
+
+<section id="mthReleaseMemory"><title>releaseMemory</title>
+<indexterm><primary>releaseMemory</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>releaseMemory</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseMemory(--count--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  This method causes the database engine to attempt to free <emphasis role="italic">count</emphasis> bytes of heap
+  memory by deallocating non-essential memory allocations held by the database library.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>count [required]</term>
+      <listitem>
+      <para>
+        The number of bytes the database engine should try to release.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the number of bytes actually released, which may be mor or less than requested.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Memory used to cache database pages to improve performance is an example of non-essential memory.
+    This method would be a no-op returning zero if SQLite was not compiled with the SQLITE_ENABLE_MEMORY_MANAGEMENT
+    compile-time option. However, ooSQLite does use that option when it is built, so this method is not a no-op.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">releaseMemory</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/release_memory.html">sqlite3_release_memory</ulink> API.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::releaseMemory() -->
+
+
+<section id="mthSoftHeapLimit64"><title>softHeapLimit64</title>
+<indexterm><primary>softHeapLimit64</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>softHeapLimit64</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--softHeapLimit64(--n--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Imposes a limit on the heap size, or queries the current size.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        A 64-bit signed whole number.  If <emphasis role="italic">n</emphasis> is positive the soft heap limit is set
+        to its value.  If <emphasis role="italic">n</emphasis> is zero then the soft heap limit is disabled.  If
+        <emphasis role="italic">n</emphasis> is negative then no change is made to the current limit.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns the size of the soft heap limit prior to the method invocation. On error a negative number is
+    returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To query the current limit only, use a negative value for <emphasis role="italic">n</emphasis>.
+  </para>
+  <para>
+    The database engine strives to keep heap memory utilization below the soft heap limit by reducing the number of
+    pages held in the page cache as heap memory usages approaches the limit. The soft heap limit is <emphasis
+    role="italic">soft</emphasis> because even though the engine strives to stay below the limit, it will exceed the
+    limit rather than generate a NOMEM error. In other words, the soft heap limit is advisory only.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">softHeapLimit64</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/soft_heap_limit64.html">sqlite3_soft_heap_limit64</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries the current soft heap limit, sets the limit, and queries it again. It also displays the current
+    memory usage.
+<programlisting>
+<![CDATA[
+
+  say 'Current soft heap limit:' .ooSQLite~softHeapLimit64(-1)
+  say 'Setting soft heap limit:' .ooSQLite~softHeapLimit64(64000000)
+  say 'Current soft heap limit:' .ooSQLite~softHeapLimit64(-1)
+  say 'Current memory used:    ' .ooSQLite~memoryUsed
+
+
+/* Output might be:
+
+Current soft heap limit: 0
+Setting soft heap limit: 0
+Current soft heap limit: 64000000
+Current memory used:     0
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::softHeapLimit64() -->
+
+
+<section id="mthSourceID"><title>sourceID</title>
+<indexterm><primary>sourceID</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>sourceID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sourceID-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the embedded SQLite library source ID string.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The source ID string of the running database engine.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is similar to the <link linkend="mthLibVersion">libVersion</link> method, but rather than a dotted
+    version string it returns an unique identifier that contains the date and time of the library source code release
+    and a globally unique nubmer hexadecimal number.
+  </para>
+  <para>
+    The value returned by this method should be exactly equal to the the compile-time version <link
+    linkend="sctCompileTimeVersion">SOURCE_ID</link> constant.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">sourceID</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/libversion.html">sqlite3_sourceid</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example displays the source ID for the currently running database engine:
+<programlisting>
+<![CDATA[
+say "Source ID:" .ooSQLite~sourceID
+
+/*  Output might be:
+Source ID: 2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5e82ad8197f38a24
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::sourceID() -->
+
+
+<section id="mthSqlite3Version"><title>sqlite3Version</title>
+<indexterm><primary>sqlite3Version</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>sqlite3Version</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sqlite3Version-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sqlite3Version</emphasis> method returns the value of the SQLite C code sqlite3_version[]
+  string constant.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The SQLite version string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is included for completeness. The string returned is exactly the same as the string returned from <link
+    linkend="mthLibVersion">libVersion</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The value returned by the <emphasis role="italic">sqlite3Version</emphasis> method is the value of the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/libversion.html"><citetitle>sqlite3_version</citetitle></ulink> constant string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the equivalence of the two <computeroutput>ooSQLite</computeroutput> class methods:
+<programlisting>
+<![CDATA[
+say "Return from libVersion method:" .ooSQLite~libVersion
+say "Constant string value:        " .ooSQLite~sqlite3Version
+
+/* Output would be, depending on the exact library version of the embedded database engine:
+Return from libVersion method: 3.40.1
+Constant string value:         3.40.1
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::sqlite3Version() -->
+
+
+<section id="mthStatus"><title>status</title>
+<indexterm><primary>status</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>status</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--status(--optParam-,-result--+----------+--)--><
+                                +-,-reset--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves runtime status information about the performance of the database engine, and optionally resets various
+  highwater marks.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>optParam [required]</term>
+      <listitem>
+      <para>
+        One of the runtime <link linkend="sctStatusParameter">status</link> parameter constants. This specifies which
+        status parameter information is required.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>result [required IN/OUT]</term>
+      <listitem>
+      <para>
+        A <computeroutput>Directory</computeroutput> object in which the retrieved information is returned. On a
+        successful return the directory object will contain the following two indexes:
+        <variablelist>
+          <varlistentry><term><emphasis role="bold">CURRENT:</emphasis></term>
+          <listitem>
+          <para>
+            The current value of the parameter specified by <emphasis role="italic">optParam</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term><emphasis role="bold">HIGHWATER:</emphasis></term>
+          <listitem>
+          <para>
+            The highest recorded value of the parameter specified by <emphasis role="italic">optParam</emphasis>.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>reset [optional]</term>
+      <listitem>
+      <para>
+        A logical value, true or false, to specifiy whether the high water mark should be reset. The default if omitted
+        is false.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns one of the ooSQLite <link linkend="sctResultCode">result</link> code constants. OK on success, otherwise an
+    error code. On error no indexes of the <emphasis role="italic">result</emphasis> object are set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Some parameters do not record the highest value. Other parameters record only the highwater mark and not the
+    current value. For parameters that do not record the highest value, the <emphasis role="italic">reset</emphasis>
+    argument is ignored.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">status</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/status.html">sqlite3_status</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints out all the status parameters:
+<programlisting>
+<![CDATA[
+
+  a = .array~of(                                    -
+                .ooSQLite~STATUS_MEMORY_USED          ,-
+                .ooSQLite~STATUS_PAGECACHE_USED       ,-
+                .ooSQLite~STATUS_PAGECACHE_OVERFLOW   ,-
+                .ooSQLite~STATUS_SCRATCH_USED         ,-
+                .ooSQLite~STATUS_SCRATCH_OVERFLOW     ,-
+                .ooSQLite~STATUS_MALLOC_SIZE          ,-
+                .ooSQLite~STATUS_PARSER_STACK         ,-
+                .ooSQLite~STATUS_PAGECACHE_SIZE       ,-
+                .ooSQLite~STATUS_SCRATCH_SIZE         ,-
+                .ooSQLite~STATUS_MALLOC_COUNT         -
+                )
+
+  n = .array~of(                                    -
+                'STATUS_MEMORY_USED       '   ,-
+                'STATUS_PAGECACHE_USED    '   ,-
+                'STATUS_PAGECACHE_OVERFLOW'   ,-
+                'STATUS_SCRATCH_USED      '   ,-
+                'STATUS_SCRATCH_OVERFLOW  '   ,-
+                'STATUS_MALLOC_SIZE       '   ,-
+                'STATUS_PARSER_STACK      '   ,-
+                'STATUS_PAGECACHE_SIZE    '   ,-
+                'STATUS_SCRATCH_SIZE      '   ,-
+                'STATUS_MALLOC_COUNT      '   -
+                )
+
+  values = .directory~new
+  do i = 1 to a~items
+    .ooSQLite~status(a[i], values)
+    say n[i]': current:' values~current~left(10) 'high water:' values~highWater
+  end
+
+
+/* Output might be:
+
+STATUS_MEMORY_USED       : current: 88864      high water: 93664
+STATUS_PAGECACHE_USED    : current: 0          high water: 0
+STATUS_PAGECACHE_OVERFLOW: current: 16288      high water: 16288
+STATUS_SCRATCH_USED      : current: 0          high water: 0
+STATUS_SCRATCH_OVERFLOW  : current: 0          high water: 0
+STATUS_MALLOC_SIZE       : current: 512        high water: 64000
+STATUS_PARSER_STACK      : current: 0          high water: 0
+STATUS_PAGECACHE_SIZE    : current: 1272       high water: 1272
+STATUS_SCRATCH_SIZE      : current: 0          high water: 0
+STATUS_MALLOC_COUNT      : current: 95         high water: 105
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::status() -->
+
+
+<section id="mthThreadSafe"><title>threadSafe</title>
+<indexterm><primary>threadSafe</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>threadSafe</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--threadSafe-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Tests to see if the currently running database engine is using a library that is thread safe.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the value of the compile-time option SQLITE_THREADSAFE, 0, 1, or 2.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Currently, ooSQLite is compiled with SQLITE_THREADSAFE=1 and therefore the return from this method is always 1. When
+    SQLITE_THREADSAFE is set to 1, as it is in ooSQLite, then SQLite uses its <emphasis
+    role="italic">Serialized</emphasis> threading model. In serialized mode, SQLite can be safely used by multiple
+    threads with no restriction.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">threadSafe</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/threadsafe.html">sqlite3_threadsafe</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the return from <emphasis role="italic">threadSafe</emphasis>:
+<programlisting>
+<![CDATA[
+
+  say 'Thread safe value:' .ooSQLite~threadSafe
+
+/* Output will be:
+
+Thread safe value: 1
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::threadSafe() -->
+
+
+<section id="mthVersion"><title>version</title>
+<indexterm><primary>version</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>version</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--version(--+--------+--)----------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  Produces a version string in the format specified by the <emphasis role="italic">type</emphasis> argument.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>type [optional]</term>
+      <listitem>
+      <para>
+        If not omitted, exactly one of the following keywords, case is not significant and only the first letter is
+        needed:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>Compact   </member>
+          <member>Full      </member>
+          <member>OneLine   </member>
+          <member>LibVersion</member>
+          <member>Number    </member>
+          <member>SourceID  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>Compact</term>
+          <listitem>
+          <para>
+            The compact format is a simple dotted version, similar to <computeroutput>1.0.0.7925</computeroutput>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>Full</term>
+          <listitem>
+          <para>
+            Produces a long version listing of several lines.  The ooSQLite version, the ooRexx version, and the SQLite
+            version are all shown. The example below has a sample output of this format.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>Oneline</term>
+          <listitem>
+          <para>
+            A version string similar to <computeroutput>ooSQLite Version 1.0.0.7925 (64 bit)</computeroutput>. This is
+            the deault if the <emphasis role="italic">type</emphasis> argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LibVersion</term>
+          <listitem>
+          <para>
+            A version string similar to <computeroutput>3.40.1</computeroutput>. This is the embedded SQLite database
+            engine version and is identical to the output from the <link linkend="mthLibVersion">libVersion</link>
+            method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>Number</term>
+          <listitem>
+          <para>
+            A version number, similar to <computeroutput>3040001</computeroutput>. This is the embedded SQLite database
+            engine version number and is identical to the output from the <link
+            linkend="mthLibVersionNumber">libVersionNumber</link> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SourceID</term>
+          <listitem>
+          <para>
+            A version string similar to <computeroutput>2012-06-11 02:05:22
+            f5b5a13f7394dc143aa136f1d4faba6839eaa6dc</computeroutput>. This is the embedded SQLite database engine
+            source ID and is identical to the output from the <link linkend="mthSourceID">sourceID</link> method.
+            text
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a string formatted as specified above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This attribute is provided by ooSQLite, there is no similar feature provided by SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints out the full format version string:
+<programlisting>
+<![CDATA[
+
+  say 'ooSQLite version (full):'; say
+  say .ooSQLite~version('F')
+
+/*  Output might be:
+
+ooSQLite version (full):
+
+ooSQLite: ooSQLite Version 1.0.0.7925 (64 bit)
+          Built Jun 19 2012 12:40:58
+          Copyright (c) RexxLA 2012-2012.
+          All Rights Reserved.
+
+Rexx:     Open Object Rexx Version 4.2.0
+
+SQLite:   SQLite Library Version 3.40.1
+          2012-06-11 02:05:22
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::version() -->
+
+
+</section>

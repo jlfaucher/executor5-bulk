@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxmath.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object RexxMath Library Functions XML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Introduction</title>
+<para>RxMath is a Rexx utility package that enables you to use enhanced mathematical
+functions.</para>
+<para>The function names in the Rexx Mathematical Functions package are similar to
+the names of their corresponding mathematical functions.</para>
+<para>The precision of calculation depends on:</para>
+<itemizedlist>
+<listitem><para>The value specified when the command is issued</para></listitem>
+<listitem><para>The numeric digits settings of the calling Rexx activity</para></listitem>
+</itemizedlist>
+<note><para>Precision is limited to 16 digits.
+If a precision larger than 16 digits is specified, the resulting precision will be 16 digits.
+</para></note>
+
+<section><title>Using the RxMath package</title>
+<para>
+  The Rexx Mathematical Functions package is contained in the library <emphasis
+  role="italic">rxmath</emphasis>, with the appropriate file name for the operating system.  This library
+  must be loadable by the operating system using the normal procedure for the system. For instance, on Windows
+  the file must be placed in a directory listed in your PATH. When installing ooRexx from any of the
+  installation packages, the details of where the file is placed are handled automatically.
+</para>
+<para>
+  Beginning with ooRexx 4.0.0, a more robust process is used to load external functions. To get access to
+  the functions in the Rexx Mathematical Functions package, use a ::requires directive. For example:
+</para>
+<programlisting>
+say 'The square root of 3 is:' RxCalcSqrt(3)
+
+::requires 'rxmath' LIBRARY
+</programlisting>
+<para>
+  Existing code that used the previous process to load external functions:
+</para>
+<programlisting>
+call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
+</programlisting>
+<para>
+  does not need to be changed. However, both <computeroutput>MathLoadFuncs()</computeroutput> and
+  <computeroutput>MathDropFuncs()</computeroutput> are nops in ooRexx 4.0.0 and later.
+</para>
+</section>
+
+<section><title>Error Handling and Function Returns</title>
+<para>
+  Error 40 (Incorrect call to routine) is raised if either the wrong number of arguments or incorrect
+  data is passed to a function.
+</para>
+<para>
+  If a mathematical function fails, the function will return <emphasis role="italic">nan</emphasis>,
+  <emphasis role="italic">+infinity</emphasis>, and <emphasis role="italic">-infinity</emphasis> as
+  appropriate. These returns are consistent on all operating systems.
+</para>
+</section>
+
+<section><title>Package Limitations</title>
+<para>
+  The RxMath package internally uses the corresponding C library math functions to perform the
+  actual calculations. These C functions are limited to values of the C numeric type of
+  <emphasis role="bold">double</emphasis>. All numeric arguments passed to the RxMath package
+  functions are truncated (if needed) in order to convert them to the C
+  <emphasis role="bold">double</emphasis> type.
+</para>
+</section>
+</chapter>

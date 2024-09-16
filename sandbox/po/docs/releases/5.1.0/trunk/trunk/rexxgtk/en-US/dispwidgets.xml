@@ -1,0 +1,819 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Display Widget Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Display Widgets</secondary></indexterm>
+
+<para>Displayable widgets are those that are just used to display object such as images
+or text. These objects are not usually interactive and are almost always static in
+nature.</para>
+
+<!-- ****************************** -->
+<!-- ********** GTKImage ********** -->
+<!-- ****************************** -->
+
+<section id="gtkimage"><title>GTKImage</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/image.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKImage class is a subclass of the
+GTKWidget class (<xref linkend="gtkwidget" />).</para>
+
+<para>This is a widget that displays an image. Several image types are supported including
+.png, .jpg, and .gif.</para>
+
+<section id="gtkimagenewfromfile">
+<title>Method: newfromfile (class method)</title>
+<indexterm><primary>newfromfile</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>newfromfile</secondary></indexterm>
+<para>Create an image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImage~newfromfile(filename)--------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>The file path/name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagenewfromstock">
+<title>Method: newfromstock (class method)</title>
+<indexterm><primary>newfromstock</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>newfromstock</secondary></indexterm>
+<para>Create an image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImage~newfromstock(stockname, size)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>stockname</term>
+      <listitem><para>The stock name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>size</term>
+      <listitem><para>The icon size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagenewfromiconname">
+<title>Method: newfromiconname (class method)</title>
+<indexterm><primary>newfromiconname</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>newfromiconname</secondary></indexterm>
+<para>Create an image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImage~newfromiconname(iconname, size)----------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iconname</term>
+      <listitem><para>The icon name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>size</term>
+      <listitem><para>The icon size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimageinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImage~new()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagesetfromfile">
+<title>Method: set_from_file</title>
+<indexterm><primary>set_from_file</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>set_from_file</secondary></indexterm>
+<para>Set the image from a file.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_from_file(filename)----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>The file path/name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagesetfromstock">
+<title>Method: set_from_stock</title>
+<indexterm><primary>set_from_stock</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>set_from_stock</secondary></indexterm>
+<para>Set the image from a stock image.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_from_stock(stockname, size)--------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>stockname</term>
+      <listitem><para>The stock name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>size</term>
+      <listitem><para>The icon size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkimagesetfromiconname">
+<title>Method: set_from_icon_name</title>
+<indexterm><primary>set_from_icon_name</primary></indexterm>
+<indexterm><primary>GTKImage</primary>
+<secondary>set_from_icon_name</secondary></indexterm>
+<para>Set the image from an icon.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_from_icon_name(iconname, size)-----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iconname</term>
+      <listitem><para>The icon name.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>size</term>
+      <listitem><para>The icon size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ****************************** -->
+<!-- ********** GTKLabel ********** -->
+<!-- ****************************** -->
+
+<section id="gtklabel"><title>GTKLabel</title>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/label.png" align="right" />
+</imageobject>
+</mediaobject>
+
+<para>The GTKLabel class is a subclass of the
+FTKWidget class (<xref linkend="gtkwidget" />).</para>
+
+<para>This is a widget that displays a small to medium amount of text. It can be optionally
+made so that the text is selectable.</para>
+
+<section id="gtklabelinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKImage~new(--+--------+--)----------------------------------------><
+                    +--text--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The text of the label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtklabelgetlabel">
+<title>Method: get_label</title>
+<indexterm><primary>get_label</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>get_label</secondary></indexterm>
+<para>Get the text of the label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_label()----------------------------------------------------------><
+
+>>--label()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>label text</para>
+</section>
+
+<section id="gtklabelsetlabel">
+<title>Method: set_label</title>
+<indexterm><primary>set_label</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>set_label</secondary></indexterm>
+<para>Set the text of the label.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_label(test)------------------------------------------------------><
+
+>>--label = text---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The text of the label.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtklabelsetjustify">
+<title>Method: set_justify</title>
+<indexterm><primary>set_justify</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>set_justify</secondary></indexterm>
+<para>Set the label justification.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_justify(type)----------------------------------------------------><
+
+>>--justify = type-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The justification type.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtklabelgetjustify">
+<title>Method: get_justify</title>
+<indexterm><primary>get_justify</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>get_justify</secondary></indexterm>
+<para>Get the label justification.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_justify()--------------------------------------------------------><
+
+>>--justify()------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Justification type</para>
+</section>
+
+<section id="gtklabelsetselectable">
+<title>Method: set_selectable</title>
+<indexterm><primary>set_selectable</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>set_selectable</secondary></indexterm>
+<para>Set the label selectable flag.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_selectable(flag)-------------------------------------------------><
+
+>>--selectable = flag----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The selectable boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtklabelsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtklabelsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKLabel</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKLabel Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>copy_clipboard</entry>
+   <entry>signal_copy_clipboard</entry>
+</row>
+<row>
+   <entry>copy_move_cursor</entry>
+   <entry>signal_copy_move_cursor</entry>
+</row>
+<row>
+   <entry>copy_populate_popup</entry>
+   <entry>signal_copy_populate_popup</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************ -->
+<!-- ********** GTKProgressBar ********** -->
+<!-- ************************************ -->
+
+<section id="gtkprogressbar"><title>GTKProgressBar</title>
+
+<para>The GTKProgressBar class is a subclass of the
+GTKWidget class (<xref linkend="gtkwidget" />).</para>
+
+<para>This is a widget which indicates progress visually.</para>
+
+<section id="gtkprogressbarinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKProgressBar</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an progress bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKProgressBar~new()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkprogressbarsetfraction">
+<title>Method: set_fraction</title>
+<indexterm><primary>set_fraction</primary></indexterm>
+<indexterm><primary>GTKProgressBar</primary>
+<secondary>set_fraction</secondary></indexterm>
+<para>Set the portion on fill.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_fraction(fraction)-----------------------------------------------><
+
+>>--fraction = fraction--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fraction</term>
+      <listitem><para>Fraction amount.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkprogressbarsetpulsestep">
+<title>Method: set_pulse_step</title>
+<indexterm><primary>set_pulse_step</primary></indexterm>
+<indexterm><primary>GTKProgressBar</primary>
+<secondary>set_pulse_step</secondary></indexterm>
+<para>Set the pulse step.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_pulse_step(fraction)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fraction</term>
+      <listitem><para>Fraction amount.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkprogressbarpulse">
+<title>Method: pulse</title>
+<indexterm><primary>pulse</primary></indexterm>
+<indexterm><primary>GTKProgressBar</primary>
+<secondary>pulse</secondary></indexterm>
+<para>Pulse the progress bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--pulse()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkprogressbarsettext">
+<title>Method: set_text</title>
+<indexterm><primary>set_text</primary></indexterm>
+<indexterm><primary>GTKProgressBar</primary>
+<secondary>set_text</secondary></indexterm>
+<para>Set the text of the progress bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_text(text)-------------------------------------------------------><
+
+>>--text = text----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Text string.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKStatusBar ********** -->
+<!-- ********************************** -->
+
+<section id="gtkstatusbar"><title>GTKStatusBar</title>
+
+<para>The GTKStatusBar class is a subclass of the
+GTKBox class (<xref linkend="gtkhbox" />).</para>
+
+<para>This widget can report messages of minor importance to the user. This wiget is
+usually (but not always) placed at the bottom of a window.</para>
+
+<section id="gtkstatusbarinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a status bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKStatusBar~new()--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkstatusbargetcontextid">
+<title>Method: get_context_id</title>
+<indexterm><primary>get_context_id</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>get_context_id</secondary></indexterm>
+<para>Get the context id for the status bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_context_id(desc)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>desc</term>
+      <listitem><para>The context description.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Context id</para>
+</section>
+
+<section id="gtkstatusbarpush">
+<title>Method: push</title>
+<indexterm><primary>push</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>push</secondary></indexterm>
+<para>Push the message onto the status bar..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--push(cid, text)------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>cid</term>
+      <listitem><para>The context id.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>The message text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Message id</para>
+</section>
+
+<section id="gtkstatusbarpop">
+<title>Method: pop</title>
+<indexterm><primary>pop</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>pop</secondary></indexterm>
+<para> Pop a message from the status bar..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--pop(cid)-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>cid</term>
+      <listitem><para>The context id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkstatusbarremove">
+<title>Method: remove</title>
+<indexterm><primary>remove</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>pop</secondary></indexterm>
+<para>Remove a message from the status bar..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--remove(cid, mid)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>cid</term>
+      <listitem><para>The context id.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mid</term>
+      <listitem><para>The message id.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkstatusbarsethasresizegrip">
+<title>Method: set_has_resize_grip</title>
+<indexterm><primary>set_has_resize_grip</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>set_has_resize_grip</secondary></indexterm>
+<para>Add a resize grip to the status bar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_has_resize_grip(flag)--------------------------------------------><
+
+>>--has_resize_grip = flag-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The boolean flag.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkstatusbargethasresizegrip">
+<title>Method: get_has_resize_grip</title>
+<indexterm><primary>get_has_resize_grip</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>get_has_resize_grip</secondary></indexterm>
+<para>Return the bollean flag for the resize grip.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_has_resize_grip()------------------------------------------------><
+
+>>--has_resize_grip()----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkstatusbarsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKStatusBar</primary>
+<secondary>signal+connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkstatusbarsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKStatusbar</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKStatusBar Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>text_popped</entry>
+   <entry>signal_text_popped</entry>
+</row>
+<row>
+   <entry>text_pushed</entry>
+   <entry>signal_text_pushed</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+

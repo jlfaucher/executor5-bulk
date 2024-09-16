@@ -1,0 +1,5786 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "orxncurses.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: nCurses Class Library Reference XML file
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<book>
+	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+
+<chapter id="windowmethods"><title>Window Class Method Reference</title>
+
+<!--#########################################################################
+    # Start of class methods
+    #########################################################################
+-->
+
+<section id="New">
+<title>New - Class Method</title>
+<indexterm><primary>New</primary></indexterm>
+<para>Init the standard screen or create a new window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_new1.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_new2.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>The first invocation of this method creates the standard screen and
+must pass zero arguments. Subsequest invocations create standard windows
+and must pass four arguments.</para>
+<variablelist>
+   <varlistentry>
+      <term>nlines</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ncols</term>
+      <listitem><para>Number of columns.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begin_y</term>
+      <listitem><para>Y position start position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begin_x</term>
+      <listitem><para>X position start position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+<example>
+<title>Creating new windows</title>
+<programlisting>
+<![CDATA[
+/* create the standard screen */
+scr = .Window~new()
+
+/* create a new window */
+win = .Window~new(10, 20, 5, 10)  
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="OrxncursesVersion">
+<title>Orxncurses_Version - Class Methos</title>
+<indexterm><primary>Orxncurses_Version</primary></indexterm>
+<para>Return the Orxnncurses_Version string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_orxncurses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The OrxnCurses library version string.</para>
+</section>
+
+<section id="OrxCurSetBase">
+<title>SetBase - Class Method</title>
+<indexterm><primary>SetBase</primary></indexterm>
+<para>Set whether or not the library uses one-based indexes or zero-based indexes. The default is one-based.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_setbase.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>base</term>
+      <listitem><para>1 = one-based, 0 = zero-based</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The current or new base.</para>
+<example>
+<title>Set base (one or zero based)</title>
+<programlisting>
+<![CDATA[
+.window~setbase(0)
+scr = .window~new()
+
+scr~move(0, 0)
+scr~addch('*')
+scr~refresh()
+scr~napms(500)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Slkinit">
+<title>Slk_init - Class Method</title>
+<indexterm><primary>OrxCurSlk_init</primary></indexterm>
+<para>Initialize for soft label. This method must be invoked prior to
+creating the standard screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fmt</term>
+      <listitem><para>Line format. Valid values are 0, 1, 2 and 3.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+<example>
+<title>Set a soft label</title>
+<programlisting>
+<![CDATA[
+left = 0
+center = 1
+right = 2
+
+.window~slk_init(0)
+scr = .window~new()
+
+scr~slk_set(1, 'Help!', left)
+scr~slk_set(2, 'File', left)
+scr~slk_set(3, 'Print', left)
+scr~slk_set(4, 'Text', center)
+scr~slk_set(5, 'Edit', center)
+scr~slk_set(6, 'Quick', right)
+scr~slk_set(7, 'Conf', right)
+scr~slk_set(8, 'Change', right)
+scr~slk_refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<!--#########################################################################
+    # Start of instance methods
+    #########################################################################
+-->
+
+<section id="Acsmap">
+<title>Acs_map</title>
+<indexterm><primary>Acs_map</primary></indexterm>
+<para>Return an ACS character.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_acs_map.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>Character.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ACS character.</para>
+</section>
+
+<section id="Addch">
+<title>Addch</title>
+<indexterm><primary>Addch</primary></indexterm>
+<para>Add a single character to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character to be added. This is a single character, not
+      a numeric value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Add a character to the screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+p = .pad~new(200, wide)
+
+strm = .stream~new(filename)
+strm~open('read')
+eof = .false
+call on notready name eof
+
+ch = strm~charin()
+do while \eof
+   p~addch(ch)
+   ch = strm~charin()
+   end
+strm~close()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Addchnstr">
+<title>Addchnstr</title>
+<indexterm><primary>Addchnstr</primary></indexterm>
+<para>Add a chtype character string to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>Chtype string be added. A chtype is a four-byte
+      sequence.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of chtype characters to add.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Addchstr">
+<title>Addchstr</title>
+<indexterm><primary>Addchstr</primary></indexterm>
+<para>Add a chtype character string to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>Chtype string be added. A chtype is a four-byte
+      sequence. The string can contain any number of chtypes.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Addnstr">
+<title>Addnstr</title>
+<indexterm><primary>Addnstr</primary></indexterm>
+<para>Add a character string to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to be added.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to add.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Addstr">
+<title>Addstr</title>
+<indexterm><primary>Addstr</primary></indexterm>
+<para>Add a character string to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to be added.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Add a string to the screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~addstr('Goodbye, cruel C Programming!')
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Assumedefaultcolors">
+<title>Assume_default_colors</title>
+<indexterm><primary>Assume_default_colors</primary></indexterm>
+<para>Set default colors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_assume_default_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fg</term>
+      <listitem><para>Forground color.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bg</term>
+      <listitem><para>Background color.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Attroff">
+<title>Attroff</title>
+<indexterm><primary>Attroff</primary></indexterm>
+<para>Turn off one or more attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attroff.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Turn off one or more attributes</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~attron(scr~A_BOLD)
+
+scr~attroff(scr~A_BOLD)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Attron">
+<title>Attron</title>
+<indexterm><primary>Attron</primary></indexterm>
+<para>Turn on one or more attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attron.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Turn on one or more attributes</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~attron(scr~A_BOLD)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Attrset">
+<title>Attrset</title>
+<indexterm><primary>Attrset</primary></indexterm>
+<para>Turn on one or more attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attrset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Set one or more attributes</title>
+<programlisting>
+<![CDATA[
+lf = .window~ASCII_LF~d2c()
+bs = .window~ASCII_BS~d2c()
+
+text = .array~of('Do', 'you', 'find', 'this', 'silly?')
+
+scr = .window~new()
+do a = 1 to text~items()
+   do b = 1 to text~items()
+      if b = a then scr~attrset(scr~A_BOLD + scr~A_UNDERLINE)
+      scr~addstr(text[b])
+      if b = a then scr~attroff(scr~A_BOLD + scr~A_UNDERLINE)
+      scr~addch(' ')
+      end
+   scr~addstr(bs || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Baudrate">
+<title>Baudrate</title>
+<indexterm><primary>Baudrate</primary></indexterm>
+<para>Return the terminal baud rate.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_baudrate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Beep">
+<title>Beep</title>
+<indexterm><primary>Beep</primary></indexterm>
+<para>Beep the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_beep.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Beep the terminal</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~addstr('Attention!' || lf)
+scr~beep()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Bkgd">
+<title>Bkgd</title>
+<indexterm><primary>Bkgd</primary></indexterm>
+<para>Set backgroung attributes for the whole screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_bkgd.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Set the background attribute for the whole screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~start_color()
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
+
+scr~bkgd(scr~COLOR_PAIR(1))
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Bkgdset">
+<title>Bkgdset</title>
+<indexterm><primary>Bkgdset</primary></indexterm>
+<para>Set backgroung attributes for the next output text.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_bkgdset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Border">
+<title>Border</title>
+<indexterm><primary>Border</primary></indexterm>
+<para>Set window border.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_border.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ls</term>
+      <listitem><para>Left side character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>rs</term>
+      <listitem><para>Right side character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ts</term>
+      <listitem><para>Top side character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bs</term>
+      <listitem><para>Bottom side character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tl</term>
+      <listitem><para>Top/Left character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>tr</term>
+      <listitem><para>Top/Right character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bl</term>
+      <listitem><para>Bottom/Left character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>br</term>
+      <listitem><para>Bottom/Right character.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Set a window border</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
+           'c9'~x2d(), 'bb'~x2d(), 'c8'~x2d(), 'bc'~x2d())
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Box">
+<title>Box</title>
+<indexterm><primary>Box</primary></indexterm>
+<para>Draw a box around the edges of a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_box.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>vch</term>
+      <listitem><para>Vertical character.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>hch</term>
+      <listitem><para>Horizontal character.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Draw a box arounf a window</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~box('*'~c2d(), '*'~c2d())
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Canchangecolor">
+<title>Can_change_color</title>
+<indexterm><primary>Can_change_color</primary></indexterm>
+<para>Returns whether or not a terminal can changes its color set.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_can_change_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+<example>
+<title>Determine if terminal hardware can change its color set</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~start_color
+if \scr~can_change_color() then do
+   scr~addstr('This probably won''t work, but anyway:' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Cbreak">
+<title>Cbreak</title>
+<indexterm><primary>Cbreak</primary></indexterm>
+<para>Activates cbreak (buffering) mode.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cbreak.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Chgat">
+<title>Chgat</title>
+<indexterm><primary>Chgat</primary></indexterm>
+<para>Change attributes on the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_chgat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of character positions.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>The attribute.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>color</term>
+      <listitem><para>The COLOR_PAIR number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Clear">
+<title>Clear</title>
+<indexterm><primary>Clear</primary></indexterm>
+<para>Clear the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_clear.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Clear the screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~clear()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Clearok">
+<title>Clearok</title>
+<indexterm><primary>Clearok</primary></indexterm>
+<para>Force a repaint of the window on the next refresh call.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_clearok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean on/off</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Clrtobot">
+<title>Clrtobot</title>
+<indexterm><primary>Clrtobot</primary></indexterm>
+<para>Clear the window from the current cursor position.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cleartobot.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Clear the window from the current cursor position</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~move(6, 21)
+scr~clrtobot()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Clrtoeol">
+<title>Clrtoeol</title>
+<indexterm><primary>Clrtoeol</primary></indexterm>
+<para>Clear the line from the current cursor position.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cleartoeol.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Clear the line from the current cursor position</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~noecho()
+scr~keypad(.true)
+
+mmask = scr~mousemask(scr~ALL_MOUSE_EVENTS)
+
+do forever
+   ch = scr~getch()
+   if ch = scr~KEY_MOUSE then do
+      mort = scr~getmouse()
+      scr~move(1, 1)
+      scr~clrtoeol()
+      scr~addstr(mort~y || '/' || mort~x)
+      scr~refresh()
+      end
+   if ch = lf then leave
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Colorpair">
+<title>Color_pair</title>
+<indexterm><primary>Color_pair</primary></indexterm>
+<para>Returns the number of possible COLOR_PAIR attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_pair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Possible color pairs attributes.</para>
+<example>
+<title>Get the number of possible COLOR_PAIR attributes</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~start_color
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
+scr~bkgd(scr~color_pair(1))
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Colorpairs">
+<title>Color_pairs</title>
+<indexterm><primary>Color_pairs</primary></indexterm>
+<para>Returns the number of possible COLOR_PAIRS.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_pairs.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Possible number of color pairs.</para>
+</section>
+
+<section id="Colors">
+<title>Colors</title>
+<indexterm><primary>Colors</primary></indexterm>
+<para>Returns the number of possible COLORs.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Number of colors.</para>
+</section>
+
+<section id="Colorset">
+<title>Color_set</title>
+<indexterm><primary>Color_set</primary></indexterm>
+<para>Sets foreground and background text color.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>COLOR_PAIR number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Cols">
+<title>Cols</title>
+<indexterm><primary>Cols</primary></indexterm>
+<para>Returns the number of columns on the stdscr.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cols.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Number of columns.</para>
+</section>
+
+<section id="Copywin">
+<title>Copywin</title>
+<indexterm><primary>Copywin</primary></indexterm>
+<para>Copy a rectangle from one window to self.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_copywin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>swin</term>
+      <listitem><para>Source window.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>sminrow</term>
+      <listitem><para>Source min row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smincol</term>
+      <listitem><para>Source min col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>dminrow</term>
+      <listitem><para>Destination min row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>dmincol</term>
+      <listitem><para>Destination min col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>dmaxrow</term>
+      <listitem><para>Destination max row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>dmaxcol</term>
+      <listitem><para>Destination max col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>overlay</term>
+      <listitem><para>Boolean yes/no to overlay destination text.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Copy a window to self</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+halfy = (maxy / 2)~format(, 0)
+halfx = (maxx / 2)~format(, 0)
+
+top = .window~new(halfy, halfx, 1, 1)
+bottom = .window~new(halfy, halfx, halfy + 1, halfx + 1)
+
+top~addstr(text1)
+top~refresh()
+bottom~addstr(text2)
+bottom~refresh()
+
+bottom~getch()
+
+retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Cursset">
+<title>Curs_set</title>
+<indexterm><primary>Curs_set</primary></indexterm>
+<para>Control the cursor visibility.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_curs_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>vis</term>
+      <listitem><para>Visibility boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Set cursor visibility</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+-- turn off cursor
+scr~curs_set(0)
+-- turn the cursor on
+scr~curs_set(1)
+-- turn the cursor very on
+scr~curs_set(2)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Cursesversion">
+<title>Curses_version</title>
+<indexterm><primary>Curses_version</primary></indexterm>
+<para>Return the nCurses version string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_curses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Version string.</para>
+</section>
+
+<section id="Delch">
+<title>Delch</title>
+<indexterm><primary>Delch</primary></indexterm>
+<para>Delete the character under the cursor and slide remaining characters
+on the line one position to the left.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_delch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Delete the character under the cursor</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~move(3, 26)
+do c = 1 to 11
+   scr~delch()
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Deleteln">
+<title>Deleteln</title>
+<indexterm><primary>Deleteln</primary></indexterm>
+<para>Delete the line under the cursor and slide remaining lines below the
+cursor up one line.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_deleteln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Delete the line under the cursor</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~move(2, 1)
+scr~deleteln()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Delwin">
+<title>Delwin</title>
+<indexterm><primary>Delwin</primary></indexterm>
+<para>Destroy a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_delwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Delete a window</title>
+<programlisting>
+<![CDATA[
+lf = .window~ASCII_LF~d2c()
+
+scr = .window~new()
+
+p = .pad~new(50, 100)
+
+scr~addstr("New pad created")
+scr~refresh()
+scr~getch()
+
+if p~delwin() = scr~OK then do
+   scr~addstr("...and now it's gone!" "" lf)
+   end
+else do
+   scr~addstr("...and now it's still there!" "" lf)
+   end
+scr~refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Derwin">
+<title>Derwin</title>
+<indexterm><primary>Derwin</primary></indexterm>
+<para>Create a derrived window from self.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_derwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>nlines</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ncols</term>
+      <listitem><para>Number of cols.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begy</term>
+      <listitem><para>Beginning Y line.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begx</term>
+      <listitem><para>Beginning X column.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A Window instance.</para>
+</section>
+
+<section id="Doupdate">
+<title>Doupdate</title>
+<indexterm><primary>Doupdate</primary></indexterm>
+<para>Update the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_doupdate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Update the terminal</title>
+<programlisting>
+<![CDATA[
+filename = 'Readme.txt'
+tall = 24
+wide = 19
+spacer = 5
+
+scr = .window~new()
+p = .pad~new(200, wide + 1)
+s1 = p~subpad(tall, wide + 1, 1, 1)
+s2 = p~subpad(tall, wide + 1, tall + 1, 1)
+s3 = p~subpad(tall, wide + 1, (2 * tall) + 1, 1)
+
+strm = .stream~new(filename)
+strm~open('read')
+eof = .false
+call on notready name eof
+
+ch = strm~charin()
+do while \eof
+   p~addch(ch)
+   ch = strm~charin()
+   end
+strm~close()
+
+s1~pnoutrefresh(1, 1, 1, 1, tall, wide + 1)
+s2~pnoutrefresh(1, 1, 1, wide + spacer + 1, tall, (wide * 2) + spacer)
+s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 2))
+scr~doupdate()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Dupwin">
+<title>Dupwin</title>
+<indexterm><primary>Dupwin</primary></indexterm>
+<para>Duplicate a window (self).</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_dupwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A Window instance.</para>
+<example>
+<title>Duplicate a window</title>
+<programlisting>
+<![CDATA[
+numeric digits 12
+lf = .window~ASCII_LF~d2c()
+
+scr = .window~new()
+
+/* Build window & wait */
+fred = .window~new(0,0,1,1)
+fred~addstr("This is the original window, Fred." || lf)
+fred~refresh()
+fred~getch()
+
+/* Create and show barney */
+barney = fred~dupwin()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Echo">
+<title>Echo</title>
+<indexterm><primary>Echo</primary></indexterm>
+<para>Turn on echo.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_echo.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Echochar">
+<title>Echochar</title>
+<indexterm><primary>Echochar</primary></indexterm>
+<para>Echo one character.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_echochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Endwin">
+<title>Endwin</title>
+<indexterm><primary>Endwin</primary></indexterm>
+<para>End nCurses formatting.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_endwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>End nCurses formating</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~endwin()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Erase">
+<title>Erase</title>
+<indexterm><primary>Erase</primary></indexterm>
+<para>Erase the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_erase.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Erasechar">
+<title>Erasechar</title>
+<indexterm><primary>Erasechar</primary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_erasechar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Return the terminal's erase char.</para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Filter">
+<title>Filter</title>
+<indexterm><primary>Filter</primary></indexterm>
+<para>Restrict output to a single line.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_filter.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Flash">
+<title>Flash</title>
+<indexterm><primary>Flash</primary></indexterm>
+<para>Briefly flash the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_flash.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Flash the screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~addstr('I said ATTENTION!')
+scr~flash()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Flushinp">
+<title>Flushinp</title>
+<indexterm><primary>Flushinp</primary></indexterm>
+<para>Flush the input queue.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_flushinp.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Flash the input queue</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~flushinp()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getbegyx">
+<title>Getbegyx</title>
+<indexterm><primary>Getbegyx</primary></indexterm>
+<para>Get the y &amp; x screen coordinate for the top left corner of the window
+relative to the stdscr.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getbegyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string in the form "y x".</para>
+</section>
+
+<section id="Getbkgd">
+<title>Getbkgd</title>
+<indexterm><primary>Getbkgd</primary></indexterm>
+<para>Get the background attribute for the the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getbkgd.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Attribute (a numeric value).</para>
+</section>
+
+<section id="Getch">
+<title>Getch</title>
+<indexterm><primary>Getch</primary></indexterm>
+<para>Get character from the keyboard.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A one character string.</para>
+<example>
+<title>Get a character from the keyboard</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+char = scr~getch()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getmaxyx">
+<title>Getmaxyx</title>
+<indexterm><primary>Getmaxyx</primary></indexterm>
+<para>Get the width and height of a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getmaxyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string in the form "maxy maxx".</para>
+<example>
+<title>Get the width and height of the screen</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getmouse">
+<title>Getmouse</title>
+<indexterm><primary>Getmouse</primary></indexterm>
+<para>Get a mouse event.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getmouse.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>An instance of the Mevent class.</para>
+<example>
+<title>Get a mouse event</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~noecho()
+scr~keypad(.true)
+
+mmask = scr~mousemask(scr~ALL_MOUSE_EVENTS)
+
+do forever
+   ch = scr~getch()
+   if ch = scr~KEY_MOUSE then do
+      mort = scr~getmouse()
+      scr~move(1, 1)
+      scr~clrtoeol()
+      scr~addstr(mort~y || '/' || mort~x)
+      scr~refresh()
+      end
+   if ch = lf then leave
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getnstr">
+<title>Getnstr</title>
+<indexterm><primary>Getnstr</primary></indexterm>
+<para>Get a string from the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to get.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string.</para>
+<example>
+<title>Get a string from the terminal</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~mvaddstr(4, 11, 'Enter your name: ')
+scr~refresh()
+name = scr~getnstr(45)
+scr~mvaddstr(6, 7, 'Enter your password: ')
+scr~refresh()
+scr~noecho()
+password = scr~getnstr(8)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getparyx">
+<title>Getparyx</title>
+<indexterm><primary>Getparyx</primary></indexterm>
+<para>Get the width and height of a window relative to the parent window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getparyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string in the form "maxy maxx".</para>
+</section>
+
+<section id="Getstr">
+<title>Getstr</title>
+<indexterm><primary>Getstr</primary></indexterm>
+<para>Get a string from the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A character string (maximum of 1023 characters).</para>
+</section>
+
+<section id="Getwin">
+<title>Getwin</title>
+<indexterm><primary>Getwin</primary></indexterm>
+<para>Create a new window from a file.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>filename</term>
+      <listitem><para>File name containing the window information.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A Window instance.</para>
+<example>
+<title>Create a new window from a file</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+win = scr~getwin('window.dat')
+win~refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Getyx">
+<title>Getyx</title>
+<indexterm><primary>Getyx</primary></indexterm>
+<para>Get the cursor location from a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string in the form "y x".</para>
+</section>
+
+<section id="Halfdelay">
+<title>Halfdelay</title>
+<indexterm><primary>Halfdelay</primary></indexterm>
+<para>Simalar to the cbreak method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_halfdelay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tenths</term>
+      <listitem><para>Tenths of a second.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Hascolors">
+<title>Has_colors</title>
+<indexterm><primary>Has_colors</primary></indexterm>
+<para>Determine if the terminal has color support.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+<example>
+<title>Determine if the terminal has color support</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+if \scr~has_colors() then do
+   scr~endwin()
+   say 'Terminal cannot do colors.'
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Hasic">
+<title>Has_ic</title>
+<indexterm><primary>Has_ic</primary></indexterm>
+<para>Determine if the terminal has insert character support.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_ic.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Hasil">
+<title>Has_il</title>
+<indexterm><primary>Has_il</primary></indexterm>
+<para>Determine if the terminal has insert line support.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_il.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Hline">
+<title>Hline</title>
+<indexterm><primary>Hline</primary></indexterm>
+<para>Draw a horizontal line.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_hline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character type (chtype)</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to draw.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Draw a horizontal line</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+x = 1
+do y = 1 to maxy
+   scr~move(y, x)
+   scr~hline(0, maxx - x + 1)
+   scr~vline(0, maxy - y + 1)
+   x += 2
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Idcok">
+<title>Idcok</title>
+<indexterm><primary>Idcok</primary></indexterm>
+<para>Use hardware to insert/delete characters.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_idcok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean on/off.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Idlok">
+<title>Idlok</title>
+<indexterm><primary>Idlok</primary></indexterm>
+<para>Use hardware to insert/delete lines.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_idlok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean on/off.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Immedok">
+<title>Immedok</title>
+<indexterm><primary>Immedok</primary></indexterm>
+<para>Use hardware to provide auto refresh.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_immedok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean on/off.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Inch">
+<title>Inch</title>
+<indexterm><primary>Inch</primary></indexterm>
+<para>Return the attr/char under the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A numeric containing the attribut and character.</para>
+</section>
+
+<section id="Inchstr">
+<title>Inchstr</title>
+<indexterm><primary>Inchstr</primary></indexterm>
+<para>Return the attr/char array.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A chtype array as a character string (maximum of 1023 bytes).</para>
+</section>
+
+<section id="Inchnstr">
+<title>Inchnstr</title>
+<indexterm><primary>Inchnstr</primary></indexterm>
+<para>Return the attr/char array.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of attr/char to return.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A chtype array as a character string.</para>
+</section>
+
+<section id="Initcolor">
+<title>Init_color</title>
+<indexterm><primary>Init_color</primary></indexterm>
+<para>Allow the user to redefine colors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_init_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>c</term>
+      <listitem><para>Color number to change.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>r</term>
+      <listitem><para>Red value.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>g</term>
+      <listitem><para>Green value.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>b</term>
+      <listitem><para>Blue value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Initpair">
+<title>Init_pair</title>
+<indexterm><primary>Init_pair</primary></indexterm>
+<para>Assign foreground an background colors to a color pair.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_init_pair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>c</term>
+      <listitem><para>COLOR_PAIR number to change.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>f</term>
+      <listitem><para>Foreground color.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>b</term>
+      <listitem><para>Background color.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Assign foreground and background colors</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~start_color()
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Innstr">
+<title>Innstr</title>
+<indexterm><primary>Innstr</primary></indexterm>
+<para>Read a string from the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_innstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to read.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string.</para>
+</section>
+
+<section id="Insch">
+<title>Insch</title>
+<indexterm><primary>Insch</primary></indexterm>
+<para>Insert attr/char under the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>chtype to be inserted.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Insert attr/character under the cursor</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+do i = len to 1 by -1
+   scr~move(6, 6)
+   scr~insch(text~substr(i, 1))
+   scr~refresh()
+   scr~napms(100)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Insdelln">
+<title>Insdelln</title>
+<indexterm><primary>Insdelln</primary></indexterm>
+<para>Insert/delete lines.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insdelin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of lines to insert/delete.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Insertln">
+<title>Insertln</title>
+<indexterm><primary>Insertln</primary></indexterm>
+<para>Insert one line.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insertln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Insert one line</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~move(2, 1)
+scr~insertln()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Insnstr">
+<title>Insnstr</title>
+<indexterm><primary>Insnstr</primary></indexterm>
+<para>Insert part of a string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to insert.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to insert.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Insstr">
+<title>Insstr</title>
+<indexterm><primary>Insstr</primary></indexterm>
+<para>Insert a string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to insert.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Instr">
+<title>Instr</title>
+<indexterm><primary>OrxCurInstr</primary></indexterm>
+<para>Read a string from the terminal.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_instr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string (maximum of 1023 bytes).</para>
+</section>
+
+<section id="Intrflush">
+<title>Intrflush</title>
+<indexterm><primary>Intrflush</primary></indexterm>
+<para>Turn on/off input queue flushing when a interrupt key is typed at the keyboard.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_intrflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Islinetouched">
+<title>Is_linetouched</title>
+<indexterm><primary>Is_linetouched</primary></indexterm>
+<para>Determine if a line has been changed since the last refresh.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_is_linetouched.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Line number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Iswintouched">
+<title>Is_wintouched</title>
+<indexterm><primary>Is_wintouched</primary></indexterm>
+<para>Determine if a window has been changed since the last refresh.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_is_wintouched.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Isbitset">
+<title>Isbitset</title>
+<indexterm><primary>Isbitset</primary></indexterm>
+<para>Return true if a bit is set.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_isbitset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>field</term>
+      <listitem><para>Field value to test.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bit</term>
+      <listitem><para>The bit to test.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Isendwin">
+<title>Isendwin</title>
+<indexterm><primary>Isendwin</primary></indexterm>
+<para>Return true if endwin() has been called.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_isendwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Keyname">
+<title>Keyname</title>
+<indexterm><primary>Keyname</primary></indexterm>
+<para>Return a string representing the specified input key.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_keyname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>k</term>
+      <listitem><para>Key value (decimal number).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String representing the key name.</para>
+</section>
+
+<section id="Keypad">
+<title>Keypad</title>
+<indexterm><primary>Keypad</primary></indexterm>
+<para>Turn on/off reading keypad (function, etc) keys.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_keypad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Turn on/off reading keypad (function, etc) keys</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~noecho()
+scr~keypad(.true)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Killchar">
+<title>Killchar</title>
+<indexterm><primary>Killchar</primary></indexterm>
+<para>Return the kill terminal's kill character.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_killchar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String of one character.</para>
+</section>
+
+<section id="Leaveok">
+<title>Leaveok</title>
+<indexterm><primary>Leaveok</primary></indexterm>
+<para>Turn on/off synchrnizing the logical and the hardware cursor location after a refresh.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_leaveok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Lines">
+<title>Lines</title>
+<indexterm><primary>Lines</primary></indexterm>
+<para>Return the number of lines on the stdscr.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_lines.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Number of lines.</para>
+</section>
+
+<section id="Longname">
+<title>Longname</title>
+<indexterm><primary>Longname</primary></indexterm>
+<para>Return the terminal string description.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_longname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String.</para>
+</section>
+
+<section id="Meta">
+<title>Meta</title>
+<indexterm><primary>Meta</primary></indexterm>
+<para>Turn on/off reading the Alt key info in the 8th bit.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_meta.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mousetrafo">
+<title>Mouse_trafo</title>
+<indexterm><primary>Mouse_trafo</primary></indexterm>
+<para>Translate mouse y and x coordinates to window coordinates.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mouse_trafo.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y mouse coordinate.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X mouse coordinate.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string in the form "y x".</para>
+</section>
+
+<section id="Mousemask">
+<title>Mousemask</title>
+<indexterm><primary>Mousemask</primary></indexterm>
+<para>Set/return the mouse event mask.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mousemask.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>new</term>
+      <listitem><para>New mouse mask.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Event mask (numeric).</para>
+<example>
+<title>Set/return the mouse event mask</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+if scr~ncurses_mouse_version() > 0 then do
+   scr~addstr('This version of NCurses supports the mouse.' || lf)
+   end
+else do
+   scr~addstr('This version of NCurses does not support the mouse.' || lf)
+   end
+
+mmask = scr~mousemask(scr~BUTTON3_CLICKED)
+if mmask = scr~BUTTON3_CLICKED then do
+   scr~addstr('I am able to read a button 3 click.' || lf)
+   end
+else do
+   scr~addstr('I am not able to read a button 3 click.' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Move">
+<title>Move</title>
+<indexterm><primary>Move</primary></indexterm>
+<para>Move the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_move.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y cursor position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New X cursor position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Move the cursor</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~noecho()
+scr~keypad(.true)
+
+mmask = scr~mousemask(scr~ALL_MOUSE_EVENTS)
+
+do forever
+   ch = scr~getch()
+   if ch = scr~KEY_MOUSE then do
+      mort = scr~getmouse()
+      scr~move(1, 1)
+      scr~clrtoeol()
+      scr~addstr(mort~y || '/' || mort~x)
+      scr~refresh()
+      end
+   if ch = lf then leave
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Mvaddch">
+<title>Mvaddch</title>
+<indexterm><primary>Mvaddch</primary></indexterm>
+<para>Add a single character to the screen after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character to be added. This is a single character, not
+      a numeric value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvaddchnstr">
+<title>Mvaddchnstr</title>
+<indexterm><primary>Mvaddchnstr</primary></indexterm>
+<para>Add a chtype character string to the screen after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>Chtype string be added. A chtype is a four-byte
+      sequence.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of chtype characters to add.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvaddchstr">
+<title>Mvaddchstr</title>
+<indexterm><primary>Mvaddchstr</primary></indexterm>
+<para>Add a chtype character string to the screen after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>Chtype string be added. A chtype is a four-byte
+      sequence.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvaddnstr">
+<title>Mvaddnstr</title>
+<indexterm><primary>Mvaddnstr</primary></indexterm>
+<para>Add a character string to the screen after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to be added.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to add.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvaddstr">
+<title>Mvaddstr</title>
+<indexterm><primary>Mvaddstr</primary></indexterm>
+<para>Add a character string to the screen after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to be added.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Add a string after moving the cursor</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+scr~scrollok(.true)
+
+do y = 1 to maxy
+   scr~mvaddstr(y, 1, "This is boring text written to line" y)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Mvchgat">
+<title>Mvchgat</title>
+<indexterm><primary>Mvchgat</primary></indexterm>
+<para>Change attributes on the window after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvchgat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y start position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X start position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of character positions.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>The attribute.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>color</term>
+      <listitem><para>The COLOR_PAIR number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvderwin">
+<title>Mvderwin</title>
+<indexterm><primary>Mvderwin</primary></indexterm>
+<para>Display a different portion of the parent window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvderwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Parent Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>Parent X position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvgetch">
+<title>Mvgetch</title>
+<indexterm><primary>OrxCurMvgetch</primary></indexterm>
+<para>Get character from the keyboard after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y position for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New X position for the cursor.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A one character string.</para>
+</section>
+
+<section id="Mvgetnstr">
+<title>Mvgetnstr</title>
+<indexterm><primary>Mvgetnstr</primary></indexterm>
+<para>Get a string from the terminal after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y positions for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New X positions for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to get.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A character string.</para>
+</section>
+
+<section id="Mvgetstr">
+<title>Mvgetstr</title>
+<indexterm><primary>Mvgetstr</primary></indexterm>
+<para>Get a string from the terminal after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y positions for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New X positions for the cursor.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A character string (maximum of 1023 characters).</para>
+</section>
+
+<section id="Mvhline">
+<title>Mvhline</title>
+<indexterm><primary>Mvhline</primary></indexterm>
+<para>Draw a horizontal line after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvhline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y cursor position</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New C cursor position</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character type (chtype)</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to draw.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Draw a horizontal after moving the cursor</title>
+<programlisting>
+<![CDATA[
+y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
+x = .array~of(11, 11,  2, 21, 21, 31,  2, 11, 21, 21, 11,  1)
+
+scr = .window~new()
+
+do c = 1 to 12 by 2
+   scr~mvhline(y[c], x[c], 0, 10)
+   scr~mvvline(y[c + 1], x[c + 1], 0, 5)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Mvinch">
+<title>Mvinch</title>
+<indexterm><primary>Mvinch</primary></indexterm>
+<para>Return the attr/char under the cursor after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New cursor y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New cursor x position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A numeric containing the attribut and character.</para>
+</section>
+
+<section id="Mvinchnstr">
+<title>Mvinchnstr</title>
+<indexterm><primary>Mvinchnstr</primary></indexterm>
+<para>Return the attr/char under the cursor after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New cursor y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New cursor x position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of attr/char to return.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A chtype array as a character string.</para>
+</section>
+
+<section id="Mvinchstr">
+<title>Mvinchstr</title>
+<indexterm><primary>Mvinchstr</primary></indexterm>
+<para>Return the attr/char under the cursor after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New cursor y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New cursor x position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A chtype array as a character string (maximum of 1023 bytes).</para>
+</section>
+
+<section id="Mvinnstr">
+<title>Mvinnstr</title>
+<indexterm><primary>Mvinnstr</primary></indexterm>
+<para>Read a string from the terminal after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New y position for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New x position for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of characters to read.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string.</para>
+</section>
+
+<section id="Mvinsch">
+<title>Mvinsch</title>
+<indexterm><primary>Mvinsch</primary></indexterm>
+<para>Insert the attr/char under the cursor after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinsch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New cursor y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New cursor x position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>chtype to be inserted.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvinsstr">
+<title>Mvinsstr</title>
+<indexterm><primary>Mvinsstr</primary></indexterm>
+<para>Insert a string after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinsstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New cursor y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New cursor x position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>String to insert.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Mvinstr">
+<title>Mvinstr</title>
+<indexterm><primary>Mvinstr</primary></indexterm>
+<para>Read a string from the terminal after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New y position for the cursor.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New x position for the cursor.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A string (maximum of 1023 bytes).</para>
+</section>
+
+<section id="Mvvline">
+<title>Mvvline</title>
+<indexterm><primary>Mvvline</primary></indexterm>
+<para>Draw a vertical line after moving the cursor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvvline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>New Y cursor position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>New X cursor position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>chtype.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of rows.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Draw a vertical after moving the cursor</title>
+<programlisting>
+<![CDATA[
+y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
+x = .array~of(11, 11,  2, 21, 21, 31,  2, 11, 21, 21, 11,  1)
+
+scr = .window~new()
+
+do c = 1 to 12 by 2
+   scr~mvhline(y[c], x[c], 0, 10)
+   scr~mvvline(y[c + 1], x[c + 1], 0, 5)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Mvwin">
+<title>Mvwin</title>
+<indexterm><primary>Mvwin</primary></indexterm>
+<para>Move a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Parent Y position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>Parent X position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Move a window</title>
+<programlisting>
+<![CDATA[
+tsize = 18
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+x = ((maxx - tsize) / 2) + 1
+b = .window~new(1, tsize, 1, x)
+b~addstr("I'm getting sick!")
+
+do y = 2 to maxy
+   b~mvwin(y, x)
+   b~refresh()
+   scr~touchline(y - 1, 1)
+   scr~refresh()
+   b~getch()
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Napms">
+<title>Napms</title>
+<indexterm><primary>Napms</primary></indexterm>
+<para>Pause the program for number of microseconds.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_napms.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of microseconds</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Pause a program</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~move(1, 1)
+scr~addch('*')
+scr~refresh()
+scr~napms(500)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Ncursesmouseversion">
+<title>Ncurses_mouse_version</title>
+<indexterm><primary>Ncurses_mouse_version</primary></indexterm>
+<para>Return the Ncurses mouse version string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ncurses_mouse_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String.</para>
+<example>
+<title>Return the nCurses mouse version string</title>
+<programlisting>
+<![CDATA[
+lf = .window~ASCII_LF~d2c()
+
+scr = .window~new()
+
+if scr~ncurses_mouse_version() > 0 then do
+   scr~addstr('This version of NCurses supports the mouse.' || lf)
+   end
+else do
+   scr~addstr('This version of NCurses does not support the mouse.' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Ncursesversion">
+<title>Ncurses_version</title>
+<indexterm><primary>Ncurses_version</primary></indexterm>
+<para>Return the Ncurses version string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ncurses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String.</para>
+<example>
+<title>Return the nCurses version string</title>
+<programlisting>
+<![CDATA[
+lf = .window~ASCII_LF~d2c()
+
+scr = .window~new()
+
+if scr~ncurses_mouse_version() > 0 then do
+   scr~addstr('This version of NCurses supports the mouse.' || lf)
+   end
+else do
+   scr~addstr('This version of NCurses does not support the mouse.' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Nl">
+<title>Nl</title>
+<indexterm><primary>Nl</primary></indexterm>
+<para>Distinguish between cr and lf.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Nocbreak">
+<title>Nocbreak</title>
+<indexterm><primary>Nocbreak</primary></indexterm>
+<para>Deactivates cbreak (buffering) mode.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nocbreak.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Nodelay">
+<title>Nodelay</title>
+<indexterm><primary>Nodelay</primary></indexterm>
+<para>Transforms getch() function to nonblocking.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nodelay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>On/off boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Change the setch() function to non-blocking</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~nodelay(.TRUE);		/* turn off getch() wait */
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Noecho">
+<title>Noecho</title>
+<indexterm><primary>Noecho</primary></indexterm>
+<para>Turn off echo.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noecho.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Turn off echo</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~noecho()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Nonl">
+<title>Nonl</title>
+<indexterm><primary>Nonl</primary></indexterm>
+<para>Do not distinguish between cr and lf.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nonl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Noqiflush">
+<title>Noqiflush</title>
+<indexterm><primary>Noqiflush</primary></indexterm>
+<para>Do no flush the input queue on interrupt.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noqiflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Noraw">
+<title>Noraw</title>
+<indexterm><primary>Noraw</primary></indexterm>
+<para>Do not remove modification done by the terminal to input.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noraw.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Notimeout">
+<title>Notimeout</title>
+<indexterm><primary>Notimeout</primary></indexterm>
+<para>Pause input function after user presses ESC key.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_notimeout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>On/off boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Overlay">
+<title>Overlay</title>
+<indexterm><primary>Overlay</primary></indexterm>
+<para>Overlay the destination window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_overlay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>dwin</term>
+      <listitem><para>Destination window.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Overlay the destination window</title>
+<programlisting>
+<![CDATA[
+alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
+
+scr~addstr(text1)					/* Add text to stdscr and wait */
+scr~refresh()
+scr~getch()
+
+alpha~addstr(text2)			/* Show win alpha and wait */
+alpha~refresh()
+alpha~getch()
+
+/* Copy text from one window to the other, non-destructively */
+scr~overlay(alpha)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Overwrite">
+<title>Overwrite</title>
+<indexterm><primary>Overwrite</primary></indexterm>
+<para>Overwrite the destination window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_overwrite.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>dwin</term>
+      <listitem><para>Destination window.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Overwrite the destination window</title>
+<programlisting>
+<![CDATA[
+alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
+
+scr~addstr(text1)					/* Add text to stdscr and wait */
+scr~refresh()
+scr~getch()
+
+alpha~addstr(text2)			/* Show win alpha and wait */
+alpha~refresh()
+alpha~getch()
+
+/* Copy text from one window to the other, destructively */
+scr~overwrite(alpha)   -- see book text
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Paircontent">
+<title>Pair_content</title>
+<indexterm><primary>Pair_content</primary></indexterm>
+<para>Return the pair of colors in a color pair.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pair_content.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>Color pair number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String in the form "fg bg" (two numberics).</para>
+</section>
+
+<section id="Pairnumber">
+<title>Pair_number</title>
+<indexterm><primary>Pair_number</primary></indexterm>
+<para>Return the default pair attr.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pair_number.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Color pair attribute.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Numeric.</para>
+</section>
+
+<section id="Pechochar">
+<title>Pechochar</title>
+<indexterm><primary>Pechochar</primary></indexterm>
+<para>This method is not valid for a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pechochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="Pnoutrefresh">
+<title>Pnoutrefresh</title>
+<indexterm><primary>OrxCurPnoutrefresh</primary></indexterm>
+<para>This method is not valid for windows.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="Prefresh">
+<title>Prefresh</title>
+<indexterm><primary>Prefresh</primary></indexterm>
+<para>This method is not valid for windows.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_prefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="Putwin">
+<title>Putwin</title>
+<indexterm><primary>Putwin</primary></indexterm>
+<para>Save a new window to a file.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_putwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fname</term>
+      <listitem><para>File name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Save a window to a file</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+retc = win~putwin('window.dat')
+if retc = scr~ERR then do
+   scr~addstr('Error putting window to disk' || lf)
+   end
+else do
+   scr~addstr('Window put to disk' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Qiflush">
+<title>Qiflush</title>
+<indexterm><primary>Qiflush</primary></indexterm>
+<para>Flush the input queue on interrupt.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_qiflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Raw">
+<title>Raw</title>
+<indexterm><primary>Raw</primary></indexterm>
+<para>Remove modification done by the terminal to input.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_raw.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Redrawwin">
+<title>Redrawwin</title>
+<indexterm><primary>Redrawwin</primary></indexterm>
+<para>Redraw an entire window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_redrawwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Refresh">
+<title>Refresh</title>
+<indexterm><primary>Refresh</primary></indexterm>
+<para>Refresh the screen and turn nCurses formatting on.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Refresh the screen and turn nCurses formatting on</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~addstr('Goodbye, cruel C Programming!')
+scr~refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Scrdump">
+<title>Scr_dump</title>
+<indexterm><primary>Scr_dump</primary></indexterm>
+<para>Dump the terminal screen to a file.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scr_dump.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fname</term>
+      <listitem><para>Output file name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Dump the terminal screen to a file</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+retc = scr~scr_dump('windump')
+if retc = scr~ERR then do
+   scr~addstr('Error writing window to disk' || lf)
+   end
+else do
+   scr~addstr('File written: press Enter to quit' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Scrrestore">
+<title>Scr_restore</title>
+<indexterm><primary>Scr_restore</primary></indexterm>
+<para>Restore the terminal screen drom a file.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scr_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fname</term>
+      <listitem><para>Input file name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Restore the screen from a file</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+retc = scr~scr_restore('windump')
+if retc = scr~ERR then do
+   scr~addstr('Error reading window file: press Enter' || lf)
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Scrl">
+<title>Scrl</title>
+<indexterm><primary>Scrl</primary></indexterm>
+<para>Scroll a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>Number of lines to scroll.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Scroll">
+<title>Scroll</title>
+<indexterm><primary>Scroll</primary></indexterm>
+<para>Scroll a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scroll.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Scrollok">
+<title>Scrollok</title>
+<indexterm><primary>Scrollok</primary></indexterm>
+<para>Allow a window to scroll.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scrollok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Boolean indicator.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Allow a window to scroll</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+scr~scrollok(.true)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Setscrreg">
+<title>Setscrreg</title>
+<indexterm><primary>Setscrreg</primary></indexterm>
+<para>Set a window reagion scrollable.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_setscrreg.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>top</term>
+      <listitem><para>Top row.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bot</term>
+      <listitem><para>Bottom row.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slkattr">
+<title>Slk_attr</title>
+<indexterm><primary>Slk_attr</primary></indexterm>
+<para>Return soft label attr_t.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Numeric.</para>
+</section>
+
+<section id="Slkattroff">
+<title>Slk_attroff</title>
+<indexterm><primary>Slk_attroff</primary></indexterm>
+<para>Turn off one or more soft label attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attroff.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slkattron">
+<title>Slk_attron</title>
+<indexterm><primary>Slk_attron</primary></indexterm>
+<para>Turn on one or more soft label attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attron.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slkattrset">
+<title>Slk_attrset</title>
+<indexterm><primary>Slk_attrset</primary></indexterm>
+<para>Set soft label attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attrset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>Attribute(s).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slkclear">
+<title>Slk_clear</title>
+<indexterm><primary>Slk_clear</primary></indexterm>
+<para>Hide the soft labels.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_clear.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Hide the soft labels</title>
+<programlisting>
+<![CDATA[
+center = 1
+label_text = .array~of('S', 'O', 'F', 'T', 'K', 'E', 'Y', 'S')
+
+.window~slk_init(1)
+scr = .window~new()
+
+scr~slk_restore()
+do label = 1 to label_text~items()
+   scr~slk_set(label, label_text[label], center)
+   end
+scr~slk_refresh()
+ch = scr~getch()
+
+scr~slk_clear()
+ch = scr~getch()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Slkcolor">
+<title>Slk_color</title>
+<indexterm><primary>Slk_color</primary></indexterm>
+<para>Set soft label colors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>color</term>
+      <listitem><para>Color pair number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slklabel">
+<title>Slk_label</title>
+<indexterm><primary>Slk_label</primary></indexterm>
+<para>Return the soft label text.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_label.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>Number of the soft label.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Label string.</para>
+</section>
+
+<section id="Slknoutrefresh">
+<title>Slk_noutrefresh</title>
+<indexterm><primary>Slk_noutrefresh</primary></indexterm>
+<para>Prepares soft labels for a refresh.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_noutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Slkrefresh">
+<title>Slk_refresh</title>
+<indexterm><primary>Slk_refresh</primary></indexterm>
+<para>Refresh soft labels.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Refresh the soft labels</title>
+<programlisting>
+<![CDATA[
+left = 0
+center = 1
+right = 2
+
+.window~slk_init(0)
+scr = .window~new()
+
+scr~slk_set(1, 'Help!', left)
+scr~slk_set(2, 'File', left)
+scr~slk_set(3, 'Print', left)
+scr~slk_set(4, 'Text', center)
+scr~slk_set(5, 'Edit', center)
+scr~slk_set(6, 'Quick', right)
+scr~slk_set(7, 'Conf', right)
+scr~slk_set(8, 'Change', right)
+scr~slk_refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Slkrestore">
+<title>Slk_restore</title>
+<indexterm><primary>Slk_restore</primary></indexterm>
+<para>Restore soft labels.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Restore the soft labels</title>
+<programlisting>
+<![CDATA[
+.window~slk_init(3)
+scr = .window~new()
+
+scr~slk_restore()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Slkset">
+<title>Slk_set</title>
+<indexterm><primary>Slk_set</primary></indexterm>
+<para>Set soft label text.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>text</term>
+      <listitem><para>Soft label text.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>Soft label number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Set the soft labels</title>
+<programlisting>
+<![CDATA[
+left = 0
+center = 1
+right = 2
+
+.window~slk_init(0)
+scr = .window~new()
+
+scr~slk_set(1, 'Help!', left)
+scr~slk_set(2, 'File', left)
+scr~slk_set(3, 'Print', left)
+scr~slk_set(4, 'Text', center)
+scr~slk_set(5, 'Edit', center)
+scr~slk_set(6, 'Quick', right)
+scr~slk_set(7, 'Conf', right)
+scr~slk_set(8, 'Change', right)
+scr~slk_refresh()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Slktouch">
+<title>Slk_touch</title>
+<indexterm><primary>Slk_touch</primary></indexterm>
+<para>Touch soft labels.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_touch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Standend">
+<title>Standend</title>
+<indexterm><primary>Standend</primary></indexterm>
+<para>Turn off text attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_standend.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Standout">
+<title>Standout</title>
+<indexterm><primary>Standout</primary></indexterm>
+<para>Turn on text attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_standout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Startcolor">
+<title>Start_color</title>
+<indexterm><primary>Start_color</primary></indexterm>
+<para>Turn on using color attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_start_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Turn on using color</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+scr~start_color()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Subpad">
+<title>Subpad</title>
+<indexterm><primary>Subpad</primary></indexterm>
+<para>This method is not valid for a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_subpad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="Subwin">
+<title>Subwin</title>
+<indexterm><primary>Subwin</primary></indexterm>
+<para>Create a subwindow.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_subwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>nlines</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ncols</term>
+      <listitem><para>Number of cols.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begy</term>
+      <listitem><para>Beginning Y line.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begx</term>
+      <listitem><para>Beginning X column.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A Window instance.</para>
+<example>
+<title>Create a subwindow</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+sonny = scr~subwin(5, 20, 11, 31)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Syncok">
+<title>Syncok</title>
+<indexterm><primary>Syncok</primary></indexterm>
+<para>Turn on/off aut touch for a window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_syncok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>On/off boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Tabsize">
+<title>Tabsize</title>
+<indexterm><primary>Tabsize</primary></indexterm>
+<para>Return/set the tab size.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_tabsize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>sz</term>
+      <listitem><para>New tab size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Tab size (numeric).</para>
+</section>
+
+<section id="Termattrs">
+<title>Termattrs</title>
+<indexterm><primary>Termattrs</primary></indexterm>
+<para>Return the which attributes the terminal is capable of producing.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_termattrs.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Numeric.</para>
+</section>
+
+<section id="termname">
+<title>Termname</title>
+<indexterm><primary>Termname</primary></indexterm>
+<para>Return the terminal name.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_termname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>String.</para>
+</section>
+
+<section id="Timeout">
+<title>Timeout</title>
+<indexterm><primary>Timeout</primary></indexterm>
+<para>Set the timeout for text input.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_timeout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>tmout</term>
+      <listitem><para>Timeout value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Touchline">
+<title>Touchline</title>
+<indexterm><primary>Touchline</primary></indexterm>
+<para>Mark one or more lines as changed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_touchline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>On/off boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Mark one or more lines as changed</title>
+<programlisting>
+<![CDATA[
+tsize = 18
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+x = ((maxx - tsize) / 2) + 1
+b = .window~new(1, tsize, 1, x)
+b~addstr("I'm getting sick!")
+
+do y = 2 to maxy
+   b~mvwin(y, x)
+   b~refresh()
+   scr~touchline(y - 1, 1)
+   scr~refresh()
+   b~getch()
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Touchwin">
+<title>Touchwin</title>
+<indexterm><primary>Touchwin</primary></indexterm>
+<para>Mark window as changed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_touchwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Typeahead">
+<title>Typeahead</title>
+<indexterm><primary>Typeahead</primary></indexterm>
+<para>Set the typeahead for text input.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_typeahead.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>fd</term>
+      <listitem><para>Typeahead value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Unctrl">
+<title>Unctrl</title>
+<indexterm><primary>Unctrl</primary></indexterm>
+<para>Convert a control code to a ^code sequence.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_unctrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Code to convert.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Ungetch">
+<title>Ungetch</title>
+<indexterm><primary>Ungetch</primary></indexterm>
+<para>Put a character into the keyboard buffer.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ungetch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character to insert.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Untouchwin">
+<title>Untouchwin</title>
+<indexterm><primary>Untouchwin</primary></indexterm>
+<para>Unmark window as changed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_untouchwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Usedefaultcolors">
+<title>Use_default_colors</title>
+<indexterm><primary>Use_default_colors</primary></indexterm>
+<para>Use the default terminal colors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_use_default_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Useenv">
+<title>Use_env</title>
+<indexterm><primary>Use_env</primary></indexterm>
+<para>Use the default terminal colors.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_use_env.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Vline">
+<title>Vline</title>
+<indexterm><primary>Vline</primary></indexterm>
+<para>Draw a vertical line.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_vline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>chtype.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of rows.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Draw a vertical line</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+maxyx = scr~getmaxyx()
+parse var maxyx maxy maxx .
+x = 1
+do y = 1 to maxy
+   scr~move(y, x)
+   scr~hline(0, maxx - x + 1)
+   scr~vline(0, maxy - y + 1)
+   x += 2
+   end
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="Wenclose">
+<title>Wenclose</title>
+<indexterm><primary>Wenclose</primary></indexterm>
+<para>Determine if a mouse click are within a window (self).</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wenclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Y cursor screen position.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>x</term>
+      <listitem><para>X cursor screen position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>One or zero.</para>
+</section>
+
+<section id="Wnoutrefresh">
+<title>Wnoutrefresh</title>
+<indexterm><primary>Wnoutrefresh</primary></indexterm>
+<para>Copy modified text to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Wredrawln">
+<title>Wredrawln</title>
+<indexterm><primary>Wredrawln</primary></indexterm>
+<para>Redraw a line to the screen.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wredrawln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>beg</term>
+      <listitem><para>Beginning line number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Wsyncdown">
+<title>Wsyncdown</title>
+<indexterm><primary>Wsyncdown</primary></indexterm>
+<para>Ensure subwindows are touched when the main window is touched.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wsyncdown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Wsyncup">
+<title>Wsyncup</title>
+<indexterm><primary>Wsyncup</primary></indexterm>
+<para>Ensure parent windows are touched when the sub window is touched.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wsyncup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="Wtouchln">
+<title>Wtouchln</title>
+<indexterm><primary>Wtouchln</primary></indexterm>
+<para>Mark one or more lines as changed.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wtouchln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>y</term>
+      <listitem><para>Start line number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>n</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>bf</term>
+      <listitem><para>Changed/Unchanged boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+</chapter>
+
+<chapter id="padmethods"><title>Pad Class Method Reference</title>
+
+<!--#########################################################################
+    # Start of class methods
+    #########################################################################
+-->
+
+<section id="padNew">
+<title>New - Class Method</title>
+<indexterm><primary>New</primary></indexterm>
+<para>Create a new pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>nlines</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ncols</term>
+      <listitem><para>Number of columns.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A new pad instance.</para>
+<example>
+<title>Create a new pad</title>
+<programlisting>
+<![CDATA[
+/* create a new pad */
+win = .Window~new(5, 10)  
+]]>
+</programlisting>
+</example>
+</section>
+
+<!--#########################################################################
+    # Start of instance methods
+    #########################################################################
+-->
+
+<section id="padEchochar">
+<title>Echochar</title>
+<indexterm><primary>Echochar</primary></indexterm>
+<para>This method is not valid foa a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_echochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padMvwin">
+<title>Mvwin</title>
+<indexterm><primary>Mvwin</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_mvwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padPechochar">
+<title>Pechochar</title>
+<indexterm><primary>Pechochar</primary></indexterm>
+<para>Echo one character to a pad and the stdscr..</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_pechochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ch</term>
+      <listitem><para>Character to echo.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+</section>
+
+<section id="padPnoutrefresh">
+<title>Pnoutrefresh</title>
+<indexterm><primary>OrxCurPnoutrefresh</primary></indexterm>
+<para>Refresh a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_pnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>minrow</term>
+      <listitem><para>Minimum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mincol</term>
+      <listitem><para>Minimum col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>sminrow</term>
+      <listitem><para>Minimum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smincol</term>
+      <listitem><para>Minimum col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smaxrow</term>
+      <listitem><para>Maximum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smaxcol</term>
+      <listitem><para>Maximum col number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Refresh a pad</title>
+<programlisting>
+<![CDATA[
+filename = 'Readme.txt'
+tall = 24
+wide = 19
+spacer = 5
+
+scr = .window~new()
+p = .pad~new(200, wide + 1)
+s1 = p~subpad(tall, wide + 1, 1, 1)
+s2 = p~subpad(tall, wide + 1, tall + 1, 1)
+s3 = p~subpad(tall, wide + 1, (2 * tall) + 1, 1)
+
+strm = .stream~new(filename)
+strm~open('read')
+eof = .false
+call on notready name eof
+
+ch = strm~charin()
+do while \eof
+   p~addch(ch)
+   ch = strm~charin()
+   end
+strm~close()
+
+s1~pnoutrefresh(1, 1, 1, 1, tall, wide + 1)
+s2~pnoutrefresh(1, 1, 1, wide + spacer + 1, tall, (wide * 2) + spacer)
+s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 2))
+scr~doupdate()
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="padPrefresh">
+<title>Prefresh</title>
+<indexterm><primary>Prefresh</primary></indexterm>
+<para>Refresh the pad to the stdscr.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_prefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>minrow</term>
+      <listitem><para>Minimum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>mincol</term>
+      <listitem><para>Minimum col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>sminrow</term>
+      <listitem><para>Minimum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smincol</term>
+      <listitem><para>Minimum col number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smaxrow</term>
+      <listitem><para>Maximum row number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>smaxcol</term>
+      <listitem><para>Maximum col number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Either ERR (-1) or OK (0).</para>
+<example>
+<title>Refresh the pad to a stdscr</title>
+<programlisting>
+<![CDATA[
+scr = .window~new()
+
+p = .pad~new(50, 100)
+if p = .nil then do
+   scr~addstr("Unable to create pad")
+   scr~refresh()
+   scr~getch()
+   scr~endwin()
+   return
+   end
+
+scr~addstr("New pad created")
+scr~refresh()
+p~addstr("New pad created")
+p~prefresh(1, 1, 1, 1, 2, 16)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="padRedrawwin">
+<title>Redrawwin</title>
+<indexterm><primary>Redrawwin</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_redrawwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padRefresh">
+<title>Refresh</title>
+<indexterm><primary>Refresh</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padScrl">
+<title>Scrl</title>
+<indexterm><primary>Scrl</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padScroll">
+<title>Scroll</title>
+<indexterm><primary>Scroll</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scroll.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padScrollok">
+<title>Scrollok</title>
+<indexterm><primary>Scrollok</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scrollok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padSubpad">
+<title>Subpad</title>
+<indexterm><primary>Subpad</primary></indexterm>
+<para>Create a subpad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_subpad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>nlines</term>
+      <listitem><para>Number of lines.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>ncols</term>
+      <listitem><para>Number of cols.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begy</term>
+      <listitem><para>Beginning Y line.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>begx</term>
+      <listitem><para>Beginning X column.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A Pad instance.</para>
+<example>
+<title>Create a subpad</title>
+<programlisting>
+<![CDATA[
+lf = .window~ASCII_LF~d2c()
+
+scr = .window~new()
+
+pod = .pad~new(50, 50)
+
+scr~addstr("New pad created" || lf)
+scr~refresh()
+
+pea = pod~subpad(20, 20, 30, 30)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="padSubwin">
+<title>Subwin</title>
+<indexterm><primary>Subwin</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_subwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+
+<section id="padWnoutrefresh">
+<title>Wnoutrefresh</title>
+<indexterm><primary>Wnoutrefresh</primary></indexterm>
+<para>This method is not valid for a pad.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_wnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>ERR (-1).</para>
+</section>
+</chapter>
+
+<chapter id="meventmethods"><title>Mevent Class Method Reference</title>
+
+<!--#########################################################################
+    # Start of instance methods
+    #########################################################################
+-->
+
+<section id="meventbstate">
+<title>Bstate</title>
+<indexterm><primary>Bstate</primary></indexterm>
+<para>The mouse button state.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_bstate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Mouse button state (numeric).</para>
+</section>
+
+<section id="meventid">
+<title>Id</title>
+<indexterm><primary>Id</primary></indexterm>
+<para>The mouse event pointing device ID.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_id.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Mouse event ID (numeric).</para>
+</section>
+
+<section id="meventx">
+<title>X</title>
+<indexterm><primary>X</primary></indexterm>
+<para>The mouse column number position.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_x.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Mouse column position (numeric).</para>
+</section>
+
+<section id="meventy">
+<title>Y</title>
+<indexterm><primary>Y</primary></indexterm>
+<para>The mouse row number position.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_y.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Mouse row position (numeric).</para>
+</section>
+</chapter>
+
+<chapter id="chtypemethods"><title>Chtype Class Method Reference</title>
+
+<!--#########################################################################
+    # Start of class methods
+    #########################################################################
+-->
+
+<section id="chtypenew">
+<title>New</title>
+<indexterm><primary>New</primary></indexterm>
+<para>Create a chtype instance.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>The attribute (numeric).</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>num</term>
+      <listitem><para>A color pair number (numeric).</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>char</term>
+      <listitem><para>A single character.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A new Chtype instance.</para>
+</section>
+
+<!--#########################################################################
+    # Start of instance methods
+    #########################################################################
+-->
+
+<section id="chtypeattr">
+<title>Attr</title>
+<indexterm><primary>Attr</primary></indexterm>
+<para>Returns/sets the numeric attribute value of the chtype.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_attr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The numeric chtype attribute value (numeric).</para>
+</section>
+
+<section id="chtypechar">
+<title>Char</title>
+<indexterm><primary>Char</primary></indexterm>
+<para>Returns/sets the character of the chtype.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_char.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The chtype character value.</para>
+</section>
+
+<section id="chtypecolorpair">
+<title>Colorpair</title>
+<indexterm><primary>Colorpair</primary></indexterm>
+<para>Returns/sets the numeric color pair value of the chtype.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_colorpair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The numeric chtype color pair value (numeric).</para>
+</section>
+
+<section id="chtypestring">
+<title>String</title>
+<indexterm><primary>String</primary></indexterm>
+<para>Returns the numeric value of the chtype.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_string.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A numeric chtype value (numeric).</para>
+</section>
+</chapter>
+
+<appendix><title>Sample nCurses Programs</title>
+<indexterm><primary>nCurses example programs</primary></indexterm>
+<indexterm><primary>example</primary>
+<secondary>nCurses programs</secondary></indexterm>
+<indexterm><primary>using OrxnCurses</primary></indexterm>
+<para>The OrxnCurses distribution contains a number of example programs. All of these progeams
+are ported from example programs contained in the book
+<citetitle>Programmer's Guide to nCurses</citetitle> by Dan Gookin published by
+Wiley Technology Publishing&reg; ISBN: 978-0-470-10759-1.</para>
+</appendix>
+
+
+<xi:include href="Common_Content/Notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Common_Content/CPLv1.0.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Revision_History.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<index />
+
+</book>

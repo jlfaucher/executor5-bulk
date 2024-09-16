@@ -1,0 +1,544 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="oneof"><title>Rexx Runtime Objects</title>
+<para>In addition to the class objects described in the previous chapter, the Rexx runtime environment
+also provides objects that are accessible via <xref linkend="ensym" xrefstyle="template:environment symbols"/>.
+</para>
+
+<section id="envo"><title>The Environment Directory (.ENVIRONMENT)</title>
+<indexterm><primary>.ENVIRONMENT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENVIRONMENT object</secondary></indexterm>
+<para>The Environment object is a directory of public
+objects that are always accessible.  The Environment object is automatically searched when environment symbols
+are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
+Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
+</para>
+<para><programlisting>
+say .true                   -- Displays "1"
+say .environment~true       -- Also displays "1"
+say .environment["TRUE"]    -- "1"
+say .environment["true"]    -- The NIL object
+</programlisting></para>
+<para>The Environment object directory contains
+all of the Rexx built-in classes (Array, etc.),
+the special Rexx constants
+<xref linkend="nil" xrefstyle="template:.NIL"/>,
+<xref linkend="TRUE" xrefstyle="template:.TRUE"/>,
+<xref linkend="FALSE" xrefstyle="template:.FALSE"/>,
+<xref linkend="ENDOFLINE" xrefstyle="template:.ENDOFLINE"/>, and the
+<xref linkend="rexxinfoEnv" xrefstyle="template:.RexxInfo object"/>.</para>
+
+<section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
+<indexterm><primary>.ENDOFLINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ENDOFLINE object</secondary></indexterm>
+<para>The ENDOFLINE object is a string constant representing the
+<xref linkend="line-end" xrefstyle="template:line-end"/> characters.
+It is <literal>'0d 0a'x</literal> (carriage-return, line-feed) on Windows,
+and <literal>'0a'x</literal> (line-feed) on Unix-like systems.
+</para>
+</section>
+
+<section id="FALSE"><title>The FALSE Constant (.FALSE)</title>
+<indexterm><primary>.FALSE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.FALSE object</secondary></indexterm>
+<para>The FALSE object is the constant "0" representing a FALSE result for
+logical and comparison operations.
+</para>
+</section>
+
+<section id="nil"><title>The NIL Object (.NIL)</title>
+<indexterm><primary>.nil object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.nil object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.nil object</secondary></indexterm>
+<para>The Nil object is a special
+object that does not contain data. It usually represents the absence of an
+object, as a null string represents a string with no characters. It has only
+the methods of the Object class. Note that you use the Nil object
+(rather than the null string (&quot;&quot;)) to test for the absence of data
+in an array or other Collection class entry: </para>
+<programlisting>
+if .nil = board[row,col]   /* .NIL rather than "" */
+then ...
+</programlisting>
+</section>
+
+<section id="rexxinfoEnv"><title>The RexxInfo Object (.RexxInfo)</title>
+<para>
+<indexterm><primary>.RexxInfo object</primary></indexterm>
+<indexterm><primary>built-in object</primary><secondary>.RexxInfo object</secondary></indexterm>
+<indexterm><primary>public object</primary><secondary>.RexxInfo object</secondary></indexterm>
+The RexxInfo object returns the only instance
+of the <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/>
+and gives access to Rexx language information and other platform-specific
+information in a single place.
+</para>
+<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 1 Sep 2016 /* e. g. */
+]]></programlisting>
+</section>
+
+<section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
+<indexterm><primary>.TRUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRUE object</secondary></indexterm>
+<para>The TRUE object is the constant "1", representing a true result for
+logical and comparison operations.
+</para>
+</section>
+</section>
+
+<section id="locenv"><title>The Local Directory (.LOCAL)</title>
+<indexterm><primary>.LOCAL object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LOCAL object</secondary></indexterm>
+<para>The Local environment object is a directory of interpreter instance
+objects that are always accessible.  You can access objects in the Local
+environment object in the same way as objects in the Environment object.
+The Local object contains
+<itemizedlist spacing="compact">
+  <listitem><para>the <xref linkend="inputt" xrefstyle="template:.INPUT"/>,
+    <xref linkend="outp" xrefstyle="template:.OUTPUT"/>,
+    <xref linkend="erobj" xrefstyle="template:.ERROR"/>,
+    <xref linkend="debuginputobj" xrefstyle="template:.DEBUGINPUT"/>,
+    and <xref linkend="traceoutputobj" xrefstyle="template:.TRACEOUTPUT"/>
+    Monitor objects used for console I/O,</para></listitem>
+  <listitem><para>the <xref linkend="stdinobj" xrefstyle="template:.STDIN"/>,
+    <xref linkend="stdoutobj" xrefstyle="template:.STDOUT"/>,
+    and <xref linkend="errorobj" xrefstyle="template:.STDERR"/>
+    output streams that are the default I/O targets,</para></listitem>
+  <listitem><para>the <xref linkend="stdqueobj" xrefstyle="template:.STDQUE"/>
+    RexxQueue instance used for Rexx external queue operations,</para></listitem>
+  <listitem><para>and the <xref linkend="syscargsobj" xrefstyle="template:.SYSCARGS"/>
+    array of program command line options.</para></listitem>
+</itemizedlist>
+</para>
+<para>Because both .ENVIRONMENT and .LOCAL are <classname>Directory</classname>
+objects, you can place objects into, or retrieve objects from, these environments
+by using any of the <classname>Directory</classname> methods <methodname>[]</methodname>,
+<methodname>[]=</methodname>, <methodname>put</methodname>, <methodname>at</methodname>,
+<methodname>setEntry</methodname>, <methodname>entry</methodname>,
+or <methodname>setMethod</methodname>). To avoid potential name clashes with built-in objects and public
+objects that Rexx provides, each object that your programs add to these
+environments should have a period in its index.</para>
+<example>
+<title>.LOCAL</title>
+<programlisting>
+/* .LOCAL example--places something in the Local environment directory */
+.local~my.alarm = theAlarm
+/* To retrieve it                                                      */
+say .local~my.alarm
+</programlisting>
+<programlisting>
+/* Another .LOCAL example (Windows) */
+.environment["MYAPP.PASSWORD"] = "topsecret"
+.environment["MYAPP.UID"] = 200
+
+/* Create a local directory for my stuff */
+.local["MYAPP.LOCAL"] = .directory~new
+
+/* Add log file for my local directory                                 */
+.myapp.local["LOG"] = .stream~new("myapp.log")
+say .myapp.password                    /* Displays "topsecret"         */
+say .myapp.uid                         /* Displays "200"               */
+
+/* Write a line to the log file */
+.myapp.local~log~lineout("Logon at "time()" on "date())
+
+/* Redirect SAY lines into a file:  */
+.output~destination(.stream~new("SAY_REDIRECT.TXT"))
+say "This goes into a file, and not onto the screen!"
+</programlisting>
+<programlisting>
+/* .LOCAL example--get the individual command line arguments */
+cmdargs = .local~syscargs
+do carg over cmdargs
+   say carg
+end
+</programlisting>
+</example>
+</section>
+
+<section id="debuginputobj"><title>The Debug Input Monitor (.DEBUGINPUT)</title>
+<indexterm><primary>debug input object</primary></indexterm>
+<indexterm><primary>.DEBUGINPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.DEBUGINPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.DEBUGINPUT object</secondary></indexterm>
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the default interactive debug input stream
+object (see <xref linkend="iostrms" />).
+This input stream is the source for all input for interactive debug mode.
+</para>
+<para>The default for this object's initial source is the .INPUT
+monitor.</para>
+</section>
+
+<section id="erobj"><title>The Error Monitor (.ERROR)</title>
+<indexterm><primary>.ERROR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ERROR object</secondary></indexterm>
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the error stream
+object. You can redirect the trace output in the same way as with the output
+object in the Monitor class example.</para>
+<para>The default for this object's initial destination is the .STDERR
+stream.</para>
+</section>
+
+<section id="inputt"><title>The Input Monitor (.INPUT)</title>
+<indexterm><primary>input object</primary></indexterm>
+<indexterm><primary>.INPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.INPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.INPUT object</secondary></indexterm>
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the default input stream
+object (see <xref linkend="iostrms" />).
+This input stream is the source for the PARSE LINEIN instruction, the LINEIN
+method of the Stream class, and, if you specify no stream name, the LINEIN
+built-in function. It is also the source for the PULL and PARSE PULL
+instructions if the external data queue is empty.</para>
+<para>The default for this object's initial source is the .STDIN
+stream.</para>
+</section>
+
+<section id="outp"><title>The Output Monitor (.OUTPUT)</title>
+<indexterm><primary>.OUTPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<indexterm><primary>output</primary>
+<secondary>object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.OUTPUT object</secondary></indexterm>
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the default output stream object (see
+<xref linkend="iostrms" />). This
+is the destination for output from the SAY instruction, the LINEOUT method
+(.OUTPUT~LINEOUT), and, if you specify no stream name, the
+LINEOUT built-in function. You can replace this object in the environment
+to direct such output elsewhere (for example, to a transcript window).</para>
+<para>The default for this object's initial destination is the .STDOUT
+stream.</para>
+</section>
+
+<section id="traceoutputobj"><title>The Trace Output Monitor (.TRACEOUTPUT)</title>
+<indexterm><primary>.TRACEOUTPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRACEOUTPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRACEOUTPUT object</secondary></indexterm>
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the trace output target
+object. You can redirect the trace output in the same way as with the output
+object in the Monitor class example.</para>
+<para>The default for this object's initial destination is the .ERROR
+monitor.</para>
+</section>
+
+<section id="errorobj"><title>The STDERR Stream (.STDERR)</title>
+<indexterm><primary>.STDERR object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDERR object</secondary></indexterm>
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is the default stream
+used for trace and error message output.
+</para>
+</section>
+
+<section id="stdinobj"><title>The STDIN Stream (.STDIN)</title>
+<indexterm><primary>.STDIN object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDIN object</secondary></indexterm>
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is representing the standard input file of a process. It is the startup default
+stream for the .INPUT object.
+</para>
+</section>
+
+<section id="stdoutobj"><title>The STDOUT Stream (.STDOUT)</title>
+<indexterm><primary>.STDOUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDOUT object</secondary></indexterm>
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is representing the standard output file of a process. It is the startup default
+stream for the .OUTPUT object.
+</para>
+</section>
+
+<section id="stdqueobj"><title>The STDQUE Queue (.STDQUE)</title>
+<indexterm><primary>.STDQUE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.STDQUE object</secondary></indexterm>
+<para>This <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/> object
+is the destination for the PUSH and QUEUE instruction, and the source for
+queue lines for the PULL and PARSE PULL instructions.
+</para>
+</section>
+
+<section id="syscargsobj" revisionflag="added"><title>&added50;The SYSCARGS Array (.SYSCARGS)</title>
+<indexterm><primary>.SYSCARGS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.SYSCARGS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.SYSCARGS object</secondary></indexterm>
+
+<para>The .SysCArgs object is an Array of all command-line arguments
+supplied to the program.  Normally all command-line arguments are
+combined into a single string and passed to the Rexx program as an argument
+retrievable via the <xref linkend="bifArg" xrefstyle="select:title"/> built-in function.
+.SYSCARGS is a direct collection of the
+individual C arguments passed to the program.</para>
+
+<indexterm><primary>examples</primary>
+<secondary>SysCArgs Array</secondary></indexterm>
+<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.local-syscargs">
+<title>SysCArgs Array</title>
+<programlisting>
+say .SysCArgs~items "SysCArgs" .SysCArgs~makeString(, ",")
+say arg() "ARGs" arg(1, "A")~makeString(, ",")
+
+/* when called with command line parameters 1 "2 3" 4, displays:
+3 SysCArgs 1,2 3,4
+1 ARGs 1 "2 3" 4
+*/
+</programlisting>
+</example>
+
+<note><title>Note</title>
+<para>.SysCArgs may not be available in all situations, e. g. in program
+code that gets run via "rexx -e".
+</para></note>
+</section>
+
+<section id="contexte"><title>The Rexx Context (.CONTEXT)</title>
+<indexterm><primary>.CONTEXT</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.CONTEXT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.CONTEXT object</secondary></indexterm>
+<para>The .CONTEXT environment symbol accesses a
+<xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/> instance for the
+currently active Rexx execution environment.
+The returned context object is only active until the
+current method call, routine call, or program terminates.  Once the context
+object is deactivated, an error will be raised if any of the RexxContext methods
+are called.</para>
+</section>
+
+<section id="linee"><title>The Line Number (.LINE)</title>
+<indexterm><primary>.LINE object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.LINE object</secondary></indexterm>
+<para>.LINE is set to the line number of the instruction currently being executed.
+If the current instruction is defined within an INTERPRET
+instruction, the line number of INTERPRET instruction is returned.</para>
+</section>
+
+<section id="methe"><title>The METHODS StringTable (.METHODS)</title>
+<indexterm><primary>.METHODS StringTable</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.METHODS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.METHODS object</secondary></indexterm>
+<para>The .METHODS environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/> of methods that
+<xref linkend="attrd" xrefstyle="select:title"/>,
+<xref linkend="constantd" xrefstyle="select:title"/>, or
+<xref linkend="methd" xrefstyle="select:title"/>
+directives in the currently running program define.
+The StringTable indexes are the <xref linkend="clsMethod" xrefstyle="template:method"/> names.
+The StringTable values are the method objects.
+</para>
+<para>Only methods or attributes that are not preceded by
+a ::CLASS directive are in the .METHODS StringTable.
+These are known as <emphasis role="italic">floating methods</emphasis>.
+If there are no such methods, the .METHODS symbol has the default value of
+<computeroutput>.METHODS</computeroutput>.</para>
+<example>
+<title>.METHODS</title>
+<programlisting>
+/* .methods contains one entry with the index (method name) "TALK" */
+o=.object~enhanced(.methods)  /* create object, enhance it with methods */
+o~talk("echo this text")  /* test "TALK" method */
+::method talk  /* floating method by the name of "TALK" */
+  use arg text  /* retrieve the argument */
+  say text  /* display received argument */
+</programlisting>
+</example>
+</section>
+
+<section id="routinee"><title>The ROUTINES StringTable (.ROUTINES)</title>
+<indexterm><primary>.ROUTINES StringTable</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ROUTINES object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ROUTINES object</secondary></indexterm>
+<para>The .ROUTINES environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+of routines that
+<xref linkend="routd" xrefstyle="select:title"/> directives in the currently running program define.
+The StringTable indexes are the <xref linkend="clsRoutine" xrefstyle="template:routine"/> names.
+The StringTable values are the routine objects.
+</para>
+<para>If there are no ::ROUTINE directives,
+the .ROUTINES symbol has the default value of
+<computeroutput>.ROUTINES</computeroutput>.</para>
+<example>
+<title>.ROUTINES</title>
+<programlisting>
+/* .routines contains one entry with the index (routine name) "TALK" */
+.routines~talk~call("echo this text")  /* test talk routine */
+::routine talk  /* floating routine by the name of "TALK" */
+  use arg text  /* retrieve the argument */
+  say text  /* display received argument */
+</programlisting>
+</example>
+</section>
+
+<section id="resourcese" revisionflag="added"><title>&added50;The RESOURCES StringTable (.RESOURCES)</title>
+<indexterm><primary>.RESOURCES StringTable</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.RESOURCES object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.RESOURCES object</secondary></indexterm>
+<para>The .RESOURCES environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+of data resources that
+<xref linkend="resourced" xrefstyle="select:title"/>
+directives in the currently running program define.
+The StringTable indexes are the resource names,
+the StringTable values are arrays of individual resource data lines.
+</para>
+<para>
+If there are no ::RESOURCE directives,
+the .RESOURCES symbol has the default value of
+<computeroutput>.RESOURCES</computeroutput>.</para>
+<example>
+<title>.RESOURCE</title>
+<programlisting>
+do name over .resources
+  say name":" .resources[name]~items "lines"
+  say .resources[name]~makeString
+end
+
+::resource greyCat end "-"
+La nuit, tous les chats sont gris
+---------------------------------
+
+::resource "brown fox"
+The quick brown fox jumps over the lazy dog
+::END
+
+::resource nollop end ANONYMOUS
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+ANONYMOUS TYPESETTER
+
+/* Displays:
+GREYCAT: 1 lines
+La nuit, tous les chats sont gris
+BROWN FOX: 1 lines
+The quick brown fox jumps over the lazy dog
+NOLLOP: 3 lines
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+*/
+</programlisting>
+</example>
+</section>
+
+<section id="rs"><title>The Return Status (.RS)</title>
+<indexterm><primary>.RS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.RS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.RS object</secondary></indexterm>
+<para>.RS is set to the return status from any executed command (including
+those submitted with the ADDRESS instruction). The .RS environment
+symbol has a value of <computeroutput>-1</computeroutput>
+when a command returns a FAILURE condition,
+a value of <computeroutput>1</computeroutput> when a command returns
+an ERROR condition, and a value of <computeroutput>0</computeroutput> when a
+command indicates successful completion. The value
+of .RS is also available after trapping the ERROR or FAILURE condition.</para>
+
+<note><title>Note</title>
+<para>Commands executed manually during interactive tracing do not change
+the value of .RS. The initial value of .RS is
+<computeroutput>.RS</computeroutput>.
+</para></note>
+</section>
+
+</chapter>

@@ -1,0 +1,21 @@
+hostemu_execio_diskr ::= 'EXECIO' ( lines | '*' ) 'DISKR' filename linenum?
+                         ( '('
+                           'FINIS'? 
+                           ( 'FIFO' | 'LIFO' | 'STEM' stemname. )?
+                           'SKIP'? 
+                           ')'?
+                         )?
+
+hostemu_execio_diskw ::= 'EXECIO' ( lines | '*' ) 'DISKW' filename
+                         ( '('
+                           'FINIS'? 
+                           ( 'STEM' stemname. )?
+                           ')'?
+                         )?
+
+hostemu_hi ::= 'HI'
+
+hostemu_te ::= 'TE'
+
+hostemu_ts ::= 'TS'
+

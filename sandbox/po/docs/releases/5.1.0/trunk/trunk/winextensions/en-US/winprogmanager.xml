@@ -1,0 +1,968 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWindowsProgramManager"><title>The WindowsProgramManager Class</title>
+<indexterm><primary>WindowsProgramManager class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsProgramManager class</secondary></indexterm>
+<para>
+  The <computeroutput>WindowsProgramManager</computeroutput> class allows the programmer to interact with
+  the Windows Program Manager. This class can be use to create program groups and shortcuts to access
+  your programs.
+</para>
+<para>
+  The WindowsProgramManager class is defined in the file
+  <computeroutput>winSystm.cls</computeroutput> To use this class in a program, place a
+  <computeroutput>::requires</computeroutput> statement in the program file:
+</para>
+<programlisting>
+::requires "winSystm.cls"
+</programlisting>
+<para>
+  A sample program <computeroutput>desktop.rex</computeroutput> is provided in the
+  <computeroutput>samples\oodialog\winsystem</computeroutput> directory.
+</para>
+<para>
+  Methods of the WindowsProgramManager class are:
+</para>
+<table frame="all">
+<title>Methods Available to the WindowsProgramManager Class</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...link</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class method)</entry>
+<entry>init (<xref linkend="wpinit" />) (Class method)</entry>
+</row>
+<row>
+<entry>addDeskTopIcon</entry>
+<entry>addDesktopIcon (<xref linkend="adddesktopicon" />)</entry>
+</row>
+<row>
+<entry>addGroup</entry>
+<entry>addGroup (<xref linkend="wpadgr" />)</entry>
+</row>
+<row>
+<entry>addItem</entry>
+<entry>addItem (<xref linkend="wpadit" />)</entry>
+</row>
+<row>
+<entry>addShortCut</entry>
+<entry>addShortCut (<xref linkend="addshortcut" />)</entry>
+</row>
+<row>
+<entry>deleteDesktopIcon</entry>
+<entry>deleteDesktopIcon (<xref linkend="deldskic" />)</entry>
+</row>
+<row>
+<entry>deleteGroup</entry>
+<entry>deleteGroup (<xref linkend="wpdegr" />)</entry>
+</row>
+<row>
+<entry>deleteItem</entry>
+<entry>deleteItem (<xref linkend="wpdeit" />)</entry>
+</row>
+<row>
+<entry>showGroup</entry>
+<entry>showGroup (<xref linkend="wpshgr" />)</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<section id="wpinit"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Creates an instance of the WindowsProgramManager class.
+</para>
+</section>
+
+<section id="adddesktopicon"><title>addDesktopIcon</title>
+<indexterm><primary>addDesktopIcon method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>AddDesktopIcon method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_adddesktopicon.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Adds a shortcut to the Windows desktop. A sample program
+<computeroutput>DESKICON.REX</computeroutput> is provided in the
+<computeroutput>ooRexx\SAMPLES</computeroutput> directory.</para>
+<variablelist>
+<varlistentry><term>Arguments:</term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The name of the shortcut, displayed below the icon.
+</para></listitem></varlistentry>
+<varlistentry><term>program</term>
+<listitem><para>The program file launched by the shortcut.
+</para></listitem></varlistentry>
+<varlistentry><term>iconfile</term>
+<listitem><para>The name of the icon used for the shortcut. If not specified,
+the icon of <emphasis role="italic">program</emphasis> is used.
+</para></listitem></varlistentry>
+<varlistentry><term>iconnr</term>
+<listitem><para>The number of the icon within the
+<emphasis role="italic">iconfile</emphasis>. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>workdir</term>
+<listitem><para>The working directory of the shortcut.
+</para></listitem></varlistentry>
+<varlistentry><term>location</term>
+<listitem><para>Either of the following locations:
+<variablelist>
+<varlistentry><term>&quot;PERSONAL&quot;</term>
+<listitem><para>The shortcut is personal and displayed only on the desktop of
+the user.</para></listitem></varlistentry>
+<varlistentry><term>&quot;COMMON&quot;</term>
+<listitem><para>The shortcut is common to all users and displayed on the
+desktop of all users.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>args</term>
+<listitem><para>The arguments passed to the program that the shortcut refers to.
+</para></listitem></varlistentry>
+<varlistentry><term>hotkey</term>
+<listitem><para>The virtual key to be used as a hotkey to open the shortcut.
+For a list of the key names, see
+<xref linkend="virtualkeys" />.
+</para></listitem></varlistentry>
+<varlistentry><term>run</term>
+<listitem><para>Specifies one of the options listed in the syntax diagram. The
+default is &quot;NORMAL&quot;.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addshortcut"><title>addShortCut</title>
+<indexterm><primary>addShortCut method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addShortCut method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_addshortcut.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Creates a shortcut within the specified folder.</para>
+<variablelist>
+<varlistentry><term>Arguments:</term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>name</term>
+<listitem><para>The full name of the shortcut.
+</para></listitem></varlistentry>
+<varlistentry><term>program</term>
+<listitem><para>The program file launched by the shortcut.
+</para></listitem></varlistentry>
+<varlistentry><term>iconfile</term>
+<listitem><para>The name of the icon used for the shortcut. If not specified,
+the icon of <emphasis role="italic">program</emphasis> is used.
+</para></listitem></varlistentry>
+<varlistentry><term>iconnr</term>
+<listitem><para>The number of the icon within the
+<emphasis role="italic">iconfile</emphasis>. The default is
+0.
+</para></listitem></varlistentry>
+<varlistentry><term>workdir</term>
+<listitem><para>The working directory of the shortcut.
+</para></listitem></varlistentry>
+<varlistentry><term>args</term>
+<listitem><para>The arguments passed to the program that the shortcut refers to.
+</para></listitem></varlistentry>
+<varlistentry><term>hotkey</term>
+<listitem><para>The virtual key to be used as a hotkey to open the shortcut.
+For a list of the key names, see
+<xref linkend="virtualkeys" />.
+</para></listitem></varlistentry>
+<varlistentry><term>run</term>
+<listitem><para>Specifies one of the options listed in the syntax diagram.
+The default is &quot;NORMAL&quot;.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>Example:</term>
+<listitem><para>The following example creates a shortcut named
+&quot;My NotePad&quot;
+to the Notepad editor within the directory c:\temp:
+<example id="ex.windowprogrammanager-addShortCut">
+<title>WindowsProgramManager class - addShortCut method</title>
+<programlisting>
+pm = .WindowsProgramManager~new
+    if pm~InitCode \= 0 then exit
+    pm~addShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
+    ::requires "winsystm.cls"
+</programlisting>
+</example>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wpadgr"><title>addGroup</title>
+<indexterm><primary>addGroup method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addGroup method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_addgroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Adds a program group to the Programs group of the desktop. If the group
+already exists, it is opened. The <emphasis role="italic">group</emphasis>
+argument specifies the name of the program group to be added. Example:</para>
+<programlisting>
+addGroup("Object Rexx Redbook")
+</programlisting>
+
+<note><title>Note</title>
+<para>The name that you specify for the
+<emphasis role="italic">group</emphasis> argument
+must not contain any brackets or parenthesis. Otherwise, this method fails.
+</para></note>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The method was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wpadit"><title>addItem</title>
+<indexterm><primary>addItem method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addItem method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_additem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Adds a shortcut to a program group. The shortcut is placed into the last
+group used with either AddGroup or ShowGroup.</para>
+<example id="ex.windowprogrammanager-addItem">
+<title>WindowsProgramManager class - addItem method</title>
+<programlisting>
+AddItem("OODialog Samples", ,
+"rexx oodialog\samples\sample.rex", ,
+"oodialog\samples\oodialog.ico")
+</programlisting>
+</example>
+
+<note><title>Note</title>
+<para>The name that you specify for the <emphasis role="italic">group</emphasis>
+argument must not contain characters that are not valid, such as brackets or
+parenthesis. Otherwise, this method fails. Some characters are changed,
+for example / to _.</para></note>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The method was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deldskic"><title>deleteDesktopIcon</title>
+<indexterm><primary>deleteDesktopIcon method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteDesktopIcon method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deletedesktopicon.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Deletes a shortcut from the Windows desktop that was previously
+created with AddDesktopIcon.</para>
+
+<para>The arguments are:</para>
+
+<variablelist>
+<varlistentry><term><emphasis>name</emphasis></term>
+<listitem><para>The name of the shortcut to be deleted.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>location</emphasis></term>
+<listitem><para>Either of the following locations:</para>
+<variablelist>
+<varlistentry><term><emphasis>"PERSONAL"</emphasis></term>
+<listitem><para>The shortcut was previously created with AddDesktopIcon
+and the location option "PERSONAL". This is the default.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>"COMMON"</emphasis></term>
+<listitem><para>The shortcut was previously created with AddDesktopIcon
+and the location option "COMMON".
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Return codes:</emphasis></para>
+
+<variablelist>
+<varlistentry><term><emphasis>0</emphasis></term>
+<listitem><para>Shortcut deleted successfully.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>2</emphasis></term>
+<listitem><para>Shortcut not found.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>3</emphasis></term>
+<listitem><para>Path to shortcut not found.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>5</emphasis></term>
+<listitem><para>Access denied or busy.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>26</emphasis></term>
+<listitem><para>Not a DOS disk.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>32</emphasis></term>
+<listitem><para>Sharing violation.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>36</emphasis></term>
+<listitem><para>Sharing buffer exceeded.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>87</emphasis></term>
+<listitem><para>Does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>206</emphasis></term>
+<listitem><para>Shortcut name exceeds range error.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note:</title>
+<para>Return code 2 is also returned when a "PERSONAL" should be
+deleted that was previously created with "COMMON" and vice
+versa.</para></note>
+
+<example id="ex.windowprogrammanager-deleteDesktopIcon">
+<title>WindowsProgramManager class - deleteDesktopIcon method</title>
+<programlisting>
+<![CDATA[
+pm = .WindowsProgramManager~new
+if pm~InitCode \= 0 then exit
+
+rc = pm~deleteDesktopIcon("MyNotepad1", ,
+     "%SystemRoot%\system32\notepad.exe")
+if rc \= 0 then do
+  say "Error deleting shortcut: My Notepad 1"
+  exit
+end
+
+exit
+
+::requires "winsystm.cls"
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="wpdegr"><title>deleteGroup</title>
+<indexterm><primary>deleteGroup method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteGroup method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deletegroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Deletes a program group from the desktop. The
+<emphasis role="italic">group</emphasis> argument specifies
+the name of the program group to be deleted.</para>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The method was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wpdeit"><title>deleteItem</title>
+<indexterm><primary>deleteItem method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteItem method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deleteitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Deletes a shortcut from a program group.</para>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The method was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wpshgr"><title>showGroup</title>
+<indexterm><primary>showGroup method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>showGroup method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_showgroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Opens a program group. The
+<emphasis role="italic">group</emphasis> argument specifies the name of
+the program group to be opened. If MIN or MAX is specified, the program group
+is opened minimized or maximized.</para>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The method was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="virtualkeys"><title>Symbolic Names for Virtual Keys</title>
+<indexterm><primary>virtual keys</primary></indexterm>
+<para><xref linkend="t000033" /> shows the symbolic names and the
+keyboard equivalents for the virtual keys used by Object Rexx.</para>
+
+<table id="t000033" frame="all">
+<title>Symbolic Names for Virtual Keys</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Symbolic Name</entry>
+<entry>Mouse or Keyboard Equivalent</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LBUTTON</entry>
+<entry>Left mouse button</entry>
+</row>
+<row>
+<entry>RBUTTON</entry>
+<entry>Right mouse button</entry>
+</row>
+<row>
+<entry>CANCEL</entry>
+<entry>Control-break processing</entry>
+</row>
+<row>
+<entry>MBUTTON</entry>
+<entry>Middle mouse button (three-button mouse)</entry>
+</row>
+<row>
+<entry>BACK</entry>
+<entry>BACKSPACE key</entry>
+</row>
+<row>
+<entry>TAB</entry>
+<entry>TAB key</entry>
+</row>
+<row>
+<entry>CLEAR</entry>
+<entry>CLEAR key</entry>
+</row>
+<row>
+<entry>RETURN</entry>
+<entry>ENTER key</entry>
+</row>
+<row>
+<entry>SHIFT</entry>
+<entry>SHIFT key</entry>
+</row>
+<row>
+<entry>CONTROL</entry>
+<entry>CTRL key</entry>
+</row>
+<row>
+<entry>MENU</entry>
+<entry>ALT key</entry>
+</row>
+<row>
+<entry>PAUSE</entry>
+<entry>PAUSE key</entry>
+</row>
+<row>
+<entry>CAPITAL</entry>
+<entry>CAPS LOCK key</entry>
+</row>
+<row>
+<entry>ESCAPE</entry>
+<entry>ESC key</entry>
+</row>
+<row>
+<entry>SPACE</entry>
+<entry>SPACEBAR</entry>
+</row>
+<row>
+<entry>PRIOR</entry>
+<entry>PAGE UP key</entry>
+</row>
+<row>
+<entry>NEXT</entry>
+<entry>PAGE DOWN key</entry>
+</row>
+<row>
+<entry>END</entry>
+<entry>END key</entry>
+</row>
+<row>
+<entry>HOME</entry>
+<entry>HOME key</entry>
+</row>
+<row>
+<entry>LEFT</entry>
+<entry>LEFT ARROW key</entry>
+</row>
+<row>
+<entry>UP</entry>
+<entry>UP ARROW key</entry>
+</row>
+<row>
+<entry>RIGHT</entry>
+<entry>RIGHT ARROW key</entry>
+</row>
+<row>
+<entry>DOWN</entry>
+<entry>DOWN ARROW key</entry>
+</row>
+<row>
+<entry>SELECT</entry>
+<entry>SELECT key</entry>
+</row>
+<row>
+<entry>EXECUTE</entry>
+<entry>EXECUTE key</entry>
+</row>
+<row>
+<entry>SNAPSHOT</entry>
+<entry>PRINT SCREEN key</entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry>INS key</entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry>DEL key</entry>
+</row>
+<row>
+<entry>HELP</entry>
+<entry>HELP key</entry>
+</row>
+<row>
+<entry>0</entry>
+<entry>0 key</entry>
+</row>
+<row>
+<entry>1</entry>
+<entry>1 key</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>2 key</entry>
+</row>
+<row>
+<entry>3</entry>
+<entry>3 key</entry>
+</row>
+<row>
+<entry>4</entry>
+<entry>4 key</entry>
+</row>
+<row>
+<entry>5</entry>
+<entry>5 key</entry>
+</row>
+<row>
+<entry>6</entry>
+<entry>6 key</entry>
+</row>
+<row>
+<entry>7</entry>
+<entry>7 key</entry>
+</row>
+<row>
+<entry>8</entry>
+<entry>8 key</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>9 key</entry>
+</row>
+<row>
+<entry>A</entry>
+<entry>A key</entry>
+</row>
+<row>
+<entry>B</entry>
+<entry>B key</entry>
+</row>
+<row>
+<entry>C</entry>
+<entry>C key</entry>
+</row>
+<row>
+<entry>D</entry>
+<entry>D key</entry>
+</row>
+<row>
+<entry>E</entry>
+<entry>E key</entry>
+</row>
+<row>
+<entry>F</entry>
+<entry>F key</entry>
+</row>
+<row>
+<entry>G</entry>
+<entry>G key</entry>
+</row>
+<row>
+<entry>H</entry>
+<entry>H key</entry>
+</row>
+<row>
+<entry>I</entry>
+<entry>I key</entry>
+</row>
+<row>
+<entry>J</entry>
+<entry>J key</entry>
+</row>
+<row>
+<entry>K</entry>
+<entry>K key</entry>
+</row>
+<row>
+<entry>L</entry>
+<entry>L key</entry>
+</row>
+<row>
+<entry>M</entry>
+<entry>M key</entry>
+</row>
+<row>
+<entry>N</entry>
+<entry>N key</entry>
+</row>
+<row>
+<entry>O</entry>
+<entry>O key</entry>
+</row>
+<row>
+<entry>Q</entry>
+<entry>Q key</entry>
+</row>
+<row>
+<entry>R</entry>
+<entry>R key</entry>
+</row>
+<row>
+<entry>S</entry>
+<entry>S key</entry>
+</row>
+<row>
+<entry>T</entry>
+<entry>T key</entry>
+</row>
+<row>
+<entry>U</entry>
+<entry>U key</entry>
+</row>
+<row>
+<entry>V</entry>
+<entry>V key</entry>
+</row>
+<row>
+<entry>W</entry>
+<entry>W key</entry>
+</row>
+<row>
+<entry>X</entry>
+<entry>X key</entry>
+</row>
+<row>
+<entry>Y</entry>
+<entry>Y key</entry>
+</row>
+<row>
+<entry>Z</entry>
+<entry>Z key</entry>
+</row>
+<row>
+<entry>NUMPAD0</entry>
+<entry>Numeric keypad 0 key</entry>
+</row>
+<row>
+<entry>NUMPAD1</entry>
+<entry>Numeric keypad 1 key</entry>
+</row>
+<row>
+<entry>NUMPAD2</entry>
+<entry>Numeric keypad 2 key</entry>
+</row>
+<row>
+<entry>NUMPAD3</entry>
+<entry>Numeric keypad 3 key</entry>
+</row>
+<row>
+<entry>NUMPAD4</entry>
+<entry>Numeric keypad 4 key</entry>
+</row>
+<row>
+<entry>NUMPAD5</entry>
+<entry>Numeric keypad 5 key</entry>
+</row>
+<row>
+<entry>NUMPAD6</entry>
+<entry>Numeric keypad 6 key</entry>
+</row>
+<row>
+<entry>NUMPAD7</entry>
+<entry>Numeric keypad 7 key</entry>
+</row>
+<row>
+<entry>NUMPAD8</entry>
+<entry>Numeric keypad 8 key</entry>
+</row>
+<row>
+<entry>NUMPAD9</entry>
+<entry>Numeric keypad 9 key</entry>
+</row>
+<row>
+<entry>MULTIPLY</entry>
+<entry>Multiply key</entry>
+</row>
+<row>
+<entry>ADD</entry>
+<entry>Add key</entry>
+</row>
+<row>
+<entry>SEPARATOR</entry>
+<entry>Separator key</entry>
+</row>
+<row>
+<entry>SUBTRACT</entry>
+<entry>Subtract key</entry>
+</row>
+<row>
+<entry>DECIMAL</entry>
+<entry>Decimal key</entry>
+</row>
+<row>
+<entry>DIVIDE</entry>
+<entry>Divide key</entry>
+</row>
+<row>
+<entry>F1</entry>
+<entry>F1 key</entry>
+</row>
+<row>
+<entry>F2</entry>
+<entry>F2 key</entry>
+</row>
+<row>
+<entry>F3</entry>
+<entry>F3 key</entry>
+</row>
+<row>
+<entry>F4</entry>
+<entry>F4 key</entry>
+</row>
+<row>
+<entry>F5</entry>
+<entry>F5 key</entry>
+</row>
+<row>
+<entry>F6</entry>
+<entry>F6 key</entry>
+</row>
+<row>
+<entry>F7</entry>
+<entry>F7 key</entry>
+</row>
+<row>
+<entry>F8</entry>
+<entry>F8 key</entry>
+</row>
+<row>
+<entry>F9</entry>
+<entry>F9 key</entry>
+</row>
+<row>
+<entry>F10</entry>
+<entry>F10 key</entry>
+</row>
+<row>
+<entry>F11</entry>
+<entry>F11 key</entry>
+</row>
+<row>
+<entry>F12</entry>
+<entry>F12 key</entry>
+</row>
+<row>
+<entry>F13</entry>
+<entry>F13 key</entry>
+</row>
+<row>
+<entry>F14</entry>
+<entry>F14 key</entry>
+</row>
+<row>
+<entry>F15</entry>
+<entry>F15 key</entry>
+</row>
+<row>
+<entry>F16</entry>
+<entry>F16 key</entry>
+</row>
+<row>
+<entry>F17</entry>
+<entry>F17 key</entry>
+</row>
+<row>
+<entry>F18</entry>
+<entry>F18 key</entry>
+</row>
+<row>
+<entry>F19</entry>
+<entry>F19 key</entry>
+</row>
+<row>
+<entry>F20</entry>
+<entry>F20 key</entry>
+</row>
+<row>
+<entry>F21</entry>
+<entry>F21 key</entry>
+</row>
+<row>
+<entry>F22</entry>
+<entry>F22 key</entry>
+</row>
+<row>
+<entry>F23</entry>
+<entry>F23 key</entry>
+</row>
+<row>
+<entry>F24</entry>
+<entry>F24 key</entry>
+</row>
+<row>
+<entry>NUMLOCK</entry>
+<entry>NUM LOCK key</entry>
+</row>
+<row>
+<entry>SCROLL</entry>
+<entry>SCROLL LOCK key</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</chapter>
+

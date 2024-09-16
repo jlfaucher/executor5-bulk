@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="classes"><title>Builtin Classes</title>
+<para>This chapter describes all of the Rexx built-in classes.</para>
+
+<variablelist>
+ <varlistentry>
+  <term><xref linkend="fundclasses" xrefstyle="select:title"/></term>
+  <listitem><para>These classes are the fundamental building blocks for all
+   other classes.
+   <xi:include href="fundclassesintro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term><xref linkend="streamclasses" xrefstyle="select:title"/></term>
+  <!-- NOTE: copy any changes to streamclasses.xml, section "streamclasses" -->
+  <listitem><para>This set of classes implements Rexx data streams.
+  They consist of <xref linkend="clsInputStream" xrefstyle="template:InputStream"/>,
+  <xref linkend="clsOutputStream" xrefstyle="template:OutputStream"/>,
+  <xref linkend="clsInputOutputStream" xrefstyle="template:InputOutputStream"/>, and
+  <xref linkend="clsStream" xrefstyle="template:Stream"/> class.</para>
+  </listitem>
+  <!-- NOTE: see note above -->
+ </varlistentry>
+
+ <varlistentry><term><xref linkend="CollectionClasses" xrefstyle="select:title"/></term>
+  <listitem><para>This set of classes implements object collections.
+  It includes
+  <itemizedlist spacing="compact">
+   <listitem><para>Ordered collections
+    <xref linkend="clsArray" xrefstyle="template:Array"/>,
+    <xref linkend="clsList" xrefstyle="template:List"/>,
+    <xref linkend="clsQueue" xrefstyle="template:Queue"/>, and
+    <xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue"/> class,
+   </para></listitem>
+   <listitem><para>Map collections
+    <xref linkend="clsDirectory" xrefstyle="template:Directory"/>,
+    <xref linkend="clsStringTable" xrefstyle="template:StringTable"/>,
+    <xref linkend="clsStem" xrefstyle="template:Stem"/>,
+    <xref linkend="clsTable" xrefstyle="template:Table"/>,
+    <xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable"/>,
+    <xref linkend="clsRelation" xrefstyle="template:Relation"/>, and
+    <xref linkend="clsProperties" xrefstyle="template:Properties"/> class, and
+   </para></listitem>
+   <listitem><para>Map/Set collections
+    <xref linkend="clsBag" xrefstyle="template:Bag"/> and
+    <xref linkend="clsSet" xrefstyle="template:Set"/> class.
+   </para></listitem>
+  </itemizedlist>
+  </para></listitem>
+ </varlistentry>
+
+ <varlistentry><term><xref linkend="miscclasses" xrefstyle="select:title"/></term>
+ <listitem><para>This set of classes consists of
+  <xi:include href="utilityclassesintro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </para>
+ </listitem></varlistentry>
+</variablelist>
+
+<xi:include href="fundclasses.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="streamclasses.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="collclasses.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="utilityclasses.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+</chapter>
