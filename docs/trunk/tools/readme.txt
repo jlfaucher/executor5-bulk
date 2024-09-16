@@ -25,7 +25,11 @@ make sure to update this file.
 
         - usage from "tools" directory:
 
-          listAuthorsasOfLate.rex ..
+          listAuthorsasOfLate.rex [dir]
+
+                dir            ... denotes the root of the docs directory to
+                                   work on (if dir contains spaces it needs
+                                   to be enquoted in double-quotes).
 
 - postProcessSVG.rex
 
@@ -77,6 +81,11 @@ make sure to update this file.
                 updateEntityValues.rex -e "2022.12.24" -r 12537  ..
                 updateEntityValues.rex -y 2022 -v "5.0 -> 5.1" -e "2022.12.25" -r 99999  ..
                 updateEntityValues.rex ..
+
+- ignoreRevisions.txt
+
+        - used/created by updateEntityValues.rex
+
 
 - bldoc_orx:
 

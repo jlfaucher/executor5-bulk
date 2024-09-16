@@ -46,6 +46,7 @@
 # sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools'
 # sftoolsfolder = '/home/frs/projects/oorexx/files/oorexx-docs-buildutils'
 #
+# Change 2024-09-15 Buggfix, now accept two parameters on the command line
 # Currently there are (at least) two shortcomings in the script:
 # (i) it is only considering files, not folders
 # (ii) it is not removing files from sftoolsfolder deleted from sfRoot
@@ -53,17 +54,20 @@
 # ------------------------------------------------------------------------------
 */
 
-trace o
+  parse arg input1 input2
 
 /* Here is where we find the docbuild tools on sourceforge		*/
 /* Should be given as input to the script, fallback if not		*/
-  if arg() < 1 then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools'
-  else sfRoot = arg(1)~strip
+  if input1 = '' then sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/trunk/tools'
+  else sfRoot = input1~strip
 
 /* Here is where we upload the built documentation on sourceforge	*/
 /* Should be given as input to the script, fallback if not		*/
-  if arg() < 2 then    sftoolsfolder = '/home/frs/projects/oorexx/files/oorexx-docs-buildutils'
-  else sftoolsfolder = arg(2)~strip
+  if input2 = '' then sftoolsfolder = '/home/frs/projects/oorexx/files/oorexx-docs-buildutils'
+  else sftoolsfolder = input2~strip
+
+say 'Debug sfRoot' sfRoot
+say 'Debug sftoolsfolder' sftoolsfolder
 
 /* These are the credentials for sourceforge upload, 
    User must have RWED rights on sourceforge and have submitted his
