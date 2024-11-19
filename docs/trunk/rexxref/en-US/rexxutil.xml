@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1710,125 +1710,201 @@ if \s~open("read")~startsWith("READY") then
 </imageobject>
 </mediaobject>
 
-<para>Maps a Unicode character string to an ASCII character string.  The new character
-string and additional information is returned in the outstem.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
+<para>Translate a Windows UTF-16 string to a character string in the specified code page.
+The translated character string and additional information is returned in
+<emphasis role="italic">outstem</emphasis>.
+</para>
+<para>This function calls the Windows API
+<methodname>WideCharToMultiByte</methodname> for the conversion.
+Any requirements or restrictions of this API apply here.
+</para>
+<para>See also <xref linkend="utlSystounicode" xrefstyle="select:title"/>.
+</para>
+<para><emphasis role="bold">Parameters</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">string</emphasis></term>
-<listitem><para>A string containing the Unicode characters to be mapped.
+<listitem><para>A string containing the UTF-16 characters to be translated.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">codepage</emphasis></term>
-<listitem><para>Specifies the code page used to perform the conversion.
-This parameter
-can be the value of any code page that is installed or available in the system.
-The default is the current original equipment manufacturer (OEM) code-page
-identifier for the system.</para>
-<para>You can also
-specify one of the following values:</para>
+<listitem><para>Specifies the code page to which
+<emphasis role="italic">string</emphasis> should be translated.
+If omitted, <literal>OEMCP</literal>, the system's OEM code page is used.
+</para>
+<para>Code pages can be specified by their numeric identifier, like 437 or 1252.
+A list of these numeric code page identifiers can be found in the
+Windows App Development documentation, currently at
+<ulink url="https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers">https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers</ulink>.
+Also, one of the following strings can be specified:
+</para>
 <variablelist>
-<varlistentry><term>ACP</term>
-<listitem><para>ANSI code page.
+<varlistentry><term><literal>ACP</literal></term>
+<listitem><para>The system default Windows ANSI code page.
 </para></listitem></varlistentry>
-<varlistentry><term>OEMCP</term>
-<listitem><para>OEM code page.
+<varlistentry><term><literal>CONSOLE</literal></term>
+<listitem><para>The current Windows console code page.
 </para></listitem></varlistentry>
-<varlistentry><term>SYMBOL</term>
-<listitem><para>symbol code page.
+<varlistentry><term><literal>MACCP</literal></term>
+<listitem><para>The system Macintosh code page (legacy, not recommended).
 </para></listitem></varlistentry>
-<varlistentry><term>THREAD_ACP
+<varlistentry><term><literal>OEMCP</literal></term>
+<listitem><para>The system OEM code page.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>SYMBOL</literal></term>
+<listitem><para>The Symbol code page (legacy, not recommended).
+</para></listitem></varlistentry>
+<varlistentry><term><literal>THREAD_ACP</literal>
 <indexterm><primary>thread</primary></indexterm>
 </term>
-<listitem><para>current thread's ANSI code page.
+<listitem><para>The Windows ANSI code page for the current thread.
 </para></listitem></varlistentry>
-<varlistentry><term>UTF7</term>
-<listitem><para>translate using UTF-7.
+<varlistentry><term><literal>UTF7</literal></term>
+<listitem><para>Translate to UTF-7 (not recommended, use <literal>UTF8</literal> instead).
 </para></listitem></varlistentry>
-<varlistentry><term>UTF8</term>
-<listitem><para>translate using UTF-8. When
-this is set, <computeroutput>mappingflags</computeroutput> must be set.
+<varlistentry><term><literal>UTF8</literal></term>
+<listitem><para>Translate to UTF-8.
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">mappingflags</emphasis></term>
-<listitem><para>Specifies the handling of unmapped characters. The function
-performs more quickly when none of these flags is set.</para>
-<para>The following flags can be
-used:</para>
+<listitem><para>Flags indicating the conversion type.
+The function performs more quickly when none of these flags are set.
+A combination of any of the following flags can be used:
+</para>
 <variablelist>
-<varlistentry><term>COMPOSITECHECK</term>
-<listitem><para>Converts composite characters to precomposed characters.
+
+<varlistentry><term><literal>COMPOSITECHECK</literal></term>
+<listitem><para>Tests for decomposed UTF-16 characters and attempts to compose
+them before converting them to the requested code page.
+Decomposed, or composite, UTF-16 characters consist of a base character and
+one or more nonspacing characters.
+For example, in the character &egrave;, the <literal>e</literal> is the base
+character and the accent grave mark is the nonspacing character.
+</para>
+<para>This flag can be specified together with any of the following flags.
+These flags determine the behavior when no precomposed mapping for a
+base-nonspacing character combination in a UTF-16 string is available.
+If none of these additional flags are specified, the translation behaves as if
+<literal>SEPCHARS</literal> had been specified.
+<variablelist spacing="compact">
+<varlistentry><term><literal>DEFAULTCHAR</literal></term>
+<listitem><para>Replace exceptions with the default character during conversion.
 </para></listitem></varlistentry>
-<varlistentry><term>SEPCHARS</term>
-<listitem><para>Generates separate characters during conversion. This is the
-default conversion behavior.
+<varlistentry><term><literal>DISCARDNS</literal></term>
+<listitem><para>Discard nonspacing characters during conversion.
 </para></listitem></varlistentry>
-<varlistentry><term>DISCARDNS</term>
-<listitem><para>Discards nonspacing characters during conversion.
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULTCHAR</term>
-<listitem><para>Replaces non-convertible characters with the default character
-during conversion.
+<varlistentry><term><literal>SEPCHARS</literal></term>
+<listitem><para>Default. Generate separate characters during conversion.
 </para></listitem></varlistentry>
 </variablelist>
-<para>When <computeroutput>compositecheck</computeroutput> is specified,
-the function converts composite characters to precomposed characters.
-A composite character consists of a base character and a nonspacing character,
-each having different character
-values. A precomposed character has a single character value for a combination
-of a base and a nonspacing character. In the character &egrave;, the "e" is the
-base character, and the "grave" accent mark is the nonspacing character.</para>
-<para>When <computeroutput>compositecheck</computeroutput> is specified, it can
-use the last three flags in this list
-(<computeroutput>discardns, sepchars</computeroutput>, and
-<computeroutput>defaultchar</computeroutput>)
-to customize the conversion to precomposed characters. These flags determine
-the function's behavior when there is no precomposed mapping for a combination
-of a base and a nonspace character in a Unicode character string. These last
-three flags can be used only if the
-<computeroutput>compositecheck</computeroutput> flag is set.
-The function's default behavior is to generate separate characters
-(<computeroutput>sepchars</computeroutput>) for unmapped composite characters.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">defaultchar</emphasis></term>
-<listitem><para>Character to be used if a Unicode character cannot be
-represented in the specified code page. If this parameter is NULL, a
-system default value is used. The function is faster when
-<computeroutput>defaultchar</computeroutput> is not used.
 </para></listitem></varlistentry>
+
+<varlistentry><term><literal>ERR_INVALID_CHARS</literal></term>
+<listitem><para>Make the translation fail with return code 1113 if an invalid
+UTF-16 input character is encountered.
+This flag can only be specified with <emphasis role="italic">codepage</emphasis>
+<literal>UTF8</literal> or 54936.
+</para></listitem></varlistentry>
+
+<varlistentry><term><literal>NO_BEST_FIT_CHARS</literal></term>
+<listitem><para>Translate any UTF-16 characters that do not translate directly to
+multibyte equivalents to the default character.
+This flag prevents the translation from mapping characters to characters that appear
+similar but have very different semantics, like translating &infin; (infinity) to 8.
+</para></listitem></varlistentry>
+
+</variablelist>
+
+</listitem></varlistentry>
+
+<varlistentry><term><emphasis role="italic">defaultchar</emphasis></term>
+<listitem><para>The character to be used if a UTF-16 character cannot be
+represented in the specified code page. If this parameter is omitted, or
+or a null string, the default character for the code page is used.
+This default character typically is a question mark.
+</para></listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">outstem</emphasis></term>
 <listitem><para>The name of the stem variable that will contain the converted
-result. If the conversion was successful the stem will be composed of
-the following value(s):
+result. If the conversion was successful the following compound variables
+are set:
 </para>
 <variablelist>
-<varlistentry><term>outstem.!USEDDEFAULTchar</term>
-<listitem><para>This variable will be set to "1" if the
+<varlistentry><term><emphasis role="italic">outstem</emphasis><literal>.!USEDDEFAULTCHAR</literal></term>
+<listitem><para>This variable is set to &true; if the
 <emphasis role="italic">defaultchar</emphasis> was used
-during the conversion and "0" if it was not.</para></listitem></varlistentry>
-<varlistentry><term>outstem.!TEXT</term>
-<listitem><para>This variable will contain the converted string.
+during the conversion, and to &false; if it was not.</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">outstem</emphasis><literal>.!TEXT</literal></term>
+<listitem><para>This variable contains the converted string.
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
+
+<para><emphasis role="bold">Return codes</emphasis></para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>No errors.
+<listitem><para>No error.
 </para></listitem></varlistentry>
 <varlistentry><term>Other</term>
-<listitem><para>An <xref linkend="systemerrorcodes" xrefstyle="template:operating system error code" />.
-On Windows, this may be one of the following, but could be others.
+<listitem><para>A Windows
+<xref linkend="systemerrorcodes" xrefstyle="template:operating system error code" />,
+which may be one of the following, but could be others.
 </para></listitem></varlistentry>
+
 <varlistentry><term>87</term>
-<listitem><para>Incorrect code page or
-<computeroutput>codepage</computeroutput> value.
+<listitem><para>The parameter is incorrect.
+Possible reasons are
+<itemizedlist spacing="compact">
+<listitem><para><emphasis role="italic">string</emphasis> length is not even (not a UTF-16 string)
+</para></listitem>
+<listitem><para><emphasis role="italic">string</emphasis> length is larger than 2 GB
+</para></listitem>
+<listitem><para><emphasis role="italic">codepage</emphasis> number is not a valid Windows code page
+</para></listitem>
+</itemizedlist>
 </para></listitem></varlistentry>
+
 <varlistentry><term>1004</term>
-<listitem><para>Invalid mapping flags.
+<listitem><para>Invalid flags.
+Possible reasons are
+<itemizedlist spacing="compact">
+<listitem><para>the flag <literal>COMPOSITECHECK</literal> was not specified
+when one of the flags <literal>DEFAULTCHAR</literal>, <literal>DISCARDNS</literal>,
+or <literal>SEPCHARS</literal> was specified
+</para></listitem>
+<listitem><para>the flag <literal>ERR_INVALID_CHARS</literal> was specified
+with a <emphasis role="italic">codepage</emphasis> other than
+<literal>UTF8</literal> or 54936
+</para></listitem>
+</itemizedlist>
 </para></listitem></varlistentry>
+
+<varlistentry><term>1113</term>
+<listitem><para>No mapping for the Unicode character exists in the target multi-byte code page.
+A possible reason is
+<itemizedlist spacing="compact">
+<listitem><para>an invalid UTF-16 input character was encountered when the flag
+<literal>ERR_INVALID_CHARS</literal> was specified with a
+<emphasis role="italic">codepage</emphasis> <literal>UTF8</literal> or 54936
+</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+
 </variablelist>
+
+<example id="ex.sysfromunicode">
+<title>RexxUtil &mdash; SysFromUnicode</title>
+<programlisting>
+-- two steps to convert a string from one code page to another
+string = '64 C3A9 6A C3A0 20 76 75'x -- UTF-8 encoded
+-- step 1: convert the string from its codepage to UTF-16
+call SysToUnicode string, "UTF8", , out.
+-- step 2: convert the UTF-16 string to the desired output codepage
+call SysFromUnicode out.!text, "CONSOLE", , , out.
+say out.!text -- d&eacute;j&agrave; vu
+</programlisting>
+</example>
+
 </section>
 
 <section id="utlSysgeterrortext"><title>SysGetErrorText</title>
@@ -3975,113 +4051,149 @@ say "current window rectangle is ("top"," left") ("bottom"," right")"
 </imageobject>
 </mediaobject>
 
-<para>Maps a character string to a Unicode string.</para>
-<para><emphasis role="bold">Parameters:</emphasis></para>
+<para>Translate a character string in the specified code page to a Windows UTF-16 string.
+The translated character string is returned in
+<emphasis role="italic">outstem</emphasis>.
+</para>
+<para>This function calls the Windows API
+<methodname>MultiByteToWideChar</methodname> for the conversion.
+Any requirements or restrictions of this API apply here.
+</para>
+<para>See also <xref linkend="utlSysfromunicode" xrefstyle="select:title"/>.
+</para>
+<para><emphasis role="bold">Parameters</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">string</emphasis></term>
-<listitem><para>A string that should be mapped to Unicode characters.
+<listitem><para>A string that should be translated to UTF-16 characters.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">codepage</emphasis></term>
-<listitem><para>Specifies the code page used to perform the conversion.
-This parameter can be the value of any code page that is installed or available
-in the system. The default is the current original equipment manufacturer
-(OEM) code-page identifier for the system.</para>
-<para>You can also
-specify one of the following values:</para>
+<listitem><para>Specifies the code page from which
+<emphasis role="italic">string</emphasis> should be translated to UTF-16.
+If omitted, <literal>OEMCP</literal>, the system's OEM code page is used.
+</para>
+<para>Code pages can be specified by their numeric identifier, like 437 or 1252.
+A list of these numeric code page identifiers can be found in the
+Windows App Development documentation, currently at
+<ulink url="https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers">https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers</ulink>.
+Also, one of the following strings can be specified:
+</para>
 <variablelist>
-<varlistentry><term>ACP</term>
-<listitem><para>ANSI code page.
+<varlistentry><term><literal>ACP</literal></term>
+<listitem><para>The system default Windows ANSI code page.
 </para></listitem></varlistentry>
-<varlistentry><term>OEMCP</term>
-<listitem><para>OEM code page.
+<varlistentry><term><literal>CONSOLE</literal></term>
+<listitem><para>The current Windows console code page.
 </para></listitem></varlistentry>
-<varlistentry><term>SYMBOL</term>
-<listitem><para>symbol code page.
+<varlistentry><term><literal>MACCP</literal></term>
+<listitem><para>The system Macintosh code page (legacy, not recommended).
 </para></listitem></varlistentry>
-<varlistentry><term>THREAD_ACP
+<varlistentry><term><literal>OEMCP</literal></term>
+<listitem><para>The system OEM code page.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>SYMBOL</literal></term>
+<listitem><para>The Symbol code page (legacy, not recommended).
+</para></listitem></varlistentry>
+<varlistentry><term><literal>THREAD_ACP</literal>
 <indexterm><primary>thread</primary></indexterm>
 </term>
-<listitem><para>current thread's ANSI code page.
+<listitem><para>The Windows ANSI code page for the current thread.
 </para></listitem></varlistentry>
-<varlistentry><term>UTF7</term>
-<listitem><para>translate using UTF-7.
+<varlistentry><term><literal>UTF7</literal></term>
+<listitem><para>Translate to UTF-7 (not recommended, use <literal>UTF8</literal> instead).
 </para></listitem></varlistentry>
-<varlistentry><term>UTF8</term>
-<listitem><para>translate using UTF-8. When
-this is set, <computeroutput>translateflags</computeroutput> must be set.
+<varlistentry><term><literal>UTF8</literal></term>
+<listitem><para>Translate to UTF-8.
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">translateflags</emphasis></term>
-<listitem><para>Indicates whether to translate to precomposed or composite-wide
-characters (if a composite form exists), whether to use glyph characters in
-place of control characters, and how to deal with invalid characters.</para>
-<para>You can specify
-a combination of the following flags:</para>
+<listitem><para>Flags indicating the conversion type.
+If omitted, <literal>PRECOMPOSED</literal> is the default.
+<literal>PRECOMPOSED</literal> and <literal>COMPOSITE</literal> are mutually exclusive,
+otherwise a combination of any of the following flags can be used:
+
 <variablelist>
-<varlistentry><term>PRECOMPOSED</term>
+<varlistentry><term><literal>COMPOSITE</literal></term>
+<listitem><para>Always use decomposed (or composite) characters, that is,
+a base character and one or more nonspacing characters.
+For example, in the character &egrave;, the <literal>e</literal> is the base
+character and the accent grave mark is the nonspacing character.
+</para>
+<para>This flag cannot be used together with <literal>PRECOMPOSED</literal>.
+</para></listitem></varlistentry>
+
+<varlistentry><term><literal>ERR_INVALID_CHARS</literal></term>
+<listitem><para>Make the translation fail with return code 1113 if an invalid
+UTF-16 input character is encountered.
+</para></listitem></varlistentry>
+
+<varlistentry><term><literal>PRECOMPOSED</literal></term>
 <listitem><para>Always use precomposed characters, that is, characters in which
 a base character and a nonspacing character have a single character value. This
-is the default translation option. Cannot be used with COMPOSITE.
+is the default translation option.
+</para>
+<para>This flag cannot be used together with <literal>COMPOSITE</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>COMPOSITE</term>
-<listitem><para>Always use composite characters, that is, characters in which a
-base character and a nonspacing character have different character values.
-Cannot be used with PRECOMPOSED.
-</para></listitem></varlistentry>
-<varlistentry><term>ERR_INVALID_CHARS</term>
-<listitem><para>If the function encounters an invalid input character, it fails
-and returns &quot;1113&quot;.
-</para></listitem></varlistentry>
-<varlistentry><term>USEGLYPHCHARS</term>
+
+<varlistentry><term><literal>USEGLYPHCHARS</literal></term>
 <listitem><para>Use glyph characters instead of control characters.
 </para></listitem></varlistentry>
 </variablelist>
-<para>A composite character consists of a base character and a nonspacing
-character, each having different character values. A precomposed character
-has a single character value for a base-nonspacing character combination.
-In the character &egrave;, the "e" is the base character and the "grave" accent
-mark is the nonspacing character. The function's default behavior is to
-translate to the precomposed form. If a precomposed form does not exist, the
-function attempts to translate to a composite form.</para>
-<para>The flags PRECOMPOSED and
-COMPOSITE are mutually exclusive. The USEGLYPHCHARS flag and the
-ERR_INVALID_CHARS can be set regardless of the state of the other flags.</para>
-</listitem></varlistentry>
+
+</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">outstem</emphasis></term>
 <listitem><para>The name of the stem variable that will contain the converted
-result. If the conversion was successful the stem will be composed of
-the following value(s):
+result. If the conversion was successful the following compound variable
+is set:
 </para>
 <variablelist>
-<varlistentry><term>outstem.!TEXT</term>
-<listitem><para>This variable will contain the converted string.
+<varlistentry><term><emphasis role="italic">outstem</emphasis><literal>.!TEXT</literal></term>
+<listitem><para>This variable contains the converted string.
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Return codes:</emphasis></para>
+
+<para><emphasis role="bold">Return codes</emphasis></para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>No errors.
+<listitem><para>No error.
 </para></listitem></varlistentry>
 <varlistentry><term>Other</term>
-<listitem><para>An error occurred.  A  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>
-is returned.  This may be one of the following, but
-could be others.
+<listitem><para>A Windows
+<xref linkend="systemerrorcodes" xrefstyle="template:operating system error code" />,
+which may be one of the following, but could be others.
 </para></listitem></varlistentry>
+
 <varlistentry><term>87</term>
-<listitem><para>Incorrect code page or
-<computeroutput>codepage</computeroutput> value.
+<listitem><para>The parameter is incorrect.
+Possible reasons are
+<itemizedlist spacing="compact">
+<listitem><para><emphasis role="italic">string</emphasis> length is larger than 2 GB
+</para></listitem>
+<listitem><para><emphasis role="italic">codepage</emphasis> number is not a valid Windows code page
+</para></listitem>
+</itemizedlist>
 </para></listitem></varlistentry>
+
 <varlistentry><term>1004</term>
-<listitem><para>Invalid translate flags.
+<listitem><para>Invalid flags.
+A possible reason is
+<itemizedlist spacing="compact">
+<listitem><para>no flags can be specified with code pages 50220/1/2/5/7/9,
+57002-57011, 54936, <literal>UTF7</literal>, or <literal>SYMBOL</literal>.
+</para></listitem>
+</itemizedlist>
 </para></listitem></varlistentry>
+
 <varlistentry><term>1113</term>
-<listitem><para>No mapping for the Unicode character exists in the target code
-page.</para></listitem></varlistentry>
+<listitem><para>No mapping for the Unicode character exists in the target multi-byte code page.
+</para></listitem></varlistentry>
+
 </variablelist>
+
 </section>
+
 
 <section id="utlSysutilversion"><title>SysUtilVersion</title>
 <indexterm><primary>SysUtilVersion</primary></indexterm>
