@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2021-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2021-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,8 +49,9 @@ else
 ::class SysTextScreenRead.testgroup subclass ooTestCase public
 
 -- if stdout is redirected, we have no console
-::method noConsole
-  return SysCurPos()~length = 0
+::constant noConsole (SysCurPos()~length = 0)
+::constant rowsConsole (SystextScreenSize()~word(1))
+::constant colsConsole (SystextScreenSize()~word(2))
 
 ::method test_screenread_args_none
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required
@@ -64,27 +65,42 @@ else
   self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
   call SysTextScreenRead 0, 0, 0, 0
 
-::method test_screenread_row_invalid
-  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
-  self~assertSame("", SysTextScreenRead(-1, 0))    -- row
+::method test_screenread_row_negative
+  if self~noConsole -- this test requires a console
+    then return
+  self~expectSyntax((88.907, "row")) -- Argument row must be in the range 0 to ..
+  call SysTextScreenRead -1, 0
 
-::method test_screenread_col_invalid
-  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
-  self~assertSame("", SysTextScreenRead(0, -1))    -- col
+::method test_screenread_row_too_high
+  if self~noConsole -- this test requires a console
+    then return
+  self~expectSyntax((88.907, "row")) -- Argument row must be in the range 0 to ..
+  call SysTextScreenRead self~rowsConsole, 0 -- range is 0 .. rowsConsole - 1
 
-::method test_screenread_len_invalid
-  self~expectSyntax(40.1) -- External routine "SYSTEXTSCREENREAD" failed
-  self~assertSame("", SysTextScreenRead(0, 0, -1)) -- len
+::method test_screenread_col_negative
+  if self~noConsole -- this test requires a console
+    then return
+  self~expectSyntax((88.907, "col")) -- Argument col must be in the range 0 to ..
+  call SysTextScreenRead 0, -1
+
+::method test_screenread_col_too_high
+  if self~noConsole -- this test requires a console
+    then return
+  self~expectSyntax((88.907, "col")) -- Argument row must be in the range 0 to ..
+  call SysTextScreenRead 0, self~rowsConsole -- range is 0 .. rowsConsole - 1
+
+::method test_screenread_len_negative
+  if self~noConsole -- this test requires a console
+    then return
+  self~expectSyntax((88.907, 3)) -- Argument 3 must be in the range 0 to ..
+  call SysTextScreenRead 0, 0, -1
 
 ::method test_screenread_null
   if self~noConsole -- the following tests require a console
     then return
   self~assertSame("", SysTextScreenRead(0, 0, 0))  -- zero length
   parse value SystextScreenSize() with rows cols
-  self~assertSame("", SysTextScreenRead(rows - 1, cols))
-  self~assertSame("", SysTextScreenRead(rows, 0))
-  self~assertSame("", SysTextScreenRead(0, cols))
-  self~assertSame("", SysTextScreenRead(rows, cols))
+  self~assertSame("", SysTextScreenRead(rows - 1, cols - 1, 0))
 
 ::method test_screenread
   if self~noConsole -- the following tests require a console
@@ -92,22 +108,29 @@ else
   parse value SystextScreenSize() with rows cols
   lastRow = rows - 1
   lastCol = cols - 1
+
+  -- note that these tests may fail with slightly larger lengths
+  -- returned when Unicode symbols are read from screen
+  -- (this is especially true for the full-length reads which may
+  -- return many thousands of screen buffer lines)
+  msg = "this may fail with a slightly larger length when Unicode symbols are read"
+
   -- no length specified
-  self~assertSame(1, SysTextScreenRead(lastRow, lastCol)~length)
-  self~assertSame(2, SysTextScreenRead(lastRow, lastCol - 1)~length)
-  self~assertSame(11, SysTextScreenRead(lastRow, lastCol - 10)~length)
-  self~assertSame(cols, SysTextScreenRead(lastRow, 0)~length)
-  self~assertSame(cols - 1, SysTextScreenRead(lastRow, 1)~length)
-  self~assertSame(cols + 1, SysTextScreenRead(lastRow - 1, lastCol)~length)
-  self~assertSame(rows * cols, SysTextScreenRead(0, 0)~length)
-  self~assertSame(rows * cols - 3 * cols - 5, SysTextScreenRead(3, 5)~length)
+  self~assertSame(1, SysTextScreenRead(lastRow, lastCol)~length, msg)
+  self~assertSame(2, SysTextScreenRead(lastRow, lastCol - 1)~length, msg)
+  self~assertSame(11, SysTextScreenRead(lastRow, lastCol - 10)~length, msg)
+  self~assertSame(cols, SysTextScreenRead(lastRow, 0)~length, msg)
+  self~assertSame(cols - 1, SysTextScreenRead(lastRow, 1)~length, msg)
+  self~assertSame(cols + 1, SysTextScreenRead(lastRow - 1, lastCol)~length, msg)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0)~length, msg)
+  self~assertSame(rows * cols - 3 * cols - 5, SysTextScreenRead(3, 5)~length, msg)
 
   -- length specified
-  self~assertSame(1, SysTextScreenRead(0, 0, 1)~length)
-  self~assertSame(10, SysTextScreenRead(0, 0, 10)~length)
-  self~assertSame(100, SysTextScreenRead(9, 9, 100)~length)
-  self~assertSame(rows * cols - 1, SysTextScreenRead(0, 0, rows * cols - 1)~length)
-  self~assertSame(rows * cols, SysTextScreenRead(0, 0, rows * cols)~length)
+  self~assertSame(1, SysTextScreenRead(0, 0, 1)~length, msg)
+  self~assertSame(10, SysTextScreenRead(0, 0, 10)~length, msg)
+  self~assertSame(100, SysTextScreenRead(9, 9, 100)~length, msg)
+  self~assertSame(rows * cols - 1, SysTextScreenRead(0, 0, rows * cols - 1)~length, msg)
+  self~assertSame(rows * cols, SysTextScreenRead(0, 0, rows * cols)~length, msg)
 
 
 ::options all syntax
