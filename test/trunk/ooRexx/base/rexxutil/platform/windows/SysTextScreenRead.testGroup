@@ -48,10 +48,14 @@ else
 ::requires 'ooTest.frm'
 ::class SysTextScreenRead.testgroup subclass ooTestCase public
 
+-- Note: we cannot use ::constant for the next two helper methods as these
+-- SysXxx functions are restricted to Windows
+
 -- if stdout is redirected, we have no console
-::constant noConsole (SysCurPos()~length = 0)
-::constant rowsConsole (SystextScreenSize()~word(1))
-::constant colsConsole (SystextScreenSize()~word(2))
+::method noConsole
+  return SysCurPos()~length = 0
+::method rowsConsole
+   return SysTextScreenSize()~word(1)
 
 ::method test_screenread_args_none
   self~expectSyntax(88.901) -- Missing argument; argument 1 is required
