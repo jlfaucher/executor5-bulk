@@ -152,12 +152,17 @@ else
   self~assertSame(1004, SysFromUnicode(.Unicode~A, 437, "SEPCHARS", , s.))
 
 ::method test_fromunicode_flags
-  -- all valid flags should be recognized
-  flags = "CompositeCheck DEFAULTCHAR discardNS sepChars Err_Invalid_Chars NO_best_fit_chars"
-  self~assertSame("0 A", SysFromUnicode(.Unicode~A, , flags, , s.) s.!text)
-  -- in addition we have two undocumented aliases
-  undocumented = "err_invalid no_best_fit"
-  self~assertSame("0 A", SysFromUnicode(.Unicode~A, , undocumented, , s.) s.!text)
+  -- all valid flags should be recognized, just ERR_INVALID_CHARS is special
+  flags = "CompositeCheck DEFAULTCHAR discardNS sepChars NO_best_fit_chars"
+  self~assertSame(0, SysFromUnicode(.Unicode~A, 850, flags, , s.))
+  -- in addition we have this undocumented alias
+  self~assertSame(0, SysFromUnicode(.Unicode~A, 850, "NO_BEST_FIT", , s.))
+
+  -- ERR_INVALID_CHARS is valid with codepages UTF8 or 54936 only
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "Err_Invalid_Chars", , s.))
+  -- in addition we have this undocumented alias
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "ERR_INVALID", , s.))
+
 
   -- NO_BEST_FIT_CHARS
 
@@ -175,6 +180,7 @@ else
   -- for codepage UTF8 it fails with 1113 "No mapping for the Unicode character
   -- exists in the target multi-byte code page" for an invalid input character
   self~assertSame(1113, SysFromUnicode(.Unicode~DFFF, "UTF8", "ERR_INVALID_CHARS", , s.))
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "UTF8", "ERR_INVALID_CHARS", , s.))
 
   -- COMPOSITECHECK DEFAULTCHAR combo
 
@@ -282,7 +288,7 @@ else
   end
   -- code page numbers (just a small selection of many possible)
   do cp over 437, 850, 1252, 65001
-    self~assertSame("0" .Unicode~A, SysToUnicode("A", cp, , s.) s.!text)
+    self~assertSame("0" .Unicode~A, SysToUnicode("A", cp, , s.) s.!text, "code page" cp)
   end
 
 ::method test_tounicode_source
@@ -294,27 +300,30 @@ else
   self~assertSame(1004, SysToUnicode("A", 42, "PRECOMPOSED", s.))
 
 ::method test_tounicode_flags
-  -- all valid flags should be recognized
-  flags = "Composite err_invalid_chars PRECOMPOSED UseGlyphChars"
-  self~assertSame("0" .Unicode~A, SysToUnicode("A", , flags, s.) s.!text)
+  -- all valid flags should be recognized, with PRECOMPOSED and COMPOSITE
+  -- being mutually exclusive
+  flags = "Composite err_invalid_chars UseGlyphChars"
+  self~assertSame(0, SysToUnicode("A", 850, flags, s.))
+  flags = "ERR_INVALID_CHARS PRECOMPOSED USEGLYPHCHARS"
+  self~assertSame(0, SysToUnicode("A", 850, flags, s.))
   -- in addition we have one undocumented alias
-  undocumented = "err_invalid"
-  self~assertSame("0" .Unicode~A, SysToUnicode("A", , undocumented, s.) s.!text)
+  self~assertSame(0, SysToUnicode("A", 850, "ERR_INVALID", s.))
 
   -- COMPOSITE
 
   -- three flags allowed together
-  self~assertSame(0, SysToUnicode("A", , "COMPOSITE ERR_INVALID_CHARS USEGLYPHCHARS", s.))
+  self~assertSame(0, SysToUnicode("A", 850, "COMPOSITE ERR_INVALID_CHARS USEGLYPHCHARS", s.))
   -- COMPOSITE cannot be used together with PRECOMPOSED
-  -- MS docs say "MB_PRECOMPOSED and MB_COMPOSITE are mutually exclusive"
-  -- but MultiByteToWideChar raises no error, so we run this as "known bug"
-  self~assertSame(1004, SysToUnicode("A", , "COMPOSITE PRECOMPOSED", s.), "tracker bug #none MultiByteToWideChar doesn't fail")
+  -- PRECOMPOSED and COMPOSITE are mutually exclusive
+  self~assertSame(1004, SysToUnicode("A", 850, "COMPOSITE PRECOMPOSED", s.))
+  -- but no error is raised for code pagr UTF8, so we run this as "known bug"
+  self~assertSame(0, SysToUnicode("A", "UTF8", "COMPOSITE PRECOMPOSED", s.), "tracker bug #n/a MultiByteToWideChar COMPOSITE PRECOMPOSED should fail")
   -- to do: more COMPOSITE tests
 
   -- PRECOMPOSED
 
   -- three flags allowed together
-  self~assertSame(0, SysToUnicode("A", , "PRECOMPOSED ERR_INVALID_CHARS USEGLYPHCHARS", s.))
+  self~assertSame(0, SysToUnicode("A", 850, "precomposed err_invalid_chars useglyphchars", s.))
   -- to do: more COMPOSITE tests
 
 
