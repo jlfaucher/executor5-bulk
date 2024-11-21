@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -251,6 +251,7 @@
 ::method TestObjectToDouble EXTERNAL "LIBRARY orxmethod TestObjectToDouble"
 ::method TestObjectToDoubleAlt EXTERNAL "LIBRARY orxmethod TestObjectToDoubleAlt"
 ::method TestDoubleToObject EXTERNAL "LIBRARY orxmethod TestDoubleToObject"
+::method TestDoubleToObjectWithPrecision EXTERNAL "LIBRARY orxmethod"
 ::method TestDoubleToObjectAlt EXTERNAL "LIBRARY orxmethod TestDoubleToObjectAlt"
 ::method TestCStringToObject EXTERNAL "LIBRARY orxmethod TestCStringToObject"
 ::method TestObjectToCString EXTERNAL "LIBRARY orxmethod TestObjectToCString"
@@ -283,6 +284,11 @@
 ::method TestGetObjectVariableOrNil     EXTERNAL "LIBRARY orxmethod"
 
 ::method TestSendMessageScoped          EXTERNAL "LIBRARY orxmethod"
+
+::method TestSetGuardOn                 EXTERNAL "LIBRARY orxmethod"
+::method TestSetGuardOff                EXTERNAL "LIBRARY orxmethod"
+::method TestSetGuardOnWhenUpdated      EXTERNAL "LIBRARY orxmethod"
+::method TestSetGuardOffWhenUpdated     EXTERNAL "LIBRARY orxmethod"
 
 
 ::method TestRaiseExceptionX

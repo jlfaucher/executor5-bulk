@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -3076,6 +3076,14 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("VAR", tester~TestVariableReferenceValue(>var))
   var = 123
   self~assertSame(123, tester~TestVariableReferenceValue(>var))
+
+
+-- #1838 Crash while attempting to resolve a routine in a library package
+::method test_bug_1838
+  -- orxmethod only contains methods, not routines
+  -- this should fail with 90.999, but not crash the interpreter
+  -- Error 90.999:  Unable to find external routine "TestObjectToValue".
+  self~assertSyntaxError(90.999, "::routine TestObjectToValue EXTERNAL 'LIBRARY orxmethod TestObjectToValue'")
 
 
 ::method testSendMessageScoped
