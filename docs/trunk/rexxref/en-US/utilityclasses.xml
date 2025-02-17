@@ -7485,11 +7485,14 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
    <member><xref linkend="mthRexxContextExecutable" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextForm" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextFuzz" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxContextInvocation" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxContextInterpreter" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextLine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextName" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextPackage" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextRs" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextStackFrames" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxContextThread" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxContextVariables" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
@@ -7575,6 +7578,7 @@ depending on the type of the active context.
 </para>
 </section>
 
+
 <section id="mthRexxContextForm"><title>form</title>
 <indexterm><primary>form method</primary>
 <secondary>of RexxContext class</secondary></indexterm>
@@ -7593,6 +7597,7 @@ depending on the type of the active context.
 </para>
 </section>
 
+
 <section id="mthRexxContextFuzz"><title>fuzz</title>
 <indexterm><primary>fuzz method</primary>
 <secondary>of RexxContext class</secondary></indexterm>
@@ -7610,6 +7615,43 @@ depending on the type of the active context.
 <xref linkend="bifFuzz" xrefstyle="select:title"/> built-in function.
 </para>
 </section>
+
+
+<section id="mthRexxContextInvocation"><title>&added51;invocation</title>
+<indexterm><primary>invocation method</primary>
+<secondary>of RexxContext class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>invocation method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rexxcontext_invocation.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the invocation ID (a number) of the current context, or &nil; (e.g. if compiled code)
+</para>
+</section>
+
+
+<section id="mthRexxContextInterpreter"><title>&added51;interpreter</title>
+<indexterm><primary>invocation method</primary>
+<secondary>of RexxContext class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>invocation method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rexxcontext_interpreter.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the interpreter ID (a number) of the current context.
+</para>
+</section>
+
 
 <section id="mthRexxContextLine"><title>line</title>
 <indexterm><primary>line method</primary>
@@ -7707,6 +7749,24 @@ stack.  The first item will represent the current Rexx context and subsequent
 elements are earlier elements in the call stack.
 </para>
 </section>
+
+<section id="mthRexxContextThread"><title>&added51;thread</title>
+<indexterm><primary>thread method</primary>
+<secondary>of RexxContext class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>thread method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rexxcontext_thread.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the thread ID (a number) of the current context.
+</para>
+</section>
+
 
 <section id="mthRexxContextVariables"><title>variables</title>
 <indexterm><primary>variables method</primary>
@@ -9264,6 +9324,7 @@ StackFrame instances cannot be directly created by the user.
   <simplelist columns="3">
    <member><xref linkend="mthStackFrameArguments" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameExecutable" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStackFrameInvocation" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameLine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameMakeString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameName" xrefstyle="select:title"/></member>
@@ -9314,6 +9375,24 @@ The executable will be either a
 <xref linkend="clsRoutine" xrefstyle="template:Routine"/> object or a
 <xref linkend="clsMethod" xrefstyle="template:Method"/> object,
 depending on the type of the StackFrame element.
+</para>
+</section>
+
+
+<section id="mthStackFrameInvocation"><title>&added51;invocation</title>
+<indexterm><primary>invocation method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>invocation method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stackframe_invocation.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the invocation ID (a number) of the stack frame or &nil; (e.g. if compiled code).
 </para>
 </section>
 
@@ -11449,6 +11528,12 @@ prepends it with the letter <literal>A</literal>
     <entry><para>the routine or method object that gets executed
     </para></entry>
     </row>
+    <row><entry>"<literal>INVOCATION</literal>"
+    <indexterm><primary>INVOCATION</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the invocation ID (a number) of the caller that caused this invocation to be created and run, or &nil; (e.g., if compiled code)
+    </para></entry>
+    </row>
     <row><entry>"<literal>LINE</literal>"
     <indexterm><primary>LINE</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
     </entry>
@@ -11464,7 +11549,7 @@ prepends it with the letter <literal>A</literal>
     <row><entry>"<literal>THREAD</literal>"
     <indexterm><primary>THREAD</primary><secondary>CALLERSTACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
     </entry>
-    <entry><para>the thread ID of the caller in case it used a REPLY keyword instruction or a START message
+    <entry><para>the thread ID (a number) of the caller in case it used a REPLY keyword instruction or a START message
     to create (spawn) a new thread of execution
     </para></entry>
     </row>
@@ -11578,6 +11663,12 @@ stored in a StringTable having the following entries:
     <indexterm><primary>EXECUTABLE</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
     </entry>
     <entry><para>the routine or method object that gets executed
+    </para></entry>
+    </row>
+    <row><entry>"<literal>INVOCATION</literal>"
+    <indexterm><primary>INVOCATION</primary><secondary>STACKFRAME</secondary><tertiary>TraceObject</tertiary></indexterm>
+    </entry>
+    <entry><para>the invocation ID (a number) of the stack frame, or &nil; (e.g., if compiled code)
     </para></entry>
     </row>
     <row><entry>"<literal>LINE</literal>"
