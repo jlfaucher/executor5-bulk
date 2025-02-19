@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
 %BOOK_ENTITIES;
 ]>
@@ -7,13 +7,13 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -261,7 +261,7 @@
   <para>
     This example has a control dialog of the <computeroutput>.HistoryDlg</computeroutput> subclass used as a page in a
     tab control. The dialog object is not instantiated until the user actually visits the page in the tab control. At
-    that time, the dialog object is instantiated and then started executing throught the <emphasis
+    that time, the dialog object is instantiated and then started executing through the <emphasis
     role="italic">execute</emphasis> method:
 <programlisting>
 <![CDATA[
@@ -584,7 +584,7 @@
       <varlistentry><term>oData [optional]</term>
       <listitem>
       <para>
-        Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
+        Used to specify the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
         have the <xref linkend="atrOwnerDialog"/> attribute set to the Rexx dialog that owns the
         control dialog, before the <xref linkend="ovvUnderlying"/> control dialog is created. In
@@ -769,7 +769,7 @@
       <varlistentry><term>ownerData [optional]</term>
       <listitem>
       <para>
-        Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
+        Used to specify the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
         have the <xref linkend="atrOwnerDialog"/> attribute set to the Rexx dialog that owns the
         control dialog, before the <xref linkend="ovvUnderlying"/> control dialog is created. In
@@ -944,7 +944,7 @@
     <varlistentry><term>ownerData [optional]</term>
     <listitem>
     <para>
-      Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
+      Used to specify the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
       have the <xref linkend="atrOwnerDialog"/> attribute set to the Rexx dialog that owns the
       control dialog, before the <xref linkend="ovvUnderlying"/> control dialog is created. In
@@ -1782,7 +1782,7 @@
   <listitem>
   <para>
     The programmer can not manipulate the pages in the property sheet dialog by manipulating the array that is the value
-    of this attrbiute. I.e., if the programmer removes an index of the array, it does not remove that page in the
+    of this attribute. I.e., if the programmer removes an index of the array, it does not remove that page in the
     property sheet, if the programmer adds an index to the array, it does not add a page to the property sheet dialog.
     Page manipulation must be done through the instance methods of the property sheet dialog, for instance, the
  <xref linkend="mthInsertPage"/> or <xref linkend="mthRemovePage"/> methods.
@@ -2951,7 +2951,7 @@
 </section>  <!-- End PropertySheetDialog::pageToIndex() -->
 
 <section id="mthPopupClsPSD" xreflabel="popup"><title>popup</title>
-<indexterm><primary>popup</primary><secondary>rPropertySheetDialog class</secondary></indexterm>
+<indexterm><primary>popup</primary><secondary>PropertySheetDialog class</secondary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>popup</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4413,7 +4413,7 @@
 </row>
 <row>
 <entry><xref linkend="mthQueryFromSibling"/></entry>
-<entry>Notifies the page of a <xref linkend="mthQuerySiblings"/>messge.</entry>
+<entry>Notifies the page of a <xref linkend="mthQuerySiblings"/>message.</entry>
 </row>
 <row>
 <entry><xref linkend="mthQueryInitialFocus"/></entry>
@@ -4856,7 +4856,7 @@
     In addition to setting the <emphasis role="italic">pageTitle</emphasis> attribute, the USETITLE keyword needs to be
     included in the <emphasis role="italic">pageOpts</emphasis> argument to the <emphasis role="italic">new</emphasis>
     method of the page. However, in general, the ooDialog framework will set the keyword correctly if / when the
-    <emphasis role="italic">pageTitle</emphasis> attrbiute is set, and the Rexx programmer does not need to worry about
+    <emphasis role="italic">pageTitle</emphasis> attribute is set, and the Rexx programmer does not need to worry about
     it. There is one <emphasis role="italic">exception</emphasis> to this. For the
  <xref linkend="clsRcPSPDialog"/> page object, the title for the page will be overwritten when the
     resource script is parsed.  To prevent this, for <computeroutput>RcPSPDialog</computeroutput> pages, the USETITLE
@@ -5196,7 +5196,7 @@
   <varlistentry><term><emphasis role="bold">wantAccelerators get:</emphasis></term>
   <listitem>
   <para>
-    If the <emphasis role="italic">wantAccelerators</emphasis> attrbiute is true, the
+    If the <emphasis role="italic">wantAccelerators</emphasis> attribute is true, the
  <xref linkend="mthTranslateAccelerator"/> method will be invoked for each TRANSLATEACCELERATOR
     event notification. By default this attribute is false and TRANSLATEACCELERATOR notifications are ignored.
   </para>
@@ -5763,7 +5763,7 @@
 </programlisting>
 
 <para>
-  Notifies the page of a <xref linkend="mthQuerySiblings"/> messge.
+  Notifies the page of a <xref linkend="mthQuerySiblings"/> message.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6626,7 +6626,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <para>
   The <emphasis role="italic">validate</emphasis> method is invoked automatically by the ooDialog framework from the
   default implementation of the <xref linkend="mthApplyClsPSP"/> event handler. It is meant to be over-ridden
-  by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is similar in
+  by the Rexx programmer and provides a place to validate the data entered by the user in a page. It is similar in
   purpose to the <xref linkend="chpDialogObject"/> object's <xref linkend="mthValidate"/>
   method.
 </para>
@@ -6730,7 +6730,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <para>
   The <emphasis role="italic">validatePage</emphasis> method is invoked automatically by the ooDialog framework from the
   default implementation of the <xref linkend="mthKillActive"/> event handler. It is meant to be
-  over-ridden by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is
+  over-ridden by the Rexx programmer and provides a place to validate the data entered by the user in a page. It is
   similar in purpose to the <xref linkend="chpDialogObject"/> object's
   <xref linkend="mthValidate"/> method.
 </para>
@@ -6756,7 +6756,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     page is valid and <computeroutput>.false</computeroutput> to signal that the data on the page is not valid. The
     default implementation of <xref linkend="mthKillActive"/> directly returns <emphasis
     role="italic">validatePage</emphasis>. Therefore, if <emphasis role="italic">killActive</emphasis> is not
-    over-ridden, the progammer must return <computeroutput>.true</computeroutput> to allow the page to lose activation
+    over-ridden, the programmer must return <computeroutput>.true</computeroutput> to allow the page to lose activation
     and <computeroutput>.false</computeroutput> to prevent the page from losing the activation.
   </para>
   </listitem></varlistentry>
@@ -7026,7 +7026,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
             In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
             worry about it. <emphasis role="italic">Except</emphasis>, for the
  <xref linkend="clsRcPSPDialog"/> page object. In this case, the title for the page will be the
-            dialog title as specfied in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
+            dialog title as specified in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
             attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
             USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
             page.
@@ -7332,7 +7332,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
             In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
             worry about it. <emphasis role="italic">Except</emphasis>, for the
  <xref linkend="clsRcPSPDialog"/> page object. In this case, the title for the page will be the
-            dialog title as specfied in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
+            dialog title as specified in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
             attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
             USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
             page.
@@ -7577,7 +7577,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
             In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
             worry about it. <emphasis role="italic">Except</emphasis>, for the
  <xref linkend="clsRcPSPDialog"/> page object. In this case, the title for the page will be the
-            dialog title as specfied in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
+            dialog title as specified in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
             attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
             USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
             page.

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
 %BOOK_ENTITIES;
 ]>
@@ -7,13 +7,13 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -796,7 +796,7 @@
       <para>
         A filter to apply to <emphasis role="italic">winMsg</emphasis>. The filter is bitwise <emphasis
         role="italic">anded</emphasis> with <emphasis role="italic">winMsg</emphasis> and if the result equals the actual
-        window messge sent, it is considered a match. If omitted a filter of 0xFFFFFFFF is used.
+        window message sent, it is considered a match. If omitted a filter of 0xFFFFFFFF is used.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>wP [optional]</term>
@@ -2814,8 +2814,8 @@ The drop down combo box sent a selection ended cancel notification message.
 <indexterm><primary>EventNotification class</primary><secondary>connectDateTimePickerEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectDateTimePickerEvent(--id-,-evt--+----------+-+------------+-)-------><
-                                           +-,--mName-+ +-,-wilReply-+
+>>--connectDateTimePickerEvent(--id-,-evt--+----------+-+-------------+-)-------><
+                                           +-,--mName-+ +-,-willReply-+
 
 ]]>
 </programlisting>
@@ -6621,7 +6621,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINDRAG</tertiary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINRDRAG</tertiary></indexterm>
 <para>
-  The event handler for the BegingDrag or BeginRDrag events is invoked when a drag-and-drop operation involving the left
+  The event handler for the BeginDrag or BeginRDrag events is invoked when a drag-and-drop operation involving the left
   mouse button or the right mouse button is being initiated.
 </para>
 <para>
@@ -7686,7 +7686,7 @@ return
 <para>
   The event handler method connected to the get info tip event is invoked when the list-view control requests the text to
   display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
-  role="italic">willRepy</emphasis> argument of the <link linkend="mthConnectListViewEvent">connectListViewEvent</link>
+  role="italic">willReply</emphasis> argument of the <link linkend="mthConnectListViewEvent">connectListViewEvent</link>
   method is ignored for this event.
 </para>
 
@@ -8242,8 +8242,8 @@ return
 <indexterm><primary>EventNotification</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMonthCalendarEvent(--id-,-event-+---------+-+------------+--)-------><
-                                           +-,-mName-+ +-,-wilReply-+
+>>--connectMonthCalendarEvent(--id-,-event-+---------+-+-------------+--)-------><
+                                           +-,-mName-+ +-,-willReply-+
 
 ]]>
 </programlisting>
@@ -8899,7 +8899,7 @@ return
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
-      The numeric value of the LPARAM parameter of the notivication message. This value contains the new position
+      The numeric value of the LPARAM parameter of the notification message. This value contains the new position
       coordinates of the dialog. The low word of the number contains the new X position and the high word contains new y
       position. The <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
     </para>
@@ -9375,7 +9375,7 @@ return
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
-      The numeric value of the LPARAM parameter of the notivication message. This is a pointer to a memory location and has
+      The numeric value of the LPARAM parameter of the notification message. This is a pointer to a memory location and has
       no conceivable use in the ooDialog program.
     </para>
     </listitem></varlistentry>
@@ -10014,7 +10014,7 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
-      The numeric value of the LPARAM parameter of the notivication message. This value contains the new size coordinates of
+      The numeric value of the LPARAM parameter of the notification message. This value contains the new size coordinates of
       the dialog. The low word of the number contains the new width and the high word contains new height. The <xref
       linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
     </para>
@@ -10553,7 +10553,7 @@ onRelease() id: 1003 reBar: a ReBar
    +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
 
 >--+-------------+-+------------+-+------------+-+-------------+--)------------><
-   +-,-mthButtom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
+   +-,-mthBottom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
 
 ]]>
 </programlisting>
@@ -10893,7 +10893,7 @@ onRelease() id: 1003 reBar: a ReBar
     The following example connects the POSITION scroll event with a method in the Rexx dialog. Since the third argument is
     omitted, the ooDialog framework automatically connects the event to the <emphasis
     role="italic">onPosition</emphasis> method. The event handler extracts the new position from the notification
-    arguments and sets the position for the scroll bar. The easist way to do this is to use the <xref
+    arguments and sets the position for the scroll bar. The easiest way to do this is to use the <xref
     linkend="mthDeterminePosition"/> method.
   </para>
   <para>
@@ -14910,7 +14910,7 @@ Verify event code (should be 4): 4
 <para>
   The event handler method connected to the get info tip event is invoked when the tree-view control requests the text to
   display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
-  role="italic">willRepy</emphasis> argument of the <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
+  role="italic">willReply</emphasis> argument of the <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
   method is ignored for this event. The event handler must always return a value.
 </para>
 
@@ -15944,7 +15944,7 @@ Verify event code (should be 4): 4
 
 <para>
   A list-view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
-  sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
+  sending a BEGINDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
   code his own <xref linkend="ovvEvents"/> handling method and use
  <xref linkend="mthConnectListViewEvent"/>() method to connect the method to the drag-and-drop
   operation.
@@ -15992,7 +15992,7 @@ Verify event code (should be 4): 4
 
 <para>
   A tree view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
-  sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
+  sending a BEGINDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
   code his own <xref linkend="ovvEvents"/> handling method and use
  <xref linkend="mthConnectTreeViewEvent"/>() method to connect the method to the drag-and-drop
   operation.

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
 %BOOK_ENTITIES;
 ]>
@@ -7,13 +7,13 @@
     #
     # Description: Open Object Rexx: ooDialog Reference XML file.
     #
-    # Copyright (c) 2005-2022, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
     # distribution. A copy is also available at the following address:
-    # http://www.oorexx.org/license.html
+    # https://www.oorexx.org/license.html
     #
     # Redistribution and use in source and binary forms, with or
     # without modification, are permitted provided that the following
@@ -800,7 +800,7 @@ of a simple entry line.</para>
   begun. By default, the progress dialog can not be canceled by the user, and no cancel button is present in the dialog. If
   the user tries to end the dialog using the Escape key, the Close menu item in the system menu, or the close button in the
   title bar, a message box is put up explaining that the operation is not done yet and can not be canceled. The dialog is not
-  allowed to close. This default behaviour is changed throught the <xref linkend="atrCanCancel"/> attribute or through the
+  allowed to close. This default behaviour is changed through the <xref linkend="atrCanCancel"/> attribute or through the
   <xref linkend="mthSetInterruptible"/> method. The use of an <xref linkend="clsInterruptible"/> object gives the programmer
   an elegant way of handling and controlling a user's request to cancel the operation.
 </para>
@@ -1044,7 +1044,7 @@ of a simple entry line.</para>
   <para>
     The exact behaviour and appearance of the progress dialog is configured by setting the values of its attributes. Only
     a few of the attribute's values can be set by arguments to the <emphasis role="italic">new</emphasis> method. The other
-    attriubtes are all set to default values when the object is instantiated. The documentation for the individual attributes
+    attributes are all set to default values when the object is instantiated. The documentation for the individual attributes
     specifies what the default value for the attribute is.
   </para>
   </listitem></varlistentry>
@@ -2656,7 +2656,7 @@ of a simple entry line.</para>
       The maximum number of radio buttons in one column. If there are more radio buttons than <emphasis
       role="italic">max</emphasis>, that is, if the <emphasis role="italic">labels.</emphasis> argument has more indexes
       than the value of <emphasis role="italic">max</emphasis>, the radio buttons are positioned in columns. Each column will
-      have <emphasis role="italic">max</emphasis> radio buttons and ther will be as many columns as needed to display all the
+      have <emphasis role="italic">max</emphasis> radio buttons and there will be as many columns as needed to display all the
       radio buttons.
     </para>
     </listitem></varlistentry>
@@ -3897,9 +3897,15 @@ returned rather than the empty string.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    The MessageDialog routine is an interface to the Microsoft MessageBox() API.
+  </para>
+  <para>
     When the message box has a <emphasis role="bold">Cancel</emphasis> button, IDCANCEL is also returned if the user
-    uses the ESC key. If the message box does not have a <emphasis role="bold">Cancel</emphasis> button, then the user
-    can not close the message box by using the ESC key.
+    uses the ESC key, the Close button in the message box title bar, or the message box system menu item Close.
+    If the message box has just an <emphasis role="bold">Ok</emphasis> button, IDOK is also returned if the user
+    uses the ESC key, the Close button in the message box title bar, or the message box system menu item Close.
+    In all other cases the user can not close the message box by using the ESC key, the Close button in the message
+    box title bar, or the message box system menu item Close.
   </para>
   <para>
     The <xref linkend="rtnAskDialog"/>, <xref linkend="rtnInfoDialog"/>, and
