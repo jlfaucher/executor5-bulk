@@ -9323,7 +9323,7 @@ StackFrame instances cannot be directly created by the user.
 -->
   <simplelist columns="3">
    <member><xref linkend="mthStackFrameArguments" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStackFrameExecutable" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStackFrameContext" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameInvocation" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameLine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameMakeString" xrefstyle="select:title"/></member>
@@ -9353,6 +9353,26 @@ StackFrame instances cannot be directly created by the user.
 </mediaobject>
 
 <para>Returns the arguments used to invoke the execution frame represented by the StackFrame instance.
+</para>
+</section>
+
+
+<section id="mthStackFrameContext"><title>&added51;context</title>
+<indexterm><primary>context method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>context method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stackframe_context.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the context object
+(cf. <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/> class)
+of the execution frame represented by the StackFrame instance.
 </para>
 </section>
 
