@@ -195,6 +195,43 @@ return testResult
   self~assertSame(frame~traceLine, frame~makestring, "StackFrame makeString() mismatch")
 
 
+::method testContextEntry
+
+  r=.routine~new("testContextEntry", .resources~testContextEntryCode)
+  ctxt=r~call(self)
+  self~expectSyntax(98.981)   -- "Target RexxContext is no longer active."
+  ctxt~line
+
+::resource testContextEntryCode
+   /*
+     test that we can a) retrieve the context entry from a stackframe and
+     b) if we return it and try to access it that we get a syntax 98.981
+     ("Target RexxContext is no longer active.")
+   */
+   use arg testObj
+   ctxt=r1(testObj)      -- call routine R1
+   t=.test~new~~m1(testObj)
+   return ctxt
+
+   ::routine r1
+     use arg testObj
+     sf=.context~stackframes
+     ctxt=sf[1]~context
+     testObj~assertSame(.context,ctxt,".context = .context~stackrames[1]~context)")
+     return ctxt
+
+   ::class test
+   ::method m1
+     use arg testObj
+     sf=.context~stackframes
+     ctxt=sf[1]~context
+     testObj~assertSame(.context,ctxt,".context = .context~stackrames[1]~context)")
+     return ctxt
+::END
+
+
+
+
 ::class ContextComparator subclass NumericComparator
 ::attribute stackframes
 
