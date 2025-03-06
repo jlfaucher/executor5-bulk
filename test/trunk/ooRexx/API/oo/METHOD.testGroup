@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -3086,6 +3086,102 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSyntaxError(90.999, "::routine TestObjectToValue EXTERNAL 'LIBRARY orxmethod TestObjectToValue'")
 
 
+-- #1625 "NewRoutine() and LoadPackageFromData() raise error 13.1 on tokenized Rexx code"
+::method test_rexxc_with_NewRoutine_LoadPackageFromData
+  tester = .METHODtester~new
+
+  pkgDir   =filespec('Location', .context~package~name)  -- this package's location
+  fnSource ="source_program.rex"                   -- source file name
+  fnComp   =fnSource"_compiled"             -- compiled file name
+  fnCompEnc=fnSource"_compiled_and_encoded" -- compiled and encoded file name
+
+  call clean   -- make sure we clean before work
+
+   -- create test file
+  .stream~new(pkgDir || fnSource) ~~open("replace") ~~lineout("return 42") ~~close
+
+   -- compile
+  address "" "rexxc" q(pkgDir || fnSource) q(pkgDir || fnComp) "-s" with output stem s. error stem e.
+  self~assertRc(0, rc, "'"fnSource"' Rexx code expected to compile with rc 0")
+  self~assertTrue(s.0 = 0, "'rexxc" fnSource "-s' is expected to produce no output")
+  self~assertTrue(e.0 = 0, "'rexxc" fnSource "-s' is expected to produce no error output")
+
+  r=.routine~newFile(fnComp)  -- create from file
+  res=r~call
+  self~assertTrue(res = 42, "calling compiled program" q(fnComp) "returns '"res"' instead of '42'")
+
+   -- compile and encode
+  address "" "rexxc" q(pkgDir || fnSource) q(pkgDir || fnCompEnc) "-e -s" with output stem s. error stem e.
+  self~assertRc(0, rc, "'"fnSource"' Rexx code expected to compile with rc 0")
+  self~assertTrue(s.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no output")
+  self~assertTrue(e.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no error output")
+
+  r=.routine~newFile(fnCompEnc)
+  res=r~call
+  self~assertTrue(res = 42, "calling compiled program" q(fnCompEnc) "returns '"res"' instead of '42'")
+
+  s=.stream~new(pkgDir || fnCompEnc)~~open("read") -- read compiled and encoded data
+  data=s~arrayin     -- read all program data
+  s~close
+  r=.routine~new(fnComp,data) -- create from file's data
+  res=r~call
+  self~assertTrue(res = 42, "calling compiled program" q(fnCompEnc) "returns '"res"' instead of '42'")
+
+   ---- NewRoutine()
+  do fn over fnSource, fnCompEnc, fnComp
+     s=.stream~new(pkgDir || fn)~~open("read") -- read compiled and encoded data
+     data=s~charin(1,s~chars) -- read all program data
+     s~close
+     r=tester~TestNewRoutine(fn, data)
+     res=r~call
+     self~assertTrue(res = 42, "calling program" q(fn) "returns '"res"' instead of '42'")
+  end
+
+   ---- LoadPackageFromData
+  do fn over fnSource, fnCompEnc, fnComp
+     s=.stream~new(pkgDir || fn)~~open("read") -- read compiled and encoded data
+     data=s~charin(1,s~chars) -- read all program data
+     s~close
+     p=tester~TestLoadPackageFromData(fn, data)
+     res=p~prolog~call        -- fetch prolog and call it
+     self~assertTrue(res = 42, "calling program" q(fn) "returns '"res"' instead of '42'")
+  end
+
+   -- assert difference in sizes
+  f=.file~new(pkgDir || fnSource)
+  len_fnSource =f~length
+  f=.file~new(pkgDir || fnComp)
+  len_fnComp   =f~length
+  f=.file~new(pkgDir || fnCompEnc)
+  len_fnCompEnd=f~length
+
+  self~assertTrue(len_fnSource<>0, "source file '"fnSource"' is empty")
+  self~assertTrue(len_fnSource<len_fnComp   , "compiled file '"fnComp"' is not larger than '"fnSource"'")
+  self~assertTrue(len_fnSource<len_fnCompEnd, "compiled and encoded file '"fnCompEnc"' is not larger than '"fnSource"'")
+  self~assertTrue(len_fnComp  <len_fnCompEnd, "compiled and encoded file '"fnCompEnc"' is not larger than '"fnSource"'")
+
+   -- clean up
+  call clean
+  return
+
+clean:   -- make sure that files do not exist
+  do fn over fnSource, fnComp, fnCompEnc
+     fn=pkgDir || fn
+     if sysFileExists(fn) then
+     do
+        rc=sysFileDelete(fn)
+        self~assertTrue(rc=0, q(fn) "exists, but cannot be deleted")
+     end
+  end
+  return
+
+q: procedure
+  parse arg fn
+  if fn~pos(' ')>0 then return '"'fn'"'
+  return fn
+
+
+
 ::method testSendMessageScoped
   tester = .METHODTester~new
   o = .Scoped3~new
@@ -3093,6 +3189,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("S2",        tester~TestSendMessageScoped(o, "STRING", .Scoped2, .Array~new(0)))
   self~assertSame("S1",        tester~TestSendMessageScoped(o, "STRING", .Scoped1, .Array~new))
   self~assertSame("a SCOPED3", tester~TestSendMessageScoped(o, "STRING", .Object,  .Array~new(0)))
+
 
 -- test class for SendMessageScoped
 ::class Scoped1
