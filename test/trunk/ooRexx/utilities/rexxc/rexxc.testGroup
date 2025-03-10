@@ -163,7 +163,7 @@ return testResult
   self~assertTrue(s.0 = 0, "'rexxc" fnSource "-s' is expected to produce no output")
   self~assertTrue(e.0 = 0, "'rexxc" fnSource "-s' is expected to produce no error output")
 
-  r=.routine~newFile(fnComp)  -- create from file
+  r=.routine~newFile(pkgDir || fnComp)  -- create from file
   res=r~call
   self~assertTrue(res = 42, "calling compiled program" self~q(fnComp) "returns '"res"' instead of '42'")
 
@@ -173,14 +173,14 @@ return testResult
   self~assertTrue(s.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no output")
   self~assertTrue(e.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no error output")
 
-  r=.routine~newFile(fnCompEnc)
+  r=.routine~newFile(pkgDir || fnCompEnc)
   res=r~call
   self~assertTrue(res = 42, "calling compiled program" self~q(fnCompEnc) "returns '"res"' instead of '42'")
 
   s=.stream~new(pkgDir || fnCompEnc)~~open("read") -- read compiled and encoded data
   data=s~arrayin     -- read all program data
   s~close
-  r=.routine~new(fnComp,data) -- create from file's data
+  r=.routine~new(fnCompEnc,data) -- create from file's data
   res=r~call
   self~assertTrue(res = 42, "calling compiled program" self~q(fnCompEnc) "returns '"res"' instead of '42'")
 

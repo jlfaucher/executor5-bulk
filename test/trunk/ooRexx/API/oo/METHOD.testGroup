@@ -3106,7 +3106,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertTrue(s.0 = 0, "'rexxc" fnSource "-s' is expected to produce no output")
   self~assertTrue(e.0 = 0, "'rexxc" fnSource "-s' is expected to produce no error output")
 
-  r=.routine~newFile(fnComp)  -- create from file
+  r=.routine~newFile(pkgDir || fnComp)  -- create from file
   res=r~call
   self~assertTrue(res = 42, "calling compiled program" q(fnComp) "returns '"res"' instead of '42'")
 
@@ -3116,7 +3116,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertTrue(s.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no output")
   self~assertTrue(e.0 = 0, "'rexxc" fnSource "-e -s' is expected to produce no error output")
 
-  r=.routine~newFile(fnCompEnc)
+  r=.routine~newFile(pkgDir || fnCompEnc)
   res=r~call
   self~assertTrue(res = 42, "calling compiled program" q(fnCompEnc) "returns '"res"' instead of '42'")
 
