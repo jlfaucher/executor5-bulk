@@ -1448,11 +1448,18 @@ void RexxActivation::termination()
 
     if (traceEntryDone && tracingLabels() && isMethodOrRoutine())
     {
-        traceEntryOrExit(TRACE_PREFIX_INVOCATION_EXIT);
-        if (!tracingAll())
+        if (settings.isForwarded())         // do not trace just as yet
         {
-            // we pause on the label only for ::OPTIONS TRACE LABELS
-            pauseLabel();
+            settings.setForwarded(false);   // clear setting to allow trace on next termination() of this activation
+        }
+        else    // o.k. to trace
+        {
+            traceEntryOrExit(TRACE_PREFIX_INVOCATION_EXIT);
+            if (!tracingAll())
+            {
+                // we pause on the label only for ::OPTIONS TRACE LABELS
+                pauseLabel();
+            }
         }
     }
 
