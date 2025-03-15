@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2023-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2023-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -52,9 +52,10 @@ else
   -- is redirected, this could trigger further test case failures.
   -- The framework resets some of the Monitors for each test *group* run,
   -- but we want to reset them here after each test *case* run.
-  .TraceOutput~destination(.Error)
-  .DebugInput~destination(.Input)
-  .Output~destination(.stdout)
+  -- Make sure we remove any previous destination before assigning the default one.
+  .TraceOutput~~destination~~destination(.Error)
+  .DebugInput ~~destination~~destination(.Input)
+  .Output     ~~destination~~destination(.stdout)
 
 
 /*@@bug pending issues
@@ -1169,6 +1170,153 @@ message name isn't traced
      6 *-* nop /* 6 */
      7 *-* nop /* 7 */
   ::end
+
+------
+::method test_trace_label_with_forward
+
+  results=42, "42 42", 42
+  do counter c1 name over "test_forwarded1.rex", "test_forwarded2.rex", "test_forwarded3.rex"
+     expected = .resources~send(name"_expected")   -- get array of expected tracelines (without package name)
+     as       = .ArrayStream~new                   -- create an array stream to capture .traceOutput
+     t        = .TraceOutput~destination(as)       -- capture .traceOutput
+     r        = .routine~new(name, .resources~send(name))
+     res      = r~call
+     expRes=results[c1]
+     self~assertSame(expRes, res, 'test "'name'": result must be "'expRes'"')
+     actual = filter_actual(as)
+     if expected~items <> actual~items then
+        self~assertFail('test "'name'": actual ('actual~items" lines) and expected ("expected~items" lines) trace output have different line counts")
+     do counter c2 exp over expected
+        self~assertTrue(actual[c2]~startsWith(exp), 'test "'name'" (index #'c2'): "'actual[c2]'" does not start with: "'exp'"')
+     end
+     .TraceOutput~destination    -- remove destination object
+  end
+  return
+
+filter_actual: procedure      -- returns an array which does not have "Routine" traces
+  use strict arg actual
+  arr=.array~new
+  do val over actual
+     if word(val,2)<>"Routine" then arr~append(val)
+  end
+  return arr
+
+  -----------------------------------------------------------------
+  ::RESOURCE test_forwarded1.rex END "  ::end"
+      t=.test~new
+      t~one
+      res=t~three             -- fetch result
+      return res              -- return three's result for assertions: "42"
+
+      ::class test
+      ::method one
+        forward message "onetwo"
+
+      ::method onetwo
+
+      ::method three
+        forward message "threefour" continue
+        return result         -- return result from threefour
+
+      ::method threefour
+        return 42
+
+      ::options trace labels
+  ::end
+
+  ::RESOURCE test_forwarded1.rex_expected END "  ::end"
+       >I> Method "ONE" with scope "TEST" in package
+       >I> Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONE" with scope "TEST" in package
+       >I> Method "THREE" with scope "TEST" in package
+       >I> Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREE" with scope "TEST" in package
+  ::end
+
+  -----------------------------------------------------------------
+  ::RESOURCE test_forwarded2.rex END "  ::end"
+   t=.test~new
+   res1=t~one              -- fetch result: 42
+   res2=t~three            -- fetch result: 42
+   return res1 res2        -- return three's result for assertions: "42 42"
+
+   ::class test
+   ::method one
+     forward message "onetwo"    -- forward without continue (will not return to run any remainder)
+
+   ::method onetwo
+     forward message "three"     -- forward without continue (will not return to run any remainder)
+
+   ::method three
+     forward message "threefour" continue
+     return result         -- return result from threefour
+
+   ::method threefour
+     return 42
+
+   ::options trace labels
+  ::end
+
+  ::RESOURCE test_forwarded2.rex_expected END "  ::end"
+       >I> Method "ONE" with scope "TEST" in package
+       >I> Method "ONETWO" with scope "TEST" in package
+       >I> Method "THREE" with scope "TEST" in package
+       >I> Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREE" with scope "TEST" in package
+       <I< Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONE" with scope "TEST" in package
+       >I> Method "THREE" with scope "TEST" in package
+       >I> Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREE" with scope "TEST" in package
+  ::end
+
+  -----------------------------------------------------------------
+  ::RESOURCE test_forwarded3.rex END "  ::end"
+   t=.test~new
+   t~one
+   call syssleep 0.001     -- make sure reply'ed invocations end
+   res=t~three             -- fetch result
+   call syssleep 0.001     -- make sure reply'ed invocations end
+   return res              -- return three's result for assertions: "42"
+
+   ::class test
+   ::method one      -- forward without continue (will not return to run any remainder)
+     forward message "onetwo"
+     i=i/0           -- will never be run, hence will never raise a syntax condition
+
+   ::method onetwo
+     reply
+
+   ::method three    -- forward ... continue (remainder after forward would be run)
+     reply 42
+     forward message "threefour" continue
+     if result<>42 then i=i/0    -- create syntax condition, if result does not match
+
+   ::method threefour
+     return 42
+
+   ::options trace labels
+  ::end
+
+  ::RESOURCE test_forwarded3.rex_expected END "  ::end"
+       >I> Method "ONE" with scope "TEST" in package
+       >I> Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONE" with scope "TEST" in package
+       >I> Method "ONETWO" with scope "TEST" in package
+       <I< Method "ONETWO" with scope "TEST" in package
+       >I> Method "THREE" with scope "TEST" in package
+       <I< Method "THREE" with scope "TEST" in package
+       >I> Method "THREE" with scope "TEST" in package
+       >I> Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREEFOUR" with scope "TEST" in package
+       <I< Method "THREE" with scope "TEST" in package
+  ::end
+
 
 -- ArrayStream allows to capture TRACE output to an Array
 -- we inherit from Stream just for the SAY method
