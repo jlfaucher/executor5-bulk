@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1545,7 +1545,7 @@ void Activity::checkActivationStack()
     if (stackFrameDepth == activationStackSize)
     {
         // allocate a larger stack
-        InternalStack *newstack = new_internalstack(activationStackSize + ACT_STACK_SIZE);
+        InternalStack *newstack = new_internalstack(activationStackSize * 2);
         // now copy all of the entries over to the new frame stack
         for (size_t i = activationStackSize; i != 0; i--)
         {
@@ -1553,7 +1553,7 @@ void Activity::checkActivationStack()
         }
         // update the frame information
         activations = newstack;
-        activationStackSize += ACT_STACK_SIZE;
+        activationStackSize *= 2;
     }
 }
 
