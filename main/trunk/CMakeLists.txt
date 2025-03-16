@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2014-2024 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2014-2025 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1372,10 +1372,10 @@ endif ()
 if (WIN32)
    set (OOD_MAJOR 4)
    set (OOD_MINOR 2)
-   set (OOD_MOD_LVL 4)
-   set (OOD_BLD_LVL 12373)
-   set (OOD_VER_STR "4.2.4.12373")
-   set (OOD_COPY_YEAR "2005-2022")
+   set (OOD_MOD_LVL 5)
+   set (OOD_BLD_LVL 12940)
+   set (OOD_VER_STR "4.2.4.12940")
+   set (OOD_COPY_YEAR "2005-2025")
 
    #################### ooshapes.dll ################
    # Sources for ooshapes.dll
