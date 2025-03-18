@@ -1374,7 +1374,7 @@ if (WIN32)
    set (OOD_MINOR 2)
    set (OOD_MOD_LVL 5)
    set (OOD_BLD_LVL 12940)
-   set (OOD_VER_STR "4.2.4.12940")
+   set (OOD_VER_STR "4.2.5.12940")
    set (OOD_COPY_YEAR "2005-2025")
 
    #################### ooshapes.dll ################
