@@ -38,8 +38,9 @@
 parse source . . s
 group = .TestGroup~new(s)
 group~add(.samples.testGroup)
-if locateSamplePrg(".") = .nil then
-  group~markNoTests("No ooRexx samples file folder can be located")
+group~restrictOS("WINDOWS")
+if locateSamplePrg("ole\adsi") = .nil then
+  group~markNoTests("No ooRexx ole\adsi file folder can be located")
 if group~isAutomatedTest then
   return group
 else
@@ -73,123 +74,36 @@ else
   self~assertTrue(output~items >= nrLines, "sample" name "expected to print at least" nrLines "line(s) of output; found" .endofline output)
   return output
 
--- tests for the basic Rexx samples
+-- tests for the ole\adsi samples, except for
+-- adsi7.rex and adsi8.rex which seem to be too intrusive to run
+-- as adsi7.rex creates a Windows user group and 15 Windows user
+-- and adsi8.rex tries to remove above changes
 
-::method test_arithmeticEvaluation
-  self~assertSampleRuns("arithmeticEvaluation.rex", 6)
+-- Standard properties of this computer
+::method test_adsi1
+  self~assertSampleRuns("ole\adsi\adsi1.rex", 7)
 
-::method test_arrayCallback
-  self~assertSampleRuns("arrayCallback.rex", 10)
+-- full name for user
+-- answer "n" to the "rename the full name" question
+::method test_adsi2
+  self~assertSampleRuns("ole\adsi\adsi2.rex", 3, .Array~of("n"))
 
-::method test_ccreply
-  self~assertSampleRuns("ccreply.rex", 20)
+-- list users
+::method test_adsi3
+  self~assertSampleRuns("ole\adsi\adsi3.rex")
 
+-- list groups and services
+::method test_adsi4
+  self~assertSampleRuns("ole\adsi\adsi4.rex", 50)
+
+-- list domains
 -- takes a long time to run: approx. 30 seconds
-::method test_concurrency
-  self~assertSampleRuns("concurrency.rex", 40)
+::method test_adsi5
+  self~assertSampleRuns("ole\adsi\adsi5.rex")
 
-::method test_constrained
-  self~assertSampleRuns("constrained.rex", 3)
-
-::method test_delegation
-  self~assertSampleRuns("delegation.rex", 5)
-
--- drives.rex is Windows only
-
-::method test_dynamicMethod
-  self~assertSampleRuns("dynamicMethod.rex", 3)
-
-::method test_factor
-  self~assertSampleRuns("factor.rex", 1, .Array~of(7))
-
-::method test_greply
-  self~assertSampleRuns("greply.rex", 14)
-
--- animal guessing
--- answer "y" to question "I bet you're thinking of a bear. Right?"
--- answer "n" to question "Wanna try another animal?"
-::method test_guess
-  self~assertSampleRuns("guess.rex", 7, ("y", "n"))
-
--- this sample intentionally ends with
--- Error 93.965:  Method NAME is ABSTRACT and cannot be directly invoked.
-::method test_interface
-  self~assertSampleRuns("interface.rex", 5, , -93)
-
--- GUARD instruction sample
--- answer "" to "Press enter to set guard expression true"
-::method test_ktguard
-  self~assertSampleRuns("ktguard.rex", 20, .Array~of(""))
-
--- answer "n" to question "clear the screen?"
--- answer "" to "press enter to continue"
-::method test_makestring
-  self~assertSampleRuns("makestring.rex", 20, ("n", ""))
-
-::method test_month
-  self~assertSampleRuns("month.rex", 28)
-
--- takes a long time to run: approx. 60 seconds
-::method test_philfork
-  self~assertSampleRuns("philfork.rex", 40)
-
--- not a nice test: it writes a file to the user's directory
-::method test_properties
-  self~assertSampleRuns("properties.rex", 10, .Array~of(""))
-
-::method test_qdate
-  self~assertSampleRuns("qdate.rex", 2)
-
-::method test_qtime
-  self~assertSampleRuns("qtime.rex", 1)
-
-::method test_rexxcps
-  output = self~assertSampleRuns("rexxcps.rex", 5)
-  -- last output line should be "Performance: nnnnnn REXX clauses per second"
-  cps = "REXX clauses per second"
-  line = output[output~last]~strip
-  parse var line before (cps)
-  self~assertTrue(line~contains(cps) & before~words > 0, "last line expected to contain 'nnnnnn" cps"'; found" .endofline line)
-  n = before~word(before~words)
-  self~assertTrue(n > 500000 & n < 100000000, cps "expected to be between 500.000 and 100.000.000; found" .endofline line)
-
-/*
-  for now, these samples have their own test groups:
-  scclient/scserver
-  sfclient/sfserver
-
-  semcls.cls is obsolete and should be removed
-*/
-
-::method test_singleLinkedList
-  self~assertSampleRuns("singleLinkedList.rex", 8)
-
-::method test_sortComposite
-  self~assertSampleRuns("sortComposite.rex", 44)
-
-::method test_stack
-  self~assertSampleRuns("stack.rex", 4)
-
-::method test_synchronousConcurrency
-  self~assertSampleRuns("synchronousConcurrency.rex", 30)
-
-::method test_timezone
-  self~assertSampleRuns("timezone.rex", 5)
-
-::method test_treeTraversal
-  self~assertSampleRuns("treeTraversal.rex", 4)
-
-::method test_usecomp
-  self~assertSampleRuns("usecomp.rex", 8)
-
-::method test_usepipe
-  self~assertSampleRuns("usepipe.rex", 25)
-
-::method test_usesingleton
-  self~assertSampleRuns("usesingleton.rex", 8)
-
-::method test_usetree
-  self~assertSampleRuns("usetree.rex", 16)
+-- list properties
+::method test_adsi6
+  self~assertSampleRuns("ole\adsi\adsi6.rex", 10)
 
 
 ::options all syntax
