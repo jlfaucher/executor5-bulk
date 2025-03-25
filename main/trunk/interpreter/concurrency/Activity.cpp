@@ -132,6 +132,7 @@ void Activity::live(size_t liveMark)
     memory_mark(waitingObject);
     memory_mark(dispatchMessage);
     memory_mark(heldMutexes);
+    memory_mark(spawnerStackFrameInfo);
 
     // have the frame stack do its own marking.
     frameStack.live(liveMark);
@@ -165,6 +166,7 @@ void Activity::liveGeneral(MarkReason reason)
     memory_mark_general(waitingObject);
     memory_mark_general(dispatchMessage);
     memory_mark_general(heldMutexes);
+    memory_mark_general(spawnerStackFrameInfo);
 
     /* have the frame stack do its own marking. */
     frameStack.liveGeneral(reason);
@@ -1086,7 +1088,7 @@ void Activity::generateProgramInformation(DirectoryClass *exobj)
 
     while (frame != NULL)
     {
-        StackFrameClass *stackFrame = frame->createStackFrame();
+        Protected<StackFrameClass> stackFrame = frame->createStackFrame();
         // save the topmost package object we can find for error reporting
         if (package == OREF_NULL && frame->getPackage() != OREF_NULL)
         {
@@ -1150,7 +1152,7 @@ ArrayClass* Activity::generateStackFrames(bool skipFirst)
         }
         else
         {
-            StackFrameClass *stackFrame = frame->createStackFrame();
+            Protected<StackFrameClass> stackFrame = frame->createStackFrame();
             stackFrames->append(stackFrame);
         }
         frame = frame->next;
@@ -1193,7 +1195,7 @@ StackFrameClass* Activity::generateCallerStackFrame(bool skipFirst)
 void Activity::setCallerStackFrameAsStringTable(Activity *oldActivity, Activity *newActivity, bool skipFirst)
 {
     // get caller stackframe, if any
-    StackFrameClass *oldActivityStackFrame = oldActivity -> generateCallerStackFrame(skipFirst);
+    Protected<StackFrameClass> oldActivityStackFrame = oldActivity -> generateCallerStackFrame(skipFirst);
     // returns a StringTable that may be empty if oldActivityStackFrame==NULLOBJECT
     newActivity -> spawnerStackFrameInfo=RexxActivation::getStackFrameAsStringTable(oldActivityStackFrame);
     // save thread ID to indicate from which thread ID the spawnReply() came from (helpful, e.g., if StringTable is empty)
@@ -3148,13 +3150,15 @@ void Activity::traceOutput(RexxActivation *activation, RexxString *line, StringT
             }
             catch (NativeActivation *)
             {
-                lineOut(traceObject->requestString()); // don't lose the data!
+                Protected<RexxString> line = traceObject->requestString();
+                lineOut(line); // don't lose the data!
             }
         }
         // could not find the target, but don't lose the data!
         else
         {
-            lineOut(traceObject->requestString()); // don't lose the data!
+            Protected<RexxString> line = traceObject->requestString();
+            lineOut(line); // don't lose the data!
         }
     }
 }

@@ -104,7 +104,8 @@ StackFrameClass *InternalActivationFrame::createStackFrame()
 
     RexxString *message = activity->buildMessage(Message_Translations_compiled_method_invocation, info);
     p = message;
-    return new StackFrameClass(StackFrameClass::FRAME_METHOD, name, frameMethod, target, new_array(count, argPtr), message, SIZE_MAX, 0, OREF_NULL);
+    Protected<ArrayClass> args = new_array(count, argPtr);
+    return new StackFrameClass(StackFrameClass::FRAME_METHOD, name, frameMethod, target, args, message, SIZE_MAX, 0, OREF_NULL);
 }
 
 PackageClass *InternalActivationFrame::getPackage()

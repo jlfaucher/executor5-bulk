@@ -3744,7 +3744,7 @@ void RexxActivation::traceTaggedValue(TracePrefix prefix, const char *tagPrefix,
     }
 
     // get the string value from the traced object.
-    RexxString *stringVal = value->stringValue();
+    Protected<RexxString> stringVal = value->stringValue();
 
     // now calculate the length of the traced string
     size_t outLength = tag->getLength() + stringVal->getLength();
@@ -5022,7 +5022,7 @@ StackFrameClass *RexxActivation::createStackFrame()
     // calling this in the constructor argument list can cause the stack frame instance
     // to be inadvertently reclaimed if a GC is triggered while evaluating the constructor
     // arguments.
-    RexxString *traceback = getTraceBack();
+    Protected<RexxString> traceback = getTraceBack();
 
     return new StackFrameClass(type, getMessageName(), getExecutableObject(), target, arguments, traceback, getContextLineNumber(), getIdntfr(), getContextObject());
 }
@@ -5153,24 +5153,26 @@ StringTable * RexxActivation::createTraceObject(Activity *activity, RexxActivati
     traceObject -> put(new_integer(activation ? activation->getIdntfr() : 0), GlobalNames::INVOCATION);
 
     // make sure we save the stackFrame information in a StringTable
-    StackFrameClass *stackFrame = ( activation ?  activation->createStackFrame() : NULL);
-    traceObject -> put(stackFrame ? getStackFrameAsStringTable(stackFrame) : TheNilObject, GlobalNames::STACKFRAME);
+    Protected<StackFrameClass> stackFrame = ( activation ?  activation->createStackFrame() : NULL);
+    Protected<RexxObject> sfast = ((RexxObject *)stackFrame) ? getStackFrameAsStringTable(stackFrame) : TheNilObject;
+    traceObject -> put(sfast, GlobalNames::STACKFRAME);
 
     // tracing a variable, create and fill in a StringTable with the variable related information
     if (tracePrefix == TRACE_PREFIX_VARIABLE || tracePrefix == TRACE_PREFIX_ASSIGNMENT)
     {
-        StringTable *varStringTable = new_string_table();
+        Protected<StringTable> varStringTable = new_string_table();
+        traceObject -> put(varStringTable,   GlobalNames::VARIABLE);
         varStringTable -> put(tag,           GlobalNames::NAME);
         varStringTable -> put(value,         GlobalNames::VALUE);
         varStringTable -> put(tracePrefix == TRACE_PREFIX_ASSIGNMENT ? TheTrueObject : TheFalseObject, GlobalNames::ASSIGNMENT);
-        traceObject -> put(varStringTable,   GlobalNames::VARIABLE);
     }
     else if (tracePrefix == TRACE_PREFIX_INVOCATION)    // tracing an invocation entry
     {
-        StackFrameClass *stackFrame = activity -> generateCallerStackFrame(true);
-        if (stackFrame)
+        Protected<StackFrameClass> stackFrame = activity -> generateCallerStackFrame(true);
+        if ((RexxObject *)stackFrame)
         {
-            traceObject -> put(getStackFrameAsStringTable(stackFrame), GlobalNames::CALLERSTACKFRAME);
+            Protected<StringTable> sfast = getStackFrameAsStringTable(stackFrame);
+            traceObject -> put(sfast, GlobalNames::CALLERSTACKFRAME);
         }
         else
         {
@@ -5262,7 +5264,7 @@ using
 */
 StringTable * RexxActivation::getStackFrameAsStringTable(StackFrameClass * stackFrame)
 {
-    StringTable *tmpStringTable = new_string_table();
+    Protected<StringTable> tmpStringTable = new_string_table();
     if (stackFrame != NULLOBJECT)
     {
         ProtectedObject result;
