@@ -39,6 +39,11 @@ parse source . . s
 group = .TestGroup~new(s)
 group~add(.samples.testGroup)
 group~restrictOS("WINDOWS")
+-- Windows-specific samples like drives.rex located in the source tree below
+-- samples\windows are not copied to the build tree, so we can only run this
+-- test group in a Rexx-installed scenario
+if locateSamplePrg("drives.rex") = .nil then
+  group~markNoTests("No Windows-specific ooRexx samples can be located")
 if group~isAutomatedTest then
   return group
 else

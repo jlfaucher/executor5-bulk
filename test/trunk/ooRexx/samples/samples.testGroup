@@ -151,7 +151,8 @@ else
   parse var line before (cps)
   self~assertTrue(line~contains(cps) & before~words > 0, "last line expected to contain 'nnnnnn" cps"'; found" .endofline line)
   n = before~word(before~words)
-  self~assertTrue(n > 500000 & n < 100000000, cps "expected to be between 500.000 and 100.000.000; found" .endofline line)
+  -- e. g. the Raspberry Pi rexxcps value is below 500.000
+  self~assertTrue(n > 200000 & n < 100000000, cps "expected to be between 200.000 and 100.000.000; found" .endofline line)
 
 /*
   for now, these samples have their own test groups:
