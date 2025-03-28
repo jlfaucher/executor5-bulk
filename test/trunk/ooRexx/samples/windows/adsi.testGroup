@@ -35,12 +35,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
 parse source . . s
 group = .TestGroup~new(s)
-group~add(.samples.testGroup)
+group~add(.adsi.testGroup)
 group~restrictOS("WINDOWS")
 if locateSamplePrg("ole\adsi") = .nil then
-  group~markNoTests("No ooRexx ole\adsi file folder can be located")
+  group~markNoTests("No ooRexx ole\adsi samples folder can be located")
 if group~isAutomatedTest then
   return group
 else
@@ -50,7 +51,7 @@ else
 ::requires 'FileUtils.cls'
 
 
-::class samples.testgroup subclass ooTestCase public
+::class adsi.testgroup subclass ooTestCase public
 
 ::constant ooTestType (.ooTestTypes~SAMPLE_TEST)
 

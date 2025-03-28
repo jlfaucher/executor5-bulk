@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -45,6 +45,7 @@ else
   return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
 
 ::class RexxQueue.testGroup public subclass ooTestCase
 
@@ -583,14 +584,14 @@ else
   .RexxQueue~delete(name) -- just to make sure
   self~assertFalse(.RexxQueue~exists(name))
 
-  -- create the named queue in a different Rexx program
-  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')"'
+  -- create the named queue in a different Rexx interpreter instance
+  call execRexxInline ".RexxQueue~new('" || name || "')"
   self~assertTrue(.RexxQueue~exists(name~upper))
   q = .RexxQueue~new(name)
   q~say("say")
 
-  -- queue an item in a different Rexx program
-  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')~queue(''external'')"'
+  -- queue an item in a different Rexx interpreter instance
+  call execRexxInline ".RexxQueue~new('" || name || "')~queue('external')"
   self~assertSame(2, q~queued)
   self~assertSame("say", q~pull)
   self~assertSame("external", q~pull)
@@ -600,8 +601,8 @@ else
   self~assertSame(1, q~queued)
   self~assertSame("RXQUEUE", q~pull)
 
-  -- delete queue in a different Rexx program
-  address "" .RexxInfo~executable '-e ".RexxQueue~new('''name''')~delete"'
+  -- delete queue in a different Rexx interpreter instance
+  call execRexxInline ".RexxQueue~new('" || name || "')~delete"
   self~assertFalse(.RexxQueue~exists(name~upper))
 
 -- external queue used by PUSH/QUEUE and PULL/PARSE PULL instructions

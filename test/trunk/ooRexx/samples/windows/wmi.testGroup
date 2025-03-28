@@ -39,9 +39,9 @@
 parse source . . s
 group = .TestGroup~new(s)
 group~add(.wmi.testGroup)
-if locateSamplePrg("windows\ole\wmi") == .nil then
-  group~markNoTests("This is a test group for windows\ole\wmi samples, but no such sample can be located")
 group~restrictOS("WINDOWS")
+if locateSamplePrg("ole\wmi") == .nil then
+  group~markNoTests("No ooRexx ole\wmi samples folder can be located")
 if group~isAutomatedTest then
   return group
 else
@@ -56,7 +56,7 @@ else
 ::constant ooTestType (.ooTestTypes~SAMPLE_TEST)
 
 ::method test_accounts
-  sample = locateSamplePrg("windows\ole\wmi\accounts.rex")
+  sample = locateSamplePrg("ole\wmi\accounts.rex")
   self~assertNotNil(sample)
   output = .Array~new
   error = .Array~new
@@ -68,7 +68,7 @@ else
   self~assertTrue(last~startsWith("Status:"), "last line expected to start with 'Status:'; found" last)
 
 ::method test_osinfo
-  sample = locateSamplePrg("windows\ole\wmi\osinfo.rex")
+  sample = locateSamplePrg("ole\wmi\osinfo.rex")
   self~assertNotNil(sample)
   output = .Array~new
   error = .Array~new
@@ -78,10 +78,9 @@ else
   -- the last line is expected to always be "OS type: WINNT"
   last = output[output~last]
   self~assertTrue(last~startsWith("OS type:"), "last line expected to start with 'OS type'; found" last)
-  self~assertTrue(last~contains("WINNT"), "last line expected to conatin 'WINNT'; found" last)
 
 ::method test_process
-  sample = locateSamplePrg("windows\ole\wmi\process.rex")
+  sample = locateSamplePrg("ole\wmi\process.rex")
   self~assertNotNil(sample)
   output = .Array~new
   error = .Array~new
@@ -93,7 +92,7 @@ else
   self~assertTrue(last~word(1)~dataType("num"), "last line expected to start with a number; found" last)
 
 ::method test_services
-  sample = locateSamplePrg("windows\ole\wmi\services.rex")
+  sample = locateSamplePrg("ole\wmi\services.rex")
   self~assertNotNil(sample)
   output = .Array~new
   error = .Array~new

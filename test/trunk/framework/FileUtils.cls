@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -64,21 +64,17 @@
  *   lines are returned together with output.
  *
  * @param input  OPTIONAL [In]
- *   An array.  The output produced by issuing the command is returned in this
- *   array.  The output is appended to the array.
- *
- *  error  OPTIONAL [In / Out]
- *    An array object in which the executed program's error output is returned.
- *    Error lines are appended to the array.  If error is not specified, error
- *    lines are returned together with output.
- *
- *  input  OPTIONAL [In]
- *    An array object providing standard input to the executed program.
+ *   An optional array object providing standard input to the executed program.
  *
  * @return  Returns the return code produced by issuing the command.
  */
 ::routine issueCmd public
   use strict arg cmd, output, error = (output), input = .nil
+
+  if output = .nil then
+    output = .Array~new
+  if error = .nil then
+    error = output
 
   if input == .nil then
     address '' with output append using (output) error append using (error)
@@ -117,7 +113,8 @@
 
   if the executable is ...               the samples are located in ...
   C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\ (Win installed)
-  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\samples\ (*) (Win build)
+  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\samples\ (Win build)
+  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\NSIS\files\Samples\samples\ (*) (Win NSIS build tree)
   /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/samples/ (Unix Linux)
   /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/ (*) (?)
   /Applications/.../bin/rexx             /Applications/.../share/ooRexx/samples/ (macOS/Darwin installed)
@@ -127,13 +124,21 @@
 
   (*) currently not all samples are copied into the build tree, e. g. those
       Windows-specific samples in misc, ole, oodialog, or ooSQLite
+      This is a hack to find those samples in the NSIS build tree
   ** 32 or 64 depending on bitness of Win
 
   */
 
-  install = .RexxInfo~executable~parent
-  do samples over "samples/", "../samples/", "../share/ooRexx/samples/", "../Shared/ooRexx/samples/"
+  -- if .RexxInfo~executable returns .nil (like it does on OpenBSD) we use
+  -- .RexxInfo~libraryPath as a fall-back
+  if .RexxInfo~executable \= .nil then
+    install = .RexxInfo~executable~parent
+  else
+    install = .RexxInfo~libraryPath~parent
+
+  do samples over "samples/", "../samples/", "../NSIS/files/Samples/samples/", "../share/ooRexx/samples/", "../Shared/ooRexx/samples/"
     sample = .File~new(samples || name, install)
+say "**" sample~absolutePath
     if sample~exists then
       return sample~absolutePath
   end
@@ -245,7 +250,7 @@ return fileName
       The arguments to the Rexx program.  If the Rexx program has no arguments,
       either use the empty string, or use the convenience function execRexxPrg
 
-    output  REQUIRED  [In / Out]
+    output  OPTIONAL  [In / Out]
       An array object in which the executed program's standard output is returned.
       The output lines are appended to the array, so the array does not need to
       be empty.
@@ -256,27 +261,45 @@ return fileName
       lines are returned together with output.
 
     input  OPTIONAL [In]
-      An array object providing standard input to the executed program.
+      An optional array object providing standard input to the executed program.
 
   Returns:
     The return code produced by executing the program on success.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::routine execRexxPrgWithArgs public
-  use strict arg prgName, params, output, error = (output), input = .nil
+  use strict arg prgName, params, output = .nil, error = (output), input = .nil
 
-  cmd = 'rexx' .TestUtil~enQuote(prgName) params
-  prgRet = issueCmd(cmd, output, error, input)
+  -- find our current interpreter, or try for fall-back
+  rexx = .RexxInfo~executable
 
-return prgRet
--- End execRexxPrgWithArgs( prgName, params, output )
+  -- if .RexxInfo~executable is .nil like on OpenBSD we check
+  -- if .RexxInfo~libraryPath "..\bin\rexx" exists
+  -- else we use plain "rexx"
+  if rexx = .nil then
+    rexx = .File~new("..\bin\rexx", .RexxInfo~libraryPath)
+
+  if rexx~exists then
+    -- quote the path as it may contain blanks
+    rexx = '"' || rexx~absolutePath || '"'
+  else
+    rexx = "rexx"
+
+  return issueCmd(rexx prgName params, output, error, input)
+
 
 /**
  * This is a convenience method to execute a Rexx program with no arguments.  It
  * delegates to execRexxPrgWithArgs().
  */
 ::routine execRexxPrg public
-  use strict arg prgName, output, error = (output), input = .nil
-return execRexxPrgWithArgs(prgName, "", output, error, input)
+  use strict arg prgName, output = .nil, error = (output), input = .nil
+  return execRexxPrgWithArgs(prgName, "", output, error, input)
+
+-- run rexx with inline code
+::routine execRexxInline public
+  use strict arg code, output = .nil, error = (output), input = .nil
+  -- our inline rexx code must be quoted
+  return execRexxPrgWithArgs("-e", '"' || code || '"', output, error, input)
 
 
 /* createOleObject( id ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

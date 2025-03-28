@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -221,7 +221,10 @@ else
 -- system directory nor the directory of the current executable
 ::method test_path_command
    -- we should be unable to locate sh/CMD or rexx
-   do command over self~command_noshell, .RexxInfo~executable~name
+   commands = .Array~of(self~command_noshell)
+   if .RexxInfo~executable \= .nil then -- .nil on e. g. OpenBSD
+     commands~append(.RexxInfo~executable~name)
+   do command over commands
      -- note that on Unix there is a difference between an empty PATH
      -- environment variable and a missing PATH.  The former works as we
      -- expect, while the latter will search e. g. /usr/bin

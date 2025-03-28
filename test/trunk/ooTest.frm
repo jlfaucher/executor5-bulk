@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1243,8 +1243,7 @@ return
     self~noTests_Reason = "No tests have been added to this container."
     self~currentTypes = .set~new
 
-    -- All possible OS words are put into the allowed OSes set, although it is
-    -- doubtful that ooRexx is compiled on the last 3.
+    -- All possible OS words are put into the allowed OSes set
     self~knownOSes = .set~of('WINDOWS', 'LINUX', 'DARWIN', 'AIX', 'SUNOS', 'MACOSX', 'CYGNUS', 'FREEBSD', 'NETBSD', 'OPENBSD')
     self~allowedOSes = self~knownOSes~copy
     self~machineOS = .ooRexxUnit.OSName

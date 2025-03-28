@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -104,26 +104,24 @@ else
 
 -- files with an absolute path are always found
 ::method test_searchpath_absolute
-  parse source . . file
-  do absolute over file, .RexxInfo~executable~absolutePath
-    self~assertSame(absolute, SysSearchPath("", absolute))
-    self~assertSame(absolute, SysSearchPath("no-variable", absolute))
-    self~assertSame(absolute, SysSearchPath("PATH", absolute))
-  end
+  parse source . . absolute
+  self~assertSame(absolute, SysSearchPath("", absolute))
+  self~assertSame(absolute, SysSearchPath("no-variable", absolute))
+  self~assertSame(absolute, SysSearchPath("PATH", absolute))
 
-::method test_searchpath_rexx
-  rexxPath = .Rexxinfo~executable~absolutePath
-  rexx = .Rexxinfo~executable~name
+::method test_searchpath_shell
+  -- sh or cmd.exe should be availabe on PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
 
-  self~assertSame(rexxPath, SysSearchPath("PATH", rexx), "this may fail if rexx is run directly from a build tree")
-  self~assertSame(rexxPath, SysSearchPath("PATH", rexx, "c"))
-  self~assertSame(rexxPath, SysSearchPath("PATH", rexx, "n"))
+  self~assertNotSame("", SysSearchPath("PATH", shell))
+  self~assertNotSame("", SysSearchPath("PATH", shell, "c"))
+  self~assertNotSame("", SysSearchPath("PATH", shell, "n"))
 
   -- Environment variables on Unix-like systems are
   -- case-sensititve even if the file system isn't, like on Darwin
   if .RexxInfo~platform~caselessStartsWith("windows") then
     return
-  self~assertSame("", SysSearchPath("path", rexx))
+  self~assertSame("", SysSearchPath("path", shell))
 
 ::method test_searchpath_variable
   parse source . . file
