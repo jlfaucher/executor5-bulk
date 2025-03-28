@@ -138,7 +138,6 @@
 
   do samples over "samples/", "../samples/", "../NSIS/files/Samples/samples/", "../share/ooRexx/samples/", "../Shared/ooRexx/samples/"
     sample = .File~new(samples || name, install)
-say "**" sample~absolutePath
     if sample~exists then
       return sample~absolutePath
   end
