@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -132,7 +132,8 @@ return testResult
   s = .Socket~new
   -- on Linux setting SO_DEBUG to true needs CAP_NET_ADMIN Capabilities,
   -- else fails with Permission denied - so we don't test it here
-  do opt over "dontroute", "keepalive", "oobinline", "reuseaddr"
+  -- on OpenBSD, setting SO_DONTROUTE returns .nil, so don't test it
+  do opt over "keepalive", "oobinline", "reuseaddr"
     option = "so_"opt
     -- default is .false for all boolean options
     self~assertFalse(s~getOption(option), option~upper "default should be .false")

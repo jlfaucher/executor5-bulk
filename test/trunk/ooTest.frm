@@ -2040,7 +2040,7 @@ return
     files = self~findFiles
 
     if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), simpleFileSpec, .ExceptionData~ANOMLY)
+      err = .ExceptionData~new(timeStamp(), simpleFileSpec, .ExceptionData~ANOMALY)
       err~severity = "Warning"
       err~msg = "No test containers found matching search parameters."
       testResult~addException(err)
@@ -2189,7 +2189,7 @@ return
 ::class 'ExceptionTypes' public mixinclass Object
 
   ::constant TRAP        1
-  ::constant ANOMLY      2
+  ::constant ANOMALY     2
   ::constant UNEXPECTED  3
   ::constant EXTERNAL    4
 
@@ -2220,7 +2220,7 @@ return
 
     select
       when self~type == self~TRAP then self~typeName = "Trap"
-      when self~type == self~ANOMLY then self~typeName = "Anomly"
+      when self~type == self~ANOMALY then self~typeName = "Anomaly"
       when self~type == self~UNEXPECTED then self~typeName = "Unexpected Error"
       when self~type == self~EXTERNAL then self~typeName = "External Command Failure"
       otherwise self~typeName = "Unexpected Error"

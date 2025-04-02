@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,22 +35,16 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-    parse source . . fileSpec
 
-    group = .TestGroup~new(fileSpec)
-
-    group~add(.SysUnix.testGroup)
-    group~restrictOS("UNIX")
-
-    .context~package~loadLibrary("rxunixsys")
-
-    if group~isAutomatedTest then return group
-
-    testResult = group~suite~execute~~print
-
-return testResult
-
--- End of entry point.
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysUnix.testGroup)
+group~restrictOS("UNIX")
+.context~package~loadLibrary("rxunixsys")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
 ::requires 'ooTest.frm'
 ::class 'SysUnix.testgroup' subclass ooTestCase public
@@ -332,32 +326,56 @@ return testResult
   self~assertEquals(80, port, "port 80 assumed to be 'http', not" name);
 
 
-::method test_SysCrypt_DES
-  salt = "3a"
-  des = SysCrypt("passsw", salt)
-  self~assertEquals(13, des~length, "13 chars DES-encoded password expected")
-  self~assertTrue(des~startsWith(salt), "DES-encoded password should start with salt '3a'")
-  self~assertEquals(0, des~verify(self~allowedCryptChars), "DES-encoded chars expected from set [a-zA-Z0-9./]")
+-- our Rexx build allows for SysCrypt() to be optional (depending on the
+-- availablity of the crypt() API), but on all platforms for which we run
+-- tests, crypt() is actually available.  So this test is unconditional.
+::method test_SysCrypt
+  -- on Linux all these algorithms are supported, on macOs just the first two,
+  -- on OpenBSD only Blowfish, etc.
 
-::method test_SysCrypt_MD5
+  -- name,               id/rounds,  salt bits,   hash chars
+  algo = (,
+    "DES",               "",                12,  0 +  64 / 6,, -- many platforms except OpenBSD
+    "BSDi extended DES", "_0...",           24,  0 +  64 / 6,, -- other BSD's, MacOS
+    "MD5",               "$1$",             24,  1 + 128 / 6,, -- many platforms
+    "Blowfish flawed",   "$2a$12$",        128, -1 + 192 / 6,, -- OpenBSD
+    "Blowfish recent",   "$2b$12$",        128, -1 + 192 / 6,, -- OpenBSD
+    "NT-Hash",           "$3$",              0,  1 + 128 / 4,, -- FreeBSD
+    "SHA-256",           "$5$rounds=9999$", 48,  1 + 256 / 6,, -- Linux, FreeBSD, Solaris
+    "SHA-512",           "$6$rounds=9999$", 48,  1 + 512 / 6,, -- Linux, FreeBSD, Solaris
+  )
 
-  -- Darwin not only doesn't support MD5,
-  -- (https://en.wikipedia.org/wiki/Crypt_(C)#Support_in_operating_systems)
-  -- it will also just happily return a 13-chars DES-encrypted string instead
-  if .ooRexxUnit.OSName == "DARWIN" then
-    return
+  -- our tests expect that at least two of the above are supported
+  supported = .Array~new
 
-  salt = "$1$salt"                     -- MD5 id is 1, salt may be up to 16 chars
-  md5 = SysCrypt("passsw", salt)
-  if md5~length \= 0 then do           -- MD5 might not be supported
-    self~assertEquals(salt~length + 1 + 22, md5~length, salt~length + 1 + 22 "chars MD5-encoded password expected")
-    self~assertTrue(md5~startsWith(salt), "MD5-encoded password should start with '"salt"'")
-    self~assertEquals(0, md5~verify(self~allowedCryptChars, , salt~length + 2), "MD5-encoded chars expected from set [a-zA-Z0-9./]")
+  pw = "password"
+  saltString = .String~lower
+  do a = 1 to algo~items by 4
+    name = algo[a]
+    id = algo[a + 1]
+    salt = (algo[a + 2] / 6)~ceiling
+    returned = algo[a + 3]~ceiling
+    key = id || saltString~left(salt)
+    r = SysCrypt(pw, key)
+    if r = "" then -- algorithm not supported
+      iterate
+
+    -- macOS/Darwin crypt() does not understand the $id$ format and will return
+    -- a standard DES encryption with 13 chars instead.  We ignore this here.
+    if .Rexxinfo~platform == "DARWIN", id~startsWoth("$") then
+      iterate
+
+    supported~append(name)
+
+    -- the returned data shoud match key plus expected hash chars
+    self~assertSame(key~length + returned, r~length, "crypt("pw"," key") should return" key~length + returned "characters, but returned" r~length .endofline r)
+
+    -- the returned data should start with id plus salt, except for Blowfish,
+    -- where last salt character may be a mismatch
+    start = id~startsWith("$2")~?(key~left(key~length - 1), key)
+    self~assertTrue(r~startsWith(start), name "crypt("pw"," key") should return a string starting with key, but returns" r)
   end
-
-::method allowedCryptChars
-  -- set [a-zA-Z0-9./]
-  return .String~alnum || "./"
+  self~assertTrue(supported~items >= 2, "crypt() is expected to support at least two algorithms, but only" supported~items "work(s):" supported~toString(, ", "))
 
 
 ::options all syntax
