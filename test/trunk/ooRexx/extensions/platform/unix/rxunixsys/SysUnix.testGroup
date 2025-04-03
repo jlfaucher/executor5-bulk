@@ -360,9 +360,14 @@ else
     if r = "" then -- algorithm not supported
       iterate
 
+    -- openIndiana/Solaris/SunOS crypt() does not understand the BSDi format and
+    -- will return a standard DES encryption with 13 chars instead.  Ignore this.
+    if .Rexxinfo~platform == "SUNOS", id~startsWith("_") then
+      iterate
+
     -- macOS/Darwin crypt() does not understand the $id$ format and will return
     -- a standard DES encryption with 13 chars instead.  We ignore this here.
-    if .Rexxinfo~platform == "DARWIN", id~startsWoth("$") then
+    if .Rexxinfo~platform == "DARWIN", id~startsWith("$") then
       iterate
 
     supported~append(name)
