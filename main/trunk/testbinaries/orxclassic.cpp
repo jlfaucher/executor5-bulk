@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -202,6 +202,13 @@ RexxRoutine1(int,                       // Return type
     RexxStringObject str;
     size_t len;
 
+    // for a RXSHV_FETCH, RXSHV_SYFET or RXSHV_PRIV operation we may either let
+    // RexxVariablePool allocate memory for a returned value, or malloc it here
+    // for RexxVariablePool to use it
+    // we need to remember who did which memory allocation as the one will have
+    // to be freed with RexxFreeMemory and the other with free
+    char* rexxAlloc = (char*)malloc((members + 1) * sizeof(char));
+
     // set up the shvblocks from the array
     for (ctr = 1; ctr <= members; ctr++) {
         nextblock = (PSHVBLOCK)malloc(sizeof(SHVBLOCK));
@@ -251,6 +258,7 @@ RexxRoutine1(int,                       // Return type
             currentblock->shvvalue.strlength = len;
             // allocate a value buffer or let RexxVariablePool allocate it
             currentblock->shvvalue.strptr = len == 0 ? NULL: (char *)malloc(len);
+            rexxAlloc[ctr] = len == 0; // remember wo did it
             break;
 
         case RXSHV_DROPV:
@@ -278,10 +286,13 @@ RexxRoutine1(int,                       // Return type
             context->SendMessage1(entry, "shvvalue=", context->NewString(currentblock->shvvalue.strptr, currentblock->shvvalue.strlength));
             context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvaluelen));
             // memory allocated by RexxVariablePool must be freed with RexxFreeMemory
-            if (currentblock->shvvaluelen == 0)
-                RexxFreeMemory(currentblock->shvvalue.strptr);
-            else
-                free(currentblock->shvvalue.strptr);
+            if (currentblock->shvvalue.strptr != NULL)
+            {
+                if (rexxAlloc[ctr] == 1)
+                    RexxFreeMemory(currentblock->shvvalue.strptr);
+                else
+                    free(currentblock->shvvalue.strptr);
+            }
             break;
 
         default:
@@ -291,6 +302,7 @@ RexxRoutine1(int,                       // Return type
         free(currentblock);
         currentblock = nextblock;
     }
+    free(rexxAlloc);
 
     return retc;
 }
