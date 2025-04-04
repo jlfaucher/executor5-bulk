@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -925,6 +925,7 @@ change the value of <literal>.rs</literal>. The initial value of <literal>.rs</l
 <para>
 <indexterm><primary>search order</primary>
 <secondary>for environment symbols</secondary></indexterm>
+<!-- NOTE: any changes to this description should be replicated to rexxref -->
 When you use an environment symbol, the language processor performs a
 series of searches to see if the environment symbol has an assigned value. The
 search locations and their ordering are:
@@ -934,7 +935,8 @@ search locations and their ordering are:
 <listitem><para>The list of classes declared on
 ::CLASS directives
 within the current program package or added to the current package using
-Package addClass method.
+the addClass or
+the addPublicClass method.
 </para></listitem>
 <listitem><para>The list of public classes declared on ::CLASS directives
 of other files included with a ::REQUIRES directive or added to the current
@@ -986,7 +988,7 @@ character string value is used.</para>
 the package local, the <literal>.LOCAL</literal>,
 and the <literal>.ENVIRONMENT</literal> directory, for programs to use,
 with package local preferred over <literal>.LOCAL</literal>, and
-and <literal>.LOCAL</literal> preferred over <literal>.ENVIRONMENT</literal>.
+<literal>.LOCAL</literal> preferred over <literal>.ENVIRONMENT</literal>.
 To avoid conflicts with future Rexx defined entries, it is recommended
 that the entries that you place in any of these directories include at least one
 period in the entry name, for example:

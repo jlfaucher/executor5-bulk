@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2024, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -683,13 +683,11 @@ added to the MapCollection object.
 </para>
 <para><example>
 <title>MapCollection class &mdash; of method</title>
-<programlisting><![CDATA[iso639 = .Directory~of(.Array~of("de", "Deutsch"), .Array~of("en", "English"), .Array~of("fr", "fran&ccedil;ais"))
-say iso639~allIndexes~makeString(, ", ")           -- de, en, fr
-say iso639~allItems~makeString(, ", ")             -- Deutsch, English, fran&ccedil;ais
-
--- using array notation
+<programlisting>
 iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
-]]></programlisting></example></para>
+say iso639~allIndexes~toString(, ", ")  -- de, en, fr
+say iso639~allItems~toString(, ", ")    -- Deutsch, English, fran&ccedil;ais
+</programlisting></example></para>
 </section>
 
 
