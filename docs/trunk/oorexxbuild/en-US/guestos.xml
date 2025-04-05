@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Build Machine Document XML File
     #
-    # Copyright (c) 2005-2023, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -48,7 +48,7 @@
 <section><title>Overview of platforms and operating systems</title>
 
 <para>ooRexx is built on both native platforms and in virtual machines. This
-is a listing of the platforms 2023-12-28:
+is a listing of all the platforms 2025-04-05 in the order of appearance:
 </para>
 </section>
 
@@ -57,25 +57,27 @@ is a listing of the platforms 2023-12-28:
 </para>
 
 <itemizedlist>
-    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox, running macOS Catalina
+    <listitem><para>Marks-M4-Mac Mark Hesslings M4 Mac on ARM64 hardware, running macOS 15.3.1 (Sequoia);
     </para></listitem>
-    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 ARMv7 Quad Core Processor, ARM 32 bit Running Raspberry Pi OS
+    <listitem><para>ams-02 René's Raspberry Pi 4 Model B (aarch64) running Ubuntu 22.04.5 LTS;
     </para></listitem>
-    <listitem><para>pos-Pi-3BPlus Raspberry 3B+, SoC: Broadcom BCM2837B0 Quad-Core A53 (ARMv8) 64-bit Running Raspberry Pi OS (Debian GNU/Linux 11 (Linux 5.15.76) on aarch64)
+    <listitem><para>pos-MacPro-12Core: Mac Pro 5,1 (2010), Dual Processor 6-Core Intel Xeon @ 2,93 GHz, Memory: 96 GB. running macOS 10.13.6 (High Sierra);
     </para></listitem>
-    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM) i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, 64-bit Windows 10 operating system, x64-based processor
+    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox for all Linux, Unix and further platforms, running macOS 15.3.1 (Sequoia);
     </para></listitem>
-    <listitem><para>ams-02 René's Raspberry Pi 4 Model B (aarch64) running Ubuntu 20.04.2
+    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 armv7l Quad Core Processor, ARM 32 bit Running Debian 11 (Bullseye);
     </para></listitem>
-    <listitem><para>ubuntu16 Erich's Ubuntu 16.04 agent
+    <listitem><para>pos-Pi-3BPlus Raspberry PI 3B+, SoC: Broadcom BCM2837B0 Quad-Core A53 (ARMv8+) 64-bit aarch64 Running Debian 11 (Bullseye);
     </para></listitem>
-    <listitem><para>Marks-M1-Mac Mark Hesslings M1 Mac running macOS Sonoma 14.x or later
+    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM)  x64-based i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, Hosting all Windows VMs running 64-bit Windows 10;
+    </para></listitem>
+    <listitem><para>ubuntu16 Erich's Ubuntu 16.04 agent;
     </para></listitem>
 </itemizedlist>
 </section>
 
 <section><title>Overview of Windows VMs</title>
-<para>ooRexx is built on these platforms in 32 and 64 bit versions and installers prepared
+<para>ooRexx is built and tested on these platforms in 32 and 64 bit versions, No installers for these platforms are uploaded, rather the installers build for Windows 10 on pos-Windows are used for all supported versions of Windows (see below):
 </para>
 
 <itemizedlist>
@@ -91,20 +93,8 @@ is a listing of the platforms 2023-12-28:
 </section>
 
 <section><title>Overview of macOS VMs</title>
-<para>ooRexx is built on these platforms in 64 bit version and installers prepared
-</para>
-
-<itemizedlist>
-    <listitem><para>pos-vbox-macOS-Catalina with 1 CPU, 4GB memory, 166 GB SSD, running
-        macOS 10.15 Catalina, .dmg package
-    </para></listitem>
-    <listitem><para>pos-vbox-macOS-BigSur VM with 1 CPU, 4GB memory, 212 GB SSD, running
-        macOS 11.2 Big Sur build and test 64-bit ooRexx, .dmg package
-    </para></listitem>
-    <listitem><para>pos-vbox-macOS-Monterey VM with 1 CPU, 8GB memory, 166 GB SSD, running
-        macOS 12.7 Monterey, .dmg package
-    </para></listitem>
-</itemizedlist>
+    <para>There are currently no macOS VMs for building ooRexx. Builds and tests are made for High Sierra on Intel hardware and for Sequoia on Intel and ARM64 (M or Apple Silicon hardware). There is a "Fat" binary uploaded that can be used on both platforms for all supported OS versions from High Sierra and forward.
+    </para>
 </section>
 
 <section><title>Overview of Debian descendant VMs</title>
@@ -115,7 +105,7 @@ is a listing of the platforms 2023-12-28:
     <listitem><para>pos-vbox-Debian11 VM with 1CPU, 2GB memory, 500GB SSD,
         build and test 64-bit ooRexx on Debian 11, build .deb package
     </para></listitem>
-    <listitem><para>pos-vbox-Ubuntu22 VM with 1CPU, 2GB memory, 500GB SSD,
+    <listitem><para>pos-vbox-Ubuntu24 VM with 1CPU, 2GB memory, 500GB SSD,
         build and test 64-bit ooRexx on Ubuntu 22.04 LTSm buuild .deb package
     </para></listitem>
     <listitem><para>pos-vbox-LinuxMint21 VM with 1CPU, 2GB memory, 500GB SSD,
