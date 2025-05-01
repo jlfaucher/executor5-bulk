@@ -16,6 +16,17 @@ Step 1.
       svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1.0/trunk  -m "Creating code branch 5.1.0 to prepare release."
       svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1.0/trunk -m "Creating test branch 5.1.0 to prepare release."
 
+  alternative (locally from oorexx/code-0 directory):
+
+      svn mkdir main/branches/5.1.0
+      svn copy main/trunk main/branches/5.1.0
+      svn ci -m "Creating code branch 5.1.0 to prepare release."
+
+      svn mkdir test/branches/5.1.0
+      svn copy test/trunk test/branches/5.1.0
+      svn ci -m "Creating test branch 5.1.0 to prepare release."
+
+
 - *before* creating the docs `branches/5.1.0/trunk`, the necessary steps:
 
   - make sure all authors who have committed in the meantime are listed in their appropriate
@@ -23,7 +34,7 @@ Step 1.
 
   - make sure that `${book}/revision_info.txt` has the latest revision information
     of real updates to `${book}/en-US/*.xml` files; one approach to update that file
-    is to first delete it, then run `updateEntityValues.rex -y 2025 -e "2025.04.30" -r 99999 ..`
+    is to first delete it, then run `updateEntityValues.rex -y 2025 -e "2025.05.01" -r 99999 ..`
     which will recreate `${book}/revision_info.txt`
 
   - make sure that all copyright texts are updated (you can use `tools/updateCopyright.rex`)
@@ -35,6 +46,12 @@ Step 1.
   here the svn command for code, documentation and test (replace "userId" with yours)
 
       svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1.0/trunk -m "Creating docs branch 5.1.0 to prepare release."
+
+  alternative (locally from oorexx/code-0 directory):
+
+      svn mkdir docs/branches/5.1.0
+      svn copy docs/trunk docs/branches/5.1.0
+      svn ci -m "Creating docs branch 5.1.0 to prepare release."
 
 
 These steps are performed mainly using a script that will replace the xml files defining all jobs on the Jenkins Controller
@@ -177,7 +194,7 @@ Step 3.
 
   - change into docs/trunk/tools and run
 
-        updateEntityValues.rex -y 2025 -v "5.1.0 -> 5.2.0" -e "2025.04.30" -r 99999 ..
+        updateEntityValues.rex -y 2025 -v "5.1.0 -> 5.2.0" -e "2025.05.01" -r 99999 ..
 
   - update the ooRexx documentation in trunk to not show *CHG* and *NEW* for 50 anymore by
     setting the replacement text to the empty string `""`, from
