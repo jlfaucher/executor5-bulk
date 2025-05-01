@@ -1,5 +1,6 @@
 2022-12-15, Release Steps for ooRexx 5.0.0 as a role model
 2025-04-29, Updated for 5.1.0 release
+2025-05-01, Updated for 5.1.0 release
 ===
 
 - create a branch for `5.1.0` using current trunk (if no show stopper errors occur
@@ -10,10 +11,10 @@
 
   here the svn command for code and test (replace "userId" with yours)
 
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1/trunk  -m "Creating code branch 5.1 to prepare release."
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1/trunk -m "Creating test branch 5.1 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1.0/trunk  -m "Creating code branch 5.1.0 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1.0/trunk -m "Creating test branch 5.1.0 to prepare release."
 
-- update the ooRexx version related information in trunk to `5.1.0`
+- update the ooRexx version related information in trunk to `5.2.0.0`
 
   cf. <https://sourceforge.net/p/oorexx/code-0/12539/#diff-1> changes to:
 
@@ -37,13 +38,13 @@
 
   - make sure that all copyright texts are updated (you can use `tools/updateCopyright.rex`)
 
-  - *NOTE:* copyright of `main/branches/5.1/trunk/ReleaseNotes` needs to be adjusted as well!
+  - *NOTE:* copyright of `main/branches/5.1.0/trunk/ReleaseNotes` needs to be adjusted as well!
 
 - create the docs branch for `5.1.0` using current `docs/trunk` to `docs/branches/5.1/trunk`
 
   here the svn command for code, documentation and test (replace "userId" with yours)
 
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0/trunk -m "Creating docs branch 5.1.0 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1.0/trunk -m "Creating docs branch 5.1.0 to prepare release."
 
 - Suggestion for a time table:
 
@@ -167,30 +168,30 @@ There is a step-by-step list to follow for this phase.
   - add a release entry in the SourceForge project's "News" section using
     the link: <https://sourceforge.net/p/oorexx/news/>
 
-  - use "svn move" to move `main/branches/5.0/trunk` to `main/releases/5.0.0/trunk`, do the same
+  - use "svn move" to move `main/branches/5.1.0/trunk` to `main/releases/5.1.0/trunk`, do the same
     for the documentation `docs/branches/5.0/trunk` to `docs/releases/5.0.0/trunk` and tests
 
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk -m "Creating main/releases/5.1.0 to conclude release process."
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk -m "Creating docs/releases/5.1.0 to conclude release process."
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk -m "Creating test/releases/5.1.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk -m "Creating main/releases/5.1.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk -m "Creating docs/releases/5.1.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk -m "Creating test/releases/5.1.0 to conclude release process."
 
   - change into docs/trunk/tools and run
 
-        updateEntityValues.rex -y 2025 -v "5.0.0 -> 5.1.0" -e "2025.04.30" -r 99999 ..
+        updateEntityValues.rex -y 2025 -v "5.1.0 -> 5.2.0" -e "2025.04.30" -r 99999 ..
 
   - update the ooRexx documentation in trunk to not show *CHG* and *NEW* for 50 anymore by
     setting the replacement text to the empty string `""`, from
 
-        <!ENTITY added50 "*NEW* ">
-        <!ENTITY changed50 "*CHG* ">
+        <!ENTITY added51 "*NEW* ">
+        <!ENTITY changed51 "*CHG* ">
     to
         <!ENTITY added51 "">
         <!ENTITY changed51 "">
 
     and to add for new additions and changes in the documentation
 
-        <!ENTITY added51 " *NEW* ">
-        <!ENTITY changed51 " *CHG* ">
+        <!ENTITY added52 " *NEW* ">
+        <!ENTITY changed52 " *CHG* ">
 
     in the files: `rexxapi/en-US/rexxapi.ent`, `rexxpg/en-US/rexxpg.ent`, `rexxref/en-US/rexxref.ent`,
     `winextensions/en-US/winextensions.ent`
@@ -218,16 +219,16 @@ There is a step-by-step list to follow for this phase.
   - t4: once the release has been finalized, create a x.x.(n+1) branch from the release branch
         to be used for potential bug fix releases. This includes updating the release number information
         in the build.
-        move the `main|docs|test"/branches/5.1/trunk` to `main|docs|test"/releases/5.1.0/trunk`
+        move the `main|docs|test"/branches/5.1/trunk` to `main|docs|test"/releases/5.1.0`
 
 - in the case that updates are needed to the release version one needs to create
-  appropriate the branches: `branches/5.0.1` for `main`, `docs`, `test` to work in
+  appropriate the branches: `branches/5.1.1` for `main`, `docs`, `test` to work in
 
 *QUESTION*: is this really necessary? can we not just overwrite the /branches/5.1/trunk compare to version 4 releases
 
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.0.1/trunk -m "Creating code branch 5.1.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0.1/trunk -m "Creating docs branch 5.1.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.0.1/trunk -m "Creating test branch 5.1.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1.1/trunk -m "Creating code branch 5.1.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1.1/trunk -m "Creating docs branch 5.1.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1.1/trunk -m "Creating test branch 5.1.1."
 
 
 ----
@@ -333,7 +334,7 @@ https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.1/trunk
 
 For all Test jobs
 
-Change Test Repository URL from trunk (not yet done) 
+Change Test Repository URL from trunk (not yet done)
 https://svn.code.sf.net/p/oorexx/code-0/test/trunk
 to Release Candidate
 https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.1/trunk
