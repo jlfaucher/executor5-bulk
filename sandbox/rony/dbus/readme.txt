@@ -24,7 +24,7 @@ in the Windows version of ooRexx).
 
 dbusoorexx/dbusoorexx-introduction.pdf or:
 
-   <https://wi.wu.ac.at/rgf/rexx/orx22/201112-DBus4ooRexx-article.pdf>
+   <https://research.wu.ac.at/files/19817340/20111208-DBus4ooRexx-article.pdf>
 
 RexxLA Symposium 2015:
 
@@ -36,4 +36,4 @@ dbusoorexx testunits (Sebastian Margiol):
    <https://wi.wu.ac.at/rgf/diplomarbeiten/#bakk_201505>
 
 
-2022-09-28, rony
+2022-09-28, 2024-05-09, Rony G. Flatscher
