@@ -27,7 +27,7 @@ Step 1.
       svn ci -m "Creating test branch 5.1.0 to prepare release."
 
 
-- *before* creating the docs `branches/5.1.0/trunk`, the necessary steps:
+- *before* creating the docs `docs/branches/5.1.0/trunk`, the necessary steps:
 
   - make sure all authors who have committed in the meantime are listed in their appropriate
     `${book}/en-US/Author_Group.xml`; to detect one can use `tools/listAuthorsAsOfLate.rex`
@@ -59,9 +59,9 @@ There is a step-by-step list to follow for this phase.
 
 - adjust release information:
 
-  - update `branches/5.1.0/NOTICES` (a text file) to reflect the current copyright year
+  - update `main/branches/5.1.0/NOTICE` (a text file) to reflect the current copyright year
 
-  - update `branches/5.1.0./CHANGES` (a text file) to document all changes from the last release for
+  - update `main/branches/5.1.0./CHANGES` (a text file) to document all changes from the last release for
 
        - Bugs
        - Feature-requests
@@ -245,7 +245,7 @@ Step 4.
 Step 5.
 -------
 - in the case that updates are needed to the release version one needs to create
-  appropriate the branches: `branches/5.1.1` for `main`, `docs`, `test` to work in
+  appropriate branches: `branches/5.1.1` for `main`, `docs`, `test` to work in
 
 *QUESTION*: is this really necessary? can we not just overwrite the /branches/5.1.0/trunk compare to version 4 releases
 
