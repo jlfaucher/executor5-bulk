@@ -22,7 +22,7 @@ How To install ooRexx 5 on macOS as a permanent single user installation
 
 1. Copy the latest ooRexx5 image (.dmg file) from Sourceforge to the desktop
    or to a folder. The image name will show version and revision such as
-   oorexx-5.1.0-12948.macos.arm64.x86_64. This installer will work on both
+   oorexx-5.1.0-12966.macos.arm64.x86_64. This installer will work on both
    Intel (x86_64) and Apple Silicon M1/M2/M3/M4 etc (arm64) hardware.
 
 2. Mount the image by double clicking on it.
@@ -59,7 +59,7 @@ rexx (show syntax)
 
 rexx /Applications/ooRexx5/share/ooRexx/samples/rexxcps (benchmark)
 
-7. To uninstall just drag the folder /ooRexx5 in /Applications to the
+7. To uninstall just drag the "App"/folder ooRexx5 in /Applications to the
 garbage bin and remove the export line from .bash_profile or .zshrc.
 
 NOTE: .bash_profile and .zshrc are invisible files that resides in each users
