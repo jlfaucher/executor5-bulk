@@ -1,0 +1,165 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.RANDOM.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "RANDOM.testGroup" subclass ooTestCase public
+
+   -- test the BIF, using examples from the documentation
+::method "test_RANDOM01"
+
+    min="0  0 1  9999 1 -5"
+    max="1 +1 9 99999 999999999 5"
+    seed="0 179 34 99999 999999999 42"
+    reps=100
+
+    do i=1 to words(min)
+       mi=word(min, i)
+       ma=word(max, i)
+       do reps
+          x=random(mi, ma)
+          if x<mi | x>ma then
+             self~fail(x "not in range: min="mi", max="ma)
+       end
+       self~assertTrue(.true)   -- indicate that this run holds
+    end
+
+    -- now collect first 100 random numbers per seed, repeat generation and compare with stored ones
+    do i=1 to words(min)
+       mi=word(min, i)
+       ma=word(max, i)
+       se=word(seed, i)
+
+       x.1=random(mi, ma, se)    -- define a seed to start the generator test
+       do i1=2 to reps
+          x.i1=random(mi, ma)
+          if x.i1<mi | x.i1>ma then
+             self~fail(x.i1 "not in range: min="mi", max="ma)
+       end
+
+         -- now re-run with same seed
+       y.1=random(mi, ma, se)
+       do i1=2 to reps
+          y.i1=random(mi, ma)
+          if y.i1<mi | y.i1>ma then
+             self~fail(y.i1 "not in range: min="mi", max="ma)
+       end
+
+         -- now compare both runs
+       do i1=1 to reps
+          if x.i1<>y.i1 then
+             self~fail("i1="i1"," x.i1 "<>" y.i1)
+       end
+       self~assertTrue(.true)   -- indicate that this run holds
+       drop x. y.
+    end
+
+::method testRandom02
+  do 100
+      r = random()
+      self~assertTrue(r >= 0 & r<= 999)
+  end
+
+  r = random(,,12345)
+  self~assertTrue(r >= 0 & r<= 999)
+
+  r = random(1,1)
+  self~assertSame(1, r)
+  r = random(1,2)
+  self~assertTrue(r >= 1 & r<= 2)
+
+  r = random(5)
+  self~assertTrue(r >= 0 & r<= 5)
+  r = random(0)
+  self~assertSame(0, r)
+  r = random(999999998)
+  self~assertTrue(r >= 0 & r<= 999999998)
+  r = random(,0)
+  self~assertSame(0, r)
+  r = random(,1)
+  self~assertTrue(r >= 0 & r<= 1)
+  r = random(0,1,0)
+  self~assertTrue(r >= 0 & r<= 1)
+
+::method testRandom03
+  self~expectSyntax(40.12)
+  r = random("abc")
+
+::method testRandom04
+  self~expectSyntax(40.12)
+  r = random(1, "abc")
+
+::method testRandom05
+  self~expectSyntax(40.12)
+  r = random(1, 2, "abc")
+
+::method testRandom06
+  self~expectSyntax(40.13)
+  r = random(1, 2, -1)
+
+::method testRandom07
+  self~expectSyntax(40.12)
+  r = random(1.5)
+
+::method testRandom08
+  self~expectSyntax(40.12)
+  r = random(1, 1.5)
+
+::method testRandom09
+  self~expectSyntax(40.12)
+  r = random(1, 2, 1.5)
+
+::method testRandom10
+  self~expectSyntax(40.33)
+  r = random(2, 1)
+
+::method testRandom11
+  r = random(0, 999999999)
+
+
+::options novalue error

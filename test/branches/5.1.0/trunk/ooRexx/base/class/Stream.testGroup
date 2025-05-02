@@ -1,0 +1,2380 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.Stream.testGroup)
+  group~add(.StreamClassQualify_QueryExists)
+  group~add(.Stream2.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: Stream.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "Stream.testGroup" public subclass ooTestCase
+
+-- one-time setup for 'filename'
+::method activate class
+  expose arg filename
+  parse source . . filename            -- we just use this testGroup file
+  forward class (super)
+
+::attribute filename get class
+
+-- filename to test read operations (we just use this testGroup file)
+::attribute filename get
+  return self~class~filename
+
+
+::attribute streamTestingFile
+::attribute extraTestingFile
+
+::method setup
+  self~streamTestingFile = .nil
+  self~extraTestingFile = .nil
+
+::method tearDown
+  obj = self~streamTestingFile
+  if obj \== .nil then do
+    -- Close the file and delete it
+    obj~close
+    j = deleteFile(obj~qualify)
+  end
+
+  fileName = self~extraTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+
+::method test_open
+  f = 'streamClassTest.delMe'
+
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+
+  self~assertTrue(obj~isA(.Stream))
+
+  ret = obj~open
+  self~assertSame("READY:", ret)
+
+  -- Close should return READY: on success (from docs.)
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+
+::method test_simple_lineout
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~lineout("line 1")
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("line 1", line)
+
+
+::method test_say_two_args
+  -- say() won't accept a 'line' argument as lineOut() does
+  self~expectSyntax(93.902) -- Error 93.902:  Too many arguments in invocation of method; 1 expected.
+  .stdout~say(1, 2)
+
+
+::method test_say_no_arg
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("", line)
+
+
+::method test_say_one_arg_null
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say("")
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("", line)
+
+
+::method test_say_one_arg
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say("say() line")
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("say() line", line)
+
+
+::method test_close_twice
+
+  f = "streamCloseTest.delMe"
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Lineout should open the file and write the line.
+  ret = obj~lineout('line 1')
+  self~assertSame(0, ret)
+
+  -- Close the file, return should be READY: and query state should be unknown
+  ret = obj~close
+  state = obj~state
+
+  self~assertSame("READY:", ret)
+  self~assertSame("UNKNOWN", state)
+
+  -- Close it again. This time the return should be the empty string (docs.)
+  ret = obj~close
+  state = obj~state
+
+  self~assertSame("", ret)
+  self~assertSame("UNKNOWN", state)
+
+-- Test new() Note that new() used normally gets heavily tested through out this
+-- test group.  These tests are for abnormal use of new()
+::method test_new_1
+
+  fileName = directory()
+  fsObj = .stream~new(fileName)
+  self~assertTrue(fsObj~isA(.stream))
+
+  name = fsObj~qualify
+  self~assertSame(directory(), name)
+
+::method test_new_2
+
+  fileName = '00'x || '/' || '00'x
+  fsObj = .stream~new(fileName)
+  self~assertTrue(fsObj~isA(.stream))
+
+
+::method test_new_syntax_1
+
+  self~expectSyntax(93.901)
+  fsObj = .stream~new()
+  self~assertTrue(fsObj~isA(.stream))
+
+
+::method test_new_syntax_2
+
+  self~expectSyntax(93.902)
+  fsObj = .stream~new("tempFile.txt", "binary")
+  self~assertTrue(fsObj~isA(.stream))
+
+
+-- Tests simple arrayin() method
+::method test_arrayIn
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+-- Tests simple arrayin(chars) method
+::method test_arrayIn_chars
+
+  fileName = "delMe.stream.arrayIn.chars"
+  ret = stream(fileName, 'C', 'open write replace')
+  do i = 97 to 122
+    j = charout(fileName, i~d2c)
+  end
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin("CHARS")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+-- Tests arrayin abbreviating CHARS or LINES
+::method test_arrayIn_abbrev
+
+  fileName = "delMe.stream.arrayIn.s"
+  ret = stream(fileName, 'C', 'open write replace')
+  do i = 97 to 122
+    j = charout(fileName, i~d2c)
+  end
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin("C")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("c")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("L")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("l")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("lIN")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+
+-- Tests arrayin() syntax
+::method test_arrayIn_syntax01
+
+  self~expectSyntax(93.915) -- Method option must be one of "CL"
+  .Stream~new("/")~arrayIn("words")
+
+
+::method test_arrayIn_syntax02
+
+  self~expectSyntax(93.902) --Too many arguments in invocation of method; 1 expected
+  .Stream~new("/")~arrayIn("LINES", "CHARS")
+
+
+::method test_arrayIn_syntax03
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.syntax_03")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  -- Omitted arg should be okay, omitted defaults to LINES.
+  a = fsObj~arrayin( , )
+
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+::method test_arrayIn_syntax04
+
+  self~expectSyntax(93.902) --Too many arguments in invocation of method; 1 expected
+  .Stream~new("/")~arrayIn( , "BYTES")
+
+
+-- [bugs:#1771] Stream's 'arrayin' does not return array object
+::method test_arrayIn_nonexisting
+
+  a = .Stream~new("/")~arrayIn -- not a file
+  self~assertIsA(a, .Array)
+  self~assertSame(0, a~items)
+
+
+-- Tests arrayin() with empty file, created
+::method test_arrayIn_1
+
+  fileName = "delMe.stream.arrayIn_1"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing
+::method test_arrayIn_2
+
+  fileName = "delMe.stream.arrayIn_2"
+
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read
+::method test_arrayIn_3
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  self~assertSame(src[3]~substr('lin'~length + 1), a[1])
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
+
+-- Tests simple arrayin() method, opened NOBUFFER
+::method test_arrayIn_noBuf
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_noBuf")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("Both nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+-- Tests arrayin() with empty file, created, opened NOBUFFER
+::method test_arrayIn_1_noBuf
+
+  fileName = "delMe.stream.arrayIn_11"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing, opened NOBUFFER
+::method test_arrayIn_2_noBuf
+
+  fileName = "delMe.stream.arrayIn_22"
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("both shared nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read, opened NOBUFFER
+::method test_arrayIn_3_noBuf
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_44")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("read shared nobuffer")
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("both shared nobuffer")
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("nobuffer")
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  self~assertSame(src[3]~substr('lin'~length + 1), a[1])
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
+
+-- Tests simple arrayin() method, opened BINARY
+::method test_arrayIn_bin
+
+  src = .array~new(12)
+  do i = 1 to 12
+    tag = i~right(2, 0)
+    src[i] = 'line' tag
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_bin")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  recLength = src[1]~length + .endOfLine~length + 2
+  fsObj~open("Both BINARY RECLENGTH" recLength)
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+
+  totalLen = (src[1]~length + .endOfLine~length) * 12
+  expectedItems = (totalLen % recLength) + 1
+  remainder = totalLen // recLength
+
+  self~assertSame(expectedItems, a~items)
+
+  expected = src[1] || .endOfLine || "li"
+  self~assertSame(expected, a[1])
+
+  expected = src[2]~substr(3) || .endOfLine || 'line'
+  self~assertSame(expected, a[2])
+
+  expected = src[3]~substr(5) || .endOfLine || 'line 0'
+  self~assertSame(expected, a[3])
+
+  -- Figure if the first 3 items in the array are correct, and the last item is
+  -- correct - that is good enough.
+  expected = (src[12] || .endOfLine)~right(remainder)
+  self~assertSame(expected, a[expectedItems])
+
+
+-- Tests arrayin() with empty file, created, opened BINARY
+::method test_arrayIn_1_bin
+
+  fileName = "delMe.stream.arrayIn_a1"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace binary reclength 1")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing, opened BINARY
+::method test_arrayIn_2_bin
+
+  fileName = "delMe.stream.arrayIn_a2"
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("both shared binary reclength 1")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read, opened BINARY
+::method test_arrayIn_3_bin
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i~right(2, 0)
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_a4")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  recLength = src[1]~length + .endOfLine~length
+  fsObj~open("read shared binary reclength" recLength)
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("both shared binary reclength" recLength)
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("binary reclength" recLength)
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  expected = src[3]~substr('lin'~length + 1) || .endOfLine
+  self~assertSame(expected, a[1])
+
+  do i = 4 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
+
+::method test_arrayOut_simple
+
+  fileName = "delMe.arrayOut_simple"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigArray
+
+  fileName = "delMe.arrayOut_bigArray"
+  a = .array~new
+  do i = 1 to 10000
+    a[i] = 'line' i
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(10000, lines(fileName, "COUNT"))
+  do i = 1 to 10000
+    self~assertSame('line' i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigLines
+
+  fileName = "delMe.arrayOut_bigLines"
+  a = .array~new
+  do i = 1 to 100
+    a[i] = ('line' i)~copies(12289)
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(100, lines(fileName, "COUNT"))
+  do i = 1 to 100
+    self~assertSame(a[i], linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigArray_chars
+
+  fileName = "delMe.arrayOut_bigArrayC"
+
+  expected = 0
+  a = .array~new
+  do i = 1 to 10000
+    a[i] = 'line' i
+    expected += a[i]~length
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, "CHARS")
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(expected, stream(fileName, 'C', "query size"))
+
+  do i = 1 to 10000
+    expected = a[i]
+    actual = charin(fileName, , a[i]~length)
+    self~assertSame(expected, actual)
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigLines_chars
+
+  fileName = "delMe.arrayOut_bigLinesC"
+
+  expected = 0
+  a = .array~new
+  do i = 1 to 100
+    a[i] = ('line' i)~copies(12289)
+    expected += a[i]~length
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, "CHARS")
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(expected, stream(fileName, 'C', "query size"))
+
+  do i = 1 to 100
+    self~assertSame(a[i], charin(fileName, , a[i]~length))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_1
+
+  fileName = "delMe.arrayOut_abbrev1"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'c')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_2
+
+  fileName = "delMe.arrayOut_abbrev2"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'CH')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_3
+
+  fileName = "delMe.arrayOut_abbrev3"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'cHaRSareTooGood')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_L1
+
+  fileName = "delMe.arrayOut_abbrev4"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'lineout')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_L2
+
+  fileName = "delMe.arrayOut_abbrev5"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'l')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_syntax_1
+
+  fileName = "delMe.arrayOut_syntaxaa"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.0)
+  ret = f~arrayout(a, 'BYTES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_2
+
+  fileName = "delMe.arrayOut_syntaxbb"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.902)
+  ret = f~arrayout(a, 'LINES', 'CHARS')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_3
+
+  fileName = "delMe.arrayOut_syntaxcc"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.903)
+  ret = f~arrayout( , 'LINES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_4
+
+  fileName = "delMe.arrayOut_syntaxdd"
+  a = .object
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(98.913)
+  ret = f~arrayout(a , 'LINES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_misc_1
+
+  fileName = "delMe.arrayOut_miscaa"
+  s = .set~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(s,)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_state_easy
+
+  fileName = "delMe.testingFilea"
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+
+::method test_state_exsitingFile
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFileb")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+
+  self~assertSame("READY", f~state)
+
+  f~close
+  self~assertSame("UNKNOWN", f~state)
+
+
+-- Test state equals ERROR.  On Linux / Unix this test case will fail if run
+-- by root.  So, we check for root and if so fail the test case.
+::method test_state_error
+
+  fileName = "delMe.testingFilec"
+  discard = stream(fileName, 'C', "open shared")
+  do i = 1 to 9
+    discard = lineout(fileName, 'My line' i)
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    'chmod -w' fileName
+  end
+
+  f~open("write replace")
+  self~assertSame("ERROR", f~state)
+
+::method test_state_ready
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFiled")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  -- Reads 9 lines, state is still ready. Reads 10th line, state is now
+  -- notready, counter gets bumped to 10, do while check is now false.  Assert
+  -- that counter is exactly 10.
+
+  counter = 0
+  do while f~state == "READY"
+    discard = f~linein
+    counter += 1
+  end
+  self~assertSame(10, counter)
+
+
+::method test_state_notready_1
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFilee")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  discard = f~linein(11)
+  self~assertSame("NOTREADY", f~state)
+
+
+::method test_state_notready_2
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  lastByte = 9 * ('My line' i || .endOfFile)~length
+
+  fileName = createFile(src, "delMe.testingFilef")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  discard = f~charin(lastByte + 1)
+  self~assertSame("NOTREADY", f~state)
+
+
+-- Test string with no actual existing file.
+::method test_string_1
+
+  fileName = "delMe.arrayOut_string_noFilegg"
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
+-- Test string with an exsisting file.
+::method test_string_2
+
+  src = .array~of(1, 2, 3, 4, 5)
+  fileName = createFile(src, "delMe.TestFilehh")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
+-- Test string with an exsisting file.
+::method test_string_3
+
+  src = .array~of(1, 2, 3, 4, 5)
+  fileName = createFile(src, "delMe.TestFile With Spaces")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
+::method test_stream_supplier_1
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.suppliera")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+  end
+
+  self~assertSame(13, count)
+
+
+::method test_stream_supplier_2
+
+  src = .array~new(18)
+  do i = 1 to 18
+    src[i] = 'cat and dog' i
+  end
+  fileName = createFile(src, "delMe.stream.supplierb")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  count = 0
+  do 3
+    count +=1
+    l = fsObj~linein
+  end
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertTrue(3 < i & i < 19)
+    self~assertSame('cat and dog' i, itr~item)
+    itr~next
+  end
+
+  self~assertSame(18, count)
+
+
+-- This test was designed around the fact that the order of items in a Supplier
+-- object is un-defined.  It appears as though the order is actually the same
+-- as the line order in the file however.  Still, seems valid to not count on
+-- the order of a Supplier object.
+::method test_stream_supplier_3
+
+  src = .array~new(18)
+  bagOfLines = .bag~new
+  do i = 1 to 18
+    src[i] = 'apples and oranges' i
+    bagOfLines~put(src[i])
+  end
+  fileName = createFile(src, "delMe.stream.supplierc")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    bagOfLines~remove(itr~item)
+    itr~next
+  end
+
+  self~assertSame(0, bagOfLines~items)
+
+
+-- Test that the supplier is unchanged by changes to the stream after the
+-- 'snapshot' is taken
+::method test_stream_supplier_5
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplierd")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~linein
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_6
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.suppliere")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~linein(12)
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_7
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplierf")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~charin(5)
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_8
+
+  src = .array~new(18)
+  do i = 1 to 18
+    src[i] = 'cat and dog' i
+  end
+  fileName = createFile(src, "delMe.stream.supplierg")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  count = 0
+  do 3
+    count +=1
+    l = fsObj~linein
+  end
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertTrue(3 < i & i < 19)
+    self~assertSame('cat and dog' i, itr~item)
+    itr~next
+    fsObj~close
+  end
+
+  self~assertSame(18, count)
+
+
+-- Regression test for a bug seen at one time.  (Don't know the number.)
+::method test_flush_on_close_xxxxxx
+
+  outFile = 'tmpOutDelMe.txt'
+  rexxPrg = 'tmpPrg'
+  self~extraTestingFile = rexxPrg || '.rex'
+
+  src = .array~new
+  src[1] = 'file = .stream~new("'outFile'")'
+  src[2] = "file~lineout('first line') "
+  src[3] = "file~lineout('second line')"
+
+  rexxPrg = createRexxPrgFile(src, rexxPrg)
+  self~assertNotSame('', rexxPrg)
+
+  outPut = .array~new
+  ret = execRexxPrg(rexxPrg, outPut)
+
+  self~assertSame(0, ret)
+  self~assertTrue(SysIsFile(outFile))
+
+  fsObj = .stream~new(outFile)
+  self~streamTestingFile = fsObj
+
+  text = fsObj~arrayin
+  self~assertSame('first line', text[1])
+  self~assertSame('second line', text[2])
+
+
+-- Regression test for bug  2776442
+::method test_seek_usedAsCount_2776442
+
+  fileName = createFile(.array~of(1, 2, 3, 4, 5, 6, 7, 8), "delMe.test_stream_seek")
+  self~assertTrue(fileName \== "")
+
+  -- The test case file for the original bug had a last line, without a new line
+  -- at the end of the file.  To keep this test case as close to that as
+  -- possible, we add a last line with no new line at the end of the file.
+  ret = charout(fileName, "9")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  f = .stream~new(fileName)
+  self~streamTestingFile = f
+
+  ret = f~open("READ SHAREREAD")
+  self~assertSame("READY:", ret)
+
+  ret = f~seek(+99999 "READ LINE")
+  self~assertSame(9, ret)
+
+  count = f~seek(-1 "READ LINE") + 1
+  self~assertSame(9, count)
+
+  secondCount = f~lines("COUNT")
+  self~assertSame(2, secondCount)
+  f~close
+
+
+-- Regression test for bug  2772454
+::method test_open_canWrite_2772454
+
+  str = "1234567890"
+  fileName = createFile(.array~of(str), "delMe.test_open_bug_2772454")
+  self~assertTrue(fileName \== "")
+  f = .stream~new(fileName)
+  self~streamTestingFile = f
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+
+  ret = f~seek("1 read")
+  self~assertSame(1, ret)
+
+  bytes = f~charin( , f~chars)
+  self~assertSame(str || .endOfLine, bytes)
+
+  ret = f~seek("4 write")
+  self~assertSame(4, ret)
+
+  ret = f~charout("xyz")
+  self~assertSame(0, ret)
+
+  ret = f~seek("1 read")
+  self~assertSame(1, ret)
+
+  expected = str~overlay("xyz", 4) || .endOfLine
+
+  bytes =  f~charin( , f~chars)
+  self~assertSame(expected, bytes)
+
+
+-- Regression test for bug  2721242
+::method test_open_canWrite_2721242
+
+  src = .array~new
+  src[1] = "1234567890"
+  do i = 2 to 12
+    src[i] = src[1]
+  end
+  fileName = createFile(src, "delMe.test_streamObj_2721242")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~streamTestingFile = f
+
+  ret = f~open("READ")
+  self~assertSame("READY:", ret)
+
+  ret = f~Position("=100 READ CHAR")
+  self~assertSame(100, ret)
+
+  ret = f~Query("POSITION READ CHAR")
+  self~assertSame(100, ret)
+
+
+-- Regression test for bug  2790126
+::method test_query_seek_long_2790126
+
+  fileName = "delMe.test_stream_2790126"
+
+  st = .stream~new(fileName)
+  self~assertTrue(st~isA(.stream))
+  self~streamTestingFile = st
+
+  ret = st~open("write replace")
+  self~assertSame("READY:", ret)
+
+  ret = st~query("seek write")
+  self~assertSame(1, ret)
+
+  ret = st~charout(1~copies(4096))
+  self~assertSame(0, ret)
+
+  ret = st~query("seek write")
+  self~assertSame(4097, ret)
+
+  ret = st~charout(1~copies(8192))
+  self~assertSame(0, ret)
+
+  ret = st~query("seek write")
+  self~assertSame(12289, ret)
+
+
+-- Regression test for bug  2792702
+::method test_notready_eof_2792702
+
+  str = "1234567890"
+  fileName = createFile(.array~of(str), "delMe.test_noteready_eof_2792702")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~streamTestingFile = f
+
+  signal on notready
+
+  f~open
+  self~assertSame(10 + .endOfLine~length, f~chars)
+  self~assertSame("READY:", f~description)
+
+  ret = f~charin(9,6)
+
+  expected = "line" .line "to not execute"
+  actual =   "line" .line - 1 "did execute"
+  msg = "notready condition must be raised"
+  type = "failure"
+  self~fail(self~makeFailure(expected, actual, msg, type))
+
+  return
+
+notready:
+  self~assertSame("NOTREADY:EOF", f~description)
+
+
+-- Regression test for bug  3274050
+-- The function call : stream(file, "c", "open write append")
+-- fails when file has write-only permissions.
+-- On Linux / Unix this test case will fail if run by root.
+-- So, we check for root and if so fail the test case.
+::method test_open_write_only_3274050_a
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of an empty file
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  line = "line1"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+::method test_open_write_only_3274050_b
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of a non empty file
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  line = "line2"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+::method test_open_write_only_3274050_c
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of an empty file, using ~open
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  ret = fsObj~open("write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line1"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+::method test_open_write_only_3274050_d
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of a non empty file, using ~open
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  ret = fsObj~open("write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line2"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+::method test_open_write_only_3274050_e
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of an empty file, using ~command
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  ret = fsObj~command("open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line1"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+::method test_open_write_only_3274050_f
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of a non empty file, using ~command
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  ret = fsObj~command("open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line2"
+  ret = fsObj~charout(line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = fsObj~lineout(line)
+  self~assertSame(0, ret)
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+
+::method test_linein_arg_one_invalid
+  self~expectSyntax(88.907) -- The 1 argument must be in the range ..
+  .Stream~new(self~filename)~lineIn(.nil)
+
+::method test_linein_arg_one_zero
+  self~expectSyntax(93.907) -- Method argument 1 must be a positive whole number
+  .Stream~new(self~filename)~lineIn(0)
+
+::method test_linein_arg_two_invalid
+  self~expectSyntax(88.907) -- The 1 argument must be in the range ..
+  .Stream~new(self~filename)~lineIn(, .nil)
+
+::method test_linein_arg_two_zero
+  self~expectSyntax(93) -- Incorrect call to method
+  .Stream~new(self~filename)~lineIn(, 2)
+
+::method test_linein_three_args
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 2 expected
+  .Stream~new(self~filename)~lineIn(, , .nil)
+
+-- test for [bugs:#1472] linein reading 510 byte records reports 511 byte length
+::method test_linein_bug1472
+  bug1472file = "stream_bug_1472.tmp"
+  bug1472data = "x" || .String~cr~copies(2)
+  -- make data at least 1K in length
+  bug1472data = bug1472data~copies(1024 % bug1472data~length + 1)
+
+  s = .Stream~new(bug1472file)
+  s~open("write replace")
+  s~charOut(bug1472data || .String~cr || .String~nl)
+  s~close
+
+  do options over "read shared", "read shared nobuffer"
+    s~open(options)
+    dataLength = bug1472data~length
+    -- step from shorter to longer line lengths to test buffer length increments
+    do position = dataLength to 1 by -1
+      s~seek(position)
+      line = s~lineIn
+      self~assertEquals(position, dataLength - line~length + 1)
+      self~assertTrue(bug1472data~endsWith(line))
+    end
+    s~close
+  end
+
+  call deleteFile bug1472file
+
+
+
+-- End of class: Stream.testGroup
+
+
+::class "StreamClassQualify_QueryExists" public subclass ooTestCase
+
+-- Set up and tear down are used to guarantee we know what directory we are in
+-- for each test, and that the original working directory is restored at the end
+-- of each test.
+::method setup
+  parse source . . file
+  newDir = directory(filespec('L', file))
+
+::method teardown
+  newDir = directory(.ooTest.originalWorkingDir)
+
+::method test_simple_qualify
+
+  parse source . . file
+  fsObj = .stream~new("Stream.testGroup")
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_simple2_qualify
+
+  parse source . . file
+  fsObj = .stream~new(file)
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_qualify_relative
+
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl || 'ooTest.frm'
+
+  relativeName = '..'sl'..'sl'..'sl'ooTest.frm'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_simple_qualify2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  relativeName = filespec('L', file) || '.'sl || '.'sl || 'Stream.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_simple_qualify3
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = 'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify3_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl || 'ooRexx'sl'base'sl'bif'sl'notAFileToday'
+  relativeName = '..'sl'bif'sl'notAFileToday'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify2_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || '.MyFile'
+  relativeName = '.'sl'.MyFile'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify1_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || '.MyFile'
+  relativeName = '.MyFile'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+
+::method test_simple_qualify4
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = '..'sl'class'sl'..'sl'bif'sl'..'sl'..'sl'base'sl'class'sl'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+
+::method test_qualify_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 0 expected
+  .stdin~qualify("")
+
+::method test_qualify_arg_null
+  self~assertSame("", .Stream~new("")~qualify)
+
+::method test_qualify_arg_short
+  name = "xxxxxxxx"
+  self~assertSame(directory() || .File~separator || name, .Stream~new(name)~qualify)
+
+::method test_qualify_arg_long
+  -- a name to make currentDirectory"/"name as long as allowed
+  name = "x"~copies(.RexxInfo~maxPathLength - directory()~length - 1)
+  self~assertSame(directory() || .File~separator || name, .Stream~new(name)~qualify)
+
+::method test_qualify_arg_device
+  select case .RexxInfo~platform~upper
+    when "WINDOWSNT"
+      then devices = "aux", "com1", "con", "lpt1", "nul", "prn"
+    when "LINUX", "DARWIN"
+      then devices = "/dev/console", "/dev/null", "/dev/random", "/dev/tty"
+    otherwise
+      devices = .Array~new(0)
+  end
+  do device over devices
+    -- devices and/or special files should return as-is, without any leading "\\.\"
+    -- (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
+    self~assertSame(device, .Stream~new(device)~qualify, ".Stream~new('"device"')~qualify should be '"device"'")
+  end
+
+::method test_qualify_arg_windows_drive
+  if .RexxInfo~platform~caselessAbbrev("WINDOWS") then do
+    -- qualify() should return the current directory for "d:"
+    drive = filespec("drive", directory())
+    self~assertSame(directory(), .Stream~new(drive)~qualify, ".Stream~new('"drive"')~qualify should be" directory())
+  end
+
+
+::method test_relative_exists
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = '..'sl'class'sl'..'sl'bif'sl'..'sl'..'sl'base'sl'class'sl'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_simple_exists
+
+  parse source . . file
+  fsObj = .stream~new(file)
+  self~assertSame(file, fsObj~query("exists"))
+
+::method test_relative_exists2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  relativeName = '..'sl'..'sl'base'sl'bif'sl'STREAM.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_notExists2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = ''
+  relativeName = '..'sl'..'sl'base'sl'bif'sl'STREAMY.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_exists3
+
+  sl = .ooRexxUnit.directory.separator
+
+  dirName = filespec('N', .ooTest.Dir)
+
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  relativeName = .ooTest.dir || sl'..'sl || dirName || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_exists4
+
+  sl = .ooRexxUnit.directory.separator
+  src = .array~of(" ", " ", " ")
+
+  fileName = .ooTest.dir || sl'ooRexx'sl'base'sl'.hidden'
+  f = createFile(src, fileName)
+  self~assertNotSame("", f)
+
+  expected = f
+  relativeName = '..'sl'.hidden'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+  j = deleteFile(f)
+  self~assertSame("", fsObj~query("exists"))
+
+::method test_relative_exists5
+
+  src = .array~of(" ", " ", " ")
+
+  fileName = '.hidden'
+  f = createFile(src, fileName)
+  self~assertNotSame("", f)
+
+  expected = f
+  relativeName = '.hidden'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+  j = deleteFile(f)
+  self~assertSame("", fsObj~query("exists"))
+
+
+::class Stream2.testGroup public subclass ooTestCase
+
+-- Stream should be able to detect and open hidden/system files on Windows
+::method test_hidden_windows
+  if \.RexxInfo~platform~caselessStartsWith("windows") then
+    return
+
+  hidden = .TemporaryTestFile~new(, "test_hidden")~create("hidden")
+  "attrib +h" hidden~absolutePath
+  self~assertTrue(hidden~isHidden)
+  s = .Stream~new(hidden)
+  do 2 -- once for hidden, and again for system
+    self~assertSame(hidden~absolutePath, s~query("exists"))
+    s~open("read shared")
+    self~assertSame(hidden~absolutePath, s~query("exists"))
+    self~assertSame("hidden", s~charin(, 10))
+    s~close
+    "attrib -h +s" hidden~absolutePath
+  end
+  hidden~delete
+
+::method test_open_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  f = .TemporaryTestFile~new(, "test_open_command_parser")
+  s = .Stream~new(f)
+  do rw over "", "both", "read", "write"
+    -- for READ neither APPEND nor REPLACE can be specified
+    do ar over (rw == "read")~?(.Array~of(""), ("", "append", "replace"))
+      do share over "", "shared", "shareread", "sharewrite"
+        do nob over "", "nobuffer"
+          -- REPLACE requires RECLENGTH to be specified together with BINARY
+          do bin over (ar == "replace")~?(("", "binary reclength 24"), ("", "binary", "binary reclength 24"))
+            self~assertSame("READY:", s~open(rw ar share nob bin), "open("rw ar share nob bin")")
+            -- some open commands require the file to exist
+            s~charout("test_open_command_parser")
+            s~close
+          end
+        end
+      end
+    end
+  end
+  -- some permutations that should work too; fully abbreviated
+  self~assertSame("READY:", s~open("shared ap bo"))
+  self~assertSame("READY:", s~open("nob rea"))
+  self~assertSame("READY:", s~open("bi sharer"))
+  self~assertSame("READY:", s~open("bi rec 1 read"))
+  self~assertSame("READY:", s~open("ap w"))
+
+  -- too short abbreviations should fail
+  do short over "re", "b", "a", "share", "no"
+    self~assertFalse(self~command(s, "open", short))
+  end
+
+  -- test RECLENGTH values
+  self~assertFalse(self~command(s, "open", "read binary reclength -1"))
+  self~assertFalse(self~command(s, "open", "read binary reclength 0"))
+  self~assertTrue(self~command(s, "open", "read binary reclength 1"))
+  numeric digits 20
+  max = 2 ** .RexxInfo~architecture - 1
+  self~assertTrue(self~command(s, "open", "read binary reclength" max))
+  self~assertFalse(self~command(s, "open", "read binary reclength" max + 1))
+
+  -- forbidden combinations that always fail
+  self~assertFalse(self~command(s, "open", "read append"))
+  self~assertFalse(self~command(s, "open", "read replace"))
+  self~assertFalse(self~command(s, "open", "reclength 1"))
+  self~assertFalse(self~command(s, "open", "write replace binary"))
+
+  -- if the stream doesn't exist, WRITE BINARY requires RECLENGTH
+  s~close
+  f~delete -- make sure WRITE BINARY fails
+  self~assertFalse(self~command(s, "open", "write binary"))
+
+  -- duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "open", "read read"))
+  self~assertFalse(self~command(s, "open", "write write"))
+  self~assertFalse(self~command(s, "open", "both both"))
+  self~assertFalse(self~command(s, "open", "read write"))
+  self~assertFalse(self~command(s, "open", "both read"))
+  self~assertFalse(self~command(s, "open", "write both"))
+  self~assertFalse(self~command(s, "open", "read char"))
+  self~assertFalse(self~command(s, "open", "append append"))
+  self~assertFalse(self~command(s, "open", "replace replace"))
+  self~assertFalse(self~command(s, "open", "replace append"))
+  self~assertFalse(self~command(s, "open", "shareread shareread"))
+  self~assertFalse(self~command(s, "open", "sharewrite sharewrite"))
+  self~assertFalse(self~command(s, "open", "shared shared"))
+  self~assertFalse(self~command(s, "open", "shareread sharewrite"))
+  self~assertFalse(self~command(s, "open", "shared shareread"))
+  self~assertFalse(self~command(s, "open", "sharewrite shared"))
+  self~assertFalse(self~command(s, "open", "nobuffer nobuffer"))
+  self~assertFalse(self~command(s, "open", "binary binary"))
+  s~close
+  f~delete
+
+::method test_seek_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  s = .Stream~new("test_parser_not_a_file")
+  offset = 123
+  do prefix over "", "=", "<", "+", "-"
+    do rw over "", "read", "write"
+      do cl over "", "char", "line"
+        self~assertSame(0, s~seek(prefix offset rw cl), "seek("prefix offset rw cl")")
+      end
+    end
+  end
+  -- even with default NUMERIC DIGITS 9 64-bit offsets should work
+  self~assertSame(0, s~seek(9223372036854775807)) -- 2^63 - 1
+
+  -- missing/huge offset, and duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "seek", ""))
+  self~assertFalse(self~command(s, "seek", "read char"))
+  self~assertFalse(self~command(s, "seek", 9223372036854775808)) -- 2^63
+  self~assertFalse(self~command(s, "seek", offset offset))
+  self~assertFalse(self~command(s, "seek", "=+1"))
+  self~assertFalse(self~command(s, "seek", "=+1"))
+  self~assertFalse(self~command(s, "seek", "1 read write"))
+  self~assertFalse(self~command(s, "seek", "1 read read"))
+  self~assertFalse(self~command(s, "seek", "1 char line"))
+  self~assertFalse(self~command(s, "seek", "1 char char"))
+  s~close
+
+::method test_query_parser
+  -- we test token sequences matching the railroad diagrams, though many
+  -- more permutations will also work
+  s = .Stream~new("test_parser_not_a_file")
+  do rw over "", "read", "write"
+    do cl over "", "char", "line"
+      self~assertSame("", s~query("position" rw cl), "query(position" rw cl")")
+      self~assertSame("", s~query("seek" rw cl), "query(seek" rw cl")")
+    end
+  end
+  self~assertSame("", s~query("position sys"), "query(position sys)")
+  self~assertSame("", s~query("seek sys"), "query(seek sys)")
+
+  -- fully abbreviated
+  self~assertSame("", s~query("s c r"))
+  self~assertSame("", s~query("p l w"))
+  self~assertSame("", s~query("s s"))
+
+  -- duplicate or mutually exclusive tokens should fail
+  self~assertFalse(self~command(s, "query", "position sys sys"))
+  self~assertFalse(self~command(s, "query", "seek sys read"))
+  self~assertFalse(self~command(s, "query", "position read write"))
+  self~assertFalse(self~command(s, "query", "seek read read"))
+  self~assertFalse(self~command(s, "query", "position char line"))
+  self~assertFalse(self~command(s, "query", "seek char char"))
+
+  do arg over "datetime", "exists", "handle", "size", "streamtype", "timestamp"
+    self~assertTrue(self~command(s, "query", arg))
+    -- fully abbreviated
+    self~assertTrue(self~command(s, "query", arg~left(1)))
+    -- invalid trailing arguments
+    self~assertFalse(self~command(s, "query", arg "0"))
+  end
+
+  s~close
+
+::method test_command_parser
+  -- command calls open, seek, and query, which we already tested
+  -- test close and flush
+  s = .Stream~new("test_parser_not_a_file")
+  self~assertSame("READY:", s~command("flush"))
+  self~assertSame("", s~command("close"))
+  self~assertFalse(self~command(s, "command", "close 0"))
+  self~assertFalse(self~command(s, "command", "flush flush"))
+  s~close
+
+::method command
+  use strict arg stream, method, command
+  signal on syntax
+  stream~send(method, command)
+  return .true
+  syntax:
+  return .false
+
+
+-- #1917 LINEIN fails after SEEK CHAR, LINEIN, SEEK LINE
+::method test_bug_1917
+  f = .TemporaryTestFile~new(, "test_bug_1917")
+  f~create(("first line", "second line", "third line"))
+  s = .Stream~new(f)
+
+  call read , 2
+  call read "linein"
+  call read "2 line"
+  call read "=2 line"
+  call read "+1 line"
+  call read ("3 line", "-1 line")
+  call read ("3 line", "-2 line", "+1 line")
+  call read ("+99 line", "2 line")
+  call read ("5 char", "2 line")
+  call read ("linein", "5 char", "2 line")
+  call read ("5 char", "linein 2", "2 line")
+  call read ("5 char", "linein", "2 line")
+  call read ("5 char", "linein"), 2
+  exit
+
+  read:
+  s~open
+  do c over arg(1)
+    select
+      when c = "linein" then s~linein
+      when c~abbrev("linein") then s~linein(c~subwords(2))
+      otherwise s~seek(c)
+    end
+  end
+  if arg(2, "exists") then
+    self~assertSame("second line", s~linein(arg(2)), arg(1)~makeArray~~append("("arg(2)")")~toString(, ", "))
+  else
+    self~assertSame("second line", s~linein, arg(1)~makeArray~toString(, ", "))
+  s~close
+  return
+
+
+::options novalue syntax

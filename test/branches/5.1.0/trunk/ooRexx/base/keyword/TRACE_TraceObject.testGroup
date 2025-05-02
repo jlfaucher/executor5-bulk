@@ -1,0 +1,766 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.TRACE_TraceObject.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class TRACE_TraceObject.testGroup subclass ooTestCase public
+
+/* ========================================================================== */
+::method setup    -- make sure we start out each test case with the defaults
+  .TraceObject~collector=.nil
+  .TraceObject~option='N'
+
+/* ========================================================================== */
+::method tearDown
+  -- Should a test case fail while a Monitor like .TraceOutput or .DebugInput
+  -- is redirected, this could trigger further test case failures.
+  -- The framework resets some of the Monitors for each test *group* run,
+  -- but we want to reset them here after each test *case* run.
+  .TraceOutput~destination(.Error)
+  .DebugInput~destination(.Input)
+  .Output~destination(.stdout)
+
+  .TraceObject~option='N'
+  .TraceObject~collector=.nil
+  .TraceObject~unsetMakeString
+
+/* ========================================================================== */
+::method test_traceObject_option    -- assert valid options
+  self~assertSame('N', .traceObject~option)   -- initial value
+  do opt over 'T','S','F','P','N'
+     .traceObject~option=opt
+     self~assertSame(opt,.traceObject~option)
+  end
+
+/* ========================================================================== */
+::method test_traceObject_option_invalid
+  self~assertSyntaxError(93.914, ".traceObject~option='x'")
+  .traceObject~option='x'
+
+/* ========================================================================== */
+  -- in methods an entry RECEIVER is available and should be equal to STACKFRAME~target
+::method test_receiver
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("test_receiver_program",.resources~test_receiver_program)
+  code~call
+  .traceObject~collector=.nil -- stop collecting
+
+  -- test for RECEIVER entry
+  do traceObject over arr
+     isMethod=traceObject~hasEntry("ATTRIBUTEPOOL")   -- this will be available in >I> and <I<
+     if isMethod then
+     do
+         self~assertTrue(traceObject~hasEntry("RECEIVER"))
+         self~assertSame(traceobject~receiver, traceObject~stackFrame~target, "receiver and StackFrame's target must be the same object")
+     end
+     else self~assertFalse(traceObject~hasEntry("RECEIVER"))
+  end
+
+
+::resource test_receiver_program
+   o=.test~new("someInitialValue")
+   d=one(o)
+
+   ::class test
+   ::method init
+     expose one
+     use arg one
+   ::attribute one
+
+   ::routine one
+     use arg o
+     return o~one
+   ::options trace a
+::END
+
+/* ========================================================================== */
+  -- check for variable referrals and assignments to variables
+::method test_variable
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("test_variable_program",.resources~test_variable_program)
+  code~call
+  .traceObject~collector=.nil -- stop collecting
+
+  -- test for RECEIVER entry
+  showTrace=.false      -- for debugging and seeing the trace output if resource's code changes
+  varCount=0
+  do counter c traceObject over arr
+     hasVarEntry=traceObject~hasEntry("VARIABLE")  -- .true=1 or .false=0
+     varCount+=hasVarEntry
+     if showTrace=.true then
+     do
+        line=traceObject~stackFrame~line
+        say "#" c~right(3)":" "VARIABLE?" pp(traceObject~hasEntry("VARIABLE")) "Line:" pp(line~right(2)) "|" traceObject
+     end
+  end
+  if showTrace=.true then say "line #" .line":" pp(varCount) "variable trace objects"
+
+  self~assertSame(6, varCount, "number of variable related trace objects")
+/*
+               traceLine:                          line:
+      var # 1: >=>   ONE <= "someInitialValue"      7
+      var # 2: >=>   O <= "a TEST"                  1
+      var # 3: >V>   O => "a TEST"                  2
+      var # 4: >=>   O <= "a TEST"                 11
+      var # 5: >V>   O => "a TEST"                 12
+      var # 6: >=>   D <= "someInitialValue"        2
+*/
+      -- vor TraceObjects that have VARIABLE entry: arrays of (traceline, line in source)
+  varTraceObj= ('>=>   ONE <= "someInitialValue"', 7), -
+               ('>=>   O <= "a TEST"',             1), -
+               ('>V>   O => "a TEST"',                   2), -
+               ('>=>   O <= "a TEST"',                  11), -
+               ('>V>   O => "a TEST"',                  12), -
+               ('>=>   D <= "someInitialValue"',   2)
+
+  counter=1
+  do traceObject over arr while counter<varCount   -- look for VARIABLE entry and check it out
+    if traceObject~hasEntry("VARIABLE") then
+    do
+       self~assertEquals(traceObject~traceLine,       varTraceObj[counter][1], "trace line")
+       self~assertEquals(traceObject~stackFrame~line, varTraceObj[counter][2], "source line number")
+       counter+=1
+    end
+  end
+
+
+
+::resource test_variable_program
+   o=.test~new("someInitialValue")
+   d=one(o)
+
+   ::class test
+   ::method init
+     expose one
+     use arg one
+   ::attribute one
+
+   ::routine one
+     use arg o
+     return o~one
+   ::options trace i    -- as of 20240625: only TRACE I will generate variable related traces
+::END
+
+
+
+/* ========================================================================== */
+::method test_traceObject_collector
+  self~assertNil(.traceObject~collector)  -- initial value
+  arr=.array~new
+  .traceObject~collector=arr
+  self~assertEquals(arr,.traceObject~collector)
+
+   -- this must be set before creating a routine from the resource
+   -- in order that all its trace lines can be collected for this
+   -- test case
+  .traceObject~option='P'                 -- now probe
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  code=.routine~new("testRoutine",.resources~code4myTestTO)
+  clz =code~call        -- invoke, returns class object
+  t=clz~new~~test       -- now have the traceObjects created
+  call syssleep 0.1     -- let the threads end (they create trace lines)
+  .traceObject~collector=.nil -- stop collecting
+
+   -- get the source lines in trace line format; as the routine got
+   -- created at runtime from a resource the source lines are relative
+   -- to the resource (i.e. source lines start with number 1)
+  srcLines=17,18,22,23,27,28,33,34,37  -- array of source lines causing trace lines
+  tsk=code~package~findRoutine("getSourceLines")   -- get access to routine
+  traceLinesFromSource=tsk~call(srcLines) -- invoke the routine
+
+/* --
+  say "traceLinesFromSource:"
+  say traceLinesFromSource
+  say "*-* "~copies(20)
+
+say "================ arr~items:" arr~items "================"
+say "arr:"
+do counter c1 el over arr
+      say "---" right(c1,3)":" el
+end
+say "================ arr~items:" arr~items "================"
+-- */
+
+   -- define data to create the trace lines for assertions
+   -- note: we do a 'startWith' on a *sorted* array such that potential differences
+   --       in the trace sequences from run to run can be safely ignored
+traceLines= -
+             '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "A" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       >I> Routine "PP" in package "testRoutine".'                        , -
+             '       <I< Routine "PP" in package "testRoutine".'                        , -
+             '       <I< Method "TEST" with scope "MYTESTTO" in package "testRoutine".' , -
+             '       >I> Method "B" with scope "MYTESTTO" in package "testRoutine".'    , -
+             '       <I< Method "B" with scope "MYTESTTO" in package "testRoutine".'
+
+   -- create sorted array with the produced trace lines
+  sortedProducedTraceLines=(traceLines~~appendAll(traceLinesFromSource))~sort
+   -- get and sort the collected trace lines
+   -- this test will also test the normal trace format ('P' implies 'N' when formatting)
+  traceObjTraceLines=extractTraceLines(arr)~sort
+  do counter c1 prodLine over sortedProducedTraceLines
+     str=traceObjTraceLines[c1]
+     self~assertTrue(str~startsWith(prodLine), "traceline" pp(str) "does not start with" pp(prodLine))
+  end
+
+  -- get a method related TraceObject and a routine related TraceObject
+  trObjMethod =.nil
+  trObjRoutine=.nil
+  do counter c1 obj over arr while trObjMethod~isNil | trObjRoutine~isNil
+     if trObjMethod~isNil, pos("a=",obj~traceLine)>0 then
+        trObjMethod=obj
+     else if trObjRoutine~isNil, pos('return ',obj~traceLine)>0 then
+        trObjRoutine=obj
+  end
+
+  routineEntries    ="INTERPRETER", "INVOCATION", "NUMBER", "OPTION", "STACKFRAME", "THREAD", "TIMESTAMP", "TRACELINE"
+  methodAddedEntries="ATTRIBUTEPOOL", "HASSCOPELOCK", "ISGUARDED", "SCOPELOCKCOUNT"
+  methodEntries     =routineEntries~copy~~appendAll(methodAddedEntries)
+
+   -- trObjMethod: a TraceObject for a method
+  do idx over methodEntries      -- check that these entries exist
+     self~assertTrue(trObjMethod~hasEntry(idx), "#" .line "index" pp(idx) "for method missing")
+  end
+
+   -- trObjRoutine: a TraceObject for a routine
+  do idx over routineEntries     -- check that these entries exist
+     self~assertTrue(trObjRoutine~hasEntry(idx), "#" .line "index" pp(idx) "for routine missing")
+  end
+  do idx over methodAddedEntries -- check that these entries do not exist
+     self~assertFalse(trObjRoutine~hasEntry(idx), "#" .line "index" pp(idx) "not expected for routine")
+  end
+
+  -- check different properites expected on this test case' ThreadObjects
+  setNr           =.set~new      -- exactly 12
+  setThread       =.set~new      -- at least two threads
+  setOption       =.set~new      -- all should be 'P'
+  setInterpreter  =.set~new      -- all should be the same
+  setAttributePool=.set~new      -- there should be two
+  do trObj over arr
+     setNr           ~put(trObj~number       )
+     setThread       ~put(trObj~thread       )
+     setOption       ~put(trObj~option       )
+     setInterpreter  ~put(trObj~interpreter  )
+     if \trObj~attributepool~isNil then   -- only available if for a method
+        setAttributePool~put(trObj~attributepool)
+  end
+
+-- say "indexes of trObj:" trObj~allIndexes~sort~makeString('L',' ')
+
+  self~assertEquals(23, setNr~items, "23 different TraceObjects expected, setNr~items:" setNr~items)
+  self~assertTrue(setThread~items>1, "at least two different threads expected, setThread~items:" setThread~items)
+  self~assertTrue(setOption~items=1, "only option 'P' expected, setOption~items:" setOption~items)
+  self~assertTrue(setOption~hasIndex('P'), "only option 'P' expected, found:" setOption~allIndexes[1]~string)
+  self~assertTrue(setInterpreter~items=1, "only one inteprpreter expected, setInterpreter~items:" setInterpreter~items)
+  self~assertTrue(setAttributePool~items=2, "exactly two attribute (object variable) pools expected, setAttributePool~items:" setAttributePool~items)
+
+  -- check standard formats 'T', 'S', 'F':
+  .TraceObject~option='T'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     ch=str[10]
+     self~assertTrue(Datatype(ch,"Number"), "option 'T' format implies a thread number at position 10, found:" ch)
+  end
+  .TraceObject~option='S'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     self~assertTrue(str~startsWith("[T"), "option 'S' format implies a bracketed multithreaded prefix, found:" str)
+
+     parse var str '[' mtPrefix ']' .
+     self~assertTrue(mtPrefix<>"","bracketed multithreaded trace prefix not found in" pp(str))
+
+     parse var mtPrefix t i g a l h . -- extract
+     self~assertTrue(t[1]='T', "first indicator must start with 'T'(hread), found:" t[1] "str:" str)
+     self~assertTrue(i[1]='I', "second indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
+     if str~pos("return ")>0 | str~pos(">I> Routine")>0  | str~pos("<I< Routine")>0 then
+     do
+        self~assertTrue(mtPrefix~words=2,"a routine, hence mtPrefix must only contain two entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+     end
+     else
+     do
+        self~assertTrue(mtPrefix~words>=4,"a method, hence mtPrefix must contain either 4 or more entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+        self~assertTrue(g[1]='G', "a method, third indicator must start with 'G'(uarded), found:" g[1] "str:" str)
+        self~assertTrue(a[1]='A', "a method, fourth indicator must start with 'A'(ttribute pool), found:" a[1] "str:" str)
+        self~assertTrue(l[1]='L', "a method, fifth indicator must start with 'L'(lock), found:" l[1] "str:" str)
+        hasLockChar?=(h='*' | h='')
+        self~assertTrue(hasLockChar?, "a method, sixth indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
+     end
+  end
+
+  .TraceObject~option='F'
+  do trObj over arr
+     str=trObj~makeString
+--     say "str:" pp(str)
+     self~assertTrue(str~startsWith("[R"), "option 'F' format implies a bracketed multithreaded prefix, found:" str)
+
+     parse var str '[' mtPrefix ']' .
+     self~assertTrue(mtPrefix<>"","bracketed multithreaded trace prefix not found in" pp(str))
+
+     parse var mtPrefix r t i g a l h . -- extract
+     self~assertTrue(r[1]='R', "first indicator must start with 'T'(hread), found:" r[1] "str:" str)
+     self~assertTrue(t[1]='T', "second indicator must start with 'T'(hread), found:" t[1] "str:" str)
+     self~assertTrue(i[1]='I', "third indicator must start with 'I'(nvocation), found:" i[1] "str:" str)
+     if str~pos("return ")>0 | str~pos(">I> Routine")>0  | str~pos("<I< Routine")>0  then
+     do
+        self~assertTrue(mtPrefix~words=3,"a routine, hence mtPrefix must only contain three entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+     end
+     else
+     do
+        self~assertTrue(mtPrefix~words>=6,"a method, hence mtPrefix must contain either 6 or more entries, but found"  mtPrefix~words "entry/ies in" pp(str))
+        self~assertTrue(g[1]='G', "a method, fourth indicator must start with 'G'(uarded), found:" g[1] "str:" str)
+        self~assertTrue(a[1]='A', "a method, fifth indicator must start with 'A'(ttributepool), found:" A[1] "str:" str)
+        self~assertTrue(l[1]='L', "a method, sixth indicator must start with 'L'(lock), found:" l[1] "str:" str)
+        hasLockChar?=(h='*' | h='')
+        self~assertTrue(hasLockChar?, "a method, seventh indicator must start either with '*' (has lock) or be empty, found:" h[1] "str:" str)
+     end
+  end
+
+  -- test setMakeString
+  .TraceObject~setMakeString(.resources~myMakeString)
+  do trObj over arr
+     str=trObj~makeString     -- returns strings of two numbers
+--     say "str:" pp(str)
+     parse var str a b
+     self~assertTrue(words(str)=2, "setMakeString(): expecting two words per returned string, however number of words found:" str~words)
+     self~assertTrue(Datatype(a,"Number"), "setMakeString(): first word" pp(a) "not a number")
+     self~assertTrue(Datatype(b,"Number"), "setMakeString(): second word" pp(b) "not a number")
+  end
+
+  .TraceObject~unsetMakeString   -- reset (uses default implementation)
+  .TraceObject~option='N'        -- reset to 'N'ormal
+  arrTraceLines=extractTraceLines(arr)~sort
+  do counter c1 prodLine over sortedProducedTraceLines
+     str=arrTraceLines[c1]
+     self~assertTrue(str~startsWith(prodLine), "traceline" pp(str) "does not start with" pp(prodLine))
+  end
+
+return
+
+produceTraceLines: procedure   -- create and return array of trace lines from the source line numbers
+  use arg arrLines
+  resArr=.array~new
+  do line over arrLines
+     resArr~append(line~right(6) "*-*" sourceLine(line)~strip('left'))
+  end
+  return resArr
+
+extractTraceLines: procedure  -- create and return array of the traceline entry
+  use arg arrTraceObj
+  resArr=.array~new
+  do traceObj over arrTraceObj
+      resArr~append(traceObj~makeString)
+  end
+  return resArr
+
+   /* ------------------------------------------------------------------------ */
+::resource myMakeString
+  use arg traceObj
+  return traceObj~number traceObj~thread   -- return two numbers from traceObj to test
+::END
+   /* ------------------------------------------------------------------------ */
+
+
+   /* ------------------------------------------------------------------------ */
+  -- a little bit tricky: we need to wrap the class in a resource
+  -- that returns the class object, otherwise the class init's
+  -- tracelines would not be collectable
+  -- DO NOT insert or delete any lines in the following RESOURCE !
+::RESOURCE code4myTestTO
+  return .myTestTO      -- line # 1
+/* ---> do not edit (insert or delete) the following lines, baseline calcs above depend on this   */
+::routine getSourceLines public  -- expects an array of indexes pointing to the source lines caller is interested in
+  use arg lineArray        -- line # 4
+  resArr=.array~new
+  do line over lineArray
+ -- say "#" .line": line="line "["sourceline(line)"]"
+     resArr~append(line~right(6) "*-*" sourceLine(line)~strip('left'))
+  end
+  return resArr            -- line # 10
+::class myTestTO
+::attribute baseline class -- stores line # of class init's assignment: a=19
+::method  init class
+  expose a b baseline
+  baseline=.line+2      -- method: # 15
+  trace all
+  a=19                  -- method: # 17
+  b=32                  -- method: # 18
+::method    a class
+  expose a
+  trace all             -- since retro-trace will cause <I<
+  reply  a              -- method: # 22
+  a=a                   -- method: # 23
+::method    b class
+  expose b
+  trace all             -- since retro-trace will cause <I<
+  reply  b              -- method: # 27
+  b=b                   -- method: # 28
+::attribute abc
+::method    test        -- method: abc=pp(19*32) is in baseline
+  expose    abc baseline srcLine1 srcLine2
+  trace all             -- since retro-trace will cause <I<
+  reply                 -- method: # 33
+  abc=pp(.myTestTO~a*.myTestTO~b)   -- method: # 34
+::routine pp
+  trace all             -- since retro-trace will cause <I<
+  return "["arg(1)"]"   -- routine: # 37
+/* <--- from now on editing is o.k. again  */
+::END
+   /* ------------------------------------------------------------------------ */
+
+/* ========================================================================== */
+::method test_setMakeString_with_method_object
+   returnValue="nixi, noxi"
+   m=.method~new("testMethod","return '"returnValue"'")
+   self~assertTrue(m~isA(.method), "is m an instance of .Method" )
+  to=.traceObject~new            -- create a TraceObject
+  .TraceObject~setMakeString(m)  -- assign the me
+  res=to~makeString
+  self~assertEquals(returnValue, res, "expecting m to always return:" returnValue)
+  .TraceObject~unsetMakeString
+
+::method test_object_and_scope
+   -- .routine~new("myTestRoutine",.resources~myObjectScopeTestRoutine)~~call; say "<--"
+   .traceObject~option='P'
+   arr=.array~new
+   .traceObject~collector=arr
+      -- load and run the code
+   .routine~new("myTestRoutine",.resources~myObjectScopeTestRoutine)~~call
+   .traceObject~collector=.nil
+
+   -- check expected tracelines
+   self~assertEquals(arr~items, 19)
+/* --
+say "arr~items:" arr~items":"
+do counter c i over arr
+   say c~right(2)":" i~traceline
+   tmp=i~stackframe~target    -- if target has a value, we are in a method
+   scope=.nil
+   if \tmp~isNil then         -- if target has a value, we are in a method
+       scope=i~stackframe~executable~scope   -- get method's scope
+   say pp(tmp~string) pp(scope~string) "|" pp(i)
+   say
+end
+say "---"
+--*/
+   -- get expected trace lines
+   traces=.resources~myObjectScopeTestRoutineTrace
+   do counter c1 traceObj over arr
+      actual    =traceObj~traceline -- get traceLine entry
+      predefined=traces[c1]         -- get expected traceLine
+      self~assertSame(actual,predefined,"traceObject #" c1": TRACELINE entry"  pp(actual) "does not match expected traceline:" pp(predefined))
+   end
+   -- expected            1     2   3   4   5   6     7     8     9    10    11    12   13     14  15  16  17  18   19
+   objectids=.array~of(.nil, .nil, "", "", "", "", .nil, .nil,   "",   "",   "",   "", .nil, .nil, "", "", "", "", .nil)
+   scopes   =.array~of(.nil, .nil, "", "", "", "", .nil, .nil, .nil, .nil, .nil, .nil, .nil, .nil, "", "", "", "", .nil)
+
+   -- in actual trace
+   do i=1 to arr~items
+      stackFr   =arr[i]~stackFrame
+      type      =stackFr~type
+      obj       =stackFr~target
+      if type="METHOD" then scope=stackFr~executable~scope
+                       else scope=.nil
+      self~assertSame(objectids[i]~isNil, obj  ~isNil, "TraceObject #" i "OBJECT" obj  ~string)
+      self~assertSame(   scopes[i]~isNil, scope~isNil, "TraceObject #" i "SCOPE"  scope~string)
+   end
+
+
+::resource myObjectScopeTestRoutine -- access via .resources possible
+trace all
+t1=.test~new
+t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
+t1~m1float  -- OBJECTID, SCOPE=.nil
+t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
+t1~m1object -- OBJECTID, SCOPE=.TEST
+
+::method fm       -- a floating method (access via .methods possible)
+  expose info
+  trace all             -- since retro-trace will cause <I<
+  a1=.context~name":" self~identityHash "(floating method)"
+  a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+
+::class test
+::method init
+  expose info
+  trace all             -- since retro-trace will cause <I<
+  b=.context~name":" self~identityHash
+  info="initialized by .TEST's init"
+
+::attribute info get
+  expose info
+  trace all             -- since retro-trace will cause <I<
+  return info
+
+::method setMethod1
+  use arg name, meth, scope
+  -- say .context~name":" self~identityHash
+  self~setMethod(name, meth, scope)
+::END
+
+::resource myObjectScopeTestRoutineTrace
+       >I> Routine "myTestRoutine" in package "myTestRoutine".
+     2 *-* t1=.test~new
+       >I> Method "INIT" with scope "TEST" in package "myTestRoutine".
+    18 *-* b=.context~name":" self~identityHash
+    19 *-* info="initialized by .TEST's init"
+       <I< Method "INIT" with scope "TEST" in package "myTestRoutine".
+     3 *-* t1~setMethod1("m1float",.methods~fm,'float')   -- scope=FLOAT (hence .nil)
+     4 *-* t1~m1float  -- OBJECTID, SCOPE=.nil
+       >I> Method "M1FLOAT" with scope ".NIL" in package "myTestRoutine".
+    11 *-* a1=.context~name":" self~identityHash "(floating method)"
+    12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+       <I< Method "M1FLOAT" with scope ".NIL" in package "myTestRoutine".
+     5 *-* t1~setMethod1("m1object",.methods~fm,'object') -- scope=OBJECT's scope
+     6 *-* t1~m1object -- OBJECTID, SCOPE=.TEST
+       >I> Method "M1OBJECT" with scope "TEST" in package "myTestRoutine".
+    11 *-* a1=.context~name":" self~identityHash "(floating method)"
+    12 *-* a2="self:" self "hello, world, scope:" .context~executable~scope "| info:" info
+       <I< Method "M1OBJECT" with scope "TEST" in package "myTestRoutine".
+       <I< Routine "myTestRoutine" in package "myTestRoutine".
+::END
+
+/* <=== test OBJECTID and SCOPE introduced for methods on 2024-03-27 with a floating method */
+
+
+
+
+
+/* ========================================================================== */
+::method test_caller_stack_frame
+-- test callerStackFrame correct
+
+traceLog=.array~new
+.traceObject~option='P'
+.traceObject~collector=traceLog
+
+callerName="testCallerStackFrame"
+r=.routine~new(callerName, .resources~test_caller_stackframe)
+do_the_work_stack_frame=r~call   -- note: this is a method call to an object!
+.traceObject~collector=.nil
+
+callerStackFrame=.nil
+do traceObj over traceLog  -- find invocation entry traceObject for routine "OHA"
+   if traceObj~traceLine~pos('>I> Routine "OHA"')>0 then
+   do
+       ohaCallerStackFrame=traceObj~callerStackFrame
+       leave
+   end
+end
+
+indices="EXECUTABLE", "LINE", "NAME", "TARGET", "TYPE"
+call compareStackFrames ohaCallerStackFrame, do_the_work_stack_frame, indices, self
+
+--> assert arguments~items the same!
+self~assertEquals(ohaCallerStackFrame~arguments~items, 0, "expecting 0 items")
+self~assertEquals(ohaCallerStackFrame~arguments~items, do_the_work_stack_frame~arguments~items, "arguments~items are different!")
+self~assertSame(ohaCallerStackFrame~traceLine    , "     5 *-* call oha   -- both statements in the same line!")
+self~assertSame(do_the_work_stack_frame~traceLine, "     5 *-* thisStackFrame=.context~stackframes[1];")
+exit
+
+   -- assert equality
+compareStackFrames: procedure
+   use arg ohaCallerStackFrame, do_the_work_stack_frame, indices, self
+   -- do idx over ohaCallerStackFrame~allindexes
+   do idx over indices -- ohaCallerStackFrame~allindexes
+--      say "idx:" idx~left(16,'.') "ohaCallerStackFrame value:" ohaCallerStackFrame~send(idx)
+--      say "                      do_the_work_stack_frame  :" do_the_work_stack_frame~send(idx)
+      self~assertSame(ohaCallerStackFrame~send(idx), do_the_work_stack_frame~send(idx), "caller's stackFrame" idx": not the same!")
+--    say
+   end
+   return
+
+   -- attention: this test depends on the exact code of the following definition, do NOT edit!
+/* ---> do NOT edit the following RESOURCE lines */
+::RESOURCE test_caller_stackframe
+   -- this will be invoked as a method object, the stackFrame's name therefore will be CALL
+   return do_the_work() -- this will invoke 'call do_the_work', hence will be a(n internal) call
+
+::routine do_the_work
+   thisStackFrame=.context~stackframes[1]; call oha   -- both statements in the same line!
+   return thisStackFrame   -- caller's stack frame
+
+::routine oha           -- the trace invocation entry traceObject will have a CALLERSTACKFRAME entry
+   return
+
+::options trace label   -- create invocation entry and exit trace objects
+
+::END
+/* <--- from now on editing is o.k. again  */
+   /* ------------------------------------------------------------------------ */
+
+
+/* ========================================================================== */
+::method test_caller_stack_frame_reply_start
+-- test callerStackFrame correct
+
+traceLog=.array~new
+.traceObject~option='P'
+.traceObject~collector=traceLog
+
+callerName="testCallerStackFrame_ReplyStart"
+r=.routine~new(callerName, .resources~test_caller_stackframe_reply_start_program)
+r~call         -- note: this is a method call to an object!
+.traceObject~collector=.nil
+
+/*
+-- show actual traceLog
+say "--->"
+do counter c traceObj over traceLog
+    say traceObj
+end
+say "<---"
+*/
+
+callerStackFrames=.list~new
+-- now analyze traceLog, first check whether expected sequence
+expectedTraceLog=.resources~test_caller_stackframe_reply_start_tracelog
+do counter c traceObj over traceLog
+   str=traceObj~makeString
+   self~assertEquals(str, expectedTraceLog[c])
+   if pos(">I>",str)>0 then
+      callerStackFrames~append(traceObj)  -- save traceObject which needs to have a CALLERSTACKFRAME entry
+end
+
+--say "... checking callerStackFrames ..."
+countThreadId_in_CSF=0
+do csf over callerStackFrames
+   self~assertTrue(csf~hasEntry("CALLERSTACKFRAME"))
+   countThreadId_in_CSF+=csf~callerStackFrame~hasEntry("THREAD")
+end
+
+self~assertEquals(countThreadId_in_CSF,2)
+
+
+::resource test_caller_stackframe_reply_start_program
+   o=.test~new
+   o~count=2
+   o~m_reply
+   call syssleep 0.01
+   o~start("m_s")
+   o~m_wait
+
+   ::class test
+   ::method init
+     expose count
+     count=0
+
+   ::attribute count
+
+   ::method m_reply
+     expose count
+     reply
+     count-=1
+
+   ::method m_s
+     expose count
+     count-=1
+     call syssleep .01
+
+   ::method m_wait unguarded
+     expose count
+     guard on when count=0
+
+   ::options trace labels
+::END
+
+::resource test_caller_stackframe_reply_start_tracelog
+       >I> Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       <I< Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       >I> Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "INIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "INIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_REPLY" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_WAIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       >I> Method "M_S" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_S" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Method "M_WAIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
+       <I< Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+::END
+
+
+
+/* ========================================================================== */
+::routine pp
+  return "["arg(1)"]"
+
+
+::options all syntax error condition failure condition
+

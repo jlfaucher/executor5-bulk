@@ -1,0 +1,209 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.ROUTINE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "ROUTINE.testGroup" subclass ooTestCase public
+
+::method testNoName
+  self~assertSyntaxError(19.903, ("/**/", "::routine"))
+
+::method testBadName
+  self~assertSyntaxError(19.903, ("/**/", "::routine *"))
+
+::method testDuplicate
+  self~assertSyntaxError(99.903, ("/**/", "::routine foo", "::routine FOO"))
+
+::method testDuplicate2
+  self~assertSyntaxError(99.903, ("/**/", "::routine 'foo'", "::routine FOO"))
+
+::method testStringOption
+  self~assertSyntaxError(25.903, ("/**/", "::routine 'foo' 'PUBLIC'"))
+
+::method testPublicTwice
+  self~assertSyntaxError(25.903, ("/**/", "::routine 'foo' Public public"))
+
+::method testPrivateTwice
+  self~assertSyntaxError(25.903, ("/**/", "::routine 'foo' private PRIVATE"))
+
+::method testPublicPrivate
+  self~assertSyntaxError(25.903, ("/**/", "::routine 'foo' public PRIVATE"))
+
+-- some tests of external routines.  NOTE:  tests of registered
+-- external routines need to be done in the API tests so that we have
+-- a reliable library to map to.
+
+::method testExternalLibrary
+  p = .package~new("test", "::routine foo external 'LIBRARY rxmath RxCalcPi'")
+  r = p~routines~foo
+  self~assertIsA(r, .routine)
+  self~assertEquals(r[], rxcalcpi())
+  self~assertFalse(p~publicroutines~hasIndex('FOO'))
+
+  p = .package~new("test", "::routine foo private external 'LIBRARY rxmath RxCalcPi'")
+
+  r = p~routines~foo
+  self~assertIsA(r, .routine)
+  self~assertEquals(r[], rxcalcpi())
+  self~assertFalse(p~publicroutines~hasIndex('FOO'))
+
+  -- uses library in lower case
+  p = .package~new("test", "::routine foo public external 'library rxmath RxCalcPi'")
+
+  r = p~routines~foo
+  self~assertIsA(r, .routine)
+  self~assertEquals(r[], rxcalcpi())
+  self~assertTrue(p~publicroutines~hasIndex('FOO'))
+  self~assertSame(r, p~publicroutines~foo)
+
+  -- the name defaults to the name specified on the directive
+  p = .package~new("test", "::routine 'RxCalcPi' public external 'LIBRARY rxmath'")
+
+  r = p~routines~rxcalcpi
+  self~assertIsA(r, .routine)
+  self~assertEquals(r[], rxcalcpi())
+
+::method testExternalNullstring
+  -- 99.917:  Incorrect external name specification
+  self~assertSyntaxError(99.917, "::routine foo external ''")
+
+::method testExternalLibraryBadName
+  self~assertSyntaxError(90.999, "::routine foo external 'LIBRARY rxmath RxCalxPiXXXXXX'")
+
+::method testExternalLibraryBadLibraryName
+  self~assertSyntaxError(98.903, "::routine foo external 'LIBRARY rxmathxxxxx RxCalxPi'")
+
+::method testExternalLibraryMissingLibraryName
+  self~assertSyntaxError(99.917, "::routine foo external 'LIBRARY'")
+
+::method testExternalLibraryMissingSpec
+  -- String expected after EXTERNAL keyword
+  self~assertSyntaxError(19.905, "::routine foo external")
+
+::method testExternalLibraryBadSpecType
+  -- String expected after EXTERNAL keyword
+  self~assertSyntaxError(19.905, "::routine foo external library")
+
+::method testExternalLibraryBadRoutineType
+  self~assertSyntaxError(99.917, "::routine foo external 'LIB rxmath RxCalxPi'")
+
+::method testExternalLibraryExtraToken
+  self~assertSyntaxError(99.917, "::routine foo external 'LIBRARY rxmath RxCalxPi xxxx'")
+
+::method testExternalRegisteredExtraToken
+  self~assertSyntaxError(99.917, "::routine foo external 'REGISTERED rxmath RxCalxPi xxxx'")
+
+::method testExternalRegisteredBadName
+  self~assertSyntaxError(90.999, "::routine foo external 'REGISTERED rxmath RxCalxPiXXXXXX'")
+
+::method testExternalRegisteredBadLibraryName
+  self~assertSyntaxError(90.999, "::routine foo external 'REGISTERED rxmathxxxxx RxCalxPi'")
+
+::method testExternalLibraryMissingRegisteredName
+  self~assertSyntaxError(99.917, "::routine foo external 'REGISTERED'")
+
+::method testExternalLibraryNotRoutine
+  self~assertSyntaxError(90.999, "::routine foo external 'LIBRARY REXX file_case_sensitive'")
+
+::method testExternalCodeBody
+  self~assertSyntaxError(99.939, ("::routine foo public external 'library rxmath RxCalcPi'", "say hi"))
+
+::method testCallType
+  self~assertEquals("FUNCTION", calltype())
+  call calltype
+  self~assertEquals("SUBROUTINE", result)
+
+::method testArgCount
+  self~assertEquals(0, argCount())
+  self~assertEquals(1, argCount(1))
+  self~assertEquals(3, argCount(1,,3))
+  self~assertEquals(3, argCount(1,,3,,,,,,))
+
+::method testContextName
+  self~assertEquals('CONTEXTNAME', contextName())
+
+::method testExecutable
+  self~assertSame(.routines~executable, executable())
+
+::method testArgumentPassing
+  a = 1
+  self~assertIdentical(a, getarg(2, a))
+
+::method testDotRoutines
+  self~assertTrue(("CALLTYPE", "ARGCOUNT", "GETARG", "CONTEXTNAME", "EXECUTABLE")~equivalent(.routines~allIndexes))
+
+::method testPackage
+  package = .context~package
+  self~assertTrue(.routines~equivalent(package~routines))
+
+  public = .stringTable~of(('ARGCOUNT', .routines~argcount))
+  self~assertTrue(public~equivalent(package~publicRoutines))
+
+-- routines for testing different aspects of correct routines
+::routine calltype
+  parse source . calltype .
+  return calltype
+
+::routine 'argCount' public
+  return arg()
+
+::routine getArg private
+  use strict arg number, ...
+  return arg(number)
+
+::routine contextName
+  return .context~name
+
+::routine executable
+  return .context~executable
+
+::requires "rxmath" library
+
+
+::options all syntax

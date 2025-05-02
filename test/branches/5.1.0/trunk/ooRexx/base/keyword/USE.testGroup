@@ -1,0 +1,450 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.USE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "USE.testGroup" subclass ooTestCase public
+
+
+::method "test_USE"
+  o1=.object~new
+
+  self~assertEquals(o1, test_01(o1))
+  self~assertEquals(.nil, test_02())
+  self~assertEquals(o1, test_03( ,o1))
+
+  return
+
+test_01: procedure
+  use arg o
+  return o
+
+test_02: procedure
+  use arg o=.nil
+  return o
+
+test_03: procedure
+  use arg o=.nil, o1=.nil
+  return o1
+
+
+
+::method "test_USE_STRICT"
+  o1=.object~new
+
+  self~assertEquals(o1, test_01(o1))
+  self~assertEquals(.nil, test_02())
+  self~assertEquals(o1, test_03( ,o1))
+  self~assertEquals(.nil, test_04( ))
+  self~assertEquals(.nil, test_05( ))
+  self~assertEquals(o1, test_06(o1, "aha", .nil, "no..." ))
+
+  return
+
+test_01: procedure
+  use strict arg o
+  return o
+
+test_02: procedure
+  use strict arg o=.nil
+  return o
+
+test_03: procedure
+  use strict arg o=.nil, o1=.nil
+  return o1
+
+test_04: procedure
+  use strict arg
+  return .nil
+
+test_05: procedure
+  use strict arg ...
+  return .nil
+
+test_06: procedure
+  use strict arg o, ...
+  return o
+
+
+
+::method "test_USE_STRICT_error01 40.4"
+  self~expectSyntax(40.4)
+  call test "o"
+  return
+test:
+  use strict arg
+  return
+
+
+::method "test_USE_STRICT_error02 40.3 "
+  self~expectSyntax(40.3)
+  call test
+  return
+test:
+  use strict arg o
+  return
+
+
+::method "test_USE_STRICT_error03 40.4 "
+  self~expectSyntax(40.4)
+  call test "a", "b"
+  return
+test:
+  use strict arg o
+  return
+
+
+
+
+::method "test_USE_assign_values_to_attributes_or_collections"
+  d=.directory~new
+  a=.array~new
+
+  text="Tirol isch lei oans, isch a Landl a kloans, isch a ..."
+  parse var text a1 a2 a3 a4 a5 .
+
+  -- parse var text d~word1 a[2] a[3] a[4] d~word5 .
+
+  call test_01 a1, a2, a3, a4, a5
+
+  self~assertEquals(a1, d~word1)
+  self~assertNull(a[1])
+  self~assertEquals(a2, a[2])
+  self~assertEquals(a3, a[3])
+  self~assertEquals(a4, a[4])
+  self~assertNull(a[5])
+  self~assertEquals(a5, d~word5)
+  return
+
+test_01:
+  use arg d~word1, a[2], a[3], a[4], d~word5
+  return
+
+
+::method test_invalid_option
+  -- USE must be followed by the keyword ARG, LOCAL or STRICT
+  self~assertSyntaxError(25.905, "use upper arg")
+
+::method test_strict_invalid_option
+  -- USE STRICT must be followed by the keyword ARG
+  self~assertSyntaxError(25.929, "use strict upper arg")
+
+::method test_none
+  use arg
+  use strict arg
+
+-- test with zero, one and two args
+::method test_ellipsis_only
+  use arg ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
+
+-- test with zero, one and two args
+::method test_strict_ellipsis_only
+  use strict arg ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
+
+-- test with zero, one and two args
+::method test_comma_only
+  use arg ,;                           -- requires explicit line-end semicolon
+
+::method test_strict_comma_only
+  -- Not enough arguments for method; 1 expected
+  self~expectSyntax(93.901)
+  use strict arg ,;                    -- requires explicit line-end semicolon
+
+-- test with zero, one and two args
+::method test_comma_ellipsis
+  use arg , ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
+
+::method test_strict_comma_ellipsis
+  signal on syntax
+  use strict arg , ...
+  self~assertFail("syntax 93.901 not raised")
+
+  -- 93.901 Not enough arguments for method; 1 expected
+  syntax:
+  condition = condition("object")
+  self~assertSame(93.901, condition~code)
+  -- we expect one message insert "1"
+  self~assertSame(1, condition~additional~items)
+  self~assertSame(1, condition~additional)
+
+-- zero args should work, one arg should raise syntax
+::method test_strict_too_many_args
+  -- Too many arguments in invocation of method; 0 expected
+  self~expectSyntax(93.902)
+  use strict arg
+  if arg() = 0 then
+    forward array ("one")
+
+::method test_strict_too_few_args
+  -- Not enough arguments for method; 1 expected
+  self~expectSyntax(93.901)
+  use strict arg a
+
+-- no dot placeholder allowed
+::method test_dot
+  -- Variable symbol must not start with a "."
+  self~assertSyntaxError(31.3, "use arg .")
+
+-- no dot placeholder allowed
+::method test_strict_dot
+  -- Variable symbol must not start with a "."
+  self~assertSyntaxError(31.3, "use strict arg .")
+
+::method test_string
+  -- The USE instruction requires a comma-separated list of variables or assignment message terms
+  self~assertSyntaxError(89.1, "use arg 'a'")
+
+::method test_strict_string
+  -- Variable symbol must not start with a number
+  self~assertSyntaxError(31.2, "use strict arg 0")
+
+::method test_no_equal
+  -- Extra token ("==") found in USE ARG variable reference; "," or end of instruction expected
+  self~assertSyntaxError(46.902, "use arg a == 2")
+
+::method test_strict_no_equal
+  -- Extra token ("==") found in USE ARG variable reference; "," or end of instruction expected
+  self~assertSyntaxError(46.902, "use strict arg a == 2")
+
+::method test_default_only
+  -- Incorrect expression detected at "="
+  self~assertSyntaxError(35.1, "use arg = .true")
+
+::method test_strict_default_only
+  -- Incorrect expression detected at "="
+  self~assertSyntaxError(35.1, "use strict arg = .true")
+
+::method test_default_missing
+  -- Missing expression following "=" token of a USE STRICT ARG instruction
+  self~assertSyntaxError(35.930, "use arg a =")
+
+::method test_strict_default_missing
+  -- Missing expression following "=" token of a USE STRICT ARG instruction
+  self~assertSyntaxError(35.930, "use strict arg a =")
+
+::method test_default_extra
+  -- Invalid or missing expression following "=" token
+  self~assertSyntaxError(35.930, "use arg a = .true b")
+
+::method test_strict_default_extra
+  -- Invalid or missing expression following "=" token
+  self~assertSyntaxError(35.930, "use strict arg a = .true b")
+
+::method test_ellipsis_extra
+  -- The "..." argument marker can only appear at the end of the argument list
+  self~assertSyntaxError(99.930, "use arg a, b, ..., c")
+
+::method test_strict_ellipsis_extra
+  -- The "..." argument marker can only appear at the end of the argument list
+  self~assertSyntaxError(99.930, "use strict arg a, b, ..., c")
+
+-- various tests with no arguments specified
+::method test_no_arg
+  a = 42
+  use arg a
+  -- USE ARG drops a variable, if it didn't receive a value
+  self~assertFalse(var("A"))
+
+  use arg a = 42
+  self~assertSame(42, a)
+
+  use strict arg a = .true, ...
+  self~assertTrue(a)
+
+  self~assignmentTerm = 42
+  use arg self~assignmentTerm
+  -- USE ARG leaves an assigment message term as-is, if it didn't receive a value
+  self~assertSame(42, self~assignmentTerm)
+
+  array = .Array~of(42)
+  use arg array[1]
+  -- USE ARG leaves an assigment message term as-is, if it didn't receive a value
+  self~assertSame(42, array[1])
+
+  use arg , b
+  self~assertFalse(var("B"))
+
+  use arg a, b, c = (3 * 3 * 3)
+  self~assertFalse(var("A"))
+  self~assertFalse(var("B"))
+  self~assertSame(3 * 3 * 3, c)
+
+-- we call ourself with a single arg, and run various tests with it
+::method test_one_arg
+  if arg() = 0
+    then forward array (.nil)
+
+  a = 42
+  use arg a
+  self~assertNull(a)
+
+  use arg a = 42
+  self~assertNull(a)
+
+  use strict arg a = .true, ...
+  self~assertNull(a)
+
+  self~assignmentTerm = 42
+  use arg self~assignmentTerm
+  self~assertNull(self~assignmentTerm)
+
+  array = .Array~of(42)
+  use arg array[1]
+  self~assertNull(array[1])
+
+  use arg , b
+  self~assertFalse(var("B"))
+
+  use arg a, b, c = (a)
+  self~assertNull(a)
+  self~assertFalse(var("B"))
+  self~assertNull(c)
+
+-- we call ourself with an omitted and a specified arg, and run various tests
+::method test_two_args_first_omitted
+  if arg() = 0
+    then forward array (, .Array~of(42))
+
+  a = 42
+  use arg a
+  -- USE ARG drops a variable, if it didn't receive a value
+  self~assertFalse(var("A"))
+
+  use arg a = 42
+  self~assertSame(42, a)
+
+  use strict arg a = .true, ...
+  self~assertTrue(a)
+
+  self~assignmentTerm = 42
+  use arg self~assignmentTerm
+  -- USE ARG leaves an assigment message term as-is, if it didn't receive a value
+  self~assertSame(42, self~assignmentTerm)
+
+  array = .Array~of(42)
+  use arg array[1]
+  -- USE ARG leaves an assigment message term as-is, if it didn't receive a value
+  self~assertSame(42, array[1])
+
+  use arg , b
+  self~assertIsA(b, .Array)
+
+  use arg a, b, c = (b[1] / 2)
+  self~assertFalse(var("A"))
+  self~assertIsA(b, .Array)
+  self~assertSame(21, c)
+
+-- we call ourself with two args, and run various tests
+::method test_two_args
+  if arg() = 0
+    then forward array ("first", 2)
+
+  a = 42
+  use arg a
+  self~assertSame("first", a)
+
+  use arg a = 42
+  self~assertSame("first", a)
+
+  use strict arg a = .true, ...
+  self~assertSame("first", a)
+
+  self~assignmentTerm = 42
+  use arg self~assignmentTerm
+  self~assertSame("first", self~assignmentTerm)
+
+  array = .Array~of(42)
+  use arg array[1]
+  self~assertSame("first", array[1])
+
+  use arg , b
+  self~assertSame(2, b)
+
+  use arg a, b, c = (arg())
+  self~assertSame("first", a)
+  self~assertSame(2, b)
+  self~assertSame(2, c)
+
+::method test_strict_no_args
+  -- Not enough arguments for method; 1 expected
+  self~expectSyntax(93.901)
+  use strict arg a
+
+::method test_strict_one_arg
+  if arg() = 0
+    then forward array (.false)
+  -- Not enough arguments for method; 2 expected
+  self~expectSyntax(93.901)
+  use strict arg , a
+
+::method test_strict_two_args
+  if arg() = 0
+    then forward array (1, 42)
+  -- Not enough arguments for method; 3 expected
+  self~expectSyntax(93.901)
+  use strict arg a, , b, ...
+
+::attribute assignmentTerm
+
+
+::options all syntax

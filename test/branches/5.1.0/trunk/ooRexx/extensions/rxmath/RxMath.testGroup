@@ -1,0 +1,1798 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.RxMath.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'rxmath' LIBRARY
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "RxMath.testGroup" subclass ooTestCase public
+
+::method 'test_RxCalcSqrtA'
+-- This set of unitTests is brought to you by the Square Root function
+-- If precision works for one function, it'll work for all them
+    sqrt_expected = .array~of(2, ,
+                              1.7, ,
+                              1.73, ,
+                              1.732, ,
+                              1.7321, ,
+                              1.73205, ,
+                              1.732051, ,
+                              1.7320508, ,
+                              1.73205081, ,
+                              1.732050808, ,
+                              1.7320508076, ,
+                              1.73205080757, ,
+                              1.732050807569, ,
+                              1.7320508075689, ,
+                              1.73205080756888, ,
+                              1.732050807568877)
+-- Test each possible value of precision
+    do i = 1 to 16
+        self~assertSame(sqrt_expected[i], RxCalcSqrt(3,i))
+    end
+
+-- Test that default numeric digits' value is used if expression is not specified
+    self~assertSame(sqrt_expected[digits()], RxCalcSqrt(3))
+
+-- Test that manually set numeric digits' value is used if expression is not specified
+    numeric digits 5
+    self~assertSame(sqrt_expected[5], RxCalcSqrt(3))
+
+::method 'test_RxCalcSqrtB'
+-- Test syntax on precision value of 0
+    self~expectSyntax(88.905) -- Argument 2 must be a positive whole number
+    rv = RxCalcSqrt(3,0)
+
+::method 'test_RxCalcSqrtC'
+-- Test syntax on precision value > 16
+    self~assertSame(RxCalcSqrt(3, 16), RxCalcSqrt(3,17))
+
+::method 'test_RxCalcSqrtD'
+-- Test syntax on no argument supplied
+    self~expectSyntax('88.901')
+    rv = RxCalcSqrt()
+
+::method 'test_RxCalcSqrtE'
+-- Test syntax when numeric digits is > than max allowed by RxMath
+    numeric digits 20
+    self~assertSame(RxCalcSqrt(3, 16), RxCalcSqrt(3))
+
+::method 'test_RxCalcSqrtF'
+-- Test significant digits when square root is a whole number
+    expected = 5
+    do i = 1 to 16
+        self~assertSame(expected, RxCalcSqrt(25,i))
+    end
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Exponential function
+::method 'test_RxCalcExpA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(1.64872127, RxCalcExp(.5))
+    numeric digits 16
+    self~assertFuzzyEquals(1.648721270700128, RxCalcExp(.5), 16)
+
+::method 'test_RxCalcExpB'
+-- Test lowest precision
+    expected = 2
+    self~assertSame(expected, RxCalcExp(.5,1))
+
+::method 'test_RxCalcExpC'
+-- Test highest precision
+    expected = 1.648721270700128
+    self~assertFuzzyEquals(expected, RxCalcExp(.5,16), 16)
+
+::method 'testRxCalcExpD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcExp(.5,0)
+
+::method 'testRxCalcExpE'
+-- Test invalid high precision
+    self~assertSame(RxCalcExp(.5,16), RxCalcExp(.5,17))
+
+::method 'testRxCalcExpF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcExp(.5,16), RxCalcExp(.5))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Natural Logarithm (base e) function
+::method 'test_RxCalcLogA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(2.77258872, RxCalcLog(16))
+    numeric digits 18
+    self~assertFuzzyEquals(2.772588722239781, RxCalcLog(16), 16)
+
+::method 'test_RxCalcLogB'
+-- Test lowest precision
+    expected = 3
+    self~assertSame(expected, RxCalcLog(16,1))
+
+::method 'test_RxCalcLogC'
+-- Test highest precision
+    expected = 2.772588722239781
+    self~assertFuzzyEquals(expected, RxCalcLog(16,16), 16)
+
+::method 'testRxCalcLogD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcLog(16,0)
+
+::method 'testRxCalcLogE'
+-- Test invalid high precision
+    self~assertSame(RxCalcLog(16,16), RxCalcLog(16,17))
+
+::method 'testRxCalcLogF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcLog(16,16), RxCalcLog(16))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Natural Logarithm (base 10) function
+::method 'test_RxCalcLog10A'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(1.20411998, RxCalcLog10(16))
+    numeric digits 18
+    self~assertFuzzyEquals(1.204119982655925, RxCalcLog10(16), 16)
+
+::method 'test_RxCalcLog10B'
+-- Test lowest precision
+    expected = 1
+    self~assertSame(expected, RxCalcLog10(16,1))
+
+::method 'test_RxCalcLog10C'
+-- Test highest precision
+    expected = 1.204119982655925
+    self~assertFuzzyEquals(expected, RxCalcLog10(16,16), 16)
+
+::method 'testRxCalcLog10D'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcLog10(16,0)
+
+::method 'testRxCalcLog10E'
+-- Test invalid high precision
+    self~assertSame(RxCalcLog10(16,16), RxCalcLog10(16,17))
+
+::method 'testRxCalcLog10F'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcLog10(16,16), RxCalcLog10(16))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Hyperbolic Sine function
+::method 'test_RxCalcSinhA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.252612317, RxCalcSinh(.25))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2526123168081683, RxCalcSinh(.25), 16)
+
+::method 'test_RxCalcSinhB'
+-- Test lowest precision
+    expected = 0.3
+    self~assertSame(expected, RxCalcSinh(.25,1))
+
+::method 'test_RxCalcSinhC'
+-- Test highest precision
+    expected = 0.2526123168081683
+    self~assertFuzzyEquals(expected, RxCalcSinh(.25,16), 16)
+
+::method 'testRxCalcSinhD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcSinh(16,0)
+
+::method 'testRxCalcSinhE'
+-- Test invalid high precision
+    self~assertSame(RxCalcSinh(.25,16), RxCalcSinh(.25,17))
+
+::method 'testRxCalcSinhF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcSinh(.25,16), RxCalcSinh(.25))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Hyperbolic Cosine function
+::method 'test_RxCalcCoshA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(1.03141310, RxCalcCosh(.25))
+    numeric digits 18
+    self~assertFuzzyEquals(1.031413099879573, RxCalcCosh(.25), 16)
+
+::method 'test_RxCalcCoshB'
+-- Test lowest precision
+    expected = 1
+    self~assertSame(expected, RxCalcCosh(.25,1))
+
+::method 'test_RxCalcCoshC'
+-- Test highest precision
+    expected = 1.031413099879573
+    self~assertFuzzyEquals(expected, RxCalcCosh(.25,16), 16)
+
+::method 'testRxCalcCoshD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCosh(16,0)
+
+::method 'testRxCalcCoshE'
+-- Test invalid high precision, capped at 16
+    self~assertSame(RxCalcCosh(.25,16), RxCalcCosh(.25,17))
+
+::method 'testRxCalcCoshF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCosh(.25,16), RxCalcCosh(.25))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Hyperbolic Tangent function
+::method 'test_RxCalcTanhA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.244918662, RxCalcTanh(.25))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2449186624037091, RxCalcTanh(.25), 16)
+
+::method 'test_RxCalcTanhB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcTanh(.25,1))
+
+::method 'test_RxCalcTanhC'
+-- Test highest precision
+    expected = 0.2449186624037091
+    self~assertFuzzyEquals(expected, RxCalcTanh(.25,16), 16)
+
+::method 'testRxCalcTanhD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcTanh(16,0)
+
+::method 'testRxCalcTanhE'
+-- Test invalid high precision
+    self~assertSame(RxCalcTanh(.25,16), RxCalcTanh(.25,17))
+
+::method 'testRxCalcTanhF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcTanh(.25,16), RxCalcTanh(.25))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Power function
+::method 'test_RxCalcPowerA'
+-- Test default precision
+    expected = 6.13**3
+    self~assertEquals(expected, RxCalcPower(6.13,3))
+
+::method 'test_RxCalcPowerB'
+-- Test lowest precision
+    expected = 2E+2
+    self~assertSame(expected, RxCalcPower(6.13,3,1))
+
+::method 'test_RxCalcPowerC'
+-- Test highest precision
+    expected = 230.346397
+    self~assertFuzzyEquals(expected, RxCalcPower(6.13,3,16), 16)
+
+::method 'testRxCalcPowerD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcPower(6.13,3,0)
+
+::method 'testRxCalcPowerE'
+-- Test invalid high precision
+    self~assertSame(RxCalcPower(6.13,3,16), RxCalcPower(6.13,3,17))
+
+::method 'testRxCalcPowerF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcPower(6.13,3,16), RxCalcPower(6.13,3))
+
+-------------------------------------------------------------------------------------------
+-- This set of unitTests is brought to you by the Sine Degrees function
+::method 'test_RxCalcSinA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.207911691, RxCalcSin(12))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2079116908177593, RxCalcSin(12), 16)
+
+::method 'test_RxCalcSinB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcSin(12,1))
+
+::method 'test_RxCalcSinC'
+-- Test highest precision
+    expected = 0.2079116908177593
+    self~assertFuzzyEquals(expected, RxCalcSin(12,16), 16)
+
+::method 'testRxCalcSinD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcSin(12,0)
+
+::method 'testRxCalcSinE'
+-- Test invalid high precision
+    self~assertSame(RxCalcSin(12,16), RxCalcSin(12,17))
+
+::method 'testRxCalcSinF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcSin(12,16), RxCalcSin(12))
+
+::method 'testRxCalcSinH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(0.207911691, RxCalcSin(12,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2079116908177593, RxCalcSin(12,,'d'), 16)
+
+::method 'testRxCalcSinI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(0.207911691, RxCalcSin(12,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2079116908177593, RxCalcSin(12,,'D'), 16)
+
+::method 'testRxCalcSinJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(0.207911691, RxCalcSin(12,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2079116908177593, RxCalcSin(12,,'degree'), 16)
+
+::method 'testRxCalcSinK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(0.207911691, RxCalcSin(12,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2079116908177593, RxCalcSin(12,,'DEGREE'), 16)
+
+::method 'testRxCalcSinL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916) -- Argument 2 must be one of D, R, or G
+    RxCalcSin(12,,'e')
+
+-- This set of unitTests is brought to you by the Sine Radians function
+::method 'test_RxCalcSin_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(-0.536572918, RxCalcSin(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.5365729180004349, RxCalcSin(12,,'r'), 16)
+
+::method 'test_RxCalcSin_rB'
+-- Test lowest precision
+    expected = -0.5
+    self~assertSame(expected, RxCalcSin(12,1,'r'))
+
+::method 'test_RxCalcSin_rC'
+    self~assertFuzzyEquals('-0.5365729180004349', RxCalcSin(12,16,'r'), 16)
+
+::method 'testRxCalcSin_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcSin(12,0,'r')
+
+::method 'testRxCalcSin_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcSin(12,16,'r'), RxCalcSin(12,17,'r'))
+
+::method 'testRxCalcSin_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcSin(12,16,'r'), RxCalcSin(12,,'r'))
+
+::method 'testRxCalcSin_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(-0.536572918, RxCalcSin(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.5365729180004349, RxCalcSin(12,,'r'), 16)
+
+::method 'testRxCalcSin_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(-0.536572918, RxCalcSin(12,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.5365729180004349, RxCalcSin(12,,'R'), 16)
+
+::method 'testRxCalcSin_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(-0.536572918, RxCalcSin(12,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.5365729180004349, RxCalcSin(12,,'radian'), 16)
+
+::method 'testRxCalcSin_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(-0.536572918, RxCalcSin(12,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.5365729180004349, RxCalcSin(12,,'RADIAN'), 16)
+
+::method 'testRxCalcSin_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcSin(12,,'e')
+
+-- This set of unitTests is brought to you by the Sine Grades function
+::method 'test_RxCalcSin_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.187381315, RxCalcSin(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1873813145857246, RxCalcSin(12,,'g'), 16)
+
+::method 'test_RxCalcSin_gB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcSin(12,1,'g'))
+
+::method 'test_RxCalcSin_gC'
+-- Test highest precision
+    expected = 0.1873813145857246
+    self~assertFuzzyEquals(expected, RxCalcSin(12,16,'g'), 16)
+
+::method 'testRxCalcSin_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcSin(12,0,'g')
+
+::method 'testRxCalcSin_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcSin(12,16,'g'), RxCalcSin(12,17,'g'))
+
+::method 'testRxCalcSin_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcSin(12,16,'g'), RxCalcSin(12,,'g'))
+
+::method 'testRxCalcSin_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(0.187381315, RxCalcSin(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1873813145857246, RxCalcSin(12,,'g'), 16)
+
+::method 'testRxCalcSin_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(0.187381315, RxCalcSin(12,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1873813145857246, RxCalcSin(12,,'G'), 16)
+
+::method 'testRxCalcSin_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(0.187381315, RxCalcSin(12,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1873813145857246, RxCalcSin(12,,'grade'), 16)
+
+::method 'testRxCalcSin_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(0.187381315, RxCalcSin(12,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1873813145857246, RxCalcSin(12,,'GRADE'), 16)
+
+::method 'testRxCalcSin_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcSin(12,,'e')
+
+-- This set of unitTests is brought to you by the Cosine Degrees function
+::method 'test_RxCalcCosA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.978147601, RxCalcCos(12))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9781476007338057, RxCalcCos(12), 16)
+
+::method 'test_RxCalcCosB'
+-- Test lowest precision
+    expected = 1
+    self~assertSame(expected, RxCalcCos(12,1))
+
+::method 'test_RxCalcCosC'
+-- Test highest precision
+    expected = 0.9781476007338057
+    self~assertFuzzyEquals(expected, RxCalcCos(12,16), 16)
+
+::method 'testRxCalcCosD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCos(12,0)
+
+::method 'testRxCalcCosE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCos(12,16), RxCalcCos(12,17))
+
+::method 'testRxCalcCosF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCos(12,16), RxCalcCos(12))
+
+::method 'testRxCalcCosH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(0.978147601, RxCalcCos(12,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9781476007338057, RxCalcCos(12,,'d'), 16)
+
+::method 'testRxCalcCosI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(0.978147601, RxCalcCos(12,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9781476007338057, RxCalcCos(12,,'D'), 16)
+
+::method 'testRxCalcCosJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(0.978147601, RxCalcCos(12,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9781476007338057, RxCalcCos(12,,'degree'), 16)
+
+::method 'testRxCalcCosK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(0.978147601, RxCalcCos(12,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9781476007338057, RxCalcCos(12,,'DEGREE'), 16)
+
+::method 'testRxCalcCosL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCos(12,,'e')
+
+-- This set of unitTests is brought to you by the Cosine Radians function
+::method 'test_RxCalcCos_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.843853959, RxCalcCos(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.8438539587324921, RxCalcCos(12,,'r'), 16)
+
+::method 'test_RxCalcCos_rB'
+-- Test lowest precision
+    expected = 0.8
+    self~assertSame(expected, RxCalcCos(12,1,'r'))
+
+::method 'test_RxCalcCos_rC'
+-- Test highest precision
+    expected = 0.8438539587324921
+    self~assertFuzzyEquals(expected, RxCalcCos(12,16,'r'), 16)
+
+::method 'testRxCalcCos_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCos(12,0,'r')
+
+::method 'testRxCalcCos_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCos(12,16,'r'), RxCalcCos(12,17,'r'))
+
+::method 'testRxCalcCos_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCos(12,16,'r'), RxCalcCos(12,,'r'))
+
+::method 'testRxCalcCos_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(0.843853959, RxCalcCos(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.8438539587324921, RxCalcCos(12,,'r'), 16)
+
+::method 'testRxCalcCos_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(0.843853959, RxCalcCos(12,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.8438539587324921, RxCalcCos(12,,'R'), 16)
+
+::method 'testRxCalcCos_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(0.843853959, RxCalcCos(12,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.8438539587324921, RxCalcCos(12,,'radian'), 16)
+
+::method 'testRxCalcCos_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(0.843853959, RxCalcCos(12,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.8438539587324921, RxCalcCos(12,,'RADIAN'), 16)
+
+::method 'testRxCalcCos_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCos(12,,'e')
+
+-- This set of unitTests is brought to you by the Cosine Grades function
+::method 'test_RxCalcCos_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.982287251, RxCalcCos(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9822872507286887, RxCalcCos(12,,'g'), 16)
+
+::method 'test_RxCalcCos_gB'
+-- Test lowest precision
+    expected = 1
+    self~assertSame(expected, RxCalcCos(12,1,'g'))
+
+::method 'test_RxCalcCos_gC'
+-- Test highest precision
+    expected = 0.9822872507286887
+    self~assertFuzzyEquals(expected, RxCalcCos(12,16,'g'), 16)
+
+::method 'testRxCalcCos_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCos(12,0,'g')
+
+::method 'testRxCalcCos_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCos(12,16,'g'), RxCalcCos(12,17,'g'))
+
+::method 'testRxCalcCos_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCos(12,16,'g'), RxCalcCos(12,,'g'))
+
+::method 'testRxCalcCos_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(0.982287251, RxCalcCos(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9822872507286887, RxCalcCos(12,,'g'), 16)
+
+::method 'testRxCalcCos_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(0.982287251, RxCalcCos(12,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9822872507286887, RxCalcCos(12,,'G'), 16)
+
+::method 'testRxCalcCos_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(0.982287251, RxCalcCos(12,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9822872507286887, RxCalcCos(12,,'grade'), 16)
+
+::method 'testRxCalcCos_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(0.982287251, RxCalcCos(12,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.9822872507286887, RxCalcCos(12,,'GRADE'), 16)
+
+::method 'testRxCalcCos_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCos(12,,'e')
+
+-- This set of unitTests is brought to you by the Tangent Degrees function
+::method 'test_RxCalcTanA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.212556562, RxCalcTan(12))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2125565616700221, RxCalcTan(12), 16)
+
+::method 'test_RxCalcTanB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcTan(12,1))
+
+::method 'test_RxCalcTanC'
+-- Test highest precision
+    expected = 0.2125565616700221
+    self~assertFuzzyEquals(expected, RxCalcTan(12,16), 16)
+
+::method 'testRxCalcTanD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcTan(12,0)
+
+::method 'testRxCalcTanE'
+-- Test invalid high precision
+    self~assertSame(RxCalcTan(12,16), RxCalcTan(12,17))
+
+::method 'testRxCalcTanF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcTan(12,16), RxCalcTan(12))
+
+::method 'testRxCalcTanH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(0.212556562, RxCalcTan(12,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2125565616700221, RxCalcTan(12,,'d'), 16)
+
+::method 'testRxCalcTanI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(0.212556562, RxCalcTan(12,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2125565616700221, RxCalcTan(12,,'D'), 16)
+
+::method 'testRxCalcTanJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(0.212556562, RxCalcTan(12,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2125565616700221, RxCalcTan(12,,'degree'), 16)
+
+::method 'testRxCalcTanK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(0.212556562, RxCalcTan(12,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.2125565616700221, RxCalcTan(12,,'DEGREE'), 16)
+
+::method 'testRxCalcTanL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcTan(12,,'e')
+
+-- This set of unitTests is brought to you by the Tangent Radians function
+::method 'test_RxCalcTan_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(-0.635859929, RxCalcTan(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.6358599286615808, RxCalcTan(12,,'r'), 16)
+
+::method 'test_RxCalcTan_rB'
+-- Test lowest precision
+    expected = -0.6
+    self~assertSame(expected, RxCalcTan(12,1,'r'))
+
+::method 'test_RxCalcTan_rC'
+-- Test highest precision
+    expected = '-0.6358599286615808'
+    self~assertFuzzyEquals(expected, RxCalcTan(12,16,'r'), 16)
+
+::method 'testRxCalcTan_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcTan(12,0,'r')
+
+::method 'testRxCalcTan_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcTan(12,16,'r'), RxCalcTan(12,17,'r'))
+
+::method 'testRxCalcTan_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcTan(12,16,'r'), RxCalcTan(12,,'r'))
+
+::method 'testRxCalcTan_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(-0.635859929, RxCalcTan(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.6358599286615808, RxCalcTan(12,,'r'), 16)
+
+::method 'testRxCalcTan_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(-0.635859929, RxCalcTan(12,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.6358599286615808, RxCalcTan(12,,'R'), 16)
+
+::method 'testRxCalcTan_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(-0.635859929, RxCalcTan(12,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.6358599286615808, RxCalcTan(12,,'radian'), 16)
+
+::method 'testRxCalcTan_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(-0.635859929, RxCalcTan(12,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(-0.6358599286615808, RxCalcTan(12,,'RADIAN'), 16)
+
+::method 'testRxCalcTan_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcTan(12,,'e')
+
+-- This set of unitTests is brought to you by the Tangent Grades function
+::method 'test_RxCalcTan_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.190760202, RxCalcTan(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1907602022185667, RxCalcTan(12,,'g'), 16)
+
+::method 'test_RxCalcTan_gB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcTan(12,1,'g'))
+
+::method 'test_RxCalcTan_gC'
+-- Test highest precision
+    expected = 0.1907602022185667
+    self~assertFuzzyEquals(expected, RxCalcTan(12,16,'g'), 16)
+
+::method 'testRxCalcTan_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcTan(12,0,'g')
+
+::method 'testRxCalcTan_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcTan(12,16,'g'), RxCalcTan(12,17,'g'))
+
+::method 'testRxCalcTan_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcTan(12,16,'g'), RxCalcTan(12,,'g'))
+
+::method 'testRxCalcTan_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(0.190760202, RxCalcTan(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1907602022185667, RxCalcTan(12,,'g'), 16)
+
+::method 'testRxCalcTan_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(0.190760202, RxCalcTan(12,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1907602022185667, RxCalcTan(12,,'G'), 16)
+
+::method 'testRxCalcTan_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(0.190760202, RxCalcTan(12,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1907602022185667, RxCalcTan(12,,'grade'), 16)
+
+::method 'testRxCalcTan_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(0.190760202, RxCalcTan(12,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1907602022185667, RxCalcTan(12,,'GRADE'), 16)
+
+::method 'testRxCalcTan_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcTan(12,,'e')
+
+-- This set of unitTests is brought to you by the Cotangent Degrees function
+::method 'test_RxCalcCotanA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(4.70463011, RxCalcCotan(12))
+    numeric digits 18
+    self~assertFuzzyEquals(4.704630109478455, RxCalcCotan(12), 16)
+
+::method 'test_RxCalcCotanB'
+-- Test lowest precision
+    expected = 5
+    self~assertSame(expected, RxCalcCotan(12,1))
+
+::method 'test_RxCalcCotanC'
+-- Test highest precision
+    expected = 4.704630109478455
+    self~assertFuzzyEquals(expected, RxCalcCotan(12,16), 16)
+
+::method 'testRxCalcCotanD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCotan(12,0)
+
+::method 'testRxCalcCotanE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCotan(12,16), RxCalcCotan(12,17))
+
+::method 'testRxCalcCotanF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCotan(12,16), RxCalcCotan(12))
+
+::method 'testRxCalcCotanH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(4.70463011, RxCalcCotan(12,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(4.704630109478455, RxCalcCotan(12,,'d'), 16)
+
+::method 'testRxCalcCotanI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(4.70463011, RxCalcCotan(12,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(4.704630109478455, RxCalcCotan(12,,'D'), 16)
+
+::method 'testRxCalcCotanJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(4.70463011, RxCalcCotan(12,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(4.704630109478455, RxCalcCotan(12,,'degree'), 16)
+
+::method 'testRxCalcCotanK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(4.70463011, RxCalcCotan(12,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(4.704630109478455, RxCalcCotan(12,,'DEGREE'), 16)
+
+::method 'testRxCalcCotanL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCotan(12,,'e')
+
+-- This set of unitTests is brought to you by the Cotangent Radians function
+::method 'test_RxCalcCotan_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(-1.57267341, RxCalcCotan(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-1.572673406397689, RxCalcCotan(12,,'r'), 16)
+
+::method 'test_RxCalcCotan_rB'
+-- Test lowest precision
+    expected = -2
+    self~assertSame(expected, RxCalcCotan(12,1,'r'))
+
+::method 'test_RxCalcCotan_rC'
+-- Test highest precision
+    self~assertFuzzyEquals('-1.572673406397689', RxCalcCotan(12,16,'r'), 16)
+
+::method 'testRxCalcCotan_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCotan(12,0,'r')
+
+::method 'testRxCalcCotan_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCotan(12,16,'r'), RxCalcCotan(12,17,'r'))
+
+::method 'testRxCalcCotan_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCotan(12,16,'r'), RxCalcCotan(12,,'r'))
+
+::method 'testRxCalcCotan_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(-1.57267341, RxCalcCotan(12,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(-1.572673406397689, RxCalcCotan(12,,'r'), 16)
+
+::method 'testRxCalcCotan_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(-1.57267341, RxCalcCotan(12,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(-1.572673406397689, RxCalcCotan(12,,'R'), 16)
+
+::method 'testRxCalcCotan_rJ'
+    numeric digits 9
+    self~assertSame(-1.57267341, RxCalcCotan(12,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(-1.572673406397689, RxCalcCotan(12,,'radian'), 16)
+
+::method 'testRxCalcCotan_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(-1.57267341, RxCalcCotan(12,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(-1.572673406397689, RxCalcCotan(12,,'RADIAN'), 16)
+
+::method 'testRxCalcCotan_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCotan(12,,'e')
+
+-- This set of unitTests is brought to you by the Cotangent Grades function
+::method 'test_RxCalcCotan_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(5.24218358, RxCalcCotan(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(5.242183581113177, RxCalcCotan(12,,'g'), 16)
+
+::method 'test_RxCalcCotan_gB'
+-- Test lowest precision
+    expected = 5
+    self~assertSame(expected, RxCalcCotan(12,1,'g'))
+
+::method 'test_RxCalcCotan_gC'
+-- Test highest precision
+    expected = 5.242183581113177
+    self~assertFuzzyEquals(expected, RxCalcCotan(12,16,'g'), 16)
+
+::method 'testRxCalcCotan_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcCotan(12,0,'g')
+
+::method 'testRxCalcCotan_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcCotan(12,16,'g'), RxCalcCotan(12,17,'g'))
+
+::method 'testRxCalcCotan_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcCotan(12,16,'g'), RxCalcCotan(12,,'g'))
+
+::method 'testRxCalcCotan_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(5.24218358, RxCalcCotan(12,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(5.242183581113177, RxCalcCotan(12,,'g'), 16)
+
+::method 'testRxCalcCotan_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(5.24218358, RxCalcCotan(12,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(5.242183581113177, RxCalcCotan(12,,'G'), 16)
+
+::method 'testRxCalcCotan_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(5.24218358, RxCalcCotan(12,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(5.242183581113177, RxCalcCotan(12,,'grade'), 16)
+
+::method 'testRxCalcCotan_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(5.24218358, RxCalcCotan(12,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(5.242183581113177, RxCalcCotan(12,,'GRADE'), 16)
+
+::method 'testRxCalcCotan_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcCotan(12,,'e')
+
+-- This set of unitTests is brought to you by the Pi function
+::method 'test_RxCalcPiA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(3.14159265, RxCalcPi())
+    numeric digits 18
+    self~assertFuzzyEquals(3.141592653589793, RxCalcPi(), 16)
+
+::method 'test_RxCalcPiB'
+-- Test lowest precision
+    expected = 3
+    self~assertSame(expected, RxCalcPi(1))
+
+::method 'test_RxCalcPiC'
+-- Test highest precision
+    expected = 3.141592653589793
+    self~assertFuzzyEquals(expected, RxCalcPi(16), 16)
+
+::method 'testRxCalcPiD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcPi(0)
+
+::method 'testRxCalcPiE'
+-- Test invalid high precision
+    self~assertSame(RxCalcPi(16), RxCalcPi(17))
+
+::method 'testRxCalcPiF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcPi(16), RxCalcPi())
+
+-- This set of unitTests is brought to you by the Arcsine Degrees function
+::method 'test_RxCalcArcSinA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(8.77763055, RxCalcArcSin(.1526))
+    numeric digits 18
+    self~assertFuzzyEquals(8.777630552223764, RxCalcArcSin(.1526), 16)
+
+::method 'test_RxCalcArcSinB'
+-- Test lowest precision
+    expected = 9
+    self~assertSame(expected, RxCalcArcSin(.1526,1))
+
+::method 'test_RxCalcArcSinC'
+-- Test highest precision
+    expected = 8.777630552223764
+    self~assertFuzzyEquals(expected, RxCalcArcSin(.1526,16), 16)
+
+::method 'testRxCalcArcSinD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcSin(.1526,0)
+
+::method 'testRxCalcArcSinE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcSin(.1526,16), RxCalcArcSin(.1526,17))
+
+::method 'testRxCalcArcSinF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcSin(.1526,16), RxCalcArcSin(.1526))
+
+::method 'testRxCalcArcSinH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(8.77763055, RxCalcArcSin(.1526,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.777630552223764, RxCalcArcSin(.1526,,'d'), 16)
+
+::method 'testRxCalcArcSinI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(8.77763055, RxCalcArcSin(.1526,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.777630552223764, RxCalcArcSin(.1526,,'D'), 16)
+
+::method 'testRxCalcArcSinJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(8.77763055, RxCalcArcSin(.1526,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.777630552223764, RxCalcArcSin(.1526,,'degree'), 16)
+
+::method 'testRxCalcArcSinK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(8.77763055, RxCalcArcSin(.1526,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.777630552223764, RxCalcArcSin(.1526,,'DEGREE'), 16)
+
+::method 'testRxCalcArcSinL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcSin(.1526,,'e')
+
+-- This set of unitTests is brought to you by the Arcsine Radians function
+::method 'test_RxCalcArcSin_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.153198554, RxCalcArcSin(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1531985536599528, RxCalcArcSin(.1526,,'r'), 16)
+
+::method 'test_RxCalcArcSin_rB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcArcSin(.1526,1,'r'))
+
+::method 'test_RxCalcArcSin_rC'
+-- Test highest precision
+    expected = 0.1531985536599528
+    self~assertFuzzyEquals(expected, RxCalcArcSin(.1526,16,'r'), 16)
+
+::method 'testRxCalcArcSin_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcSin(.1526,0,'r')
+
+::method 'testRxCalcArcSin_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcSin(.1526,16,'r'), RxCalcArcSin(.1526,17,'r'))
+
+::method 'testRxCalcArcSin_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcSin(.1526,16,'r'), RxCalcArcSin(.1526,,'r'))
+
+::method 'testRxCalcArcSin_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(0.153198554, RxCalcArcSin(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1531985536599528, RxCalcArcSin(.1526,,'r'), 16)
+
+::method 'testRxCalcArcSin_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(0.153198554, RxCalcArcSin(.1526,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1531985536599528, RxCalcArcSin(.1526,,'R'), 16)
+
+::method 'testRxCalcArcSin_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(0.153198554, RxCalcArcSin(.1526,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1531985536599528, RxCalcArcSin(.1526,,'radian'), 16)
+
+::method 'testRxCalcArcSin_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(0.153198554, RxCalcArcSin(.1526,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1531985536599528, RxCalcArcSin(.1526,,'RADIAN'), 16)
+
+::method 'testRxCalcArcSin_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcSin(.1526,,'e')
+
+-- This set of unitTests is brought to you by the Arcsine Grades function
+::method 'test_RxCalcArcSin_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(9.75292284, RxCalcArcSin(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.752922835804183, RxCalcArcSin(.1526,,'g'), 16)
+
+::method 'test_RxCalcArcSin_gB'
+-- Test lowest precision
+    expected = 1E+1
+    self~assertSame(expected, RxCalcArcSin(.1526,1,'g'))
+
+::method 'test_RxCalcArcSin_gC'
+-- Test highest precision
+    expected = 9.752922835804183
+    self~assertFuzzyEquals(expected, RxCalcArcSin(.1526,16,'g'), 16)
+
+::method 'testRxCalcArcSin_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcSin(.1526,0,'g')
+
+::method 'testRxCalcArcSin_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcSin(.1526,16,'g'), RxCalcArcSin(.1526,17,'g'))
+
+::method 'testRxCalcArcSin_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcSin(.1526,16,'g'), RxCalcArcSin(.1526,,'g'))
+
+::method 'testRxCalcArcSin_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(9.75292284, RxCalcArcSin(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.752922835804183, RxCalcArcSin(.1526,,'g'), 16)
+
+::method 'testRxCalcArcSin_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(9.75292284, RxCalcArcSin(.1526,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.752922835804183, RxCalcArcSin(.1526,,'G'), 16)
+
+::method 'testRxCalcArcSin_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(9.75292284, RxCalcArcSin(.1526,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.752922835804183, RxCalcArcSin(.1526,,'grade'), 16)
+
+::method 'testRxCalcArcSin_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(9.75292284, RxCalcArcSin(.1526,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.752922835804183, RxCalcArcSin(.1526,,'GRADE'), 16)
+
+::method 'testRxCalcArcSin_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcSin(.1526,,'e')
+
+-- This set of unitTests is brought to you by the ArcCosine Degrees function
+::method 'test_RxCalcArcCosA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(81.2223694, RxCalcArcCos(.1526))
+    numeric digits 18
+    self~assertFuzzyEquals(81.22236944777625, RxCalcArcCos(.1526), 16)
+
+::method 'test_RxCalcArcCosB'
+-- Test lowest precision
+    expected = 8E+1
+    self~assertSame(expected, RxCalcArcCos(.1526,1))
+
+::method 'test_RxCalcArcCosC'
+-- Test highest precision
+    expected = 81.22236944777625
+    self~assertFuzzyEquals(expected, RxCalcArcCos(.1526,16), 16)
+
+::method 'testRxCalcArcCosD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcCos(.1526,0)
+
+::method 'testRxCalcArcCosE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcCos(.1526,16), RxCalcArcCos(.1526,17))
+
+::method 'testRxCalcArcCosF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcCos(.1526,16), RxCalcArcCos(.1526))
+
+::method 'testRxCalcArcCosH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(81.2223694, RxCalcArcCos(.1526,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(81.22236944777625, RxCalcArcCos(.1526,,'d'), 16)
+
+::method 'testRxCalcArcCosI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(81.2223694, RxCalcArcCos(.1526,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(81.22236944777625, RxCalcArcCos(.1526,,'D'), 16)
+
+::method 'testRxCalcArcCosJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(81.2223694, RxCalcArcCos(.1526,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(81.22236944777625, RxCalcArcCos(.1526,,'degree'), 16)
+
+::method 'testRxCalcArcCosK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(81.2223694, RxCalcArcCos(.1526,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(81.22236944777625, RxCalcArcCos(.1526,,'DEGREE'), 16)
+
+::method 'testRxCalcArcCosL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcCos(.1526,,'e')
+
+-- This set of unitTests is brought to you by the ArcCosine Radians function
+::method 'test_RxCalcArcCos_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(1.41759777, RxCalcArcCos(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(1.417597773134944, RxCalcArcCos(.1526,,'r'), 16)
+
+::method 'test_RxCalcArcCos_rB'
+-- Test lowest precision
+    expected = 1
+    self~assertSame(expected, RxCalcArcCos(.1526,1,'r'))
+
+::method 'test_RxCalcArcCos_rC'
+-- Test highest precision
+    expected = 1.417597773134944
+    self~assertFuzzyEquals(expected, RxCalcArcCos(.1526,16,'r'), 16)
+
+::method 'testRxCalcArcCos_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcCos(.1526,0,'r')
+
+::method 'testRxCalcArcCos_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcCos(.1526,16,'r'), RxCalcArcCos(.1526,17,'r'))
+
+::method 'testRxCalcArcCos_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcCos(.1526,16,'r'), RxCalcArcCos(.1526,,'r'))
+
+::method 'testRxCalcArcCos_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(1.41759777, RxCalcArcCos(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(1.417597773134944, RxCalcArcCos(.1526,,'r'), 16)
+
+::method 'testRxCalcArcCos_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(1.41759777, RxCalcArcCos(.1526,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(1.417597773134944, RxCalcArcCos(.1526,,'R'), 16)
+
+::method 'testRxCalcArcCos_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(1.41759777, RxCalcArcCos(.1526,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(1.417597773134944, RxCalcArcCos(.1526,,'radian'), 16)
+
+::method 'testRxCalcArcCos_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(1.41759777, RxCalcArcCos(.1526,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(1.417597773134944, RxCalcArcCos(.1526,,'RADIAN'), 16)
+
+::method 'testRxCalcArcCos_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcCos(.1526,,'e')
+
+-- This set of unitTests is brought to you by the ArcCosine Grades function
+::method 'test_RxCalcArcCos_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(90.2470772, RxCalcArcCos(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(90.24707716419583, RxCalcArcCos(.1526,,'g'), 16)
+
+::method 'test_RxCalcArcCos_gB'
+-- Test lowest precision
+    expected = 9E+1
+    self~assertSame(expected, RxCalcArcCos(.1526,1,'g'))
+
+::method 'test_RxCalcArcCos_gC'
+-- Test highest precision
+    expected = 90.24707716419583
+    self~assertFuzzyEquals(expected, RxCalcArcCos(.1526,16,'g'), 16)
+
+::method 'testRxCalcArcCos_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcCos(.1526,0,'g')
+
+::method 'testRxCalcArcCos_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcCos(.1526,16,'g'), RxCalcArcCos(.1526,17,'g'))
+
+::method 'testRxCalcArcCos_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcCos(.1526,16,'g'), RxCalcArcCos(.1526,,'g'))
+
+::method 'testRxCalcArcCos_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(90.2470772, RxCalcArcCos(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(90.24707716419583, RxCalcArcCos(.1526,,'g'), 16)
+
+::method 'testRxCalcArcCos_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(90.2470772, RxCalcArcCos(.1526,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(90.24707716419583, RxCalcArcCos(.1526,,'G'), 16)
+
+::method 'testRxCalcArcCos_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(90.2470772, RxCalcArcCos(.1526,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(90.24707716419583, RxCalcArcCos(.1526,,'grade'), 16)
+
+::method 'testRxCalcArcCos_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(90.2470772, RxCalcArcCos(.1526,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(90.24707716419583, RxCalcArcCos(.1526,,'GRADE'), 16)
+
+::method 'testRxCalcArcCos_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcCos(.1526,,'e')
+
+-- ihere
+-- This set of unitTests is brought to you by the ArcTangent Degrees function
+::method 'test_RxCalcArcTanA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(8.67640073, RxCalcArcTan(.1526))
+    numeric digits 18
+    self~assertFuzzyEquals(8.676400728009401, RxCalcArcTan(.1526), 16)
+
+::method 'test_RxCalcArcTanB'
+-- Test lowest precision
+    expected = 9
+    self~assertSame(expected, RxCalcArcTan(.1526,1))
+
+::method 'test_RxCalcArcTanC'
+-- Test highest precision
+    expected = 8.676400728009401
+    self~assertFuzzyEquals(expected, RxCalcArcTan(.1526,16), 16)
+
+::method 'testRxCalcArcTanD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcTan(.1526,0)
+
+::method 'testRxCalcArcTanE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcTan(.1526,16), RxCalcArcTan(.1526,17))
+
+::method 'testRxCalcArcTanF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcTan(.1526,16), RxCalcArcTan(.1526))
+
+::method 'testRxCalcArcTanH'
+-- Test supplying Degree as 'd'
+    numeric digits 9
+    self~assertSame(8.67640073, RxCalcArcTan(.1526,,'d'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.676400728009401, RxCalcArcTan(.1526,,'d'), 16)
+
+::method 'testRxCalcArcTanI'
+-- Test supplying Degree as 'D'
+    numeric digits 9
+    self~assertSame(8.67640073, RxCalcArcTan(.1526,,'D'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.676400728009401, RxCalcArcTan(.1526,,'D'), 16)
+
+::method 'testRxCalcArcTanJ'
+-- Test supplying Degree as 'degree'
+    numeric digits 9
+    self~assertSame(8.67640073, RxCalcArcTan(.1526,,'degree'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.676400728009401, RxCalcArcTan(.1526,,'degree'), 16)
+
+::method 'testRxCalcArcTanK'
+-- Test supplying Degree as 'DEGREE'
+    numeric digits 9
+    self~assertSame(8.67640073, RxCalcArcTan(.1526,,'DEGREE'))
+    numeric digits 18
+    self~assertFuzzyEquals(8.676400728009401, RxCalcArcTan(.1526,,'DEGREE'), 16)
+
+::method 'testRxCalcArcTanL'
+-- Test supplying Degree as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcTan(.1526,,'e')
+
+-- This set of unitTests is brought to you by the ArcTangent Radians function
+::method 'test_RxCalcArcTan_rA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(0.151431760, RxCalcArcTan(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1514317599261971, RxCalcArcTan(.1526,,'r'), 16)
+
+::method 'test_RxCalcArcTan_rB'
+-- Test lowest precision
+    expected = 0.2
+    self~assertSame(expected, RxCalcArcTan(.1526,1,'r'))
+
+::method 'test_RxCalcArcTan_rC'
+-- Test highest precision
+    expected = 0.1514317599261971
+    self~assertFuzzyEquals(expected, RxCalcArcTan(.1526,16,'r'), 16)
+
+::method 'testRxCalcArcTan_rD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcTan(.1526,0,'r')
+
+::method 'testRxCalcArcTan_rE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcTan(.1526,16,'r'), RxCalcArcTan(.1526,17,'r'))
+
+::method 'testRxCalcArcTan_rF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcTan(.1526,16,'r'), RxCalcArcTan(.1526,,'r'))
+
+::method 'testRxCalcArcTan_rH'
+-- Test supplying Radian as 'r'
+    numeric digits 9
+    self~assertSame(0.151431760, RxCalcArcTan(.1526,,'r'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1514317599261971, RxCalcArcTan(.1526,,'r'), 16)
+
+::method 'testRxCalcArcTan_rI'
+-- Test supplying Radian as 'R'
+    numeric digits 9
+    self~assertSame(0.151431760, RxCalcArcTan(.1526,,'R'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1514317599261971, RxCalcArcTan(.1526,,'R'), 16)
+
+::method 'testRxCalcArcTan_rJ'
+-- Test supplying Radian as 'radian'
+    numeric digits 9
+    self~assertSame(0.151431760, RxCalcArcTan(.1526,,'radian'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1514317599261971, RxCalcArcTan(.1526,,'radian'), 16)
+
+::method 'testRxCalcArcTan_rK'
+-- Test supplying Radian as 'RADIAN'
+    numeric digits 9
+    self~assertSame(0.151431760, RxCalcArcTan(.1526,,'RADIAN'))
+    numeric digits 18
+    self~assertFuzzyEquals(0.1514317599261971, RxCalcArcTan(.1526,,'RADIAN'), 16)
+
+::method 'testRxCalcArcTan_rL'
+-- Test supplying Radian as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcTan(.1526,,'e')
+
+-- This set of unitTests is brought to you by the ArcTangent Grades function
+::method 'test_RxCalcArcTan_gA'
+-- Test default precision
+    numeric digits 9
+    self~assertSame(9.64044525, RxCalcArcTan(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.640445253343781, RxCalcArcTan(.1526,,'g'), 16)
+
+::method 'test_RxCalcArcTan_gB'
+-- Test lowest precision
+    expected = 1E+1
+    self~assertSame(expected, RxCalcArcTan(.1526,1,'g'))
+
+::method 'test_RxCalcArcTan_gC'
+-- Test highest precision
+    expected = 9.640445253343781
+    self~assertFuzzyEquals(expected, RxCalcArcTan(.1526,16,'g'), 16)
+
+::method 'testRxCalcArcTan_gD'
+-- Test invalid low precision
+    self~expectSyntax(88.905)
+    rv = RxCalcArcTan(.1526,0,'g')
+
+::method 'testRxCalcArcTan_gE'
+-- Test invalid high precision
+    self~assertSame(RxCalcArcTan(.1526,16,'g'), RxCalcArcTan(.1526,17,'g'))
+
+::method 'testRxCalcArcTan_gF'
+-- Test invalid high precision base on numeric digits
+    numeric digits 20
+    self~assertSame(RxCalcArcTan(.1526,16,'g'), RxCalcArcTan(.1526,,'g'))
+
+::method 'testRxCalcArcTan_gH'
+-- Test supplying Grade as 'g'
+    numeric digits 9
+    self~assertSame(9.64044525, RxCalcArcTan(.1526,,'g'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.640445253343781, RxCalcArcTan(.1526,,'g'), 16)
+
+::method 'testRxCalcArcTan_gI'
+-- Test supplying Grade as 'G'
+    numeric digits 9
+    self~assertSame(9.64044525, RxCalcArcTan(.1526,,'G'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.640445253343781, RxCalcArcTan(.1526,,'G'), 16)
+
+::method 'testRxCalcArcTan_gJ'
+-- Test supplying Grade as 'grade'
+    numeric digits 9
+    self~assertSame(9.64044525, RxCalcArcTan(.1526,,'grade'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.640445253343781, RxCalcArcTan(.1526,,'grade'), 16)
+
+::method 'testRxCalcArcTan_gK'
+-- Test supplying Grade as 'GRADE'
+    numeric digits 9
+    self~assertSame(9.64044525, RxCalcArcTan(.1526,,'GRADE'))
+    numeric digits 18
+    self~assertFuzzyEquals(9.640445253343781, RxCalcArcTan(.1526,,'GRADE'), 16)
+
+::method 'testRxCalcArcTan_gL'
+-- Test supplying Grade as an invalid expression
+    self~expectSyntax(88.916)
+    RxCalcArcTan(.1526,,'e')
+
+
+-- nan and infinity tests
+
+-- calling any of the math functions with a "nan" argument is valid, but will
+-- always result in a "nan" result
+::method test_nan_argument
+    do function over "sqrt", "exp", "log", "log10", "sin", "cos", "tan", "cotan", "arcsin", "arccos", "arctan", "sinh", "cosh", "tanh"
+      call ("rxcalc" || function) "nan"
+      self~assertSame("nan", result)
+    end
+    self~assertSame("nan", RxCalcPower(2, "nan"))
+    self~assertSame("nan", RxCalcPower("nan", 2))
+    self~assertSame("nan", RxCalcPower("nan", "nan"))
+
+::method test_nan
+    self~assertSame("nan", RxCalcSqrt(-1))
+    self~assertSame("nan", RxCalcLog(-0.1))
+    self~assertSame("nan", RxCalcLog10(-0.1))
+    self~assertSame("nan", RxCalcPower(-2, 5.1))
+    self~assertSame("nan", RxCalcArcSin(1.0001))
+    self~assertSame("nan", RxCalcArcCos(1.0001))
+
+::method test_infinity_argument
+    self~assertSame("nan", RxCalcSqrt("-infinity"))
+    self~assertSame("+infinity", RxCalcSqrt("+infinity"))
+
+    self~assertSame(0, RxCalcExp("-infinity"))
+    self~assertSame("+infinity", RxCalcExp("+infinity"))
+    self~assertSame(0, RxCalcExp("-infinity"))
+
+    self~assertSame("+infinity", RxCalcPower("+infinity", 2))
+    self~assertSame("+infinity", RxCalcPower("-infinity", 2))
+    self~assertSame("-infinity", RxCalcPower("-infinity", 3))
+    self~assertSame("+infinity", RxCalcPower(2, "+infinity"))
+    self~assertSame(0, RxCalcPower(2, "-infinity"))
+
+    self~assertSame("+infinity", RxCalcLog("+infinity"))
+    self~assertSame("+infinity", RxCalcLog10("+infinity"))
+
+    self~assertSame(-90, RxCalcArcTan("-infinity"))
+    self~assertSame(90, RxCalcArcTan("+infinity"))
+
+::method test_infinity
+    self~assertSame("+infinity", RxCalcExp(709.8), "exp(709.8) should be +inf:" RxCalcExp(709.8))
+
+    -- maximum double is ~1.79769e308; log(1.79769e308) is ~709.78
+    self~assertTrue(RxCalcExp(709.7) > 1e308, "exp(709.7) should work:" RxCalcExp(709.7))
+    self~assertSame("+infinity", RxCalcExp(709.8), "exp(709.8) should be +inf:" RxCalcExp(709.8))
+
+    self~assertSame("-infinity", RxCalcLog(0))
+    self~assertSame("-infinity", RxCalcLog10(0))
+
+    -- 2^1023 < maximum double < 2^1024
+    self~assertTrue(RxCalcPower(2, 1023) > 8e307, "power(2, 1023) should work:" RxCalcPower(2, 1023))
+    self~assertSame("+infinity", RxCalcPower(2, 1024), "power(2, 1024) should be +inf:" RxCalcPower(2, 1024))
+
+    -- (-2)^1023 > minimum double > (-2)^1025
+    self~assertTrue(RxCalcPower(-2, 1023) < -1e307, "power(-2, 1023) should work:" RxCalcPower(-2, 1023))
+    self~assertSame("+infinity", RxCalcPower(-2, 1024), "power(-2, 1024) should be +inf:" RxCalcPower(-2, 1024))
+    self~assertSame("-infinity", RxCalcPower(-2, 1025), "power(-2, 1025) should be -inf:" RxCalcPower(-2, 1025))
+
+    -- a bit arbitrary, but well ..
+    self~assertSame("+infinity", RxCalcTan(90))
+    self~assertSame("-infinity", RxCalcTan(270))
+
+
+::options all syntax

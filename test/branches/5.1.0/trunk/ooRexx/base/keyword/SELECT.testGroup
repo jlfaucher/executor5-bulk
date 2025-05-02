@@ -1,0 +1,732 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SELECT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "SELECT.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   Do i=3 to 1 by -1
+      SELECT;WHEN i=1;THEN;R1='1';WHEN i=2;Then;R2='2';OTHERWISE;R3='3';END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_2"
+   Do i=3 to 1 by -1
+      SELECT;WHEN i=1 THEN R1='1';WHEN i=2 Then R2='2';OTHERWISE R3='3';END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_3"
+   Do i=3 to 1 by -1
+      SELECT
+         WHEN i=1 THEN R1='1'
+         WHEN i=2 Then R2='2'
+         OTHERWISE R3='3'
+         END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_4"
+   Do i=3 to 1 by -1
+      SELECT   /* comm1 */ ; WHEN i=1 THEN R1='1'    /*     comm2           */
+         /* comm3 */   WHEN i=2 Then R2='2'    /*     comm4           */
+         /* comm5 */   OTHERWISE R3='3'        /*     comm6           */
+         END                                            /*     comm7           */
+      SELECT ; /* comm1 */   WHEN i=1 THEN R4='4'    /*     comm2           */
+         /* comm3 */   WHEN i=2 Then R5='5'    /*     comm4           */
+         /* comm5 */   OTHERWISE R6='6'        /*     comm6           */
+         END                                            /*     comm7           */
+      End
+   self~assertSame((r1 r2 r3 r4 r5 r6), (1 2 3 4 5 6))
+
+::method "test_5"
+   a.=0
+   k=0
+   v.=0
+   v.1.1=1; v.2.2=2; v.3.3=3; v.4.4=4;v.5.5=5
+   Do i=1 to 5
+      SELECT ;
+         WHEN ff(1); THEN Call check(1)
+         WHEN ff(2); THEN Call check(2)
+         WHEN ff(3); THEN Call check(3)
+         WHEN ff(4); THEN Call check(3)     /* force err-then             */
+         WHEN ff(8); THEN Call check(5)     /* force err-when             */
+         OTHERWISE;       Call check(4)
+         END
+      /*Call check('after')*/
+     END
+   Do j=1 To k
+      self~assertSame((a.1.j a.2.j a.3.j a.4.j a.5.j), (v.1.j v.2.j v.3.j v.4.j v.5.j))
+      End
+   return
+   check:
+   k=k+1
+   If i<>ARG(1) Then Do;
+      If i<>4 Then self~assertTrue(0)
+      End;
+   a.i.k=i
+   j = i
+   Return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_6"
+   SELECT;
+      WHEN i=k THEN self~assertTrue(0)
+      WHEN i=j Then self~assertTrue(0)
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_7"
+   SELECT;
+      WHEN i=k THEN nop
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_8"
+   r1=0; r2=0
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN ff(1) THEN R1= 1 ;      /*function ref to check If evaluat*/
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (1 0))
+   return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_9"
+   r1=0;r2=0;
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN ff(0) THEN R1= 1 ;      /*function ref to check If evaluat*/
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+   return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_10"
+   r1=0;r2=0
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN i     THEN R1= 1 ;      /* var with value 0 or 1          */
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_11"
+   r1=0;r2=0;
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN j     THEN R1= 1 ;      /* var with value 0 or 1          */
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+
+::method "test_12"
+   self~expectSyntax(43.1)
+   r1=0;r2=0;
+   SELECT;
+      WHEN '1'   THEN R1= 1 ;      /* const with value 0 or 1        */
+      OTHERWISE       R2= 2 ;
+      END;
+   id='0017'; Call iirbqaa (r1 r2),(1 0) ;R0017: -- Call non-existent function
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_13"
+   r1=0;r2=0;
+   SELECT;
+      WHEN '0'   THEN R1= 1 ;      /* const with value 0 or 1       */
+      OTHERWISE       R2= 2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+
+::method "test_14"
+   r1=0;r2=0;                                   /* complex expressions  */
+   SELECT;
+      WHEN SUBSTR(11||((((5+7)*2-2)/2)**2)(9%8)(9//2),1,1) Then R1=1;
+      OTHERWISE       R2 = 2;
+      END;
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_15"
+   -- Value of expression following WHEN keyword must be exactly "0" or "1"
+   self~expectSyntax(34.2)
+   a='a'
+   SELECT
+      WHEN a   THEN R1='1'
+      OTHERWISE self~assertTrue(0)
+      END
+
+::method "test_16"
+   -- Value of expression following WHEN keyword must be exactly "0" or "1"
+   self~expectSyntax(34.2)
+   SELECT
+      WHEN  3  THEN R1='1'
+      OTHERWISE self~assertTrue(0)
+      END
+   return
+
+::method "test_17"
+   i=1
+   a=0
+   /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ nop
+   /**/Otherwise/**/ nop
+   End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   self~assertTrue(1)
+   /*------------  Nesting in /**/Otherwise/**/ ----------*/
+   a=0
+   i=1; j=0
+   /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop
+   /**/Otherwise/**/ nop
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End;
+   self~assertTrue(1)
+   return
+
+
+::method test_select_end_only
+  -- SELECT on line .. requires WHEN
+  self~assertSyntaxError(7.1, "select; end")
+
+::method test_select_otherwise_only
+  -- SELECT on line .. requires WHEN
+  self~assertSyntaxError(7.1, "select; otherwise; end")
+
+::method test_select_any_clause
+  -- WHEN or OTHERWISE expected
+  self~assertSyntaxError(7.2, "select; a = 1; end")
+
+::method test_select_when_any_clause
+  -- WHEN or OTHERWISE expected
+  self~assertSyntaxError(7.2, "select; when 1 then nop; if 0 then nop; end")
+
+::method test_select_when_only
+  -- Missing expression in logical expression list
+  self~assertSyntaxError(35.929, "select; when; end")
+
+::method test_select_when_expression
+  -- WHEN instruction on line 1 requires matching THEN clause
+  self~assertSyntaxError(18.2, "select; when 1; end")
+
+::method test_select_when_expression_then
+  -- END has no corresponding DO, LOOP, or SELECT
+  self~assertSyntaxError(10.1, "select; when 1 then; end")
+
+::method test_select_minimum_required
+  select
+    when 1 then self~assertTrue(1)
+  end
+
+::method test_select_subkeyword_wrong
+  -- SELECT must be followed by the keyword LABEL or CASE
+  self~assertSyntaxError(25.923, "select name; when 1 then nop; end")
+
+::method test_select_label_missing
+  -- Symbol expected after LABEL keyword
+  self~assertSyntaxError(20.918, "select label; when 1 then nop; end")
+
+::method test_select_label_missing_end_label
+  -- END corresponding to SELECT on line 638 must not have a symbol following it because there is no LABEL
+  self~assertSyntaxError(10.7, "select; when 1 then nop; end 1")
+
+::method test_select_label_missing_end_nomatch
+  -- Symbol following END ("2") must match LABEL of SELECT specification ("1")
+  self~assertSyntaxError(10.4, "select label 1; when 1 then nop; end 2")
+
+::method test_select_label_numeric
+  select label 1
+    when 1 then self~assertTrue(1)
+  end
+
+::method test_select_label_numeric_end_match
+  select label 1
+    when .true then self~assertTrue(1)
+  end 1
+
+::method test_select_label_symbol
+  select label 1
+    when 1 = .true then self~assertTrue(1)
+  end
+
+::method test_select_label_symbol_end_match
+  select label lbl
+    when 1 == .true then self~assertTrue(1)
+  end lbl
+
+::method test_select_label_nil_symbol
+  select label .nil
+    when \.false then self~assertTrue(1)
+  end
+
+::method test_select_label_nil_symbol_end_match
+  select label .nil
+    when 1 then self~assertTrue(1)
+  end .nil
+
+::method test_select_no_otherwise
+  -- All WHEN expressions of SELECT are false; OTHERWISE expected
+  self~expectSyntax(7.3)
+  select
+    when 0 then self~assertFail
+  end
+
+::method test_select_when_list_omitted_all
+  -- Missing expression in logical expression list
+  self~assertSyntaxError(35.929, "select; when , then nop; end")
+
+::method test_select_when_list_omitted_start
+  -- Missing expression in logical expression list
+  self~assertSyntaxError(35.929, "select; when , 1 then nop; end")
+
+::method test_select_when_list_omitted_mid
+  -- Missing expression in logical expression list
+  self~assertSyntaxError(35.929, "select; when 1, , .true then nop; end")
+
+::method test_select_when_list_omitted_end
+  -- Missing expression in logical expression list
+  self~assertSyntaxError(35.929, "select; when .true, , then nop; end")
+
+::method test_select_when_list_true_first
+  select
+    when 1, .true, 1 == 1 then self~assertTrue(1)
+  end
+
+::method test_select_when_otherwise
+  select
+    when 1 then self~assertTrue(1)
+    otherwise
+  end
+
+::method test_select_when_otherwise_clause
+  select
+    when 0 then self~assertFalse
+    otherwise self~assertTrue(1)
+  end
+
+::method test_select_when_otherwise_clauses
+  select
+    when .false then self~assertFalse
+    otherwise nop; self~assertTrue(1)
+  end
+

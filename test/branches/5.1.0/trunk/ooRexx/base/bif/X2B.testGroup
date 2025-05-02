@@ -1,0 +1,303 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.X2B.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "X2B.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~assertSame('11000011', x2b('C3'))
+
+::method 'test002'
+    self~assertSame('0111', x2b('7'))
+
+::method 'test003'
+    self~assertSame('000111000001', x2b('1 C1'))
+
+::method 'test004'
+    self~assertSame('11000011', x2b(c2x('C3'X)))
+
+::method 'test005'
+    self~assertSame('10000001', x2b(d2x('129')))
+
+::method 'test006'
+    self~assertSame('1100', x2b(d2x('12')))
+
+::method 'test007'
+    self~assertSame('0000', x2b('0'))
+
+::method 'test008'
+    self~assertSame('0001', x2b('1'))
+
+::method 'test009'
+    self~assertSame('0010', x2b('2'))
+
+::method 'test010'
+    self~assertSame('0011', x2b('3'))
+
+::method 'test011'
+    self~assertSame('0100', x2b('4'))
+
+::method 'test012'
+    self~assertSame('0101', x2b('5'))
+
+::method 'test013'
+    self~assertSame('0110', x2b('6'))
+
+::method 'test014'
+    self~assertSame('0111', x2b('7'))
+
+::method 'test015'
+    self~assertSame('1000', x2b('8'))
+
+::method 'test016'
+    self~assertSame('1001', x2b('9'))
+
+::method 'test017'
+    self~assertSame('1010', x2b('A'))
+
+::method 'test018'
+    self~assertSame('1011', x2b('B'))
+
+::method 'test019'
+    self~assertSame('1100', x2b('C'))
+
+::method 'test020'
+    self~assertSame('1101', x2b('D'))
+
+::method 'test021'
+    self~assertSame('1110', x2b('E'))
+
+::method 'test022'
+    self~assertSame('1111', x2b('F'))
+
+::method 'test023'
+    self~assertSame(x2b('0123456789ABCDEF'), x2b('0123456789abcdef'))
+
+::method 'test024'
+    self~assertSame(x2b('0123456789ABCDEF'), x2b('01 23 45 67 89 ab cd ef'))
+
+::method 'test025'
+    self~assertSame(x2b('0123456789ABCDEF'), x2b(c2x('0123456789abcdef'x)))
+
+::method 'test026'
+    self~assertSame('64', length(x2b('0123456789abcdef')))
+
+::method 'test027'
+    long_str.1 = copies('1a',255)
+    self~assertSame('2040', length(x2b(long_str.1)))
+
+::method 'test028'
+    long_str.2 = copies('1a',256)
+    self~assertSame('2048', length(x2b(long_str.2)))
+
+::method 'test029'
+    long_str.3 = copies('1a',32768)
+    self~assertSame('262144', length(x2b(long_str.3)))
+
+::method 'test030'
+    long_str.4 = copies('1a',100000)
+    self~assertSame('800000', length(x2b(long_str.4)))
+
+::method 'test031'
+    self~assertSame('', x2b(''))
+
+::method 'test032'
+    self~assertSame('', x2b(''))
+
+::method 'test033'
+    self~assertSame('', x2b(''))
+
+::method 'test034'
+    self~assertSame('0000000100000010', x2b('01 02'))
+
+::method 'test035'
+    self~assertSame(x2b('0123456789ABCDEF'), x2b('0123 4567 89ab cdef'))
+
+::method 'test036'
+    self~assertSame(x2b('0123456789ABCDEF'), x2b('01234567 89abcdef'))
+
+::method 'test037'
+    many_bl_str = '01'||copies(" ",100000)||'02'
+    self~assertSame('0000000100000010', x2b(many_bl_str))
+
+::method 'test038'
+    self~expectSyntax(93.976)
+    xre = x2b('0 1')
+
+::method 'test039'
+    self~expectSyntax(93.976)
+    xre = x2b('010 2')
+
+::method 'test040'
+    self~expectSyntax(93.931)
+    xre = x2b('01 ')
+
+::method 'test041'
+    self~expectSyntax(93.931)
+    xre = x2b(' 01 02')
+
+::method 'test042'
+    self~expectSyntax(93.931)
+    xre = x2b(' 0 1 0 2')
+
+::method 'test043'
+    iv_str.1 = xrange('00'x, '29'x)
+    self~expectSyntax(93.933)
+    xre = x2b(iv_str.1)
+
+::method 'test044'
+    iv_str.2 = xrange('3A'x,'40'x)
+    self~expectSyntax(93.933)
+    xre = x2b(iv_str.2)
+
+::method 'test045'
+    iv_str.3 = xrange('47'x, '60'x)
+    self~expectSyntax(93.933)
+    xre = x2b(iv_str.3)
+
+::method 'test046'
+    iv_str.4 = xrange('67'x, 'FF'x)
+    self~expectSyntax(93.933)
+    xre = x2b(iv_str.4)
+
+::method 'test047'
+    long_iv_str.1 = '1'||copies('*',100000)||'1'
+    self~expectSyntax(93.933)
+    xre = x2b(long_iv_str.1)
+
+::method 'test048'
+    long_iv_str.2 = copies('2A'x,100000)
+    self~expectSyntax(93.933)
+    xre = x2b(long_iv_str.2)
+
+::method 'test049'
+    long_iv_str.3 = copies('5C'x,100000)
+    self~expectSyntax(93.933)
+    xre = x2b(long_iv_str.3)
+
+::method 'test050'
+    long_iv_str.4 = 'A'||copies(' ',100000)
+    self~expectSyntax(93.931)
+    xre = x2b(long_iv_str.4)
+
+::method 'test051'
+    long_iv_str.5 = copies(' ',100000)||'A'
+    self~expectSyntax(93.931)
+    xre = x2b(long_iv_str.5)
+
+::method 'test055'
+    self~expectSyntax(40.4)
+    xre = x2b('1a'x,'B')
+
+::method 'test056'
+    self~expectSyntax(40.4)
+    xre = x2b('1a'x,copies('A',100000))
+
+::method 'test057'
+    self~assertSame('200000', length(b2x(x2b(copies('41',100000)))))
+
+::method 'test058'
+    self~assertSame('000111100010', x2b('1E2'))
+
+::method 'test059'
+    self~expectSyntax(93.933)
+    xre=x2b('1E+2')
+
+::method 'test060'
+    self~expectSyntax(93.933)
+    xre=x2b('1.77E+2')
+
+::method 'test061'
+    self~assertSame('000100000000', x2b(+1E2))
+
+::method 'test062'
+    self~assertSame('000100000000', x2b(+1E+2))
+
+::method 'test063'
+    self~assertSame('000101110111', x2b(+1.77E2))
+
+::method 'test064'
+    self~assertSame('000101110111', x2b(+1.77E+2))
+
+::method 'test065'
+    self~assertSame('01000010', x2b(+42))
+
+::method 'test066'
+    self~assertSame('01000010', x2b(+21*2))
+
+::method 'test067'
+    self~assertSame('01000010', x2b((7*3)*2))
+
+::method 'test068'
+    numeric digits 1
+    self~assertSame('00010000', x2b(10))
+
+::method 'test069'
+    self~assertSame('0001', x2b(dataType(6,'N')))
+
+::method 'test070'
+    self~expectSyntax(93.933)
+    xre=x2b(dataType(6))
+
+::method 'test071'
+    self~assertSame('00101000', x2b(subStr('0192837465abcdefgh',4,2)))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_X2B"
+    self~assertEquals('11000011', X2B('C3'))
+    self~assertEquals('0111', X2B('7'))
+    self~assertEquals('000111000001', X2B('1 C1'))
+
+   -- new tests
+    self~assertEquals('', X2B(''))
+    self~assertEquals('', X2B(''))
+
+
+::options novalue error

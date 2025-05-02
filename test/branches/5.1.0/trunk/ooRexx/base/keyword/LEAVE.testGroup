@@ -1,0 +1,246 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.LEAVE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "LEAVE.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   c=0; c2=0
+   Do 10
+     c=c+1
+     If c>5 Then Leave                 /* c=6 must be reached */
+     c2=c2+1                           /* only executed for c<=5         */
+     End
+   self~assertSame((c c2), (6 5))
+
+::method "test_2"
+   c=0; ca=0; c2=0
+   Do Forever
+     c=c+1
+     If ca>20 Then Signal X0002
+     ca=ca+1
+     If c>10 Then Leave
+     c2=c2+1
+     End
+   X0002:
+   self~assertSame((c ca c2), (11 11 10))
+
+::method "test_3"
+   c=0; c2=0;
+   Do While c2<100; c2=c2+1; If c>10 Then Leave  ; c=c+1; End
+   self~assertSame((c c2), (11 12))
+
+::method "test_4"
+   c=0; c2=0;
+   Do Until c2>50;  c2=c2+2; If c>10 Then Leave  ; c=c+1; End
+   self~assertSame((c c2), (11 24))
+
+::method "test_5"
+   c=0; Do i=1; If i=50 Then Signal X0005; If i>20 Then Leave; c=c+1; End
+   X0005:
+   self~assertSame((i c), (21 20))
+
+::method "test_6"
+   c=0; Do i=1 To 50; If i>10 Then Leave i; c=c+1; End
+   self~assertSame((i c), (11 10))
+
+::method "test_7"
+   c=0;
+   Do i=1 by 2;
+      If i>100 Then Signal X0007;
+      If i>10 Then Leave i; c=c+1; End
+   X0007:
+   self~assertSame((i c), (11 5))
+
+::method "test_8"
+   c=0;
+   Do i=1 for 30; If i>2 Then  Leave i; c=c+1; End
+   self~assertSame((i c), (3 2))
+
+::method "test_9"
+   c=0;
+   Do j=1 Until j>20
+      Do While j<10;
+         j=j+1; If j>5  Then Leave  ; c=c+1 ; End
+      If j>15 Then Leave  ; c=c+1; End
+   self~assertSame((j c), (16 12))
+
+::method "test_10"
+   c2=0;c1=0
+   Do i=1 To 10 By 2
+      Do j=10 To 1 By -1
+         If i>2  Then Leave  i
+         c1=c1+1
+         If j<6 Then Leave   j
+         c2=c2+1
+         End j
+      End i
+   self~assertSame((i j''c2 c1), (3/**/ 1/**irrelevant**/05 6 /** trailing comm*/))
+
+::method "test_11"
+   c.=0;j=1;
+   Do i.j=0 to 6; c.1=c.1+1; If i.j=1 Then Leave I.J; End i.j
+   Do i.j=0 to 6; c.2=c.2+1; If i.j=2 Then Leave I.j; End i.j
+   Do i.j=0 to 6; c.3=c.3+1; If i.j=3 Then Leave i.J; End i.j
+   Do i.j=0 to 6; c.4=c.4+1; If i.j=4 Then Leave i.j; End i.j
+   self~assertSame((c.1 c.2 c.3 c.4 ), (2 3 4 5 ))
+
+::method "test_12"
+   self~expectSyntax(28.3)
+   Do i.j=0; xrc=28; if 1 then Leave   I.1; Call err; End; R0011:
+
+::method "test_13"
+   c.=0;
+   Do i.=0 to 4
+      c.1=c.1+1
+      if c.1>=3 then Leave   i.           /* symbol in iterate=stem       */
+      c.2=c.2+1
+      End i.
+   self~assertTrue(1)
+
+::method "test_14"
+   c=0; i=0
+   Do i=1 To 10
+      Do j=1 While i>5
+         If i+c>20 Then
+          Leave   i
+         c=c+1
+         End
+      End
+   self~assertSame((i j c), (6 16 15))
+
+::method "test_15"
+   ck=0; cj=0; ci=0; d=0;i=0; j=0; k=0;
+   Do 3 ; i=i+1
+      Do 5 ; j=j+1
+         Do 6 ; k=k+1
+           d=d+1
+           If i>3 Then Leave
+           ck=ck+1
+           End
+         cj=cj+1
+         End
+      ci=ci+1
+      End
+   self~assertSame((i j k ci cj ck d), (3 15 90 3 15 90 90))
+
+::method "test_16"
+   ck=0; cj=0; ci=0; d=0
+   Do i=1 To 10
+      Do j=1 to 5
+         Do k=1
+            d=d+1
+            If i>3 Then Leave
+            If j>4 Then Leave   k
+            If k>5 Then Leave   k
+            ck=ck+1
+            End
+         cj=cj+1
+         End
+      ci=ci+1
+      End
+   self~assertSame((i j k ci cj ck d), (11 6 1 10 50 60 110))
+
+::method "test_17"
+   self~expectSyntax(28.3)
+   Do k=1 To 3
+      Leave   i
+      End
+   return
+
+::method "test_18"
+   ck=0; cj=0; ci=0; d=0; flag=0
+   Do i=1 To 3
+      Do j=1 to 5
+         If d<=20 then self~assertSame(flag, 0)
+         else self~assertSame(flag, 1)
+         Do k=1 to 7
+            d=d+1
+            If d>20 Then Do; flag=1;Leave   j ;flag=0;End;
+            If j>4   Then Leave   k
+            If k>5   Then Leave   k
+            ck=ck+1
+            End
+         cj=cj+1
+         End
+      ci=ci+1
+      End
+   self~assertSame((i j k ci cj ck d), (4 1 1 3 3 17 23))
+
+::method "test_22"
+   self~expectSyntax(28.3)
+   c=0; i=0
+   Do i=1 to 5
+      Call X0018
+      Signal Z0018
+      Call err
+   End i
+   X0018:Leave   i ; Return
+   R0018:Call ver i,1
+   Return
+
+::method "test_23"
+   self~expectSyntax(28.3)
+   Do i=5; Leave   k; End
+
+::method "test_24"
+   self~expectSyntax(28.1)
+   Leave
+
+::method "test_25"
+   self~expectSyntax(28.3)
+   Leave   i
+
+::method "test_26"
+   self~expectSyntax(28.3)
+   Do i=1 To 5;Leave   3; End i
+
+
+::options novalue error

@@ -1,0 +1,1238 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Queue.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires "ooTest.frm"
+
+::class Queue.testGroup subclass ooTestCase public
+
+::method init
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+  forward class (super) continue    -- let superclass initialize
+
+  clz=.Queue                       -- collection class object to use
+  bUserDefinedIndex=.false          -- user defined index? (determines what MAKEARRAY returns)
+  bSingleItem      =.true           -- index associates only one item
+
+  collDir=.directory~new            -- define directory containing predefined collections
+  collDir~emptyColl=clz~new
+
+  o1=.object~new
+  o2=.object~new
+--@@
+o1= 11
+o2= 22
+
+  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~coll_2   =clz~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+  collDir~allIndexes1=.array~of(0, 1, 2, 3, 4, 5)
+  collDir~allIndexes2=.array~of(0, 1, 2, 3, 4, 5, 6)
+
+  collDir~allItems1=.array~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~allItems2=.array~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+
+   /* determine resulting collection   */
+  collDir~difference1 =clz~of("1v","2v")  /* coll_1~difference(coll_2) */
+  collDir~difference2 =clz~of(o2, o2, "3v")       /* coll_2~difference(coll_1) */
+
+
+  collDir~interSectionColl=clz~of("2v", "2v", o1, o1)
+
+  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", o1, o1, o1, o1, o2, o2, "3v")
+  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v", o1, o1, o2, o2, o1, o1)
+
+  collDir~xorColl1        =clz~of("1v", "2v", o2, o2, "3v")
+  collDir~xorColl2        =clz~of(o2, o2, "3v", "1v", "2v")
+
+  ::method  test_new
+
+    -- Prefix to my messages.
+    be   = "New object should be"
+    have = "New object should have"
+
+    -- Create what should be a new instance of a queue.
+    q = .queue~new
+
+    -- Test that the object is indeed an instance of .queue.
+    self~assertEquals(.queue, q~class, "subtest01:" be "instance of .queue")
+
+    -- Test that the new object is a direct subclass of .object.
+    supers = q~class~superclasses
+
+    self~assertEquals(2, supers~items, "subtest02:"  have "2 superclasses")
+
+    self~assertEquals(.object, supers[ 1 ], "subtest03:"  have ".object as superclass")
+
+    -- Test that the object has all the .queue methods.
+    self~assertTrue(q~hasmethod( "[]"        ), "subtest04:" have '"[]" method')
+    self~assertTrue(q~hasmethod( "[]="       ), "subtest05:" have '"[]=" method')
+    self~assertTrue(q~hasmethod( "AT"        ), "subtest06:" have "AT method")
+    self~assertTrue(q~hasmethod( "HASINDEX"  ), "subtest07:" have "HASINDEX method")
+    self~assertTrue(q~hasmethod( "ITEMS"     ), "subtest08:" have "ITEMS method")
+    self~assertTrue(q~hasmethod( "MAKEARRAY" ), "subtest09:" have "MAKEARRAY method")
+    self~assertTrue(q~hasmethod( "PEEK"      ), "subtest10:" have "PEEK method")
+    self~assertTrue(q~hasmethod( "PULL"      ), "subtest11:" have "PULL method")
+    self~assertTrue(q~hasmethod( "PUSH"      ), "subtest12:" have "PUSH method")
+    self~assertTrue(q~hasmethod( "PUT"       ), "subtest13:" have "PUT method")
+    self~assertTrue(q~hasmethod( "QUEUE"     ), "subtest14:" have "QUEUE method")
+    self~assertTrue(q~hasmethod( "REMOVE"    ), "subtest15:" have "REMOVE method")
+    self~assertTrue(q~hasmethod( "SUPPLIER"  ), "subtest16:" have "SUPPLIER method")
+
+    -- Test that the queue is created empty.
+    self~assertEquals(0, q~items, "subtest17:" be "empty")
+
+  ::method  test_newReptitively
+
+    holder = .set~new
+    count  = 100
+    do count
+      q = .queue~new
+      q~~queue( 'one' )~~queue( 'two' )~~queue( 'three' )
+      holder~put( q )
+    end
+
+    self~assertEquals(count, holder~items, "Expected to create" count "unique queues")
+
+    iterator = holder~supplier
+    lastObj  = .queue~new
+    i        = 0
+    do while iterator~available
+      obj = iterator~item
+      self~assertEquals(.queue, obj~class, "Every new object should be instance of queue")
+      self~assertEquals(3, obj~items, "Each new queue object should now have 3 items")
+
+      self~assertNotSame(obj, lastObj, "Each new queue object should be unique")
+      lastObj = obj
+
+      i = i + 1
+      iterator~next
+    end
+
+    -- Double check the logic of the test.
+    self~assertEquals(count, i, "Expected to create" count "unique queues")
+
+
+  ::method  test_hasIndex
+
+    -- Test that a queue with 100 items has all indexes 1 through 100, and no
+    -- more.
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+    end
+    do i = 1 to 100
+      self~assertTrue(q~hasindex( i ), 'Queue must have an index of' i)
+    end
+
+    self~assertFalse(q~hasindex( 101 ), 'This queue can not have an index of 101')
+    self~assertFalse(q~hasindex( 102 ), 'This queue can not have an index of 102')
+
+    -- Test that a relatively big integer does not cause a problem.
+    self~assertFalse(q~hasindex(  999999999 ), 'This queue can not have an index of 999,999,999')
+
+
+    -- Test that hasindex is correct after the queue has been re-ordered.
+    q = self~fillQueueWithBoth( .queue~new )
+    do i = 199 to 0 by -11
+      q~remove( i )
+    end
+    lastIndex = q~items
+
+    do i = 1 to lastIndex
+      self~assertTrue(q~hasindex( i ), 'Queue must have an index of' i)
+    end
+    self~assertFalse(q~hasindex( lastIndex + 1 ), 'Queue can not have index of' lastIndex + 1)
+
+    -- Test that hasindex is correct with an empty queue.
+    q = .queue~new
+    self~assertFalse(q~hasindex(         1 ), 'Queue can not have an index of 1'                   1)
+    self~assertFalse(q~hasindex(         2 ), 'Queue can not have an index of 2'                   2)
+    self~assertFalse(q~hasindex( 999999999 ), 'Queue can not have an index of 999,999,999' 999999999)
+
+
+  ::method  test_items
+
+    q = .queue~new
+    self~assertTrue(q~items == 0, 'Empty queue should have 0 items')
+
+    -- Queue 100 numbers, should have 100 items.
+    do number over self~class~arrayOf100numbers
+      q~queue( number )
+    end
+    self~assertTrue(q~items == 100, 'Queued 100 times, queue should have 100 items')
+
+    -- After each remove, ~items should be one less.
+    do i = 100 to 1 by -1
+      q~pull
+      self~assertEquals(i - 1, q~items, "After each pull, count of items should be 1 less")
+    end
+
+    -- Double check we are empty.
+    self~assertTrue(q~items == 0, 'Empty queue should have 0 items')
+
+    -- Similar basic tests using objects (no reason to expect an object to be
+    -- queued any different, but you never know.)
+    arr = self~class~arrayOf100objects
+    do i = 1 to 100
+      q~push( arr[ i ] )
+      self~assertEquals(i, q~items, 'Items should equal count of pushes')
+    end
+
+    -- Remove every other object in queue, expect count of items to be correct
+    -- after the queue adjusts its indexes.
+    j = 100
+    do i = 100 to 1 by -2
+      q~remove( i )
+      j = j - 1
+      self~assertEquals(j, q~items, 'After each remove, count of items should be 1 less')
+    end
+
+    -- Double check my counting.
+    self~assertEquals(50, q~items, 'Queue should have 50 items')
+
+    -- Same thing, remove every 5th object in the queue.
+    j = 50
+    do i = 50 to 1 by -5
+      q~remove( i )
+      j = j - 1
+      self~assertEquals(j, q~items, 'After each remove, count of items should be 1 less')
+    end
+    self~assertEquals(40, q~items, 'Queue should have 40 items')
+
+    -- Use ~items in a do statement.
+    do q~items
+      q~pull
+    end
+    self~assertTrue(q~items == 0, 'Queue should be empty')
+
+    -- Pull from an empty queue a number of times and see that items remains 0.
+    do 50
+      q~pull
+    end
+    self~assertTrue(q~items == 0, 'Queue should be empty')
+
+    -- Try a relatively large number of items.
+    do 10
+      do n over self~class~arrayOf100numbers
+        q~queue( n )
+      end
+      do o over self~class~arrayOf100objects
+        q~push( o )
+      end
+    end
+    self~assertEquals(2000, q~items, 'Queue should have 2000 items')
+
+    -- Remove a couple of miscellaneous items from the queue, (which forces
+    -- the queue to readjust a lot of indexes,) and check the item count.
+    q~~remove( 3  )~~remove( 11 )~~remove( 19 )
+    self~assertEquals(1997, q~items, 'Queue should have 1997 items')
+
+    -- Remove all but 1 item and check count.
+    do 1996
+      q~pull
+    end
+    self~assertEquals(1, q~items, 'Queue should have 1 item')
+
+
+  ::method  test_peek
+
+    q   = .queue~new
+    obj = q~peek
+    self~assertNull(obj, 'Peek on empty queue should return .nil')
+
+
+  ::method  test_pull
+
+    -- Test on an empty queue.
+    q   = .queue~new
+    obj = q~pull
+    self~assertNull(obj, 'Pull from empty queue should return .nil')
+
+
+  ::method  test_queue
+
+    -- Test that we can queue simple numbers ...
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+    end
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
+
+    -- ... and test we can queue objects.
+    q = .queue~new
+    do o over self~class~arrayOf100objects
+      q~queue( o )
+    end
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
+
+    -- Test we can queue the .nil object ...
+    q = .queue~new
+    do 100
+      q~queue( .nil )
+    end
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
+
+    -- ... and test each queued object is the .nil object.
+    do obj over q
+      self~assertEquals(.nil, obj, 'Each object in queue should be the .nil object')
+    end
+
+    -- Test that we can queue a queue.
+    q = .queue~new
+    testQ = .queue~new~~queue( 'one' )~~queue( 'two' )~~queue( 'three' )
+    do 100
+      q~queue( testQ )
+    end
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
+    do obj over q
+      self~assertEquals(testQ, obj, 'Each object in queue should be the test queue')
+    end
+
+    -- Test that we can queue a class object.
+    q = .queue~new
+    do 100
+      q~queue( .method )
+    end
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
+    do obj over q
+      self~assertEquals(.method, obj, 'Each object in queue should be the .method class object')
+    end
+
+    -- Test that each queued item is queued to the tail of the queue.
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+      self~assertEquals(n, q[ q~items ], 'Each queued object should be at the tail')
+    end
+    do o over self~class~arrayOf100objects
+      q~queue( o )
+      self~assertEquals(o, q[ q~items ], 'Each queued object should be at the tail')
+    end
+
+    -- Test each queued item has the correct index.  (Doubt that this proves
+    -- much the last test did not prove.)
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+    end
+    do o over self~class~arrayOf100objects
+      q~queue( o )
+    end
+
+    n = self~class~arrayOf100numbers
+    do i = 1 to 100
+      self~assertEquals(n[ i ], q[ i ], 'Queue object at index should match object at array index')
+    end
+    o = self~class~arrayOf100objects
+    do i = 101 to 200
+      self~assertEquals(o[ i - 100 ], q[ i ], 'Queue object at index should match object at array index')
+    end
+
+
+  ::method  test_supplier
+
+    -- Test that the supplier method returns a supplier.
+    q = .queue~new
+    q~queue( 1 )
+    obj = q~supplier
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (1)')
+
+    -- Test the returned supplier is correct.
+    self~assertEquals(1, obj~index, 'Supplier index must be 1')
+    self~assertEquals(1, obj~item, 'Supplier item must be 1')
+    count = 0
+    do while obj~available
+      count = count + 1
+      obj~next
+    end
+    self~assertEquals(1, count, 'Supplier must have exactly 1 index/item')
+
+    -- Test that an empty queue produces an empty supplier.
+    q     = .queue~new
+    obj   = q~supplier
+    count = 0
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (2)')
+    do while obj~available
+      count = count + 1
+      obj~next
+    end
+    self~assertEquals(0, count, 'Supplier must not have any index/item')
+
+
+::method "test_sort"
+
+  a=.queue~of
+  a2=.queue~of
+  a1=a~sort
+  self~assertTrue(a1~items=a2~items)
+
+  a=.queue~of(1)
+  a2=.queue~of(1)
+  a1=a~sort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2)
+  a2=.queue~of(1,2)
+  a1=a~sort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2,3)
+  a2=.queue~of(1,2,3)
+  a1=a~sort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(2,1,3)
+  a1=a~sort
+  a2=.queue~of(1,2,3)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1,3,2)
+  a1=a~sort
+  a2=.queue~of(1,2,2,3)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1)
+  a1=a~sort
+  a2=.queue~of(1,2)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.queue~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~sort
+  a2=.queue~of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+  self~assertTrue(testSeq(a1, a2))
+
+  return
+
+::method "test_stableSort"
+
+  a=.queue~of
+  a2=.queue~of
+  a1=a~stableSort
+  self~assertTrue(a1~items=a2~items)
+
+  a=.queue~of(1)
+  a2=.queue~of(1)
+  a1=a~stableSort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2)
+  a2=.queue~of(1,2)
+  a1=a~stableSort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2,3)
+  a2=.queue~of(1,2,3)
+  a1=a~stableSort
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(2,1,3)
+  a1=a~stableSort
+  a2=.queue~of(1,2,3)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1,3,2)
+  a1=a~stableSort
+  a2=.queue~of(1,2,2,3)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1)
+  a1=a~stableSort
+  a2=.queue~of(1,2)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.queue~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~stableSort
+  a2=.queue~of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+  self~assertTrue(testSeq(a1, a2))
+
+  return
+
+::method "test_sort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.queue~of
+  a2=.queue~of
+  a1=a~sortWith(c)
+  self~assertTrue(a1~items=a2~items)
+
+  a=.queue~of(1)
+  a2=.queue~of(1)
+  a1=a~sortWith(c)
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2)
+  a1=a~sortWith(c)
+  a2=.queue~of(2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(1,2,3)
+  a1=a~sortWith(c)
+  a2=.queue~of(3,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1,3)
+  a1=a~sortWith(c)
+  a2=.queue~of(3,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+
+  a=.queue~of(2,1,3,2)
+  a1=a~sortWith(c)
+  a2=.queue~of(3,2,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1)
+  a1=a~sortWith(c)
+  a2=.queue~of(2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.queue~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~sortWith(c)
+  a2=.queue~of('z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
+  self~assertTrue(testSeq(a1, a2))
+
+  return
+
+
+::method "test_stableSort_with"
+
+  c=.DescendingComparator~new    -- sort descendingly
+  a=.queue~of
+  a2=.queue~of
+  a1=a~stableSortWith(c)
+  self~assertTrue(a1~items=a2~items)
+
+  a=.queue~of(1)
+  a2=.queue~of(1)
+  a1=a~stableSortWith(c)
+  self~assertTrue(testSeq(a2, a1))
+
+  a=.queue~of(1,2)
+  a1=a~stableSortWith(c)
+  a2=.queue~of(2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(1,2,3)
+  a1=a~stableSortWith(c)
+  a2=.queue~of(3,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1,3)
+  a1=a~stableSortWith(c)
+  a2=.queue~of(3,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+
+  a=.queue~of(2,1,3,2)
+  a1=a~stableSortWith(c)
+  a2=.queue~of(3,2,2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  a=.queue~of(2,1)
+  a1=a~stableSortWith(c)
+  a2=.queue~of(2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.queue~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~stableSortWith(c)
+  a2=.queue~of('z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
+  self~assertTrue(testSeq(a1, a2))
+
+  return
+
+  -- Attribute: arrayOf100objects
+  --   An array to hold 100 objects.  This array is not changed by any test once
+  --   it has been created, so it only needs to be initialized one time.
+  ::method  arrayOf100objects attribute class
+
+  -- Attribute: arrayOf100numbers
+  --   Holds the numbers 1 through 100.  Like arrayOf100objects, this array is
+  --   not changed by any test cases and only needs to be initialized once.
+  ::method  arrayOf100numbers attribute class
+
+  /* setUp( ) - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Some initialization to be performed prior to each test running.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  setUp
+
+    -- Array only needs to be created and filled one time.  No test changes the
+    -- array in any way.
+    if self~class~arrayOf100numbers~class <> .array then do
+      arr = .array~new
+      do i = 1 to 100
+        arr[ i ] = i
+      end
+      self~class~arrayOf100numbers = arr
+    end
+
+    -- Likewise, no test changes this array.  Note, no item in this array can
+    -- match an item in the arrayOf100numbers array.  Do not do: arr[ i ] = i
+    if self~class~arrayOf100objects~class <> .array then do
+      arr = .array~of( 'one', 'two', 'three', 'four', 'five' )
+      do i = 6 to 100
+        select
+          when (i // 5) == 0 then
+            arr[ i ] = .directory~new~~setentry( i, i )
+
+          when (i // 4) == 0 then
+            arr[ i ] = .table~new~~put( i, "tableIndex"i )
+
+          when (i // 3) == 0 then
+            arr[ i ] = .set~of( i )
+
+          when (i // 2) == 0 then
+            arr[ i ] = .list~of( i )
+
+          otherwise
+            arr[ i ] = .bag~of( i )
+
+        end
+        -- End select
+      end
+      -- End do i = 6 to 100
+
+      self~class~arrayOf100objects = arr
+
+    end
+
+
+  /* fillQueueWithNumbers( q ) - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Adds all the numbers in the arrayOf100numbers array to the specified queue.
+    The numbers are added to the end of the queue.
+
+    Input:
+      q  REQUIRED
+        The queue in which to add the numbers.
+
+    Returns:
+      The queue object.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  fillQueueWithNumbers private
+    use arg q
+
+    -- Might as well take advantage of our assert facility.
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithNumbers() method must be a queue')
+    do number over self~class~arrayOf100numbers
+      q~queue( number )
+    end
+
+  return q
+  -- End fillQueueWithNumbers( q )
+
+  /* fillQueueWithObjects( q ) - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Adds all the objects in the arrayOf100objects array to the specified queue.
+    The objects are added to the end of the queue.
+
+    Input:
+      q  REQUIRED
+        The queue in which to add the objects.
+
+    Returns:
+      The queue object.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  fillQueueWithObjects private
+    use arg q
+
+    -- Might as well take advantage of our assert facility.
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithObjects() method must be a queue')
+    do obj over self~class~arrayOf100objects
+      q~queue( obj )
+    end
+
+  return q
+  -- End fillQueueWithObjects( q )
+
+  /* fillQueueWithBoth( q )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Adds all the numbers in the arrayOf100numbers array and all the objects in
+    arrayOf100objects to the specified queue.  The numbers are added first then
+    the objects.  Everything is added to the end of the queue.
+
+    Input:
+      q  REQUIRED
+        The queue to work with.
+
+    Returns:
+      The queue object.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  fillQueueWithBoth private
+    use arg q
+
+    -- Might as well take advantage of our assert facility.
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithBoth() method must be a queue')
+    self~fillQueueWithNumbers( q )
+    self~fillQueueWithObjects( q )
+
+  return q
+
+
+::method "test_section"
+  a1=.queue~of(1)
+  a2=a1~section(1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a2=a1~section(1,1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a2=a1~section(1,5)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a1=.queue~of(1,2,3,4,5)
+  a2=a1~section(2)
+  self~assertEquals(4, a2~items)
+  self~assertTrue(testSeq(.queue~of(2,3,4,5), a2))
+  a2=a1~section(2,2)
+  self~assertEquals(2, a2~items)
+  self~assertTrue(testSeq(.queue~of(2,3), a2))
+
+  return
+
+
+::routine testseq
+  use arg a1, a2, start=1
+
+  a1index = a1~first
+  loop while start > 1
+      a1index = a1~next(a1index)
+      start -= 1
+  end
+
+  a2index = a2~first
+
+  do i=1 to a2~items
+     if a1[a1index]<>a2[a2index] then return .false
+     a1index = a1~next(a1index)
+     a2index = a2~next(a2index)
+  end
+  return .true
+
+
+::method "test_first_last_next_previous"
+
+  a=.queue~new       -- empty queue
+  self~assertNull(a~first)
+  self~assertNull(a~last)
+  self~assertNull(a~firstItem)
+  self~assertNull(a~lastItem)
+  -- next and previous must use valid indices, so these won't work yet
+  -- self~assertNull(a~next(1))
+  -- self~assertNull(a~previous(1))
+
+  a~push("1v")          -- single item
+  self~assertEquals(1, a~first)
+  self~assertEquals(1, a~last)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals("1v", a~lastItem)
+  self~assertNull(a~next(1))
+  self~assertNull(a~previous(1))
+
+
+  a~queue("2v")
+  self~assertEquals(1, a~first)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals(2, a~last)
+  self~assertEquals("2v", a~lastItem)
+  self~assertEquals(2, a~next(1))
+  self~assertEquals(1, a~previous(2))
+
+
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.queue~new~equivalent(.queue~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~new))
+  self~assertFalse(.queue~new~equivalent(.queue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.queue~of(1,2,3)~equivalent(.queue~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~of(1,2,3,4)))
+  self~assertFalse(.queue~of(1,2,3,4)~equivalent(.queue~of(1,2,3)))
+  -- simple test between list and array
+  self~assertTrue(.queue~of(1,2,3)~equivalent(.array~of(1,2,3)))
+
+::method "test_disjoint"
+  -- empty queues are disjoint because they have no elements in common.
+  self~assertTrue(.queue~new~disjoint(.queue~new))
+  -- empty vs. non-empty, two ways.  Both disjoint
+  self~assertTrue(.queue~of(1,2,3)~disjoint(.queue~new))
+  self~assertTrue(.queue~new~disjoint(.queue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.queue~of(1,2,3)~disjoint(.queue~of(4,5,6)))
+  -- equal errays
+  self~assertFalse(.queue~of(1,2,3)~disjoint(.queue~of(1,2,3)))
+  -- single element overlap
+  self~assertFalse(.queue~of(1,2,3)~disjoint(.queue~of(3,4,5)))
+
+::method "test_interSection"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~interSectionColl
+
+  self~assertEquals(ce, ce~interSection(ce))
+
+  self~assertEquals(ce, c1~interSection(ce))
+  self~assertEquals(ce, c2~interSection(ce))
+
+  self~assertEquals(res, c1~interSection(c2))
+  self~assertEquals(res, c2~interSection(c1))
+
+  self~assertEquals(c1, c1~interSection(c1))
+  self~assertEquals(c2, c2~interSection(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("2", o1)          -- expected result
+  d2=c~interSection(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list intersection table
+  receiverList = .queue~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~intersection(argumentTable)
+  self~assertSame(.queue, resultObj~class, "(1.) After intersection operation result must be same class as receiver")
+  self~assertSame(3, resultObj~items, 'w x y z intersect w y z should result in 3 items')
+  self~assertTrue(resultObj~hasItem('w'), 'w x y z intersect w y z result should contain an item of w')
+
+::method "test_subset"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu1=collDir~unionColl1
+  cu2=collDir~unionColl2
+
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+  self~assertTrue(ce~subset(c2))
+
+  self~assertTrue(c1~subset(c1))
+  self~assertTrue(c2~subset(c2))
+
+  self~assertTrue(ce~subset(cu1))
+
+  self~assertTrue(c1~subset(cu1))
+  self~assertTrue(c1~subset(cu2))
+
+  self~assertTrue(c2~subset(cu1))
+  self~assertTrue(c2~subset(cu2))
+
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
+
+  self~assertFalse(c2~subset(ce))
+  self~assertFalse(c2~subset(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse(d2, "subtest14: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list subset table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  self~assertFalse(receiverList~subset(argumentTable), 'w x y z is not a subset of w y z')
+  receiverList~removeItem('x')
+  receiverList~removeItem('z')
+  self~assertTrue(receiverList~subset(argumentTable), 'w y is a subset of w y z')
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue(d2, "subtest16: 'other' is an 'OrderedCollection'")
+
+::method "test_union"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~union(ce))
+
+  self~assertEquals(c1, c1~union(ce))
+  self~assertEquals(c2, c2~union(ce))
+
+  self~assertEquals(c1, ce~union(c1))
+  self~assertEquals(c2, ce~union(c2))
+
+  self~assertEquivalentList(collDir~unionColl1, c1~union(c2))
+  self~assertEquivalentList(collDir~unionColl2, c2~union(c1))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1", "2", "2", o1, o1)  -- expected result
+  d2=c~union(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list union table
+  receiverList = clz~of('x', 'y')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~union(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After union operation result must be same class as receiver")
+  self~assertSame(4, resultObj~items, 'w x y z union w y z should result in 4 items')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z union w y z result should contain an item of x')
+
+
+
+
+::method "test_xor"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~xorColl
+
+  self~assertEquals(ce, ce~xor(ce))
+
+  self~assertEquals(c1, c1~xor(ce))
+  self~assertEquals(c2, c2~xor(ce))
+
+  self~assertEquals(collDir~xorColl1, c1~xor(c2), .endofline c1~allItems~toString(, " ") "XOR" .endofline c2~allItems~toString(, " ") "=" .endofline c1~xor(c2)~allItems~toString(, " ") .endofline collDir~xorColl1~allItems~toString(, " "))
+  self~assertEquals(collDir~xorColl2, c2~xor(c1))
+
+  self~assertEquals(ce, c1~xor(c1))
+  self~assertEquals(ce, c2~xor(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")          -- expected result
+  d2=c~xor(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list XOR table
+  receiverList = .list~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~xor(argumentTable)
+  self~assertSame(.list, resultObj~class, "(1.) After xor operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z xor w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z xor w y z result should contain an item of x')
+
+::method "test_difference"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~difference(ce))
+
+  self~assertEquals(c1, c1~difference(ce))
+  self~assertEquals(c2, c2~difference(ce))
+
+  self~assertEquals(collDir~difference1, c1~difference(c2))
+  self~assertEquals(collDir~difference2, c2~difference(c1))
+
+  self~assertEquals(ce, c1~difference(c1))
+  self~assertEquals(ce, c2~difference(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")     -- expected result
+  d2=c~difference(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list difference table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~difference(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After difference operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z difference w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z difference w y z result should contain an item of x')
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasItem(o) then             -- no entry anymore ?
+        return .false
+
+     tmp~removeItem(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
+
+
+
+-- delete (should be identical to remove)
+
+::method test_queue_delete_no_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.903")
+  q~delete
+
+::method test_queue_delete_negative_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(-1)
+
+::method test_queue_delete_zero_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(0)
+
+::method test_queue_delete_nonnumeric_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete("")
+
+::method test_queue_delete_two_args
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.902")
+  q~delete(1, 1)
+
+::method test_queue_delete
+  q = .Queue~new
+  self~assertNil(q~delete(1))
+  self~assertSameList(.Queue~new, q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("a", q~delete(1))
+  self~assertSameList(.Queue~of("b", "c"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("b", q~delete(2))
+  self~assertSameList(.Queue~of("a", "c"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("c", q~delete(3))
+  self~assertSameList(.Queue~of("a", "b"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertNil(q~delete(4))
+  self~assertSameList(.Queue~of("a", "b", "c"), q)
+
+
+-- remove (should be identical to delete)
+
+::method test_queue_remove_no_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.903")
+  q~delete
+
+::method test_queue_remove_negative_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(-1)
+
+::method test_queue_remove_zero_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(0)
+
+::method test_queue_remove_nonnumeric_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete("")
+
+::method test_queue_remove_two_args
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.902")
+  q~delete(1, 1)
+
+::method test_queue_remove
+  q = .Queue~new
+  self~assertNil(q~delete(1))
+  self~assertSameList(.Queue~new, q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("a", q~delete(1))
+  self~assertSameList(.Queue~of("b", "c"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("b", q~delete(2))
+  self~assertSameList(.Queue~of("a", "c"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertSame("c", q~delete(3))
+  self~assertSameList(.Queue~of("a", "b"), q)
+
+  q = .Queue~of("a", "b", "c")
+  self~assertNil(q~delete(4))
+  self~assertSameList(.Queue~of("a", "b", "c"), q)
+
+
+-- put (should be identical to []=)
+
+::method test_queue_put_no_arg
+  self~expectSyntax(("93.903", 1)) -- Missing argument in method; argument 1 is required
+  .Queue~new~put
+
+::method test_queue_put_one_arg
+  self~expectSyntax(("93.903", 2)) -- Missing argument in method; argument 1 is required
+  .Queue~new~put(1)
+
+::method test_queue_put_three_args
+  self~expectSyntax(("93.902", 2)) -- Too many arguments in invocation of method; 2 expected
+  .Queue~new~put(1, 2, 3)
+
+::method test_queue_put_arg_invalid
+  self~expectSyntax(("93.907", 2)) -- Method argument 2 must be a positive whole number
+  .Queue~new~put("", "")
+
+-- put index must always be in range
+::method test_queue_put_out_of_range_1
+  self~expectSyntax(("93.966", 1)) -- Incorrect queue index "1"
+  -- argument to new is just a hint, not the queue size
+  .Queue~new(1)~put("item", 1)
+
+-- put index must always be in range
+::method test_queue_put_out_of_range_2
+  q = .Queue~new
+  q~push("first") -- now the queue has size 1
+  self~assertSame(1, q~size)
+
+  self~expectSyntax(("93.966", 2)) -- Incorrect queue index "2"
+  q~put("second", 2)
+
+-- []= (should be identical to put)
+
+::method test_queue_setat_three_args
+  self~expectSyntax(("93.902", 2)) -- Too many arguments in invocation of method; 2 expected
+  .Queue~new[1, 2] = 3
+
+-- message text is strange but reflects ~put(1, "")
+::method test_queue_setat_arg_invalid
+  self~expectSyntax(("93.907", 2)) -- Method argument 2 must be a positive whole number
+  .Queue~new[''] = 1
+
+-- put index must always be in range
+::method test_queue_setat_out_of_range_1
+  self~expectSyntax(("93.966", 1)) -- Incorrect queue index "1"
+  -- argument to new is just a hint, not the queue size
+  .Queue~new(1)[1] = "value"
+
+-- put index must always be in range
+::method test_queue_setat_out_of_range_2
+  q = .Queue~new
+  q~push("first") -- now the queue has size 1
+  self~assertSame(1, q~size)
+
+  self~expectSyntax(("93.966", 2)) -- Incorrect queue index "2"
+  q[2] = "second"
+
+
+::options all syntax

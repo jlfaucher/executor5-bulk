@@ -1,0 +1,684 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.caselessLastpos.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "caselessLastpos.testGroup" subclass ooTestCase public
+
+::method "test_LastPos_caseless"
+
+   self~assertEquals(4, .mutableBuffer~new('efgxyz')~caselessLastpos('xy'))
+   self~assertEquals(4, .mutableBuffer~new('efgxyz')~caselessLastpos('XY'))
+   self~assertEquals(4, .mutableBuffer~new('efgxyz')~caselessLastpos('Xy'))
+   self~assertEquals(4, .mutableBuffer~new('efgxyz')~caselessLastpos('xY'))
+
+::method 'test000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v10000 = copies('J ',9999)||'K '
+    .local~vwbw = 'John'||copies(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test001'
+    self~assertSame('0', .mutableBuffer~new('')~caselessLastpos(''))
+
+::method 'test002'
+    self~assertSame('1', .mutableBuffer~new(' ')~caselessLastpos(' '))
+
+::method 'test003'
+    self~assertSame('1', .mutableBuffer~new('WORD1 WORD2')~caselessLastpos('WORD1'))
+
+::method 'test004'
+    self~assertSame('7', .mutableBuffer~new('WORD1 WORD2')~caselessLastpos('WORD2'))
+
+::method 'test005'
+    self~assertSame('0', .mutableBuffer~new('WORD1 WORD2')~caselessLastpos('WORD3'))
+
+::method 'test006'
+    self~assertSame('1', .mutableBuffer~new('4a'x)~caselessLastpos('4a'x))
+
+::method 'test007'
+    self~assertSame('0', .mutableBuffer~new('4a'x)~caselessLastpos('4b'x))
+
+::method 'test008'
+    self~assertSame('1', .mutableBuffer~new('WORD')~caselessLastpos('WORD'))
+
+::method 'test009'
+    self~assertSame('0', .mutableBuffer~new('WORD')~caselessLastpos('DROW'))
+
+::method 'test010'
+    self~assertSame('0', .mutableBuffer~new('4a52'x)~caselessLastpos('20202020204a522020202020'x))
+
+::method 'test011'
+    self~assertSame('0', .mutableBuffer~new('4a52'x)~caselessLastpos('20202020204a20522020202020'x))
+
+::method 'test012'
+    self~assertSame('1', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc1x))
+
+::method 'test013'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc140x))
+
+::method 'test014'
+    self~assertSame('13', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc7x))
+
+::method 'test015'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc740x))
+
+::method 'test016'
+    self~assertSame('1', .mutableBuffer~new(.v26)~caselessLastpos('A'))
+
+::method 'test017'
+    self~assertSame('19', .mutableBuffer~new(.v26)~caselessLastpos('J'))
+
+::method 'test018'
+    self~assertSame('51', .mutableBuffer~new(.v26)~caselessLastpos('Z'))
+
+::method 'test019'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('0'))
+
+::method 'test020'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('()'))
+
+::method 'test021'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('A     B     C     D     E     '))
+
+::method 'test022'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('V     W     X     Y     Z     '))
+
+::method 'test023'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('X     Y     Z     A     B     '))
+
+::method 'test024'
+    numeric digits 1
+    self~assertSame('16', .mutableBuffer~new((12+6 12+7 12+8 12+9))~caselessLastpos(+19))
+
+::method 'test025'
+    numeric digits 1
+    self~assertSame('0', .mutableBuffer~new('12+6 12+7 12+8 12+9')~caselessLastpos(+19))
+
+::method 'test026'
+    numeric digits 1
+    self~assertSame('6', .mutableBuffer~new((12+1 12+2 12+3 12+4))~caselessLastpos(+14))
+
+::method 'test027'
+    numeric digits 1
+    self~assertSame('0', .mutableBuffer~new('12+1 12+2 12+3 12+4')~caselessLastpos(+14))
+
+::method 'test028'
+    self~assertSame('4', .mutableBuffer~new((12+6 12+7 12+8 12+9))~caselessLastpos(+19))
+
+::method 'test029'
+    self~assertSame('0', .mutableBuffer~new('12+6 12+7 12+8 12+9')~caselessLastpos(+19))
+
+::method 'test030'
+    self~assertSame('4', .mutableBuffer~new((12+1 12+2 12+3 12+4))~caselessLastpos(+14))
+
+::method 'test031'
+    self~assertSame('0', .mutableBuffer~new('12+1 12+2 12+3 12+4')~caselessLastpos(+14))
+
+::method 'test032'
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil)
+
+::method 'test034'
+    self~assertSame('1', .mutableBuffer~new('NV')~caselessLastpos(nv))
+
+::method 'test035'
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil)
+
+::method 'test036'
+    self~assertSame('1', .mutableBuffer~new('NV.10')~caselessLastpos(nv.10))
+
+::method 'test037'
+    self~assertSame('1', .mutableBuffer~new(nv)~caselessLastpos('NV'))
+
+::method 'test039'
+    self~assertSame('1', .mutableBuffer~new(nv.10)~caselessLastpos('NV.10'))
+
+::method 'test040'
+    self~assertSame('0', .mutableBuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~caselessLastpos('qwer zxcv ASDF'))
+
+::method 'test041'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('1', .mutableBuffer~new(v8)~caselessLastpos('one'))
+
+::method 'test042'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('two                three four'))
+
+::method 'test043'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('seven eight nine'))
+
+::method 'test044'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('41534446202020'x))
+
+::method 'test045'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('20202041534446'x))
+
+::method 'test046'
+    self~assertSame('10', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('204153444620'x))
+
+::method 'test047'
+    self~assertSame('20', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos('7a786376'x))
+
+::method 'test048'
+    self~assertSame('15', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos('41534446'x))
+
+::method 'test049'
+    self~assertSame('6', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos(.vxnx))
+
+::method 'test050'
+    self~assertSame('19997', .mutableBuffer~new(.v10000)~caselessLastpos('J'))
+
+::method 'test051'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('J  K'))
+
+::method 'test052'
+    self~assertSame('19997', .mutableBuffer~new(.v10000)~caselessLastpos('J K'))
+
+::method 'test053'
+    self~assertSame('19999', .mutableBuffer~new(.v10000)~caselessLastpos('K'))
+
+::method 'test054'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('K J'))
+
+::method 'test055'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('1'))
+
+::method 'test056'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('9', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35'x))
+
+::method 'test057'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35202020202020202020203620372020202020202020202038'x))
+
+::method 'test058'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J '||copies('*',10000)))
+
+::method 'test059'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000)||' R'))
+
+::method 'test060'
+    self~assertSame('1', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J'))
+
+::method 'test061'
+    self~assertSame('5002', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000)))
+
+::method 'test062'
+    self~assertSame('20002', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('R'))
+
+::method 'test063'
+    self~assertSame('1', .mutableBuffer~new(.vwbw)~caselessLastpos('John'))
+
+::method 'test064'
+    self~assertSame('10005', .mutableBuffer~new(.vwbw)~caselessLastpos('Buckley'))
+
+::method 'test065'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('John Buckley'))
+
+::method 'test066'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('Buckley John'))
+
+::method 'test067'
+    self~assertSame('1', .mutableBuffer~new((00345 03450 34500))~caselessLastpos(00345))
+
+::method 'test068'
+    self~assertSame('1', .mutableBuffer~new((00345 03450 34500))~caselessLastpos(00345          03450))
+
+::method 'test069'
+    self~assertSame('13', .mutableBuffer~new((00345 03450 34500))~caselessLastpos(34500))
+
+::method 'test070'
+    self~assertSame('0', .mutableBuffer~new((00345 03450 34500))~caselessLastpos(34500                    00))
+
+::method 'test071'
+    self~assertSame('0', .mutableBuffer~new((3 4 5))~caselessLastpos(3 4||copies(' ',10000)||5))
+
+::method 'test072'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('one two three five'))
+
+::method 'test073'
+    v8. = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8.[])~caselessLastpos('four'||copies(' ',50000)||'five six'))
+
+::method 'test074'
+    v8. = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('three four five',))
+
+::method 'test075'
+    v8. = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('seven eight nine'))
+
+::method 'test076'
+    v8. = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('ten'))
+
+::method 'test077'
+    self~assertSame('51', .mutableBuffer~new((.v26||' '||reverse(.v26)))~caselessLastpos('Z Z',))
+
+::method 'test078'
+    self~assertSame('49', .mutableBuffer~new((.v26' 'reverse(.v26)))~caselessLastpos('Y Z Z Y'))
+
+::method 'test079'
+    self~assertSame('47', .mutableBuffer~new((.v26 reverse(.v26)))~caselessLastpos('X Y Z Z Y'))
+
+::method 'test080'
+    self~assertSame('51', .mutableBuffer~new((.v26||' '||reverse(.v26)))~caselessLastpos('z z'))
+
+::method 'test081'
+    self~assertSame('49', .mutableBuffer~new((.v26' 'reverse(.v26)))~caselessLastpos('y z z y'))
+
+::method 'test082'
+    self~assertSame('47', .mutableBuffer~new((.v26 reverse(.v26)))~caselessLastpos('x y z z y'))
+
+::method 'test083'
+    self~assertSame('1', .mutableBuffer~new(substr('one two three four',5,9))~caselessLastpos('two three'))
+
+::method 'test084'
+    self~assertSame('0', .mutableBuffer~new((datatype(6) datatype('A')))~caselessLastpos('NUM                       CHAR'))
+
+::method 'test085'
+    self~assertSame('0', .mutableBuffer~new((datatype(6) datatype('A')))~caselessLastpos('num                       char'))
+
+::method 'test086'
+    .local~remove(v26)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+
+::method 'test087'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v10000 = copies('J ',9999)||'K '
+    .local~vwbw = 'John'||copies(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test088'
+    self~assertSame('0', .mutableBuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessLastpos('WORD1',3))
+
+::method 'test089'
+    self~assertSame('0', .mutableBuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessLastpos('WORD2',3))
+
+::method 'test090'
+    self~assertSame('0', .mutableBuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessLastpos('WORD3',3))
+
+::method 'test091'
+    self~assertSame('1', .mutableBuffer~new('4a'x)~caselessLastpos('4a'x,1))
+
+::method 'test092'
+    self~assertSame('1', .mutableBuffer~new('4a'x)~caselessLastpos('4a'x,2))
+
+::method 'test093'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new('4a'x)~caselessLastpos('4b'x,0)
+
+::method 'test094'
+    self~assertSame('0', .mutableBuffer~new('4a'x)~caselessLastpos('4b'x,1))
+
+::method 'test095'
+    self~assertSame('0', .mutableBuffer~new('4a52'x)~caselessLastpos('20202020204a522020202020'x,1))
+
+::method 'test096'
+    self~assertSame('0', .mutableBuffer~new('4a52'x)~caselessLastpos('20202020204a522020202020'x,2))
+
+::method 'test097'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc1x,1))
+
+::method 'test098'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc1x,2))
+
+::method 'test099'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc140x,1))
+
+::method 'test100'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc140x,2))
+
+::method 'test101'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc7x,13))
+
+::method 'test102'
+    self~assertSame('0', .mutableBuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessLastpos(.vc740x,14))
+
+::method 'test103'
+    self~assertSame('1', .mutableBuffer~new(.v26)~caselessLastpos('A',1))
+
+::method 'test104'
+    self~assertSame('1', .mutableBuffer~new(.v26)~caselessLastpos('A',2))
+
+::method 'test105'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('J','39'x))
+
+::method 'test106'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('J',X2D('A')))
+
+::method 'test107'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('J','3131'x))
+
+::method 'test108'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('Z',' 25 '))
+
+::method 'test109'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('0',1))
+
+::method 'test110'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new(.v26)~caselessLastpos('A     B     C     D     E     ',-1)
+
+::method 'test111'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('V     W     X     Y     Z     ',.22E02))
+
+::method 'test112'
+    self~assertSame('0', .mutableBuffer~new(.v26)~caselessLastpos('X     Y     Z     A     B     ','.22E02'))
+
+::method 'test113'
+    numeric digits 1
+    self~assertSame('3', .mutableBuffer~new('A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z')~caselessLastpos('Z',+19))
+
+::method 'test114'
+    numeric digits 1
+    self~assertSame('3', .mutableBuffer~new('A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z')~caselessLastpos('Z',+14))
+
+::method 'test115'
+    self~assertSame('3', .mutableBuffer~new('A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z')~caselessLastpos('Z',+19))
+
+::method 'test116'
+    self~assertSame('3', .mutableBuffer~new('A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z')~caselessLastpos('Z',+14))
+
+::method 'test117'
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil,1)
+
+::method 'test118'
+    self~assertSame(0, .mutableBuffer~new('NV')~caselessLastpos(nv,1))
+
+::method 'test119'
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = .mutableBuffer~new('NV.')~caselessLastpos(.nil,1)
+
+::method 'test120'
+    self~assertSame('0', .mutableBuffer~new('NV.10')~caselessLastpos(nv.10,1))
+
+::method 'test121'
+    self~assertSame('0', .mutableBuffer~new(nv)~caselessLastpos('NV',1))
+
+::method 'test123'
+    self~assertSame('0', .mutableBuffer~new(nv.10)~caselessLastpos('NV.10',1))
+
+::method 'test124'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new('NV')~caselessLastpos('NV',nv)
+
+::method 'test125'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new('NV.')~caselessLastpos('NV.',nv.)
+
+::method 'test126'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new('NV.10')~caselessLastpos('NV.10',nv.10)
+
+::method 'test127'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new(noval2)~caselessLastpos(noval1,noval3)
+
+::method 'test128'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('one',1*1))
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('one',2*1))
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('two                three four','000001'))
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('two                three four',000002))
+    self~assertSame('0', .mutableBuffer~new(v8)~caselessLastpos('two                three four',3.00))
+
+::method 'test129'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('41534446202020'x,2))
+
+::method 'test130'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('41534446202020'x,3))
+
+::method 'test131'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('41534446202020'x,4))
+
+::method 'test132'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('20202041534446'x,3))
+
+::method 'test133'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('20202041534446'x,4))
+
+::method 'test134'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('20202041534446'x,5))
+
+::method 'test135'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('204153444620'x,1))
+
+::method 'test136'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('204153444620'x,2))
+
+::method 'test137'
+    self~assertSame('0', .mutableBuffer~new('6173646620717765722041534446205157455220'x)~caselessLastpos('204153444620'x,4))
+
+::method 'test138'
+    self~assertSame('20', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos('7a786376'x))
+
+::method 'test139'
+    self~assertSame('15', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos('41534446'x))
+
+::method 'test140'
+    self~assertSame('6', .mutableBuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessLastpos(.vxnx))
+
+::method 'test141'
+    self~assertSame('9999', .mutableBuffer~new(.v10000)~caselessLastpos('J',9999))
+
+::method 'test142'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('J  K','39393939'x))
+
+::method 'test143'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('J K','9999'))
+
+::method 'test144'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('K',009999))
+
+::method 'test145'
+    self~assertSame('0', .mutableBuffer~new(.v10000)~caselessLastpos('K J','009999'))
+
+::method 'test146'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('1',1))
+    self~assertSame('1', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('1',9))
+    self~assertSame('0', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35'x,'34'x))
+    self~assertSame('0', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35'x,'35'x))
+    self~assertSame('0', .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35'x,'36'x))
+
+::method 'test147'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35202020203620372020202020202020202038'x,"'34'x")
+
+::method 'test148'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35202020203620372020202020202020202038'x,"'35'x")
+
+::method 'test149'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutableBuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessLastpos('35202020203620372020202020202020202038'x,"'36'x")
+
+::method 'test150'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J '||copies('*',10000),1))
+
+::method 'test151'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J '||copies('*',10000),0+2))
+
+::method 'test152'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000)||' R','3'))
+
+::method 'test153'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000)||' R','04'))
+
+::method 'test154'
+    self~assertSame('1', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J',1))
+
+::method 'test155'
+    self~assertSame('1', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('J',2))
+
+::method 'test156'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000),'32'x))
+
+::method 'test157'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos(copies('*',10000),'33'x))
+
+::method 'test158'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('R','000004'))
+
+::method 'test159'
+    self~assertSame('0', .mutableBuffer~new(.vwbwwbw)~caselessLastpos('R','000005'))
+
+::method 'test160'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('John',1))
+
+::method 'test161'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('John',2))
+
+::method 'test162'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('Buckley',1))
+
+::method 'test163'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('Buckley',2))
+
+::method 'test164'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('John Buckley',1))
+
+::method 'test165'
+    self~assertSame('0', .mutableBuffer~new(.vwbw)~caselessLastpos('John Buckley',2))
+
+::method 'test166'
+    self~assertSame('0', .mutableBuffer~new((3 4 5))~caselessLastpos(3 4||copies(' ',10000)||5,1))
+
+::method 'test167'
+    self~assertSame('0', .mutableBuffer~new((3 4 5))~caselessLastpos(3 4||copies(' ',10000)||5,2))
+
+::method 'test168'
+    v8 = 'one two  three   four    five     six      seven       eight'
+    v8. = v8
+    self~assertSame('0', .mutableBuffer~new(v8.[])~caselessLastpos('four'||copies(' ',50000)||'five six',3))
+    self~assertSame('0', .mutableBuffer~new(v8.[])~caselessLastpos('four'||copies(' ',50000)||'five six',4))
+    self~assertSame('0', .mutableBuffer~new(v8.[])~caselessLastpos('four'||copies(' ',50000)||'five six',5))
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('three four five',1))
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('three four five',3))
+    self~assertSame('0', .mutableBuffer~new(v8.10)~caselessLastpos('three four five',8))
+
+::method 'test169'
+    self~assertSame('0', .mutableBuffer~new((.v26||' '||reverse(.v26)))~caselessLastpos('Z Z',23))
+
+::method 'test170'
+    self~assertSame('0', .mutableBuffer~new((.v26' 'reverse(.v26)))~caselessLastpos('Y Z Z Y',25))
+
+::method 'test171'
+    self~assertSame('0', .mutableBuffer~new((.v26 reverse(.v26)))~caselessLastpos('X Y Z Z Y',25))
+
+::method 'test172'
+    self~assertSame('0', .mutableBuffer~new(subStr('one two three four',5,9))~caselessLastpos('two three',1))
+
+::method 'test173'
+    self~assertSame('0', .mutableBuffer~new(subStr('one two three four',5,9))~caselessLastpos('two three',2))
+
+::method 'test174'
+    self~assertSame('0', .mutableBuffer~new((dataType(6) dataType('A')))~caselessLastpos('NUM                       char',1))
+
+::method 'test175'
+    self~assertSame('0', .mutableBuffer~new((dataType(6) dataType('A')))~caselessLastpos('NUM                       char',2))
+
+::method 'test176'
+    self~assertSame('0', .mutableBuffer~new((dataType(6) dataType('A')))~caselessLastpos('NUM                       char',3))
+
+::method 'test177'
+    .local~remove(v26)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+
+::method testRange01
+    self~assertSame('0', .mutableBuffer~new('')~caselessLastPos('',,100))
+    self~assertSame('0', .mutableBuffer~new('')~caselessLastPos('',,0))
+    self~assertSame('0', .mutableBuffer~new('aaaaabcdef')~caselessLastPos('a',,5))
+    self~assertSame('0', .mutableBuffer~new('aaaaabcdef')~caselessLastPos('a',10,5))
+    self~assertSame('5', .mutableBuffer~new('aaaaabcdef')~caselessLastPos('a',9,5))
+    self~assertSame('0', .mutableBuffer~new('aaaaabcdef')~caselessLastPos('aaa',5,2))
+
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = .mutableBuffer~new('123456789')~caselessLastPos('34',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = .mutableBuffer~new('--------')~caselessLastPos('-',1,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = .mutableBuffer~new('--------')~caselessLastPos('-',1,0.5)

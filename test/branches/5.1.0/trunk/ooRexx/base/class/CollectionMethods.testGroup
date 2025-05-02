@@ -1,0 +1,177 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2016-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+--group~add(.ArrayMethods.testGroup)           we assume Array already tests this
+  group~add(.BagMethods.testGroup)
+--group~add(.CircularQueueMethods.testGroup)   we assume CircularQueue already tests this
+  group~add(.DirectoryMethods.testGroup)
+  group~add(.IdentityTableMethods.testGroup)
+  group~add(.ListMethods.testGroup)
+  group~add(.PropertiesMethods.testGroup)
+  group~add(.QueueMethods.testGroup)
+  group~add(.RelationMethods.testGroup)
+  group~add(.SetMethods.testGroup)
+--group~add(.StemMethods.testGroup)            we assume Stem already tests this
+  group~add(.StringTableMethods.testGroup)
+  group~add(.TableMethods.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
+
+::class BagMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Bag
+
+::class DirectoryMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Directory
+
+::class IdentityTableMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .IdentityTable
+
+::class ListMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .List
+
+::class PropertiesMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Properties
+
+::class QueueMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Queue
+
+::class RelationMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Relation
+
+::class SetMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Set
+
+::class StringTableMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .StringTable
+
+::class TableMethods.testGroup subclass CollectionMethods.testGroup public
+::method collection
+  return .Table
+
+
+::class CollectionMethods.testGroup subclass ooTestCase public
+
+-- tests for [feature-requests:#604] Allow collections other than array to accept an initial size 
+
+::method test_collection_new_2_args
+  self~expectSyntax(93.902)
+  self~collection~new(.nil, .nil)
+
+::method test_collection_new_arg_1_nil
+  self~expectSyntax(93.923)
+  self~collection~new(.nil)
+
+::method test_collection_new_arg_1_notnumeric
+  self~expectSyntax(93.923)
+  self~collection~new("string")
+
+::method test_collection_new_arg_1_notwhole
+  self~expectSyntax(93.923)
+  self~collection~new(1.0001)
+
+::method test_collection_new_arg_1_negative
+  self~expectSyntax(93.923)
+  self~collection~new(-1)
+
+::method test_collection_new
+  -- we'll test initial size values of 0 .. 25, 100, 1000, 10000, and 100000
+  -- we cannot really check the allocated size (only Array and CircularQueue
+  -- provide a 'size' method), so we only test for 'isEmtpy' and 'items' = 0 
+  do size = 0 to 25
+    c = self~collection~new(size)
+    self~assertTrue(c~isEmpty)
+    self~assertEquals(0, c~items)
+  end
+  do power = 2 to 5
+    c = self~collection~new(10 ** power)
+    self~assertTrue(c~isEmpty)
+    self~assertEquals(0, c~items)
+  end
+
+
+-- tests for [feature-requests:##670]
+
+-- appendAll() to return target collection as result
+::method test_orderedcollection_appendAll
+  c = self~collection~new
+  if c~isA(.OrderedCollection) then do                     -- only OrderedCollections have appendAl()
+    self~assertSame(c, c~~appendAll(.Array~of(1, 2, 3)))   -- classic style
+    self~assertSame(c, c~appendAll(.Array~of(4, 5, 6)))    -- new style
+  end
+
+-- putAll() to return target collection as result
+::method test_mapcollection_putAll
+  c = self~collection~new
+  if c~isA(.MapCollection) then do                         -- only MapCollections have putAll()
+    self~assertSame(c, c~~putAll(.Array~of(1, 2, 3)))      -- classic style
+    self~assertSame(c, c~putAll(.Array~of(4, 5, 6)))       -- new style
+  end
+
+-- fill() to return target collection as result
+-- this doesn't really fit in here, as we don't test Array, but just add it for now
+::method test_array_fill
+  c = .Array~new(3)                                        -- just Array has fill()
+  self~assertSame(c, c~~fill(1))                           -- classic style
+  self~assertSame(c, c~fill(2))                            -- new style
+
+-- empty() to return target collection as result
+::method test_collection_empty
+  c = self~collection~new                                  -- all Collections have empty()
+    self~assertSame(c, c~~empty)                           -- classic style
+    self~assertSame(c, c~empty)                            -- new style
+
+
+::options novalue error

@@ -1,0 +1,109 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+ /**
+  * This is an example of how to structure an OLEObject test case.  Because not
+  * all systems will have an OLE Automation application installed, the idea is
+  * to check in the prologue and make sure the OLEObject can be created.  If it
+  * can not be created, then the test group is marked as having no executable
+  * tests.
+  */
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.NotesTestCases)
+  group~restrictOS("WINDOWS")
+
+  -- If we are on Windows test for the OLE Automation object.  By testing that
+  -- the current OS is Windows, we don't over-ride the OS restriction reason
+  -- with an OLE Object not found reason.  That way, on another OS, say Linux,
+  -- when the test group is skipped the reason will be because the OS is not
+  -- correct, rather than the reason being the OLE application is not found.
+  -- On Linux, that reason could be slightly confusing to a user who knows
+  -- little about OLE Automation.
+  if group~machineOS == "WINDOWS" then do
+    code = testForOleObject('Notes.NotesSession')
+    if code <> 0 then
+      group~markNoTests("This is an OLE / Notes test but the Notes OLEObject can not be created. Code:" code)
+  end
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+  The OLE helper functions, testForOleObject() and createOleObject() are in the
+  FileUtils framework file.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: NotesTestCases - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+     Most systems will not have Notes installed and this test group will be
+     skipped.  So there are only a few real test cases.  How to write the actual
+     test cases for OLEObject is left as an exercise for the reader.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "NotesTestCases" public subclass ooTestCase
+
+  ::method test_GoodCreation
+
+    notes = createOleObject("Notes.NotesSession")
+    self~assertNotNull(notes)
+
+  ::method  test_UserName
+
+    -- Get the logged in user name.
+    output = .array~new
+    cmd = "set USERNAME"
+    ret = issueCmd(cmd, output)
+
+    -- Always assert that necessary things are as expected.
+    self~assertSame(0, ret)
+    self~assertSame(1, output~items)
+    parse value output[1] with envVar "=" user
+
+    notes = createOleObject("Notes.NotesSession")
+    self~assertNotNull(notes)
+
+    notesUser = notes~UserName
+    self~assertSame(user, notesUser)
+
+-- End of class: NotesTestCases

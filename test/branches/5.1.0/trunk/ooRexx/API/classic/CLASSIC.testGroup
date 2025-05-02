@@ -1,0 +1,1320 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008-2024 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CLASSIC.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('CLASSICPackage.cls')
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+-- class named exactly like file
+::class "CLASSIC.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+::method init
+  expose t1
+  forward class (super) continue
+  t1 = .TestQueueFuncs~new
+
+-- Note: The order of these tests is very important.
+
+::method 'test_01_create_queue'
+  expose t1
+  t1 = .TestQueueFuncs~new()
+  q1 = 'MyTestQueue1'
+  -- create a named queue
+  nq1 = t1~testcreatequeue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag)
+  self~assertSame(q1, nq1)
+  -- create an unnamed queue
+  nq2 = t1~testcreatequeue()
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag)
+  -- try to create a duplicate queue
+  nq1 = t1~testcreatequeue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertNotEquals(0, t1~flag)
+  self~assertNotSame(q1, nq1)
+
+  -- test return codes
+  RXQUEUE_STORAGE = 1
+  RXQUEUE_BADQNAME = 5
+
+  -- specified queue name too long for buffer size
+  t1~testcreatequeue("x"~copies(50), 40)
+  self~assertEquals(RXQUEUE_STORAGE, t1~retc)
+
+  -- returned queue name too long for buffer size
+  t1~testcreatequeue(, 10)
+  self~assertEquals(RXQUEUE_STORAGE, t1~retc)
+
+  -- queue name contains invalid characters
+  t1~testcreatequeue("C:")
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
+
+  -- SESSION is reserved
+  t1~testcreatequeue("SESSION")
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
+
+  -- queue name too long
+  t1~testcreatequeue("q"~copies(251))
+  self~assertEquals(RXQUEUE_BADQNAME, t1~retc)
+
+::method 'test_02_open_queue'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- open a named queue
+  t1~testopenqueue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to create a duplicate queue
+  t1~testopenqueue(q2)
+  self~assertEquals(0, t1~retc)
+
+::method 'test_03_Queue_exists'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- query a named queue
+  t1~testqueryqueue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to query a queue that does not exist
+  t1~testdeletequeue('ZYXCBA')
+  self~assertNotEquals(0, t1~retc)
+
+::method 'test_04_delete_queue'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- delete a named queue
+  t1~testdeletequeue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to delete a queue that does not exist
+  t1~testdeletequeue('ZYXCBA')
+  self~assertNotEquals(0, t1~retc)
+
+::method 'test_05_query_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- query a named queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag) -- flag is the count
+
+::method 'test_06_add_queue_1'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- add to a named queue
+  t1~testaddqueue(q1, 'FIFO test data', 0) -- 0 = FIFO
+  self~assertEquals(0, t1~retc)
+  t1~testaddqueue(q1, 'LIFO test data', 1) -- 1 = LIFO
+  self~assertEquals(0, t1~retc)
+
+::method 'test_07_query_queue_2'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- query a named queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(2, t1~flag) -- flag is the count
+
+::method 'test_08_pullfrom_queue_1'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- pull from a named queue
+  t1~testpullfromqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals('LIFO test data', t1~flag) -- flag is the pulled data
+
+::method 'test_09_clear_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- make sure there is still data in the queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(1, t1~flag) -- flag is the count
+  -- clear a named queue
+  t1~testclearqueue(q1)
+  self~assertEquals(0, t1~retc)
+  -- make sure there is no data in the queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag) -- flag is the count
+
+::method 'test_10_pullfrom_queue_2'
+  expose t1
+  q1 = 'MyTestQueue1'
+  do data over "test data", "", " ", '00'x, "contains" || '00'x || "null"
+    -- add to a named queue
+    t1~testaddqueue(q1, data, 0) -- 0 = FIFO
+    self~assertEquals(0, t1~retc)
+    -- pull from a named queue
+    t1~testpullfromqueue(q1)
+    self~assertEquals(0, t1~retc)
+    self~assertEquals(data, t1~flag) -- flag is the pulled data
+  end
+
+::method 'test_11_delete_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- delete a named queue
+  t1~testdeletequeue(q1)
+  self~assertEquals(0, t1~retc)
+
+::method 'test_20_allocatefree_memory'
+  m1 = .TestMemoryFuncs~new()
+  retc = m1~TestAllocateFreeMemory(1)
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(64)
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(128)
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(256)
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(4096)
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(65535)
+  self~assertEquals(0, retc)
+
+::method 'test_30_variablepool'
+  vp = .TestVariablePool~new()
+  retc = vp~TestVariablePool()
+  self~assertEquals(144, retc)
+
+::method 'test_31_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+
+::method 'test_31a_variablepool'
+  test1 = 123 -- give this an existing value
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+
+::method 'test_31b_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_31c_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '*****' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_32_variablepool'
+  test1_val = 'my test string'
+  test2_val = 'another test string'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = test2_val
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 0 -- RXSHV_SET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+  self~assertEquals(test2_val, arr[2]~shvvalue)
+  self~assertEquals(test2_val~length, arr[2]~shvvaluelen)
+
+::method 'test_32a_variablepool'
+  test1 = 123   -- only give one a value
+  test1_val = 'my test string'
+  test2_val = 'another test string'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = test2_val
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 0 -- RXSHV_SET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+  self~assertEquals(1, arr[2]~shvret)
+  self~assertEquals(test2_val, arr[2]~shvvalue)
+  self~assertEquals(test2_val~length, arr[2]~shvvaluelen)
+
+::method 'test_33_variablepool'
+  test1 = 123 -- give this an existing value
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYFET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, arr[1]~shvvalue)
+
+::method 'test_33a_variablepool'
+  test1 = 123 -- give this an existing value
+  test2 = 'my test string' -- give this an existing value
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYFET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 3 -- RXSHV_SYFET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, arr[1]~shvvalue)
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertEquals(test2, arr[2]~shvvalue)
+
+::method 'test_33b_variablepool'
+  -- make sure you do not assign the variable test1, we want an error
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYFET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+
+::method 'test_33c_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYFET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_33d_variablepool'
+  test1 = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
+  arr[1]~shvcode = 4 -- RXSHV_SYFET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(4, retc)
+  self~assertEquals(4, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_34_variablepool'
+  test1 = 123 -- give this an existing value
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 5 -- RXSHV_SYDRO
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertFalse(var(arr[1]~shvname))
+
+::method 'test_34a_variablepool'
+  test1 = 123 -- give this an existing value
+  test2 = 'my teststring' -- give this an existing value
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 5 -- RXSHV_SYDRO
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = 0
+  arr[2]~shvcode = 5 -- RXSHV_SYDRO
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertFalse(var(arr[1]~shvname))
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertFalse(var(arr[2]~shvname))
+
+::method 'test_34b_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 5 -- RXSHV_SYDRO
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_35_variablepool'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'VERSION'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 7 -- RXSHV_PRIV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertNotEquals('', arr[1]~shvvalue)
+
+::method 'test_35a_variablepool'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'QUENAME'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 7 -- RXSHV_PRIV
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'PARM'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = 0
+  arr[2]~shvcode = 7 -- RXSHV_PRIV
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertNotEquals('', arr[1]~shvvalue)
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertNotEquals('', arr[2]~shvvalue)
+
+::method 'test_35b_variablepool'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'XXX' -- invalid name
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 7 -- RXSHV_PRIV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret)
+
+::method 'test_37_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYSET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+
+::method 'test_37a_variablepool'
+  test1 = 123 -- give this an existing value
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYSET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+
+::method 'test_37b_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYSET
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_38_variablepool'
+  test1_val = 'my test string'
+  test2_val = 'another test string'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYSET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = test2_val
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 3 -- RXSHV_SYSET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+  self~assertEquals(test2_val, arr[2]~shvvalue)
+  self~assertEquals(test2_val~length, arr[2]~shvvaluelen)
+
+::method 'test_38a_variablepool'
+  test1 = 123   -- only give one a value
+  test1_val = 'my test string'
+  test2_val = 'another test string'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 3 -- RXSHV_SYSET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = test2_val
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 3 -- RXSHV_SYSET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+  self~assertEquals(1, arr[2]~shvret)
+  self~assertEquals(test2_val, arr[2]~shvvalue)
+  self~assertEquals(test2_val~length, arr[2]~shvvaluelen)
+
+::method 'test_39_variablepool'
+  test1 = 123 -- give this an existing value
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 20    -- just give some head room for this
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, arr[1]~shvvalue)
+
+::method 'test_39a_variablepool'
+  test1 = 123 -- give this an existing value
+  test2 = 'my test string' -- give this an existing value
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = test1~length
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = test2~length
+  arr[2]~shvcode = 1 -- RXSHV_FETCH
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, arr[1]~shvvalue)
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertEquals(test2, arr[2]~shvvalue)
+
+::method 'test_39b_variablepool'
+  -- make sure you do not assign the variable test1, we want an error
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 5
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(1, retc)
+  self~assertEquals(1, arr[1]~shvret)
+
+::method 'test_39c_variablepool'
+  test1 = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = test1~length
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_39d_variablepool'
+  test1 = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = test1
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(4, retc)
+  self~assertEquals(4, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_39e_variablepool'
+  test1 = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '*****' -- really invalid name
+  arr[1]~shvvalue = test1
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = test1~length
+  arr[1]~shvcode = 1 -- RXSHV_FETCH
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_40_variablepool'
+  test1 = 123 -- give this an existing value
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertFalse(var(arr[1]~shvname))
+
+::method 'test_40a_variablepool'
+  test1 = 123 -- give this an existing value
+  test2 = 'my teststring' -- give this an existing value
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = 0
+  arr[2]~shvcode = 2 -- RXSHV_DROPV
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertFalse(var(arr[1]~shvname))
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertFalse(var(arr[2]~shvname))
+
+::method 'test_40b_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+::method 'test_40c_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '*****' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
+-- Note: The order of these tests is very important.
+
+::method 'test_50_externalfunction'
+  call rxfuncdrop 'TestExternalFunction'
+  call rxfuncadd 'TestExternalFunction', 'orxclassic1', 'TestExternalFunction'
+  self~assertEquals(0, result)
+  call rxfuncquery 'TestExternalFunction'
+  self~assertEquals(0, result)
+  call TestExternalFunction
+  self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertEquals(0, result)
+
+::method 'test_51_externalfunction'
+  call MyTestExtFunc
+  self~assertEquals(0, result)
+
+::method 'test_52_externalfunction'
+  call MyTestExtFunc 'dummy'
+  self~assertEquals(0, result)
+  -- the interpreter caches these, so drops that don't use rxfuncdrop
+  -- won't remove the function from the cache.
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertEquals(0, result)
+
+::method 'test_53_externalfunction'
+  call TestExternalFunction 'dummy'
+  self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertEquals(0, result)
+
+::method 'test_54_externalfunction'
+  call MyTestExtFunc
+  self~assertEquals(0, result)
+
+::method 'test_56_externalfunction'
+  call rxfuncdrop 'TestExternalFunction'
+  self~assertEquals(0, result)
+
+-- Note: The order of these tests is very important.
+
+::method 'test_60_subcom'
+  call rxfuncdrop 'TestSubcomHandler'
+  call rxfuncadd 'TestSubcomHandler', 'orxclassic1', 'TestSubcomHandler'
+  self~assertEquals(0, result)
+  call TestSubcomHandler 'R', 'TestSubcom'
+  myteststring = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  address 'TestSubcom' myteststring
+  self~assertEquals(myteststring, rc)
+
+::method 'test_61_subcom'
+  call TestSubcomHandler 'D', 'TestSubcom'
+  call rxfuncdrop 'TestSubcomHandler'
+  self~assertEquals(0, result)
+
+::method 'test_62_subcom'
+  call rxfuncdrop 'TestSubcomHandler'
+  call rxfuncadd 'TestSubcomHandler', 'orxclassic1', 'TestSubcomHandler'
+  self~assertEquals(0, result)
+  call TestSubcomHandler 'E', 'TestSubcom'
+  myteststring = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  address 'TestSubcom' myteststring
+  self~assertEquals(myteststring, rc)
+
+::method 'test_63_subcom'
+  call TestSubcomHandler 'X', 'TestSubcom'
+  call rxfuncdrop 'TestSubcomHandler'
+  self~assertEquals(0, result)
+
+-- Note: The order of these tests is very important.
+
+::method 'test_70_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestAddMacro('xxx', 'xxx', 1) -- should produce an error
+  self~assertEquals(7, retc)              -- source not found
+  retc = t2~TestAddMacro('myreverse', self~locateTestFile('testmacro1.rex'), 1)
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(0, retc)
+  teststr = 'abcdefgh1234567890'
+  retc = myreverse(teststr)
+  self~assertEquals(teststr~reverse~upper, retc)
+
+::method 'test_71_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestAddMacro('myupper', self~locateTestFile('testmacro2.rex'), 2)
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(0, retc)
+  teststr = 'abcdefgh1234567890'
+  retc = myupper(teststr)
+  self~assertEquals(teststr~upper, retc)
+
+::method 'test_72_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  names = .array~new(2)
+  names[1] = 'myreverse'
+  names[2] = 'myupper'
+  retc = t2~TestSaveMacroSpace(names, 'macrosave.bin')
+  self~assertEquals(0, retc)
+
+::method 'test_73_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestClearMacroSpace()
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(2, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(2, retc)
+
+::method 'test_74_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  names = .array~new(2)
+  names[1] = 'myreverse'
+  names[2] = 'myupper'
+  retc = t2~TestLoadMacroSpace(names, 'macrosave.bin')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(0, retc)
+
+  -- Should be done with this, delete it.
+  j = deleteFile('macrosave.bin')
+
+::method 'test_75_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestReorderMacro('myupper', 1)
+  self~assertEquals(0, retc)
+
+::method 'test_76_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestDropMacro('myupper')
+  self~assertEquals(0, retc)
+  retc = t2~TestDropMacro('myreverse')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(2, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(2, retc)
+
+::method 'test_77_function'
+  t2 = .TestFunctionRegistration~new
+  self~assertEquals(0, t2~TestRegisterFunctionExe("MYFUNCTION"))
+  self~assertEquals(0, t2~TestQueryFunction("MYFUNCTION"))
+
+  self~assertEquals("MYFUNCTION 1 Hello World!", myfunction("Hello World!"))
+  self~assertEquals(0, t2~TestDeregisterFunction("MYFUNCTION"))
+  self~assertEquals(30, t2~TestQueryFunction("MYFUNCTION"))
+
+
+::method locateTestFile
+  use arg file
+  parse source . . me
+
+  return qualify(filespec('Location', me)||file)
+
+
+-- for better readability below SHVBLOCK tests use SHV codes F/f, S/s, D/d, P, N
+-- like they are documented for z/OS and z/VM REXX
+-- not sure why ooRexx uses incompatible codes, e. g. SYFET 0x04 instead of "f"
+
+-- test SHVBLOCK return codes
+::method test_shv_rc
+  self~assertSame(.Shv~OK, TestFVariablePool(.Array~new(0)))
+  self~assertSame(.Shv~BADF, TestFVariablePool(.Shv~new("*", "")))
+
+  -- @@quirk or bug:
+  -- F ".NIL" returns BADN, but f ".nil" returns NEWV
+  self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("F", ".NIL")))
+  self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("f", ".nil")))
+
+-- test SHVBLOCK F/FETCH, direct interface
+::method test_shv_fetch_direct
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "NULL", "RANGE", "N", "LARGE", "VAR250"~left(250, "_")
+    shv = .Shv~new("F", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value(name), shv~shvvalue)
+  end
+
+  -- test stem.n
+  shv = .Shv~new("F", "STEM.tail")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame(stem.n, shv~shvvalue)
+
+  -- SHV is strictly string-only
+  shv = .Shv~new("F", "ARRAY")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame("an Array", shv~shvvalue)
+  shv = .Shv~new("F", "SELF")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame(self~objectName, shv~shvvalue)
+
+  -- fetching an unassigned variable returns NEWV
+  do name over "NOTSET", "STEM.N", "_!?"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("F", name)), name)
+  end
+
+  -- variables are not accessible from within a procedure
+  shv = .Shv~new("F", "N")
+  self~assertSame(.Shv~NEWV, procedureVariablePool(shv))
+
+  -- variable value truncation returns TRUNC
+  do name over "RANGE", "LARGE"
+    shv = .Shv~new("F", name, , 100) -- 100 is too small for RANGE and LARGE
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value(name)~left(100), shv~shvvalue)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("F", name)), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("F", "RC"), .Shv~new("F", "LARGE", , 100), .Shv~new("F", "N"), .Shv~new("F", "*")
+  self~assertSame(.Shv~NEWV + .Shv~TRUNC + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~TRUNC, shv[2]~shvret)
+  self~assertSame(.Shv~OK,    shv[3]~shvret)
+  self~assertSame(n,          shv[3]~shvvalue)
+  self~assertSame(.Shv~BADN,  shv[4]~shvret)
+
+  return
+
+  procedureVariablePool: procedure
+  use strict arg shv
+  return TestFVariablePool(shv)
+
+-- test SHVBLOCK f/SYFET, symbolic interface
+::method test_shv_fetch_symbolic
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "null", "Range", "n", "large", "stem.n", "var250"~left(250, "_")
+    shv = .Shv~new("f", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value(name), shv~shvvalue)
+  end
+
+  -- SHV is strictly string-only
+  shv = .Shv~new("f", "array")
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertSame("an Array", shv~shvvalue)
+
+  -- variables not set return NEWV
+  do name over "NOTset", "stem.large", "_!?", "rc"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("f", name)), name)
+  end
+
+  -- variables are not accessible from within a procedure
+  shv = .Shv~new("f", "n")
+  self~assertSame(.Shv~NEWV, procedureVariablePool(shv))
+
+  -- variable value truncation returns TRUNC
+  do name over "range", "large"
+    shv = .Shv~new("f", name, , 100) -- 100 is too small for range and large
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value(name)~left(100), shv~shvvalue)
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("f", name)), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("f", "rc"), .Shv~new("f", "large", , 100), .Shv~new("f", "n"), .Shv~new("f", "*")
+  self~assertSame(.Shv~NEWV + .Shv~TRUNC + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~TRUNC, shv[2]~shvret)
+  self~assertSame(.Shv~OK,    shv[3]~shvret)
+  self~assertSame(n,          shv[3]~shvvalue)
+  self~assertSame(.Shv~BADN,  shv[4]~shvret)
+
+  return
+
+  procedureVariablePool: procedure
+  use strict arg shv
+  return TestFVariablePool(shv)
+
+-- test SHVBLOCK D/DROP, direct interface
+::method test_shv_drop_direct
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  -- test stem.n
+  shv = .Shv~new("D", "STEM.tail")
+  self~assertTrue(var("stem.n")) -- confirm variable exists
+  self~assertSame(.Shv~OK, TestFVariablePool(shv))
+  self~assertFalse(var("stem.n")) -- confirm variable was dropped
+
+  do name over "NULL", "RANGE", "N", "LARGE", "VAR250"~left(250, "_")
+    self~assertTrue(var(name), name) -- confirm variable exists
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("D", name)), name)
+    self~assertFalse(var(name), name) -- confirm variable was dropped
+  end
+
+  -- dropping an unassigned variable returns NEWV
+  do name over "NOTSET", "STEM.N", "_!?"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("D", name)), name)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("D", name)), name)
+  end
+
+  n = 0.123
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("D", "RC"), .Shv~new("D", "N"), .Shv~new("D", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertFalse(var("N"))
+
+-- test SHVBLOCK d/SYDRO, symbolic interface
+::method test_shv_drop_symbolic
+  null = ""
+  range = xrange()
+  n = "tail"
+  large = "X"~copies(4 * 1024 + 1)
+  stem.n = "stem value"
+  var250____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ = .250
+  array = .Array~new(0)
+
+  do name over "null", "Range", "stem.n", "n", "large", "var250"~left(250, "_")
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("d", name)), name)
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("d", name)), name)
+    self~assertFalse(var(name), name)
+  end
+
+  -- dropping an unassigned variable returns NEWV
+  do name over "NOTset", "stem.n", "_!?", "rc"
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("d", name)), name)
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("d", name)), name)
+  end
+
+  n = 0.123
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("d", "rc"), .Shv~new("d", "n"), .Shv~new("d", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertFalse(var("N"))
+
+-- test SHVBLOCK S/SET, direct interface
+::method test_shv_set_direct
+
+  vars = .StringTable~of( -
+   ("NULL", ""), ("RANGE", xrange()), ("N", "tail"), ("LARGE", "X"~copies(4 * 1024 + 1)), -
+    ("VAR250"~left(250, "_"), .250))
+  -- S will return NEWV first, OK on second try
+  do with index name item value over vars
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("S", name, value)), name)
+    self~assertSame(value, value(name))
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("S", name, value)), name)
+    self~assertSame(value, value(name))
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "lower", "V"~copies(256), "", "*", 0, "2INVALID", "WITH BLANK", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("S", name, "")), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("S", "RC", -1), .Shv~new("S", "N", "other"), .Shv~new("S", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertSame(-1, rc)
+  self~assertSame("other", n)
+
+-- test SHVBLOCK s/SYSET, symbolic interface
+::method test_shv_set_symbolic
+
+  vars = .StringTable~of( -
+   ("null", ""), ("range", xrange()), ("n", "tail"), ("large", "x"~copies(4 * 1024 + 1)), -
+   ("stem.n", "stem value"), ("var250"~left(250, "_"), .250))
+  -- S will return NEWV first, OK on second try
+  do with index name item value over vars
+    self~assertSame(.Shv~NEWV, TestFVariablePool(.Shv~new("s", name, value)), name)
+    self~assertSame(value, value(name))
+    self~assertSame(.Shv~OK, TestFVariablePool(.Shv~new("s", name, value)), name)
+    self~assertSame(value, value(name))
+  end
+
+  -- invalid variable names return BADN
+  do name over "v"~copies(256), "", "*", 0, "2invalid", "with blank", '00'x
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("s", name, "")), name)
+  end
+
+  -- a chained request returns a composite OR'ed return code
+  shv = .Shv~new("s", "RC", -1), .Shv~new("s", "N", "other"), .Shv~new("s", "*")
+  self~assertSame(.Shv~NEWV + .Shv~OK + .Shv~BADN, TestFVariablePool(shv))
+  self~assertSame(.Shv~NEWV,  shv[1]~shvret)
+  self~assertSame(.Shv~OK,    shv[2]~shvret)
+  self~assertSame(.Shv~BADN,  shv[3]~shvret)
+  self~assertSame(-1, rc)
+  self~assertSame("other", n)
+
+-- test SHVBLOCK P/PRIV, direct interface
+::method test_shv_private
+  parse source s
+  parse version v
+  private = .Stringtable~of( -
+   ("QUENAME", rxqueue("GET")), ("SOURCE", s), ("VERSION", v))
+  do with index name item value over private
+    shv = .Shv~new("P", name)
+    self~assertSame(.Shv~OK, TestFVariablePool(shv), name)
+    self~assertSame(value, shv~shvvalue)
+  end
+
+  -- this method receives no args, so we test PARM and PARM.n by calling
+  -- method shv_private_args with one arg (our Array of SHVBLOCKs)
+  -- we use a chained request here
+  parms = .Shv~new("P", "PARM"), .Shv~new("P", "PARM.1"), .Shv~new("P", "PARM.2")
+  self~assertSame(.Shv~OK, self~shv_private_args(parms))
+  self~assertSame(1, parms[1]~shvvalue)
+  self~assertSame("an Array", parms[2]~shvvalue)
+  self~assertSame("", parms[3]~shvvalue) -- omitted args return nullstring
+
+  -- variable value truncation returns TRUNC
+  do with index name item value over private~~remove("QUENAME")
+    shv = .Shv~new("P", name, , 8) -- 8 is too small for SOURCE and VERSION
+    self~assertSame(.Shv~TRUNC, TestFVariablePool(shv), name)
+    self~assertSame(value~left(8), shv~shvvalue)
+  end
+
+  -- lowercase or invalid variable names return BADN
+  do name over "source", "P", "PARM.ALL", "ARG"
+    self~assertSame(.Shv~BADN, TestFVariablePool(.Shv~new("P", name)), name)
+  end
+
+
+::method shv_private_args
+  return TestFVariablePool(arg(1))
+
+-- test SHVBLOCK N/NEXTV, direct interface
+::method test_shv_next
+  shv = .Array~new(9)
+  do shv~size
+    shv~append(.Shv~new("N", ""))
+  end
+
+  -- we now have four variables defined: SELF, SUPER, SHV, and RESULT
+  -- we have n+1 SHVBLOCKs and the last one must be LVAR
+  self~assertSame(5, TestFNVariablePool(shv))
+  self~assertSame(.Shv~LVAR, shv[5]~shvret) -- last+1 SHVBLOCK must be LVAR
+  mustHave = "SELF", "SUPER", "SHV", "RESULT"
+  do i = 1 to mustHave~items
+    self~assertSame(.Shv~OK, shv[i]~shvret)
+    self~assertTrue(mustHave~hasItem(shv[i]~shvname), shv[i]~shvname)
+    mustHave~removeItem(shv[i]~shvname)
+    select case shv[i]~shvname
+      when "SHV"    then self~assertSame("an Array", shv[i]~shvvalue)
+      when "RESULT" then self~assertSame(9, shv[i]~shvvalue)
+      otherwise nop
+    end
+  end
+
+  -- call a procedure where not a single variable is defined
+  self~assertSame(1, procedureVariablePool(shv))
+  self~assertSame(.Shv~LVAR, shv[1]~shvret) -- last+1 SHVBLOCK must be LVAR
+  return
+
+  procedureVariablePool: procedure
+  return TestFNVariablePool(arg(1))
+
+
+::options all syntax

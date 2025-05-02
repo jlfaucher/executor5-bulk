@@ -1,0 +1,153 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2020-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.SysFileDateTime.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysFileDateTime.testgroup subclass ooTestCase public
+
+-- get function SysGetFileDateTime
+
+::method test_get_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysGetFileDateTime
+
+::method test_get_option_null
+  self~expectSyntax(40.920) -- SysGetFileDateTime argument time selector must be one of "'A', 'C', or 'W'"
+  call SysGetFileDateTime "", ""
+
+::method test_get_option_invalid
+  self~expectSyntax(40.920) -- SysGetFileDateTime argument time selector must be one of "'A', 'C', or 'W'"
+  call SysGetFileDateTime "", "X"
+
+::method test_get_three_args_too_many
+  self~expectSyntax(88.922, 2) -- Too many arguments in invocation; 2 expected
+  call SysGetFileDateTime "", "", ""
+
+
+-- set function SysSetFileDateTime
+
+::method test_set_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysSetFileDateTime
+
+::method test_set_four_args_too_many
+  self~expectSyntax(88.922, 3) -- Too many arguments in invocation; 3 expected
+  call SysSetFileDateTime "", "", "", ""
+
+::method test_set_datetime_invalid
+  test = "test_set_datetime"
+  testFile = .TemporaryTestFile~new(self, test)~create
+
+  self~assertSame(-1, SysSetFileDateTime(test, ""))
+  self~assertSame(-1, SysSetFileDateTime(test, "2020"))
+  self~assertSame(-1, SysSetFileDateTime(test, "2020-03"))
+  self~assertSame(-1, SysSetFileDateTime(test, "2020:03:04"))
+
+  self~assertSame(-1, SysSetFileDateTime(test, , ""))
+  self~assertSame(-1, SysSetFileDateTime(test, , "05"))
+  self~assertSame(-1, SysSetFileDateTime(test, , "05:06"))
+  self~assertSame(-1, SysSetFileDateTime(test, , "05-06-07"))
+
+  self~assertSame(-1, SysSetFileDateTime(test, "2020-03-04", ""))
+  self~assertSame(-1, SysSetFileDateTime(test, "", "05:06-07"))
+
+  testFile~delete
+
+
+-- combined set/get tests
+
+::method test_set_get_datetime
+  testFile = .TemporaryTestFile~new(self, "test_set_datetime")~create
+  parse value testFile~lastModified~isoDate with date "T" time "."
+  test = testFile~absolutePath
+
+  -- set either date or time
+  self~assertSame(0, SysSetFileDateTime(test, "2020-04-01"), "SysSetFileDateTime("test", 2020-04-01)")
+  -- time must still be unchanged
+  self~assertSame("2020-04-01" time, SysGetFileDateTime(test))
+  self~assertSame(0, SysSetFileDateTime(test, , "04:05:59"))
+  -- now the date must still be unchanged
+  self~assertSame("2020-04-01 04:05:59", SysGetFileDateTime(test), "expected to fail on FAT where write time has a resolution of 2 seconds")
+
+  -- set both date and time, winter time
+  self~assertSame(0, SysSetFileDateTime(test, "2020-02-02", "15:30:01"))
+  self~assertSame("2020-02-02 15:30:01", SysGetFileDateTime(test))
+  self~assertSame("2020-02-02 15:30:01", SysGetFileDateTime(test, "write"))
+
+  -- set both date and time, summer time
+  self~assertSame(0, SysSetFileDateTime(test, "2020-08-02", "00:30:59"))
+  self~assertSame("2020-08-02 00:30:59", SysGetFileDateTime(test))
+  self~assertSame("2020-08-02 00:30:59", SysGetFileDateTime(test, "write"))
+
+  -- SysSetFileDateTime sets the modified (write) date/time only
+  -- other file timestamps, created and accessed, should be unchanged
+  -- Create time is available on Windows only
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    -- If this test is run again after only a few seconds in between,
+    -- the following assert may fail on Windows due to the Windows "File
+    -- System Tunneling cache" which keeps the creation date of a file
+    -- as-is even if it is deleted and later re-created with the same
+    -- name. See https://stackoverflow.com/questions/33227149/after-deleting-file-and-re-creating-file-not-change-creation-date-in-windows/33227233
+    self~assertSame(date time, SysGetFileDateTime(test, "c"), "Fails on Windows if the test is repeated with only a few seconds in between due to the file system tunneling cache")
+  self~assertSame(date time, SysGetFileDateTime(test, "a"))
+
+  -- set without a date or a time arg, sets the current time
+  self~assertSame(0, SysSetFileDateTime(test))
+  -- the returned timestamp should be (almost) the current time
+  -- as SysGetFileDateTime doesn't return fractions of seconds, we
+  -- allow a delta of up to 1.1 seconds
+  timestamp = SysGetFileDateTime(test)
+  fileTime = .DateTime~fromIsoDate(timestamp~replaceAt("T", 11, 1) || ".000000")
+  now = .DateTime~new
+  delta = (now - fileTime)~totalSeconds
+  self~assertTrue(delta > 0 & delta < 1.1, "file time" timestamp", current time" now~string)
+
+  self~AssertSame(0, SysSetFileDateTime(test, "2020-03-04", "05:06:07"), "SysSetFileDateTime("test", 2020-03-04, 05:06:07)")
+  self~AssertSame("2020-03-04 05:06:07", SysGetFileDateTime(test, "write"), "SysGetFileDateTime("test", write)")
+
+
+  testFile~delete
+
+
+::options all syntax

@@ -1,0 +1,151 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.SysSearchPath.testgroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysSearchPath.testgroup subclass ooTestCase public
+
+
+::method test_searchpath_args_none
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  call SysSearchPath
+
+::method test_searchpath_args_one
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
+  call SysSearchPath ""
+
+::method test_searchpath_args_four
+  self~expectSyntax((88.922, 3)) -- Too many arguments in invocation; 3 expected
+  call SysSearchPath "", "", "", ""
+
+::method test_searchpath_option_null
+  self~expectSyntax(40.920) -- SysSearchPath argument option must be one of "'C' or 'N'"
+  call SysSearchPath "", "", ""
+
+::method test_searchpath_option_invalid
+  self~expectSyntax(40.920) -- SysSearchPath argument option must be one of "'C' or 'N'"
+  call SysSearchPath "", "", "x"
+
+
+::method test_searchpath_empty
+  self~assertSame("", SysSearchPath("", ""))
+  self~assertSame("", SysSearchPath("", "no-file"))
+  self~assertSame("", SysSearchPath("no-variable", ""))
+  self~assertSame("", SysSearchPath("no-variable", "no-file"))
+  self~assertSame("", SysSearchPath("PATH", ""))
+  self~assertSame("", SysSearchPath("PATH", "no-file"))
+
+  self~assertSame("", SysSearchPath("", "", "n"))
+  self~assertSame("", SysSearchPath("", "", "C"))
+  self~assertSame("", SysSearchPath("", "", "No"))
+  self~assertSame("", SysSearchPath("", "", "cur"))
+
+  -- SysSearchPath searches for files only, no directories
+  self~assertSame("", SysSearchPath("", "/", "nocurrent"))
+  self~assertSame("", SysSearchPath("", "/", "CURRENT"))
+  self~assertSame("", SysSearchPath("", "/"))
+  self~assertSame("", SysSearchPath("", ".", "C"))
+  self~assertSame("", SysSearchPath("", "./."))
+  self~assertSame("", SysSearchPath("", directory()))
+
+::method test_searchpath_relative
+  -- test all files in the current directory
+  do file over .File~new('.')~listFiles
+    if file~isFile then do
+      msg = file~name "in directory" directory()
+      -- option C searches current directory
+      self~assertSame(file~absolutePath, SysSearchPath("", file~name, "current"), msg)
+      self~assertSame(file~absolutePath, SysSearchPath("", "./"file~name, "current"), "./" || msg)
+      -- option N won't search current directory
+      self~assertSame("", SysSearchPath("", file~name, "nocurrent"), msg)
+    end
+  end
+
+-- files with an absolute path are always found
+::method test_searchpath_absolute
+  parse source . . absolute
+  self~assertSame(absolute, SysSearchPath("", absolute))
+  self~assertSame(absolute, SysSearchPath("no-variable", absolute))
+  self~assertSame(absolute, SysSearchPath("PATH", absolute))
+
+::method test_searchpath_shell
+  -- sh or cmd.exe should be availabe on PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
+
+  self~assertNotSame("", SysSearchPath("PATH", shell))
+  self~assertNotSame("", SysSearchPath("PATH", shell, "c"))
+  self~assertNotSame("", SysSearchPath("PATH", shell, "n"))
+
+  -- Environment variables on Unix-like systems are
+  -- case-sensititve even if the file system isn't, like on Darwin
+  if .RexxInfo~platform~caselessStartsWith("windows") then
+    return
+  self~assertSame("", SysSearchPath("path", shell))
+
+::method test_searchpath_variable
+  parse source . . file
+  name = filespec("name", file)
+  path = filespec("location", file) -- this keeps a trailing delimiter
+  pathStripped = path~strip("t", "/")
+  -- we're doing a relative search
+  current = directory()
+  call directory path
+  -- make sure we don't search the current directory
+  self~assertSame("",   self~searchPath(.Array~of(""), name, "N"))
+-- On Windows SearchPath() searches current directory when a path part is the
+-- null string.  So we skip this
+--self~assertSame("",   self~searchPath(("", ""), name, "n"))
+  self~assertSame(file, self~searchPath(.Array~of(path), name, "n"))
+  self~assertSame(file, self~searchPath(.Array~of(pathStripped), name, "n"))
+  self~assertSame(file, self~searchPath(("abc", path, pathStripped, "xyz"), name, "n"))
+  self~assertSame(file, self~searchPath(("abc"~copies(500), path), name, "n"))
+  call directory current
+
+::method searchPath
+  use strict arg list, file, option = "c"
+  call value "test_searchpath", list~toString(, .File~pathSeparator), "environment"
+  return SysSearchPath("test_searchpath", file, option)
+
+
+::options all syntax

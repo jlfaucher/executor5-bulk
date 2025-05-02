@@ -1,0 +1,257 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2014-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.mutablebuffer_caselessContains.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "mutablebuffer_caselessContains.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(1,mbtobe~isA(.mutablebuffer))
+    self~assertSame('The MutableBuffer class',mbtobe~class)
+    self~assertSame('To be or not to be ( Hamlet )',mbtobe~string)
+
+::method 'test002'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(1,mbtobe~caselessContains('To be'))
+
+::method 'test003'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(1,mbtobe~caselessContains('To bE'))
+
+::method 'test004'   --rexxref pos in mutable buffer
+    x1 = .mutablebuffer~new("Saturday")
+    self~assertSame(1,x1~caselessContains("day"))
+    self~assertSame(0,x1~caselessContains(" "))
+    self~assertSame(1-1,x1~caselessContains(" ",5))
+
+::method 'test004a'   --rexxref pos in mutable buffer
+    x1 = .mutablebuffer~new("abc def ghi")
+    self~assertSame(000/1,x1~caselessContains("x"))
+    self~assertSame(1,x1~caselessContains(" "))
+    self~assertSame(1,x1~caselessContains(" ",5))
+
+::method test011
+    m011=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m011~caselessContains('be',))
+
+::method test012
+    m012=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m012~caselessContains('be o',))
+
+::method test013
+    m013=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m013~caselessContains('Ham',))
+
+::method test014
+    m014=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m014~caselessContains('Ham',21))
+
+::method test015
+    m015=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m015~caselessContains('Ham',22))
+
+::method test016
+    m016=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m016~caselessContains('Ham',23))
+
+::method test017
+    m017=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m017~caselessContains('Ham',1e2))
+
+::method test018
+    m018=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m018~caselessContains('(',19))
+
+::method test019
+    m019=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m019~caselessContains('(',20))
+
+::method test020
+    m020=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m020~caselessContains('(',21))
+
+::method test021
+    m021=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m021~caselessContains('be o',))
+
+::method test022
+    m022=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m022~caselessContains('be o',))
+
+::method test023
+    m023=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m023~caselessContains('be o',999999999))
+
+::method test024
+    self~expectSyntax(93.924)
+    m024=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    if .rexxinfo~internaldigits = 9 then
+       self~assertSame('1',m024~caselessContains('be o',1e10))
+    else
+       self~assertSame('1',m024~caselessContains('be o',1e19))
+
+::method test025
+    m025=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m025~caselessContains('be o',))
+
+::method test026
+    self~expectSyntax(93.924)
+    m026=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m026~caselessContains('be o',"a")
+
+::method test027
+    self~expectSyntax(93.924)
+    m027=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m027~caselessContains('be o',0)
+
+::method test028
+    self~expectSyntax(93.924)
+    m028=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m028~caselessContains('be o',-1)
+
+::method test029
+    m029=.mutablebuffer~new('')
+    self~assertSame('0',m029~caselessContains(''))
+
+::method test030
+    m030=.mutablebuffer~new('')
+    self~assertSame('0',m030~caselessContains('a'))
+
+::method test031
+    x00ff=xrange('00'x,'ff'x)
+    m031=.mutablebuffer~new(x00ff)
+    Do i=0 To 255
+      self~assertSame(.true,m031~caselessContains(i~d2c))
+      End
+    m031[1,0]='A'
+--  say m031~string~left(2)~c2x
+--  say m031~length
+    self~assertSame(.true,m031~caselessContains('00'x))
+    m031[1,2]='AA'
+--  say m031~string~left(2)~c2x
+--  say m031~length
+    self~assertSame(.false,m031~caselessContains('00'x))
+
+::method test032
+    self~expectSyntax(93.903)
+    m032=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m032~caselessContains()
+
+::method test033
+    self~expectSyntax(93.902)
+    m033=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m033~caselessContains('be o',33,33,18)
+
+::method test034             -- 1234567890123456
+    m034=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(.true,m034~caselessContains('be',4,2))
+    self~assertSame(.false,m034~caselessContains('be',5,2))
+    self~assertSame(.true,m034~caselessContains('be',3,15))
+    self~assertSame(.true,m034~caselessContains('be',,20))
+    self~assertSame(.true,m034~caselessContains('be'))
+
+::method test035
+    self~expectSyntax(93.923)
+    m035=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m035~caselessContains('be o',1,"aaa")
+
+::method test036
+  m036=.mutablebuffer~new('abc')
+  self~assertSame('1',m036~caselessContains('AB',1,2))
+
+::method test037
+  m037=.mutablebuffer~new('ABC')
+  self~assertSame('0',m037~caselessContains('ab',2,))
+
+::method test038
+  m038=.mutablebuffer~new('abc')
+  self~assertSame('0',m038~caselessContains('AB',2,))
+
+::method test039
+  m039=.mutablebuffer~new('abc aaB')
+  self~assertSame('1',m039~caselessContains('AB',6,2))
+
+::method test040
+  m040=.mutablebuffer~new('ABC AAB')
+  self~assertSame('1',m040~caselessContains('aB',6,2))
+
+::method test041
+  m041=.mutablebuffer~new('ABC AAB')
+  self~assertSame('1',m041~caselessContains('Ab',6,2))
+
+::method test042
+  m042=.mutablebuffer~new('aBcDeF')
+  self~assertSame('1',m042~caselessContains('BCD',1,))
+
+::method test043
+  m043=.mutablebuffer~new('aBcDeF')
+  self~assertSame('1',m043~caselessContains('BCD',2,))
+
+::method test044
+  m044=.mutablebuffer~new('aBcDeF')
+  self~assertSame('0',m044~caselessContains('BCD',2,2))
+
+::method test045
+  m045=.mutablebuffer~new('aBcDeF')
+  self~assertSame('1',m045~caselessContains('BCD',2,3))
+
+::method test046
+  m046=.mutablebuffer~new('aBcDeF')
+  self~assertSame('1',m046~caselessContains('BCD',2,999999999))
+
+::method test047
+  m047=.mutablebuffer~new('aBcDeF')
+  self~assertSame('0',m047~caselessContains('BCD',999999999,2))
+
+::method test048
+  m048=.mutablebuffer~new('aBcDeF')
+  self~assertSame('0',m048~caselessContains('BCD',3,))
+
+
+::options novalue error

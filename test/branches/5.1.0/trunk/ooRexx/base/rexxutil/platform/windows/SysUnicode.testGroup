@@ -1,0 +1,366 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SysUnicode.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::class SysUnicode.testgroup subclass ooTestCase public
+
+-- SysFromUnicode tests
+
+::method test_fromunicode_args_none
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFromUnicode
+
+::method test_fromunicode_args_one
+  self~expectSyntax((88.901, 5)) -- Missing argument; argument 5 is required
+  call SysFromUnicode ""
+
+::method test_fromunicode_args_too_many
+  self~expectSyntax((88.922, 5)) -- Too many arguments in invocation; 5 expected
+  call SysFromUnicode "", , , , s., ''
+
+::method test_fromunicode_arg_one_nil
+  self~expectSyntax((88.909, 1)) -- Argument 1 must have a string value
+  call SysFromUnicode .nil, , , , s.
+
+::method test_fromunicode_arg_one_odd_length
+  -- 87, The parameter is incorrect
+  self~assertSame(87, SysFromUnicode("x", , , , s.))
+
+::method test_fromunicode_arg_two_nil
+  self~expectSyntax((88.909, 2)) -- Argument 2 must have a string value
+  call SysFromUnicode "", .nil, , , s.
+
+::method test_fromunicode_arg_two_null
+  -- SysFromUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysFromUnicode "", "", , , s.
+
+::method test_fromunicode_arg_two_invalid
+  -- SysFromUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysFromUnicode "", "invalid", , , s.
+
+::method test_fromunicode_arg_two_invalid_number
+  -- SysFromUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax((40.920, "SysFromUnicode", "codepage"))
+  call SysFromUnicode "", "43 7", , , s.
+
+::method test_fromunicode_arg_two_negative
+  -- SysFromUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysFromUnicode "", -1, , , s.
+
+::method test_fromunicode_arg_two_too_large
+  -- SysFromUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysFromUnicode "", "1000000000", , , s.
+
+::method test_fromunicode_arg_three_nil
+  self~expectSyntax((88.909, 3)) -- Argument 3 must have a string value
+  call SysFromUnicode "", , .nil, , s.
+
+::method test_fromunicode_arg_three_invalid
+  -- SysFromUnicode argument mappingflags must be one of COMPOSITECHECK, DEFAULTCHAR, DISCARDNS, SEPCHARS, ERR_INVALID_CHARS, or NO_BEST_FIT_CHARS
+  self~expectSyntax((40.920, "SysFromUnicode", "mappingflags"))
+  call SysFromUnicode "", , "invalid", , s.
+
+::method test_fromunicode_arg_four_nil
+  self~expectSyntax((88.909, 4)) -- Argument 4 must have a string value
+  call SysFromUnicode "", , , .nil, s.
+
+::method test_fromunicode_arg_four_too_long
+  -- SysFromUnicode argument defaultchar must be a single character
+  self~expectSyntax((40.23, "SysFromUnicode", "defaultchar"))
+  call SysFromUnicode "", , , "ab", s.
+
+::method test_fromunicode_arg_five_no_stem
+  self~expectSyntax((40.919, 5)) -- Argument 5 must have a stem object or stem name value
+  call SysFromUnicode "", , , , ''
+
+::method test_fromunicode_source_null
+  -- null string should be allowed
+  self~assertSame("0 ", SysFromUnicode("", , , , s.) s.!text)
+
+::method test_fromunicode_simple
+  self~assertSame("0 A", SysFromUnicode(.Unicode~A, , , , s.) s.!text)
+
+::method test_fromunicode_codepage_numeric_invalid
+  -- 87, The parameter is incorrect
+  self~assertSame(87, SysFromUnicode(.Unicode~A, 999999, , , s.))
+
+::method test_fromunicode_codepages
+  -- symbolic code page names, don't test SYMBOL or UTF7
+  do cp over "ACP CONSOLE MACCP OEMCP THREAD_ACP UTF8"~subWords
+    self~assertSame("0 A", SysFromUnicode(.Unicode~A, cp, , , s.) s.!text, "code page" cp)
+  end
+  -- code page numbers (just a small selection of many possible)
+  do cp over 437, 850, 1252, 65001
+    self~assertSame("0 A", SysFromUnicode(.Unicode~A, cp, , , s.) s.!text)
+  end
+
+::method test_fromunicode_flags_no_compositecheck
+  -- The three flags DEFAULTCHAR, DISCARDNS, and SEPCHARS all
+  -- require that COMPOSITECHECK be specified together with each.
+  -- Otherwise the call fails with 1004 "Invalid flags"
+  -- (results vary with different codepages, but still ...)
+  self~assertSame(1004, SysFromUnicode(.Unicode~A, 437, "DEFAULTCHAR", , s.))
+  self~assertSame(1004, SysFromUnicode(.Unicode~A, 437, "DISCARDNS", , s.))
+  self~assertSame(1004, SysFromUnicode(.Unicode~A, 437, "SEPCHARS", , s.))
+
+::method test_fromunicode_flags
+  -- all valid flags should be recognized, just ERR_INVALID_CHARS is special
+  flags = "CompositeCheck DEFAULTCHAR discardNS sepChars NO_best_fit_chars"
+  self~assertSame(0, SysFromUnicode(.Unicode~A, 850, flags, , s.))
+  -- in addition we have this undocumented alias
+  self~assertSame(0, SysFromUnicode(.Unicode~A, 850, "NO_BEST_FIT", , s.))
+
+  -- ERR_INVALID_CHARS is valid with codepages UTF8 or 54936 only
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "Err_Invalid_Chars", , s.))
+  -- in addition we have this undocumented alias
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "ERR_INVALID", , s.))
+
+
+  -- NO_BEST_FIT_CHARS
+
+  -- &copy; in 437 is "best-fit" character "c"
+  self~assertSame("0 c", SysFromUnicode(.Unicode~copy, 437, , , s.) s.!text)
+  -- with NO_BEST_FIT_CHARS it should return "?" with !USEDDEFAULTCHAR .true
+  self~assertSame("0 ? 1", SysFromUnicode(.Unicode~copy, 437, "NO_BEST_FIT_CHARS", , s.) s.!text s.!useddefaultchar)
+
+  -- ERR_INVALID_CHARS
+
+  -- valid with codepages UTF8 or 54936 only
+  -- otherwise fails with 1004 "Invalid flags"
+  self~assertSame(1004, SysFromUnicode(.Unicode~A, 437, "ERR_INVALID_CHARS", , s.))
+
+  -- for codepage UTF8 it fails with 1113 "No mapping for the Unicode character
+  -- exists in the target multi-byte code page" for an invalid input character
+  self~assertSame(1113, SysFromUnicode(.Unicode~DFFF, "UTF8", "ERR_INVALID_CHARS", , s.))
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "UTF8", "ERR_INVALID_CHARS", , s.))
+
+  -- COMPOSITECHECK DEFAULTCHAR combo
+
+  -- &infin; is available in 437, but "best-fit" approximated in 1252 with digit "8" (crazy!)
+  self~assertSame("0 EC 0", SysFromUnicode(.Unicode~infin, 437, , , s.) s.!text~c2x s.!useddefaultchar)
+  self~assertSame("0 8 0", SysFromUnicode(.Unicode~infin, 1252, , , s.) s.!text s.!useddefaultchar)
+  -- This test sets NO_BEST_FIT_CHARS so that infin is translated to the
+  -- default character instead, and sets COMPOSITECHECK DEFAULTCHAR for a
+  -- unique default character.  !USEDDEFAULTCHAR should be .true
+  self~assertSame("0 _ 1", SysFromUnicode(.Unicode~infin, 1252, -
+    "no_best_fit_chars compositecheck defaultchar", "_", s.) s.!text s.!useddefaultchar)
+
+  -- COMPOSITECHECK DISCARDNS combo
+  -- tests to be done
+
+  -- COMPOSITECHECK and COMPOSITECHECK SEPCHARS combo
+
+  -- A composite like A plus combining diaeresis should become a single character
+  -- if either of above flag/combo is specified.  And two characters else.
+  composite = .Unicode~A || .Unicode~uml
+  self~assertSame("0 1", SysFromUnicode(composite, 1252, 'COMPOSITECHECK', , s.) s.!text~length)
+  self~assertSame("0 1", SysFromUnicode(composite, 1252, 'COMPOSITECHECK SEPCHARS', , s.) s.!text~length)
+  self~assertSame("0 2", SysFromUnicode(composite, 1252, , , s.) s.!text~length)
+
+::method test_fromunicode_defaultchar
+  -- defaultchar can be set independently of COMPOSITECHECK DEFAULTCHAR flags
+  self~assertSame("0 # 1", SysFromUnicode(.Unicode~Psi, 1252, , "#", s.) s.!text s.!useddefaultchar)
+  self~assertSame(0 '00'x 1, SysFromUnicode(.Unicode~Psi, 1252, , '00'x, s.) s.!text s.!useddefaultchar)
+  -- can be either omitted or a null string
+  self~assertSame("0 ? 1", SysFromUnicode(.Unicode~Psi, 1252, , , s.) s.!text s.!useddefaultchar)
+  self~assertSame("0 ? 1", SysFromUnicode(.Unicode~Psi, 1252, , "", s.) s.!text s.!useddefaultchar)
+
+
+-- SysToUnicode tests
+
+::method test_tounicode_args_none
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysToUnicode
+
+::method test_tounicode_args_one
+  self~expectSyntax((88.901, 4)) -- Missing argument; argument 4 is required
+  call SysToUnicode ""
+
+::method test_tounicode_args_too_many
+  self~expectSyntax((88.922, 4)) -- Too many arguments in invocation; 4 expected
+  call SysToUnicode "", , , s., ''
+
+::method test_tounicode_arg_one_nil
+  self~expectSyntax((88.909, 1)) -- Argument 1 must have a string value
+  call SysToUnicode .nil, , , s.
+
+::method test_tounicode_arg_two_nil
+  self~expectSyntax((88.909, 2)) -- Argument 2 must have a string value
+  call SysToUnicode "", .nil, , s.
+
+::method test_tounicode_arg_two_null
+  -- SysToUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysToUnicode "", "", , s.
+
+::method test_tounicode_arg_two_invalid
+  -- SysToUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysToUnicode "", "invalid", , s.
+
+::method test_tounicode_arg_two_invalid_number
+  -- SysToUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax((40.920, "SysToUnicode", "codepage"))
+  call SysToUnicode "", "43 7", , s.
+
+::method test_tounicode_arg_two_negative
+  -- SysToUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysToUnicode "", -1, , s.
+
+::method test_tounicode_arg_two_too_large
+  -- SysToUnicode argument codepage must be one of ACP, CONSOLE, MACCP, OEMCP, THREAD_ACP, SYMBOL, UTF7, UTF8, or a non-negative whole number
+  self~expectSyntax(40.920)
+  call SysToUnicode "", "1000000000", , s.
+
+::method test_tounicode_arg_three_nil
+  self~expectSyntax((88.909, 3)) -- Argument 3 must have a string value
+  call SysToUnicode "", , .nil, s.
+
+::method test_tounicode_arg_three_invalid
+  -- SysToUnicode argument mappingflags must be one of COMPOSITE, ERR_INVALID_CHARS, PRECOMPOSED, or USEGLYPHCHARS
+  self~expectSyntax((40.920, "SysToUnicode", "mappingflags"))
+  call SysToUnicode "", , "NO_BEST_FIT_CHARS", s.
+
+::method test_tounicode_arg_four_no_stem
+  self~expectSyntax((40.919, 4)) -- Argument 4 must have a stem object or stem name value
+  call SysToUnicode "", , , ''
+
+::method test_tounicode_simple
+  self~assertSame("0" .Unicode~A, SysToUnicode("A", , , s.) s.!text)
+
+::method test_tounicode_codepage_numeric_invalid
+  -- 87, The parameter is incorrect
+  self~assertSame(87, SysToUnicode("A", 11111, , s.))
+
+::method test_tounicode_codepages
+  -- symbolic code page names, don't test SYMBOL or UTF7
+  do cp over "ACP CONSOLE MACCP OEMCP THREAD_ACP UTF8"~subWords
+    self~assertSame("0" .Unicode~A, SysToUnicode("A", cp, , s.) s.!text, "code page" cp)
+  end
+  -- code page numbers (just a small selection of many possible)
+  do cp over 437, 850, 1252, 65001
+    self~assertSame("0" .Unicode~A, SysToUnicode("A", cp, , s.) s.!text, "code page" cp)
+  end
+
+::method test_tounicode_source
+  -- null string should be allowed
+  self~assertSame("0 ", SysToUnicode("", , , s.) s.!text)
+
+::method test_tounicode_flags_not_allowed
+  -- no flags are allowed for code pages 5022x, 570xx, 65000, 42
+  self~assertSame(1004, SysToUnicode("A", 42, "PRECOMPOSED", s.))
+
+::method test_tounicode_flags
+  -- all valid flags should be recognized, with PRECOMPOSED and COMPOSITE
+  -- being mutually exclusive
+  flags = "Composite err_invalid_chars UseGlyphChars"
+  self~assertSame(0, SysToUnicode("A", 850, flags, s.))
+  flags = "ERR_INVALID_CHARS PRECOMPOSED USEGLYPHCHARS"
+  self~assertSame(0, SysToUnicode("A", 850, flags, s.))
+  -- in addition we have one undocumented alias
+  self~assertSame(0, SysToUnicode("A", 850, "ERR_INVALID", s.))
+
+  -- COMPOSITE
+
+  -- three flags allowed together
+  self~assertSame(0, SysToUnicode("A", 850, "COMPOSITE ERR_INVALID_CHARS USEGLYPHCHARS", s.))
+  -- COMPOSITE cannot be used together with PRECOMPOSED
+  -- PRECOMPOSED and COMPOSITE are mutually exclusive
+  self~assertSame(1004, SysToUnicode("A", 850, "COMPOSITE PRECOMPOSED", s.))
+  -- but no error is raised for code pagr UTF8, so we run this as "known bug"
+  self~assertSame(0, SysToUnicode("A", "UTF8", "COMPOSITE PRECOMPOSED", s.), "tracker bug #n/a MultiByteToWideChar COMPOSITE PRECOMPOSED should fail")
+  -- to do: more COMPOSITE tests
+
+  -- PRECOMPOSED
+
+  -- three flags allowed together
+  self~assertSame(0, SysToUnicode("A", 850, "precomposed err_invalid_chars useglyphchars", s.))
+  -- to do: more COMPOSITE tests
+
+
+::method test_tofromunicode
+  -- UTF-8 text converted to Windows Unicode and back to UTF-8 should return unchanged
+  do line over .resources~wikipedia
+    self~assertSame("0 0" line, -
+     SysToUnicode(line, "utf8", , s.) SysFromUnicode(s.!text, "utf8", , , s.) s.!text)
+  end
+
+  -- even for a multi-line conversion
+  lines = .resources~wikipedia~makeString
+  self~assertSame("0 0" lines, -
+   SysToUnicode(lines, "utf8", , s.) SysFromUnicode(s.!text, "utf8", , , s.) s.!text)
+
+
+::class Unicode
+::constant A      ('00 41'x~reverse) -- U+0041, Latin Capital Letter A
+::constant copy   ('00 A9'x~reverse) -- U+00A9, Copyright sign, &copy;
+::constant infin  ('22 1E'x~reverse) -- U+221E, Infinity, &infin; available in 437, "best-fit" in 1252
+::constant Psi    ('03 A8'x~reverse) -- U+03A8, Greek Capital Letter Psi, &Psi; unavailable in 437, 1252
+-- non-spacing
+::constant uml    ('03 08'x~reverse) -- U+0308, Combining Diaeresis
+
+::method unknown class
+  -- allow hexadecimal form .Unicode~xxxx
+  -- raises neither NOVALUE nor NOMETHOD
+  return arg(1)~x2c~reverse
+
+
+::resource wikipedia
+Unicode, formally The Unicode Standard, is a text encoding standard maintained by the Unicode Consortium designed to support the use of text in all of the world's writing systems
+Unicode est un standard informatique qui permet des échanges de textes dans différentes langues, à un niveau mondial
+Der Unicode-Standard (Aussprachen: amerikanisches Englisch [ˈjuːnikoʊd], britisches Englisch [ˈjuːnikəʊd]; dt. [ˈjuːnikoːt]) legt fest, wie Schrift elektronisch gespeichert wird
+Unicode es un estándar de codificación de caracteres diseñado para facilitar el tratamiento informático, transmisión y visualización de textos de numerosos idiomas
+Unicode är en branschstandard för hur datorer ska hantera text skriven i olika skriftsystem
+::END
+
+
+::options all syntax

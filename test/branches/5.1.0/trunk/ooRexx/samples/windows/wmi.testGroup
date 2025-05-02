@@ -1,0 +1,107 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2021-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.wmi.testGroup)
+group~restrictOS("WINDOWS")
+if locateSamplePrg("ole\wmi") == .nil then
+  group~markNoTests("No ooRexx ole\wmi samples folder can be located")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+
+::class wmi.testgroup subclass ooTestCase public
+
+::constant ooTestType (.ooTestTypes~SAMPLE_TEST)
+
+::method test_accounts
+  sample = locateSamplePrg("ole\wmi\accounts.rex")
+  self~assertNotNil(sample)
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(0, execRexxPrg(sample, output, error))
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
+  self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
+  -- the last line is expected to start with "Status:" ("Status: OK")
+  last = output[output~last]
+  self~assertTrue(last~startsWith("Status:"), "last line expected to start with 'Status:'; found" last)
+
+::method test_osinfo
+  sample = locateSamplePrg("ole\wmi\osinfo.rex")
+  self~assertNotNil(sample)
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(0, execRexxPrg(sample, output, error))
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
+  self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
+  -- the last line is expected to always be "OS type: WINNT"
+  last = output[output~last]
+  self~assertTrue(last~startsWith("OS type:"), "last line expected to start with 'OS type'; found" last)
+
+::method test_process
+  sample = locateSamplePrg("ole\wmi\process.rex")
+  self~assertNotNil(sample)
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(0, execRexxPrg(sample, output, error))
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
+  self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
+  -- the last is line expected to have a number as its first word, e. g. "5832 rexx.exe"
+  last = output[output~last]
+  self~assertTrue(last~word(1)~dataType("num"), "last line expected to start with a number; found" last)
+
+::method test_services
+  sample = locateSamplePrg("ole\wmi\services.rex")
+  self~assertNotNil(sample)
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(0, execRexxPrg(sample, output, error, "Q"))
+  self~assertSame(0, error~items, "unexpected error output" error~toString)
+  self~assertTrue(output~items >= 20, "at least 20 lines of output expected; found" output~items)
+  -- the last but fifth line expected to be like "[310] This service .."
+  last = output[output~last - 5]
+  self~assertTrue(last~startsWith("["), "last line expected to start with '['; found" last)
+
+
+::options all syntax

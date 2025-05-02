@@ -1,0 +1,750 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.DateParser.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'dateparser.cls'
+
+::class "DateParser.testGroup" subclass ooTestCase public
+
+-- test the different methods of parsing off year information.
+::method "TestYearElements"
+
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/07/31", "yyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(00190731), .DateParser~parse("19/07/31", "yyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/07/31", "yyyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(00190731), .DateParser~parse("0019/07/31", "yyyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/07/31", "yyy/MM/dd"))
+
+  -- two digit year tests, which are a little more complicated because they need to be done relative
+  -- to the current year. We'll do all of the parsing using the ordered date format
+
+  today = .datetime~new~date
+  startRange = today~addYears(-50)
+  endRange = today~addYears(49)
+
+  self~assertSame(today, .DateParser~parse(today~orderedDate, "yy/MM/dd"))
+  self~assertSame(startRange, .DateParser~parse(startRange~orderedDate, "yy/MM/dd"))
+  self~assertSame(endRange, .DateParser~parse(endRange~orderedDate, "yy/MM/dd"))
+
+  -- these should all produce the same results as above
+  self~assertSame(today, .DateParser~parse(today~orderedDate, "y/MM/dd"))
+  self~assertSame(startRange, .DateParser~parse(startRange~orderedDate, "y/MM/dd"))
+  self~assertSame(endRange, .DateParser~parse(endRange~orderedDate, "y/MM/dd"))
+
+  -- testing the no leading zero is a little tricker because of the sliding window. We
+  -- will produce a date object by parsing the same date, then use the parser on the retrieved
+  -- date to make sure we get the same result
+
+  date = .DateTime~fromOrderedDate('01/01/01')
+  -- this strips the leading zero from the date
+  self~assertSame(date, .DateParser~parse(date~orderedDate~strip('L', '0'), "y/MM/dd"))
+
+
+-- test the different ways of parsing off Month elements
+::method "TestMonthElements"
+
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/07/31", "yyyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/7/31", "yyyy/M/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019/07/31", "yyyy/M/dd"))
+
+  self~assertSame(.DateTime~fromStandardDate(20190111), .DateParser~parse("Jan 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190211), .DateParser~parse("Feb 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190311), .DateParser~parse("Mar 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190411), .DateParser~parse("Apr 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190511), .DateParser~parse("May 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190611), .DateParser~parse("Jun 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190711), .DateParser~parse("Jul 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190811), .DateParser~parse("Aug 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190911), .DateParser~parse("Sep 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191011), .DateParser~parse("Oct 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191111), .DateParser~parse("Nov 11, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191211), .DateParser~parse("Dec 11, 2019", "MMM dd, yyyy"))
+
+  self~assertSame(.DateTime~fromStandardDate(20190111), .DateParser~parse("January 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190211), .DateParser~parse("February 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190311), .DateParser~parse("March 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190411), .DateParser~parse("April 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190511), .DateParser~parse("May 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190611), .DateParser~parse("June 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190711), .DateParser~parse("July 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190811), .DateParser~parse("August 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190911), .DateParser~parse("September 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191011), .DateParser~parse("October 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191111), .DateParser~parse("November 11, 2019", "MMMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20191211), .DateParser~parse("December 11, 2019", "MMMM dd, yyyy"))
+
+::method "TestDayElements"
+
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("Jan 1, 2019", "MMM d, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("Jan 01, 2019", "MMM d, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("Jan 01, 2019", "MMM dd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190111), .DateParser~parse("Jan 11, 2019", "MMM d, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190111), .DateParser~parse("Jan 11, 2019", "MMM dd, yyyy"))
+
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("Jan 1st, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190102), .DateParser~parse("Jan 2nd, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190103), .DateParser~parse("Jan 3rd, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190104), .DateParser~parse("Jan 4th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190105), .DateParser~parse("Jan 5th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190106), .DateParser~parse("Jan 6th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190107), .DateParser~parse("Jan 7th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190108), .DateParser~parse("Jan 8th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190109), .DateParser~parse("Jan 9th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190110), .DateParser~parse("Jan 10th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190111), .DateParser~parse("Jan 11th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190112), .DateParser~parse("Jan 12th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190113), .DateParser~parse("Jan 13th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190114), .DateParser~parse("Jan 14th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190115), .DateParser~parse("Jan 15th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190116), .DateParser~parse("Jan 16th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190117), .DateParser~parse("Jan 17th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190118), .DateParser~parse("Jan 18th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190119), .DateParser~parse("Jan 19th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190120), .DateParser~parse("Jan 20th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190121), .DateParser~parse("Jan 21st, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190122), .DateParser~parse("Jan 22nd, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190123), .DateParser~parse("Jan 23rd, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190124), .DateParser~parse("Jan 24th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190125), .DateParser~parse("Jan 25th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190126), .DateParser~parse("Jan 26th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190127), .DateParser~parse("Jan 27th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190128), .DateParser~parse("Jan 28th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190129), .DateParser~parse("Jan 29th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190130), .DateParser~parse("Jan 30th, 2019", "MMM ddddd, yyyy"))
+  self~assertSame(.DateTime~fromStandardDate(20190131), .DateParser~parse("Jan 31st, 2019", "MMM ddddd, yyyy"))
+
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("2019-1", "yyyy-ddd"))
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("2019-001", "yyyy-ddd"))
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("2019-001", "yyyy-dddd"))
+
+  self~assertSame(.DateTime~fromStandardDate(20191231), .DateParser~parse("2019-365", "yyyy-ddd"))
+  self~assertSame(.DateTime~fromStandardDate(20191231), .DateParser~parse("2019-365", "yyyy-dddd"))
+
+  self~assertSame(.DateTime~fromStandardDate(20201231), .DateParser~parse("2020-366", "yyyy-ddd"))
+  self~assertSame(.DateTime~fromStandardDate(20201231), .DateParser~parse("2020-366", "yyyy-dddd"))
+
+
+::method "TestHourElements"
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd h"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd h"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), .DateParser~parse("2019/08/02 12", "yyyy/MM/dd h"))
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd H"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), .DateParser~parse("2019/08/02 12", "yyyy/MM/dd H"))
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), .DateParser~parse("2019/08/02 0", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), .DateParser~parse("2019/08/02 00", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T12:00:00.000000"), .DateParser~parse("2019/08/02 12", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T13:00:00.000000"), .DateParser~parse("2019/08/02 13", "yyyy/MM/dd hh"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T23:00:00.000000"), .DateParser~parse("2019/08/02 23", "yyyy/MM/dd hh"))
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000000"), .DateParser~parse("2019/08/02 00", "yyyy/MM/dd HH"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T01:00:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd HH"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T12:00:00.000000"), .DateParser~parse("2019/08/02 12", "yyyy/MM/dd HH"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T13:00:00.000000"), .DateParser~parse("2019/08/02 13", "yyyy/MM/dd HH"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T23:00:00.000000"), .DateParser~parse("2019/08/02 23", "yyyy/MM/dd HH"))
+
+
+::method "TestMinuteElements"
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:01:00.000000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd m"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:01:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd m"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:59:00.000000"), .DateParser~parse("2019/08/02 59", "yyyy/MM/dd m"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:01:00.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd mm"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:59:00.000000"), .DateParser~parse("2019/08/02 59", "yyyy/MM/dd mm"))
+
+
+::method "TestSecondElements"
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:01.000000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd s"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:01.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd s"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), .DateParser~parse("2019/08/02 59", "yyyy/MM/dd s"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:01.000000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd ss"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), .DateParser~parse("2019/08/02 59", "yyyy/MM/dd ss"))
+
+
+::method "TestFractionElements"
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.100000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd f"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.230000"), .DateParser~parse("2019/08/02 23", "yyyy/MM/dd ff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.345000"), .DateParser~parse("2019/08/02 345", "yyyy/MM/dd fff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.456700"), .DateParser~parse("2019/08/02 4567", "yyyy/MM/dd ffff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.567890"), .DateParser~parse("2019/08/02 56789", "yyyy/MM/dd fffff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.678901"), .DateParser~parse("2019/08/02 678901", "yyyy/MM/dd ffffff"))
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.100000"), .DateParser~parse("2019/08/02 1", "yyyy/MM/dd f"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.010000"), .DateParser~parse("2019/08/02 01", "yyyy/MM/dd ff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.001000"), .DateParser~parse("2019/08/02 001", "yyyy/MM/dd fff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000100"), .DateParser~parse("2019/08/02 0001", "yyyy/MM/dd ffff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000010"), .DateParser~parse("2019/08/02 00001", "yyyy/MM/dd fffff"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:00.000001"), .DateParser~parse("2019/08/02 000001", "yyyy/MM/dd ffffff"))
+
+
+::method "TestCivilTime"
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), .DateParser~parse("2019/08/02 12:30am", "yyyy/MM/dd h:mmtt"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), .DateParser~parse("2019/08/02 12:30pm", "yyyy/MM/dd h:mmtt"))
+
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), .DateParser~parse("2019/08/02 12:30a", "yyyy/MM/dd h:mmt"))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), .DateParser~parse("2019/08/02 12:30p", "yyyy/MM/dd h:mmt"))
+
+::method "TestWeekNumber"
+
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 1 2", "yyyy w D"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 01 2", "yyyy w D"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 01 2", "yyyy ww D"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 1 Tuesday", "yyyy w DDD"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 01 Tue", "yyyy w DD"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 01 Tuesday", "yyyy ww DDD"))
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 01 Tue", "yyyy ww DD"))
+
+::method "TestOffset"
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+0400", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), .DateParser~parse("2019-08-02T00:00:59.000000-0400", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), .DateParser~parse("2019-08-02T00:00:59.000000+0430", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), .DateParser~parse("2019-08-02T00:00:59.000000+0430", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+04:00", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), .DateParser~parse("2019-08-02T00:00:59.000000-04:00", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), .DateParser~parse("2019-08-02T00:00:59.000000+04:30", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:30"), .DateParser~parse("2019-08-02T00:00:59.000000+04:30", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), .DateParser~parse("2019-08-02T00:00:59.000000Z", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), .DateParser~parse("2019-08-02T00:00:59.000000Z", "yyyy-MM-dd'T'hh:mm:ss.ffffffzzzz"))
+
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+04", "yyyy-MM-dd'T'hh:mm:ss.ffffffzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), .DateParser~parse("2019-08-02T00:00:59.000000-04", "yyyy-MM-dd'T'hh:mm:ss.ffffffzz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), .DateParser~parse("2019-08-02T00:00:59.000000Z", "yyyy-MM-dd'T'hh:mm:ss.ffffffzz"))
+
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+04", "yyyy-MM-dd'T'hh:mm:ss.ffffffz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), .DateParser~parse("2019-08-02T00:00:59.000000-04", "yyyy-MM-dd'T'hh:mm:ss.ffffffz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+4", "yyyy-MM-dd'T'hh:mm:ss.ffffffz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000-04:00"), .DateParser~parse("2019-08-02T00:00:59.000000-4", "yyyy-MM-dd'T'hh:mm:ss.ffffffz"))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000Z"), .DateParser~parse("2019-08-02T00:00:59.000000Z", "yyyy-MM-dd'T'hh:mm:ss.ffffffz"))
+
+::method "TestPredefined"
+  self~assertSame(.DateTime~fromNormalDate("3 Aug 2019"), .DateParser~parse("3 Aug 2019", .Dateformats~NormalDate))
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:00:59.000000"), .DateParser~parse("2019-08-02T00:00:59.000000", .Dateformats~ISODate))
+  self~assertSame(.DateTime~fromUtcIsoDate("2019-08-02T00:00:59.000000+04:00"), .DateParser~parse("2019-08-02T00:00:59.000000+04:00", .Dateformats~UTCISODate))
+  self~assertSame(.DateTime~fromEuropeanDate("08/03/19"), .DateParser~parse("08/03/19", .Dateformats~EuropeanDate))
+  self~assertSame(.DateTime~fromUsaDate("03/08/19"), .DateParser~parse("03/08/19", .Dateformats~USADate))
+  self~assertSame(.DateTime~fromStandardDate("20190803"), .DateParser~parse("08/03/2019", .Dateformats~LongUsaDate))
+  self~assertSame(.DateTime~fromStandardDate("20190803"), .DateParser~parse("03/08/2019", .Dateformats~LongEuropeanDate))
+  self~assertSame(.DateTime~fromStandardDate("20190803"), .DateParser~parse("19/08/03", .Dateformats~OrderedDate))
+  self~assertSame(.DateTime~fromStandardDate("20190803"), .DateParser~parse("2019/08/03", .Dateformats~LongOrderedDate))
+  self~assertSame(.DateTime~fromStandardDate("20190803"), .DateParser~parse("2019/08/03", .Dateformats~StandardDate))
+  self~assertSame(.DateTime~fromOrdinalDate("2019-250"), .DateParser~parse("2019-250", .Dateformats~OrdinalDate))
+  self~assertSame(.DateTime~fromWeekNumberDate("2019-W25-1"), .DateParser~parse("2019-W25-1", .Dateformats~WeekNumberDate))
+
+
+  self~assertSame(.DateTime~fromCivilTime("1:24am"), .DateParser~parse("1:24am", .Dateformats~CivilTime))
+  self~assertSame(.DateTime~fromCivilTime("1:24pm"), .DateParser~parse("1:24pm", .Dateformats~CivilTime))
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("13:24:00", .Dateformats~NormalTime))
+  self~assertSame(.DateTime~fromNormalTime("01:24:00"), .DateParser~parse("01:24:00", .Dateformats~NormalTime))
+  self~assertSame(.DateTime~fromLongTime("13:24:00.123456"), .DateParser~parse("13:24:00.123456", .Dateformats~LongTime))
+  self~assertSame(.DateTime~fromLongTime("01:24:00.123456"), .DateParser~parse("01:24:00.123456", .Dateformats~LongTime))
+
+::method "TestDateSeperator"
+
+  formats = .DateFormats~new
+  formats~dateSeparator = "-"
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019-07-31", "yyyy/MM/dd", formats))
+  formats~dateSeparator = " "
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019 07 31", "yyyy/MM/dd", formats))
+  formats~dateSeparator = "-"
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019-07-31", "yyyy/MM/dd", formats))
+  formats~dateSeparator = ""
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("20190731", "yyyy/MM/dd", formats))
+  formats~dateSeparator = "<>"
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("2019<>07<>31", "yyyy/MM/dd", formats))
+
+
+::method "TestTimeSeperator"
+
+  formats = .DateFormats~new
+  formats~timeSeparator = ":"
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("13:24:00", "hh:mm:ss", formats))
+  formats~timeSeparator = ";"
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("13;24;00", "hh:mm:ss", formats))
+  formats~timeSeparator = " "
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("13 24 00", "hh:mm:ss", formats))
+  formats~timeSeparator = ""
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("132400", "hh:mm:ss", formats))
+  formats~timeSeparator = "<>"
+  self~assertSame(.DateTime~fromNormalTime("13:24:00"), .DateParser~parse("13<>24<>00", "hh:mm:ss", formats))
+
+
+::method "TestDateTimeSymbols"
+
+  formats = .DateFormats~new
+  formats~dayNames = ("lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")
+
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 1 martes", "yyyy w DDD", formats))
+
+  formats~dayAbbreviations = ("lu", "ma", "mi", "ju", "vi", "sa", "do")
+  self~assertSame(.DateTime~fromIsoDate("2019-01-01T00:00:00.000000"), .DateParser~parse("2019 1 ma", "yyyy w DD", formats))
+
+  formats~monthAbbreviations = ("ene", "feb", "mar", "abr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dic")
+  self~assertSame(.DateTime~fromStandardDate(20190411), .DateParser~parse("Abr 11, 2019", "MMM dd, yyyy", formats))
+
+  formats~monthNames = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agusto", "septiembre", "octubre", "noviembre", "diciembre")
+  self~assertSame(.DateTime~fromStandardDate(20190411), .DateParser~parse("Abril 11, 2019", "MMMM dd, yyyy", formats))
+
+  formats~civilLabels = ("ax", "px")
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T12:30:00.000000"), .DateParser~parse("2019/08/02 12:30px", "yyyy/MM/dd h:mmtt", formats))
+
+  formats~civilShortLabels = ("m", "n")
+  self~assertSame(.DateTime~fromIsoDate("2019-08-02T00:30:00.000000"), .DateParser~parse("2019/08/02 12:30m", "yyyy/MM/dd h:mmt", formats))
+
+  formats~ordinalSuffixes = ("er", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  self~assertSame(.DateTime~fromStandardDate(20190101), .DateParser~parse("1 1er, 2019", "M ddddd, yyyy", formats))
+  self~assertSame(.DateTime~fromStandardDate(20190102), .DateParser~parse("1 2e, 2019", "M ddddd, yyyy", formats))
+
+
+::method "TestLiteralStrings"
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("Day 2019/07/31", "'Day 'yyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("Day 2019/07/31", '"Day "yyy/MM/dd'))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse("'Day' 2019/07/31", "'''Day'' 'yyy/MM/dd"))
+  self~assertSame(.DateTime~fromStandardDate(20190731), .DateParser~parse('"Day" 2019/07/31', '"""Day"" "yyy/MM/dd'))
+
+
+::method testError1
+  self~expectSyntax(88.932)
+  .DateParser~parse("Day 2019/07/31", "'Day yyy/MM/dd")
+
+::method testError2
+  self~expectSyntax(88.932)
+  .DateParser~parse("Day 2019/07/31", '"Day yyy/MM/dd')
+
+::method testError3
+  self~expectSyntax(88.932)
+  .DateParser~parse("Day 2019/07/31", '"Day"" yyy/MM/dd')
+
+::method testError4
+  self~expectSyntax(88.932)
+  .DateParser~parse("Day 2019/07/31", "'Day'' yyy/MM/dd")
+
+::method testError5
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-dddddd")
+
+::method testError6
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-DDDD")
+
+::method testError7
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-fffffff")
+
+::method testError8
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-hhh")
+
+::method testError9
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-HHH")
+
+::method testError10
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-mmm")
+
+::method testError11
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-MMMMM")
+
+::method testError12
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-sss")
+
+::method testError13
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-ttt")
+
+::method testError14
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-www")
+
+::method testError15
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyyy-dd")
+
+::method testError16
+  self~expectSyntax(88.932)
+  .DateParser~parse("2019-001", "yyyy-zzzzz")
+
+::method testError17
+  self~expectSyntax(88.933)
+  .DateParser~parse("2019-2020", "yyyy-yyyy")
+
+::method testError18
+  self~expectSyntax(88.933)
+  .DateParser~parse("12-01", "MM-MM")
+
+::method testError19
+  self~expectSyntax(88.933)
+  .DateParser~parse("125-126", "ddd-ddd")
+
+::method testError20
+  self~expectSyntax(88.933)
+  .DateParser~parse("10-11", "hh-hh")
+
+::method testError21
+  self~expectSyntax(88.933)
+  .DateParser~parse("2019/08/02 13:30am", "yyyy/MM/dd hh:mmtt")
+
+::method testError22
+  self~expectSyntax(88.933)
+  .DateParser~parse("10-11", "mm-mm")
+
+::method testError23
+  self~expectSyntax(88.933)
+  .DateParser~parse("+10-+11", "zz-zz")
+
+::method testError24
+  self~expectSyntax(88.933)
+  .DateParser~parse("1-2", "D-D")
+
+::method testError25
+  self~expectSyntax(88.933)
+  .DateParser~parse("1-2", "D-D")
+
+::method testError26
+  self~expectSyntax(88.933)
+  .DateParser~parse("pm-am", "tt-tt")
+
+::method testError27
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "d")
+
+::method testError28
+  self~expectSyntax(88.933)
+  .DateParser~parse("32", "d")
+
+::method testError29
+  self~expectSyntax(88.933)
+  .DateParser~parse("a", "d")
+
+::method testError30
+  self~expectSyntax(88.933)
+  .DateParser~parse("00", "dd")
+
+::method testError31
+  self~expectSyntax(88.933)
+  .DateParser~parse("32", "dd")
+
+::method testError32
+  self~expectSyntax(88.933)
+  .DateParser~parse("0a", "dd")
+
+::method testError32a
+  self~expectSyntax(88.933)
+  .DateParser~parse(" 1", "dd")
+
+::method testError33
+  self~expectSyntax(88.933)
+  .DateParser~parse("1", "dd")
+
+::method testError34
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "ddd")
+
+::method testError35
+  self~expectSyntax(88.933)
+  .DateParser~parse("367", "ddd")
+
+::method testError36
+  self~expectSyntax(88.933)
+  .DateParser~parse("a", "ddd")
+
+::method testError37
+  self~expectSyntax(88.933)
+  .DateParser~parse("000", "dddd")
+
+::method testError38
+  self~expectSyntax(88.933)
+  .DateParser~parse("367", "dddd")
+
+::method testError39
+  self~expectSyntax(88.933)
+  .DateParser~parse("01a", "dddd")
+
+::method testError40
+  self~expectSyntax(88.933)
+  .DateParser~parse("  1", "dddd")
+
+::method testError41
+  self~expectSyntax(88.933)
+  -- 2019 only has 365 days, so this is an error
+  .DateParser~parse("2019-366", "yyyy-dddd")
+
+::method testError42
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "D")
+
+::method testError43
+  self~expectSyntax(88.933)
+  .DateParser~parse("8", "D")
+
+::method testError44
+  self~expectSyntax(88.933)
+  .DateParser~parse("", "D")
+
+::method testError45
+  self~expectSyntax(88.933)
+  .DateParser~parse("Lun", "DD")
+
+::method testError46
+  self~expectSyntax(88.933)
+  .DateParser~parse("Lunes", "DDD")
+
+::method testError47
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "h")
+
+::method testError48
+  self~expectSyntax(88.933)
+  .DateParser~parse("13", "h")
+
+::method testError50
+  self~expectSyntax(88.933)
+  .DateParser~parse("24", "hh")
+
+::method testError51
+  self~expectSyntax(88.933)
+  .DateParser~parse("00", "H")
+
+::method testError52
+  self~expectSyntax(88.933)
+  .DateParser~parse("13", "H")
+
+::method testError53
+  self~expectSyntax(88.933)
+  .DateParser~parse("1", "H")
+
+::method testError54
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "HH")
+
+::method testError55
+  self~expectSyntax(88.933)
+  .DateParser~parse("24", "HH")
+
+::method testError56
+  self~expectSyntax(88.933)
+  .DateParser~parse("60", "m")
+
+::method testError57
+  self~expectSyntax(88.933)
+  .DateParser~parse("60", "mm")
+
+::method testError58
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "mm")
+
+::method testError59
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "M")
+
+::method testError60
+  self~expectSyntax(88.933)
+  .DateParser~parse("13", "M")
+
+::method testError61
+  self~expectSyntax(88.933)
+  .DateParser~parse("1", "MM")
+
+::method testError62
+  self~expectSyntax(88.933)
+  .DateParser~parse("00", "MM")
+
+::method testError63
+  self~expectSyntax(88.933)
+  .DateParser~parse("13", "MM")
+
+::method testError64
+  self~expectSyntax(88.933)
+  .DateParser~parse("Ene", "MMM")
+
+::method testError65
+  self~expectSyntax(88.933)
+  .DateParser~parse("Enero", "MMMM")
+
+::method testError66
+  self~expectSyntax(88.933)
+  .DateParser~parse("60", "s")
+
+::method testError67
+  self~expectSyntax(88.933)
+  .DateParser~parse("60", "ss")
+
+::method testError68
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "ss")
+
+::method testError69
+  self~expectSyntax(88.933)
+  .DateParser~parse("z", "t")
+
+::method testError70
+  self~expectSyntax(88.933)
+  .DateParser~parse("zm", "tt")
+
+::method testError71
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "w")
+
+::method testError72
+  self~expectSyntax(88.933)
+  .DateParser~parse("54", "w")
+
+::method testError73
+  self~expectSyntax(88.933)
+  .DateParser~parse("00", "ww")
+
+::method testError74
+  self~expectSyntax(88.933)
+  .DateParser~parse("54", "ww")
+
+::method testError75
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "ww")
+
+::method testError76
+  self~expectSyntax(88.933)
+  -- 2005 only has 52 weeks
+  .DateParser~parse('2005-W53-1', .Dateformats~OrdinalDate)
+
+::method testError77
+  self~expectSyntax(88.933)
+  .DateParser~parse("x", "y")
+
+::method testError78
+  self~expectSyntax(88.933)
+  .DateParser~parse("1", "yy")
+
+::method testError79
+  self~expectSyntax(88.933)
+  .DateParser~parse("0", "yyy")
+
+::method testError80
+  self~expectSyntax(88.933)
+  .DateParser~parse("0000", "yyyy")
+
+::method testError81
+  self~expectSyntax(88.933)
+  -- case matters
+  .DateParser~parse("z", "z")
+
+::method testError82
+  self~expectSyntax(88.933)
+  .DateParser~parse("+13", "z")
+
+::method testError83
+  self~expectSyntax(88.933)
+  -- case matters
+  .DateParser~parse("z", "zz")
+
+::method testError84
+  self~expectSyntax(88.933)
+  .DateParser~parse("+13", "zz")
+
+::method testError85
+  self~expectSyntax(88.933)
+  .DateParser~parse("-1", "zz")
+
+::method testError86
+  self~expectSyntax(88.933)
+  -- case matters
+  .DateParser~parse("z", "szz")
+
+::method testError87
+  self~expectSyntax(88.933)
+  .DateParser~parse("+13:00", "zzz")
+
+::method testError88
+  self~expectSyntax(88.933)
+  .DateParser~parse("-1:00", "zzz")
+
+::method testError89
+  self~expectSyntax(88.933)
+  .DateParser~parse("-01:60", "zzz")
+
+::method testError90
+  self~expectSyntax(88.933)
+  .DateParser~parse("-01:6", "zzz")
+
+::method testError91
+  self~expectSyntax(88.933)
+  .DateParser~parse("-016", "zzz")
+
+::method testError92
+  self~expectSyntax(88.933)
+  .DateParser~parse("12-00", "hh:mm")
+
+::method testError93
+  self~expectSyntax(88.933)
+  .DateParser~parse("2019:08:07", "yyyy/MM/dd")
+
+::method testError94
+  self~expectSyntax(88.933)
+  .DateParser~parse("2019:07", "yyyy/dd")
+
+::method testError95
+  self~expectSyntax(88.933)
+  .DateParser~parse("2019:07", "yyyy/MM")
+
+::method testError96
+  self~expectSyntax(88.933)
+  -- this date is a Thursday, so not fully valid
+  .DateParser~parse("Wednesday 2019/08/08", "DD yyyy/MM/dd")
+
+::method testError97
+  self~expectSyntax(88.933)
+  -- The weeknumber does not match the resolved date
+  .DateParser~parse("20 2019/08/08", "ww yyyy/MM/dd")

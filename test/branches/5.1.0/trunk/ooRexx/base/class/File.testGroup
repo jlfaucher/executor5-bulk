@@ -1,0 +1,966 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2024 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . s
+
+group = .TestGroup~new(s)
+group~add(.File.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+
+::class "File.testGroup" public subclass ooTestCase
+
+::method test_relative
+  fName = "test_relative"
+  f = .file~new(fName)~~delete -- make sure this doesn't exist
+
+  self~assertEquals(fName, f~path)
+  self~assertEquals(f~string, f~path)
+  self~assertEquals(fName, f~name)
+  self~assertEquals(directory()||.File~separator||fName, f~absolutePath)
+  self~assertEquals(directory(), f~parent)
+  self~assertEquals(.File~new(directory()), f~parentFile)
+  self~assertEquals(0, f~length)
+
+  -- some assertions on the various is tests
+  -- f doesn't exist, so nothing should work
+  self~assertFalse(f~exists)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isHidden)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+  self~assertFalse(f~delete)
+
+  self~assertSame(.nil, f~lastModified)
+  self~assertSame(.nil, f~list)
+  self~assertSame(.nil, f~listFiles)
+
+  -- now create this and repeat a few of the tests
+  self~assertTrue(f~makeDir)
+  self~assertFalse(f~makeDir)  -- already exists
+  self~assertTrue(f~exists)
+  self~assertTrue(f~isDirectory)
+  self~assertFalse(f~isFile)
+  self~assertIsA(f~lastModified, .DateTime)
+  self~assertTrue((.DateTime~new - f~lastModified)~totalSeconds~abs < 0.1, -
+   "timestamp" f~lastModified~string "should be within 0.1s to current" .DateTime~new~string)
+
+  -- file timestamp without fractions of a second
+  date = f~lastModified~addYears(-1)
+  date = .DateTime~new(date~year, date~month, date~day, date~hours, date~minutes, date~seconds)
+  self~assertTrue(f~"lastModified="(date), "can't change lastModified to" date~string)
+  self~assertEquals(date, f~lastModified)
+
+  -- now delete, recreate with makeDirs and run more tests
+  self~assertTrue(f~delete)
+  self~assertFalse(f~delete)   -- already deleted
+  self~assertFalse(f~exists)
+
+  self~assertTrue(f~makeDirs)
+  self~assertFalse(f~makeDirs) -- already exists
+  self~assertTrue(f~exists)
+  self~assertTrue(f~isDirectory)
+  list = f~list
+  self~assertIsA(list, .Array)
+  self~assertEquals(0, list~items)
+  subfile = .File~new("A_real_file", f)
+  s = .stream~new(subfile)
+  s~lineout('xyz')
+  s~close
+
+  self~assertTrue(subfile~exists)
+  self~assertFalse(subfile~isDirectory)
+  self~assertTrue(subfile~isFile)
+  self~assertEquals(3 + .endofline~length, subfile~length)
+
+  list = f~list
+  self~assertIsA(list, .Array)
+  self~assertEquals(1, list~items)
+  self~assertEquals('A_real_file', list[1])
+
+  list = f~listFiles
+  self~assertIsA(list, .Array)
+  self~assertEquals(1, list~items)
+  self~assertEquals(subFile, list[1])
+  self~assertEquals(subFile~absolutePath, list[1]~path)
+
+  self~assertTrue(subfile~delete)
+  self~assertFalse(subfile~exists)
+
+  self~assertTrue(f~delete)
+
+  subdir = .File~new("Y/Z", f)
+  -- verify the separator translation
+  -- qualify will translate / to \ on Windows only
+  -- on Unix-like systems \ isn't translated to /
+  if .File~separator == "\" then do
+      self~assertEquals(f~absolutePath||"\Y\Z", subdir~path)
+      if \.File~isCaseSensitive then do
+          subdir2 = .File~new("y\z", f)
+          self~assertEquals(subdir, subdir2)
+      end
+  end
+
+  self~assertFalse(subdir~makeDir)
+  self~assertFalse(subdir~exists)
+  self~assertTrue(subdir~makeDirs)
+  self~assertTrue(subdir~exists)
+  self~assertTrue(subdir~parentFile~exists)
+
+  list = f~list
+  self~assertIsA(list, .Array)
+  self~assertEquals(1, list~items)
+  self~assertEquals('Y', list[1])
+
+  list = f~listFiles
+  self~assertIsA(list, .Array)
+  self~assertEquals(1, list~items)
+  self~assertEquals(subdir~parentFile, list[1])
+  self~assertEquals(subdir~parent, list[1]~path)
+
+  self~assertFalse(subdir~parentFile~delete)  -- this should fail
+  self~assertTrue(subdir~delete)
+  self~assertTrue(subdir~parentFile~delete)
+  self~assertFalse(subdir~exists)
+  self~assertFalse(subdir~parentFile~exists)
+
+  f2 = .file~new(fName, directory())   -- this should be the same file
+  self~assertEquals(f, f2)
+  f3 = .file~new(fName, .File~new(directory()))   -- this should be the same file
+  self~assertEquals(f, f3)
+  f4 = .file~new(fName, f~parentFile)   -- this should be the same file
+  self~assertEquals(f, f4)
+
+  self~assertTrue(f~delete)
+
+
+-- additional timestamp tests
+::method test_file_lastmodified
+  f = .TemporaryTestFile~new(self, "test_file_lastmodified")~~create("File.testGroup: test_file_lastmodified")
+  s = .Stream~new(f)
+
+  -- ooRexx provides various interfaces to retrieve file time stamps:
+  --   File~lastModified,
+  --   Stream~query("timestamp") (we'll ignore Stream~query("datetime") as it doesn't provide a 4-digit year),
+  --   SysGetFileDateTime(, "write"), and
+  --   SysFileTree(dir, , "FL")
+  -- check them all for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastModified
+    tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertIsA(tLastModified, .DateTime)
+    -- When comparing with the current time, we ignore anything smaller than milliseconds
+    -- because Windows returns the current time with only a millisecond resolution
+    -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
+    now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
+    tLastModified = tLastModified~string~left(23) -- keep milliseconds, ignore microseconds
+    self~assertTrue(tLastModified <= now, "test timestamp" tLastModified "should be before" now || "; expected to fail on FAT where write time has a resolution of 2 seconds")
+    tLastModified = tLastModified~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from Stream~query("timestamp")
+    -- a. query a closed stream
+    q = .Stream~new(f)
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified "should be equal to ~query('timestamp')" tQuery)
+    -- b. query an opened stream (will only work if no read/write lock is applied)
+    -- (we want to test both SysFile::getTimeStamp code paths)
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified "should be equal to ~query('timestamp')" tQuery)
+    q~close
+
+    -- file time from SysGetFileDateTime(, "write")
+    t = SysGetFileDateTime(f~absolutePath, "write") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tSysGet, "~lastModified timestamp" tLastModified "should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- file time from SysFileTree(dir, , "FL")
+    call SysFileTree f~absolutePath, "FILE.", "FL" -- list files only; use long timestamps
+    tTree = file.1~word(1)"T"file.1~word(2) -- e. g. 2015-06-06 15:12:08
+    self~assertEquals(tLastModified, tTree, "~lastModified timestamp" tLastModified "should be equal to SysFileTree() timestamp" tTree)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastModified = f~lastModified - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
+::method test_file_lastmodified_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastModified(.nil)
+
+::method test_file_lastmodified_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastModified="
+
+::method test_file_lastmodified_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastModified="(0, 0)
+
+::method test_file_lastmodified_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastModified = ""
+
+::method test_file_lastmodified_directory
+  -- current directory must exist, so lastModified should never be nil
+  self~assertIsA(.File~new(".")~lastModified, .DateTime)
+
+::method test_file_lastmodified_nil
+  -- setting lastModified will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastModified)
+  f~lastModified = .DateTime~new
+  self~assertFalse(f~exists, "setting lastModified() should not create" f~name)
+  self~assertSame(.nil, f~lastModified)
+
+-- fractions of seconds should work
+::method test_file_lastmodified_fractions
+  file = .TemporaryTestFile~new(self, "fractions")~~create("")
+  now = .DateTime~new
+  file~lastModified = now
+  self~assertSame(now, file~lastModified, "expected to fail on FAT where write time has a resolution of 2 seconds")
+
+::method test_file_lastaccessed_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastAccessed(.nil)
+
+::method test_file_lastaccessed_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastAccessed="
+
+::method test_file_lastaccessed_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastAccessed="(0, 0)
+
+::method test_file_lastaccessed_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastAccessed = ""
+
+::method test_file_lastaccessed
+  f = .TemporaryTestFile~new(self, "test_file_lastaccessed")~~create("File.testGroup: test_file_lastaccessed")
+  s = .Stream~new(f)
+
+  -- ooRexx provides two interfaces to retrieve last access time stamps:
+  --   File~lastAccessed and
+  --   SysGetFileDateTime(, "access")
+  -- check them for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastAccessed
+    tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertIsA(tLastAccessed, .DateTime)
+    -- When comparing with the current time, we ignore anything smaller than milliseconds
+    -- because Windows returns the current time with only a millisecond resolution
+    -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
+    now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
+    tLastAccessed = tLastAccessed~string~left(23) -- keep milliseconds, ignore microseconds
+    self~assertTrue(tLastAccessed <= now, "test timestamp" tLastAccessed "should be before" now)
+    tLastAccessed = tLastAccessed~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from SysGetFileDateTime(, "access")
+    t = SysGetFileDateTime(f~absolutePath, "access") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastAccessed, tSysGet, "~lastAccessed timestamp" tLastAccessed "should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastAccessed = f~lastAccessed - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
+::method test_file_lastaccessed_directory
+  -- current directory must exist, so lastAccessed should never be nil
+  self~assertIsA(.File~new(".")~lastAccessed, .DateTime)
+
+::method test_file_lastaccessed_nil
+  -- setting lastAccessed will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastAccessed)
+  f~lastAccessed = .DateTime~new
+  self~assertFalse(f~exists, "setting lastAccessed() should not create" f~name)
+  self~assertSame(.nil, f~lastAccessed)
+
+-- fractions of seconds should work
+::method test_file_accessed_fractions
+  file = .TemporaryTestFile~new(self, "fractions")~~create("")
+  now = .DateTime~new
+  file~lastAccessed = now
+  self~assertSame(now, file~lastAccessed, "expected to fail on FAT where access time has a resolution of 1 day")
+
+-- special cases: Epoch, current year: New Year, winter time, summer time, New Years Eve
+::method test_file_timestamps
+  file = .TemporaryTestFile~new(self, "file_timestamps")~~create("")
+
+  y = .Datetime~new~year
+  do date over "1969-12-31", "1970-01-01", y || "-01-01", y || "-02-28", y || "-08-08", y || "-12-31"
+    -- we test 24 hours of two time timestamps:
+    -- 1. YYYY-MM-DD hh:00:00, with hh = 00 .. 23
+    d00 = .DateTime~fromStandardDate(date, "-")
+    -- 2. YYYY-MM-DD hh:59:59, with hh = 00 .. 23
+    d59 = d00~addHours(1)~addSeconds(-1)
+
+    -- on FreeBSD and NetBSD, most probably due to the mktime() (time_t)-1
+    -- ambiguity, a UTC file timestamp of 1969-12-31T23:59:59 cannot be set
+    -- e. g. in a GMT+1 timezone:
+    -- touch -m -t 197001010059.59 file
+    -- touch: out of range or illegal time specification: [[CC]YY]MMDDhhmm[.SS]
+    -- timestamps plus/minus one second work
+    -- touch -m -t 197001010059.58 file
+    -- touch -m -t 197001010100.00 file
+    -- still, lastModified= returns .true, so we test a different second
+    if .RexxInfo~platform~caselessStartsWith("NetBSD") | -
+       .RexxInfo~platform~caselessStartsWith("FreeBSD"), -
+       date == "1969-12-31" | date == "1970-01-01" then
+      d59 = d59~addSeconds(-1) -- test hh:59:58 instead, with hh = 00 .. 23
+
+    do 24
+      self~assertTrue(file~"lastAccessed="(d00), d00~string)
+      self~assertEquals(d00, file~lastAccessed, d00~string)
+      self~assertTrue(file~"lastModified="(d59), d59~string)
+      self~assertEquals(d59, file~lastModified, d59~string)
+      d00 = d00~addHours(1)
+      d59 = d59~addHours(1)
+    end
+  end
+
+
+-- listRoots tests
+
+-- too many arguments
+::method test_listroots_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation
+  .File~listRoots(.nil)
+
+::method test_listroots
+  roots = .File~listRoots
+  self~assertIsA(roots, .Array, ".File~listRoots should return an Array; found" roots~class~id)
+  if .File~separator = "/" then do
+    -- on Unix we expect a single-item Array of "/"
+    self~assertEquals(1, roots~items, ".File~listRoots should return a single-item Array; found" roots~items "items")
+    self~assertEquals("/", roots[1], ".File~listRoots should return '/'; found" roots[1])
+  end
+  else do
+    -- on Windows we expect an Array of one or more uppercase "D:\" strings
+    self~assertTrue(roots~items >= 1, ".File~listRoots should return an Array with one or more items; found" roots~items "items")
+    do root over roots
+      self~assertEquals(3, root~length, ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root~endsWith(":\"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root[1]~dataType("UPPER"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+    end
+  end
+
+
+-- compareTo tests
+
+-- too many arguments
+::method test_compareto_no_arg
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .File~new(".")~compareTo
+
+::method test_compareto_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method
+  .File~new(".")~compareTo(.nil, .nil)
+
+::method test_compareto
+  root = .File~listRoots[1]
+  case = .File~isCaseSensitive
+  aLower = .File~new("a", root)
+  aUpper = .File~new("A", root)
+  bUpper = .File~new("B", root)
+  one = .File~new(1, root)
+  self~assertSame(0, aLower~compareTo(aLower))
+  self~assertTrue(aLower = aLower)
+  self~assertSame(case~?(1, 0), aLower~compareTo(aUpper))
+  self~assertSame(case~?(.false, .true), aLower < bUpper)
+  self~assertSame(case~?(1, -1), aLower~compareTo(bUpper))
+  self~assertSame(-1, one~compareTo(aLower))
+  self~assertTrue(one < aLower)
+  sorted = ""
+  do file over (aLower, bUpper, one)~sort
+    sorted = sorted file~name
+  end
+  self~assertSame(case~?("1 B a", "1 a B"), sorted~strip)
+
+
+-- absolutePath/absoluteFile tests
+
+-- too many arguments
+::method test_absolutepath_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~absolutePath(.nil)
+
+::method test_absolutefile_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~absoluteFile(.nil)
+
+
+-- normalization
+::method test_absolutepath
+  -- normalization should remove trailing slashes
+  do path over ".", "./", ".//"
+    current = .File~new(path)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current)
+    current = .File~new(path)~absoluteFile
+    self~assertIsA(current, .File, current~string)
+    self~assertEquals(directory(), current~string, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current~string)
+  end
+
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    -- normalization should remove trailing or duplicate slashes
+    expected = "/usr"
+    do path over "/usr", "/usr/", "/usr//", "//usr", "//usr/", "//usr//"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    self~assertSame("/", .File~new("//"))
+
+  end
+  else do
+
+    -- Windows-only
+
+    -- normalization should remove trailing or duplicate backslashes and slashes
+    -- all slashes should be converted to backslashes
+    expected = "C:\Users"
+    do path over "C:\Users", "C:\\Users", "C:\Users\", "C:\Users\\", "C:/Users", "C://Users", "C:/Users/", "C:/Users/\", "C:\/Users/\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    -- same as above
+    do path over "\\l", "\\localhost\", "\\localhost\share\", "\\?\C:\Windows\", , "\\?\C:\nul\"
+      self~assertSame(path~changeStr("/", "\")~strip("t", "\"), .File~new(path)~absolutePath)
+    end
+    drive = filespec("drive", directory()) || "\"
+    do path over "//", "\\", drive || "\", drive || "\."
+      self~assertSame(drive, .File~new(path)~absolutePath)
+    end
+
+    -- normalization should NOT change a naked drive specification D:
+    drive = filespec("drive", directory())
+    current = .File~new(drive)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || drive || "')~absolutePath should return current directory" directory()"; found" current)
+
+    -- normalization should NOT remove the last trailing slash for root D:\
+    expected = drive || "\"
+    do path over expected, expected || "/", expected || "//", expected || "\", expected || "\\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    -- these Win32 namespaces must keep their trailing backslash
+    do path over "\\?\", "\\?\C:\", "\\.\", "\\.\C:\"
+      self~assertSame(path, .File~new(path)~absolutePath)
+    end
+
+  end
+
+
+-- a specified root parent path must not cause duplicate separators
+::method test_root_parent_path
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    expected = "/usr"
+    actual = .File~new("usr", "/")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('usr', '/')~absolutePath should return" expected"; found" actual)
+
+  end
+  else do
+
+    -- Windows-only
+
+    expected = "C:\User"
+    actual = .File~new("User", "C:\")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('User', 'C:\')~absolutePath should return" expected"; found" actual)
+
+  end
+
+
+-- canRead/Write and setReadOnly/Writable tests
+
+::method test_file_canread_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~canRead(.nil)
+
+::method test_file_canwrite_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~canWrite(.nil)
+
+::method test_file_setreadonly_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~setReadOnly(.nil)
+
+::method test_file_setwritable_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~setWritable(.nil)
+
+-- nothing should work with a non-existing file
+::method test_file_readwrite_file_not_exist
+  f = .File~new("file_not_exist") -- shouldn't exist
+
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setReadOnly
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+-- test with an existing file
+::method test_file_readwrite_file_exist
+  f = .TemporaryTestFile~new(self, "file_exist")
+  f~create("line")
+
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+  f~setReadOnly
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+-- test with an existing directory
+::method test_file_readwrite_directory_exist
+  f = .TemporaryTestDirectory~new(self, "directory_exist")
+  f~create
+
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+  f~setReadOnly
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+
+-- temporaryPath tests
+
+::method test_temporaryPath_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~temporaryPath(.nil)
+
+::method test_temporaryPath_file
+  self~assertIsA(.File~temporaryPath, .File)
+
+::method test_temporaryPath_accessible
+  temp = .File~temporaryPath
+  self~assertTrue(temp~isDirectory, "temporaryPath" temp~string "should be a directory")
+  self~assertTrue(temp~canRead, "temporaryPath" temp~string "should be readable")
+  self~assertTrue(temp~canWrite, "temporaryPath" temp~string "should be writable")
+
+-- on Windows environment variables TMP, TEMP, USERPROFILE are checked in sequence
+::method test_temporaryPath_environment_variables_windows
+  if \.RexxInfo~platform~caselessStartsWith("Windows") then
+    return
+
+  tmp = value("TMP", "c:\testtmp", "environment")
+  self~assertSame("c:\testtmp", .File~temporaryPath~string)
+  call value "TMP", .nil, "environment"
+
+  -- if TMP isn't set, TEMP is checked
+  temp = value("TEMP", "c:\testtemp", "environment")
+  self~assertSame("c:\testtemp", .File~temporaryPath~string)
+  call value "TEMP", .nil, "environment"
+
+  -- if neither TMP nor TEMP is set, USERPROFILE is checked
+  user = value("USERPROFILE", "c:\testuser", "environment")
+  self~assertSame("c:\testuser", .File~temporaryPath~string)
+  call value "USERPROFILE", .nil, "environment"
+
+  -- if neither of those three is set, the current directory is returned
+  self~assertSame(directory(), .File~temporaryPath~string)
+
+  -- restore environment
+  call value "TMP", (tmp == "")~?(.nil, tmp), "environment"
+  call value "TEMP", (temp == "")~?(.nil, temp), "environment"
+  call value "USERPROFILE", (user == "")~?(.nil, user), "environment"
+
+-- on Unix environment variable TMPDIR is checked
+::method test_temporaryPath_environment_variables_unix
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    return
+
+  tmpDir = value("TMPDIR", "/testtmpdir", "environment")
+  self~assertSame("/testtmpdir", .File~temporaryPath)
+  call value "TMPDIR", .nil, "environment"
+
+  -- if TMPDIR isn't set, "/tmp" is returned unconditionally
+  self~assertSame("/tmp", .File~temporaryPath)
+
+  -- restore environment
+  call value "TMPDIR", (tmpDir == "")~?(.nil, tmpDir), "environment"
+
+
+-- searchPath tests
+
+::method test_searchPath_no_arg
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .File~searchPath
+
+::method test_searchPath_two_args_first_omitted
+  self~expectSyntax(93.903) -- Missing argument in method
+  .File~searchPath(, "")
+
+::method test_searchPath_three_args_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~searchPath("", "", "")
+
+::method test_searchPath_one_arg_not_valid
+  self~assertNil(.File~searchPath(""))
+  self~assertNil(.File~searchPath("*"))
+  self~assertNil(.File~searchPath("/"))
+  self~assertNil(.File~searchPath("\"))
+  self~assertNil(.File~searchPath("C:"))
+  firstDir = value("PATH", , "environment")~makeArray(.File~pathSeparator)[1]
+  self~assertNil(.File~searchPath(firstDir))
+
+::method test_searchPath_two_args_not_valid
+  self~assertNil(.File~searchPath("", ""))
+  self~assertNil(.File~searchPath("*", "*"))
+  self~assertNil(.File~searchPath("/", value("PATH", , "environment")))
+  self~assertNil(.File~searchPath("\", value("LIBPATH", , "environment")))
+  path = value("PATH", , "environment")
+  firstDir = path~makeArray(.File~pathSeparator)[1]
+  self~assertNil(.File~searchPath(firstDir, path))
+
+::method test_searchPath_one_arg
+  -- we assume that the default shell is in PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
+  found = .File~searchPath(shell)
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
+
+::method test_searchPath_two_args
+  -- we assume that the default shell is in PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
+  path = value("PATH", ,"environment")
+  found = .File~searchPath(shell, path) -- PATH as a string
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
+
+  -- now second arg as an Array
+  found = .File~searchPath(shell, path~makeArray(.File~pathSeparator)) -- PATH as an Array
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell), shell "not found in PATH")
+
+  -- searchPath will search for files with or without path
+  -- if this file's path was /dir1/dir2/dir3/File.testgroup, we'd test
+  -- searchPath("dir1/dir2/dir3/File.testgroup", "/")
+  -- searchPath("dir2/dir3/File.testgroup", "/dir1")
+  -- searchPath("dir3/File.testgroup", "/dir1/dir2")
+  -- searchPath("File.testgroup", "/dir1/dir2/dir3")
+  slash = .File~separator
+  parse source . . this
+  components = this~makeArray(slash)~~delete(1)
+  root = .Array~of(filespec("drive", this) || slash)
+  do while components~items > 0
+    found = .File~searchPath(components~toString(, slash), root~toString(, slash))
+    self~assertIsA(found, .File)
+    self~assertTrue(found~absolutePath~caselessEndsWith(components~lastItem))
+    root~append(components~delete(1))
+  end
+
+
+-- parent/parentFile tests
+
+::method test_parent_one_arg_too_many
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .File~new("name")~parent("")
+
+::method test_parentFile_one_arg_too_many
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .File~new("name")~parentFile("")
+
+::method test_parent_root
+  root = .File~listRoots[1]
+  file = .File~new("name", root)
+  -- parent of /root/name must be /root
+  self~assertSame(root, file~parent)
+  -- grand parent of /root/name must be .nil
+  self~assertNil(file~parentFile~parent)
+
+  -- repeat for parentFile method
+  root = .File~new(root)
+  self~assertSame(root, file~parentFile)
+  self~assertNil(file~parentFile~parentFile)
+
+::method test_parent_current_directory
+  dir = directory()
+  file = .File~new(dir)
+  separator = .File~separator
+  do dir~countStr(separator) - 1
+    dir = dir~left(dir~lastPos(separator) - 1)
+    file = file~parentFile
+    self~assertSame(dir, file~absolutePath)
+  end
+
+-- UNC path, Windows-only
+::method test_parent_windows_unc
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  dir = "\\localhost\c$\Program Files\WindowsPowerShell"
+  file = .File~new(dir)
+  separator = .File~separator
+  do 2 -- after two parent operations we've reached UNC root
+    dir = dir~left(dir~lastPos(separator) - 1)
+    self~assertSame(dir, file~parent)
+    self~assertSame(dir, file~parentFile)
+    file = file~parentFile
+  end
+  self~assertNil(file~parent)
+  self~assertNil(file~parentFile)
+
+  -- incomplete UNC paths don't allow parent
+  self~assertNil(.File~new("\\localhost")~parent)
+  self~assertNil(.File~new("\\127.0.0.1")~parent)
+
+-- Win32 namespaces, Windows-only
+::method test_parent_windows_namespace
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  -- Win32 file namespace
+  file = .File~new("\\?\C:\Windows\System32")
+  self~assertSame("\\?\C:\Windows", file~parent)
+  self~assertSame("\\?\C:\", file~parentFile~parent)
+  self~assertNil(file~parentFile~parentFile~parent)
+
+  -- Win32 device namespace
+  self~assertSame("\\.\", .File~new("\\.\NUL")~parent)
+  self~assertNil(.File~new("\\.\")~parent)
+  self~assertNil(.File~new("con")~parent)
+
+
+-- extension tests
+
+::method test_extension_one_arg_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new("")~extension("")
+
+::method test_extension
+  do name over "", ".", "..", "a.", "a..", "a", ".a"
+      self~assertSame("", .File~new(name)~extension, "extension of" name)
+      self~assertSame("", .File~new(name, "/")~extension, "extension of" name)
+  end
+
+  do name over "..a", "a.b", "temp.txt", "a b.c", "file.d e"
+      self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name)~extension, "extension of" name)
+      self~assertSame(name~substr(name~lastPos(".") + 1), .File~new(name, "/")~extension, "extension of" name)
+  end
+
+
+-- isCaseSensitive, class and instance method tests
+
+::method test_iscasesensitive_class_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation
+  .File~isCaseSensitive(.nil)
+
+::method test_iscasesensitive_no_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new('')~isCaseSensitive(.nil)
+
+::method test_iscasesensitive_directory
+  -- the class method returns the case sensititvity for "/" or the Windows
+  -- system directory
+  if .RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    root = SysSystemDirectory()
+  else
+    root = "/"
+  self~assertSame(.File~isCaseSensitive, .File~new(root)~isCaseSensitive)
+
+  -- a Windows and a Mac file system typically isn't case-sensitive
+  -- (probably not true under all circumstances, but a good guess)
+  -- we test root directory, and first directory in PATH
+  firstPath = .File~new(value("PATH", , "environment")~makeArray(.File~pathSeparator)[1])
+  if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then do
+    self~assertFalse(.File~isCaseSensitive, "Windows and Mac file system is expected to be case-insensitive")
+    self~assertFalse(firstPath~isCaseSensitive, firstPath~string "expected to be case-insensitive")
+  end
+  else do
+    self~assertTrue(.File~isCaseSensitive, "typical Unix file systems is expected to be case-sensitive")
+    self~assertTrue(firstPath~isCaseSensitive, firstPath~string "expected to be case-sensitive")
+  end
+
+::method test_iscasesensitive_file
+  -- test files in home directory, either $HOME, or %USERPROFILE%
+  homeDirectory = value((.RexxInfo~platform == "WindowsNT")~?("USERPROFILE", "HOME"), , "environment")
+  homeFiles = .File~new(homeDirectory)~listFiles
+  if homeFiles == .nil then
+    return
+  do file over homeFiles
+    if file~isFile then do
+      if ("WindowsNT", "DARWIN")~hasItem(.RexxInfo~platform) then
+        self~assertFalse(file~isCaseSensitive, file~string "expected to be case-insensitive")
+      else
+        self~assertTrue(file~isCaseSensitive, file~string "expected to be case-sensitive")
+      end
+  end
+
+::method test_iscasesensitive_fsutil_windows_only
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  -- On a recent Windows 10 with enabled Windows Subsystem for Linux, NTFS
+  -- allows case-sensitive folders (fsutil file setCaseSensitiveInfo).
+  -- fsutil may be unavailable, or may fail if Windows Subsystem for Linux has
+  -- not been enabled, or the user doesn't have enough privilege.  For the
+  -- privilege issue, the TEMP path is a good place to run the test.
+  sensitiveDir = .TemporaryTestDirectory~new(.File~temporaryPath, "test_iscasesensitive_fsutil")~create
+  trace off
+  signal off error -- don't let ::OPTIONS ALL SYNTAX trigger on non-zero rc
+  address "" with output stem ignore. error stem ignore.
+  "fsutil file setCaseSensitiveInfo" sensitiveDir~absolutePath "enable"
+  if rc \= 0 then do
+    sensitiveDir~delete
+    return -- can't test, fsutil doesn't work
+  end
+
+  -- at this point fsutil should have made this directory case-sensitive
+  self~assertTrue(sensitiveDir~isCaseSensitive, sensitiveDir~name "is expected to be case-sensitive")
+
+  -- now create a file and a folder with names differing just in their casing
+  -- this should (only) work in a case-sensitive directory
+  sensitiveFile = .TemporaryTestFile~new(sensitiveDir, "name")~create("test_iscasesensitive_fsutil")
+  sensitiveSubdir = .TemporaryTestDirectory~new(sensitiveDir, "Name")~create
+
+  self~assertTrue(sensitiveFile~isFile, sensitiveFile~name "file should exist")
+  self~assertTrue(sensitiveFile~isCaseSensitive, sensitiveFile~name "file should be case-sensitive")
+
+  self~assertTrue(sensitiveSubdir~isDirectory, sensitiveSubdir~name "directory should exist")
+  self~assertTrue(sensitiveSubdir~isCaseSensitive, sensitiveSubdir~name "directory should be case-sensitive")
+
+  sensitiveFile~delete
+  sensitiveSubdir~delete
+  sensitiveDir~delete
+
+
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .File~new(".")~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .File~new(".")~makeString(.nil)
+
+::method test_string_makestring
+  name = "relative"
+  f = .File~new(name)
+  self~assertSame(name, f~string)
+  self~assertSame(f~absolutePath, f~makeString)
+
+
+-- [bugs:#1724] File attributes for Windows system files cannot be read
+::method test_system_files_windows_only
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  numeric digits 18 -- we expect very large file sizes
+  do system over "hiberfil.sys", "swapfile.sys", "pagefile.sys"
+    -- does the file exist?
+    call SysFileTree SysBootDrive() || "\" || system, f., "fo"
+    if f.0 = 0 then
+      iterate
+    name = f.1
+    file = .File~new(name)
+    self~assertTrue(file~exists, name "exists")
+    self~assertTrue(file~isFile, name "isFile")
+    self~assertFalse(file~isDirectory, name "isDirectory")
+    self~assertTrue(file~isHidden, name "isHidden")
+    self~assertTrue(file~length > 0, name "length")
+
+    self~assertSame(file~lastModified~isoDate~left(19)~changeStr("T", " "), SysGetFileDateTime(name, "write"), "lastModified" name)
+    self~assertSame(file~lastAccessed~isoDate~left(19)~changeStr("T", " "), SysGetFileDateTime(name, "access"), "lastAccessed" name)
+
+    self~assertTrue(SysFileExists(name), "SysFileExists" name)
+    self~assertTrue(SysIsFile(name), "SysIsFile" name)
+    self~assertFalse(SysIsFileDirectory(name), "SysIsFileDirectory" name)
+  end
+
+
+::options all syntax
