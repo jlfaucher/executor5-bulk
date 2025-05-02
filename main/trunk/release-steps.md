@@ -1,6 +1,6 @@
 2022-12-15, Release Steps for ooRexx 5.0.0 as a role model
 2025-04-29, Updated for 5.1.0 release
-2025-05-01, Updated for 5.1.0 release
+2025-05-01/02, Updated for 5.1.0 release
 ===
 
 Step 1.
@@ -143,19 +143,16 @@ Step 2.
       main/trunk/platform/windows/rexx32.exe.manifest
       main/trunk/platform/windows/rexx64.exe.manifest
 
-  and cf. <http://sourceforge.net/p/oorexx/code-0/12540>
-
       main/trunk/api/oorexxapi.h  -- Add a new version identifier define for the new release.
-
 
 
 - create the following directories in files area on Sourceforge:
 
-      oorexx/files/5.2.0beta        ... to receive the new builds from trunk
-      oorexx/oorexx-docs/5.2.0beta  ... to receive the new documentation from trunk
-
       oorexx/files/5.1.0_Release_Candidate        ... to receive the tested builds from branches/5.1.0/trunk
       oorexx/oorexx-docs/5.1.0_Release_Candidate  ... to receive the new documentation from docs/branches/5.1.0/trunk
+
+      oorexx/files/5.2.0beta        ... to receive the new builds from trunk
+      oorexx/oorexx-docs/5.2.0beta  ... to receive the new documentation from trunk
 
 - adjust the build scripts on Jenkins and feed the oorexx/files/5.1.0_Release_Candidate
 - adjust the build scripts on Jenkins and feed the oorexx/oorexx-docs/5.1.0_Release_Candidate
