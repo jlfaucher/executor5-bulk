@@ -1,0 +1,334 @@
+            Fixes and Changes in Open Object Rexx 5.1.0
+
+The following is a list of fixes, enhancements, and other relevant changes
+to ooRexx since the 5.0.0 release.  The numbers for each item can be used to
+look up the item in the appropriate tracker in the ooRexx project on
+SourceForge, i.e. the Bugs tracker, the Feature Requests tracker, etc.
+
+
+  Overview / Major Changes
+  ------------------------
+
+  Keyword instructions
+        none
+
+  Built-in functions
+        none
+
+  Added notation
+        none
+
+  Directives
+        none
+
+  Changes to classes and methods
+        New TraceObject class (cf. 5.4.25. in rexxref.pdf)
+
+  Environment variables
+        none
+
+
+  Bugs
+  ----
+   1: # 2005 SysFileTree Segmentation Fault on OpenBSD
+             (entered by Erich on       2025-04-02     ->       2025-04-02    )
+   2: # 1999 Problem installing  oorexx-5.1.0-12940
+             (entered by Larry_S on       2025-03-16     ->       2025-03-21    )
+   3: # 1998 Recursive CALL slow
+             (entered by Erich on       2025-03-15     ->       2025-03-15    )
+   4: # 1997 ooDialog  - Windows taskbar icons not being properly set on dialogs
+             (entered by Dom Wise on       2025-03-12     ->       2025-03-18    )
+   5: # 1994 Duplicate trace line if using "forward" without "continue"
+             (entered by Rony G. Flatscher on       2025-01-22     ->       2025-03-15    )
+   6: # 1989 SysTextScreenRead fails when reading non-ANSI characters
+             (entered by Erich on       2024-11-19     ->       2024-11-20    )
+   7: # 1984 SysTo/FromUnicode issues
+             (entered by Erich on       2024-09-19     ->       2024-11-21    )
+   8: # 1975 Uninitialized substitution list variables in DROP and EXPOSE should raise NOVALUE
+             (entered by Erich on       2024-09-07     ->       2024-09-07    )
+   9: # 1973 GUARD ON exposed variables wrongly determined when USE LOCAL
+             (entered by Josep Maria Blasco on       2024-08-29     ->       2024-08-31    )
+  10: # 1970 Allow DO WITH be parsed as repetitive DO
+             (entered by Josep Maria Blasco on       2024-08-24     ->       2024-08-24    )
+  11: # 1965 Text of syntax error 19.922 wrong
+             (entered by Josep Maria Blasco on       2024-08-20     ->       2024-08-24    )
+  12: # 1963 Extraneous data wrongly accepted after FOREVER keyword
+             (entered by Josep Maria Blasco on       2024-08-19     ->       2024-08-23    )
+  13: # 1961 Syntax error 21.903 is wrong
+             (entered by Josep Maria Blasco on       2024-08-17     ->       2024-08-17    )
+  14: # 1958 Text of syntax error 19.925 is wrong
+             (entered by Josep Maria Blasco on       2024-07-30     ->       2024-08-24    )
+  15: # 1955 testsuite  error for ooRrexx at  rev 12852,  testsuite  at rev 12853
+             (entered by Enrico Sorichetti on       2024-07-16     ->       2024-07-16    )
+  16: # 1953 Tracing in 5.1 can hang or crash method callbacks in BSF400Rexx850
+             (entered by Dom Wise on       2024-07-13     ->       2025-03-26    )
+  17: # 1951 Error message insert masking issues
+             (entered by Josep Maria Blasco on       2024-06-16     ->       2024-08-25    )
+  18: # 1947 FORMAT issues
+             (entered by Erich on       2024-04-20     ->       2024-04-20    )
+  19: # 1945 No labels should be allowed within DO/LOOP, IF, SELECT
+             (entered by Josep Maria Blasco on       2024-04-05     ->       2024-09-21    )
+  20: # 1942 QUEUE "[]=" not the same as PUT
+             (entered by Josep Maria Blasco on       2024-03-24     ->       2024-09-04    )
+  21: # 1933 annoying warnings on Apple Sonoma
+             (entered by Enrico Sorichetti on       2024-01-23     ->       2024-09-08    )
+  22: # 1931 r12778 and r12779  are not really needed
+             (entered by Enrico Sorichetti on       2024-01-17     ->       2024-01-29    )
+  23: # 1929 RexxVariablePool issues
+             (entered by Erich on       2024-01-09     ->       2025-04-04    )
+  24: # 1928 Android porting issues
+             (entered by Erich on       2023-12-02     ->       2024-01-13    )
+  25: # 1927 Problem with SysCls on Windows
+             (entered by Gil Barmwater on       2023-11-29     ->       6 days ago    )
+  26: # 1925 building Portable installer failing on Solaris
+             (entered by Per Olov Jonsson on       2023-11-13     ->       2025-03-10    )
+  27: # 1924 Building fails on Solaris 11
+             (entered by Per Olov Jonsson on       2023-11-11     ->       2024-01-13    )
+  28: # 1923 "Insufficient control stack space; cannot continue execution." building rexx.img on AIX 7.2
+             (entered by Jeffrey H. Johnson on       2023-10-29     ->       2024-01-13    ) ***TODO: [tests]
+  29: # 1922 ooDialog Edit Control addExtendedStyle not case insensitive
+             (entered by Jon Wolfers on       2023-10-25     ->       2023-10-27    )
+  30: # 1919 Error message 25.12 is incomplete (i.e., wrong)
+             (entered by Josep Maria Blasco on       2023-09-02     ->       2024-01-13    )
+  31: # 1917 LINEIN fails after SEEK CHAR, LINEIN, SEEK LINE
+             (entered by Josep Maria Blasco on       2023-08-11     ->       2023-08-16    )
+  32: # 1916 SYSCARGS wrong in REXXHIDE
+             (entered by Gil Barmwater on       2023-07-21     ->       2023-07-21    )
+  33: # 1914 Stack unwind issue on Windows
+             (entered by Erich on       2023-07-15     ->       2023-10-26    )
+  34: # 1912 Parameters missing if the first one is the empty string
+             (entered by Gil Barmwater on       2023-07-12     ->       2023-07-21    )
+  35: # 1911 The interpreter is using too small of a stacksize.
+             (entered by Rick McGuire on       2023-06-27     ->       2023-07-15    )
+  36: # 1910 oorexx source package has incorrect directory structure
+             (entered by Mark Hessling on       2023-06-17     ->       2023-07-23    )
+  37: # 1909 Error building oorexx 5.1.0 build 12694 from source
+             (entered by Mark Hessling on       2023-06-17     ->       2023-07-23    )
+  38: # 1908 Rexxtry Call Show error for source variable
+             (entered by Josep Maria Blasco on       2023-06-17     ->       2023-08-16    )
+  39: # 1907 Bad Precision of rxCalsArcsin: incorrectly diagnosed
+             (entered by Walter on       2023-06-14     ->       2023-06-16    )
+  40: # 1906 Handling of hex/binary string format errors incoherent, and line reported is wrong
+             (entered by Josep Maria Blasco on       2023-06-04     ->       2023-08-17    )
+  41: # 1905 Interpreter incorrectly reports line number as 0 and  says "no source available" in some cases when syntax error 6.1
+             (entered by Josep Maria Blasco on       2023-06-04     ->       2023-06-04    )
+  42: # 1904 Problem with Do ... Over
+             (entered by Gil Barmwater on       2023-06-03     ->       2023-06-06    ) ***TODO: [tests]
+  43: # 1902 Failure to Create Named Queue
+             (entered by Jim Hannigan on       2023-05-31     ->       2023-10-26    )
+  44: # 1898 rpm reports wrong version of package
+             (entered by Per Olov Jonsson on       2023-05-15     ->       2023-05-15    )
+  45: # 1897 Entry missing in Windows installer
+             (entered by Per Olov Jonsson on       2023-05-07     ->       2023-05-10    )
+  46: # 1894 sources aligned to the binaries
+             (entered by  on       2023-04-20     ->       2023-07-23    )
+  47: # 1893 portable file names are clobbered
+             (entered by  on       2023-04-18     ->       2023-05-13    )
+  48: # 1887 Ticker fails when cancelled twice
+             (entered by Erich on       2023-04-07     ->       2023-10-26    )
+  49: # 1884 Error message for error 25.905 is incorrect
+             (entered by Josep Maria Blasco on       2023-04-05     ->       2023-04-06    )
+  50: # 1881 A number of Testcases failures/errors after recent commit
+             (entered by Per Olov Jonsson on       2023-04-04     ->       2023-05-13    )
+  51: # 1880 Stem objects not properly converting into a string value
+             (entered by Rick McGuire on       2023-04-02     ->       2023-04-02    ) ***TODO: [tests]
+  52: # 1879 DO LABEL X fails
+             (entered by m-stgt on       2023-04-01     ->       2023-10-27    )
+  53: # 1878 SEEK does not affect WRITE position
+             (entered by AvdP on       2023-03-15     ->       2023-08-11    ) ***TODO: [tests]
+  54: # 1877 SYNTAX error raised on next clause only
+             (entered by Rupert Reynolds on       2023-03-10     ->       2023-10-27    )
+  55: # 1876 pthread_t issues
+             (entered by Erich on       2023-03-09     ->       2023-10-27    )
+  56: # 1870 Typo in Windows version of SysFileSystem::hasExtension
+             (entered by Josep Maria Blasco on       2023-02-19     ->       2023-05-13    )
+  57: # 1869 json.cls does not properly support JSON boolean values
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  58: # 1868 ooDialog openFIleDialog has inactive HELP button
+             (entered by Jon Wolfers on       2023-01-26     ->       2023-10-28    )
+  59: # 1867 confusing revision reported
+             (entered by  on       2023-01-24     ->       2023-05-13    )
+  60: # 1854 ooRexx 5.0.0 distribution files
+             (entered by  on       2022-12-24     ->       2023-07-23    )
+  61: # 1850 TRACE issues
+             (entered by Erich on       2022-11-21     ->       2023-08-17    ) ***TODO: [code+doc+test]
+  62: # 1842 linein performance issue
+             (entered by Erich on       2022-09-11     ->       2023-10-28    ) ***TODO: [code]
+  63: # 1841 charin and record I/O linein/arrayin performance
+             (entered by Erich on       2022-09-11     ->       2023-10-28    )
+  64: # 1840 lineout for very long lines is broken
+             (entered by Erich on       2022-09-07     ->       2023-10-28    )
+  65: # 1837 circular requires: some public classes are not visible
+             (entered by jfaucher on       2022-08-09     ->       2022-12-20    ) ***TODO: [doc+test]
+  66: # 1825 CALL with literal name should bypass internal labels
+             (entered by Matthé van der Lee on       2021-10-02     ->       2023-10-28    )
+  67: # 1786 RexxPullFromQueue() returning invalid data for a null queue entry
+             (entered by Daniel Erdos on       2021-11-05     ->       2021-11-27    ) ***TODO: [tests]
+  68: # 1774 Building and Testing on Windows 8
+             (entered by Per Olov Jonsson on       2021-07-13     ->       2023-10-28    )
+  69: # 1773 Android build issues
+             (entered by Erich on       2021-07-07     ->       2023-10-28    )
+  70: # 1763 StreamSocket issues
+             (entered by Ruurd Idenburg on       2021-05-11     ->       2022-06-27    ) ***TODO: [code+doc+test]
+  71: # 1762 pushing very large data hangs RexxQueue
+             (entered by Erich on       2021-05-04     ->       2021-07-07    ) ***TODO: [code+test]
+  72: # 1742 Stream RECLENGTH 1 issues
+             (entered by Erich on       2021-02-05     ->       2021-02-05    ) ***TODO: [tests]
+
+
+  Requests For Enhancement
+  ------------------------
+   1: #  851 Update rexxcps sample
+             (entered by Rick McGuire on       2025-03-17     ->       2025-03-19    )
+   2: #  849 Add context entry to stackframes (cf also RFE #847)
+             (entered by Rony G. Flatscher on       2025-02-20     ->       2025-03-12    )
+   3: #  847 Add invocation ID to stackframe and allow .context to serve the current instance ID, thread ID and invocation ID
+             (entered by Rony G. Flatscher on       2025-02-17     ->       2025-02-17    )
+   4: #  844 Allow reserved keywords in DO/LOOP expression message terms
+             (entered by Erich on       2024-09-04     ->       2024-09-04    )
+   5: #  843 .File method extension issue with files starting with dot
+             (entered by Till Winkler on       2024-05-19     ->       2024-09-02    )
+   6: #  842 Supply a caller stackframe for the spawners of an activity for TraceObject
+             (entered by Rony G. Flatscher on       2024-08-18     ->       2024-08-28    )
+   7: #  841 Add entries to TraceObject, store stackframe values in StringTable
+             (entered by Rony G. Flatscher on       2024-07-17     ->       2024-07-18    )
+   8: #  840 Refactor Activity.cpp and RexxActivation.cpp such, that TraceObject logic goes to RexxActivation
+             (entered by Rony G. Flatscher on       2024-07-12     ->       2024-07-12    )
+   9: #  839 Add information about object and variables to TraceObject
+             (entered by Rony G. Flatscher on       2024-06-25     ->       2024-06-25    )
+  10: #  838 Enhance the portable "setupoorexx.rex"
+             (entered by Rony G. Flatscher on       2024-06-01     ->       2024-06-09    )
+  11: #  837 When creating a portable version, only create a full version
+             (entered by Rony G. Flatscher on       2024-06-01     ->       2024-06-09    )
+  12: #  835 Trace entry in routine/method  when trace is the first instruction
+             (entered by jfaucher on       2024-05-23     ->       2024-06-01    )
+  13: #  833 Add a new trace invocation exit traceline to TRACE
+             (entered by Rony G. Flatscher on       2024-04-11     ->       2024-04-22    )
+  14: #  832 Windows: Create a bitness-independent "samples\ole\apps\MSAccessDemo.rex"
+             (entered by Rony G. Flatscher on       2024-01-03     ->       2024-01-03    )
+  15: #  831 Windows: Rename samples\ole\apps\MSAccessDemo.rex to MSAccessDemo_32bit_only.rex
+             (entered by Rony G. Flatscher on       2024-01-03     ->       2024-01-04    )
+  16: #  830 Add oleinfo scripts from sandbox/rony/oleinfo
+             (entered by Rony G. Flatscher on       2023-12-08     ->       2023-12-14    )
+  17: #  825 Improve trace output for Rexx programs running on multiple threads
+             (entered by Rony G. Flatscher on       2023-03-11     ->       2024-03-27    )
+  18: #  824 CSVStream class should cope with BOM
+             (entered by Jon Wolfers on       2023-02-08     ->       2023-02-08    )
+  19: #  823 json.cls: if an unhandled object use its string value instead of null
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  20: #  822 json.cls: allow using the JSON methods via the class object to ease coding
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  21: #  821 json.cls: add support for makejson and makestring methods
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  22: #  820 json.cls: add convenience methods fromJSONFile and toJSONFile
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  23: #  819 json.cls: sort by names/keys
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  24: #  818 json.cls: allow processing any MapCollection and OrderedCollection
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  25: #  817 json.cls: allow to identify JSON booleans after fromJSON
+             (entered by Rony G. Flatscher on       2023-02-07     ->       2023-02-07    )
+  26: #  814 Add sample for "address...with" to download the ooRexx documentation from SourceForge with curl
+             (entered by Rony G. Flatscher on       2023-01-04     ->       2023-01-04    )
+  27: #  812 Please recompile ooSQLite for the Linuxes
+             (entered by Josep Maria Blasco on       2023-01-02     ->       2024-01-13    )
+  28: #  803 extensions to complex.cls
+             (entered by Walter on       2022-06-02     ->       2022-06-03    ) ***TODO: [tests]
+  29: #  581 Add item data capability to combo box
+             (entered by Mark Miesfeld on       2014-01-30     ->       2014-01-30    ) ***TODO: [doc+test]
+  30: #  578 Accept string keywords instead of requiring numeric value in image related methods
+             (entered by Mark Miesfeld on       2013-12-28     ->       2013-12-28    ) ***TODO: [doc]
+  31: #  576 Add support for the 'split button'
+             (entered by Mark Miesfeld on       2013-12-25     ->       2013-12-25    ) ***TODO: [code+doc+test]
+  32: #  569 Allow direct creation of dialog control windows.
+             (entered by Mark Miesfeld on       2013-12-21     ->       2013-12-21    ) ***TODO: [code+doc+test]
+  33: #  552 Add the ToolBar control to ooDialog
+             (entered by Mark Miesfeld on       2013-09-12     ->       2013-09-21    ) ***TODO: [code+doc+test]
+  34: #  550 Add the ReBar dialog control to ooDialog
+             (entered by Mark Miesfeld on       2013-08-30     ->       2013-09-21    ) ***TODO: [doc+test]
+  35: #  544 Allow the registration of user defined SQL functions and aggregates
+             (entered by Mark Miesfeld on       2013-05-08     ->       2013-05-19    ) ***TODO: [doc]
+  36: #  353 Embedded Database
+             (entered by Anonymous on       2009-05-01     ->       2012-12-21    ) ***TODO: [doc]
+
+
+  Documentation Bugs
+  ------------------
+   1: #  340 1.13.6. Environment Symbols - Missing method and typo
+             (entered by Josep Maria Blasco on       2025-03-30     ->       2025-04-04    )
+   2: #  338 Wrong Remark About MessageDialog
+             (entered by m-stgt on       2025-02-18     ->       2025-02-19    )
+   3: #  334 rexxref 2.4 DO note 9 inexact
+             (entered by Josep Maria Blasco on       2024-09-05     ->       2024-09-05    )
+   4: #  333 clarify DO/LOOP reserved keywords in expressions
+             (entered by Josep Maria Blasco on       2024-09-02     ->       2024-09-04    )
+   5: #  332 rexxref CALL description incomplete
+             (entered by Josep Maria Blasco on       2024-08-28     ->       2024-09-05    )
+   6: #  330 Rexxref 2.9. GUARD incomplete
+             (entered by Josep Maria Blasco on       2024-08-27     ->       2024-08-31    )
+   7: #  329 rexxref c.1.8 description of error 10.2 inaccurate
+             (entered by Josep Maria Blasco on       2024-08-22     ->       2024-08-23    )
+   8: #  328 rexxref 2.4 DO note 9 wrong
+             (entered by Josep Maria Blasco on       2024-08-19     ->       2024-08-23    )
+   9: #  324 rexxref 2.30.2 USE LOCAL and compound variables
+             (entered by Josep Maria Blasco on       2024-08-16     ->       2024-08-16    )
+  10: #  323 Typo in rexxref 2.30.1 "USE ARG, USE STRICT ARG"
+             (entered by Josep Maria Blasco on       2024-08-16     ->       2024-08-16    )
+  11: #  322 PARSE pattern expression
+             (entered by Josep Maria Blasco on       2024-08-15     ->       2024-09-07    )
+  12: #  321 3.5. ::METHOD incomplete
+             (entered by Josep Maria Blasco on       2024-07-31     ->       2024-08-16    )
+  13: #  320 lastItem in OrderedCollection wrongly states it returns the *first* item
+             (entered by Rony G. Flatscher on       2024-07-03     ->       2024-07-03    )
+  14: #  319 "rexxref 1.13.6. Environment Symbols" and "rexxpg 5.4.4" contain contradictory information
+             (entered by Josep Maria Blasco on       2024-04-03     ->       2024-08-22    )
+  15: #  318 Chapter 16: Reserved Keywords incoherent
+             (entered by Josep Maria Blasco on       2024-04-02     ->       2024-08-17    )
+  16: #  317 RexxRef "1.11.4. Message Terms" is wrong
+             (entered by Josep Maria Blasco on       2024-03-30     ->       2024-08-18    )
+  17: #  316 5.1.4.12. instanceMethods outdated
+             (entered by Josep Maria Blasco on       2024-03-27     ->       2024-08-16    )
+  18: #  315 15.3. RXTRACE Variable inaccurate
+             (entered by Josep Maria Blasco on       2024-03-21     ->       2024-03-21    )
+  19: #  314 1.10.5. Implied Semicolons, note inaccurate
+             (entered by Josep Maria Blasco on       2024-03-20     ->       2024-03-21    )
+  20: #  313 rexxref's "5.1.3.19. setUnguarded" contains error, methods are guarded by default (not unguarded)
+             (entered by Rony G. Flatscher on       2024-01-19     ->       2024-01-19    )
+  21: #  312 ooRexx Reference incorrectly references rexxutil.dll
+             (entered by Mark Gaubatz on       2022-12-27     ->       2023-10-27    )
+  22: #  311 ressref should refer to Unix in a consistent way
+             (entered by Mark Gaubatz on       2022-12-27     ->       2023-10-28    )
+  23: #  309 RxMessageBox described wrong in several aspects
+             (entered by m-stgt on       2023-09-14     ->       2023-09-23    )
+  24: #  308 Rexxref 2.18: Description of PARSE VALUE inaccurate
+             (entered by Josep Maria Blasco on       2023-08-31     ->       2024-08-18    )
+  25: #  306 rexxref 2.10, "IF", note 2 inaccurate
+             (entered by Josep Maria Blasco on       2023-08-23     ->       2023-08-26    )
+  26: #  305 Missing comma in RexxRef 1.31.3 "Extended Assignments"
+             (entered by Josep Maria Blasco on       2023-08-20     ->       2023-08-20    )
+  27: #  304 RexxRef 7.4.40 Description of LINEOUT BIF ambiguous
+             (entered by Josep Maria Blasco on       2023-08-10     ->       2023-08-26    )
+  28: #  303 Rexxref 1.13.2. "Constant Symbols": Incorrect description of environment symbols
+             (entered by Josep Maria Blasco on       2023-06-15     ->       2023-08-26    )
+  29: #  302 Rexxref 7.4.71.2. "Global environment variables" example inaccurate
+             (entered by Josep Maria Blasco on       2023-06-13     ->       2023-08-26    )
+  30: #  301 Rexxref "1.10.4.6. Operator Characters" should mention that adjacent comments are allowed and ignored, like whitespace
+             (entered by Josep Maria Blasco on       2023-05-27     ->       2023-08-26    )
+  31: #  300 In rexxref, "8.2. List of Rexx Utility Functions", SysSetPriority is not marked as (Windows only)
+             (entered by Josep Maria Blasco on       2023-04-14     ->       2023-08-26    )
+  32: #  299 Description of PARSE SOURCE is inaccurate
+             (entered by Josep Maria Blasco on       2023-04-13     ->       2023-08-26    )
+  33: #  297 Section "13.1. Calls to the Security Manager" of rexxref gives wrong return values
+             (entered by Josep Maria Blasco on       2023-04-05     ->       2023-04-06    )
+  34: #  296 ooDialog reference 4.2.4 ComboBox class missing set/get/remove itemdata methods
+             (entered by Jon Wolfers on       2023-02-05     ->       2023-08-26    )
+  35: #  290 RexxRef Set class 5.3.15.19 removeItem
+             (entered by Jon Wolfers on       2022-05-05     ->       2024-08-18    )
+
+
+  Patches
+  -------
+   1: #  221 Windows Clipboard Unicode contents
+             (entered by jfaucher on       2023-07-30     ->       2023-08-15    )
+
+
