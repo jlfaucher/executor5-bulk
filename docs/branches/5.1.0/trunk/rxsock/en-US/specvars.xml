@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxsock.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RxSock TCP/IP Socket Functions Reference
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Special Variables</title>
+<indexterm><primary>special variables</primary></indexterm>
+<indexterm><primary>variables, special</primary></indexterm>
+<para>The following variables are maintained by the system: errno and h_errno.
+<variablelist>
+   <varlistentry>
+      <term>Variable <emphasis role="italic">errno</emphasis></term>
+      <listitem><para>The variable errno is set after each RxSock call. It can have one of the following
+      values or any other numeric value:</para>
+      <itemizedlist>
+         <listitem><para>EWOULDBLOCK    </para></listitem>
+         <listitem><para>EINPROGRESS    </para></listitem>
+         <listitem><para>EALREADY       </para></listitem>
+         <listitem><para>ENOTSOCK       </para></listitem>
+         <listitem><para>EDESTADDRREQ   </para></listitem>
+         <listitem><para>EMSGSIZE       </para></listitem>
+         <listitem><para>EPROTOTYPE     </para></listitem>
+         <listitem><para>ENOPROTOOPT    </para></listitem>
+         <listitem><para>EPROTONOSUPPORT</para></listitem>
+         <listitem><para>ESOCKTNOSUPPORT</para></listitem>
+         <listitem><para>EOPNOTSUPP     </para></listitem>
+         <listitem><para>EPFNOSUPPORT   </para></listitem>
+         <listitem><para>EAFNOSUPPORT   </para></listitem>
+         <listitem><para>EADDRINUSE     </para></listitem>
+         <listitem><para>EADDRNOTAVAIL  </para></listitem>
+         <listitem><para>ENETDOWN       </para></listitem>
+         <listitem><para>ENETUNREACH    </para></listitem>
+         <listitem><para>ENETRESET      </para></listitem>
+         <listitem><para>ECONNABORTED   </para></listitem>
+         <listitem><para>ECONNRESET     </para></listitem>
+         <listitem><para>ENOBUFS        </para></listitem>
+         <listitem><para>EISCONN        </para></listitem>
+         <listitem><para>ENOTCONN       </para></listitem>
+         <listitem><para>ESHUTDOWN      </para></listitem>
+         <listitem><para>ETOOMANYREFS   </para></listitem>
+         <listitem><para>ETIMEDOUT      </para></listitem>
+         <listitem><para>ECONNREFUSED   </para></listitem>
+         <listitem><para>ELOOP          </para></listitem>
+         <listitem><para>ENAMETOOLONG   </para></listitem>
+         <listitem><para>EHOSTDOWN      </para></listitem>
+         <listitem><para>EHOSTUNREACH   </para></listitem>
+         <listitem><para>ENOTEMPTY      </para></listitem>
+      </itemizedlist>
+      <note><para>The value is set even if the function called does not set the variable, in
+      which case the value has no meaning. A value of 0 indicates that no error
+      occurred.</para></note>
+      </listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>Variable <emphasis role="italic">h_errno</emphasis></term>
+      <listitem><para>This variable is now obsolete.
+      It is set to zero (0) after each RxSock call.</para>
+      </listitem>
+   </varlistentry>
+</variablelist>
+</para>
+</chapter>
+

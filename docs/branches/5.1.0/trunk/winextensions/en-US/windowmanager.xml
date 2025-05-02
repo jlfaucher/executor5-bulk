@@ -1,0 +1,322 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWindowsManager"><title>The WindowsManager Class</title>
+<indexterm><primary>WindowsManager class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsManager class</secondary></indexterm>
+<para>
+  The WindowsManager class provides methods to query, manipulate, and interact with windows on your
+  desktop. Currently, this class is specifically for the Windows operating system and is not available on
+  other operating systems.
+</para>
+<para>
+  The WindowsManager class is not a built-in class, it is defined in the file
+  <computeroutput>winSystm.cls</computeroutput>. To use the class, add a
+  <computeroutput>::requires</computeroutput> statement to the program file:
+</para>
+<programlisting>
+::requires "winSystm.cls"
+</programlisting>
+<para><emphasis role="bold">Methods the WindowsManager Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>desktopWindow</para></listitem>
+<listitem><para>find</para></listitem>
+<listitem><para>foregroundWindow</para></listitem>
+<listitem><para>windowAtPosition</para></listitem>
+<listitem><para>consoleTitle</para></listitem>
+<listitem><para>consoleTitle=</para></listitem>
+<listitem><para>sendTextToWindow</para></listitem>
+<listitem><para>pushButtonInWindow</para></listitem>
+<listitem><para>processWindowCommand</para></listitem>
+<listitem><para>broadcastSettingChanged</para></listitem></itemizedlist>
+
+<section id="mthDesktopWindow"><title>desktopWindow</title>
+<indexterm><primary>desktopWindow method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>desktopWindow method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_desktopwindow.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns an instance of the WindowObject (<xref linkend="clsWindowObject" />) class that represents
+  the Desktop window.  The Desktop window is the parent of all top-level windows and therefore the
+  ancestor of every window on the system.  If some error happens,
+  <computeroutput>.nil</computeroutput> is returned.  (This is extremely unlikely.)
+</para>
+</section>
+
+<section id="findwm"><title>find</title>
+<indexterm><primary>find method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>find method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_find.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Searches for a top-level window (not a child window) on your desktop with
+the specified <emphasis role="italic">title</emphasis>.</para>
+<para>If this window already exists, an instance of the WindowObject class is
+returned. Otherwise, .Nil is returned.</para>
+</section>
+
+<section id="foregroundwindowwm"><title>foregroundWindow</title>
+<indexterm><primary>foregroundWindow method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>foregroundWindow method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_foregroundwindow.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class that is associated with the
+current foreground window.</para>
+</section>
+
+<section id="windowatpositionwm"><title>windowAtPosition</title>
+<indexterm><primary>windowAtPosition method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>windowAtPosition method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_windowatposition.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class that is associated with the
+window at the specified position (<emphasis role="italic">x,y</emphasis>). The
+coordinates are specified
+in screen pixels. This method does not retrieve hidden or disabled windows.
+If you are interested in a particular child window, use method
+childAtPosition (<xref linkend="childatpositionwo" />).</para>
+</section>
+
+<section id="consoletitlewm"><title>consoleTitle</title>
+<indexterm><primary>consoleTitle method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>consoleTitle method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_consoletitle.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the title of the current console.</para>
+</section>
+
+<section id="consoletitlenewwm"><title>consoleTitle=</title>
+<indexterm><primary>consoleTitle= method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>consoleTitle= method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_consoletitle_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the title of the current console.</para>
+</section>
+
+<section id="sendtexttowindowwm"><title>sendTextToWindow</title>
+<indexterm><primary>sendTextToWindow method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendTextToWindow method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_sendtexttowindow.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a case-sensitive <emphasis role="italic">text</emphasis> to the
+window with the specified <emphasis role="italic">title.</emphasis>.</para>
+</section>
+
+<section id="pushbuttoninwindowwm"><title>pushButtonInWindow</title>
+<indexterm><primary>pushButtonInWindow method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>pushButtonInWindow method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_pushbuttoninwindow.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects the button with label <emphasis role="italic">text</emphasis>
+in the window with the specified <emphasis role="italic">title</emphasis>.
+If the button's label contains a mnemonic (underscored letter),
+you must specify an ampersand (&amp;) in front of it. You can also use this
+method to select radio buttons and to check or uncheck check boxes.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+winmgr~pushButtonInWindow("Testwindow","List &amp;Employees")
+</programlisting>
+</section>
+
+<section id="processmenucommandwm"><title>processMenuCommand</title>
+<indexterm><primary>processMenuCommand method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>processMenuCommand method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_processmenucommand.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects an item of the menu or submenu of the specified window
+<emphasis role="italic">title</emphasis>. You can specify as many submenus as
+necessary to get to the required item.</para>
+</section>
+
+<section id="broadcastsettingchanged"><title>broadcastSettingChanged</title>
+<indexterm><primary>broadcastSettingChanged method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>broadcastSettingChanged method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winmgr/winmgr_broadcastsettingchanged.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Causes the Windows operating system to send a message, (the
+WM_SETTINGCHANGE message,) to every top-level window on the Desktop informing
+them that a system-wide setting has changed.  Well-written applications will
+then reload any system settings that they use.</para>
+<para>An example of one use for this might be an installer program setting an
+environment variable, such as the PATH.  Then a call to broadcastSettingChanged
+would cause all open applications to update their reference to the environment,
+without the necessity of a reboot.</para>
+<para>There are two variations of calling this method.  When called with no
+arguments, the message is broadcast and returns immediately.  When called with
+the time out parameter, the message is broadcast and does not return until
+every window on the Desktop has acknowledged the message, or timed out.</para>
+<para>The problem with using a time out and waiting for acknowledgment is that,
+if a window is not responding, or several windows are slow to respond, it
+may take a very long time to return.  The problem with not using a time out
+and returning immediately is that the caller will have no way of knowing when
+every window has received the message.  Generally this is not a problem, but
+it is up to the programmer to decide how she wants to use this method.</para>
+<para>The time out value is specified in milliseconds.  For each window, the
+operating system will wait up to the time out for a response before going
+on to the next window.  Typically a time out value of 5000 (5 seconds) is
+used, and this is the default.</para>
+<para>The single optional argument is:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">timeOut</emphasis></term>
+<listitem><para>The time, in milliseconds, to wait for each window to
+acknowledge it received the setting changed message. Specifying 0 or a negative
+number will cause the default time out of 5000 to be used.  (5000 is a typical
+value used by applications.)
+</para></listitem></varlistentry>
+</variablelist>
+<para>Return value:</para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The setting changed message was broadcast successfully.  If no
+time out argument was used, then this is all it means.  If a time out value was
+used, then all top-level windows have acknowledged receiving the message.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The setting changed message was broadcast, but one or more
+windows timed out.  This return can only happen when the time out parameter
+is used.
+</para></listitem></varlistentry>
+<varlistentry><term>-x</term>
+<listitem><para>A number less than -1 indicates a system error occurred.
+This value is the negation of the system error code.  I.e., if the return is
+-1400, the system error code was 1400.  System error codes can be looked up in
+the MSDN library or the Windows Platform SDK.  Microsoft makes these references
+available on the Internet.
+</para></listitem></varlistentry>
+<varlistentry><term>+x</term>
+<listitem><para>A number greater than 0 would be a window result of broadcasting
+the setting changed message and would not be an error.  It is unlikely that this
+would occur.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+ret = winmgr~broadcastSettingChanged(1000)
+</programlisting>
+</section>
+</chapter>
+

@@ -1,0 +1,1020 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2012-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		      v01-03 16Mar13
+
+    Changes:
+     v01-00 06Jun12: First version.
+     v01-01 30Dec12: Minor change to text describing function in next chapter.
+     v01-02 08Jan13: Correct trivial typo (path said "c:\aaaa\..." instead of
+                     "c:\aaa\...".
+     v01-03 19Jan13: Changed text on re-sizable dialogs to include the new ResizingAdmin class,
+            16Mar13: Changed to conform with typographic conventions.
+
+    6     "An Application Workplace"      chapSix
+    6.1     Program Structure             chap06-struc
+    6.1.1     Overview
+    6.1.2     Some Implications
+    6.1.2.1     File Paths
+    6.1.2.2     .Application Usage
+    6.1.2.3     Externalized Strings
+    6.1.3     Application Function
+    6.2     Popups and Parents            chap06-popups
+    6.2.1     Starting a Popup Dialog     chap06-popups-start
+    6.2.2     Offsetting Dialogs          chap06-popups-offset
+    6.2.3     Use of 'Interpret'          chap06-popups-interpret
+    6.3     Icons and Lists               chap06-lviews
+    6.3.1     The Icon View               chap06-lviews-icon
+    6.3.2     The Report View             chap06-listview-report
+    6.4     Re-sizing Dialogs             chap06-resize
+    6.5     Creating and Using Icons      chap06-icons
+    6.6     Utility Dialogs               chap06-utildlgs
+
+-->
+
+<chapter id="chapSix"><title>An Application Workplace</title>
+<indexterm><primary>OrderMgr component</primary></indexterm>
+<para>This chapter introduces the Order Management application, which is designed as a "workplace"
+      for a user handling sales orders. As such, it provides access to the required components -
+      customers, products, orders, and order forms. A common approach for a "workplace" dialog is to
+      provide an icon for each component that the user may wish to use. In the
+        <computeroutput>Exercise06</computeroutput> folder, run
+        <computeroutput>startup.rex</computeroutput>. The <emphasis role="bold">Sales Order Management</emphasis>
+        dialog opens, and
+      consists mainly of a List View containing four icons. Move the icons around; double-click them
+      and if a Customer, Product, or Order List appears then double-click a list item; re-size the
+      "Order Management" window; check out the menu items and the pushbuttons. As you see, while much
+      of the application function is absent, the data is hard-coded, and there is some
+      redundancy (e.g. every time you double-click on an item in a list view a new Model and Data
+      object is created), the essential parts of the Order Management application mentioned in
+      <xref linkend="chapFour" /> are visible. This chapter addresses the following topics in the context
+      of the Order Management application:</para>
+      <itemizedlist>
+        <listitem>
+          <para><xref linkend="chap06-struc"/></para>
+        </listitem>
+        <listitem>
+          <para><xref linkend="chap06-popups"/></para>
+        </listitem>
+        <listitem>
+          <para><xref linkend="chap06-lviews"/></para>
+        </listitem>
+        <listitem>
+          <para><xref linkend="chap06-resize"/></para>
+        </listitem>
+        <listitem>
+          <para><xref linkend="chap06-icons"/></para>
+        </listitem>
+        <listitem>
+          <para><xref linkend="chap06-utildlgs"/></para>
+        </listitem>
+      </itemizedlist>
+
+
+<section id="chap06-struc" xreflabel="Program Structure"><title id="progstruc.title">Program Structure</title>  <!-- Section 6.1 -->
+
+  <section id="chap06-struc-overview"><title>Overview</title>  <!-- Section 6.1.1 -->
+  <para>In Exercise 6, each business component has its own folder:
+    Customer, Order, OrderMgr, and Product. Customer and Product are more or less identical
+    to the same components introduced in Exercises 4 and 5 except for the addition
+    of a list view (<computeroutput>CustomerListView.rex</computeroutput> and
+    <computeroutput>ProductListView.rex)</computeroutput>.
+    Placing each business component into a separate folder
+    helps promote high cohesion and low coupling in the software,
+    since the internals of each business component should be opaque to other business components.
+    Thus another application (e.g. Customer Relationship
+    Management) could well be able to make use of the Customer business component without change.
+    The Order Manager (<computeroutput>OrderMgr</computeroutput>) business component
+    is unlikely to be re-used in other applications as it is
+    a kind of "container" business component that "choreographs" the other business components.
+    To the user, creating a new sales order consists of "choreographing" the various business aspects
+    required - creating an Order Form (used to assemble the customer order), searching for and selecting a
+    specific Customer, searching for and selecting one or more Products, recording the quantities ordered,
+    and producing a Sales Order that is the "contract" between supplier and customer.
+    Of course, the <computeroutput>OrderMgr</computeroutput>
+    component could be used by "higher-level" components such as business processes or workflows (for example
+    a fulfilment process). In systems
+    organized according to these principles, invocation of components takes the form of a directed acyclic graph.
+  </para>
+  <para>
+    Within each business component are a number of components. For example, the
+    Customer business component contains a Customer View and a CustomerList View,
+    as well as CustomerModel and CustomerData components. Also in the folder are
+    the other files (.h, .rc, .bmp and .ico) required.
+    As in Exercise 04, <computeroutput>CustomerView</computeroutput> gets its data
+    from <computeroutput>CustomerModel</computeroutput>, which in turn gets its
+    data from <computeroutput>CustomerData</computeroutput>. However,
+    <computeroutput>CustomerListView</computeroutput> is rather skeletal, and its
+    data is hard-coded. In a later exercise, this will be modified, and will get
+    its data directly from <computeroutput>CustomerData</computeroutput> (there
+    being no need, in this simple example, for a ListModel component). Note that
+    aside from the list views, the Customer and Product business components
+    are essentially the same as in Exercises 4 and 5 respectively.
+  </para>
+  <para>The Order Manager business component is implemented
+    by the view class <computeroutput>OrderMgrView</computeroutput>.
+    This contains the code for handling a
+    re-sizable dialog (see <xref linkend="chap06-resize" />).
+    <computeroutput>OrderMgrView</computeroutput> contains the
+    code specific to the Order Management application. The only reason for splitting the code
+    like this is that it seems to fall happily into these two parts. This reduces the amount
+    of code in any one class or file, and so (arguably) makes for better readability.
+  </para>
+  <para>Note that the "data" of the Order Manager business component is the set of icons and their
+    associated data. Examples of possible additional
+    components could be a "commodities" component which shows the commodities required to
+    produce a given product; or a credit-check component that links to an external
+    credit-check agency.</para>
+  <para>The Order business component is extremely skeletal, but will be developed further in
+  a later exercise.</para>
+  <para>Finally, it's worth noting that the folder structure, while useful for development, is
+    not necessarily the most appropriate structure for a deployed application. A more
+    appropriate deployment structure will be described in a later chapter.
+  </para>
+  </section>  <!-- End of section 6.1.1 -->
+
+  <section id="chap06-struc-impls"><title>Some Implications</title>  <!-- Section 6.1.2 -->
+    <para>Choosing this folder structure for the development of the application has certain
+      design implications worth mentioning. These are: file paths, the use of <computeroutput>.Application</computeroutput>,
+      and the handling of externalized human-readable strings.
+    </para>
+    <section id="chap06-struc-impls-paths"><title>File Paths</title>  <!-- Section 6.1.2.1 -->
+      <indexterm><primary>File path</primary></indexterm>
+      <para>When an ooRexx program is run, the current (or
+        "home") directory is that from which the program is started. That is, if a
+        program is started on a command prompt like this: <computeroutput>c:\aaa\bbb>myprog.rex</computeroutput>,
+        then the current directory will be <computeroutput>c:\aaa\bbb</computeroutput>. However, if the program
+        is started like this: <computeroutput>c:\aaa>bbb\myprog.rex</computeroutput>, then the current directory
+        will be <computeroutput>c:\aaa</computeroutput>. In Exercise 6,
+        all programs are started from the <computeroutput>Exercise06</computeroutput>
+        folder. Thus any relative paths must be relative to the
+        <computeroutput>Exercise06</computeroutput> folder. However, using ResEdit with relative
+        paths, the path for a resource such as a dialog icon is relative to the folder in
+        which the *.rc file is created. For example, if <computeroutput>CustomerView.rc</computeroutput>
+        is created in the <computeroutput>Customer</computeroutput> folder, then the icon will be specified
+        in <computeroutput>CustomerView.rc</computeroutput> with the path
+        <computeroutput>".\\bmp\\Customer.ico"</computeroutput>. So the path for the icon
+        resource in the *.rc file will be wrong, and the dialog icon will not be shown.</para>
+      <para>The solution is either to edit the *.rc file and change the icon resource's path, or (better)
+        create the *.rc file in the Exercise06 folder and then move it into the
+        <computeroutput>Customer</computeroutput> folder.
+      </para>
+      <para>Considering the implication of paths also applies to other parts of the code, such
+        as header files specified in the <computeroutput>.Application~addToConstDir(...)</computeroutput> statement and
+        dialog creation statements such as <computeroutput>dlg = .CustomerView~new(...)</computeroutput>.
+      </para>
+      <para>In summary, all paths (if not absolute) must be relative to the folder from which the
+        program is started. This is why, when running a stand-alone test such as
+        <computeroutput>startupCustomer.rex</computeroutput>, the program must be started
+        from the <computeroutput>Exercise06</computeroutput> folder, since the design decision was
+        taken to make all paths relative to <computeroutput>Exercise06</computeroutput> folder.
+      </para>
+      <para>This discussion on paths prompts two thoughts (at least).
+      First, is there not a way to have some support code
+        manage paths, so that each component asks this support code for the path it should use?
+        While this may be feasible,
+        it's not specifically an ooDialog questions, and so is not pursued here. Second, using the
+        <computeroutput>ResDialog</computeroutput> class instead of <computeroutput>RcDialog</computeroutput>
+        reduces the problem of paths, since resources such as icons and bitmaps are placed in the *.dll file.
+      </para>
+      </section>  <!-- End of Section 6.1.2.1 -->
+
+    <section><title>.Application Usage</title>  <!-- Section 6.1.2.2 -->
+      <para>The <computeroutput>startup.rex</computeroutput> file applies application-wide
+        defaults through the statement <computeroutput>.Application~setDefaults("O", , .false)</computeroutput> .
+        However, the header file for each view class is included at the beginning of its file. For example,
+        <computeroutput>.Application~addToConstDir("Customer\CustomerView.h")</computeroutput> is the first
+        executable statement in <computeroutput>CustomerView.rex</computeroutput>.
+        For a shipped application that includes multiple classes, it would be much better to provide all the
+        <computeroutput>~addToConstDir()</computeroutput> statements in the startup file after, say, the
+        <computeroutput>~setDefaults()</computeroutput> statement. However, because at this stage the application
+        is still in a pre-deployment state, and each component needs to be able to be unit-tested
+        (see <xref linkend="apx-satesting" />),
+        it was deemed better to include the <emphasis role="italic">~addToConstDir()</emphasis> statements in each view file.
+        An alternative was to duplicate them in the unit-test startup programs, but code duplication is generally not the best strategy.
+        <indexterm><primary>Unit-testing</primary><secondary>Placement of .Application statement</secondary></indexterm>
+        <indexterm><primary>.Application</primary><secondary>and Unit-Testing</secondary></indexterm>
+      </para>
+    </section>  <!-- End of Section 6.1.2.2 -->
+
+    <section><title>Externalized Strings</title>  <!-- Section 6.1.2.3 -->
+      <para>All components that display information to the user have the displayed strings separated from code either in
+        a class whose name is prefaced "HRS" for "Human-Readable Strings" or in a *.rc file. Each such class name has a suffix
+        - e.g. "HRScv" for the <computeroutput>CustomerView</computeroutput> class. The reason for the suffix is to
+        distinguish the various HRS classes if the various files were later to be placed into a single file for
+        application deployment purposes.
+      </para>
+      <para>Human-readable strings in *.rc classes are a problem when internationalization is a requirement.
+      "Internationalization"
+        (often referred to as I18N - there are 20 letters in the word) is the term given to
+        providing for translation of human-readable text into other languages.
+        <indexterm><primary>Internationalization</primary></indexterm>
+        An immediate solution is to display the translated strings from within the program rather than from the *.rc file.
+        The <computeroutput>initDialog</computeroutput> method is a good place to do this. Try inserting the following
+        in <computeroutput>CustomerView.rex</computeroutput>, say just before
+        the statement <computeroutput>self~getData</computeroutput> in the <computeroutput>initDialog</computeroutput> method:
+<programlisting><![CDATA[
+    custNameLabel = self~newStatic("IDC_CUST_LBL_CUSTNAME")
+    custNameLabel~setText("Namen:")]]></programlisting>
+        The Customer View will be displayed with "Namen" (German) instead of "Name" (English).
+      </para>
+      <para>Of course, this text should
+        come from an HRS class or better from a proper I18N resource file. Such files would be produced using special
+        I18N tools. These tools take account of the many considerations and gotchas of internationalization.
+        For example, in our trivial attempt to change the label from English "Name" to German "Namen", we've lost the colon
+        at the end. This is because the
+        horizontal space given to this particular static text in <computeroutput>CustomerView.rc</computeroutput> is not big enough.
+        Some authorities suggest that 150% of the space required for English is needed to allow for proper translations to other languages.
+        And this is only one of the lesser considerations in the task of internationalization.
+        The following quote from the Wikipedia entry illustrates something of the full complexity of I18N:
+        "It should be noted that 'internationalized' does not necessarily mean that a system can be used absolutely anywhere,
+        since simultaneous support for all possible locales is both practically almost impossible and commercially very hard
+        to justify. In many cases an internationalized system includes full support
+        only for the most spoken languages,
+        plus any others of particular relevance to the application."
+      </para>
+    </section>  <!-- End of Section 6.1.2.3 -->
+
+  </section>  <!-- End of Section 6.1.2 -->
+
+  <section><title>Application Function and Naming</title>  <!-- Section 6.1.3 -->
+  <para>
+    One of the first things to notice about Exercise 6 is that there is very little application function.
+    For example, data is all hard-coded, and all Customers have identical data, as do all Products and all Orders
+    (this will be fixed in the next exercise).
+    The second thing is that while there's an <computeroutput>Order</computeroutput> component to display and change existing sales orders,
+    there's a separate <computeroutput>OrderForm</computeroutput> component
+    for creating new sales orders. But there is no way to create new Customers or Products. This will not be
+    fixed in the next exercise, mainly because providing this function would not exercise any new ooDialog
+    features. However, in the next exercise data will be able to be read from a data file.
+  </para>
+  <para>The reason for having a different dialog for creating as opposed to viewing and updating is that in real applications,
+    creating a Customer, or Product, or Order generally requires a more complex process than simply updating. For example,
+    creating a Customer often cannot be done without a credit check and
+    establishing the customer's bank details in the accounting system. In our Order Management application,
+    only the <computeroutput>Order</computeroutput> component has a separate Order Creation dialog, in order to exercise,
+    in a later chapter, more ooDialog capabilities. So, for present purposes,
+    we assume that Customer and Product creation takes place outside of the sample Order Management application.
+  </para>
+  <para>Although perhaps not immediately apparent, a specific naming convention has been used.
+    <indexterm><primary>Naming convention</primary><secondary>Components</secondary></indexterm>
+    <indexterm><primary>Component names</primary><secondary>Naming convention</secondary></indexterm>
+    This convention is useful to differentiate between the various parts of the application.
+    Thus "X Management" is the name given to the application as a whole (in our case "X" is "Sales Order").
+    Generally, an application constructed from a number of relatively autonomous components
+    has one or more "coordinator"
+    or "process" components that arrange for the
+    "choreographing" of other components. These are often called "Managers" - hence the "Order Manager"
+    component that provides the framework for the application. Finally, entities such as Customer
+    are given the entity name - "Customer", "Product", "OrderList", etc. - followed by the suffix "View", "Model",
+    or "Data" as discussed in <xref linkend="chapThree" />.
+    <!-- was <xref linkend="chapThree"/> but the / showed. -->
+  </para>
+  <para>Finally, starting an application that can make changes to a business is generally
+    guarded by some form of security. When starting the sample application, this is
+    trivially represented
+    by a password dialog, which is visible if you start the application (in the
+    <computeroutput>Exercise06</computeroutput> folder) with the command
+    <computeroutput>startup enterPW</computeroutput> instead of just
+    <computeroutput>startup</computeroutput>. Yes, this is the wrong way round,
+    but its purpose is to illustrate the code required for a password prompt.
+    It is very simple, and uses one of the many and useful ooDialog built-in dialogs -
+    <computeroutput>PasswordBox(...)</computeroutput> - as follows:<programlisting><![CDATA[
+      parse arg pwOption
+      if pwOption = "enterPW" then do
+        pwd = PasswordBox("Please enter your password","Sign In")
+        if pwd \= "Password" then exit
+      end    ]]></programlisting>
+  </para>
+
+  </section>  <!-- End of Section 6.1.3 -->
+
+</section>  <!-- End of section 6.1 -->
+
+<section id="chap06-popups" xreflabel="Popups and Parents"><title id="popups.title">Popups and Parents</title>  <!-- Section 6.2 -->
+  <para>This section addresses how the various dialogs in the Order Management application are launched.
+    First, the way in which dialogs are started is addressed. Second, the use of the
+    <computeroutput>interpret</computeroutput> statement in displaying dialogs
+    by double-clicking an icon in the "Order Management" window is discussed.
+  </para>
+
+<section id="chap06-popups-start"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.1 -->
+  <indexterm><primary>Popups</primary><secondary>Parents</secondary></indexterm>
+  <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
+  <para>In previous chapters, dialogs have been started using the statement
+    <computeroutput>self~execute(...)</computeroutput>. The <computeroutput>~execute</computeroutput> method
+    makes the dialogs "modal", that is, access to other dialogs is blocked until the dialog is closed.
+    A good example of a modal dialog is the Help-About
+    dialog in Exercise 5. While this is open, the Product View dialog is blocked.
+  </para>
+  <para>The dialogs in Exercise 6 are not modal; they are "amodal" or "modeless". Any of them can be accessed
+    by the user at any time. A modeless dialog is
+    created by using the <computeroutput>~popup</computeroutput> or <computeroutput>~popupAsChild</computeroutput>
+    methods in place of <computeroutput>~execute</computeroutput>. The difference between the two
+    is as follows.</para>
+    <itemizedlist>
+      <listitem><para><computeroutput>~popup()</computeroutput> - If dialog A
+        pops up dialog B, then B exists independently of A. Either can be accessed by the user at any time.
+        Either can be closed without affecting the other. The application ends only when both are closed. </para>
+      </listitem>
+      <listitem><para><computeroutput>~popupAsChild(parentDlg)</computeroutput> - If dialog
+        A pops up dialog B as its child, then B's existence depends on A's. If A is closed, so does B. However, as with
+        <computeroutput>~popup</computeroutput> either can be accessed by the user at any time. Note that the only required
+        argument for <computeroutput>~popupAsChild(parentDlg)</computeroutput> is the parent dialog.</para></listitem>
+    </itemizedlist>
+<indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
+<indexterm><primary>PopupAsChild</primary></indexterm>
+  <para>
+    For the Order Management application, <computeroutput>~popupAsChild</computeroutput>
+    is used. Thus while
+    <computeroutput>OrderMgrView</computeroutput> is started with
+    <computeroutput>~execute</computeroutput>, all other dialogs in the
+    Order Management application
+    are started with <computeroutput>~popupAsChild(rootDlg)</computeroutput>
+    where the "root" (or parent) dialog is always
+    <computeroutput>OrderMgrView</computeroutput>. Thus all dialogs are modeless
+    and independent of each other, except that when <computeroutput>OrderMgrView</computeroutput>
+    is closed, everything else closes and the application ends.
+    (Note that <computeroutput>ProductView</computeroutput>'s "About" dialog is still modal: it blocks access
+    to the specific instance of <computeroutput>ProductView</computeroutput> from which it is launched; other instances
+    of <computeroutput>ProductView</computeroutput> are unaffected, as are other dialogs.)
+  </para>
+  <para>So, for a dialog to be "popped up as child", there has to be a parent dialog that was
+     surfaced with either <emphasis role="italic">~popup</emphasis> or
+     <emphasis role="italic">~execute</emphasis>. This presents a problem for stand-alone testing.
+     The solution adopted in this exercise is illustrated
+     by the following code fragment, taken from <computeroutput>CustomerListView</computeroutput>'s
+    <computeroutput>activate</computeroutput> method (which is called from its
+    <computeroutput>newInstance</computeroutput> class method):<programlisting><![CDATA[
+      ::METHOD activate UNGUARDED
+        expose rootDlg
+        use arg rootDlg
+        if rootDlg = "SA" then do			-- If standalone operation required
+          rootDlg = self				-- To pass on to children
+          self~execute("SHOWTOP","IDI_CUSTLIST_DLGICON")
+        end
+        else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_CUSTLIST_DLGICON")
+        return]]></programlisting>
+    This code illustrates the two ways of starting a dialog. For
+          stand-alone testing (see <xref linkend="apx-satesting" />), the dialog is started using
+    <computeroutput>self~execute()</computeroutput>. In normal operation, however, it is
+    started by <computeroutput>self~popupAsChild(...)</computeroutput>. Notice that the
+    first parameter of <computeroutput>~popupAsChild(rootDlg, ...)</computeroutput> is the
+    <computeroutput>OrderMgrView</computeroutput> dialog, which is passed to the
+    <computeroutput>newInstance</computeroutput> class method and thence as the parameter
+    <computeroutput>rootDlg</computeroutput> to the <computeroutput>activate</computeroutput>
+    method. Thus <computeroutput>CustomerListView</computeroutput> is both
+    a child of <computeroutput>OrderMgrView</computeroutput> and parent of
+    <computeroutput>CustomerView</computeroutput>. Later in
+    <computeroutput>CustomerListView</computeroutput>, a Customer is displayed by the user
+    double-clicking on an item in the List View. The event handler method (<computeroutput>showCustomer</computeroutput>)
+    that surfaces the Customer is as follows:<programlisting><![CDATA[
+      ::METHOD showCustomer UNGUARDED
+        expose lvCustomers rootDlg
+        item = lvCustomers~selected
+        if item = -1 then do		-- if no item selected.
+          ret = MessageDialog(.HRSclv~nilSelected, self~hwnd, title, 'WARNING')
+          return
+        end
+        info=.Directory~new
+        if lvCustomers~getItemInfo(item, info) then do
+          .local~my.idCustomerData  = .CustomerData~new	   -- create Customer Data instance
+          .local~my.idCustomerModel = .CustomerModel~new   -- create Customer Model instance
+          .local~my.idCustomerData~activate
+          .local~my.idCustomerModel~activate
+          .CustomerView~newInstance(rootDlg,"CU003")
+          self~disableControl("IDC_CUSTLIST_SHOWCUST")
+        end
+        else do
+          say "CustomerListView-showCustomer-04: ~getItemInfo returned .false."
+        end]]></programlisting>
+    The list of customers is shown in a ListView control (see <xref linkend="chap06-lviews" /> below).
+    The <computeroutput>showCustomer</computeroutput>
+    method is invoked when the user double-clicks on an item in the list. This item is
+    identified by the statement <computeroutput>item = lvCustomers~selected</computeroutput>,
+    the proxy object for the list control being <computeroutput>lvCustomers</computeroutput>
+    (an item is automatically selected
+    when it is double-clicked). If no item is selected, an error message is
+    displayed, and the method returns. The data in the selected row is then placed in a
+    directory (with an error check in case <computeroutput>~getItemInfo</computeroutput>
+    returns <computeroutput>.false</computeroutput>). The next statements
+    (<computeroutput>.local~my...</computeroutput>) create instances of the
+    <computeroutput>CustomerModel</computeroutput> and
+    <computeroutput>CustomerData</computeroutput> classes. Then
+    an instance of <computeroutput>CustomerView</computeroutput> is created by the statement
+    <computeroutput>.CustomerView~newInstance(rootDlg,"CU003")</computeroutput>. The second
+    parameter is the Customer Number, which is ignored in Exercise 6 (but which will
+    be used in a later exercise). Finally, the <emphasis role="bold">Show Customer</emphasis>
+    pushbutton is disabled.</para>
+  <para>
+    The approach to establishing the model and data objects shown here is not ideal. Indeed, the above code
+    merely satisfies the requirement for a <computeroutput>CustomerView</computeroutput> object to have access
+    to a <computeroutput>CustomerModel</computeroutput> instance which in turn needs access to an instance of
+    <computeroutput>CustomerData</computeroutput>. And, in this exercise, the data is all hard-coded. The
+    next exercise will illustrate a much better way of doing this, with data being read from a disk file
+    (a notional "data base").
+  </para>
+  </section>  <!-- End of Section 6.2.1 -->
+
+  <section id="chap06-popups-offset"><title id="offsetting.title">Offsetting Dialogs</title>  <!-- Section 6.2.2 -->
+    <para>When creating a resource file for a dialog, it is unusual to define the position of the
+          dialog on the screen. Instead, the option to center the dialog in the screen is often
+          used. This is the option applied in Exercise 6. However, when a number of different dialogs
+          are all surfaced in the same place they
+          tend to overlap each other, so making things difficult for the user who has
+          to continually move dialogs away from the center. A better approach is to offset
+          newly-surfaced dialogs from existing ones such that the new dialog pops up in the best
+          place from a user point of view. This is possible with ooDialog, but is not simple.
+    </para>
+    <para>
+      However, ooDialog also provides a half-way house, where simple code produces a
+      useful result. This simpler code is discussed in
+      <xref linkend="apx-satesting-offsets" /> in
+      <xref linkend="apx-satesting" />. The following code illustrates the key functions:
+      <programlisting><![CDATA[        -- In 'parent' dialog:
+        ::METHOD getPopupPos
+          popupPos = self~getRealPos
+          popupPos~incr(100,100)
+          return popupPos
+
+        -- In 'child' dialog:
+        ::METHOD offset
+          use arg popupPos
+          self~moveTo(popupPos, 'SHOWWINDOW')
+          self~ensureVisible()]]></programlisting>
+      The "parent" dialog finds its own position on the screen with
+      <computeroutput>parentPos=self~getRealPos></computeroutput> (where
+      <computeroutput>parentPos</computeroutput> is an instance of the <computeroutput>Point</computeroutput>
+      class). It then
+      increments the point's <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput>
+      coordinates using the point's <computeroutput>incr</computeroutput> method. The result is the child dialog's
+      desired position. When the parent dialog pops up a "child" dialog, it passes this desired position to
+      the child dialog. From the child dialog's <computeroutput>initDialog</computeroutput> method, either in-line
+      or with a method call, the instruction <computeroutput>self~moveTo(popupPos,...)</computeroutput> moves
+      the child dialog to the desired position. Finally, the instruction
+      <computeroutput>self~ensureVisible()</computeroutput> ensures that the child dialog is wholly on the screen
+      and not partly invisible.
+    </para>
+  </section>  <!-- End of Section 6.2.2 -->
+
+  <section id="chap06-popups-interpret"><title id="interpret.title">Use of 'Interpret'</title>  <!-- Section 6.2.3 -->
+    <para>When an icon in the "Order Management" dialog is double-clicked, a child dialog is surfaced.
+          This is handled by two methods in the <computeroutput>OrderMgrView</computeroutput> class.
+      First, the event-handling method <computeroutput>onDoubleClick</computeroutput> catches the
+          double-click, works out which icon (or "record" - see <xref linkend="chap06-lviews" />
+      below) was double-clicked, and then calls the <computeroutput>showModel</computeroutput>
+      method. This method uses an <computeroutput>interpret</computeroutput> instruction to
+          launch a view of the component represented by chosen icon, as follows:<programlisting><![CDATA[        use arg record
+        className = record~ID
+        viewClassName = className||"View"
+        interpret "."||viewClassName||"~newInstance(self)"]]></programlisting>
+      Thus in principle icons for additional components can be added
+      without changing the code. An alternative to using <computeroutput>interpret</computeroutput>
+      would be to use the ooRexx <computeroutput>Message</computeroutput> class.
+      Then again, an arguably better approach could have been to hold the class
+      object in the record, and to invoke <computeroutput>newInstance</computeroutput>
+      directly on the class object. However, in the next exercise, the mechanics of invoking the
+      various components (given a class name and an "instance name" such as a customer number)
+      will be moved to support classes.</para>
+    <para>Finally, a separate file - <computeroutput>RequiresList.rex</computeroutput> -
+      contains the set of <computeroutput>::requires</computeroutput> statements for
+      the components that might be surfaced. This is why the first executable statement in
+      the file <computeroutput>OrderMgrView.rex</computeroutput> is
+      <computeroutput>call "OrderMgr\RequiresList.rex"</computeroutput>. While these statements could
+      have been included in <computeroutput>OrderMgrView.rex</computeroutput>,
+      they were separated as they can be thought of as "configuration", and it's
+      arguably better to keep configuration separate from code.</para>
+  </section>  <!-- End of Section 6.2.3 -->
+
+</section>  <!-- End of Section 6.2 -->
+
+<section id="chap06-lviews" xreflabel="Icons and Lists"><title id="lviews.title">Icons and Lists</title>  <!-- Section 6.3 -->
+    <indexterm><primary>ListView</primary></indexterm>
+    <indexterm><primary>Controls</primary><secondary>ListView</secondary></indexterm>
+    <indexterm><primary>Icons</primary><secondary>in a ListView</secondary></indexterm>
+
+  <para>A <computeroutput>ListView</computeroutput> should not be confused with a
+  <computeroutput>ListBox</computeroutput>.
+  A ListView is a souped-up ListBox with lots of additional features. In particular:</para>
+  <itemizedlist>
+    <listitem><para>An item in a ListView can be a complex structure or "record" containing
+      multiple fields. One of these fields is termed the "label" of the item.</para></listitem>
+    <listitem><para>ListView items can be displayed in four different styles (or modes):
+      <itemizedlist>
+        <listitem><para>Icon view - each item appears as a full-sized icon with a label below it.
+          Items can be dragged around the ListView.</para></listitem>
+        <listitem><para>Small-icon view - each item appears as a small icon with a label to its right.
+          Items can be dragged around the ListView.</para></listitem>
+        <listitem><para>List view - each item appears as a label with an optional small icon to its left.</para></listitem>
+        <listitem><para>Report view - each item appears as a row in a table with an optional small icon to its left.
+          </para></listitem>
+      </itemizedlist>
+      The four different modes are well illustrated by the sample program <computeroutput>oodListViews.rex</computeroutput>
+      located in the <computeroutput>ooRexx\samples\oodialog</computeroutput> folder.</para></listitem>
+  </itemizedlist>
+  <para>In the Order Management application, a ListView control in the "Icon" style provides the main area
+    of the <computeroutput>OrderMgrView</computeroutput> dialog where draggable icons
+    represent the various components of the application.
+    (The ListView control in the "Report" style is used to provide the tabular lists for
+    the <computeroutput>CustomerListView</computeroutput>,
+    <computeroutput>ProductListView</computeroutput>, and <computeroutput>OrderListView</computeroutput> dialogs.)
+  </para>
+
+  <section id="chap06-lviews-icon"><title>The Icon View</title>  <!-- Section 6.3.1 -->
+  <para>
+    The Order Manager dialog is provided by two classes: <computeroutput>OrderMgrBaseView</computeroutput>
+    and <computeroutput>OrderMgrView</computeroutput>. The former handles re-sizing, and to do this it needs
+    to know about the ListView control. But the latter also needs to know about the ListView control. To provide
+    for both requirements, the proxy for the ListView control is stored in
+    <computeroutput>OrderMgrBaseView</computeroutput> as a private attribute named
+    <emphasis role="italic">lv</emphasis>.
+  </para>
+  <para>
+    Five things are needed to produce an
+    icon view: first, create (or obtain) some icons; second, specify the <computeroutput>ICON</computeroutput>
+    style for the ListView control; third, create an ImageList from the icons (required by the ListView control);
+    fourth, create a set of records (one record per icon) to be loaded into the ListView; and fifth, load the
+    icons and records into the ListView.
+  </para>
+    <orderedlist numeration="arabic">
+      <listitem> <!-- One -->
+        <para><emphasis role="bold">Produce the Icons</emphasis></para>
+        <para>The large "icons" in the ListView are actually bitmaps. Icons and bitmaps have different
+          formats, and different uses,
+          and there are a number of differences between them. The bitmaps themselves
+          are in the folders of the relevant business components, so the "icon" for the Customer List, for example,
+          is <computeroutput>Exercise06\Customer\bmp\CustList.bmp</computeroutput> (the
+          *.ico files are the dialog icons). See <xref linkend="chap06-icons" />
+          for further information.
+        </para>
+      </listitem>
+      <listitem> <!-- Two -->
+        <para><emphasis role="bold">Specify the ICON Style</emphasis></para>
+        <para>The icon style for a ListView control is specified either in the *.rc file as the
+          <computeroutput>LVS_ICON</computeroutput> (in ResEdit, set the "View" property to
+          "Icon"), or in a UserDialog, by creating the ListView control in the
+          <computeroutput>initDialog</computeroutput> method using the
+          <computeroutput>ICON</computeroutput> style - e.g.:
+          <computeroutput>self~createListView(IDC_ORDMGMT_ICONS, ... "ICON")</computeroutput>
+          where the first parameter is the ID for the ListView control. </para>
+      </listitem>
+      <listitem> <!-- 3 -->
+        <para><emphasis role="bold">Create an ImageList</emphasis></para>
+        <para>The ListView documentation provides several ways to load icons. Probably the easiest is to create an
+          instance of the <computeroutput>ImageList</computeroutput> class
+          which is then loaded into the ListView. In <computeroutput>OrderMgrView</computeroutput>, this
+          is done in the <computeroutput>createIconList</computeroutput> method
+          (invoked from the <computeroutput>init</computeroutput> method) as follows:<programlisting><![CDATA[
+          ::METHOD createIconList PRIVATE
+            expose iconList
+            imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
+            imgProdList  = .Image~getImage("product\res\ProdList.bmp")
+            imgOrderList = .Image~getImage("order\bmp\OrderList.bmp")
+            imgOrderForm = .Image~getImage("order\bmp\OrderForm.bmp")
+            -- Boldly assume no errors in creating the Image List or in the ~getImage statements.
+            iconList = .ImageList~create(.Size~new(64, 64), .Image~toID(ILC_COLOR4), 4, 0)
+            iconList~add(imgCustList)   -- item 0 in the list
+            iconList~add(imgProdList)   -- item 1 in the list
+            iconList~add(imgOrderList)  -- item 2 in the list
+            iconList~add(imgOrderForm)  -- item 3 in the list
+            imgCustList~release
+            imgProdList~release
+            imgOrderList~release
+            imgOrderForm~release
+            return]]></programlisting>
+    For each icon, only two statements are required: create an Image from file, and then copy it to the ImageList
+    (and a third, if you're a polite programmer, clean up afterwards by releasing the image).
+    </para>
+    </listitem>
+
+    <listitem>  <!-- 4 -->
+      <para><emphasis role="bold">Create Records</emphasis></para>
+      <para>Records are typically created in the <computeroutput>init</computeroutput> method (or in a method
+      invoked from there). In <computeroutput>OrderMgrView</computeroutput> the records are created in the
+        <computeroutput>initRecords</computeroutput> method which is invoked from
+        <computeroutput>init</computeroutput>. Each record has two fields: the class name of the dialog to be
+      surfaced when a user double-clicks on an icon, and the text to appear beneath the icon.
+      The design choice for these records is that each record is a directory, and each directory is
+      stored in an array. The array index of a record is equivalent to the position of its icon in the
+      ImageList (remembering that arrays are 1-based while ImageLists are 0-based). The code for creating
+      the record array is as follows (showing only the Sales Orders item for brevity):<programlisting><![CDATA[
+      ::METHOD initRecords PRIVATE
+        expose records
+        records = .array~new()
+        ...
+        rec = .directory~new
+        rec~ID = "OrderList"            -- Class Name
+        rec~name = "Sales Orders"       -- Text to display under the icon
+        records[3] = rec
+        ...
+        return records]]></programlisting>
+    </para>
+  </listitem>
+  <listitem> <!-- 5 -->
+    <para><emphasis role="bold">Load the ImageList and the Records</emphasis></para>
+    <para>Loading icon images and records into the ListView is done in
+    <computeroutput>OrderMgrView</computeroutput>'s <computeroutput>initDialog</computeroutput> method:
+    <programlisting><![CDATA[
+    ::METHOD initDialog
+      expose records iconList
+      self~initDialog:super
+      self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
+      do i=1 to records~items
+        self~lv~addRow(, i-1, records[i]~name)
+      end    ]]></programlisting>
+    The icons in the ImageList are all applied to the ListView control in the
+    single statement, <computeroutput>self~lv~setImageList(...)</computeroutput>.
+    The second parameter of
+    the <computeroutput>setImageList</computeroutput> method specifies the size of the icons by invoking
+      the <computeroutput>toID</computeroutput> method of the Image class with the parameter
+      <computeroutput>LVSIL_NORMAL</computeroutput>. This is the flag for the icon view as opposed to
+    the list, report, or small icon views. The Image class is used to work with and manipulate images.
+    The icons having been set, the records are then added using the ListView's
+      <computeroutput>addRow</computeroutput> method. The first parameter is the index of the list
+    item (if omitted, the record is added after the last). The second parameter is the index of the icon to
+    be used with this record, and the last parameter is the label for the list item - the string
+    "Customer List" in the case of the first item added.
+    </para>
+    </listitem>
+  </orderedlist>
+
+  </section>  <!-- End of section 6.3.1 -->
+
+  <section id="chap06-listview-report"><title>The Report View</title>  <!-- Section 6.3.2 -->
+    <!--
+       - how do different fonts for the listView items
+       Answer: in initDialog:
+         font = self~createFontEx("Ariel", 10)
+         lvCustomers~setFont(font)
+    -->
+    <para>Three of the icons in the Sales Order Management dialog surface a list when double-clicked - the Customer List,
+      Product List, and Order List. These three components are technically very similar - so that a
+      "list superclass" could perhaps be useful. However, in Exercise 6 this is not done, and each
+      list is quite separate. Nevertheless, their similarity means that discussing one list - the Customer List
+      - effectively addresses all three.
+    </para>
+    <para>A list view with the "Report View" style provides for a variable number of columns, each item
+      appearing on a separate line with information arranged in columns. Each line may have a small icon at
+      the left of each line. Note that the fields in a ListView must be defined in code, since a Windows
+      resource file does not support the definition of columns within the list view.</para>
+    <para>
+      The following code fragment from the <computeroutput>CustomerListView</computeroutput> class
+      shows how the List View (without small icons) is defined:
+      <programlisting><![CDATA[      ::METHOD initDialog
+        expose menuBar lvCustomers btnShowCustomer
+        ...
+        lvCustomers = self~newListView("IDC_CUSTLIST_LIST");
+        lvCustomers~addExtendedStyle(GRIDLINES FULLROWSELECT)
+        lvCustomers~insertColumnPX(0,"Number",60,"LEFT")
+        lvCustomers~insertColumnPX(1,"Name",220,"LEFT")
+        lvCustomers~insertColumnPX(2,"Zip",80,"LEFT")
+        self~connectListViewEvent("IDC_CUSTLIST_LIST","CLICK",itemSelected)		-- Single click
+        self~connectListViewEvent("IDC_CUSTLIST_LIST","ACTIVATE",openItem)	 	-- Double-click
+        self~connectButtonEvent("IDC_CUSTLIST_SHOWCUST","CLICKED",showCustomer)
+        self~loadList      ]]></programlisting>
+      First, a proxy for the ListView control, <computeroutput>lvCustomers</computeroutput>, is created. Then,
+      in the second statement, the list view
+      is formatted using "extended styles" (of which there are around twenty). Extended styles are
+      defined by Microsoft, and can only be added after the underlying Windows control has been created
+      - that is, (normally) in
+      the <computeroutput>initDialog</computeroutput> method. In the above code, only two extended
+      styles are applied: GRIDLINES and FULLROWSELECT. Both apply only to the Report View. The former
+      draws gridlines around all items; the latter defines that,
+      when a row is selected by the user, the whole row is highlighted rather than just
+      the first column. Then there are three <computeroutput>~insertColumnPX</computeroutput> statements,
+      each adding a column to the list view - "Number", "Name", and "Zip". Following these are two
+      <computeroutput>~connectListViewEvent</computeroutput> statements that define event handler methods
+      for single click and a double-click - <computeroutput>itemSelected</computeroutput> and
+      <computeroutput>openItem</computeroutput>. The latter merely invokes the
+      <computeroutput>showCustomer</computeroutput> method, as does the second-to-last statement
+      <computeroutput>~connectButtonEvent</computeroutput> which defines the event handler method for the
+      pushbutton.
+    </para>
+    <para>
+      The last statement in the above invokes the <computeroutput>loadList</computeroutput> method, which
+      loads the list view with data, as follows:<programlisting><![CDATA[
+        ::METHOD loadList
+          expose lvCustomers
+          lvCustomers~addRow( , ,"CU001", "ABC Inc.",   "TX 20152")
+          lvCustomers~addRow( , ,"CU002", "Frith Inc.", "CA 30543")
+          lvCustomers~addRow( , ,"CU003", "LMN & Co",   "NY 47290-1201")
+          lvCustomers~addRow( , ,"CU005", "EJ Smith",   "NJ 12345")
+          lvCustomers~addRow( , ,"CU010", "Red-On Inc.","AZ 12345")
+          lvCustomers~addRow( , ,"AB15784", "Joe Bloggs & Co Ltd","LB7 4EJ")
+          lvCustomers~setColumnWidth(1)      ]]></programlisting>
+      The <computeroutput>~addRow</computeroutput> method adds a row of data into the list view.
+      As can be seen, the data in the list is hard-coded (but this will be fixed in the next exercise). The first parameter
+      is the 0-based index of the item, and defaults to the index of the last item added plus 1 (if no items
+      already in the list view, this defaults to 0). Note however that when the user
+      creates the dialog, the last item appears first not last.
+      This is because the *.rc file specifies the style <computeroutput>LVS_SORTASCENDING</computeroutput>.
+      The second parameter is the index (in an ImageList) of the item's icon should that be required.
+      Finally, the last statement sets the width of the second column to that of the longest text entry.
+      Note that loading the list view with data could have been done in the
+      <computeroutput>initDialog</computeroutput> method. However, the separation of concerns principle
+      points strongly to separating the formatting of the list view from loading data into the list view.
+    </para>
+    <para>Surfacing a Customer from the Customer List is done in one of two ways: either double click on an item,
+      or select the item and then press the <emphasis role="bold">Show Customer</emphasis> button. Both invoke the
+      <computeroutput>showCustomer></computeroutput> method. These two approaches are implemented by the
+      following code (error-handling code omitted):
+      <programlisting><![CDATA[      -- 1. Double-Click:
+
+      ::METHOD initDialog
+        ...
+        self~connectListViewEvent("IDC_CUSTLIST_LIST","ACTIVATE",openItem)	 	-- Double-click
+        ...
+
+      ::METHOD openItem UNGUARDED
+        self~showCustomer
+
+
+      -- 2. Select (single click) then press button:
+
+      ::METHOD initDialog
+        ...
+        self~connectListViewEvent("IDC_CUSTLIST_LIST","CLICK",itemSelected)		-- Single click
+        self~connectButtonEvent("IDC_CUSTLIST_SHOWCUST","CLICKED",showCustomer)
+        ...
+
+      ::METHOD itemSelected UNGUARDED
+        use arg id, itemIndex, columnIndex, keyState
+        if itemIndex > -1 then self~enableControl("IDC_CUSTLIST_SHOWCUST")
+        else self~disableControl("IDC_CUSTLIST_SHOWCUST")      ]]></programlisting>
+      In the first approach, If the user double-clicks on a row, and the row is empty, the second
+      click of the double-click is ignored, else the double-click method (<computeroutput>openItem</computeroutput>)
+      is invoked. This is turn invokes <computeroutput>showCustomer</computeroutput>.
+      In the second approach, the <computeroutput>itemSelected</computeroutput> method is fired when
+      the user clicks on a row in the ListView. If the user clicks on an empty row, then
+      <computeroutput>itemIndex</computeroutput> is set to -1, else it is set to the 0-based row number.
+      As can be seen, both approaches invoke the <computeroutput>showCustomer</computeroutput> method, which
+      is as follows (where <computeroutput>lvCustomers</computeroutput> is
+      the proxy for the List View control):
+<programlisting><![CDATA[
+      ::METHOD showCustomer UNGUARDED
+        expose lvCustomers rootDlg
+        item = lvCustomers~selected
+        info=.Directory~new
+        lvCustomers~getItemInfo(item, info)
+        .local~my.idCustomerData  = .CustomerData~new	  -- create CustomerData instance
+        .local~my.idCustomerModel = .CustomerModel~new	-- create CustomerModel instance
+        .local~my.idCustomerData~activate
+        .local~my.idCustomerModel~activate
+        .CustomerView~newInstance(rootDlg,"CU003")
+        self~disableControl("IDC_CUSTLIST_SHOWCUST")      ]]></programlisting>
+      First, the relevant row (<computeroutput>item</computeroutput>)is found using the
+      <computeroutput>~selected</computeroutput> method of the List View. Then a directory
+      is created, and the data from the selected row is placed into the directory by the List View's
+      <computeroutput>getItemInfo</computeroutput> method. Thirdly, the Customer Data and Model objects
+      are instantiated, and then the CustomerView is instantiated
+      (<computeroutput>CustomerView</computeroutput> depends on <computeroutput>CustomerModel</computeroutput>
+      being available). As can be seen, in this version of <computeroutput>CustomerListView</computeroutput>
+      the data from the ListView is ignored, and the same Customer is surfaced regardless. This is also true
+      for the other List Views. In the next exercise this will be fixed so that instantiation of the Model and Data
+      objects will be handled elsewhere, and the correct instance will be shown.
+    </para>
+    <para>
+      Finally, two items about ListViews. First, to change the font for the data in
+      a ListView, use the <computeroutput>createFont</computeroutput> method of
+      the dialog (actually a method in ooDialog's "WindowsExtensions" mixin). For
+      example, try inserting the following in <computeroutput>CustomerListView</computeroutput>'s
+      <computeroutput>initDialog</computeroutput> method, immediately before the statement
+      <computeroutput>self~loadList</computeroutput>:<programlisting><![CDATA[
+      font = self~createFontEx("Ariel", 10)
+      lvCustomers~setFont(font)      ]]></programlisting>
+      Save and run. You should see the data in the ListView displayed using the
+      Ariel 10-pitch font.
+      <indexterm><primary>ListView</primary><secondary>Font</secondary></indexterm>
+      <indexterm><primary>Font</primary><secondary>in a ListView</secondary></indexterm>
+    </para>
+    <para>
+      The second item concerns the appearance of the ListView control. If you place
+      the mouse over one of the headers, its appearance changes and if you click
+      it, it acts rather like a pushbutton. But nothing happens, although you might
+      expect it to sort the list according to values in the clicked column).
+      The reason it does not is that
+      <computeroutput>CustomerListView.rc</computeroutput> does not include the
+      style <computeroutput>LVS_NOSORTHEADER</computeroutput>. Try adding this
+      to the resource file (change "... LVS_SORTASCENDING, ..." to
+      "... LVS_SORTASCENDING | LVS_NOSORTHEADER, ..."), then re-run.
+      On the other hand, should you wish to change things so that the
+      data is sorted, then check out the <computeroutput>sortItems</computeroutput>
+      method in the "List View Controls" chapter in the ooDialog reference.
+      <indexterm><primary>List View</primary><secondary>Sorting</secondary></indexterm>
+    </para>
+
+  </section>  <!-- End of section 6.3.2 -->
+
+</section>  <!-- End of section 6.3 -->
+
+<section id="chap06-resize" xreflabel="Re-sizing Dialogs"><title id="resize.title">Re-sizing Dialogs</title>  <!-- Section 6.4 -->
+<para>If you haven't already done so, try re-sizing the Order Management dialog. The ListView
+      containing the icons expands to match the new window size, and the two push-buttons both move
+      (and change in size) in proportion. The re-sizing functionality is provided by the
+      ooDialog-provided mixin class <computeroutput>ResizingAdmin</computeroutput>. All that is
+      required is to specify this mixin in the <computeroutput>::Class</computeroutput> statement,
+      and the dialog will be re-sizeable. Note that together with the dialog, controls are also
+      re-sized. Often, however, it is necessary for some controls <emphasis role="italic">not</emphasis>
+      to be resized, or, for example, only to be re-sized in one dimension. This
+      can be specified, for each control, by using the <computeroutput>controlSizing</computeroutput>
+      method of the <computeroutput>ResizingAdmin</computeroutput> class. Essentially, this method provides
+      for "pinning" individual controls in relation either to the dialog, or to other controls.</para>
+<para>Re-sizing is also provided by the <computeroutput>DlgAreaU</computeroutput> class. This
+      ingenious class was written some time ago when ooDialog capabilities were much less developed
+      than they are today. It works by parsing the source code of a subclass'
+      <computeroutput>defineDialog</computeroutput> method at run-time. However, this constrains it to
+      being used only with <computeroutput>UserDialog</computeroutput>, where the dialog template is
+      created through explicit control creation statements. In addition, since the source code is
+      required at run-time, it will not work if the source code is tokenized using
+      <computeroutput>rexxc</computeroutput>. For information about using this approach to re-sizing
+      dialogs, see the documentation for the <computeroutput>DlgAreaU</computeroutput> class in the
+      ooDialog Reference manual or the
+      copious comments in <computeroutput>dlgAreaUDemoThree.rex</computeroutput> (which can be found
+      in  the ooRexx samples folder in
+      <computeroutput>oodialog\resizableDialogs\DialogAreaU</computeroutput>).</para>
+</section>  <!-- End of section 6.4 -->
+
+<section id="chap06-icons" xreflabel="Creating Icons"><title id="icons.title">Creating Icons</title>  <!-- Section 6.5 -->
+  <para>This section discusses first the creation of icons and bitmaps, and secondly how the icons in the
+  <computeroutput>OrderMgrView</computeroutput> dialog are loaded into its icon-style List view.</para>
+  <para>Various questions arise when creating icons for the first time - especially since the
+    whole area of images in Windows is not, at first glance, simple.
+    This section lists some of the main points about creating icons.</para>
+  <para>First, it's important to establish whether what's required is an icon (file type *.ico)
+    or a bitmap (file type *.bmp). The "icons" in <computeroutput>OrderMgrView</computeroutput>
+    dialog are actually bitmaps. But a
+    "dialog icon" (the icon displayed in the left hand corner of the title bar of a dialog) is an icon,
+    not a bitmap.
+    A number of tools are available for creating and editing images, icons, bitmaps etc.,
+    some of them providing conversion and re-sizing capabilities. One such is GIMP (GNU Image Manipulation
+    Program), a freely distributed piece of software, from http://www.gimp.org.
+    <indexterm><primary>Bitmap Editor</primary></indexterm>
+    <indexterm><primary>Icon editor</primary></indexterm>
+  </para>
+  <para>Second, the size of a dialog icon is variable. That is, an icon larger than the space available
+    will be shrunk to fit. The dialog icons in this exercise are all 64x64 in size, and are automatically
+    shrunk to fit. For resource dialogs, the dialog icon is specified in the resource file,
+    and its ID in the resource file is specified in the <computeroutput>self~execute(...)</computeroutput>
+    method. For UserDialog dialogs, the dialog icon is loaded by the
+    <computeroutput>addIconResource</computeroutput> method. The two arguments to this method are a
+    resource ID and the file name of the icon, for example:
+    <computeroutput>dlg~addIconResource(105,"MyPicture.ico")</computeroutput>. The resource ID is then
+    specified in the <computeroutput>dlg~execute("SHOWTOP, 105)</computeroutput> statement.
+  </para>
+  <para>Finally, the "icons" in the "Order Management" dialog are bitmaps of size 64x64. These are not shrunk;
+    a smaller icon will look smaller. These bitmaps are loaded into the ListView programmatically.
+    The code that loads the bitmaps into the ListView is as follows (with repetitive statements removed):
+<programlisting><![CDATA[
+  ::METHOD createIconList PRIVATE
+    expose iconList
+    imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
+    ...
+    iconList = .ImageList~create(.Size~new(64, 64), .Image~toID(ILC_COLOR4), 4, 0)
+    iconList~add(imgCustList)
+    ...
+    imgCustList~release
+    ...
+    return
+
+  ::METHOD initRecords PRIVATE
+    -- Called from init - This method simulates getting the "data" for the OrderMgr view.
+    expose records
+    records = .array~new()
+    ...
+    rec = .directory~new
+    rec~ID = "ProductList"
+    rec~name = "Product List"
+    records[2] = rec
+    ...
+    return records
+
+  ::METHOD initDialog
+    expose records iconList
+    self~initDialog:super
+    self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
+    do i=1 to records~items
+      self~lv~addRow(, i-1, records[i]~name)
+    end    ]]></programlisting>
+    The icon view requires icons to be loaded from an "image list" - that is, an instance
+    of the <computeroutput>ImageList</computeroutput> class. It is the function of the
+    <computeroutput>createIconList</computeroutput> method (invoked
+    from <computeroutput>init</computeroutput>) to produce such an image list.
+    To build the image list - called <computeroutput>iconList</computeroutput> in the above -
+    each bitmap is first loaded from disk into an instance of the <computeroutput>.Image</computeroutput>
+    class using the <computeroutput>getImage</computeroutput> method. Then the statement
+    <computeroutput>iconList=.ImageList~create(...)</computeroutput> creates an empty image list,
+    into which each of the four images is loaded using the <computeroutput>add </computeroutput> method.
+    Finally, each separate image is released. By the end of this method, an image list has been created,
+    but has not yet been loaded into the list view.
+  </para>
+  <para>
+    As with the "Record View" used for <computeroutput>CustomerListView</computeroutput>,
+    items in an "Icon View" are loaded as "records".
+    In this case, each record consists of an icon and a text label for that icon.
+    The <computeroutput>initRecords</computeroutput> method does just that - sets up the records in an array
+    called <computeroutput>records</computeroutput>. The record id is used to hold the class name
+    (e.g. "ProductList") of the component to be launched when the user double-clicks an icon.
+  </para>
+  <para>Finally, in the <computeroutput>initDialog</computeroutput> method, the image list
+    (<computeroutput>lv</computeroutput>) is first set into (added to) the list view, following which
+    the records are added. It is a user responsibility to make sure the sequence of icons in the icon list
+    matches the sequence of text data in the records array.
+  </para>
+  <para>To complete the behavior of the <computeroutput>OrderMgrView</computeroutput>
+    component, there remains the task,
+    when the user double-clicks on an icon, of surfacing the required component. This is done by the following
+    code in <computeroutput>OrderMgrView</computeroutput>:<programlisting><![CDATA[
+    ::METHOD onDoubleClick UNGUARDED
+      expose records
+      index = self~lv~focused		-- lv is an attribute of the superclass.
+      record = records[index+1]
+      self~showModel(record)
+
+    ::METHOD showModel UNGUARDED
+      use arg record
+      className = record~ID
+      viewClassName = className||"View"
+      interpret "."||viewClassName||"~newInstance(self)"
+      say "OrderMgrView-showModel-02:"  ]]></programlisting>
+    The <computeroutput>onDoubleClick</computeroutput> method is the event handler method defined for the list view.
+    The first statement (after <computeroutput>expose records</computeroutput>) finds which icon has focus - that is,
+    which one was double-clicked. The second retrieves the corresponding record, and then
+    <computeroutput>showModel</computeroutput> is invoked with the appropriate
+    record. In <computeroutput>showModel</computeroutput> an appropriate view is created and surfaced using the
+    <computeroutput>interpet</computeroutput> instruction in much the same way that CustomerList did for individual
+    Customer views (see <xref linkend="chap06-popups-interpret" />).
+  </para>
+  <para>It remains only to mention that the above code will allow as many lists to be created and surfaced as
+  the user wishes. This may or may not be what's required. It is of course possible to arrange things
+  so that only a single list for
+  each of Customers, Products and Orders is allowed. In such a case, when the user double-clicks on an icon, the
+  appropriate list would be "surfaced" in the proper sense of the word - that is, created and shown as the
+  top-level dialog, or, if already created, would have focus put on it so that, if hidden under other
+  dialogs, it will pop to the "surface" - that is, become the topmost window on the screen.</para>
+</section>  <!-- End of section 6.5 -->
+
+<section id="chap06-utildlgs" xreflabel="Utility Dialogs"><title id="utildlgs.title">Utility Dialogs</title>   <!-- Section 6.6 -->
+  <indexterm><primary>Password dialog</primary></indexterm>
+  <indexterm><primary>Utility routine</primary><secondary>PasswordBox</secondary></indexterm>
+  <para>A subject not yet mentioned is the use of ooDialog utility classes and routines
+    that can be used in any ooRexx program. The routines are very simple, and are often one-liners.
+    As an example, in this exercise the startup program
+    provides for entry of a password using the (one-line) <computeroutput>PasswordBox</computeroutput> routine.
+    Invoking <computeroutput>startup enterPW</computeroutput> produces a password box that will accept the password
+    "Password". If you get the password wrong, the startup routine will silently end.
+    The code is as follows:<programlisting><![CDATA[
+    parse arg pwOption
+    if pwOption = "enterPW" then do
+      pwd = PasswordBox("Please enter your password","Sign In")
+      if pwd \= "Password" then exit
+    end
+    .OrderMgmtView~newInstance
+    ::REQUIRES "OrderMgmt\OrderMgmtView.rex"    ]]></programlisting>
+    Check out the ooDialog Reference for the whole set of classes and routines.
+  </para>
+</section>  <!-- End of section 6.6 -->
+
+</chapter>
+

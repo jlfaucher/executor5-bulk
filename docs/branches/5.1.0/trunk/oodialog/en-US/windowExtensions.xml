@@ -1,0 +1,3215 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<section id="clsWindowExtensions" xreflabel="WindowsExtensions"><title>WindowExtensions Mixin Class</title>
+<indexterm><primary>WindowExtensions Class</primary></indexterm>
+<para>
+  WindowExtensions is a mixin class with methods that <emphasis role="italic">should</emphasis> be common to all
+  windows. The class name implies it is meant to be an extension of the <xref linkend="clsWindowBase"/>
+  class, providing more sophisticated window methods. It is inherited by both the
+  <xref linkend="chpDialogObject"/> and the dialog <xref linkend="chpDialogControlObject"/> objects.
+</para>
+<para>
+  Unfortunately, <emphasis role="bold">many</emphasis> of the methods placed in the WindowExtensions class were not
+  really <emphasis role="italic">window</emphasis> methods. Rather they were extensions to the ooDialog framework.
+  Otherwise in the <link linkend="sctHistory">effort</link> to simplify ooDialog all the methods would have been moved
+  to the WindowBase class and the WindowExtensions class would have been eliminated. However, the methods remaining in
+  WindowExtensions, do not belong in a <emphasis role="italic">window</emphasis> class, so that
+  simplification could not be done.
+</para>
+<para>
+  In addition, most of the methods do not really belong to a <emphasis role="italic">dialog control</emphasis> specific
+  class. But, since historically the dialog control did have these methods, they need to remain a part of the dialog
+  control object for backwards compatibility. Therefore, both the name of the class and the usage of its methods from a
+  dialog control object are not really appropriate.
+</para>
+
+
+<section id="sctMethodsWindowExtensions"><title>Method Table</title>
+<para>
+  The following table lists the instance methods of the <computeroutput>WindowExtensions</computeroutput> Mixin Class.
+</para>
+<table id="tblMethodsWindowExtensions" frame="all"> <title>WindowExtensions Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="2*" /><colspec colwidth="7*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateBrush"/></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateFont"/></entry>
+<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreatePen"/></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateFontEx"/></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><xref linkend="mthDeleteFont"/></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDeleteObject"/></entry>
+<entry>Deletes a graphic object,</entry>
+</row>
+<row>
+<entry><xref linkend="mthDrawAngleArc"/></entry>
+<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDrawArc"/></entry>
+<entry>Draws a circle or ellipse within the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDrawLine"/></entry>
+<entry>Draws a line within the device context using the active pen.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDrawPie"/></entry>
+<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDrawPixel"/></entry>
+<entry>Draws a pixel within the device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFillDrawing"/></entry>
+<entry>Fills an area of the display surface with the current brush. The area to be filled is outlined by the color specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFillRect"/></entry>
+<entry>Fills a rectangle using the specified brush within the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFontColor"/></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFontToDC"/></entry>
+<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFreeDC"/></entry>
+<entry>Releases a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetArcDirection"/></entry>
+<entry>Returns the current drawing direction.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFont"/></entry>
+<entry>Returns the font used by the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetPixel"/></entry>
+<entry>Returns the color number of a pixel within the device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetSysBrush"/></entry>
+<entry>Retrieves a handle to a logical brush that corresponds to the specified system color index.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTextAlign"/></entry>
+<entry>Gets the text alignment setting for the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTextExtent"/></entry>
+<entry>Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHScrollPos"/></entry>
+<entry>Returns the position of the horizontal scroll bar in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLoadBitmap"/></entry>
+<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
+</row>
+<row>
+<entry><xref linkend="mthObjectToDC"/></entry>
+<entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOpaqueText"/></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><xref linkend="mthRectangle"/></entry>
+<entry>Draws a rectangle within the given device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveBitmap"/></entry>
+<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
+</row>
+<row>
+<entry><xref linkend="mthScrollClsWE"/></entry>
+<entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetArcDirection"/></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFont"/></entry>
+<entry>Sets a new font to be used by the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetHScrollPos"/></entry>
+<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTextAlign"/></entry>
+<entry>Sets the text alignment option for the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetVScrollPos"/></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthTransparentText"/></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
+</row>
+<row>
+<entry><xref linkend="mthVScrollPos"/></entry>
+<entry>Returns the position of the vertical scroll bar in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWrite"/></entry>
+<entry>Writes text in a dialog using the given font, style, and color at the position specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWriteDirect"/></entry>
+<entry>Writes text in a dialog at the position specified using a device context.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="mthCreateBrush" xreflabel="createBrush"><title>createBrush</title>
+<indexterm><primary>createBrush</primary><secondary>WindowExtensions</secondary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>createBrush</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>createBrush</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createBrush(--+---------+--+------------------+--)-------------------------><
+                  +--color--+  +-,-brushSpecifier-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">createBrush</emphasis> method creates a logical brush that has the specified style, color,
+  and pattern.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    Both arguments are optional. If both arguments are omitted then a hollow brush is created. Otherwise, the arguments
+    are:
+  <variablelist>
+    <varlistentry><term>color [optional]</term>
+    <listitem>
+    <para>
+      The <xref linkend="defColor"/>. When this argument is omitted and <emphasis
+      role="italic">brushSpecifier</emphasis> is used, the color number defaults to 1.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>brushSpecifier [optional]</term>
+    <listitem>
+    <para>
+      If this argument is omitted a solid brush using the color specified is created.  Otherwise, this argument can be
+      the name of a bitmap file, or one of the following keywords. The keywords create a hatched brush. A bitmap file
+      name will cause the bitmap to be loaded into memory and then used for the brush. Case is not significant in the
+      keywords.
+    </para>
+    <para>
+    <simplelist type='vert' columns='2'>
+      <member>UPDIAGONAL  </member>
+      <member>CROSS       </member>
+      <member>DIAGCROSS   </member>
+      <member>DOWNDIAGONAL</member>
+      <member>HORIZONTAL  </member>
+      <member>VERTICAL    </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>UPDIAGONAL</term>
+      <listitem>
+      <para>
+        A 45-degree upward, left-to-right hatch.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CROSS</term>
+      <listitem>
+      <para>
+        A horizontal and vertical crosshatch.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DIAGCROSS</term>
+      <listitem>
+      <para>
+        A 45-degree crosshatch.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DOWNDIAGONAL</term>
+      <listitem>
+      <para>
+        A 45-degree downward, left-to-right hatch.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HORIZONTAL</term>
+      <listitem>
+      <para>
+        A horizontal hatch.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>VERTICAL</term>
+      <listitem>
+      <para>
+        A vertical hatch.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A brush is a bitmap that the operating system uses to paint the interiors of filled shapes. After the programmer
+    creates a brush, it can then be selected into a device context using the
+ <xref linkend="mthObjectToDC"/>() method. When the brush is no longer needed use the
+ <xref linkend="mthDeleteObject"/>() method to release the operating resources used by the brush.
+  </para>
+  <para>
+    The <emphasis role="italic">createBrush</emphasis> method here is almost identical to the
+    <xref linkend="mthCreateBrushClsDialogExtensions"/> method of the
+    <xref linkend="clsDialogExtensions"/> class. The method documented here is a method of the
+    <xref linkend="clsWindowExtensions"/> class and is therefore inherited by both the
+    <xref linkend="chpDialogObject"/> and the dialog <xref linkend="chpDialogControlObject"/> objects.
+  </para>
+  <para>
+    However, in the dialog object, the <emphasis role="italic">createBrush</emphasis> method of the
+    <computeroutput>DialogExtensions</computeroutput> class over-rides this method. Therefore, this documentation is
+    essentially the dialog control's <emphasis role="italic">createBrush</emphasis> documentation and the
+    <xref linkend="mthCreateBrushClsDialogExtensions"/> documentation is for the dialog object's <emphasis
+    role="italic">createBrush</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthCreateFont" xreflabel="createFont"><title>createFont</title>
+<indexterm><primary>createFont</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>createFont</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>createFont</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>createFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createFont(--+----------+-+------------+-+---------+-+-------------+--)----><
+                 +-fontName-+ +-,-fontSize-+ +-,-style-+ +-,-fontWidth-+
+]]>
+</programlisting>
+
+<para>
+  The createFont method creates a font and returns its handle.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis> the implementation of this method is incorrect. It does not
+  return the font specified. The correct method to use is
+ <xref linkend="mthCreateFontEx"/>(). <computeroutput>createFont</computeroutput>() is
+  maintained for program compatibility. Some existing programs may rely on using the (incorrect) font
+  returned.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>fontName [optional]</term>
+    <listitem>
+    <para>
+      The name of the font. the default is System.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontSize [optional]</term>
+    <listitem>
+    <para>
+      The size of the font. The default is 10.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      One or more of the following keyword, separated by blanks.
+      <simplelist type='horiz' columns='3'>
+      <member>THIN      </member>
+      <member>EXTRALIGHT</member>
+      <member>LIGHT     </member>
+      <member>MEDIUM    </member>
+      <member>SEMIBOLD  </member>
+      <member>EXTRABOLD </member>
+      <member>BOLD     </member>
+      <member>HEAVY    </member>
+      <member>UNDERLINE</member>
+      <member>ITALIC   </member>
+      <member>STRIKEOUT</member>
+      </simplelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontWidth [optional]</term>
+    <listitem>
+    <para>
+      The average width of the characters in the font. If omitted, the width is set to the value of <emphasis
+      role="italic">fontSize</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthCreateFontEx" xreflabel="createFontEx"><title>createFontEx</title>
+<indexterm><primary>createFontEx</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>createFontEx</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>createFontEx</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>createFontEx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+
+]]>
+</programlisting>
+
+<para>
+  Creates a logical font with the characteristics requested. This should be the preferred method to create fonts in ooDialog.
+  The <xref linkend="mthCreateFont"/> method does <emphasis role="bold">not</emphasis> properly create the font requested.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="italic">fontName [required]</emphasis></term>
+    <listitem>
+    <para>
+      The typeface name of the requested font. The <emphasis role="italic">fonts</emphasis> folder, accessed from the Control
+      Panel on Windows, lists the typeface names of all fonts installed on the system.
+    </para>
+    <para>
+      As noted in the remarks section, the font mapper will try to substitute a similar font if the typeface name does not
+      match any of the installed fonts.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="italic">pointSize [optional]</emphasis></term>
+    <listitem>
+    <para>
+      The point size of the requested font. The default is 8.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="italic">additional [optional]</emphasis></term>
+    <listitem>
+    <para>
+      Specifies additional characteristics of the requested font. If this argument is omitted, default values are used for all
+      characteristics. The <emphasis role="italic">additional</emphasis> argument can be either:
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      A <computeroutput>.Directory</computeroutput> object whose indexes specify the characteristics.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      A list of blank separated keywords that specify the characteristics.
+    </para>
+    </listitem>
+    </itemizedlist>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Directory Object:</emphasis></term>
+      <listitem>
+      <para>
+        The indexes of the object specify the additional font characteristics. For any missing index, the default value is
+        used for that characteristic. Unrecognized indexes are ignored. The indexes are listed below. Each index maps to an
+        argument of the <computeroutput>CreateFont()</computeroutput> Win32 API. The Rexx programmer can, and maybe should,
+        consult the MSDN <xref linkend="defWindowsDoc"/> to get complete information on the individual arguments. The value
+        for each index must be either numeric or logical, depending on the index.
+      </para>
+      <para>
+        The indexes below are listed in the same order as the arguments to <computeroutput>CreateFont()</computeroutput> from
+        <emphasis role="italic">nWidth</emphasis> to <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has
+        an internal link, the link provides some more information on the possible values for index. The valid indexes are:
+      </para>
+      <variablelist>
+        <varlistentry><term><xref linkend="cfxWidth"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the average width of the characters in the requested font. The default
+          is 0 which tells the font mapper to choose a closest match value.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxEscarpment"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the angle between the escapement vector and the x-axis of the device.
+          The default is 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxOrientation"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the angle between each character's base line and the x-axis of the
+          device. The default is 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxWeight"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number in the range of 0 through 1,000 that specifies the weight of the font. The default is
+          FW_NORMAL, which is 400.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">ITALIC</emphasis></term>
+        <listitem>
+        <para>
+          True for an italic font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">UNDERLINE</emphasis></term>
+        <listitem>
+        <para>
+          True for an underline font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">STRIKEOUT</emphasis></term>
+        <listitem>
+        <para>
+          True for a strikeout font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxCharset"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the character set. The default is DEFAULT_CHARSET.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxOutputPrecision"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the output precision. The default is OUT_TT_PRECIS.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxClipPrecision"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the clipping precision. The default is CLIP_DEFAULT_PRECIS.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxQuality"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the output quality. The default is DEFAULT_QUALITY.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxPitchAndFamily"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the pitch and family of the font. The default is FF_DONTCARE.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Keyword List:</emphasis></term>
+      <listitem>
+      <para>
+        One or more of the following keywords, separated by blanks. Case is not significant. The UNDERLINE, ITALIC, and
+        STRIKEOUT keywords specify the corresponding type of font. All the other keywords specify the weight of the font.
+        Using more that one of the weight keywords is the list is undefined:
+      </para>
+        <simplelist type='horiz' columns='3'>
+        <member>THIN      </member>
+        <member>EXTRALIGHT</member>
+        <member>LIGHT     </member>
+        <member>MEDIUM    </member>
+        <member>SEMIBOLD  </member>
+        <member>EXTRABOLD </member>
+        <member>BOLD     </member>
+        <member>HEAVY    </member>
+        <member>UNDERLINE</member>
+        <member>ITALIC   </member>
+        <member>STRIKEOUT</member>
+        </simplelist>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a handle to a font that can be used in any ooDialog method that requires a font
+    handle. Because of the way the font mapper works, it is hard to conceive of a circumstance where
+    this method would fail. However, if it were to fail, the
+    <xref linkend="dotSystemErrorCode"/> would be non-zero.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned font can be used in any method that takes a font, such as, <xref linkend="mthSetFont"/>, <xref
+    linkend="mthSetControlFont"/>, or <xref linkend="mthFontToDC"/>. When the programmer is done with the font, the operating
+    system resources used by the font can be released with the <xref linkend="mthDeleteFont"/> method.
+  </para>
+  <para>
+    The Windows operating system uses a font mapper to map a logical font to the characteristics of the font requested. Because
+    available fonts can vary from system to system, the returned font is not always the same as the requested font. For
+    example, if a font named Palatino is requested, but no such font is available on the system, the font mapper will
+    substitute a font that has similar attributes but a different name.
+  </para>
+  <para>
+    The interface to the font mapper takes a wide range of arguments to specify many different attributes of the requested
+    font. The <emphasis role="italic">additional</emphasis> argument gives the ooRexx programmer the ability to use any, or
+    all, of these arguments. On the other hand, The <emphasis role="italic">createFontEx</emphasis> method has good defaults
+    for each of the arguments, allowing the programmer to use the method with a minimum of effort.
+  </para>
+  <para>
+    If an application will run on different systems, where the programmer does not know in advance what fonts will be available
+    on each system, carefully specifying the font characteristics will help give the application the same look on each system.
+    The font mapper will pick a font on each system that most closely matches the requested attributes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>. Use the MSDN <xref
+    linkend="defWindowsDoc"/> documentation to get more information on the arguments to this method.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates a 16 point, italic, underlined, Ariel font and then uses the font for a static
+    control.
+<programlisting>
+<![CDATA[
+
+  additional = .directory~new
+  additional~italic = .true
+  additional~underline = .true
+
+  hFont = self~createFontEx("Arial", 16, additional)
+  hOldFont = self~newStatic(IDC_ST_ALERT)~setFont(hFont)
+  ...
+]]>
+</programlisting>
+  </para>
+  <para>
+    This example creates a 14 point, bold, italic, Times New Roman font and instructs the font mapper
+    to only choose from true type fonts. If there are no true type fonts installed on the system, then
+    the font mapper returns to its default behavior.
+<programlisting>
+<![CDATA[
+
+  FW_BOLD = 700
+  OUT_TT_ONLY_PRECIS = 7
+
+  additional = .directory~new
+  additional~italic = .true
+  additional~weight = FW_BOLD
+  additional~outputPrecision = OUT_TT_ONLY_PRECIS
+
+  hFont = self~createFontEx("Times New Roman", 14, additional)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="sctFontAttributes"><title>createFontEx Argument Values</title>
+<para>
+  The following list is the indexes of the <computeroutput>.Directory</computeroutput> object that can be
+  used for the third argument of the <xref linkend="mthCreateFontEx"/>() method. The
+  list provides additional information on the meaning of values that can be assigned to each index.
+</para>
+<variablelist>
+  <varlistentry id="cfxWidth" xreflabel="WIDTH"><term><emphasis role="bold">width</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the average width, in logical units, of the characters in the requested font. The default
+      value of zero, tells the font mapper to choose a closest match value. This is likely to produce the
+      best results, unless the programmer has some need that requires specifying the character width.
+    </para>
+    <para>
+      The closest match value is determined by comparing the absolute values of the difference between
+      the current device's aspect ratio and the digitized aspect ratio of available fonts.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxEscarpment" xreflabel="ESCARPMENT"><term><emphasis role="bold">escarpment</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the angle, in tenths of degrees, between the escapement vector and the x-axis of the
+      device. The escapement vector is parallel to the base line of a row of text. Windows has no
+      predefined values for this argument.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxOrientation" xreflabel="ORIENTATION"><term><emphasis role="bold">orientation</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the angle, in tenths of degrees, between each character's base line and the x-axis of the
+      device. Windows has no predefined values for this argument.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxWeight" xreflabel="WEIGHT"><term><emphasis role="bold">weight</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the weight of the font in the range 0 through 1000. For example, 400 is normal and 700 is
+      bold. If this value is zero, a default weight is used. The following table shows Windows predefined
+      values for this argument:
+    </para>
+    <informaltable id="tblCfxWeight" frame="all">
+    <tgroup cols="2">
+    <colspec align='left' colwidth='4*' />
+    <colspec align='right' colwidth='2*' />
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry>FW_DONTCARE  </entry><entry>  0</entry></row>
+    <row><entry>FW_THIN      </entry><entry>100</entry></row>
+    <row><entry>FW_EXTRALIGHT</entry><entry>200</entry></row>
+    <row><entry>FW_ULTRALIGHT</entry><entry>200</entry></row>
+    <row><entry>FW_LIGHT     </entry><entry>300</entry></row>
+    <row><entry>FW_NORMAL    </entry><entry>400</entry></row>
+    <row><entry>FW_REGULAR   </entry><entry>400</entry></row>
+    <row><entry>FW_MEDIUM    </entry><entry>500</entry></row>
+    <row><entry>FW_SEMIBOLD  </entry><entry>600</entry></row>
+    <row><entry>FW_DEMIBOLD  </entry><entry>600</entry></row>
+    <row><entry>FW_BOLD      </entry><entry>700</entry></row>
+    <row><entry>FW_EXTRABOLD </entry><entry>800</entry></row>
+    <row><entry>FW_ULTRABOLD </entry><entry>800</entry></row>
+    <row><entry>FW_HEAVY     </entry><entry>900</entry></row>
+    <row><entry>FW_BLACK     </entry><entry>900</entry></row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">italic</emphasis> Must be a logical.</term>
+  <listitem>
+    <para>
+      Set this index to <computeroutput>.true</computeroutput> to request an italic font. The default is
+      <computeroutput>.false</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">underline</emphasis> Must be a logical.</term>
+  <listitem>
+    <para>
+      Set this index to <computeroutput>.true</computeroutput> to request an underlined font. The default
+      is <computeroutput>.false</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">strikeout</emphasis> Must be a logical.</term>
+  <listitem>
+    <para>
+      Set this index to <computeroutput>.true</computeroutput> to request a strike out font. The default
+      is <computeroutput>.false</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxCharset" xreflabel="CHARSET"><term><emphasis role="bold">charset</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the character set. The following values are predefined in Windows:
+    </para>
+    <informaltable id="tblCfxCharset" frame="all">
+    <tgroup cols="2">
+    <colspec align='left' colwidth='4*' />
+    <colspec align='right' colwidth='2*' />
+    <thead>
+    <row><entry>Symbol</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row><entry>ANSI_CHARSET       </entry><entry>0</entry></row>
+    <row><entry>BALTIC_CHARSET     </entry><entry>186</entry></row>
+    <row><entry>CHINESEBIG5_CHARSET</entry><entry>136</entry></row>
+    <row><entry>DEFAULT_CHARSET    </entry><entry>1</entry></row>
+    <row><entry>EASTEUROPE_CHARSET </entry><entry>238</entry></row>
+    <row><entry>GB2312_CHARSET     </entry><entry>134</entry></row>
+    <row><entry>GREEK_CHARSET      </entry><entry>161</entry></row>
+    <row><entry>HANGUL_CHARSET     </entry><entry>129</entry></row>
+    <row><entry>MAC_CHARSET        </entry><entry>77</entry></row>
+    <row><entry>OEM_CHARSET        </entry><entry>255</entry></row>
+    <row><entry>RUSSIAN_CHARSET    </entry><entry>204</entry></row>
+    <row><entry>SHIFTJIS_CHARSET   </entry><entry>128</entry></row>
+    <row><entry>SYMBOL_CHARSET     </entry><entry>2</entry></row>
+    <row><entry>TURKISH_CHARSET    </entry><entry>162</entry></row>
+    <row><entry>VIETNAMESE_CHARSET </entry><entry>163</entry></row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry id="cfxOutputPrecision" xreflabel="OUTPUTPRECISION"><term><emphasis role="bold">outputPrecision</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      The output precision defines how closely the output must match the requested font's height, width,
+      character orientation, escapement, pitch, and font type.
+    </para>
+    <para>
+      Applications can use the OUT_DEVICE_PRECIS, OUT_RASTER_PRECIS, OUT_TT_PRECIS, and
+      OUT_PS_ONLY_PRECIS values to control how the font mapper chooses a font when the operating system
+      contains more than one font with a specified name. For example, if an operating system contains a
+      font named Symbol in raster and TrueType form, specifying OUT_TT_PRECIS forces the font mapper to
+      choose the TrueType version. Specifying OUT_TT_ONLY_PRECIS forces the font mapper to choose a
+      TrueType font, even if it must substitute a TrueType font of another name.
+    </para>
+    <para>
+      It can be one of the following values:
+    </para>
+    <informaltable id="tblCfxOutputPrecision" frame="all" pgwide='1'>
+    <tgroup cols="3">
+    <colspec align='left' colwidth='3*' />
+    <colspec align='left' colwidth='4*' />
+    <colspec align='right' colwidth='1*' />
+    <thead>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row>
+      <entry>OUT_CHARACTER_PRECIS</entry>
+      <entry>Not used.</entry>
+      <entry>2</entry></row>
+    <row>
+      <entry>OUT_DEFAULT_PRECIS  </entry>
+      <entry>
+        Specifies the default font mapper behavior.
+      </entry>
+      <entry>0</entry></row>
+    <row>
+      <entry>OUT_DEVICE_PRECIS   </entry>
+      <entry>
+        Instructs the font mapper to choose a Device font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>5</entry></row>
+    <row>
+      <entry>OUT_OUTLINE_PRECIS  </entry>
+      <entry>
+        This value instructs the font mapper to choose from TrueType and other outline-based fonts.
+      </entry>
+      <entry>8</entry></row>
+    <row>
+      <entry>OUT_PS_ONLY_PRECIS  </entry>
+      <entry>
+        Instructs the font mapper to choose from only PostScript fonts. If there are no PostScript fonts installed in the
+        system, the font mapper returns to default behavior.
+      </entry>
+      <entry>10</entry></row>
+    <row>
+      <entry>OUT_RASTER_PRECIS   </entry>
+      <entry>
+        Instructs the font mapper to choose a raster font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>6</entry></row>
+    <row>
+      <entry>OUT_STRING_PRECIS   </entry>
+      <entry>Not used.</entry>
+      <entry>1</entry></row>
+    <row>
+      <entry>OUT_STROKE_PRECIS   </entry>
+      <entry>Not used.</entry>
+      <entry>3</entry></row>
+    <row>
+      <entry>OUT_TT_ONLY_PRECIS  </entry>
+      <entry>
+        Instructs the font mapper to choose from only TrueType fonts. If there are no TrueType fonts installed in the system,
+        the font mapper returns to default behavior.
+      </entry>
+      <entry>7</entry></row>
+    <row>
+      <entry>OUT_TT_PRECIS       </entry>
+      <entry>
+        Instructs the font mapper to choose a TrueType font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>4</entry></row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry id="cfxClipPrecision" xreflabel="CLIPPRECISION"><term><emphasis role="bold">clipPrecision</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      The clipping precision defines how to clip characters that are partially outside the clipping
+      region. It can be one or more of the following values. Use
+      .DlgUtil~<xref linkend="mthOrClsDlgUtil"/> to combine values.
+    </para>
+    <informaltable id="tblCfxClipPrecision" frame="all" pgwide="1">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='2*' />
+    <colspec align='left' colwidth='3*' />
+    <colspec align='right' colwidth='1*' />
+    <thead>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row>
+      <entry>CLIP_CHARACTER_PRECIS
+      </entry><entry>Not used.</entry>
+      <entry>1 (0x01)</entry>
+    </row>
+    <row>
+      <entry>CLIP_DEFAULT_PRECIS</entry>
+      <entry>Specifies default clipping behavior.</entry>
+      <entry>0 (0x00)</entry>
+    </row>
+    <row>
+      <entry>CLIP_DFA_DISABLE</entry>
+      <entry>
+        Windows XP SP1: Turns off font association for the font. Note that this flag is not guaranteed to have any effect on
+        any platform after Windows Server 2003.
+      </entry>
+      <entry>64 (0x40)</entry>
+    </row>
+    <row>
+      <entry>CLIP_EMBEDDED</entry>
+      <entry>
+        You must specify this flag to use an embedded read-only font.
+      </entry>
+      <entry>128 (0x80)</entry>
+    </row>
+    <row>
+      <entry>CLIP_LH_ANGLES</entry>
+      <entry>
+        When this value is used, the rotation for all fonts depends on whether the orientation of the coordinate system is
+        left-handed or right-handed. If not used, device fonts always rotate counterclockwise, but the rotation of other
+        fonts is dependent on the orientation of the coordinate system. For more information about the orientation of
+        coordinate systems, see the description of the orientation parameter.
+      </entry>
+      <entry>16 (0x10)</entry>
+    </row>
+    <row>
+      <entry>CLIP_MASK</entry>
+      <entry>Not used.</entry>
+      <entry>15 (0x0f)</entry>
+    </row>
+    <row>
+      <entry>CLIP_STROKE_PRECIS</entry>
+      <entry>Not used.</entry>
+      <entry>2 (0x02)</entry>
+    </row>
+    <row>
+      <entry>CLIP_TT_ALWAYS</entry>
+      <entry>Not used.</entry>
+      <entry>32 (0x20)</entry>
+    </row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry id="cfxQuality" xreflabel="QUALITY"><term><emphasis role="bold">quality</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      The output quality defines how carefully the font mapper must attempt to match the logical-font
+      attributes to those of an actual physical font.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that if neither ANTIALIASED_QUALITY nor
+      NONANTIALIASED_QUALITY is selected, the font is antialiased only if the user chooses "smooth screen
+      fonts" in Control Panel. Quality can be one of the following values:
+    </para>
+    <informaltable id="tblCfxQuality" frame="all" pgwide="1">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='3*' />
+    <colspec align='left' colwidth='4*' />
+    <colspec align='right' colwidth='1*' />
+    <thead>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row>
+      <entry>ANTIALIASED_QUALITY</entry>
+      <entry>
+        Font is antialiased, or smoothed, if the font supports it and the size of the font is not too small or too large.
+      </entry>
+      <entry>4</entry>
+    </row>
+    <row>
+      <entry>CLEARTYPE_QUALITY</entry>
+      <entry>
+        If set, text is rendered (when possible) using ClearType antialiasing method. See Remarks for more information.
+      </entry>
+      <entry>6</entry>
+    </row>
+    <row>
+      <entry>DEFAULT_QUALITY</entry>
+      <entry>
+        Appearance of the font does not matter.
+      </entry>
+      <entry>0</entry>
+    </row>
+    <row>
+      <entry>DRAFT_QUALITY</entry>
+      <entry>
+        Appearance of the font is less important than when the PROOF_QUALITY value is used. For GDI raster fonts, scaling is
+        enabled, which means that more font sizes are available, but the quality may be lower. Bold, italic, underline, and
+        strikeout fonts are synthesized, if necessary.
+      </entry>
+      <entry>1</entry>
+    </row>
+    <row>
+      <entry>NONANTIALIASED_QUALITY</entry>
+      <entry>
+        Font is never antialiased, that is, font smoothing is not done.
+      </entry>
+      <entry>3</entry>
+    </row>
+    <row>
+      <entry>PROOF_QUALITY</entry>
+      <entry>
+        Character quality of the font is more important than exact matching of the logical-font attributes. For GDI raster
+        fonts, scaling is disabled and the font closest in size is chosen. Although the chosen font size may not be mapped
+        exactly when PROOF_QUALITY is used, the quality of the font is high and there is no distortion of appearance. Bold,
+        italic, underline, and strikeout fonts are synthesized, if necessary.
+      </entry>
+      <entry>2</entry>
+    </row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry id="cfxPitchAndFamily" xreflabel="PITCHANDFAMILY"><term><emphasis role="bold">pitchAndFamily</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the pitch and family of the font. Font families describe the look of a font in a general
+      way. They are intended for specifying fonts when the exact typeface requested is not available.
+    </para>
+    <para>
+      Combine one pitch value with one family value. The values are combined using a boolean or, but in
+      this case they could simply be added. The programmer can also use
+      .DlgUtil~<xref linkend="mthOrClsDlgUtil"/> to combine values.
+    </para>
+    <informaltable id="tblCfxPitchAndFamily" frame="all" pgwide="1">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='2*' />
+    <colspec align='left' colwidth='4*' />
+    <colspec align='right' colwidth='1*' />
+    <thead>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row><entry><emphasis role="bold">Pitch</emphasis></entry><entry></entry><entry></entry></row>
+    <row><entry>DEFAULT_PITCH </entry><entry></entry><entry>0</entry></row>
+    <row><entry>FIXED_PITCH   </entry><entry></entry><entry>1</entry></row>
+    <row><entry>VARIABLE_PITCH</entry><entry></entry><entry>2</entry></row>
+    <row><entry><emphasis role="bold">Family</emphasis></entry></row>
+    <row>
+      <entry>FF_DECORATIVE</entry>
+      <entry>
+        Novelty fonts. Old English is an example.
+      </entry>
+      <entry>128 (0x80)</entry>
+    </row>
+    <row>
+      <entry>FF_DONTCARE</entry>
+      <entry>
+        Use default font.
+      </entry>
+      <entry>4 (0x04)</entry>
+    </row>
+    <row>
+      <entry>FF_MODERN</entry>
+      <entry>
+        Fonts with constant stroke width, with or without serifs. Pica, Elite, and Courier New are examples.
+      </entry>
+      <entry>32 (0x20)</entry>
+    </row>
+    <row>
+      <entry>FF_ROMAN</entry>
+      <entry>
+        Fonts with variable stroke width and with serifs. MS Serif is an example.
+      </entry>
+      <entry>8 (10x08)</entry>
+    </row>
+    <row>
+      <entry>FF_SCRIPT</entry>
+      <entry>
+        Fonts designed to look like handwriting. Script and Cursive are examples.
+      </entry>
+      <entry>64 (0x40)</entry>
+    </row>
+    <row>
+      <entry>FF_SWISS</entry>
+      <entry>
+        Fonts with variable stroke width and without serifs. MS Sans Serif is an example.
+      </entry>
+      <entry>16 (0x10)</entry>
+      </row>
+    </tbody></tgroup>
+    </informaltable>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End createFontEx Argument Values -->
+</section>  <!-- End WindowExtensions::createFontEx() -->
+
+
+<section id="mthCreatePen" xreflabel="createPen"><title>createPen</title>
+<indexterm><primary>createPen</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>createPen</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>createPen</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>createPen</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
+                +-width-+  +-,-style--+  +-,-color--+
+
+]]>
+</programlisting>
+
+<para>
+  Creates a logical pen that has the specified style, width, and color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>width [optional]</term>
+    <listitem>
+    <para>
+      A non-negative whole number that specifies the width of the lines that the pen draws. A width of 1 is the default.
+      If 0 is specified the operating system will change the width to 1.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      One of the following keywords, case is not significant. Solid is the default.
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>SOLID     </member>
+      <member>DASH      </member>
+      <member>DOT       </member>
+      <member>DASHDOT   </member>
+      <member>DASHDOTDOT</member>
+      <member>NULL      </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>SOLID</term>
+      <listitem>
+      <para>
+        The line drawn by the pen is a solid line.  This line can be any thickness. SOLID is the default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DASH</term>
+      <listitem>
+      <para>
+        The pen will draw a dashed line. The width must be 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DOT</term>
+      <listitem>
+      <para>
+        The pen will draw a dotted line. The width must be 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DASHDOT</term>
+      <listitem>
+      <para>
+        The pen will draw a line consisting of a dash followed by a dot. The width must be 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DASHDOTDOT</term>
+      <listitem>
+      <para>
+        The pen will draw a line consisting of a dash followed by two dots. The width must be 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DASHDOTDOT</term>
+      <listitem>
+      <para>
+        The pen will draw an invisible line.  The width can be any thickness.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>color [optional]</term>
+    <listitem>
+    <para>
+      The <xref linkend="defColor"/> for the pen. 0 is the default.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    After a pen is selected into a device context, it can be used to draw lines and curves. It can then be selected into
+    a device context using the <xref linkend="mthObjectToDC"/>() method. When the pen is no longer
+    needed use the <xref linkend="mthDeleteObject"/>() method to release the operating resources used
+    by the brush.
+  </para>
+  <para>
+    For dashed and dotted lines, if the width specified is greater than 1, the operating system will return a pen of
+    that width, but change its style to solid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a dotted pen object with a width of 1:
+
+<programlisting>
+<![CDATA[
+  hPen = dlg~createPen(1, "DOT", 13)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDeleteFont" xreflabel="deleteFont"><title>deleteFont</title>
+<indexterm><primary>deleteFont</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>deleteFont</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>deleteFont</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>deleteFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deleteFont(--hFont--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The deleteFont method deletes a font. This method is to be used to delete a font created with the
+ <xref linkend="mthCreateFontEx"/>() method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hFont</term>
+<listitem><para>The handle of a font.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDeleteObject" xreflabel="deleteObject"><title>deleteObject</title>
+<indexterm><primary>deleteObject</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>deleteObject</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>deleteObject</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>deleteObject</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deleteObject(--obj--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>The deleteObject method deletes a graphic object,
+namely a pen or a brush. See <xref linkend="mthCreatePen"/> and <xref linkend="mthCreateBrush"/> for
+information on how to get the handle of a pen or brush. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>obj</term>
+<listitem><para>The handle of a pen or brush.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDrawAngleArc" xreflabel="drawAngleArc"><title>drawAngleArc</title>
+<indexterm><primary>drawAngleArc</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>drawAngleArc</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>drawAngleArc</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>drawAngleArc</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
+
+]]>
+</programlisting>
+
+<para>The drawAngleArc method draws a partial circle
+(arc) and a line connecting the start drawing point with the start of the
+arc on the given device context using the active pen for the outline. The
+circle is drawn counterclockwise with the given radius between the given angles. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>xs, ys</term>
+<listitem><para>The start draw position, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The center of the circle, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>radius</term>
+<listitem><para>The radius of the circle, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>startangle, sweepangle</term>
+<listitem><para>The starting and ending angles for the partial circle in degrees (0
+is the x-axis).
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDrawArc" xreflabel="drawArc"><title>drawArc</title>
+<indexterm><primary>drawArc</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>drawArc</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>drawArc</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>drawArc</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+
+]]>
+</programlisting>
+
+<para>The drawArc method draws a circle or ellipse on
+the given device context using the active pen for the outline. The circle
+or ellipse is drawn within the boundaries of an imaginary rectangle whose
+coordinates are given. A partial figure can be drawn by giving the end points
+of two radials. By default, the figure is drawn counterclockwise, but the
+direction can be modified using <xref linkend="mthSetArcDirection"/>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the imaginary rectangle, in
+pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>x2, y2</term>
+<listitem><para>The position of the lower right corner of the imaginary rectangle, in
+pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>r1x, r1y, r2x, r2y</term>
+<listitem><para>The end points of the starting and ending radials for drawing the figure.
+A full circle or ellipse is drawn if no start and end are given. Omitted values
+default to 0. Imaginary radials are drawn from the center of the bounding rectangle to the start and
+end points. The circle or ellipse is then drawn between the intersections
+of these lines with the full circle or ellipse.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example draws a full ellipse and a quarter circle:
+
+<programlisting>
+<![CDATA[
+dc = self~getControlDC(100)
+pen = self~createPen(4,"solid",13)
+oldp = self~objectToDC(dc,pen)
+self~drawArc(dc,50,50,200,150)                 /* full ellipse */
+self~drawArc(dc,100,100,150,150, 200,50,75,75) /* quarter circle */
+self~objectToDC(dc,oldp); self~deleteObject(pen)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDrawLine" xreflabel="drawLine"><title>drawLine</title>
+<indexterm><primary>drawLine</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>drawLine</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>drawLine</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>drawLine</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
+                      +-fromX-+     +-fromY-+
+
+]]>
+</programlisting>
+
+<para>The drawLine method draws a line within the device
+context using the active pen. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>fromX, fromY</term>
+<listitem><para>The starting position, in pixels. If omitted, the previous end point
+of a line or arc is used.
+</para></listitem></varlistentry>
+<varlistentry><term>toX, toY</term>
+<listitem><para>The target position.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDrawPie" xreflabel="drawPie"><title>drawPie</title>
+<indexterm><primary>drawPie</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>drawPie</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>drawPie</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>drawPie</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+
+]]>
+</programlisting>
+
+<para>The drawPie method draws a pie of a circle or ellipse
+on the given device context using the active pen for the outline and the active
+brush to fill the pie. The circle or ellipse is drawn within the boundaries
+of an imaginary rectangle whose coordinates are given. The arc is drawn between
+start and end radials in the direction specified by <xref linkend="mthSetArcDirection"/>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the imaginary rectangle, in
+pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>x2, y2</term>
+<listitem><para>The position of the lower right corner of the imaginary rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>r1x, r1y, r2x, r2y</term>
+<listitem><para>The end points of the two radials (same as for <xref linkend="mthDrawArc"/>).
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthDrawPixel" xreflabel="drawPixel"><title>drawPixel</title>
+<indexterm><primary>drawPixel</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>drawPixel</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>drawPixel</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>drawPixel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawPixel(--dc--,--x--,--y--,--color--)----------><
+
+]]>
+</programlisting>
+
+<para>The drawPixel method draws a pixel within the device
+context. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>color</term>
+<listitem><para>The <xref linkend="defColor"/> for the pixel.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthFillDrawing" xreflabel="fillDrawing"><title>fillDrawing</title>
+<indexterm><primary>fillDrawing</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>fillDrawing</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fillDrawing</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>fillDrawing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fillDrawing(--dc--,--x--,--y--,--color--)----><
+]]>
+</programlisting>
+
+<para>
+  Fills an area of the display surface with the current brush. The area to be filled is outlined by the color specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The device context containing the area to be filled.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x [required]</term>
+    <listitem>
+    <para>
+      The x coordinate of the position in the area to start filling.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y [required]</term>
+    <listitem>
+    <para>
+      The x coordinate of the position in the area to start filling.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>color [required]</term>
+    <listitem>
+    <para>
+      Specifies the color that outlines the area to be filled. The color can be specified as a color palette <link
+      linkend="defColor">index</link>, or as a <xref linkend="defColorRef"/> color.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system assumes that the area to be filled is completely bounded by the color specified by the <emphasis
+    role="italic">color</emphasis> argument. The operating system begins filling at the point specified by the <emphasis
+    role="italic">x</emphasis> and <emphasis role="italic">y</emphasis> arguments and continues in all directions until it
+    reaches the boundary.
+  </para>
+  <para>
+    The MSDN documentation says there are a number of reasons why this method may fail, and lists some of the reasons as
+    being:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    The filling could not be completed.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The specified point has the boundary color specified by the <emphasis role="italic">color</emphasis> argument.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The point is outside the clipping region, that is, it is not visible on the device.
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. If <emphasis role="italic">dc</emphasis> is
+    zero, the error code is set to: 1, <emphasis role="italic">ERROR_INVALID_FUNCTION Incorrect function.</emphasis> The
+    operating system may set other error codes for other reasons.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::fillDrawing() -->
+
+
+<section id="mthFillRect" xreflabel="fillRect"><title>fillRect</title>
+<indexterm><primary>fillRect</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>fillRect</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fillRect</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>fillRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fillRect(--dc--,--rect--,--brush--)----------><
+]]>
+</programlisting>
+
+<para>
+  Fills a rectangle using the specified brush within the specified device context.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The device context that contains the rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rect [required]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that specifies the rectangle to be filled.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>brush [required]</term>
+    <listitem>
+    <para>
+      Specifies the brush that is to be used to fill the rectangle. This can either be the handle of the brush or the index
+      of the system color to be used. Brush handles are retrieved using methods such as <xref linkend="mthCreateBrush"/> or
+      <xref linkend="mthGetSysBrush"/>. A system color index can be either the non-negative whole number ID or the keyword
+      ID. Both types of IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+  	Unlike the <xref linkend="mthRectangle"/> method, the <emphasis role="italic">fileRect</emphasis> method does not outline
+    the rectangle with the pen of the device context.
+  </para>
+  <para>
+    In addition, for programmers that may read the Microsoft <xref linkend="defWindowsDoc"/> on the Windows <emphasis
+    role="italic">FillRect</emphasis> API, the <emphasis role="italic">fillRect</emphasis> method fills the entire rectangle
+    specified. The Windows API does not include the rectangle's right and bottom sides. That API fills a rectangle up to, but
+    not including, the right column and bottom row. If the ooDialog programmer needs that behaviour, she should subtract 1
+    from the right and bottom coordinates of the <emphasis role="italic">rect</emphasis> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. If <emphasis role="italic">dc</emphasis> is
+    zero, the error code is set to: 1, <emphasis role="italic">ERROR_INVALID_FUNCTION Incorrect function.</emphasis> The
+    operating system may set other error codes for other reasons.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from a clock program that displays the digital time. The time is updated every second. If the previous
+    time is not erased, it just becomes a smear as the different digits are written over the top of each other. The example
+    gets a system brush that is the color of the background of the clock and uses that to erase the background of the area
+    that displays the digital time before it is updated with the current time:
+<programlisting>
+<![CDATA[
+  -- Get a system brush using the button's system color. Do not delete system
+  -- brushes
+  btnBrush = self~getSysBrush('BTNFACE')
+  curBrush = self~objectToDC(dc, btnBrush)
+
+  -- Erase the area where the time will be displayed by painting the
+  -- background with our button brush.  Get the size of the area, the
+  -- text extent, taken up by the time.  Use that to calculate our
+  -- rectangle.
+  s = button~getTextExtent(dc, time)
+  r = .Rect~new(290, 40, 290 + s~width, 40 + s~height)
+  self~fillRect(dc, r, btnBrush)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::fillRect() -->
+
+<section id="mthFontColor" xreflabel="fontColor"><title>fontColor</title>
+<indexterm><primary>fontColor</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>fontColor</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fontColor</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>fontColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fontColor(--color--,--dc--)----------------------><
+
+]]>
+</programlisting>
+
+<para>The fontColor method sets the font color for a
+device context. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>color</term>
+<listitem><para>The index of a color in the system's color palette.
+</para></listitem></varlistentry>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthFontToDC" xreflabel="fontToDC"><title>fontToDC</title>
+<indexterm><primary>fontToDC</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>fontToDC</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fontToDC</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>fontToDC</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fontToDC(--dc--,--hFont--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>The fontToDC method loads a font into a device
+context and returns the handle of the previous font. Use the <xref linkend="mthGetWindowDC"/>,
+<xref linkend="mthGetDC"/>, or <xref linkend="mthGetControlDC"/> method to retrieve a device
+context, and the <xref linkend="mthCreateFontEx"/>() method to get a font handle. To reset the font to
+the original state, use another fontToDC call with the handle of the previous font. To release the device context, use
+the <xref linkend="mthFreeWindowDC"/>, <xref linkend="mthFreeDC"/>, or
+<xref linkend="mthFreeControlDC"/> method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context of a dialog or button.
+</para></listitem></varlistentry>
+<varlistentry><term>hFont</term>
+<listitem><para>The handle of a font.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example loads an Arial font into the current dialog window:
+
+<programlisting>
+<![CDATA[
+additional = .directory~new
+additional~italic = .true
+hfnt = MyDialog~createFontEx("Arial", 16, additional)
+dc   = MyDialog~getDC
+oldf = MyDialog~fontToDC(dc,hfnt)  /* activate font */
+...
+MyDialog~fontToDC(dc,oldf)         /* restore previous font */
+MyDialog~freeDC(dc)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthFreeDC" xreflabel="freeDC"><title>freeDC</title>
+<indexterm><primary>freeDC</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>freeDC</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>freeDC</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>freeDC</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--freeDC(--dc--)-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">freeDC</emphasis> method releases the device context resources that were reserved by the <xref
+  linkend="mthGetDC"/> method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="defHandle">handle</link> to the device context that is to be released.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer should always free a device context when the application is done using the device context.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the device context of a button window, draws something in the client space of the button, and then
+    releases the device context:
+<programlisting>
+<![CDATA[
+  pb = self~newPushButton("DRAWINGS")
+  if pb = .nil then return -1
+  dc = pb~getDC
+  if dc = 0 then return -1
+  ... /* draw something */
+  pb~freeDC(dc)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::freeDC() -->
+
+
+<section id="mthGetArcDirection" xreflabel="getArcDirection"><title>getArcDirection</title>
+<indexterm><primary>getArcDirection</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getArcDirection</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getArcDirection</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getArcDirection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getArcDirection(--dc--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The getArcDirection method returns the current drawing direction for the <xref linkend="mthDrawArc"/> method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetDC" xreflabel="getDC"><title>getDC</title>
+<indexterm><primary>getDC</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getDC</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getDC</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getDC</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDC--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The getDC method reserves drawing resources and
+returns the handle to the display device context of a dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the device context, or 0 if this method failed.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example retrieves the device context of button DRAWINGS,
+processes the drawing commands, and frees the device context resources:
+<programlisting>
+<![CDATA[
+obj = MyDialog~newPushButton("DRAWINGS")
+if obj = .Nil then return -1
+dc = obj~getDC
+if dc = 0 then return -1
+... /* draw something */
+obj~freeDC(dc)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+When you have finished with the device context, call <xref linkend="mthFreeDC"/>.
+</para></note>
+</section>
+
+
+<section id="mthGetFont" xreflabel="getFont"><title>getFont</title>
+<indexterm><primary>getFont</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getFont</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getFont</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFont------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves a handle to the font currently being used by the dialog or dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns a handle to the font for text used by the dialog or dialog control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This is an example from a fictious program where a custom font is used to emphasis the text in two
+    static controls.  When the user does some action, the text in one control is emphasised and the
+    other is de-emphasised.  One way to do this is to just swap the fonts.
+<programlisting>
+<![CDATA[
+::method onToggle private
+  static1 = self~newStatic(IDC_ST_OUTSTANDING_BALANCE)
+  static2 = self~newStatic(IDC_ST_LASTPAYMENT)
+
+  font1 = static1~getFont
+  font2 = static2~getFont
+  static1~setFont(font2)
+  static2~setFont(font1)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ::getFont() -->
+
+
+<section id="mthGetPixel" xreflabel="getPixel"><title>getPixel</title>
+<indexterm><primary>getPixel</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getPixel</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getPixel</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getPixel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getPixel(--dc--,--x--,--y--)---------------------><
+
+]]>
+</programlisting>
+
+<para>The getPixel method returns the color number of a pixel
+within the device context. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetSysBrush" xreflabel="getSysBrush"><title>getSysBrush</title>
+<indexterm><primary>getSysBrush</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getSysBrush</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getSysBrush</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getSysBrush</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSysBrush(--sysColor--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves a handle to a logical brush that corresponds to the specified system color index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>sysColor [required]</term>
+    <listitem>
+    <para>
+      Specifies the system color to be used. This can be either the non-negative whole number ID or the keyword ID. Both
+      types of IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The handle to the brush on success, or .nil on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A brush is a bitmap that the system uses to paint the interiors of filled shapes. System color brushes track changes in
+    system colors. In other words, when the user changes a system color, the associated system color brush automatically
+    changes to the new color.
+  </para>
+  <para>
+    To paint with a system color brush, an application should use <emphasis role="italic">getSysBrush</emphasis> instead of
+    using <xref linkend="mthCreateBrush"/>, because <emphasis role="italic">getSysBrush</emphasis> returns a cached brush
+    instead of allocating a new one. System color brushes are owned by the system and must not be destroyed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets a brush with the system color of a push button and then selects it into a device context to use it form
+    painting:
+<programlisting>
+<![CDATA[
+
+  -- Get a system brush using the button's system color. Do not delete system
+  -- brushes
+  btnBrush = self~getSysBrush('BTNFACE')
+  curBrush = self~objectToDC(dc, btnBrush)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::getSysBrush() -->
+
+<section id="mthGetTextAlign" xreflabel="getTextAlign"><title>getTextAlign</title>
+<indexterm><primary>getTextAlign</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getTextAlign</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextAlign</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextAlign</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextAlign(--hDC--)------------------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the text alignment setting for the specified device context.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>hDC [required]</term>
+    <listitem>
+    <para>
+      The device context whose text alignment is required.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string of keywords specifying the text alignment.  The returned string will contain exactly one keyword from the
+    following 3 groups of keywords, in the same order as the groups are listed:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>LEFT</term>
+    <listitem>
+    <para>
+      The reference point is on the left edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>RIGHT</term>
+    <listitem>
+    <para>
+      The reference point is on the right edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CENTER</term>
+    <listitem>
+    <para>
+      The reference point is aligned horizontally with the center of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+
+  <variablelist>
+    <varlistentry><term>TOP</term>
+    <listitem>
+    <para>
+      The reference point is on the top edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BOTTOM</term>
+    <listitem>
+    <para>
+      The reference point is on the bottom edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BASELINE</term>
+    <listitem>
+    <para>
+      The reference point is on the base line of the text.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+
+  <variablelist>
+    <varlistentry><term>NOUPDATECP</term>
+    <listitem>
+    <para>
+      The current position is not updated after each text output call.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>UPDATECP</term>
+    <listitem>
+    <para>
+      The current position is updated after each text output call.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The bounding rectangle is a rectangle bounding all of the character cells in a string of text. Its dimensions can be
+    obtained by using the <xref linkend="mthGetTextExtent"/> method.
+  </para>
+  <para>
+    The text-alignment flags determine how the text writing methods, such as <xref linkend="mthWrite"/> and <xref
+    linkend="mthWriteDirect"/>, align a string of text in relation to the string's reference point provided to the methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::getTextAlign() -->
+
+<section id="mthGetTextExtent" xreflabel="getTextExtent"><title>getTextExtent</title>
+<indexterm><primary>getTextExtent</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getTextExtent</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextExtent</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextExtent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextExtent(--hDC--,--text--)--------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the
+  specified device context.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>hDC [required]</term>
+    <listitem>
+    <para>
+      The device context in which the text will be drawn.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The text string to be drawn in the device context.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A <computeroutput>Size</computeroutput> object that reflects the size of the bounding rectangle of the text.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The size is calculated using the currently selected font in the device context.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtension::getTextExtent() -->
+
+
+<section id="mthHScrollPos" xreflabel="hScrollPos"><title>hScrollPos</title>
+<indexterm><primary>hScrollPos</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>hScrollPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hScrollPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hScrollPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hScrollPos---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The HScrollPos method returns the position of the
+horizontal scroll bar in the associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The position of the horizontal scroll bar.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthLoadBitmap" xreflabel="loadBitmap"><title>loadBitmap</title>
+<indexterm><primary>loadBitmap</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>loadBitmap</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>loadBitmap</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>loadBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadBitmap(--bmpFilename--+------------+--)------><
+                              +-,-loadOpt--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">loadBitmap</emphasis> method loads a bitmap from a file into memory and returns the handle
+  to the bitmap.
+</para>
+<para>
+  In general, the <xref linkend="clsImage"/> class should be used when working with bitmaps, if possible. The
+  <emphasis role="italic">loadBitmap</emphasis>() and <xref linkend="mthRemoveBitmap"/>() methods date
+  back to the Windows 3.1 ooDialog and use outdated techniques. However, at this time, the bitmap button methods, like
+ <xref linkend="mthInstallBitmapButton"/>() still require the bitmap handle returned from
+  <emphasis role="italic">loadBitmap</emphasis>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>bmpFilename [required]</term>
+    <listitem>
+    <para>
+      The file name of the bitmap file. The name can be a relative or absolute path.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>loadOpt [optional]</term>
+    <listitem>
+    <para>
+      The only load option is: USEPAL.  This sets the color palette of the bitmap as the system color palette.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the handle of the loaded bitmap on success, or 0 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="mthRemoveBitmap"/>() method to free memory when the bitmap is no longer in use.
+    Although it does no harm, it is not necessary to free the bitmap if the Rexx program is ending. When the Rexx
+    interpreter process ends, the operating system will free the bitmap memory. To use the bitmap in the
+ <xref linkend="mthInstallBitmapButton"/>() or
+ <xref linkend="mthChangeBitmapButton"/>() methods specify the INMEMORY option.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example loads the bitmap file, <computeroutput>Walker.bmp</computeroutput>, into memory. The file is
+    located in the <computeroutput>bmp</computeroutput> subdirectory. hBmp is the handle to this in-memory bitmap.
+
+<programlisting>
+<![CDATA[
+  hBmp = MyDialog~loadBitmap("bmp\Walker.bmp", "USEPAL")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthObjectToDC" xreflabel="objectToDC"><title>objectToDC</title>
+<indexterm><primary>objectToDC</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>objectToDC</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>objectToDC</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>objectToDC</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--objectToDC(--dc--,--obj--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>The objectToDC method loads a graphic object, namely
+a pen or a brush, into a device context. Subsequent lines, rectangles, and
+arcs are drawn using the pen and brush. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>obj</term>
+<listitem><para>The object: a pen or a brush.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle of the previous active pen or brush. It can be used to restore
+the previous environment.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example activates a pen for drawing:
+
+<programlisting>
+<![CDATA[
+dc = MyBaseDialog~getDC
+hpen = MyDialog~createPen(2, "SOLID", 4)
+MyDialog~objectToDC(dc,hpen)
+... /* do lines, rectangles, ... */
+MyDialog~deleteObject(hpen)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthOpaqueText" xreflabel="opaqueText"><title>opaqueText</title>
+<indexterm><primary>opaqueText</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>opaqueText</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>opaqueText</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>opaqueText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--opaqueText(--dc--)-------------------------------><
+
+]]>
+</programlisting>
+
+<para>The opaqueText method restores the default text
+mode, that is, with a white background behind the text, which overlays whatever
+is at that position in the dialog or dialog control. Use this method after
+transparent mode was set using <xref linkend="mthTransparentText"/>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>A device context.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRectangle" xreflabel="rectangle"><title>rectangle</title>
+<indexterm><primary>rectangle</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>rectangle</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>rectangle</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>rectangle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-----------------><
+                                              +-,-keyWord-+
+
+]]>
+</programlisting>
+
+<para>The rectangle method draws a rectangle to the given
+device context. The appearance is determined by the graphics objects currently
+active in the device context. The active pen draws the outline and, optionally,
+the active brush fills the inside area. The default pen is thin black and
+the default brush is white. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>The device context.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the rectangle, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>x2, y2</term>
+<listitem><para>The position of the lower right corner.
+</para></listitem></varlistentry>
+<varlistentry><term>keyWord [optional]</term>
+<listitem>
+<para>
+  If the argument is omitted, the rectangle is just outlined (drawn) with the active pen. otherwise the rectangle is
+  filled with the active brush. The keyword would be &quot;FILL&quot; to file the rectangle, but the argument is not
+  actually checked. If the argument is used, the rectangle is filled, if it is not used the rectangle is outlined..
+</para>
+</listitem></varlistentry> </variablelist> </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example draws a red rectangle filled with yellow, surrounded
+by a black rectangle:
+
+<programlisting>
+<![CDATA[
+dc = self~getControlDC(100)
+brush = self~createBrush(15)        /* yellow */
+pen = self~createPen(10,"solid",13) /* thick red */
+oldb = self~objectToDC(dc,brush)
+oldp = self~objectToDC(dc,pen)
+self~rectangle(dc, 50, 50, 200, 150, "FILL")
+self~objectToDC(dc,oldp); self~deleteObject(pen)
+self~objectToDC(dc,oldb); self~deleteObject(brush)
+self~rectangle(dc, 40, 40, 210, 160) /* default */
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthRemoveBitmap" xreflabel="removeBitmap"><title>removeBitmap</title>
+<indexterm><primary>removeBitmap</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>removeBitmap</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>removeBitmap</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>removeBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeBitmap(--hBitmap--)------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Use this method to free an in-memory bitmap that was loaded through the
+ <xref linkend="mthLoadBitmap"/>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>hBitmap [required]</term>
+    <listitem>
+    <para>
+      The bitmap handle.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 of the bitmap handle is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method frees the memory used by the bitmap. Do not free a bitmap that is in use. It is not necessary to free
+    the bitmap if the Rexx program is ending. When the Rexx interpreter process ends, the operating system will free the
+    bitmap memory. However, in a long running program, the programmer will likely want to free bitmaps that are not in
+    use.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthScrollClsWE" xreflabel="scroll"><title>scroll</title>
+<indexterm><primary>scroll</primary><secondary>WindowExtensions class</secondary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>scroll</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>scroll</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>scroll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--scroll(--cx--,--cy--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>The Scroll method scrolls the contents of the associated
+dialog or dialog control by the amount specified.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>cx</term>
+<listitem><para>The number of screen pixels the content of the dialog or dialog control
+is to be scrolled to the right or to the left, if negative.
+</para></listitem></varlistentry>
+<varlistentry><term>cy</term>
+<listitem><para>The number of screen pixels the content of the dialog or dialog control
+is to be scrolled downward or upward, if negative.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Scrolling was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Scrolling failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetArcDirection" xreflabel="setArcDirection"><title>setArcDirection</title>
+<indexterm><primary>setArcDirection</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>setArcDirection</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setArcDirection</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setArcDirection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setArcDirection(--dc--+--------------+--)--------><
+                          +-,-direction--+
+
+]]>
+</programlisting>
+
+<para>
+  The setArcDirection method changes the drawing direction for the <xref linkend="mthDrawArc"/> and
+ <xref linkend="mthDrawPie"/> methods. The default direction is counterclockwise.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The device context.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>direction [optional]</term>
+    <listitem>
+    <para>
+      The new drawing direction. Use either the CLOCKWISE or COUNTERCLOCKWISE keywords, case is not significant. If the
+      argument is omitted, then the direction is set back to the default, counterclockwise.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetFont" xreflabel="setFont"><title>setFont</title>
+<indexterm><primary>setFont</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>setFont</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setFont</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFont(--fontHandle--+----------+--)------------><
+                          +-,-redraw-+
+
+]]>
+</programlisting>
+
+<para>
+  The setFont method assigns another font to be used for the text in a dialog or dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>fontHandle</term>
+    <listitem>
+    <para>
+      The handle to the font that is to be used by the dialog or dialog control. There are several
+      methods to get the font handle, including <xref linkend="mthCreateFontEx"/>() or
+ <xref linkend="mthGetFont"/>().
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>redraw</term>
+    <listitem>
+    <para>Optional, .true or .false. If you specify .true, the message sent to the underlying dialog or
+      dialog control tells it to redraw itself.  If you specify .false, the dialog or dialog control is not
+      told to redraw itself.  The default is .true.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates the font Arial with a size of 14 and assigns it to the tree view
+    control FILES, which is forced to be redrawn.
+<programlisting>
+<![CDATA[
+hfnt = dlg~createFontEx("Arial", 14)
+dlg~newTreeView("FILES")~setFont(hfnt, .true)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetHScrollPos" xreflabel="setHScrollPos"><title>setHScrollPos</title>
+<indexterm><primary>setHScrollPos</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>setHScrollPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setHScrollPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setHScrollPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setHScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
+
+]]>
+</programlisting>
+
+<para>The SetHScrollPos method sets the thumb position
+of the horizontal scroll bar contained in the associated dialog or dialog
+control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>position</term>
+<listitem><para>The new thumb position of the horizontal scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>If this argument is 1 (the default), the display of the scroll bar is
+updated.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The previous position of the horizontal scroll bar, or 0 if this method
+failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetTextAlign" xreflabel="setTextAlign"><title>setTextAlign</title>
+<indexterm><primary>setTextAlign</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>setTextAlign</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setTextAlign</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setTextAlign</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTextAlign(--hDC--,--align--)--------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the text alignment option for the specified device context.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>hDC [required]</term>
+    <listitem>
+    <para>
+      The device context whose text alignment is to be set.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>align [optional]</term>
+    <listitem>
+    <para>
+      A string of keywords specifying the text alignment. The following keywords are recognized. Specify exactly one keyword
+      from the following 3 groups of keywords, case and order are insignificant.
+    </para>
+    <para>
+      The default if this argument is omitted is: <computeroutput>LEFT TOP NOUPDATECP</computeroutput>. For any group that
+      has no keyword specified, the default for that group is used. I.e., if neither LEFT RIGHT nor CENTER is specified,
+      LEFT is used.
+    </para>
+    <para>
+      <variablelist>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          The reference point is on the left edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          The reference point is on the right edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          The reference point is aligned horizontally with the center of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+
+      <variablelist>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          The reference point is on the top edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          The reference point is on the bottom edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BASELINE</term>
+        <listitem>
+        <para>
+          The reference point is on the base line of the text.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+
+      <variablelist>
+        <varlistentry><term>NOUPDATECP</term>
+        <listitem>
+        <para>
+          The current position is not updated after each text output call.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UPDATECP</term>
+        <listitem>
+        <para>
+          The current position is updated after each text output call.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous alignment of the device context as a string of keywords. The string is identical to what the <xref
+    linkend="mthGetTextAlign"/> method would have returned if the method was invoked immediately prior to invoking this
+    method. On error the empty string is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The text-alignment flags determine how the text writing methods, such as <xref linkend="mthWrite"/> and <xref
+    linkend="mthWriteDirect"/>, align a string of text in relation to the string's reference point provided to the methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::setTextAlign() -->
+
+
+<section id="mthSetVScrollPos" xreflabel="setVScrollPos"><title>setVScrollPos</title>
+<indexterm><primary>setVScrollPos</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>setVScrollPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setVScrollPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setVScrollPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setVScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
+
+]]>
+</programlisting>
+
+<para>The SetVScrollPos method sets the thumb position
+of the vertical scroll bar contained in the associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>position</term>
+<listitem><para>The new thumb position of the vertical scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>If this argument is 1 (the default), the display of the scroll bar is
+updated.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The previous position of the vertical scroll bar, or 0 if this method
+failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthTransparentText" xreflabel="transparentText"><title>transparentText</title>
+<indexterm><primary>transparentText</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>transparentText</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>transparentText</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>transparentText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--transparentText(--dc--)--------------------------><
+
+]]>
+</programlisting>
+
+<para>The transparentText method enables you to write
+text to a device context using <xref linkend="mthWriteDirect"/> in transparent
+mode, that is, without a white background behind the text. Restore the default
+mode using <xref linkend="mthOpaqueText"/>. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>A device context.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthVScrollPos" xreflabel="vScrollPos"><title>vScrollPos</title>
+<indexterm><primary>vScrollPos</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>vScrollPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>vScrollPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>vScrollPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--vScrollPos---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The VScrollPos method returns the position of the
+vertical scroll bar in the associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The position of the vertical scroll bar.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWrite" xreflabel="write"><title>write</title>
+<indexterm><primary>write</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>write</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>write</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>write</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--write(-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)---><
+                        +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">write</emphasis> method writes the specified text to the dialog or dialog control in the
+  given font, style, and color at the specified position.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+    <para>
+      The starting position of the text, in pixels. The position coordinates are relative to the window, or the client
+      area of the window, not relative to the screen.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string to be written.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fName [optional]</term>
+    <listitem>
+    <para>
+      The font name. The default if omitted is SYSTEM.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fSize [optional]</term>
+    <listitem>
+    <para>
+      The point size of the font. If omitted, the standard size (10) is used.
+    </para>
+    </listitem></varlistentry>
+
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These options control
+      aspects of the font and how the font is written.
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>OPAQUE     </member>
+      <member>TRANSPARENT</member>
+      <member>CLIENT     </member>
+      <member>THIN       </member>
+      <member>EXTRALIGHT </member>
+      <member>LIGHT      </member>
+      <member>MEDIUM     </member>
+      <member>SEMIBOLD   </member>
+      <member>EXTRABOLD  </member>
+      <member>HEAVY      </member>
+      <member>BOLD       </member>
+      <member>UNDERLINE  </member>
+      <member>ITALIC     </member>
+      <member>STRIKEOUT  </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>OPAQUE</term>
+      <listitem>
+      <para>
+        The background of the area the text will occupy is painted with the specified background color, or with white if
+        the background color is omitted, before writing the text.  This has the effect of &quot;erasing&quot; whatever
+        is currently drawn in that area. Contrast this with the TRANSPARENT option. OPAQUE is the default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TRANSPARENT</term>
+      <listitem>
+      <para>
+        The background area of the text is left unchanged. (The background color option is ignored if it is used.) This
+        has the effect of writing the text over the top of whatever is currently drawn in the area the text will occupy.
+        Contrast this with the OPAQUE option.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CLIENT</term>
+      <listitem>
+      <para>
+        The position for the text will be relative to the <xref linkend="defClientArea"/> of the dialog
+        or dialog control rather than relative to the window itself.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>THIN</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 100.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRALIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 200.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 300.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MEDIUM</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 500.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SEMIBOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 600.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 700.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRABOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 800.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HEAVY</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 900.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UNDERLINE</term>
+      <listitem>
+      <para>
+        An underline font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ITALIC</term>
+      <listitem>
+      <para>
+        An italic font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>STRIKEOUT</term>
+      <listitem>
+      <para>
+        A strike out font is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fg [optional]</term>
+    <listitem>
+    <para>
+      The color index for the text foreground color. If omitted, the text color is left unchanged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bk [optional]</term>
+    <listitem>
+    <para>
+      The color index of the background color. If omitted, the background color is left unchanged. The background color
+      is not used in transparent mode.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method sets <computeroutput>.systemErrorCode</computeroutput> to the error code set by the operating system
+    when a failure in one of the Win32 APIs is detected. However, there is one Win32 API,
+    <computeroutput>SelectObject()</computeroutput>, that does not set the system error code on failure. It is unlikely
+    that it will fail, but if it does, the ooDialog framework sets <computeroutput>.systemErrorCode</computeroutput> to
+    <computeroutput>156</computeroutput>, ERROR_SIGNAL_REFUSED.
+  </para>
+  <para>
+    The text message for error code <computeroutput>156</computeroutput> is: <emphasis role="italic">The recipient
+    process has refused the signal.</emphasis> In this case, the text message is not really related to the failure, it
+    is just used to indicate that the <computeroutput>SelectObject()</computeroutput> API failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.  See the remarks above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example writes the string &quot;Hello world!&quot; to the dialog using a blue 24pt Arial font in bold
+    and transparent, italic style:
+
+<programlisting>
+<![CDATA[
+  dlg~write(5, 5, "Hello world!", "Arial", 24, "BOLD ITALIC TRANSPARENT CLIENT", 4)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthWriteDirect" xreflabel="writeDirect"><title>writeDirect</title>
+<indexterm><primary>writeDirect</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>writeDirect</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>writeDirect</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>writeDirect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
+
+]]>
+</programlisting>
+
+<para>The writeDirect method enables you to write text
+to a device context at a given position. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>dc</term>
+<listitem><para>A device context.
+</para></listitem></varlistentry>
+<varlistentry><term>xPos, yPos</term>
+<listitem><para>The position where the text is placed, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The string you want to write to the dialog or dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+</section>  <!-- End WindowExtensions Mixin Class -->

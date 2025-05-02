@@ -1,0 +1,781 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxpg.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Programming Guide XML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<appendix id="samples"><title>Sample Rexx Programs</title>
+<indexterm><primary>example Rexx programs, included</primary></indexterm>
+<indexterm><primary>sample Rexx programs, included</primary></indexterm>
+<indexterm><primary>Rexx</primary>
+<secondary>program samples, included</secondary></indexterm>
+<para>  Rexx supplies the following sample
+programs as .rex ,
+.cls (a package meant to be used via the
+::REQUIRES directive) and .frm (a package meant to be used via the
+::REQUIRES directive) files.</para>
+
+<variablelist><title>Platform independent samples</title>
+
+<varlistentry><term><filename>arithmeticEvaluation.rex</filename></term>
+<listitem><para>This program demonstrates a number of principles of object-oriented programming.</para>
+<para>This implements a
+simple expression evaluator that builds a parse tree for an arithmetic expression that can also
+evaluate the This program demonstrates how to given expression.  use reply to run two methods at the
+same time.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>arrayCallback.rex</filename></term>
+<listitem>
+<para>This program demonstrates how routines can be used to perform a function
+over all elements in an array.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ccreply.rex</filename></term>
+<listitem><para>A concurrent programming example.</para>
+<para>This program demonstrates how to
+use reply to run two methods at the same time.</para>
+</listitem></varlistentry>
+
+<varlistentry id="complex" xreflabel="complex.cls"><term><filename>complex.cls</filename></term>
+<listitem><para>A complex number class.</para>
+<para>This program demonstrates how to create a
+complex number class using the ::CLASS and
+::METHOD  directives. An example
+of subclassing the complex number class (the Vector subclass) is also shown.
+Finally, the Stringlike class demonstrates the use of a mixin to provide to
+the complex number class with some string behavior.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>concurrency.rex</filename></term>
+<listitem>
+<para>This is a simple demonstration of multi-threaded execution with some
+synchronization between the threads.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>constrained.rex</filename></term>
+<listitem>
+<para>Demonstrate how to use the isA method to check for particular types
+of objects.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>delegation.rex</filename></term>
+<listitem>
+<para>Demonstrate the concept of a object method delegation, where one object
+can pass on a method to another object
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>drives.rex</filename></term>
+<listitem><para>A sample use of the Sys... functions.</para>
+<para>This program displays information
+about drives using the utility functions SysDriveMap, SysDriveInfo,
+SysFileSystemType, and SysBootDrive.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>dynamicMethod.rex</filename></term>
+<listitem>
+<para>This program demonstrates how methods can be dynamically added to an
+object instance.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>factorial.rex</filename></term>
+<listitem><para>A sample that demonstrates a factorial method routine. </para>
+<para>This sample defines a floating method (one that is not assigned to a class) that
+implements a factorial algorithm. Using the <literal>.methods</literal> environment symbol
+this method gets fetched and added under the name factorial
+to the class named factorial_class,
+created as a subclass of the String class.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>greply.rex</filename></term>
+<listitem><para>An example contrasting the GUARDED and
+UNGUARDED methods.</para>
+<para>This program demonstrates the difference between GUARDED and
+UNGUARDED methods with respect
+to their use of the object variable pool.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>guess.rex</filename></term>
+<listitem><para>An animal guessing game. </para>
+<para>This sample creates a simple node class
+and uses it to create a logic tree. The logic tree is filled in by playing
+a simple guessing game.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>interface.rex</filename></term>
+<listitem>
+<para>This program demonstrates to define an interface class in ooRexx.
+object instance.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ktguard.rex</filename></term>
+<listitem><para>A GUARD instruction example. </para>
+<para>This program demonstrates the use of
+the START method and the GUARD
+instruction to control the running of several
+programs. In this sample, the programs are controlled by one &quot;guarded&quot;
+variable.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>makestring.rex</filename></term>
+<listitem>
+<para>A sample to demonstrate a combination of makearray method of the stream
+and makestring method of the array class.
+</para>
+<para>
+The sample creates a temporary file with text, reads in all data using
+the makearray method of the stream class, removes all comments of the
+file and writes back data to a temporary file using the makestring
+method of the array class. After displaying the content of the input
+and output file, the temporary files are removed from the system.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>month.rex</filename></term>
+<listitem><para>An example that displays the days of the month <code>January 1994</code>.</para>
+<para>This version demonstrates the use of arrays to replace stems.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>philfork.rex</filename></term>
+<listitem>
+ <para>Philosophers' Forks: Console window version.
+ </para>
+<para>Sample for concurrency with command line output.
+</para></listitem></varlistentry>
+
+<varlistentry id="pipe" xreflabel="pipe.cls"><term><filename>pipe.cls</filename></term>
+<listitem><para>A pipeline implementation.</para>
+<para>This program demonstrates the use of the
+::CLASS and ::METHOD directives to create a simple implementation of a CMS-like
+pipeline function.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>properties.rex</filename></term>
+<listitem>
+<para>This program demonstrates the Properties class.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>qdate.rex</filename></term>
+<listitem><para>An example that types or pushes today's date and moon phase, in
+English date format.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>qtime.rex</filename></term>
+<listitem><para>An example that lays or stacks time in English time format, and also
+chimes.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>rexxcps.rex</filename></term>
+<listitem>
+<para>Measuring REXX clauses/second.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>scclient.rex</filename></term>
+<listitem>
+<para>Simple socket client using socket class (package socket.cls).
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>scserver.rex</filename></term>
+<listitem>
+<para>Simple socket server using socket class (package socket.cls).
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>semcls.cls</filename></term>
+<listitem>
+<para>This Rexx package demonstrates how to implement public semaphore classes
+(EventSemaphore,
+MutexSemaphore) in Object Rexx.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>sfclient.rex</filename></term>
+<listitem>
+<para>Simple socket client using socket function package.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>sfserver.rex</filename></term>
+<listitem>
+<para>Simple socket server using socket function package.
+</para>
+</listitem></varlistentry>
+
+
+<varlistentry><term><filename>singleLinkedList.rex</filename></term>
+<listitem>
+<para>A simple implementation of a linked list using objects.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>sortComposite.rex</filename></term>
+<listitem>
+<para>Demonstrates on how to sort non-string objects using the built in sort methods.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>stack.rex</filename></term>
+<listitem><para>A stack class. </para>
+<para>This program demonstrates how to implement a stack
+class using the ::CLASS and ::METHOD directives. Also included is a short
+example of the use of a stack.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>synchronousConcurrency.rex</filename></term>
+<listitem>
+<para>This uses a work queue to synchronize activity between two independent  threads
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>timezone.rex</filename></term>
+<listitem>
+<para>Sample of performing timezone manipulations.  Also shows a handy technique for embedding data in program.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>treeDirectory.cls</filename></term>
+<listitem>
+<para>A directory implementation using a balanced binary tree.  Unlike the  directory class, indexes are maintained in sorted order.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>treeTraversal.rex</filename></term>
+<listitem>
+<para>Build a binary tree structure and demonstrate different traversal  methods  (preorder, inorder, postorder and levelorder traversals).
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>usecomp.rex</filename></term>
+<listitem><para>A simple demonstration of the complex number class. </para>
+<para>This program
+demonstrates the use of the ::REQUIRES directive, using the complex number
+class implemented in the package <xref linkend="complex" />.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>usepipe.rex</filename></term>
+<listitem><para>Sample uses of the pipe implementation in package <xref linkend="pipe" />. </para>
+<para>This program demonstrates how you could use the pipes implemented
+in the package pipe.cls.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>usesingleton.rex</filename></term>
+<listitem><para>Sample use of the metaclass named Singleton, which makes sure that
+only a single instance of the TestSingleton class can be
+created as opposed to the Test class, which allows for any number of instances. </para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>usetree.rex</filename></term>
+<listitem><para>Sample uses of the pipe implementation in package treeDirectory.cls.</para>
+<para>This program
+demonstrates how you could use the treeDirectory class implemented
+in the package treeDirectory.cls.</para>
+</listitem></varlistentry>
+
+</variablelist>
+<para></para>
+
+
+<variablelist>
+<title>Windows only samples</title>
+
+<varlistentry><term><filename>ole\adsi\adsi1.rex</filename></term>
+<listitem><para>Retrieves information about a computer with <emphasis role="italic">ADSI</emphasis>.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi2.rex</filename></term>
+<listitem><para>Gets a user's full name and changes it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi3.rex</filename></term>
+<listitem><para>Shows the use of <emphasis role="italic">ADSI</emphasis> containers.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi4.rex</filename></term>
+<listitem><para>Shows the use of filters with <emphasis role="italic">ADSI</emphasis> collections.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi5.rex</filename></term>
+<listitem><para>Displays namespaces and domains.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi6.rex</filename></term>
+<listitem><para>Enables you to inspect the properties of an object.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi7.rex</filename></term>
+<listitem><para>Creates a group, and places several users in it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\adsi\adsi8.rex</filename></term>
+<listitem><para>Removes the users and the group that were created in sample adsi7.rex.
+</para></listitem></varlistentry>
+
+
+<varlistentry><term><filename>ole\apps\AOO_scalc_chart.rex</filename></term>
+<listitem>
+<para>
+ Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">OpenOffice scalc</emphasis>
+ worksheet, create random data and a chart based on it.
+Demonstrates how to use <emphasis role="italic">UNO</emphasis> reflection and incorporate <emphasis
+role="italic">UNO_CONSTANTS</emphasis> and <emphasis role="italic">UNO_ENUM</emphasis> values into a
+Rexx directory for easier use.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\AOO_simpress_present.rex</filename></term>
+<listitem>
+<para>
+ Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">OpenOffice simpress</emphasis>
+presentation about <emphasis role="italic">REXX</emphasis> and
+ <emphasis role="italic">ooRexx</emphasis> and then start it as a presentation. Demonstrates how to use
+ enumeration to enumerate paragraphs of a text and query their <emphasis role="italic">'NumberingLevel'</emphasis>
+ property.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\AOO_swriter_paragraphs.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">OpenOffice
+swriter</emphasis> document, add paragraphs that get aligned in four different ways.  Demonstrates
+how to use <emphasis role="italic">UNO</emphasis> reflection and incorporate <emphasis
+role="italic">UNO_CONSTANTS</emphasis> and <emphasis role="italic">UNO_ENUM</emphasis> values into a
+Rexx directory for easier use.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\AOO_swriter_table.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">OpenOffice
+swriter</emphasis> document, a <emphasis role="italic">TextTable</emphasis>, a <emphasis
+role="italic">TextFrame</emphasis>, paragraphs and apply various formattings.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\Lotus123.rex</filename></term>
+<listitem><para>Creates a new spreadsheet in
+<emphasis role="italic">Lotus 1-2-3</emphasis>
+and fills in a table with fictional
+revenue numbers. The table also contains a calculated field and different
+styles. A second sheet is added with a 3D chart displaying the revenue data.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusNotes_mail.rex</filename></term>
+<listitem><para>Creates a mail message in
+<emphasis role="italic">Lotus Notes</emphasis>
+and sends it to a number of recipients automatically.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusWordPro.rex</filename></term>
+<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis>,
+enters some text with different attributes, and finally saves and prints the document.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\LotusWordPro_clickHereFields.rex</filename></term>
+<listitem><para>Creates a new document in <emphasis role="italic">Lotus WordPro 97</emphasis> with
+a provided <emphasis role="italic">Smartmaster</emphasis>.
+Fills in some <emphasis role="italic">"Click here"</emphasis> fields with data prompted by the program or
+queried from the system. Finally the document is saved to the directory in which this Rexx
+program is located and is sent to the printer.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSAccessDemo_32bit_only.rex</filename></term>
+<listitem>
+<para>Demonstrate how one can explicitly interact with the 32-bit <emphasis role="italic">Jet (MS Access)</emphasis>
+database engine using <emphasis role="italic">ActiveX/OLE</emphasis>. This sample can only run with
+the 32-bit ooRexx.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSAccessDemo.rex</filename></term>
+<listitem>
+<para>Demonstrate how one can interact with MS Access databases using
+<emphasis role="italic">ActiveX/OLE</emphasis>. This sample uses the current
+database engine of MS Access to access and manipulate the MS Access database.
+This sample can run with 32-bit and 64-bit ooRexx.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSAccess_contacts.rex</filename></term>
+<listitem>
+<para>
+Demonstrate how one can create a database in <emphasis role="italic">Microsoft Access</emphasis>
+using <emphasis role="italic">ActiveX/OLE</emphasis>.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSExcel.rex</filename></term>
+<listitem><para>Creates a <emphasis role="italic">Microsoft Excel</emphasis> sheet, enters some data,
+and saves it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSExcel_cURL.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis> creates a new <emphasis role="italic">Microsoft Excel</emphasis>
+worksheet, queries the weather with the <emphasis role="italic">cURL</emphasis> command and inserts the received data.
+Using the worksheet temperature data a simple chart gets created.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSExcel_usingRexxArray.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis> creates a new <emphasis role="italic">Microsoft Excel</emphasis>
+ instance, creates and places additional
+ sheets, renames sheets, iterates over sheets, fills in the first sheet with generated data
+ from an ooRexx array, then creates a chart from the data.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_events.rex</filename></term>
+<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
+<itemizedlist>
+<listitem><para>Navigate to the RexxLA homepage and disallow the changing of the URL to a
+page not in that "address space".</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_getMethods.rex</filename></term>
+<listitem>
+<para>
+ Example from <emphasis role="italic">"winextensions.pdf"</emphasis>,
+ <emphasis role="italic">"Example 8.11. OLEObject - getKnownMethods method"</emphasis>:
+ query and list all known methods from Microsoft Internet Explorer
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_navigate.rex</filename></term>
+<listitem><para>Starts <emphasis role="italic">Internet Explorer</emphasis> and shows the
+<emphasis role="italic">IBM</emphasis> homepage.
+After 10 seconds the <emphasis role="italic">RexxLA</emphasis> events page will be displayed for 10 seconds.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_search.rex</filename></term>
+<listitem><para>Demonstrates the use of events with Microsoft Internet Explorer:
+<itemizedlist>
+<listitem><para>Search for the string "Rexx" on the RexxLA Web page, and go randomly
+to one of the found sites.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSInternetExplorer_stockPrice.rex</filename></term>
+<listitem><para>Gets the stock price from the RexxLA internet page with
+<emphasis role="italic">Microsoft Internet Explorer</emphasis>, and stores it in a Rexx variable.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSOutlook.rex</filename></term>
+<listitem>
+<para>Demonstrate how one can interact with <emphasis role="italic">Microsoft Outlook</emphasis>
+databases using <emphasis role="italic">ActiveX/OLE</emphasis>.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSOutlook_monitorInbox.rex</filename></term>
+<listitem>
+<para>
+Example from <emphasis role="italic">"winextensions.pdf"</emphasis>,
+<emphasis role="italic">"Example 8.3. OLEObject - Monitor Outlook"</emphasis>:
+ open <emphasis role="italic">Microsoft Outlook</emphasis>, attach an ooRexx
+ <emphasis role="italic">"ItemAdd"</emphasis> event listener
+ to monitor the inbox for adding new mails. The program takes commands
+ by watching every second whether one of the files <filename>pause.monitor</filename>,
+ <filename>restart.monitor</filename> or <filename>stop.monitor</filename> got
+ created in the meantime by the user.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSPowerPoint_layouts.rex</filename></term>
+<listitem>
+<para>
+ Using <emphasis role="italic">OLE</emphasis> open <emphasis role="italic">Microsoft PowerPoint</emphasis> and
+ add a title slide with <emphasis role="italic">Title</emphasis> and <emphasis role="italic">SubTitle</emphasis>
+ shapes (sections).
+ Append slides with various styles, get slide count and amount of shapes per slide, list names of shapes on each slide.
+ Save  <emphasis role="italic">pptx</emphasis> file with a unique name and close <emphasis role="italic">MS PowerPoint</emphasis>.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSPowerPoint_present.rex</filename></term>
+<listitem>
+<para>
+ Using <emphasis role="italic">OLE</emphasis> create a new <emphasis role="italic">MS
+ PowerPoint</emphasis> presentation about REXX and ooRexx and then start it as a presentation.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSWord_createModify.rex</filename></term>
+<listitem><para>Creates a <emphasis role="italic">Microsoft Word</emphasis> document, enters some text,
+and saves it. The program then loads the document again and modifies it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\MSWord_useStyles.rex</filename></term>
+<listitem>
+<para>
+Using <emphasis role="italic">OLE</emphasis>  creates a <emphasis role="italic">Micorsoft Word</emphasis>
+document, adds text using various styles and waits for the user to press the <emphasis role="italic">enter</emphasis>
+(<emphasis role="italic">return</emphasis>) key before changing font
+attributes of the styles named <emphasis role="italic">"Title"</emphasis> and <emphasis role="italic">"Heading 1"</emphasis>.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\oleUtils.frm</filename></term>
+<listitem>
+<para>Provides some useful utilities for working with the OLEObject class.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\ScriptingFileSystemObject.rex</filename></term>
+<listitem><para>Uses the <emphasis role="italic">Windows Script Host FileSystemObject</emphasis> to obtain information
+about the drives of the system.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\ShellApplication_listSystemFolders.rex</filename></term>
+<listitem>
+<para>
+ Using <emphasis role="italic">OLE</emphasis> creates a new Windows' <emphasis role="italic">Shell.Application</emphasis>
+ and queries all Windows system folders.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\WScriptNetwork.rex</filename></term>
+<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Network</emphasis>
+object:
+<itemizedlist spacing="compact">
+<listitem><para>Query computer name, user name</para></listitem>
+<listitem><para>List network connections for drives and printers</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\apps\WScriptShell.rex</filename></term>
+<listitem><para>Shows some features of the <emphasis role="italic">Windows Scripting Host Shell</emphasis> object:
+<itemizedlist spacing="compact">
+<listitem><para>Query environment string</para></listitem>
+<listitem><para>List special folders</para></listitem>
+<listitem><para>Create a shortcut on the desktop</para></listitem>
+<listitem><para>Use a GUI popup</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\methinfo\main.rex</filename></term>
+<listitem><para>This application demonstrates the use of the GetKnownMethods method.
+</para></listitem></varlistentry>
+
+
+<varlistentry><term><filename>ole\oleinfo\createOleInfo.rex</filename></term>
+<listitem><para>This utility creates a HTML-rendered documentation of the OLE/ActiveX
+Windows program with the supplied ProgId, CLSID or ooRexx OLEObject object and
+optionally displays the results in the default web browser.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\oleinfo\getOleConstants.rex</filename></term>
+<listitem><para>This utility creates an ooRexx program which stores all published
+constants of the OLE/ActiveX Windows program with the supplied ProgId or CLSID
+in an ooRexx directory that can be referenced with the environment symbol .ole.const
+from any program requiring it.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\oleinfo\listProgIds.rex</filename></term>
+<listitem><para>This utility analyzes the Windows registry and lists all
+ProgIds, optionally with their CLSID.
+</para></listitem></varlistentry>
+
+
+<varlistentry><term><filename>ole\wmi\accounts.rex</filename></term>
+<listitem><para>This is a demo application for displaying all the accounts of the windows
+system with <emphasis role="italic">WMI</emphasis>. It also shows how to display all the properties of a <emphasis role="italic">WMI</emphasis>
+object in general.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\wmi\services.rex</filename></term>
+<listitem><para>This application demonstrates how to list, start, stop, pause, or resume
+windows services with <emphasis role="italic">WMI</emphasis>.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\wmi\process.rex</filename></term>
+<listitem><para>This application displays by means of <emphasis role="italic">WMI</emphasis> the processes of a windows
+system that are running.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\wmi\osinfo.rex</filename></term>
+<listitem><para>This sample script uses a <emphasis role="italic">Windows Management Instrumentation (WMI)</emphasis>
+object (<emphasis role="italic">"Win32_OperatingSystem"</emphasis>) to obtain information about the installed
+operating system(s).
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>ole\wmi\sysinfo\sysinfo.rex</filename></term>
+<listitem><para>This is a demo application for inspecting some system properties using
+WMI.
+</para></listitem></varlistentry>
+
+
+
+<!-- samples\oodialog\winsystem: -->
+
+<varlistentry><term><filename>oodialog\oleinfo\oleinfo.rex</filename></term>
+<listitem><para>This sample is a "small" ooDialog (GUI) based browser for OLE objects.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\deskicon.rex</filename></term>
+<listitem><para>A WindowsProgramManager class example.</para>
+<para>This sample uses the method
+addDesktopIcon of the <emphasis role="italic">WindowsProgramManager</emphasis>
+class to create a shortcut to
+a program or an application on the Windows desktop.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\desktop.rex</filename></term>
+<listitem><para>This program demonstrates how you could use the
+WindowsProgramManager class to manipulate program groups and program items.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\displayAnyMenu.rex</filename></term>
+<listitem><para>Displays the menu hierarchy for a window that the user picks. </para>
+<para>It uses the functionality of
+the windowsSystem.frm Rexx package which makes it easy to use the most
+important functionality of the winsystm.cls and
+ooDialog.cls Rexx  packages.
+In addition it demonstrates the usage of winSystemDlgs.h and winSystemDlgs.rc files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\displayWindowTree.rex</filename></term>
+<listitem><para>Displays the window hierarchy for a top level window that the user picks.</para>
+<para>It uses the functionality of
+the windowsSystem.frm Rexx package which makes it easy to use the most
+important functionality of the winsystm.cls and
+ooDialog.cls Rexx  packages.
+In addition it demonstrates the usage of winSystemDlgs.h and winSystemDlgs.rc files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\eventlog.rex</filename></term>
+<listitem><para>A sample use of the WindowsEventLog class.</para>
+<para>This sample demonstrates
+how to read from and write to the Windows event log using the methods of
+the WindowsEventLog class.</para>
+</listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\getTheWindow.rex</filename></term>
+<listitem><para>This example shows how to find a window without using the exact window title.</para>
+<para>Displays the window containing part of the user supplied window title irrespective of case.
+It uses the functionality of the  winsystm.cls Rexx  package.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             8 118 menuCalc.rex          *** problem   (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\menuNotepad.rex</filename></term>
+<listitem><para>This example displays the hierarchy of the Notepad menu.</para>
+<para>It uses the functionality of
+the windowsSystem.frm Rexx package which makes it easy to use the most
+important functionality of the winsystm.cls and
+ooDialog.cls Rexx  packages.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             8 850 quickCalc.rex          *** problem   (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\quickShowAllMenus.rex</filename></term>
+<listitem><para>This program prints out a menu outline of every open window that has a menu.</para>
+<para>It uses the functionality of
+the windowsSystem.frm Rexx package which makes it easy to use the most
+important functionality of the winsystm.cls and
+ooDialog.cls Rexx  packages.
+</para></listitem></varlistentry>
+
+<varlistentry><term><filename>oodialog\winsystem\registry.rex</filename></term>
+<listitem><para>This program demonstrates how you could use the WindowsRegistry class
+to work with the Windows registry.
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16            17 027 usewmgr.rex           *** problem  (Win10?) -->
+
+<varlistentry><term><filename>oodialog\winsystem\windowsSystem.frm</filename></term>
+<listitem><para>A Rexx package (a collection of public routines and classes) to help work with
+the winsystm.cls package.
+</para>
+<para>
+It demonstrates the usage of winSystemDlgs.h and winSystemDlgs.rc files
+that define Windows graphical user interfaces (GUI).
+</para></listitem></varlistentry>
+
+<!--  does not work on Win10:  04.03.2020  12:16             9 242 writeWithNotepad.rex *** problem (Win10?) -->
+
+
+</variablelist>
+
+
+
+<!-- samples\oodialog\winsystem:
+
+Directory of C:\Program Files (x86)\ooRexx\samples\oodialog\winsystem
+
+09.03.2020  15:10    <DIR>          .
+09.03.2020  15:10    <DIR>          ..
+04.03.2020  12:16             6 196 deskicon.rex
+04.03.2020  12:16             4 421 desktop.rex
+04.03.2020  12:16             8 597 displayAnyMenu.rex
+04.03.2020  12:16            11 528 displayWindowTree.rex
+04.03.2020  12:16            19 347 eventlog.rex
+04.03.2020  12:16             7 570 getTheWindow.rex
+04.03.2020  12:16             8 118 menuCalc.rex          *** problem   (Win10?)
+04.03.2020  12:16             6 029 menuNotepad.rex
+04.03.2020  12:16             8 850 quickCalc.rex          *** problem   (Win10?)
+04.03.2020  12:16             5 064 quickShowAllMenus.rex
+04.03.2020  12:16             9 920 registry.rex
+04.03.2020  12:16            17 027 usewmgr.rex           *** problem  (Win10?)
+04.03.2020  12:16            32 033 windowsSystem.frm
+04.03.2020  12:16             3 604 winSystemDlgs.h
+04.03.2020  12:16             5 682 winSystemDlgs.rc
+04.03.2020  12:16             9 242 writeWithNotepad.rex *** problem (Win10?)
+
+-->
+
+</appendix>

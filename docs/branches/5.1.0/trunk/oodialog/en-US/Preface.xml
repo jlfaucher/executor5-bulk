@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE preface PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<preface id="pref-oodialogk-Preface">
+<title>Preface</title>
+
+<para>
+  This book describes the ooDialog framework, which is implemented as an external library package, and is part of the
+  Open Object Rexx distribution on the <trademark class="registered">Windows</trademark> platform. It describes the
+  classes in the framework and how to use the framework to program graphical user interfaces, (commonly referred to as a
+  GUI,) on Windows
+</para>
+<para>
+  This book is intended for Open Object Rexx programmers who want to design graphical user interfaces for their
+  applications.
+</para>
+
+<section id="bookstructure"><title>How This Book is Structured</title>
+<para>
+  This book is primarily a reference that describes the classes and methods in the ooDialog framework in detail. In
+  general, each chapter describes a single class and its methods. Although, in some cases similar classes that do not
+  need a lot of documentation are gathered together in a single chapter with a subsection for each class. For the most
+  part, the documentation for each class will have a table, at the beginning, that lists the methods of the class, with
+  a link to the detailed documentation for the method within that chapter or section.
+</para>
+<para>
+  One slight deviation from that pattern is found in the <link linkend="chpDialogObject">dialog object</link> and <link
+  linkend="chpDialogControlObject">dialog control object</link> chapters at the beginning of the book. These objects are
+  composed of a number of base classes and mixin classes. These two chapters list the class methods, attributes, and
+  instance methods that are a part of every dialog, or every dialog control object, respectively, without much
+  distinction as to exactly which base, or mixin, class the method comes from. The method tables at the beginning of the
+  chapters will contain links to the detailed documentation, which may be in another chapter.
+</para>
+<para>
+  The <emphasis role="italic">Preface</emphasis> and Chapter 1, contain general information that should be read, or re-read,
+  with every new release. The rest of the book is wholly reference and the reader can navigate to the specific topic they are
+  interested in. The <emphasis role="italic">Preface</emphasis>, (this section) is intended to give the reader a
+  better understanding of how to use this reference. As the book is revised, how best to use the book may change. Chapter
+  1, a <link linkend="chapOverview">Brief Overview</link>, contains general information that all users of ooDialog should
+  know. This content is dynamic. In particular there is a section on the <link linkend="sctCurrentRelease">current
+  release</link> that will contain important information the user should be aware of in the new release. The chapter
+  also contains a section on <link linkend="sctGeneralOODialog">common concepts</link> that all ooDialog programmers
+  should be aware of. As new features are added, or new misconceptions come to light, this information is also likely to
+  change over time.
+</para>
+</section>
+
+
+<xi:include href="Common_Content/Conventions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<section id="syndia"><title>How to Read the Syntax Diagrams</title>
+<para>
+  Throughout this book, syntax is described using the structure defined below. This is similar to, but slightly
+  different than, the IBM syntax diagrams used in other ooRexx reference documentation.  The author is calling these
+  diagrams <emphasis role="italic">simplified railroad tracks</emphasis>. It primarily strives to limit all diagrams to
+  2 lines, and does away with much of the complexity of true IBM railroad tracks. The body of text following the
+  syntax diagrams, along with this clarifying text, will resolve any ambiguities in the diagrams.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> Not all syntax diagrams may be converted to the simplified railroad tracks at
+  this time.
+</para>
+<para>
+  In this reference, the syntax diagrams being presented are the diagrams of the syntax for method, attribute, and routine
+  invocations. The diagrams show the method, attribute, or routine name and the arguments for the invocation. For method or
+  attribute invocations, the section the method or attribute is included in, and / or the text itself, make it clear as to
+  which class the method belongs to. The following defines how the syntax diagrams are to be read:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  Each syntax diagram is for a single method, attribute, or routine invocation,
+</para>
+</listitem>
+<listitem>
+<para>
+  Read the syntax diagrams from left to right, from top to bottom, following the path of the line.
+</para>
+<para>
+  The <computeroutput>&gt;&gt;--</computeroutput> symbol indicates the beginning of an invocation or call.
+</para>
+<para>
+  The <computeroutput>--&gt;</computeroutput> symbol indicates that the invocation syntax is continued on the next line. In
+  most cases continuation is avoided.
+</para>
+<para>
+  The <computeroutput>&gt;---</computeroutput> symbol indicates that a statement is continued from the previous line.
+</para>
+<para>
+  The <computeroutput>-&gt;&lt;</computeroutput> symbol indicates the end of a statement.
+</para>
+</listitem>
+<listitem>
+<para>
+  The method, attribute, or routine name is the first token, (first word,) on the horizontal line (the main path).
+  Parentheses enclose the arguments, if there are any arguments.
+
+<programlisting>
+<![CDATA[
+>>--methodName()---------------------------------><
+]]>
+</programlisting>
+</para>
+</listitem>
+<listitem>
+<para>
+  Methods, attributes, or routines that do not accept arguments, stand alone on the main line.
+
+<programlisting>
+<![CDATA[
+>>--attributeName--------------------------------><
+]]>
+</programlisting>
+</para>
+</listitem>
+<listitem>
+<para>
+  Required arguments appear on the horizontal line, (the main path,) within the parentheses.
+
+<programlisting>
+<![CDATA[
+>>--methodName(--requiredArgument--)-------------><
+]]>
+</programlisting>
+</para>
+</listitem>
+<listitem>
+<para>
+  Optional arguments appear on a line directly below the main path.
+
+<programlisting>
+<![CDATA[
+>>--methodName(--+--------------------+--)-------><
+                 +--optionalArgument--+
+]]>
+</programlisting>
+</para>
+</listitem>
+<listitem>
+<para>
+  Commas are placed on the same line and immediately before the argument whose position relies on the comma.
+
+<programlisting>
+<![CDATA[
+>>--methodName(--arg1--+-----------+--,--arg3--+-----------+--)----------------><
+                       +--,--arg2--+           +--,--arg4--+
+]]>
+</programlisting>
+</para>
+</listitem>
+</itemizedlist>
+<important><title>Important</title>
+  <para>
+    In ooRexx, the arguments to methods or functions are enclosed in parenthesis and each argument is separated by a comma.
+    The arguments are <emphasis role="italic">positional</emphasis> and the commas are always required to properly place an
+    argument in its correct position. Required arguments can not be omitted. Optional arguments can be omitted, however, any
+    argument that follows an omitted argument <emphasis role="italic">must</emphasis> be in its proper position as delineated
+    by the commas. If there are no arguments following an omitted argument, there is no need to include any following commas.
+    But, it is not incorrect to include the following commas.
+  </para>
+</important>
+<para>
+  In the syntax diagrams in this document, arguments are represented by appropriate variable names and these variable names
+  are then described in the text for the method. When arguments are optional, the default value and or behavior if the
+  argument is omitted is also described in the text.
+</para>
+<para>
+  In <emphasis role="bold">all</emphasis> cases, the text rather than the syntax diagram should be considered definitive.
+</para>
+<para>
+  The following example shows the described syntax:
+</para>
+<programlisting>
+<![CDATA[
+>>--createFontEx(--fontName--+----------------+--+-----------------+--)--------><
+                             +--,--pointSize--+  +--,--additional--+
+]]>
+</programlisting>
+<para>
+  In the above example, the syntax diagram indicates that the name of the method or routine is <emphasis
+  role="italic">createFontEx</emphasis>. The <link linkend="mthCreateFontEx">location</link> of the syntax diagram in the
+  body of this document would clearly indicate that it is a method of the <xref linkend="clsWindowExtensions"/> class, that
+  has been inherited by the <xref linkend="chpDialogObject"/> object. The diagram indicates that the argument in the first
+  position, <emphasis role="italic">fontName</emphasis> is required. The argument in the second postion, <emphasis
+  role="italic">pointSize</emphasis> is optional, and the argument in the third position, <emphasis
+  role="italic">additional</emphasis> is also optional.
+</para>
+<para>
+  <emphasis role="bold">In addition</emphasis>, the syntax diagram indicates that <emphasis role="italic">if</emphasis> the
+  second positional argument is omitted but the third positional arugment is used, there <emphasis
+  role="bold">must</emphasis> be 2 commas preceding the <emphasis role="italic">additional</emphasis> argument.
+</para>
+<important><title>Important</title>
+  <para>
+    Although the reader may prefer to interpret the syntax diagrams in some other way than that just explained, any other
+    interpretation is not correct.
+  </para>
+</important>
+</section>
+
+
+<section id="helpGettingHelp"><title>Getting Help and Submitting Feedback</title>
+<para>
+  The Open Object Rexx Project has a number of methods to obtain help and submit feedback for ooRexx and the
+  extension packages that are part of ooRexx. These methods are listed below. For users of ooDialog, the order listed below
+  is in the order that is most likely to receive prompt help or support.
+</para>
+
+<section><title>The Open Object Rexx SourceForge Site</title>
+<para>
+  The <ulink url="http://www.oorexx.org/">Open Object Rexx Project</ulink> utilizes
+  <ulink url="http://sourceforge.net/"><citetitle>SourceForge</citetitle></ulink> to house the
+  <ulink url="http://sourceforge.net/projects/oorexx"><citetitle>ooRexx Project</citetitle></ulink>
+  source repositories, mailing lists, and other project features. Over time it has become apparent to the ooDialog developers
+  that the mailing lists are better tools for carrying on discussions concerning ooDialog and that the Forums provided by
+  SourceForge are cumbersome to use. The ooDialog user is most likely to get timely replies by posting questions or comments
+  to the Users Mailing List.
+</para>
+<para>
+  Here is a list of some of the most useful facilities provided by SourceForge.
+</para>
+<variablelist>
+  <varlistentry id="helpUsersList"><term>The Users Mailing List</term>
+  <listitem>
+  <para>
+    You can subscribe to the oorexx-users mailing list at <ulink url="http://sourceforge.net/p/oorexx/mailman/">
+    <citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page. This list is for discussing using ooRexx. It
+    also supports a historical archive of past messages. Users of ooDialog are <emphasis role="italic">most</emphasis> likely
+    to get a prompt reply to their questions, suggestions, or comments on that mailing list.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>The Announcements Mailing List</term>
+  <listitem>
+  <para>
+    You can subscribe to the oorexx-announce mailing list at <ulink url="http://sourceforge.net/p/oorexx/mailman/">
+    <citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page. This list is only used to announce
+    significant ooRexx project events.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="helpDevelList"><term>The Developer Mailing List</term>
+  <listitem>
+  <para>
+    You can subscribe to the oorexx-devel mailing list at <ulink url="http://sourceforge.net/p/oorexx/mailman/">
+    <citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page. This list is for discussing ooRexx project
+    development activities and future interpreter enhancements.  It also supports a historical archive of past
+    messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>The Bug Mailing List</term>
+  <listitem>
+  <para>
+    You can subscribe to the oorexx-bugs mailing list at <ulink url="http://sourceforge.net/p/oorexx/mailman/">
+    <citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page. This list is only used for
+    monitoring changes to the ooRexx bug tracking system.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Bug Reports</term>
+  <listitem>
+  <para>
+    You can create a bug report at <ulink url="http://sourceforge.net/p/oorexx/bugs/"> <citetitle>ooRexx Bug
+    Report</citetitle></ulink> page. Please try to provide as much information in the bug report as possible so that the
+    developers can determine the problem as quickly as possible.  Sample programs that can reproduce your problem will make
+    it easier to debug reported problems.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Documentation Feedback</term>
+  <listitem>
+  <para>
+    You can submit feedback for, or report errors in, the documentation at
+    <ulink url="http://sourceforge.net/p/oorexx/documentation/"> <citetitle>ooRexx Documentation Report</citetitle></ulink>
+    page. Please try to provide as much information in a documentation report as possible. In addition to listing the
+    document and section the report concerns, direct quotes of the text will help the developers locate the text in the
+    source code for the document. (Section numbers are generated when the document is produced and are not available in the
+    source code itself.) Suggestions as to how to reword or fix the existing text should also be included.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Request For Enhancement</term>
+  <listitem>
+  <para>
+    You can suggest ooRexx features at the<ulink url="http://sourceforge.net/p/oorexx/feature-requests/"> <citetitle>ooRexx
+    Feature Requests</citetitle></ulink> page.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Patch Reports</term>
+  <listitem>
+  <para>
+    If you create an enhancement patch for ooRexx please post the patch using the <ulink
+    url="http://sourceforge.net/p/oorexx/patches/"> <citetitle>ooRexx Patch Report</citetitle></ulink> page. Please provide
+    as much information in the patch report as possible so that the developers can evaluate the enhancement as quickly as
+    possible.
+  </para>
+  <para>
+    Please do not post bug fix patches here, instead you should open a bug report and attach the patch to it.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>The ooRexx Forums</term>
+  <listitem>
+  <para>
+    The ooRexx project maintains a set of forums that anyone may contribute to or monitor. They are located on the
+    <ulink url="http://sourceforge.net/p/oorexx/discussion/"><citetitle>Open Object Rexx Discussion</citetitle></ulink> page.
+    There are currently four forums available: Help, Developers, Open Discussion, and General Discussion. In addition, you
+    can monitor the forums via email.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section><title>The Rexx Language Association Mailing List</title>
+<para>
+  The <ulink url="http://www.rexxla.org/"><citetitle>Rexx Language Association</citetitle></ulink> maintains a mailing
+  list for its members. This mailing list is only available to RexxLA members thus you will need to
+  join RexxLA in order to get on the list. The dues for RexxLA membership are small and are charged on a yearly basis.
+  For details on joining RexxLA please refer to the
+  <ulink url="http://rexxla.org/"><citetitle>RexxLA Home Page</citetitle></ulink> or the
+  <ulink url="http://www.rexxla.org/rexxla/join.html">
+  <citetitle>RexxLA Membership Application</citetitle></ulink> page.
+</para>
+</section>
+
+<section><title>comp.lang.rexx Newsgroup</title>
+<para>The <ulink url="http://groups.google.com/group/comp.lang.rexx/topics?hl=en">comp.lang.rexx</ulink> newsgroup
+is a good place to obtain help from many
+individuals within the Rexx community. You can obtain help on Open Object
+Rexx or on any number of other Rexx interpreters and tools.</para>
+</section>
+
+</section>
+
+<section id="relinf"><title>Related Information</title>
+<para>See also:
+<citetitle pubwork="book">Open Object Rexx: Reference</citetitle></para>
+</section>
+
+</preface>
+

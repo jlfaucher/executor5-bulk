@@ -1,0 +1,419 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2013-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<!-- Chapter08 - <Title?>		 		  	  v01-00 28Jly14
+
+    Changes:
+     v01-00 10May13: First version.
+     v01-01 28Jly14: Version 2 - minor tidy-up only.
+
+    8   *  Dialog-to-Dialog Drag/Drop            chapEight
+    8.1   * Introduction                                   chap08-intro
+    8.2   * Direct Manipulation                            chap08-dragdrop
+    8.3   * Refactoring the MVF                            chap08-mvfRefactoring
+    8.4   * Using the MVF                                  chap08-usingMVF
+    8.5   * Event Management                               chap08-eventMgmt
+    8.6   * The Order Form                                 chap08-orderForm
+
+    
+Topics (in no particular order):
+  1. Moving the View supers into a single mixin.
+  2. Drag/Drop Customer/Product to OrderForm
+-->
+<chapter id="chapEight">
+  <title>Dialog-to-Dialog Drag-Drop</title>
+
+<!-- *********************************************************************************************** -->
+  <section id="chap08-intro"><title>Introduction</title>    <!-- Section 8.1 -->
+    <para>Exercise 8 introduces drag-drop - sometimes known as "direct manipulation" - between dialog
+      components. Try opening an Order Form, then open a Customer
+      dialog. Drag the Customer to an Order Form dialog and drop. The customer details are entered
+      automatically. Drag a Product dialog to the OrderForm dialog and the product number is
+      entered. Drag-drop as it appears to the application developer is discussed in the section
+        <xref linkend="chap08-dragdrop"/>, and further detail is provided in <xref linkend="apx6-dm"
+      />.</para> 
+    <para>However, Exercise 8 also introduces a number of other things. Although not apparent to the
+      user, substantial changes have been made to the MVF class structure. In particular, the
+      unfortunate duplication of code in the three View superclasses of previous exercises is
+      removed. The new structure is discussed in <xref linkend="chap08-mvfRefactoring"/>, while the
+      consequential changes at the application level are described in <xref linkend="chap08-usingMVF"/>.</para> 
+    <para>You may have noticed in Exercise 7 that the process hangs when you close the
+      Order Management dialog without first closing all Order Form dialogs. This problem, and its
+      solution, is addressed in <xref linkend="chap08-eventMgmt"/>. </para>
+    <para>Also, some enhancements to the <xref linkend="chap08-orderForm"/> function are briefly
+      described.</para>
+    <para>Finally, the last section - <xref linkend="chap08-toBeContinued"/> gives a brief preview 
+      of some of the function planned for the next version of this Guide. </para>
+  </section>
+  <!-- *********************************************************************************************** -->
+  
+  <section id="chap08-dragdrop" xreflabel="Direct Manipulation">  <!-- Section 8.2 -->
+    <title>Direct Manipulation</title>
+    <indexterm><primary>Direct manipulation</primary></indexterm>
+    <indexterm><primary>Drag-Drop</primary></indexterm>
+    <para>Direct manipulation (or drag-drop) is the use of the mouse to drag a small mouse icon representing a dialog
+      around the screen and drop it on other dialogs, resulting in sopme form of comunication between the two dialogs. 
+      To try this out, first surface a Customer dialog (e.g. by double-clicking
+      on an item in the Customer List dialog). Second, create an Order Form dialog by double-clicking on the
+      OrderForm icon in the Order Manager dialog. Now place the mouse cursor
+      over the Customer dialog then press and hold the "primary" button (usually the left mouse button).
+      <footnote><para>The "primary" button defaults to being the left-hand 
+      button, but this can be changed in the Windows Mouse Properties so that it's the right-hand button.</para></footnote>
+      Start dragging - you'll see the mouse cursor change to a no-entry (or "no-drop") symbol. Drag it over the OrderForm. 
+      The mouse cursor changes to a Customer symbol, meaning a drop is allowed. Now release the mouse button - 
+      that it, "drop" the Customer onto the Order Form. The customer details appear on the Order Form. 
+    </para>
+    <para>Behind this operation there is some quite complex code (discussed in <xref linkend="apx6-dm"/>), 
+      implemented by a Drag-Drop Framework consisting of code within the <computeroutput>View</computeroutput> superclass
+      and a new "manager" object called the "Drag Manager" (<computeroutput>DragMgr.rex</computeroutput> in the 
+      <computeroutput>Exercise08\Support</computeroutput>) folder). The objective of the Drag-Drop Framework is to
+      make drag/drop as simple as possible fort he application developer. Thus the code within application components
+      is very simple. In the drag-drop context, there are two kinds of component: a "source" dialog that is dragged,
+      and a "target" dialog that is dragged over and/or dropped upon (dragging more than one component is not supported
+      in Exercise 8). Note that, if it makes sense, a dialog may be both a source and a target. The code required to
+      participate in drag-drop is as follows:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="italic"><emphasis role="bold">A Source Dialog</emphasis></emphasis></para>
+        <para>To enable support for dragging from a source dialog, simply provide the following superclass
+          invocation when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
+          method):
+          <programlisting><![CDATA[  r = self~dmSetAsSource:super("<cursor file name>")]]></programlisting>
+          The cursor file (with file extension "cur") must be given with its path. For example, the
+          cursor file name in <computeroutput>CustomerView</computeroutput> is
+          <computeroutput>Customer\bmp\Customer.cur</computeroutput>. A cursor file can be created
+          using an appropriate tool.<footnote>
+            <para>One such tool is <ulink url="http://www.gdgsoft.com/gconvert/index.aspx"
+              ><citetitle>GConvert</citetitle></ulink>. However, there are others, and mention
+              of this particular product should not be interpreted as a preference.</para>
+          </footnote></para></listitem>
+      <listitem>
+        <para><emphasis role="italic"><emphasis role="bold">A Target Dialog</emphasis></emphasis></para>
+        <para>To enable a dialog to accept a drop, simply provide the following superclass
+        invocation when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
+        method):<programlisting><![CDATA[  r = self~dmSetAsTarget:super(dropArea)]]></programlisting>The single 
+        optional parameter defines the area within the dialog onto which a drop is allowed. If omitted, the drop
+        area defaults to the dialog window less 10 on each side.</para>
+        <para>In a target dialog, two things have to be done. First, when being dragged over, decide whether a drop
+        is acceptable, so that the mouse cursor can be set (by the Drag/Drop Framework) as either no-drop or ok-to-drop. 
+        Second, if acceptable, accept the drop if it happens (the user might cancel the operation by pressing
+        the Escape key, or may carry on dragging over one dialog to another).</para>
+        <itemizedlist>
+          <listitem><para><emphasis role="bold">Drop acceptable?</emphasis></para>
+            <para>When the Drag/Drop Framework detects that the mouse is over a dialog other than
+              the source dialog, it checks whether a drop is acceptable by sending a
+                <computeroutput>dmQueryDrop</computeroutput> message to the class object of the
+              target's model component. This message has a single parameter - the name of the source
+              model's class. For example, a drop on an Order Form sends the
+                <computeroutput>dmQueryDrop</computeroutput> message to
+                <computeroutput>.OrderFormModel</computeroutput>, which accepts a drop of a Customer
+              as follows: <programlisting><![CDATA[  ::METHOD dmQueryDrop CLASS PUBLIC
+     use arg sourceClassName
+     if sourceClassName = "CUSTOMERMODEL" then return .true
+     else return .false]]></programlisting>Returning <computeroutput>.true</computeroutput> changes
+              the mouse cursor to the "drop ok" icon; returning
+                <computeroutput>.false</computeroutput> changes the mouse cursor to the "no entry"
+              or "no drop allowed" cursor (the code for doing this is in the Drag/Drop
+              Framework).</para>
+            <para>Why ask the class object and not the View instance if a drop is OK? Well, in the general case, 
+              a user might want to drop on some visible representation of a target such as an item in a
+              ListView. To get to the right item, the mouse cursor could be dragged over many other items.
+              If each is asked if a drop is allowed, then each must first be instantiated, and this
+              could mean many database accesses. Much better to check with an object that's already
+              instantiated - such as the class object (class objects are instantiated when the
+              program starts). Note, however, that in Exercise 8 only instantiated and visible dialogs
+              can be drag-drop targets. </para>
+          </listitem>
+          <listitem><para><emphasis role="bold">Drop happens</emphasis></para>
+            <para>If a drop is acceptable, and if the user then releases the mouse button, then the
+              view instance receives a <computeroutput>dmDrop</computeroutput> message from the
+              Drag/Drop Framework. (In <computeroutput>OrderFormView.rex</computeroutput> it is the
+              main dialog rather than one of the control dialogs that receives this message.) This
+              message has two parameters: the source dialog's model, and the source dialog. The
+              target's <computeroutput>dmDrop</computeroutput> method typically asks the source's
+              model object for data. For example, the drop method in
+                <computeroutput>OrderFormView</computeroutput> is as follows:<programlisting><![CDATA[  ::METHOD dmDrop PUBLIC
+     expose cd1 cd2
+     use strict arg sourceModel, sourceDlg
+     parse var sourceModel . modelName
+     select
+       when modelName =  "CUSTOMERMODEL" then do
+         cd1~getCustomer(sourceModel); return .true; end
+       when modelName = "PRODUCTMODEL" then do
+         cd2~getProduct(sourceModel); return .true; end
+     end
+     return .false]]></programlisting>Note that the variables <computeroutput>cd1</computeroutput>
+              and <computeroutput>cd2</computeroutput> are the Customer Details and the Product
+              Details control dialogs respectively (see <xref linkend="chap08-orderForm"/>). The
+              method <computeroutput>getCustomerData</computeroutput> in the Customer Details
+              control dialog invokes <computeroutput>query</computeroutput> on the source's model
+              instance - in this case <computeroutput>CustomerModel</computeroutput>. The customer
+              details part of the Order Form is then populated with the customer data received.
+              Similarly for product details.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </section>
+  
+  <!-- *********************************************************************************************** -->
+  <section id="chap08-mvfRefactoring" xreflabel="Refactoring the MVF"><title>Refactoring the MVF</title> <!-- Section 8.3 -->
+    <para>Exercise 8 introduces a new superclass for components called
+        <computeroutput>Component</computeroutput>, which becomes part of the MVF.
+        <computeroutput>Component</computeroutput> handles event management on behalf of subclasses.
+      In addition, the duplicate View superclasses (<computeroutput>RcView</computeroutput>,
+        <computeroutput>ResView</computeroutput>, and <computeroutput>UdView</computeroutput>) are
+      replaced by a single <computeroutput>View</computeroutput> superclass. Ideally, and using
+      parts of the Customer business component as an example, the desired class structure would be
+      as follows (where a blue border indicates an application component, red an ooDialog class,
+      green an MVF class, and black an ooRexx-provided class):</para>
+      <figure id="fig0801">
+        <title>Exercise08 Notional Class Structure</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter08-Image1.jpg" scale="70"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    <para>However, this structure requires multiple inheritance: each "view" component (such as
+        <computeroutput>CustomerView</computeroutput>) subclasses two superclasses -
+        <computeroutput>RcDialog</computeroutput> and <computeroutput>View</computeroutput>. But
+      this form of multiple inheritance <indexterm>
+        <primary>Multiple inheritance</primary>
+      </indexterm>is not supported by ooRexx. However, ooRexx <emphasis role="italic"
+        >does</emphasis> provide "mixin" classes. A mixin class <indexterm>
+        <primary>Mixins</primary>
+      </indexterm> is a class that is "mixed into" the single-inheritance class hierarchy. It's a
+      very useful way to provide more than one effective superclass. Technically, making a class a
+      mixin adds the ability to use the class in the "inherit" option of another class lower down
+      the class hierarchy. In all other respects the mixin is a normal class.</para>
+    <para>In Exercise 8, the ooRexx mixin facility is used to provide a single "View" mixin class.
+      However, we also want <computeroutput>View</computeroutput> effectively to be a subclass of
+        <computeroutput>Component</computeroutput>. 
+      The solution used here is to make <computeroutput>Component</computeroutput> a mixin as well
+      (but note that there may well be other ways of achieving the objective).
+      As long as <computeroutput>View</computeroutput> and
+        <computeroutput>Component</computeroutput> do not have the same method names, then all will
+      be well. The resulting class hierarchy is as follows (with <computeroutput>ProductView</computeroutput>
+      added to illustrate an additional ooDialog superclass):<figure id="fig0802">
+        <title>Exercise08 Class Structure</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter08-Image2.jpg" scale="70"/>
+          </imageobject>
+        </mediaobject>
+      </figure>Solid lines are normal "subclass" lines, while dotted lines are mixin "inherits".
+      The ooRexx class definitions required for the <computeroutput>Customer</computeroutput>
+      business component to operate with the two mixins is as follows (with unnatural spacing to
+      show differences more clearly): <programlisting><![CDATA[   ::CLASS Component                          PUBLIC MIXINCLASS Object
+
+   ::CLASS View                               PUBLIC MIXINCLASS PlainBaseDialog
+
+   ::CLASS Model         SUBCLASS Object      PUBLIC INHERIT Component
+
+   ::CLASS GenericFile   SUBCLASS Object      PUBLIC INHERIT Component
+
+   ::CLASS CustomerView  SUBCLASS RcDialog    PUBLIC INHERIT Component View 
+
+   ::CLASS CustomerModel SUBCLASS Model       PUBLIC
+
+   ::CLASS CustomerData  SUBCLASS GenericFile PUBLIC]]>    </programlisting>In summary, to comply
+      with MVF, a View application component "inherits" both <computeroutput>View</computeroutput>
+      and <computeroutput>Component</computeroutput>, while a Model or Data component inherits only
+        <computeroutput>Component</computeroutput>.</para>
+  </section> 
+  
+  <!-- *********************************************************************************************** -->
+  <section id="chap08-usingMVF" xreflabel="Using the MVF"><title>Using the MVF</title>  <!-- Section 8.4 -->
+    <para>For the application developer, using the revised MVF is very simple, as follows.</para>
+    <para>For <emphasis role="italic"><emphasis role="bold">View</emphasis></emphasis> components
+      such as <computeroutput>CustomerView.rex</computeroutput>:</para>
+    <itemizedlist>
+      <listitem><para>Add to the start of the *.rex file:<programlisting><![CDATA[  ::REQUIRES "Support\View.rex"
+   ::REQUIRES "Support\Component.rex"]]></programlisting></para></listitem>
+      <listitem><para>Sublass from <computeroutput>RcView</computeroutput>,
+          <computeroutput>ResView</computeroutput>, or <computeroutput>UdView</computeroutput> as
+          appropriate.</para></listitem>
+      <listitem><para>Add to the end of the <computeroutput>::CLASS</computeroutput> statement
+            "<computeroutput>INHERIT View Component</computeroutput>".</para></listitem>
+      <listitem><para>In the <computeroutput>init</computeroutput> method, immediately after
+         <computeroutput>forward class (super) continue</computeroutput>", add
+         <computeroutput>self~initView</computeroutput>. This ensures that the View mixin is 
+         properly initialized (just supering <computeroutput>init</computeroutput> results in a run-time error).</para></listitem>
+    </itemizedlist>
+    <para>For <emphasis role="italic"><emphasis role="bold">Model</emphasis></emphasis> and
+        <emphasis role="italic"><emphasis role="bold">Data</emphasis></emphasis> components, there's
+      no change; merely ensure there's
+      a<programlisting><![CDATA[  ::REQUIRES "Support\Model.rex"]]></programlisting>at the start of
+      any Model program file, and
+      a<programlisting><![CDATA[  ::REQUIRES "Support\GenericFile.rex"]]></programlisting> at the
+      start of any Data program file. </para>  <!-- End of 8.4.2 -->
+  </section>  <!-- End of 8.4 -->
+ 
+  <!-- *********************************************************************************************** -->  
+   <section id="chap08-eventMgmt" xreflabel="Event Management">  <!-- Section 8.5-->
+   <title>Event Management</title>
+   <para>If an Order Form is open when the Order Management application is closed, then the process
+      hangs. The reason for this is that the OrderForm's control dialogs must be cleaned up
+      explicitly when the Order Form dialog is closed - else the control dialogs are left in limbo,
+      and the process cannot close. The solution is to tell all Order Form dialogs to close when the
+      user closes the application (that is, when the Order Management dialog is closed). But how
+      should this be done? Somehow, all active Order Form dialogs must be told about the
+      "application close" event so they can clean up the two control dialogs.</para>
+    <para>One solution might be for the Order Management dialog to tell each Order Form that the
+      application is about to close. Perhaps the Order Management dialog could inquire of the Object
+      Manager as to which Order Form dialogs exist, and then send each of them a "close now"
+      message. However, a more elegant solution - and one that has much wider potential use - is to
+      provide an event management framework. </para>
+    <para>A simple event management framework (EMF) is introduced in Exercise 8. The object that
+      keeps track of events and who's interested in them is the Event Manager (the file
+        <computeroutput>EventMgr.rex</computeroutput> in the
+        <computeroutput>Exercise08\Support</computeroutput> folder). The code that "talks" directly
+      to the Event Manager is in the <computeroutput>Component</computeroutput> mixin.
+      Application-level components merely super event requests, and
+        <computeroutput>Component</computeroutput> does the rest.</para>
+    <para>Note that events handled by the Event Manager must not be confused with events generated by
+      ooDialog, such as menu selection events.</para>
+     <para>The EMF works like this. First, a dialog component (such as the Order Form) decides that
+      it's interested in some event - say "AppClosing". When this event occurs, it wants to be sent
+      a message so that it can take appropriate action. To express its interest, the component
+      supers (e.g. in its <computeroutput>activate</computeroutput> method) a
+        <computeroutput>registerInterest</computeroutput> message. This has two parameters - the
+      event in which it's interested and its object id (i.e. <computeroutput>self</computeroutput>).
+      For example, the "register interest" invocation in
+        <computeroutput>OrderFormView</computeroutput> is:
+      <programlisting><![CDATA[  self~registerInterest("appClosing", self)]]></programlisting>This
+      message is handled by the <computeroutput>Component</computeroutput> mixin, which forwards the
+      message to the Event Manager, which then adds the event to its directory of events. In this
+      directory, each index is the event name, and each item is an array of objects that have
+      expressed interest in that event. Some time later, when the Order Manager
+        (<computeroutput>OrderMgrView</computeroutput> - which in Exercise 8 mixes-in and so
+      inherits from both <computeroutput>ResizingAdmin</computeroutput>
+      <emphasis role="italic">and</emphasis>
+      <computeroutput>Component</computeroutput>) is closed, it asks for the event "appClosing" to
+      be triggered:
+      <programlisting><![CDATA[  self~triggerEvent("appClosing")]]></programlisting>The
+        <computeroutput>Component</computeroutput> mixin sends this to the Event Manager which then
+      sends a <computeroutput>notify</computeroutput> message to each component that has registered
+      interest in this event. The Order Form provides a method to capture this event and close its
+      control dialogs:<programlisting><![CDATA[  ::METHOD notify PUBLIC
+      use strict arg event
+      if event = "AppClosing" then self~closeControlDialogs]]></programlisting>Thus each Order Form
+      that's open when the app closes receives a notification so that it can close its control
+      dialogs. </para>
+    <para>Note that this simple event management framework is fairly generic, and can be used for
+      any event by any component. The only constraint is that event names should be unique across an
+      application. For example, triggering an "AppClosing" event to signal that a dialog is opening
+      is likely to have unfortunate consequences (although the Event Manager will be quite
+      happy).</para>
+     <para>Finally, note that the Event Manager has a <computeroutput>list</computeroutput> method
+      which lists all registered events on the console.</para>
+   </section>
+  
+  <!-- *********************************************************************************************** -->
+  <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.6 -->
+    <!--  -     -->
+    <para>The Order Form dialog is now partly semi-functional. Aside from the enhancements already
+      mentioned (drag/drop and closing properly on app close), several new capabilities are
+      added:</para>          
+      <orderedlist>
+        <listitem><para>Customer details can be entered using the keyboard (as well as with drag/drop). Type a
+          customer number (e.g. "CU0003") into the "Customer Number" field on the "Customer Details"
+          tab. The "Find Customer" button is enabled. Click on the button, and the Customer details
+          are entered on the form. Accessing customer details is done by the following code
+          (excluding error-handling code): <programlisting><![CDATA[  ::METHOD findCustomer UNGUARDED
+     expose ecCustNum objectMgr 
+     custNo = ecCustNum~getLine(1) 
+     idCust = objectMgr~getComponentId("CustomerModel",custNo)
+     dirCustData = idCust~query
+     self~setCustomer(dirCustData)]]></programlisting></para></listitem>
+        <listitem>
+        <para>Products can also be entered using the keyboard. Click on the "Order Lines" tab, and
+          enter a product number (e.g. "CU003") into the "Product No." field. Then enter a quantity
+          in the "Quantity" field. Finally, click the "Add Order Line" button. A line item for that
+          product is entered into the Order Details list view.</para>
+      </listitem>
+      <listitem>
+        <para>Third, totals are added up and discounts applied. However, removing a line item does
+          not, in this version, decrement the order totals (a serious omission in a real
+          system!).</para>
+      </listitem>
+        <listitem><para>Finally, try double-clicking on an Order Line. A product dialog for the line item is surfaced.
+          This uses the same code (mutatis mutandis) as that for surfacing a Customer dilaog. </para></listitem>
+       </orderedlist>
+ 
+    <para>Capabilities missing in this exercise include saving the Order to disk when it's complete,
+      allowing use of the enter key for the "Find Customer" and "Add Order Line" buttons, and
+      ensuring that the totals are always correct. In addition, the calculation of totals should be
+      done in the Model component, not in the View. This is because a major role of a model
+      component is to implement business rules. The results of applying such rules is then made
+      visible by the View component. In summary, the Model should do the "business" part while the
+      View should make the business visible and provide for new info to be entered.</para>
+  </section>
+  
+  <section id="chap08-toBeContinued"><title>To Be Continued</title> <!-- Section 8.7 -->
+    <para>In the next version of this Guide, the development of the Order Management application
+      will be continued. In particular, it is planned to move the text data files to an <ulink
+        url="http://www.sqlite.org/index.html"><citetitle>SQLite</citetitle></ulink> database, which
+      will provide for data to be updated as well as read. SQLite will be accessed using <ulink
+        url="http://sourceforge.net/projects/oorexx/files/ooSQLite/"
+        ><citetitle>ooSQLite</citetitle></ulink> - the ooRexx language interface to SQLite. </para>
+      <para>A second function planned is drag/drop of a component from a list view
+      such as <computeroutput>CustomerListView</computeroutput> to an Order Form. 
+      The Order Form will see this as a drop of a specific Customer rather than of a Customer List.</para> 
+      <para>You may have noticed that most of the code in the List View components 
+      (e.g. <computeroutput>CustomerListView.rex</computeroutput>)
+      is identical aside from some variable names. This cries out for a ListView superclass. 
+      Exercise 9 will introduce just such a superclass, and the individual list views will merely 
+      configure the view and provide a call-back method for any data needing specific attention - 
+      for example formatting a date field according to country-specific usage.  
+    </para>
+    <para>Finally, aside from other enhancements, it is planned to show how an application
+      consisting of multiple dialogs can be "packaged" so that the many folders and 
+      <computeroutput>.rex</computeroutput>files are simplified into a much smaller number
+      of files.
+    </para>
+  </section>
+</chapter>

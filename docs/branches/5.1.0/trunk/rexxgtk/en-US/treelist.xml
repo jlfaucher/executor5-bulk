@@ -1,0 +1,2047 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Tree, List and Icon Grid Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Tree, List and Icon Grid</secondary></indexterm>
+
+<para>This set of widgets support the display of information in a tree format.</para>
+
+<!-- ********************************* -->
+<!-- ********** GTKTreePath ********** -->
+<!-- ********************************* -->
+
+<section id="gtktreepath"><title>GTKTreePath</title>
+
+<section id="gtktreepathinit1">
+<title>Method: newfromstring (class method)</title>
+<indexterm><primary>newfromstring</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>newfromstring</secondary></indexterm>
+<para>Create a tree path.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreePath~newfromstring(spath)------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>spath</term>
+      <listitem><para>The path string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreepathinit0">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a tree path.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreePath~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreepathtostring">
+<title>Method: to_string</title>
+<indexterm><primary>to_string</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>to_string</secondary></indexterm>
+<para>Convert a path to a string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--to_string()----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Path string</para>
+</section>
+
+<section id="gtktreepathup">
+<title>Method: up</title>
+<indexterm><primary>up</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>up</secondary></indexterm>
+<para>Move up the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--up()-----------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreepathdown">
+<title>Method: down</title>
+<indexterm><primary>down</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>down</secondary></indexterm>
+<para>Move down the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--down()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreepathprev">
+<title>Method: prev</title>
+<indexterm><primary>prev</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>prev</secondary></indexterm>
+<para>Move to the previous node.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prev()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtktreepathnext">
+<title>Method: next</title>
+<indexterm><primary>next</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>next</secondary></indexterm>
+<para>Move to the next node.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--next()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtktreepathprependindex">
+<title>Method: prepend_index</title>
+<indexterm><primary>prepend_index</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>prepend_index</secondary></indexterm>
+<para>Prepend an index.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend_index(idx)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>idx</term>
+      <listitem><para>The index.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreepathappendindex">
+<title>Method: append_index</title>
+<indexterm><primary>append_index</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>append_index</secondary></indexterm>
+<para>Append an index.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_index(idx)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>idx</term>
+      <listitem><para>The index.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreepathgetdepth">
+<title>Method: get_depth</title>
+<indexterm><primary>get_depth</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>get_depth</secondary></indexterm>
+<para>Get the depth.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_depth()----------------------------------------------------------><
+
+>>--depth()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreepathisancestor">
+<title>Method: is_ancestor</title>
+<indexterm><primary>is_ancestor</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>is_ancestor</secondary></indexterm>
+<para>Is a node an ancestor.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--is_ancestor(node)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>node</term>
+      <listitem><para>The node to test.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtktreepathisdescendant">
+<title>Method: is_descendant</title>
+<indexterm><primary>is_descendant</primary></indexterm>
+<indexterm><primary>GTKTreePath</primary>
+<secondary>is_descendant</secondary></indexterm>
+<para>Is a node an descendant.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--is_descendant(node)--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>node</term>
+      <listitem><para>The node to test</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+</section>
+
+
+<!-- ********************************** -->
+<!-- ********** GTKTreeModel ********** -->
+<!-- ********************************** -->
+
+<section id="gtktreemodel"><title>GTKTreeModel</title>
+
+<para>The tree interface used by GTKTreeView widget (<xref linkend="gtktreeview" />).</para>
+
+<section id="gtktreemodelinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>init</secondary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeModel(pointer)-----------------------------------------------><
+]]>
+</programlisting>
+<para>Create a tree model.</para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>pointer</term>
+      <listitem><para>The pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A new tree model.</para>
+</section>
+
+<section id="gtktreemodelgetncolumns">
+<title>Method: get_n_columns</title>
+<indexterm><primary>get_n_columns</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_n_columns</secondary></indexterm>
+<para>Get the number of columns.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_n_columns()------------------------------------------------------><
+
+>>--n_columns()----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreemodelgetcolumntype">
+<title>Method: get_column_type</title>
+<indexterm><primary>get_column_type</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_column_type</secondary></indexterm>
+<para>Get the column type.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_column_type(idx)-------------------------------------------------><
+
+>>--column_type(idx)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>idx</term>
+      <listitem><para>The column index.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreemodelgetiter">
+<title>Method: get_iter</title>
+<indexterm><primary>get_iter</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_iter</secondary></indexterm>
+<para>Get an iterator from a path.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_iter(path)-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>path</term>
+      <listitem><para>The path.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Iter pointer</para>
+</section>
+
+<section id="gtktreemodelgetiterfromstring">
+<title>Method: get_iter_from_string</title>
+<indexterm><primary>get_iter_from_string</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_iter_from_string</secondary></indexterm>
+<para>Get an iterator from a string.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_iter_from_string(str)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>str</term>
+      <listitem><para>The string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Iter pointer</para>
+</section>
+
+<section id="gtktreemodelgetvalue">
+<title>Method: get_value</title>
+<indexterm><primary>get_value</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_value</secondary></indexterm>
+<para>Get the value in a column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_value(iter, col)-------------------------------------------------><
+
+>>--value(iter, col)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iterator.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Value</para>
+</section>
+
+<section id="gtktreemodeliternext">
+<title>Method: iter_next</title>
+<indexterm><primary>iter_next</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>iter_next</secondary></indexterm>
+<para>Move the iterator to the next entry.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--iter_next(iter)------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iter pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Iter pointer</para>
+</section>
+
+<section id="gtktreemodelgetpath">
+<title>Method: get_path</title>
+<indexterm><primary>get_path</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_path</secondary></indexterm>
+<para>Get the path from an iter.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_path(iter)-------------------------------------------------------><
+
+>>--path(iter)-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iter pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Path pointer</para>
+</section>
+
+<section id="gtktreemodelhasparent">
+<title>Method: has_parent</title>
+<indexterm><primary>has_parent</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>has_parent</secondary></indexterm>
+<para>Return boolean true if the iter has a parent.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--has_parent(iter)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iter pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Path pointer</para>
+</section>
+
+<section id="gtktreemodelgetparent">
+<title>Method: get_parent</title>
+<indexterm><primary>get_parent</primary></indexterm>
+<indexterm><primary>GTKTreeModel</primary>
+<secondary>get_parent</secondary></indexterm>
+<para>Return the parent.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_parent(iter)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>rxiter</term>
+      <listitem><para>The iter pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Object</para>
+</section>
+</section>
+
+<!-- ***************************************** -->
+<!-- ********** GTKTreeRowReference ********** -->
+<!-- ***************************************** -->
+
+<section id="gtktreerowreference"><title>GTKTreeRowReference</title>
+
+<section id="gtktreerowreferenceinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeRowReference</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a tree row reference.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeRowReference~new()-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreerowreferencevalid">
+<title>Method: valid</title>
+<indexterm><primary>valid</primary></indexterm>
+<indexterm><primary>GTKTreeRowReference</primary>
+<secondary>valid</secondary></indexterm>
+<para>Is the row reference valid.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--valid()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtktreerowreferencegetpath">
+<title>Method: get_path</title>
+<indexterm><primary>get_path</primary></indexterm>
+<indexterm><primary>GTKTreeRowReference</primary>
+<secondary>get_path</secondary></indexterm>
+<para>Get the path from an a row reference.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_path()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Path pointer</para>
+</section>
+</section>
+
+<!-- ************************************** -->
+<!-- ********** GTKTreeSelection ********** -->
+<!-- ************************************** -->
+
+<section id="gtktreeselection"><title>GTKTreeSelection</title>
+
+<para>The selection object for GTKTreeView widget (<xref linkend="gtktreeview" />).</para>
+
+<section id="gtltreeselectioninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeSelection</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a tree selection.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeSelection~new(ptr)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>ptr</term>
+      <listitem><para>The reference pointer.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeselectiongetselectedrows">
+<title>Method: get_selected_rows</title>
+<indexterm><primary>get_selected_rows</primary></indexterm>
+<indexterm><primary>GTKTreeSelection</primary>
+<secondary>get_selected_rows</secondary></indexterm>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_selected_rows()--------------------------------------------------><
+]]>
+</programlisting>
+<para>Return an array of selected rows (tree row references).</para>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>An array</para>
+</section>
+
+<section id="gtltreeselectionsetmode">
+<title>Method: set_mode</title>
+<indexterm><primary>set_mode</primary></indexterm>
+<indexterm><primary>GTKTreeSelection</primary>
+<secondary>set_mode</secondary></indexterm>
+<para>Set the selection mode.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_mode(mode)-------------------------------------------------------><
+
+>>--mode = mode----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>mode</term>
+      <listitem><para>The mode.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtltreeselectionsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKTreeSelection</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreeselectionsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKTreeSelection</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKTreeSelection Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>changed</entry>
+   <entry>signal_changed</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- *************************************** -->
+<!-- ********** GTKTreeViewColumn ********** -->
+<!-- *************************************** -->
+
+<section id="gtktreeviewcolumn"><title>GTKTreeViewColumn</title>
+
+<para>A visible column in a GTKTreeView widget (<xref linkend="gtktreeview" />).</para>
+
+<section id="gtktreeviewcolumnnewwithattributes">
+<title>Method: newwithattributes (class method)</title>
+<indexterm><primary>newwithattributes</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>newwithattributes</secondary></indexterm>
+<para>Create an tree view column with attributes.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeViewColumn~newwithattributes(title, rend--+-----------------+--)--><
+                                                      | +-------------+ |
+                                                      | V             | |
+                                                      +--, attr, col--+-+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+    <varlistentry>
+       <term>title</term>
+       <listitem><para>The title.</para></listitem>
+    </varlistentry>
+   <varlistentry>
+      <term>rend</term>
+      <listitem><para>The GTKCellRenderer object (<xref linkend="gtkcellrenderer" />).</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>The attribute string.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumninit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tree view column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeViewColumn()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumnsettitle">
+<title>Method: set_title</title>
+<indexterm><primary>set_title</primary></indexterm>
+<para>Set the title of a tree view column.</para>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>set_title</secondary></indexterm>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_title(title)-----------------------------------------------------><
+
+>>--title = title--------------------------------------------------------><
+]]>
+</programlisting>
+<variablelist>
+   <varlistentry>
+      <term>title</term>
+      <listitem><para>The title.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktreeviewcolumngettitle">
+<title>Method: get_title</title>
+<indexterm><primary>get_title</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>get_title</secondary></indexterm>
+<para>Get the title of a tree view column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_title(title)-----------------------------------------------------><
+
+>>--title()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumnpackstart">
+<title>Method: pack_start</title>
+<indexterm><primary>pack_start</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>pack_start</secondary></indexterm>
+<para>Pack the tree view column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--pack_start(flag)-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The expand boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumnpackend">
+<title>Method: pack_end</title>
+<indexterm><primary>pack_end</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>pack_end</secondary></indexterm>
+<para>Pack the tree view column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--pack_end(flag)-------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The expand boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumnsetattribute">
+<title>Method: set_attribute</title>
+<indexterm><primary>set_attribute</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>set_attribute</secondary></indexterm>
+<para>Set an attribute of a tree view column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_attribute(rend, attr, col)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>rend</term>
+      <listitem><para>The GTKCellRenderer object (<xref linkend="gtkcellrenderer" />).</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>attr</term>
+      <listitem><para>The attribute string.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>rend</term>
+      <listitem><para>The column number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewcolumnsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreeviewcolumnsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKTreeViewColumn</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKTreeViewColumn Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>clicked</entry>
+   <entry>signal_clicked</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKTreeView ********** -->
+<!-- ********************************* -->
+
+<section id="gtktreeview"><title>GTKTreeView</title>
+
+<para>A widget for displaying both trees and lists.</para>
+
+<section id="gtktreeviewinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an tree view.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKTreeView~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewappendcolumn">
+<title>Method: append_column</title>
+<indexterm><primary>append_column</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>append_column</secondary></indexterm>
+<para>Append a column to the tree view.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append_column(col)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column object.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewremovecolumn">
+<title>Method: remove_column</title>
+<indexterm><primary>remove_column</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>remove_column</secondary></indexterm>
+<para>Remove a column from the tree view.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--remove_column(col)---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewinsertcolumn">
+<title>Method: insert_column</title>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>insert_column</secondary></indexterm>
+<indexterm><primary>insert_column</primary></indexterm>
+<para>Insert a column to the tree view.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert_column(col, pos)----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewsetmodel">
+<title>Method: set_model</title>
+<indexterm><primary>set_model</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>set_model</secondary></indexterm>
+<para>Set the model for the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_model(model)-----------------------------------------------------><
+
+>>--model = model--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>model</term>
+      <listitem><para>The model object.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtktreeviewgetmodel">
+<title>Method: get_model</title>
+<indexterm><primary>get_model</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>get_model</secondary></indexterm>
+<para>Get the model for the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_model()----------------------------------------------------------><
+
+>>--model()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Treemodel object</para>
+</section>
+
+<section id="gtktreeviewgetselection">
+<title>Method: get_selection</title>
+<indexterm><primary>get_selection</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>get_selection</secondary></indexterm>
+<para>Get the selection for the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_selection()------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Treeselectionh object</para>
+</section>
+
+<section id="gtktreeviewexpandall">
+<title>Method: expand_all</title>
+<indexterm><primary>expand_all</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>expand_all</secondary></indexterm>
+<para>Expand all levels of the tree.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--expand_all()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtktreeviewsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>   The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtktreeviewsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKTreeView</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKTreeView Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>columns_changed</entry>
+   <entry>signal_columns_changed</entry>
+</row>
+<row>
+   <entry>cursor_changed</entry>
+   <entry>signal_cursor_changed</entry>
+</row>
+<row>
+   <entry>expand_collapse_cursor_row</entry>
+   <entry>signal_expand_collapse_cursor_row</entry>
+</row>
+<row>
+   <entry>move_cursor</entry>
+   <entry>signal_move_cursor</entry>
+</row>
+<row>
+   <entry>row_activated</entry>
+   <entry>signal_row_activated</entry>
+</row>
+<row>
+   <entry>row_collapsed</entry>
+   <entry>signal_row_collapsed</entry>
+</row>
+<row>
+   <entry>row_expanded</entry>
+   <entry>signal_row_expanded</entry>
+</row>
+<row>
+   <entry>select_all</entry>
+   <entry>signal_select_all</entry>
+</row>
+<row>
+   <entry>select_cursor_parent</entry>
+   <entry>signal_select_cursor_parent</entry>
+</row>
+<row>
+   <entry>select_cursor_row</entry>
+   <entry>signal_select_cursor_row</entry>
+</row>
+<row>
+   <entry>set_scroll_adjustments</entry>
+   <entry>signal_set_scroll_adjustments</entry>
+</row>
+<row>
+   <entry>start_interactive_search</entry>
+   <entry>signal_start_interactive_search</entry>
+</row>
+<row>
+   <entry>test_collapse_row</entry>
+   <entry>signal_test_collapse_row</entry>
+</row>
+<row>
+   <entry>test_expand_row</entry>
+   <entry>signal_test_expand_row</entry>
+</row>
+<row>
+   <entry>toggle_cursor_row</entry>
+   <entry>signal_toggle_cursor_row</entry>
+</row>
+<row>
+   <entry>unselect_all</entry>
+   <entry>signal_unselect_all</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ************************************* -->
+<!-- ********** GTKCellRenderer ********** -->
+<!-- ************************************* -->
+
+<section id="gtkcellrenderer"><title>GTKCellRenderer</title>
+
+<para>An object for rendering a single cell.</para>
+
+<section id="gtkcellrenderersetfixedsize">
+<title>Method: set_fixed_size</title>
+<indexterm><primary>set_fixed_size</primary></indexterm>
+<indexterm><primary>GTKCellRenderer</primary>
+<secondary>init</secondary></indexterm>
+<para>Sets a fixed size for the renderer object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_fixed_size(width, height)----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>width</term>
+      <listitem><para>The width.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>height</term>
+      <listitem><para>The height.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderersignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCellRenderer</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ****************************************** -->
+<!-- ********** GTKCellRendererAccel ********** -->
+<!-- ****************************************** -->
+
+<section id="gtkcellrendereraccell"><title>GTKCellRendererAccel</title>
+<para>The GTKCellRendererAccel class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderertext" />).</para>
+
+<para>This widget renders a keyboard accelerator in a cell.</para>
+
+<section id="gtkcellrendereraccelinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererAccel</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer accel object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererAccel~new()------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrendereraccelsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCellRendererAccel</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrendereraccelsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKCellRendererAccel</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKCellRendererAccel Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>accel_cleared</entry>
+   <entry>signal_accel_cleared</entry>
+</row>
+<row>
+   <entry>accel_edited</entry>
+   <entry>signal_accel_edited</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ****************************************** -->
+<!-- ********** GTKCellRendererCombo ********** -->
+<!-- ****************************************** -->
+
+<section id="gtkcellrenderercombo"><title>GTKCellRendererCombo</title>
+<para>The GTKCellRendererCombo class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderertext" />).</para>
+
+<para>Renders a combobox in a cell.</para>
+
+<section id="gtlcellrenderercomboinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererCombo</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer combo object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererCombo~new()------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtlcellrenderercombosignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCellRendererCombo</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderercombosignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKCellRendererCombo</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKCellRendererCombo Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>accel_changed</entry>
+   <entry>signal_accel_changed</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ******************************************* -->
+<!-- ********** GTKCellRendererPixbuf ********** -->
+<!-- ******************************************* -->
+
+<section id="gtkcellrendererpixbuf"><title>GTKCellRendererPixbuf</title>
+<para>The GTKCellRendererPixbuf class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderer" />).</para>
+
+<para>Renders a pixbuf in a cell.</para>
+
+<section id="gtlcellrendererpixbufinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererPixbuf</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer pixbuf object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererPixbuf~new()-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ********************************************* -->
+<!-- ********** GTKCellRendererProgress ********** -->
+<!-- ********************************************* -->
+
+<section id="gtkcellrendererprogress"><title>GTKCellRendererProgress</title>
+<para>The GTKCellRendererProgress class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderer" />).</para>
+
+<para>Renders a progressbar in a cell.</para>
+
+<section id="gtlcellrendererprogressinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererProgress</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer progress bar object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererPixbuf~new()-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ***************************************** -->
+<!-- ********** GTKCellRendererText ********** -->
+<!-- ***************************************** -->
+
+<section id="gtkcellrenderertext"><title>GTKCellRendererText</title>
+<para>The GTKCellRendererText class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderer" />).</para>
+
+<para>Renders text in a cell.</para>
+
+<section id="gtkcellrenderertextinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererText</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer text object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererText~new()-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderertextsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCellRendererText</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderersignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKCellRenderer</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKCellRebderer Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>editing_canceled</entry>
+   <entry>signal_editing_canceled</entry>
+</row>
+<row>
+   <entry>editing_started</entry>
+   <entry>signal_editing_started</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ******************************************* -->
+<!-- ********** GTKCellRendererToggle ********** -->
+<!-- ******************************************* -->
+
+<section id="gtkcellrenderertoggle"><title>GTKCellRendererToggle</title>
+<para>The GTKCellRendererToggle class is a subclass of the
+GTKCellRenderer class (<xref linkend="gtkcellrenderer" />).</para>
+
+<para>Renders a togglebutton in a cell.</para>
+
+<section id="gtkcellrenderertoggleinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a cell renderer toggle object.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCellRendererToggle~new()-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderertogglesetradio">
+<title>Method: set_radio</title>
+<indexterm><primary>set_radio</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>set_radio</secondary></indexterm>
+<para>Make the toggle a radio button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_radio(flag)------------------------------------------------------><
+
+>>--radio = flag---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The radio boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkcellrenderertogglegetradio">
+<title>Method: get_radio</title>
+<indexterm><primary>get_radio</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>get_radio</secondary></indexterm>
+<para>Get the toggle a radio button.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_radio()----------------------------------------------------------><
+
+>>--radio()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean flag</para>
+</section>
+
+<section id="gtkcellrenderertogglesetactive">
+<title>Method: set_active</title>
+<indexterm><primary>set_active</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>set_active</secondary></indexterm>
+<para>Make the toggle active.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_active(flag)-----------------------------------------------------><
+
+>>--active = flag--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>The active boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkcellrenderertogglegetactive">
+<title>Method: get_active</title>
+<indexterm><primary>get_active</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>get_active</secondary></indexterm>
+<para>Get the toggle active boolean.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_active()---------------------------------------------------------><
+
+>>--active()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean flag</para>
+</section>
+
+<section id="gtkcellrenderertogglesignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcellrenderertogglesignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKCellRendererToggle</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKCellRendererToggle Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>toggled</entry>
+   <entry>signal_toggled</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKListStore ********** -->
+<!-- ********************************** -->
+
+<section id="gtkliststore"><title>GTKListStore</title>
+
+<para>A list-like data structure that can be used with the 
+GTKTreeView widget (<xref linkend="gtktreeview" />).</para>
+
+<section id="gtkliststoreinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKListStore</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a liststore.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKListStore~new(type)----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type1</term>
+      <listitem><para>The type.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkliststoreappend">
+<title>Method: append</title>
+<indexterm><primary>append</primary></indexterm>
+<indexterm><primary>GTKListStore</primary>
+<secondary>append</secondary></indexterm>
+<para>Append a new row</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Row iterator</para>
+</section>
+
+<section id="gtkliststoresetvalue">
+<title>Method: set_value</title>
+<indexterm><primary>set_value</primary></indexterm>
+<indexterm><primary>GTKListStore</primary>
+<secondary>set_value</secondary></indexterm>
+<para>Set the value in a column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_value(iter, column, val)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iterator.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>colnum</term>
+      <listitem><para>The column number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>val</term>
+      <listitem><para>The value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKTreeStore ********** -->
+<!-- ********************************** -->
+
+<section id="gtktreestore"><title>GTKTreeStore</title>
+
+<para>A tree-like data structure that can be used with the 
+GTKTreeView widget (<xref linkend="gtktreeview" />).</para>
+
+<section id="gtltreestoreinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKTreeStore</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a tree store.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+                        +----,-----+
+                        V          |
+>>--.GTKTreeStore~new(----coltype--+--)----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>coltype</term>
+      <listitem><para>One or more column types.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtltreestoreappend">
+<title>Method: append</title>
+<indexterm><primary>append</primary></indexterm>
+<indexterm><primary>GTKTreeStore</primary>
+<secondary>append</secondary></indexterm>
+<para>Append a new row</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append(--+--------+--)-----------------------------------------------><
+             +--iter--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The parent object iter. If the <emphasis role="italic">iter</emphasis>
+      argument is not supplied a NULL pointer is assumed.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Row iterator</para>
+</section>
+
+<section id="gtltreestoresetvalue">
+<title>Method: set_value</title>
+<indexterm><primary>set_value</primary></indexterm>
+<indexterm><primary>GTKTreeStore</primary>
+<secondary>set_value</secondary></indexterm>
+<para>Set the value in a column.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+                    +--------------+
+                    V              |
+>>--set_value(iter--+--------------+--)----------------------------------><
+                    +--, col, val--+
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The iterator.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>col</term>
+      <listitem><para>The column number.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>val</term>
+      <listitem><para>The value.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtltreestoreremove">
+<title>Method: remove</title>
+<indexterm><primary>remove</primary></indexterm>
+<indexterm><primary>GTKTreeStore</primary>
+<secondary>remove_value</secondary></indexterm>
+<para>Remove a row.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_value(iter)------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>iter</term>
+      <listitem><para>The object iter.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Row iterator valid flag</para>
+</section>
+</section>
+
+</chapter>
+

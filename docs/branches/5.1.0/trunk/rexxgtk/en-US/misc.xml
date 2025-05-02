@@ -1,0 +1,1425 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxgtk.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxGTK Class Library XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Miscellaneous Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Miscellaneous</secondary></indexterm>
+
+<para>These are miscellaneous widgets which are not easily categorized.</para>
+
+<!-- *********************************** -->
+<!-- ********** GTKAccelGroup ********** -->
+<!-- *********************************** -->
+
+<section id="gtkacclegroup"><title>GTKAccelGroup</title>
+
+<para>This widget provide a set of keyboard accelerators for an entire
+GTKWindow (<xref linkend="gtkwindow" />).</para>
+
+<section id="gtkaccelgroupinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKAccelGroup</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an accelerator group.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKAccelGroup~new()-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkaccelgroupsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKAccelGroup</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkaccelgroupsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKAccelGroup</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKAccelGroup Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>accel_activate</entry>
+   <entry>signal_accel_activate</entry>
+</row>
+<row>
+   <entry>accel_changed</entry>
+   <entry>signal_accel_changed</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- *********************************** -->
+<!-- ********** GTKAdjustment ********** -->
+<!-- *********************************** -->
+
+<section id="gtkadjustment"><title>GTKAdjustment</title>
+
+<para>A widget representing an adjustable bounded value.</para>
+
+<section id="gtkadjustmentinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an adjustment.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKAdjustment~new(value, upper, lower, step, page, pagesz)----------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>value</term>
+      <listitem><para>The value.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>upper</term>
+      <listitem><para>The upper limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>lower</term>
+      <listitem><para>The lower limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>step</term>
+      <listitem><para>The step increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>page</term>
+      <listitem><para>The page increment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pagesz</term>
+      <listitem><para>The page size.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>An adjustment object.</para>
+</section>
+
+<section id="gtkadjustmentgetvalue">
+<title>Method: get_value</title>
+<indexterm><primary>get_value</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>get_value</secondary></indexterm>
+<para>Get the current value.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_value()----------------------------------------------------------><
+
+>>--value()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Value</para>
+</section>
+
+<section id="gtkadjustmentsetvalue">
+<title>Method: set_value</title>
+<indexterm><primary>set_value</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>set_value</secondary></indexterm>
+<para>Set the current value.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_value(value)-----------------------------------------------------><
+
+>>--value = value--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>value</term>
+      <listitem><para>The new value.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkadjustmentclamppage">
+<title>Method: clamp_page</title>
+<indexterm><primary>clamp_page</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>clamp_page</secondary></indexterm>
+<para>Clamp the page.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--clamp_page(lower, upper)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>lower</term>
+      <listitem><para>The lower limit.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>upper</term>
+      <listitem><para>The upper limit.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkadjustmentsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkadjustmentsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKAdjustment</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKAdjustment Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>changed</entry>
+   <entry>signal_changed</entry>
+</row>
+<row>
+   <entry>value_changed</entry>
+   <entry>signal_value_changed</entry>
+</row>
+</tbody>
+
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKCalendar ********** -->
+<!-- ********************************* -->
+
+<section id="gtkcalendar"><title>GTKCalendar</title>
+<para>The GTKCalendar class is a subclass of the
+GTKWidget class (<xref linkend="gtkwidget" />).</para>
+
+<para>This widget presents a claendar to the user. The calendar is completely interactive
+and can be used to provide date selection capabilities to an application.</para>
+
+<section id="gtkcalendarinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a calendar.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKCalendar~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>A calendar object.</para>
+</section>
+
+<section id="gtkcalendarselectmonth">
+<title>Method: select_month</title>
+<indexterm><primary>select_month</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>select_month</secondary></indexterm>
+<para>Select a month.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--select_month(month, year)--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>month</term>
+      <listitem><para>The month.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>year</term>
+      <listitem><para>The year.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtkcalendarselectday">
+<title>Method: select_day</title>
+<indexterm><primary>select_day</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>select_day</secondary></indexterm>
+<para>Select a day.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--select_day(day)------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>day</term>
+      <listitem><para>The day.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcalendarmarkday">
+<title>Method: mark_day</title>
+<indexterm><primary>mark_day</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>mark_day</secondary></indexterm>
+<para>Mark a day.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--mark_day(day)--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>day</term>
+      <listitem><para>The day.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtkcalendarunmarkday">
+<title>Method: unmark_day</title>
+<indexterm><primary>unmark_day</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>unmark_day</secondary></indexterm>
+<para>Unmark a day.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--unmark_day(day)------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>day</term>
+      <listitem><para>The day.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean</para>
+</section>
+
+<section id="gtkcalendarclearmarks">
+<title>Method: clear_marks</title>
+<indexterm><primary>clear_marks</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>clear_marks</secondary></indexterm>
+<para>Clear all marks.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--clear_marks()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkcalendargetdisplayoptions">
+<title>Method: get_display_options</title>
+<indexterm><primary>get_display_options</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>get_display_options</secondary></indexterm>
+<para>Get the display options.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_display_options()------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Options as a single decimal number</para>
+</section>
+
+<section id="gtkcalendarsetdisplayoptions">
+<title>Method: set_display_options</title>
+<indexterm><primary>set_display_options</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>set_display_options</secondary></indexterm>
+<para>Set the display options.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_display_options(flags)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flags</term>
+      <listitem><para>Options as a single decimal number.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcalendargetdate">
+<title>Method: get_date</title>
+<indexterm><primary>get_date</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>get_date</secondary></indexterm>
+<para>Get the date in Rexx format date().</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_date()-----------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The date.</para>
+</section>
+
+<section id="gtkcalendarsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkcalendarsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKCalendar</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKCalendar Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>day_selected</entry>
+   <entry>signal_day_selected</entry>
+</row>
+<row>
+   <entry>day_selected_double_click</entry>
+   <entry>signal_day_selected_double_click</entry>
+</row>
+<row>
+   <entry>month_changed</entry>
+   <entry>signal_month_changed</entry>
+</row>
+<row>
+   <entry>next_month</entry>
+   <entry>signal_next_month</entry>
+</row>
+<row>
+   <entry>next_year</entry>
+   <entry>signal_next_year</entry>
+</row>
+<row>
+   <entry>prev_month</entry>
+   <entry>signal_prev_month</entry>
+</row>
+<row>
+   <entry>prev_year</entry>
+   <entry>signal_prev_year</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKEventBox ********** -->
+<!-- ********************************* -->
+
+<section id="gtkeventbox"><title>GTKEventBox</title>
+<para>The GTKEventBox class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>A widget used to catch events for widgets which do not have their own window.</para>
+
+<section id="gtkeventboxinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKEventBox</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an event box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKEventBox~new()---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>An eventbox object.</para>
+</section>
+
+<section id="gtkeventboxsetabovechild">
+<title>Method: set_above_child</title>
+<indexterm><primary>set_above_child</primary></indexterm>
+<indexterm><primary>GTKEventBox</primary>
+<secondary>set_above_child</secondary></indexterm>
+<para>Set the z-order position with respect to a child.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_above_child(flag)------------------------------------------------><
+
+>>--above_child = flag---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkeventboxgetabovechild">
+<title>Method: get_above_child</title>
+<indexterm><primary>get_above_child</primary></indexterm>
+<indexterm><primary>GTKEventBox</primary>
+<secondary>get_above_child</secondary></indexterm>
+<para>Get the z-order position with respect to a child.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_above_child()----------------------------------------------------><
+
+>>--above_child()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean.</para>
+</section>
+
+<section id="gtkeventboxsetvisiblewindow">
+<title>Method: set_visible_window</title>
+<indexterm><primary>set_visible_window</primary></indexterm>
+<indexterm><primary>GTKEventBox</primary>
+<secondary>set_visible_window</secondary></indexterm>
+<para>Set the visibility of the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_visible_window(flag)---------------------------------------------><
+
+>>--visible_window = flag------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>flag</term>
+      <listitem><para>Boolean.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkeventboxgetvisiblewindow">
+<title>Method: get_visible_window</title>
+<indexterm><primary>get_visible_window</primary></indexterm>
+<indexterm><primary>GTKEventBox</primary>
+<secondary>get_visible_window</secondary></indexterm>
+<para>Get the visibility of the window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_visible_window()-------------------------------------------------><
+
+>>--visible_window()-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Boolean.</para>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKHandleBox ********** -->
+<!-- ********************************** -->
+
+<section id="gtkhandlebox"><title>GTKHandleBox</title>
+<para>The GTKHandleBox class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>A widget for detachable window portions.</para>
+
+<section id="gtkhandleboxinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>init</secondary></indexterm>
+<para>Create an handle box.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKHandleBox~new()--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkhandleboxsetshadowtype">
+<title>Method: set_shadow_type</title>
+<indexterm><primary>set_shadow_type</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>set_shadow_type</secondary></indexterm>
+<para>Set the handle box shadow type.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_shadow_type(type)------------------------------------------------><
+
+>>--shadow_type = type---------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The shadow type.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkhandleboxsetposition">
+<title>Method: set_position</title>
+<indexterm><primary>set_position</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>set_position</secondary></indexterm>
+<para>Set the handle box position type.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_position(type)---------------------------------------------------><
+
+>>--position = type------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The position type.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkhandleboxsetsnapedge">
+<title>Method: set_snap_edge</title>
+<indexterm><primary>set_snap_edge</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>set_snap_edge</secondary></indexterm>
+<para>Set the handle box snap edge type.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_snap_edge(type)--------------------------------------------------><
+
+>>--snap_edge = type-----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>type</term>
+      <listitem><para>The snap edge type.</para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="gtkhandleboxsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkhandleboxsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKHandleBox</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKHandleBox Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>child_attached</entry>
+   <entry>signal_child_attached</entry>
+</row>
+<row>
+   <entry>child_detached</entry>
+   <entry>signal_child_detached</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GTKViewport ********** -->
+<!-- ********************************* -->
+
+<section id="gtkviewport"><title>GTKViewport</title>
+<para>The GTKViewport class is a subclass of the
+GTKContainer class (<xref linkend="gtkcontainer" />).</para>
+
+<para>An adapter which makes widgets scrollable.</para>
+
+<section id="gtkviewportinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKViewport</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new viewport.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKViewport~new(hadj, vadj)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>hadj</term>
+      <listitem><para>The horizontal adjustment.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>vadj</term>
+      <listitem><para>The vertical adjustment.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkviewportsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKViewport</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkviewportsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKViewport</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKViewport Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>set_scroll_adjustments</entry>
+   <entry>signal_set_scroll_adjustments</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GTKClipboard ********** -->
+<!-- ********************************** -->
+
+<section id="gtkclipboard"><title>GTKClipboard</title>
+
+<para>A widget which provides access to the system clipboard.</para>
+
+<section id="gtkclipboardinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKClipboard</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a clipboard.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKClipboard~new()--------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+</section>
+
+<!-- ********************************* -->
+<!-- ********** GSList ********** -->
+<!-- ********************************* -->
+
+<section id="gslist"><title>GSList</title>
+
+<para>This is a singally linked list class. It is used by some of the GTK+ widgets.</para>
+
+<section id="gslistinit">
+<title>init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new GSList.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GSList~new()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistuninit">
+<title>uninit</title>
+<indexterm><primary>uninit</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>uninit</secondary></indexterm>
+<para>Destroy a new GSList.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--uninit()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistappend">
+<title>append</title>
+<indexterm><primary>append</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>append</secondary></indexterm>
+<para>Append an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append(item)---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistprepend">
+<title>prepend</title>
+<indexterm><primary>prepend</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>prepend</secondary></indexterm>
+<para>Prepend an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend(item)--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistinsert">
+<title>insert</title>
+<indexterm><primary>insert</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>insert</secondary></indexterm>
+<para>Insert an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert(item, pos)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position (1-based).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistitem">
+<title>item</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>item</secondary></indexterm>
+<para>Get the list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--item()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>Pointer to the item.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslisthead">
+<title>head</title>
+<indexterm><primary>head</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>first</secondary></indexterm>
+<para>Get the first list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--head()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslistnext">
+<title>next</title>
+<indexterm><primary>next</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>next</secondary></indexterm>
+<para>Get the next list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--next()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gslisttoarray">
+<title>toarray</title>
+<indexterm><primary>toarray</primary></indexterm>
+<indexterm><primary>GSList</primary>
+<secondary>toarray</secondary></indexterm>
+<para>Get the next list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--toarray()------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ******************************** -->
+<!-- ********** GList ********** -->
+<!-- ******************************** -->
+
+<section id="glist"><title>GList</title>
+
+<para>This is a double linked list class. It is used by some of the GTK+ widgets.</para>
+
+<section id="glistinit">
+<title>init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a new GList.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GList~new()---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistuninit">
+<title>uninit</title>
+<indexterm><primary>uninit</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>uninit</secondary></indexterm>
+<para>Destroy a GList.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--uninit()-------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistappend">
+<title>append</title>
+<indexterm><primary>GrxGListAppend</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>append</secondary></indexterm>
+<para>Append an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--append(item)---------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistprepend">
+<title>prepend</title>
+<indexterm><primary>prepend</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>prepend</secondary></indexterm>
+<para>Prepend an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--prepend(item)--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistinsert">
+<title>insert</title>
+<indexterm><primary>insert</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>insert</secondary></indexterm>
+<para>Insert an item to the list.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--insert(item, pos)----------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>The item string.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>pos</term>
+      <listitem><para>The position (1-based).</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistitem">
+<title>item</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>item</secondary></indexterm>
+<para>Get the list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--item()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>item</term>
+      <listitem><para>Pointer to the item.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glisthead">
+<title>head</title>
+<indexterm><primary>head</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>head</secondary></indexterm>
+<para>Get the first list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--first()--------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glistnext">
+<title>next</title>
+<indexterm><primary>next</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>next</secondary></indexterm>
+<para>Get the next list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--next()---------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="glisttoarray">
+<title>toarray</title>
+<indexterm><primary>toarray</primary></indexterm>
+<indexterm><primary>GList</primary>
+<secondary>toarray</secondary></indexterm>
+<para>Get the next list item.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--toarray()------------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+</section>
+
+<!-- ********************************** -->
+<!-- ********** GdkRectangle ********** -->
+<!-- ********************************** -->
+
+<section id="gdkrectangle">
+<title>GdkRectangle</title>
+<indexterm><primary>GdkRectangle</primary></indexterm>
+
+<para>This class is used by some of the GTK+ classes to describe a rectangle.</para>
+
+<para><emphasis role="bold">Read/Write Attributes</emphasis></para>
+<simplelist type="vert" columns="1">
+<member>x</member>
+<member>y</member>
+<member>width</member>
+<member>height</member>
+</simplelist>
+</section>
+
+</chapter>
+

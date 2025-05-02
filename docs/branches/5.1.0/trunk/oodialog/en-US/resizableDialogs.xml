@@ -1,0 +1,3655 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2012-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chpResizableDialogs" xreflabel="Resizable Dialogs"><title>Resizable Dialogs</title>
+<indexterm><primary>resizable dialogs</primary></indexterm>
+<para>
+  In the early versions of Windows, dialogs in general were always fixed in size. Even today, most dialogs are fixed in size.
+  However, the use of resizable dialogs has become very common. Giving the user the ability to resize the dialogs in your
+  program is a nice feature. Especially if the dialogs contain list boxes, list-views, or tree-views.
+</para>
+<para>
+  ooDialog provides two basic ways to make dialogs resizable. One is through the <xref linkend="clsDlgAreaU"/> class and the
+  other is through the <xref linkend="clsResizingAdmin"/> class.
+</para>
+
+<section id="clsDlgArea" xreflabel="DlgArea"><title>DlgArea Class</title>
+<indexterm><primary>DlgArea class</primary></indexterm>
+<para>
+  The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
+  dynamically defined dialog.  The class defines an area within the <xref linkend="defClientArea"/> of
+  a <xref linkend="clsUserDialog"/>. It is a helper class for the
+ <xref linkend="mthDefineDialog"/> method of a <computeroutput>UserDialog</computeroutput> and has no
+  effect on any <xref linkend="ovvUnderlying"/> window.
+</para>
+<para>
+  Note that the <computeroutput>DlgArea</computeroutput> class does not, in and of itself, produce a resizable dialog. It is
+  the use of its subclass, the <xref linkend="clsDlgAreaU"/> class that produces a resizable dialog.
+</para>
+<para>
+  The methods and attributes of the <computeroutput>DlgArea</computeroutput> provide the coordinates of, and within, the
+  defined area. All coordinates are specified as <emphasis role="italic">client area</emphasis> coordinates. That is,
+  all coordinates are relative to the origin (0, 0) of the client area of the dialog.
+</para>
+<para>
+  The following figure shows the measurement attributes used to position a <computeroutput>DlgArea</computeroutput> on
+  the client area of a <computeroutput>UserDialog</computeroutput>.
+</para>
+<figure id="dlgareafig"><title>DlgArea Measurements</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/dlgArea.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<section id="sctMethodsDlgArea"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the
+  <computeroutput>DlgArea</computeroutput> class:
+
+<table id="tblMethodsDlgArea" frame="all"> <title>DlgArea Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsDlgArea"/></entry>
+<entry>Instantiates a new <computeroutput>DlgArea</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrB"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the bottom margin of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrHeight"/></entry>
+<entry>Reflects the height of the dialog area in dialog units.</entry>
+</row>
+<row>
+<entry><xref linkend="atrL"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLeft"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrMargin"/></entry>
+<entry>Reflects the size, in dialog units, of the dialog area margin.</entry>
+</row>
+<row>
+<entry><xref linkend="atrR"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the right margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrT"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrTop"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrWidthClsDlgArea"/></entry>
+<entry>Reflects the width of the dialog area in dialog units.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthCX"/></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCY"/></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthH"/></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHR"/></entry>
+<entry>Returns the remaining height, in dialog units, between the last y invocation and the bottom margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRightClsDlgArea"/></entry>
+<entry>Returns the x coordinate, in dialog units, of the right edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthW"/></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWR"/></entry>
+<entry>Returns the remaining width, in dialog units, between the last x invocation and the right margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthXClsDlgArea"/></entry>
+<entry>Returns a x coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthYClsDlgArea"/></entry>
+<entry>Returns a y coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsDlgArea" xreflabel="init"><title>init</title>
+<indexterm><primary>new</primary><secondary>DlgArea class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--,--width--,--height--+-------------+--)------><
+                                        +--,--margin--+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>DlgArea</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>x [required]</term>
+      <listitem>
+      <para>
+        The x coordinate for the area to be defined. The coordinate is specified in <xref linkend="defDialogUnit"/>s and is
+        relative to the top left corner of the <xref linkend="defClientArea"/> of the
+        <computeroutput>UserDialog</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y [required]</term>
+      <listitem>
+      <para>
+        The y coordinate for the area to be defined. The coordinate is specified in dialog units and is relative to the
+        top left corner of the client area of the <computeroutput>UserDialog</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>width [required]</term>
+      <listitem>
+      <para>
+        The width, in dialog units, of the area being defined.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>height [required]</term>
+      <listitem>
+      <para>
+        The height, in dialog units, of the area being defined.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin [optional]</term>
+      <listitem>
+      <para>
+        An inner margin, in dialog units, within the dialog area to be left blank. The default is 5
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This examples defines two dialog areas in a dialog. The first area, <emphasis role="italic">u</emphasis>, is defined
+    for the entire client area of the dialog. The second area, <computeroutput>b</computeroutput> is defined as a
+    sub-area of the <computeroutput>u</computeroutput> area.
+  </para>
+
+<programlisting>
+<![CDATA[
+u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)
+b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="atrT" xreflabel="t"><title>t (Attribute)</title>
+<indexterm><primary>t</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>t</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--t--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top margin of the area.
+</para>
+
+</section>
+
+<section id="atrL" xreflabel="l"><title>l (Attribute)</title>
+<indexterm><primary>l</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>l</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--l--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left margin of the area.
+</para>
+
+</section>
+
+<section id="atrB" xreflabel="b"><title>b (Attribute)</title>
+<indexterm><primary>b</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>b</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--b--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the bottom margin of the area.
+</para>
+
+<para></para>
+</section>
+
+<section id="atrR" xreflabel="r"><title>r (Attribute)</title>
+<indexterm><primary>r</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>r</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--r--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the right margin of the area.
+</para>
+
+</section>
+
+<section id="atrTop" xreflabel="top"><title>top (Attribute)</title>
+<indexterm><primary>top</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--top------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top edge of the area.
+</para>
+
+</section>
+
+<section id="atrLeft" xreflabel="left"><title>left (Attribute)</title>
+<indexterm><primary>left</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--left-----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left edge of the area.
+</para>
+
+</section>
+
+<section id="atrWidthClsDlgArea" xreflabel="width"><title>width (Attribute)</title>
+<indexterm><primary>width</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--width----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the width of the dialog area in dialog units.
+</para>
+
+</section>
+
+<section id="atrHeight" xreflabel="height"><title>height (Attribute)</title>
+<indexterm><primary>height</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--height---------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the height of the dialog area in dialog units.
+</para>
+
+</section>
+
+<section id="atrMargin" xreflabel="margin"><title>margin (Attribute)</title>
+<indexterm><primary>margin</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>margin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--margin---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the size, in dialog units, of the dialog area margin.
+</para>
+
+</section>
+
+<section id="mthCX" xreflabel="cx"><title>cx</title>
+<indexterm><primary>cx</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cx(--+---------+--)--------------------------><
+         +--flag---+
+
+]]>
+</programlisting>
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area. The <emphasis role="italic">cx</emphasis>
+  and <xref linkend="mthW"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+ <xref linkend="mthXClsDlgArea"/> method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCY" xreflabel="cy"><title>cy</title>
+<indexterm><primary>cy</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cy(--+---------+--)--------------------------><
+         +--flag---+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">cy</emphasis> and <xref linkend="mthH"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 4
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+ <xref linkend="mthYClsDlgArea"/> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthH" xreflabel="h"><title>h</title>
+<indexterm><primary>h</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>h</secondary></indexterm>
+
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">h</emphasis> and <xref linkend="mthCY"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 5
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+ <xref linkend="mthYClsDlgArea"/> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHR" xreflabel="hr"><title>hr</title>
+<indexterm><primary>hr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>hr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hr-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the remaining height, in dialog units, between the last <xref linkend="mthYClsDlgArea"/> invocation and
+  the bottom margin of the area. This is equivalent to <xref linkend="mthH"/>("R").
+</para>
+
+</section>
+
+<section id="mthRightClsDlgArea" xreflabel="right"><title>right</title>
+<indexterm><primary>right</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>right</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--right----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the x coordinate, in dialog units, of the right edge of the area.
+</para>
+
+</section>
+
+<section id="mthW" xreflabel="w"><title>w</title>
+<indexterm><primary>w</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>w</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--w(--+---------+--)---------------------------><
+        +--flag---+
+
+]]>
+</programlisting>
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area. The <xref linkend="mthCX"/> and
+  <emphasis role="italic">w</emphasis> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+ <xref linkend="mthXClsDlgArea"/> method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWR" xreflabel="wr"><title>wr</title>
+<indexterm><primary>wr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>wr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wr-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the remaining width, in dialog units, between the last <xref linkend="mthXClsDlgArea"/> invocation and the
+  right margin of the area. This is equivalent to <xref linkend="mthW"/>("R").
+</para>
+
+</section>
+
+<section id="mthXClsDlgArea" xreflabel="x"><title>x</title>
+<indexterm><primary>x</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>x</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--x(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a x coordinate relative to the <xref linkend="defClientArea"/> of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the x coordinate of the left margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
+        an amount to the right of the left margin. When negative, the offset is an amount to the left of the right
+        margin. Both concrete and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <xref linkend="defClientArea"/> x coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthYClsDlgArea" xreflabel="y"><title>y</title>
+<indexterm><primary>y</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>y</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--y(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a y coordinate relative to the <xref linkend="defClientArea"/> of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the y coordinate of the top margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
+        an amount below the top margin. When negative, the offset is an amount above the bottom margin. Both concrete
+        and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <xref linkend="defClientArea"/> y coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="exampleDlgArea"><title>DlgArea Example</title>
+<para>
+  With a <computeroutput>UserDialog</computeroutput> we want the top left to be an edit control, with an area for
+  buttons on the right and a status area below.
+</para>
+<para>
+  We decide to give 70% of the width and 90% of the height to the edit control. We leave the margin as the default.
+</para>
+<figure id="dlgareaplanfig"><title>DlgArea Plan</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/dlgareaplan.png" />
+</imageobject>
+</mediaobject>
+</figure>
+<para>
+  Here is what our defineDialog method might look like:
+</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method defineDialog
+/* ------------------------------------------------------------------------- */
+/* define DlgArea named u as whole of user dialog                            */
+u=.dlgArea~new(  0       ,         0,self~SizeX,Self~SizeY)   /* whole dlg   */
+
+/* define DlgArea named e within DlgArea u for edit control                  */
+e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))
+
+/* define DlgArea named s within DlgArea u for Status Area in remaining height*/
+s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
+
+/* define DlgArea named b within DlgArea u for Button area                   */
+b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
+
+/* Edit control coterminous with area e margins                              */
+self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
+
+/* Status Area Coterminous with area s margins                               */
+self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
+
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~createPushButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"), ,"Button" i,"Button"||i)
+end /* DO */
+
+/* ok button 15 dialog units high at bottom of area b                        */
+self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
+]]>
+</programlisting>
+<para>
+  Here is the resultant dialog.
+</para>
+<figure id="dlgareasample"><title>Sample DlgArea</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/sample1.png"/>
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+</section>
+
+<section id="clsDlgAreaU" xreflabel="DlgAreaU"><title>DlgAreaU Class</title>
+<indexterm><primary>DlgAreaU class</primary></indexterm>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> class is a subclass of the <xref linkend="clsDlgArea"/>
+  class that helps with the creation of dynamically resizable dialogs. This class provides assistance in resizing and /
+  or positioning controls when a dialog is resized.  When the <computeroutput>DlgArea</computeroutput> and
+  <computeroutput>DlgAreaU</computeroutput> classes are used together, they provide a convenient way to create
+  resizable dialogs.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>DlgAreaU</computeroutput> class uses the <emphasis
+  role="italic">.Object</emphasis> class's <emphasis role="italic">source</emphasis> class method to parse the source
+  code of the dialog's <xref linkend="mthDefineDialog"/> method.  This source is not available if the
+  <emphasis role="italic">rexxc</emphasis> program is used to tokenize the source code. Therefore, <emphasis
+  role="italic">DlgAreaU</emphasis> class will <emphasis role="bold">not</emphasis> work if <emphasis
+  role="italic">rexxc</emphasis> is used to tokenize the source code.
+</para>
+<para>
+  The other implication of using the <emphasis role="italic">source</emphasis> method to parse the dialog's <emphasis
+  role="italic">defineDialog</emphasis> method is that the <computeroutput>DlgAreaU</computeroutput> class can only be
+  used with a <xref linkend="clsUserDialog"/>. It will not work with any other dialog class, such as the
+ <xref linkend="clsResDialog"/> or <xref linkend="clsRcDialog"/> classes.
+</para>
+
+<section id="sctMethodsDlgAreaU"><title>Method Table</title>
+<para>
+  Instances of the <computeroutput>DlgAreaU</computeroutput> class implement the methods listed in the following
+  table.
+
+<table id="tDlgAreaUClass" frame="all">
+<title>DlgAreaU Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsDlgAreaU"/></entry>
+<entry>Instantiates a new <computeroutput>DlgAreaU</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrCorrectionFactor"/></entry>
+<entry>A value used to fix problems in the conversion of pixels to dialog units by adjusting the ratio of original size to change in size.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLastError"/></entry>
+<entry>Holds the details if an error was encountered when parsing the dialog's defineDialog method.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNoMove"/></entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be moved during a resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNoResize"/></entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be resized during a resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="atrUpdateOnResize"/></entry>
+<entry>Controls whether the DlgAreaU object forces the dialog controls to redraw after every resize event.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNoMovePut"/></entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be moved during the resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNoResizePut"/></entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be resized during the resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="mthResizeClsDlgAreaU"/></entry>
+<entry>Causes the DlgAreaU object to resize and reposition all the dialog controls in the dialog.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section id="mthNewClsDlgAreaU" xreflabel="new"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(-dlg--+----------+--+------------+--+--------+-)--------><
+              +-,-margin-+  +-,-noResize-+  +-noMove-+
+
+]]>
+</programlisting>
+
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> object creates a dialog area coterminous with the calling dialog. It is
+  a subclass of the <xref linkend="clsDlgArea"/> class and therefore inherits all the methods and
+  attributes of that class.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>dlg</term>
+      <listitem>
+      <para>
+        The resizable dialog you are creating a dialog area for. This dialog must be subclassed from a
+       <xref linkend="clsUserDialog"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin</term>
+      <listitem>
+      <para>
+        The <computeroutput>DlgArea</computeroutput> <xref linkend="atrMargin"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noResize</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The IDs may be numeric
+        or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noMove</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The IDs may be
+        numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="atrCorrectionFactor" xreflabel="correctionFactor"><title>correctionFactor (Attribute)</title>
+<indexterm><primary>correctionFactor</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>correctionFactor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--correctionFactor-----------------------------><
+
+>>--correctionFactor=num-------------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute containing the value used to adjust the ratio of the top &amp; left margins to the bottom &amp; right
+  margins. (The default correction factor is set to 1.05.) The Possible <link linkend="sctDlgAreaUProblems">Problems</link>
+  section has additional details on using the <emphasis role="italic">correctionFactor</emphasis> attribute.
+</para> </section>
+
+<section id="atrLastError" xreflabel="lastError"><title>lastError (Attribute)</title>
+<indexterm><primary>lastError</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>lastError</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastError------------------------------------><
+
+>>--lastError = errMsg---------------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute holding the details if an error was encountered when parsing the calling dialog's
+ <xref linkend="mthDefineDialog"/> method.  The value of the attribute is .nil if no error occurred.
+</para> </section>
+
+<section id="atrNoMove" xreflabel="noMove"><title>noMove (Attribute)</title>
+<indexterm><primary>noMove</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMove</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMove---------------------------------------><
+
+>>--noMove = ids---------------------------------><
+]]>
+</programlisting>
+
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be moved during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <xref linkend="defSymbolicId"/> IDs for the dialog controls by adding to the set
+  through the <xref linkend="mthNoMovePut"/> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noMove</emphasis> attribute to add a resource ID, only numeric IDs should be used.
+</para>
+</section>
+
+<section id="atrNoResize" xreflabel="noResize"><title>noResize (Attribute)</title>
+<indexterm><primary>noResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noResize</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>--noResize-------------------------------------><
+
+>>--noResize = ids-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be resized during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <xref linkend="defSymbolicId"/> IDs for the dialog controls by adding to the set
+  through the <xref linkend="mthNoResizePut"/> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noResize</emphasis> attribute to add a resource ID, only numeric IDs should be used.
+</para>
+</section>
+
+<section id="atrUpdateOnResize" xreflabel="updateOnResize"><title>updateOnResize (Attribute)</title>
+<indexterm><primary>updateOnResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>updateOnResize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateOnResize-------------------------------><
+>>--updateOnResize = boolean---------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute that controls whether the <computeroutput>DlgAreaU</computeroutput> object forces the dialog controls to
+  redraw during every resize event.  The default value of this attribute is <computeroutput>.true</computeroutput>, the
+  dialog controls are forced to redraw on every resize event. Setting this attribute to false will prevent the dialog
+  controls from being forced to redraw.
+</para>
+<para>
+  When the <emphasis role="italic">updateOnResize</emphasis> attribute is <computeroutput>.false</computeroutput>, it
+  becomes the programmer's responsibility to force the dialog controls to redraw when the user has stopped resizing the
+  dialog. This can be down by using the <xref linkend="mthConnectSizeMoveEnded"/> method. Having the dialog
+  controls redraw only once eliminates flicker while the user is sizing the dialog. However, the dialog controls do not
+  change size or position while the using is sizing the dialog. In the <computeroutput>samples\oodialog</computeroutput>
+  directory of the ooRexx installation are two example programs: <computeroutput>dlgAreaUDemo.rex</computeroutput>
+  redraws the dialog controls on every resize event. <computeroutput>dlgAreaUDemoTwo.rex</computeroutput> only redraws
+  the controls once, when the user has stopped resizing the controls. Contrast the two programs to determine which
+  method best suits the needs or your program.
+</para>
+</section>
+
+<section id="mthNoMovePut" xreflabel="noMovePut"><title>noMovePut</title>
+<indexterm><primary>noMovePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMovePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMovePut(--resourceID--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a dialog control to the <xref linkend="atrNoMove"/> of dialog controls that will not be moved during the
+  resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be moved during the resize event. May be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <xref linkend="defSymbolicId"/> IDs for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noMove</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthNoResizePut" xreflabel="noResizePut"><title>noResizePut</title>
+<indexterm><primary>noResizePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noResizePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noResizePut(--resourceID--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a dialog control to the <xref linkend="atrNoResize"/> of dialog controls that will not be resized during
+  the resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be resized during the resize event. May be symbolic or
+      numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <xref linkend="defSymbolicId"/> IDs for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noResize</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthResizeClsDlgAreaU" xreflabel="resize"><title>resize</title>
+<indexterm><primary>resize</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resize(--dlgObj--,--sizeInfo--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">resize</emphasis> method causes the <computeroutput>DlgAreaU</computeroutput> object to
+  resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
+  the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
+  redraws the controls. However, the updating is dependent on the value of the
+ <xref linkend="atrUpdateOnResize"/> attribute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlgObj [required]</term>
+    <listitem>
+    <para>
+      The dialog which is being resized. The dialog must be the same dialog used to instantiate the
+ <xref linkend="mthNewClsDlgAreaU"/> <computeroutput>DlgAreaU</computeroutput> object.
+    </para> </listitem></varlistentry>
+    <varlistentry><term>sizeInfo [required]</term>
+    <listitem>
+    <para>
+      The new size of the dialog. Normally, <emphasis role="italic">sizeInfo</emphasis> comes from the value passed to
+      your resize <link linkend="paraResizeEvent">event</link> handler.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The most common way to use the <computeroutput>DlgAreaU</computeroutput> class is to connect the
+ <xref linkend="mthConnectResize"/> event to an event handling method in a resizable dialog. Then the
+    <emphasis role="italic">sizeInfo</emphasis> arg to the event handler is simply passed on to the <emphasis
+    role="italic">resize</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a typical event handling method in a resizable dialog that makes use of the
+    <computeroutput>DlgAreaU</computeroutput> class
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+  expose u
+
+  self~connectResize('onResize')
+
+  u = .dlgAreaU~new(self)
+  ...
+
+
+::method onResize unguarded
+  expose u
+  use arg sizeEvent, sizeInfo
+
+  u~resize(self, sizeInfo)
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::resize() -->
+
+<section id="sctCeateResizableDialogs"><title>Creating resizable Dialogs</title>
+<indexterm><primary>dynamically resizable dialogs</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resizable dialogs</secondary></indexterm>
+<para>
+  You can use the <computeroutput>DlgAreaU</computeroutput> class to facilitate creating dynamically resizable dialogs.
+  However the following restrictions apply:
+</para>
+<para>
+  The dialog must be a <xref linkend="clsUserDialog"/> with all dialog controls created in the dialog
+  template from within the <xref linkend="mthDefineDialog"/> method. In the
+ <xref linkend="mthCreate"/> or <xref linkend="mthCreateCenter"/> method, the dialog
+  template must be created with the THICKFRAME option.
+</para>
+<para id="paraResizeEvent">
+  You must connect the <xref linkend="mthConnectResize"/> event to a method in your dialog. Add the
+  following code somewhere in your dialog code. The <emphasis role="italic">init</emphasis>, <emphasis
+  role="italic">defineDialog</emphasis> or <emphasis role="italic">initDialog</emphasis> methods are all a suitable
+  place for the line. The <emphasis role="italic">methodName</emphasis> argument is the name of your event handling
+  method and can be any appropriate method name.
+</para>
+
+<programlisting>
+<![CDATA[
+self~connectResize(methodName)
+]]>
+</programlisting>
+
+<para>
+  Your <emphasis role="italic">defineDialog</emphasis> method must start with these lines:
+</para>
+<programlisting>
+<![CDATA[
+expose u
+u = .dlgAreaU~new(self)
+]]>
+</programlisting>
+<para>
+  Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the
+  <link linkend="sctCreateMethods">create</link>/> control method parameters. Although you can use references to
+  <xref linkend="clsDlgArea"/> attributes, so
+</para>
+<programlisting>
+<![CDATA[
+  self~createPushButton(IDC_PB, 5, 100, 45, 15, , "MyButton", "Pressed")
+  self~createPushButton(IDC_PB_1, b~x, b~y("10%"), b~w, b~h("9%"), , "Button" 1, "Button"||1)
+]]>
+</programlisting>
+  <para>
+    work fine, whereas
+  </para>
+<programlisting>
+<![CDATA[
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~createPushButton(12+i, b~x, b~y((i * 10)||"%"), b~w, b~h("9%"), , "Button" i, "Button"||i)
+end /* DO */
+]]>
+</programlisting>
+<para>
+  would fail because the <emphasis role="italic">createPushButton</emphasis> method references the variable
+  <computeroutput>i</computeroutput> within its parameters.
+</para>
+<para>
+  To debug your <computeroutput>DlgAreaU</computeroutput> object call/insert the following after the instantiation:
+</para>
+<programlisting>
+<![CDATA[
+if u~lastError \= .nil then call errorDialog u~lastError
+]]>
+</programlisting>
+<para>
+  Your event handler code for the RESIZE event must pass on the second argument of the method to the
+  <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method.
+</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method OnResize
+/* ------------------------------------------------------------------------- */
+  expose u
+  use arg sizeEvent, sizeInfo
+
+  u~resize(self, sizeInfo)
+
+]]>
+</programlisting>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method will then
+  automatically resize &amp; position the dialog controls in your dialog that were added to the dialog template with the
+  following methods. The resizing takes place when the dialog frame is dragged, or the minimize, maximize, or restore
+  buttons are pressed:
+</para>
+<table frame="all">
+<title>DlgAreaU Automatic Resize Controls</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+  <entry>createBitmapbutton</entry>
+  <entry>createBlackframe</entry>
+  <entry>createBlackrect</entry>
+  <entry>createCheckbox</entry>
+</row>
+<row>
+  <entry>createCombobox</entry>
+  <entry>createEdit</entry>
+  <entry>createDatetimePicker</entry>
+  <entry>createEdit</entry>
+</row>
+<row>
+  <entry>createEtchedHorizontal</entry>
+  <entry>createEtchedVertical</entry>
+  <entry>createGrayFrame</entry>
+  <entry>createGrayRect</entry>
+</row>
+<row>
+  <entry>createGroupBox</entry>
+  <entry>createListBox</entry>
+  <entry>createListView</entry>
+  <entry>createMonthCalendar</entry>
+</row>
+<row>
+  <entry>createPasswordEdit</entry>
+  <entry>createProgressBar</entry>
+  <entry>createPushButton</entry>
+  <entry>createRadioButton</entry>
+</row>
+<row>
+  <entry>createScrollBar</entry>
+  <entry>createStatic</entry>
+  <entry>createStaticFrame</entry>
+  <entry>createStaticImage</entry>
+</row>
+<row>
+  <entry>createStaticText</entry>
+  <entry>createTab</entry>
+  <entry>createTrackBar</entry>
+  <entry>createTreeView</entry>
+</row>
+<row>
+  <entry>createUpDown</entry>
+  <entry>createWhiteFrame</entry>
+  <entry>createWhiteRect</entry>
+  <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+  The following <link linkend="sctCreateMethods">create</link> methods can be used to define dialog controls in a
+  <xref linkend="clsUserDialog"/>, but cannot be handled by the
+  <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method. If you use any of
+  these methods, the dialog controls will not be automatically resized and positioned.
+</para>
+<table frame="all">
+<title>DlgAreaU Non-Automatic Resize Controls</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+  <entry>createCheckBoxGroup</entry>
+  <entry>createCheckBoxStem</entry>
+  <entry>createComboBoxInput</entry>
+  <entry>createEditInput</entry>
+</row>
+<row>
+  <entry>createEditInputGroup</entry>
+  <entry>createEditInputStem</entry>
+  <entry>createOkCancelLeftBottom</entry>
+  <entry>createOkCancelLeftTop</entry>
+</row>
+<row>
+  <entry>createOkCancelRightBottom</entry>
+  <entry>createOkCancelRightTop</entry>
+  <entry>createPushButtonGroup</entry>
+  <entry>createRadioButtonGroup</entry>
+</row>
+<row>
+  <entry>createRadioButtonStem</entry>
+  <entry></entry>
+  <entry></entry>
+  <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+  All of these dialog controls can be added to the dialog template by using combinations of the methods recognized in
+  the <emphasis role="italic">resize</emphasis> method.
+</para>
+</section>
+
+<section id="sctDlgAreaUProblems"><title>Possible Problems</title>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method can create slightly
+  over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a
+ <xref linkend="atrCorrectionFactor"/> attribute set by default to 1.05. In tests, this
+  correction factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be
+  able to correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For
+  example:
+</para>
+<programlisting>
+<![CDATA[
+u = .DlgAreaU~new(self)
+u~correctionFactor=1.07
+]]>
+</programlisting>
+<para>
+  You will have to experiment to find the appropriate setting for this attribute.
+</para>
+<para>
+  This problem occurs because of the use of the <xref linkend="ovvInaccurate"/> <emphasis
+  role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes to convert pixels to dialog
+  units. Fixing the problem, at this point, would most likely break existing programs.
+</para>
+</section>
+
+<section id="sctDlgAreaUSample"><title>Sample Code</title>
+<programlisting>
+<![CDATA[
+/* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
+
+dlg = .MyDialog~new
+if dlg~initCode == 0 then dlg~execute("ShowTop")
+
+return dlg~initCode
+
+::requires "ooDialog.cls"
+/* ========================================================================= */
+::class 'MyDialog' subclass UserDialog
+/* ========================================================================= */
+::method init
+/* ------------------------------------------------------------------------- */
+  self~init:super
+  if \ self~createCenter(250, 250, "MyDialog", "ThickFrame", , "Tahoma", 8) then do
+    self~initCode = 1
+    return
+  end
+
+  self~connectResize("onResize")
+
+/* ------------------------------------------------------------------------- */
+::method defineDialog
+/* ------------------------------------------------------------------------- */
+expose u
+
+u = .dlgAreaU~new(self)                                       /* whole dlg   */
+if u~lastError \= .nil then call errorDialog u~lastError
+e = .dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%")) /* edit   area */
+s = .dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      ) /* status area */
+b = .dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      ) /* button area */
+
+self~createEdit(IDC_EDIT, e~x, e~y, e~w, e~h, "multiline", "text")
+self~createStaticText(IDC_ST_STATUS, s~x, s~y, s~w, s~h, , "Status info appears here")
+
+self~createPushButton(IDC_PB_0, b~x, b~y('00%'), b~w, b~h('9%'), ,'Button' 0, 'Button'||0)
+self~createPushButton(IDC_PB_1, b~x, b~y('10%'), b~w, b~h('9%'), ,'Button' 1, 'Button'||1)
+self~createPushButton(IDC_PB_2, b~x, b~y('20%'), b~w, b~h('9%'), ,'Button' 2, 'Button'||2)
+self~createPushButton(IDC_PB_3, b~x, b~y('30%'), b~w, b~h('9%'), ,'Button' 3, 'Button'||3)
+self~createPushButton(IDC_PB_4, b~x, b~y('40%'), b~w, b~h('9%'), ,'Button' 4, 'Button'||4)
+self~createPushButton(IDC_PB_5, b~x, b~y('50%'), b~w, b~h('9%'), ,'Button' 5, 'Button'||5)
+self~createPushButton(IDC_PB_6, b~x, b~y('60%'), b~w, b~h('9%'), ,'Button' 6, 'Button'||6)
+self~createPushButton(IDOK,     b~x, b~y('90%'), b~w, b~h('9%'),'DEFAULT', 'Ok')
+
+
+/* ------------------------------------------------------------------------- */
+::method unknown
+/* ------------------------------------------------------------------------- */
+use arg msgname, args
+if msgname~abbrev("BUTTON") then
+   self~newStatic(IDC_ST_STATUS)~setText('You Pressed Button' msgname~right(1))
+
+/* ------------------------------------------------------------------------- */
+::method onResize
+/* ------------------------------------------------------------------------- */
+expose u
+use arg sizeEvent, sizeinfo
+u~resize(self, sizeinfo)
+
+]]>
+</programlisting>
+<para>
+  This achieves the same dialog as the previous DlgArea <link linkend="exampleDlgArea">example</link>, but now it is
+  resizable by dragging the frame.
+</para>
+</section>
+</section>
+
+
+<section id="clsResizingAdmin" xreflabel="ResizingAdmin"><title>ResizingAdmin Mixin Class</title>
+<indexterm><primary>ResizingAdmin Class</primary></indexterm>
+<para>
+  The <computeroutput>ResizingAdmin</computeroutput> class is a <computeroutput>mixin</computeroutput> class. Resizable
+  dialogs are produced by having a dialog class inherit the <computeroutput>ResizingAdmin</computeroutput> class. Any
+  ooDialog dialog that inherits the resizing admin class becomes resizable, using a default resizing policy, without adding
+  any other code. Existing programs can add resizability to the dialogs in the programm by adding:
+<programlisting>
+<![CDATA[
+  inherit ResizingAdmin
+]]>
+</programlisting>
+  to the class definition of the dialog subclasses without making any other code changes. In many cases the default sizing
+  policy produces an adequate resizable dialog. If not, methods of the <computeroutput>ResizingAdmin</computeroutput> can be
+  used to specify a different default sizing policy, or to specify different resizing rules for individual controls.
+</para>
+
+
+<section id="sctResizingPrinciples" xreflabel=""><title>Understanding How Resizing Works</title>
+<indexterm><primary>ResizingAdmin Class</primary><secondary>basics</secondary></indexterm>
+<para>
+  The basic idea behind the <computeroutput>ResizingAdmin</computeroutput> class is relatively simple. The idea is that each
+  edge, or side, of a dialog control window is <emphasis role="italic">pinned</emphasis> to an edge of the dialog window, or
+  an edge of a dialog control within the dialog. As the edge of the <emphasis role="italic">pinned to</emphasis> window
+  changes position, the <emphasis role="italic">pinned</emphasis> edge of the dialog control changes position according to
+  the <emphasis role="italic">type</emphasis> of pin.
+</para>
+<para>
+  This can be visualized using a list-view in a dialog, where the left edge of the list-view is <emphasis
+  role="italic">pinned</emphasis> to the left edge of the dialog and the right edge of the list-view is <emphasis
+  role="italic">pinned</emphasis> to the right edge of the dialog. As the left edge of the dialog is pulled to the left, the
+  pinned left edge of the list-view is pulled to the left along with it. The right edge of the list-view is pinned to the
+  right edge of the dialog, so it remains stationary, (the right edge of the dialog is stationary.) As the dialog increases
+  in width, the list-view increases in width also.
+</para>
+<para>
+  Every edge of every control in the dialog has a <emphasis role="italic">sizing defintion</emphasis> assigned to it. If the
+  programmer does not explicitly define a sizing for an edge of a control, a default sizing definition is assigned to it by
+  the ooDialog framework. This is how a dialog can be made resizable by just inheriting the
+  <computeroutput>ResizingAdmin</computeroutput> and nothing else. The ooDialog framework will assign a default sizing
+  definition to each edge of every control in the dialog.
+</para>
+
+<variablelist>
+  <varlistentry id="varDefaultSizing"><term><emphasis role="bold">Default Sizing Policy:</emphasis></term>
+  <listitem>
+  <para>
+    The initial default sizing policy is relatively simple. The left edge of a dialog control is pinned proportionally to
+    the left edge of the dialog. The top edge of a dialog control is pinned proportionally to the top edge of the dialog. And
+    so on, the right edge of a control to the right edge of the dialog, bottom edge of a control to the bottom edge of the
+    dialog.
+  </para>
+  <para>
+    The default sizing policy can be changed by the programmer though the <xref linkend="mthDefaultSizing"/> method. Or the
+    individual default sizing for a single edge can be changed through the <xref linkend="mthDefaultBottom"/>, <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultRight"/>, or <xref linkend="mthDefaultTop"/> methods.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  The default sizing definition may be adequate for the programmer's needs. If not, the programmer can explicitly set the
+  sizing definitions for the edges of the controls as needed.
+</para>
+<para>
+  The sizing definitions for every control are placed in a table. When a resizing event happens, every control is resized,
+  according to its definition, in the order the defintions occur in the table. Control sizings explicitly defined by the
+  programmer are placed in the table in the order they are defined. All default control sizings generated by the ooDialog
+  framework are placed in the table following the explicitly defined sizings, in the order the controls occur in the dialog
+  template.
+</para>
+<para>
+  If an edge of a control is <emphasis role="italic">pinned</emphasis> to another window, the other window has to be resized
+  first. This implies that the sizing defintion for a <emphasis role="italic">pinned to</emphasis> window has to precede the
+  sizing definition for the window that is pinning to it.
+</para>
+<para>
+  Each sizing definition is comprised of 5 parts:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  The dialog control whose sizing is being defined. Dialog controls are specified by their <link
+  linkend="defResourceId">resource</link> ID. As in other areas of ooDialog, the ID may be numeric or <link
+  linkend="defSymbolicId">symbolic</link>.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pinned edge</emphasis> of the dialog control that is being defined. The pinned edge being
+  defined is specified by one of four keywords: LEFT, TOP, RIGHT, and BOTTOM. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pinned to edge</emphasis> of another window. <emphasis role="italic">Pinned to</emphasis> edges
+  are specified by one of six keywords: LEFT, TOP, RIGHT, BOTTOM, XCENTER, and YCENTER. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pin type</emphasis>. <emphasis role="italic">Pin types</emphasis> are specified by one of four
+  keywords: PROPORTIONAL, STATIONARY, MYTOP, MYLEFT. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pinned to window</emphasis>. The window an edge is pinned to must be either another dialog
+  control window or the dialog window itself. Resource IDs are used to specify other dialog control windows. A special
+  constant value, IDC_DEFAULT_PINTO_WINDOW, is provided to specify the dialog window. However, the dialog window is also the
+  default, usually the IDC_IDC_DEFAULT_PINTO_WINDOW constant does not need to be specified.
+</para>
+</listitem>
+</itemizedlist>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Pinned edge:</emphasis></term>
+  <listitem>
+  <para>
+    The following specifies the meaning of the pinned edge keywords:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>Left:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Top:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Right:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Bottom:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y coordinate.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry id="varPinnedToEdge" xreflabel="pinned to edge"><term><emphasis role="bold">Pinned to edge:</emphasis></term>
+  <listitem>
+  <para>
+    The following specifies the meaning of the pinned to edge keywords:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>Left:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Top:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Right:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Bottom:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y coordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>XCenter:</term>
+    <listitem>
+    <para>
+      The edge being pinned keeps its relationship to the horizontal center of the XCenter pinned to edge. This works best
+      when the initial position of the control is already horizontally centered with the pinned to window. Only the top and
+      bottom edges of a dialog control can be pinned to a XCenter edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>YCenter:</term>
+    <listitem>
+    <para>
+      The edge being pinned keeps its relationship to the vertical center of the YCenter pinned to edge. This works best when
+      the initial position of the control is already vertically centered with the pinned to window. Only the left and
+      right edges of a dialog control can be pinned to a YCenter edge.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry id="varPinType" xreflabel="pin type"><term><emphasis role="bold">Pin type:</emphasis></term>
+  <listitem>
+  <para>
+    The following specifies the meaning of the pin type keywords:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>Stationary</term>
+    <listitem>
+    <para>
+      The edge being pinned remains a fixed distance from the pin to edge. The fixed distance is the distance in pixels
+      between the pinned and pinned to edges when the dialog is initially created. For instance, if the left side of a
+      list-view is pinned to the left side of the dialog, and the list-view is initially 7 pixels from the left edge of the
+      dialog, the left edge of the list-view will remain 7 pixels from the left edge of the dialog no matter what size the
+      dialog is resized to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Proportional:</term>
+    <listitem>
+    <para>
+      The edge being pinned remains a proportional distance from the pin to edge. Again, the proportion depends on the
+      initial distance between the two edges when the dialog is first created. Using the example of a list-view whose left
+      edge is 7 pixels from the left edge of the dialog. If the left edge of the list-view is pinned to the left edge of the
+      dialog using a proportional pin, if the dialog is doubled in width, the list-view will end up 14 pixels from the left
+      edge of the dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>MyLeft:</term>
+    <listitem>
+    <para>
+      A MyLeft pin causes the width of the dialog control to stay constant. The initial width of the control does not change
+      as the dialog is resized. The MyLeft type of pin can only be used for the right edge of a dialog control. The pin to
+      window and pin to edge are ignored with this type of pin, but most methods require the pin to edge argument. Typically
+      a line of code for this type of pin would look like this:
+<programlisting>
+<![CDATA[
+  self~controlRight(IDC_ST_PROCESSA, 'MYLEFT', 'LEFT')
+]]>
+</programlisting>
+      The <emphasis role="italic">LEFT</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSA is a valid
+      symbolic ID in the application.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>MyTop:</term>
+    <listitem>
+    <para>
+      A MyTop pin is the converse of a MyLeft pin. It causes the height of the dialog control to stay constant. The initial
+      height of the control does not change as the dialog is resized. The MyTop type of pin can only be used for the bottom
+      edge of a dialog control. The pin to window and pin to edge are ignored with this type of pin, but most methods require
+      the pin to edge argument. Typically a line of code for a MyTop pin would look like this:
+<programlisting>
+<![CDATA[
+
+  self~controlBottom(IDC_ST_PROCESSB, 'MYTOP', 'TOP')
+]]>
+</programlisting>
+      The <emphasis role="italic">TOP</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSB is a valid
+      symbolic ID in the application.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  There are a number of sizing definitions that would result in incorrectly sized controls. Take for instance control A that
+  is pinned to an edge in control B. If control B were to come after control A in the sizing table, then when control A was
+  being resized, it would be resized in relationship to the <emphasis role="italic">old</emphasis> size of control B.
+  Whatever relationship was desired with the control B window would not be carried out correctly. In a case like this, the
+  Rexx programmer would see that the dialog was not resized the way intended, but it would be very difficult to determine
+  why. Because of this, when this documentation says things like: <emphasis role="italic">the pin to window B must precede
+  the window being pinned in the sizing table</emphasis>, what is really meant is that a syntax condition is raised if that
+  condition is detected.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis>, when using the <computeroutput>ResizingAdmin</computeroutput> class, the event
+  notifications related to resizing are handled internally by the ooDialog framework and the event notifications can not be
+  connected to an event handler in the Rexx dialog. There are 3 event notifications effected: the SIZE, SIZING, and
+  EXITSIZEMOVE events. The <xref linkend="mthConnectResize"/>, <xref linkend="mthConnectResizing"/>, and <xref
+  linkend="mthConnectSizeMoveEnded"/> methods have no effect when a dialog has inherited the
+  <computeroutput>ResizingAdmin</computeroutput> class. However, the <xref linkend="mthWantSizeEnded"/> can be used to allow
+  the application to be notified of the EXITSIZEMOVE event.
+</para>
+
+</section>  <!-- End Section ResizingPrinciples  -->
+
+
+<section id="sctMethodsResizingAdmin"><title>Method Table</title>
+<para>
+  The following table lists the methods of the <computeroutput>ResizingAdmin</computeroutput> class for use by the
+  programmer:
+</para>
+<table id="tblResizingAdminMethods" frame="all">
+<title>ResizingAdmin Methods</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="11*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+</row>
+<row>
+<entry>IDC_DEFAULT_PINTO_WINDOW</entry>
+<entry>The symbolic ID of the default window an edge of a dialog control is pinned to. This ID resolves to the dialog window.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrMaxSize"/></entry>
+<entry>Reflects the maximum size the dialog is allowed to resize to. By default, there is no limit on the maximum size for the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="atrMinSize"/></entry>
+<entry>Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its initial size when the operating system first creates it.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthControlBottom"/></entry>
+<entry>Defines the sizing for the bottom edge of the dialog control specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlLeft"/></entry>
+<entry>Defines the sizing for the left edge of the dialog control specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlRight"/></entry>
+<entry>Defines the sizing for the right edge of the dialog control specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlSizing"/></entry>
+<entry>Defines the sizing for some or all of the edges of the specified dialog control with one method call.</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlTop"/></entry>
+<entry>Defines the sizing for the top edge of the dialog control specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefaultBottom"/></entry>
+<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefaultLeft"/></entry>
+<entry>Changes the default sizing policy for the left edge of dialog controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefaultRight"/></entry>
+<entry>Changes the default sizing policy for the right edge of dialog controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefaultSizing"/></entry>
+<entry>Resets the default sizing policy to that specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefaultTop"/></entry>
+<entry>Changes the default sizing policy for the top edge of dialog controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefineSizing"/></entry>
+<entry>The <emphasis role="italic">defineSizing</emphasis> method is invoked automatically by the ooDialog framework. It is not meant to be, nor should it be, invoked by the programmer. The method is meant to be over-ridden by the programmer. It is used to add or change sizing defintions.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNoMaxSize"/></entry>
+<entry>Removes any exsiting restriction on the maximum size the dialog can be resized to.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNoMinSize"/></entry>
+<entry>Removes any exsiting restriction on the minimum size the dialog can be resized to.</entry>
+</row>
+<row>
+<entry><xref linkend="mthPagedTab"/></entry>
+<entry>Adds the data necessary to properly resize the dialogs used as pages in a tab control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUseDefaultSizing"/></entry>
+<entry>Sets the sizing information for the specified control to that of the current <link linkend="mthDefaultSizing">default</link> sizing.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWantSizeEnded"/></entry>
+<entry>Allows the user to specify that a method in the Rexx dialog is invoked when the EXITSIZEMOVE event happens.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+<section id="atrMaxSize" xreflabel="maxSize"><title>maxSize (Attribute)</title>
+<indexterm><primary>maxSize</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>maxSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--maxSize--------------------------------------><
+
+>>--maxSize = sizeObj----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the maximum size the dialog is allowed to resize to. By default, there is no limit on the maximum size for the
+  dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">maxSize get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the maximum size constraint of the dialog as a <xref linkend="clsSize"/> object. If the maximum size is not
+    constrained, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">maxSize set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the maximum size a dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
+    role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the maximum width, in pixels, for
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object is the
+    maximum height, in pixels for the dialog. By default, the dialog will not have a maximum size restriction.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">maxSize</emphasis> attribute can only be set using a <computeroutput>Size</computeroutput>
+    object. If a maximum size constraint has been set, and for some reason that constraint needs to be removed, use the <xref
+    linkend="mthNoMaxSize"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. However, the <emphasis role="italic">maxSize</emphasis> attribute can be set or read
+    at any time in the life-cycle of the dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the maximum size for the resizable dialog based on a proportion of the initial dialog size.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  size = self~MinSize
+  max = .Size~new(size~width * 2, trunc(size~height * 1.5))
+  self~maxSize = max
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::maxSize() [attribute]  -->
+
+<section id="atrMinSize" xreflabel="minSize"><title>minSize (Attribute)</title>
+<indexterm><primary>minSize</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>minSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minSize--------------------------------------><
+
+>>--minSize = sizeObj----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its
+  initial size when the operating system first creates it.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">minSize get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the minimum size constraint of the dialog as a <xref linkend="clsSize"/> object. If the minimum size is not
+    constrained, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">minSize set:</emphasis></term>
+  <listitem>
+  <para>
+    Set the minimum size the dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
+    role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the minimum width, in pixels, for
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object is the
+    minimum height, in pixels, for the dialog. By default, the dialog will have an initial minimum size restriction set to
+    the size of the dialog when first created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">minSize</emphasis> attribute can only be set using a <computeroutput>Size</computeroutput>
+    object. If a minimum size constraint is set, and that constraint needs to be removed, use the <xref
+    linkend="mthNoMinSize"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. However, the <emphasis role="italic">minSize</emphasis> attribute can be set or read
+    at any time in the life-cycle of the dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a minimum size for the resizable dialog to be 100 pixels wide by 50 pixels high:
+<programlisting>
+<![CDATA[
+
+::method defineSizing
+
+  s = .Size~new(100, 50)
+  self~minSize = s
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::minSize() [attribute]  -->
+
+<section id="mthControlBottom" xreflabel="controlBottom"><title>controlBottom</title>
+<indexterm><primary>controlBottom</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlBottom</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlBottom(--id--,--howPinned--,--pinToEdge--+------------------+--)----><
+                                                    +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Defines the sizing for the bottom edge of the dialog control specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the bottom edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When defining the sizing for the bottom edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlBottom</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example defines the sizing for the bottom edge of a list-view:
+<programlisting>
+<![CDATA[
+
+  self~controlBottom(IDC_LV_MAIN, 'STATIONARY', 'BOTTOM')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::controlBottom() -->
+
+<section id="mthControlLeft" xreflabel="controlLeft"><title>controlLeft</title>
+<indexterm><primary>controlLeft</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlLeft</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlLeft(--id--,--howPinned--,--pinToEdge--+------------------+--)------><
+                                                  +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Defines the sizing for the left edge of the dialog control specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the left edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When defining the sizing for the left edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlLeft</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example defines the sizing for the left edge of a list-view:
+<programlisting>
+<![CDATA[
+
+  self~controlLeft(IDC_LV_MAIN, 'STATIONARY', 'LEFT')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::controlLeft() -->
+
+<section id="mthControlRight" xreflabel="controlRight"><title>controlRight</title>
+<indexterm><primary>controlRight</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlRight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlRight(--id--,--howPinned--,--pinToEdge--+------------------+--)-----><
+                                                   +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Defines the sizing for the right edge of the dialog control specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the right edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When defining the sizing for the right edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlRight</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example defines the sizing for the right edge of a list-view. To be sure the code is clear to anyone looking at it,
+    the programmer decided to explicitly name the window the right edge is pinned to:
+<programlisting>
+<![CDATA[
+
+  self~controlRight(IDC_LV_MAIN, 'STATIONARY', 'RIGHT', self~IDC_IDC_DEFAULT_PINTO_WINDOW)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::controlRight() -->
+
+<section id="mthControlSizing" xreflabel="controlSizing"><title>controlSizing</title>
+<indexterm><primary>controlSizing</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlSizing(--id--+--------- +--+--------+--+---------+--+-----------+--)-----><
+                        +-,-right--+  +-,-top--+  +-,-left--+  +-,-bottom--+
+]]>
+</programlisting>
+
+<para>
+  Defines the sizing for some or all of the edges of the specified dialog control with one method call.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>right [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the right edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultRight">right</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>top [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the top edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultTop">top</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>left [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the left edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultLeft">left</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bottom [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the bottom edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultBottom">bottom</link> sizing definition is used. See the remarks section for the
+      details on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">right</emphasis>, <emphasis role="italic">top</emphasis>, etc., arguments must be an array.
+    Each array must contain index 1 and index 2. Index 3 is optional. The arrays are formed are as follows:
+  </para>
+  <variablelist>
+    <varlistentry><term>Index 1 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 2 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 3 [optional]</term>
+    <listitem>
+    <para>
+      The window the edge is being pinned to. By default this is the dialog window. To specify a dialog control window use
+      the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  <para>
+    For any of the optional edge sizing definition arguments that are omitted, a sizing edge defintion is constructed using
+    the default sizing in effect at the time. Not that the default sizing can be changed using the <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultTop"/>, etc., methods. Changing the default sizing has no effect on
+    the sizing definition for any control that has already been added to the sizing table. It only affects sizing added after
+    the default has been changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example defines the sizing for all edges of an edit control using the <emphasis
+    role="italic">controlSizing</emphasis> method. Note that there are any number of ways the Rexx code could be formatted
+    here. The format shown is merely one way, it is not required:
+<programlisting>
+<![CDATA[
+
+  self~controlSizing(IDC_EDIT_NAMES,                                       -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_NAMES),        -
+                     .array~of('STATIONARY', 'TOP',  IDC_GB_TEST),         -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_LABELS),       -
+                     .array~of('MYTOP',      'TOP')                        -
+                     )
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::controlSizing() -->
+
+<section id="mthControlTop" xreflabel="controlTop"><title>controlTop</title>
+<indexterm><primary>controlTop</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlTop</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlTop(--id--,--howPinned--,--pinToEdge--+------------------+--)-------><
+                                                 +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Defines the sizing for the bottom edge of the dialog control specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the top edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When defining the sizing for the top edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlTop</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example defines the sizing for the top edge of a list-view:
+<programlisting>
+<![CDATA[
+
+  self~controlTop(IDC_LV_MAIN,'STATIONARY', 'TOP')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::controlTop() -->
+
+
+<section id="mthDefaultBottom" xreflabel="defaultBottom"><title>defaultBottom</title>
+<indexterm><primary>defaultBottom</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>defaultBottom</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultBottom(--howPinned--,--pinToEdge--+------------------+--)-----------><
+                                             +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Changes the default sizing policy for the bottom edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the bottom edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly defined.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultBottom</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::defaultBottom() -->
+
+<section id="mthDefaultLeft" xreflabel="defaultLeft"><title>defaultLeft</title>
+<indexterm><primary>defaultLeft</primary></indexterm>
+<indexterm><primary>Resizing class</primary><secondary>defaultLeft</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultLeft(--howPinned--,--pinToEdge--+------------------+--)-------------><
+                                           +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Changes the default sizing policy for the left edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the left edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultLeft</emphasis> method is one of them. It can only
+    be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Resizing::defaultLeft() -->
+
+<section id="mthDefaultRight" xreflabel="defaultRight"><title>defaultRight</title>
+<indexterm><primary>defaultRight</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>defaultRight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultRight(--howPinned--,--pinToEdge--+------------------+--)------------><
+                                            +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Changes the default sizing policy for the right edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the right edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultRight</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::defaultRight() -->
+
+
+<section id="mthDefaultSizing" xreflabel="defaultSizing"><title>defaultSizing</title>
+<indexterm><primary>defaultSizing</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>defaultSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultSizing(--+---------+--+---------+--+----------+--+------------+--)--><
+                    +--right--+  +-,--top--+  +-,--left--+  +-,--bottom--+
+]]>
+</programlisting>
+
+<para>
+  Resets the default sizing policy. At the time the underlying dialog starts executing, every edge of every control in the
+  dialog must have a sizing definition. Any edge of any control that does not have a sizing definition explicitly set by the
+  application is assigned the default sizing definition for that edge.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>right [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the default sizing for the right edge of a control. If this argument is omitted, the current
+      default right sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>top [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the default sizing for the top edge of a control. If this argument is omitted, the current
+      default top sizing definition is not changed. See the remarks section for the details on constructing the array and its
+      indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>left [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the default sizing for the left edge of a control. If this argument is omitted, the current
+      default left sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bottom [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the bottom edge of the control. If this argument is omitted, the current
+      default bottom sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">right</emphasis>, <emphasis role="italic">top</emphasis>, etc., arguments must be an array.
+    Each array must contain index 1 and index 2. Index 3 is optional. The arrays are formed are as follows:
+  </para>
+  <variablelist>
+    <varlistentry><term>Index 1 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 2 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 3 [optional]</term>
+    <listitem>
+    <para>
+      The window the edge is being pinned to. By default this is the dialog window. To specify a dialog control window use
+      the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  <para>
+    For any of the optional edge sizing definition arguments that are omitted, the current sizing edge defintion is left
+    unchanged. Note that the default sizing for a single edge can be changed individually using the <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultTop"/>, etc., methods. Changing the default sizing has no effect on
+    the sizing defintion for any control that has already been added to the sizing table. It only effects sizing definitions
+    added after the default has been changed.
+  </para>
+  <para>
+    The default sizing definition is used for any control that does not have any sizing record in the sizing table. It is
+    also used for any missing edge defintions in a partially defined record. E.g., if the application explicitly sets only
+    the top edge definition for a dialog control, the default sizing definitions for the left, right, and bottom edges will
+    be used.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from an application that changes the default sizing to one that is better for the application. All the
+    dialog controls whose sizing is not explicitly defined in the application will have their left and right sides pinned to
+    the left side of dialog. The STATIONARY keyword means that the sides will remain the same pixel distance from the left
+    edge as they start with. A similar thing with the top and bottom of the controls, they will be pinned to the bottom of a
+    list-view. The effect of this, is that the dialog controls using the default sizing will all remain the same size. They
+    will not get bigger or smaller:
+<programlisting>
+<![CDATA[
+
+  self~defaultSizing(.array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', IDC_LV_MAIN),      -
+                     .array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
+                    )
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::defaultSizing() -->
+
+
+<section id="mthDefaultTop" xreflabel="defaultTop"><title>defaultTop</title>
+<indexterm><primary>defaultTop</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>defaultTop</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultTop(--howPinned--,--pinToEdge--+------------------+--)--------------><
+                                          +--,--pinToWindow--+
+]]>
+</programlisting>
+
+<para>
+  Changes the default sizing policy for the top edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the top edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultTop</emphasis> method is one of them. It can only
+    be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the default sizing for dialog control top edges to a STATIONARY type of pin and pins the edges to
+    the bottom edge of a list-view:
+<programlisting>
+<![CDATA[
+
+  self~defaultTop~('STATIONARY', 'BOTTOM', IDC_LV_MAIN)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::defaultTop() -->
+
+
+<section id="mthDefineSizing" xreflabel="defineSizing"><title>defineSizing</title>
+<indexterm><primary>defineSizing</primary></indexterm>
+<indexterm><primary>Resizing class</primary><secondary>defineSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defineSizing---------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">defineSizing</emphasis> method is invoked automatically by the ooDialog framework. It is not
+  meant to be, nor should it be, invoked by the programmer. The method is meant to be over-ridden by the programmer. It is
+  used to add or change sizing defintions.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments sent to the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Many of the methods of the <computeroutput>ResizingAdmin</computeroutput> can only be invoked during the execution of the
+    <emphasis role="italic">defineSizing</emphasis> method. All sizing definitions must be done within the <emphasis
+    role="italic">defineSizing</emphasis> method. The <emphasis role="italic">defineSizing</emphasis> method executes before
+    the underlying Windows dialog is created. The implication of this is that methods that require the underlying Windows
+    dialog to exist can not be used in <emphasis role="italic">defineSizing</emphasis>.
+  </para>
+  <para>
+    The <emphasis role="italic">defineSizing</emphasis> method is invoked as the last procedure in the initialization of the
+    base dialog object. Error conditions during the <emphasis role="italic">defineSizing</emphasis> method cause the
+    initialization of the base dialog object to fail.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis>, the default implementation of the <emphasis role="italic">defineSizing</emphasis>
+    method returns 0. If an application over-rides the <emphasis role="italic">defineSizing</emphasis> method, that method
+    <emphasis role="bold">must</emphasis> also return 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the complete <emphasis role="italic">defineSizing</emphasis> method from one of the example programs:
+<programlisting>
+<![CDATA[
+
+::method defineSizing
+
+    -- The only control in this dialog is the list-view.  We define its sizing
+    -- so that each edge of the list-view maintains the same distance to its
+    -- corresponding edge of the dialog:
+    self~controlSizing(IDC_LV_MAIN,                            -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    -- A value must be returned from the defineSizing() method.  O allows the
+    -- dialog to continue, any other value is a failure and the dialog will be
+    -- ended.
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Resizing::defineSizing() -->
+
+
+<section id="mthNoMaxSize" xreflabel="noMaxSize"><title>noMaxSize</title>
+<indexterm><primary>noMaxSize</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>noMaxSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMaxSize------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Removes any exsiting restriction on the maximum size the dialog can be resized to.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default no maximum size limit is set for resizable dialogs. If the application uses the <xref linkend="atrMaxSize"/>
+    attribute to set a maximum size and later needs to remove the restriction, it can be done using the <emphasis
+    role="italic">noMaxSize</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">noMaxSize</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::noMaxSize() -->
+
+
+<section id="mthNoMinSize" xreflabel="noMinSize"><title>noMinSize</title>
+<indexterm><primary>noMinSize</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>noMinSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMinSize------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Removes any exsiting restriction on the minimum size the dialog can be resized to.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default the  minimum size limit is set to the initial size of the dialogs. If the application wants to remove this
+    restriction, or uses the <xref linkend="atrMinSize"/> attribute to set a minimum size and later needs to remove the
+    restriction, it can be done using the <emphasis role="italic">noMinSize</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">noMinSize</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example removes the minimum size restriction for a resizable dialog. It does it during the <xref
+    linkend="mthDefineSizing"/> method because it is convenient to do it there, not because it is required to be done in
+    that method:
+<programlisting>
+<![CDATA[
+
+::method defineSizing
+
+  self~noMinSize
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::noMinSize() -->
+
+<section id="mthPagedTab" xreflabel="pagedTab"><title>pagedTab</title>
+<indexterm><primary>pagedTab</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>pagedTab</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pagedTab(--tabID--,--dlgIDs--)---------------><
+]]>
+</programlisting>
+
+<para>
+  Adds the data necessary to properly resize the dialogs used as pages in a tab control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>tabID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the tab control that contains the dialogs used as pages of that tab control. May be numeric or <xref
+      linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlgIDs [required]</term>
+    <listitem>
+    <para>
+      An array of the dialog <link linkend="atrDlgID">IDs</link> of each control dialog.  Each item in the array is assumed
+      to be the dlgID of one of the dialog pages.  Each item in the array may be numeric or symbolic.  The items must be
+      valid dialog IDs, that is a whole number greater than 0, or a symbolic ID that resolves to a whole number greater
+      than 0.
+    </para>
+    <para>
+      The array must not be sparse and the number of items can not exceed the maximum number of child dialogs, which is 20.
+      The order of the IDs does not matter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success. On any detected error a syntax condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A <emphasis role="italic">paged</emphasis> tab is a tab control that uses <xref linkend="clsControlDialog"/> dialogs as
+    the contents for its pages.  A resizable dialog can only define up to 4 paged tabs.
+  </para>
+  <para>
+    In order for the resizing admin to properly resize <computeroutput>ControlDialog</computeroutput> dialogs embedded in a
+    tab control, the <emphasis role="italic">pagedTab</emphasis> method must be used to define each paged tab.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">pagedTab</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows part of the <xref linkend="mthDefineSizing"/> method for a dialog that has a tab control with 5 pages:
+<programlisting>
+<![CDATA[
+
+  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, -
+                     IDD_TRACKBAR_DLG, IDD_TAB_DLG)
+
+  self~pagedTab(IDC_TAB, dlgIDs)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::pagedTab() -->
+
+<section id="mthUseDefaultSizing" xreflabel="useDefaultSizing"><title>useDefaultSizing</title>
+<indexterm><primary>useDefaultSizing</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>useDefaultSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useDefaultSizing(--ctrlID--)-----------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the sizing information for the specified control to that of the current <link
+  linkend="varDefaultSizing">default</link> sizing.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>ctrlID</term>
+    <listitem>
+    <para>
+      The resource ID of the control whose sizing is being set. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In order to pin the edge of a dialog control to the edge of some other dialog control, a sizing definition for the other
+    control must already exist in the sizing definition table. The <emphasis role="italic">useDefaultSizing</emphasis> is a
+    convenience method that allows a sizing definition for the <emphasis role="italic">other</emphasis> control to be placed
+    in the table with a minimum of effort.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">useDefaultSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the default sizing is going to be changed to pin the top and bottom edges of controls to a list-view in
+    the application. There needs to be a sizing definition for the list-view already in the table to do that, but the sizing
+    for the list-view is that of the current default sizing. The <emphasis role="italic">useDefaultSizing</emphasis> method
+    provides a convenient way to add the list-view's record:
+<programlisting>
+<![CDATA[
+
+  self~useDefaultSizing(IDC_LV_MAIN)
+
+  self~defaultSizing(.array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', IDC_LV_MAIN),      -
+                     .array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
+                    )
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::useDefaultSizing() -->
+
+<section id="mthWantSizeEnded" xreflabel="wantSizeEnded"><title>wantSizeEnded</title>
+<indexterm><primary>wantSizeEnded</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>wantSizeEnded</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wantSizeEnded(--+-----------+--+----------------+--)--------><
+                    +--mthName--+  +--,--willReply--+
+]]>
+</programlisting>
+
+<para>
+  Allows the user to specify that a method in the Rexx dialog is invoked when the EXITSIZEMOVE event happens.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>mthName [optional]</term>
+    <listitem>
+    <para>
+      The name of the event handler method in the Rexx dialog to be connected to the EXITSIZEMOVE event. If this argument is
+      omitted, the ooDialog framework uses a method name of <emphasis role="italic">onSizeEnded</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      Specifies if the interpreter should <link linkend="sctCodingEventHandlers">wait</link>, or not wait, for the reply from
+      the event handler. If <emphasis role="italic">willReply</emphasis> is true, the interpreter waits in the window message
+      processing loop until the event handler returns a reply to the notification, if false the interpreter does not wait.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When using the <computeroutput>ResizingAdmin</computeroutput> class, the event notifications related to resizing are
+    handled internally by the ooDialog framework and the event notifications can not be connected to an event handler in the
+    Rexx dialog. There are 3 event notifications effected: the SIZE, SIZING, and EXITSIZEMOVE events. The <xref
+    linkend="mthConnectResize"/>, <xref linkend="mthConnectResizing"/>, and <xref linkend="mthConnectSizeMoveEnded"/> methods
+    have no effect when a dialog has inherited the <computeroutput>ResizingAdmin</computeroutput> class.
+  </para>
+  <para>
+    However, there are cases when the resize ended notification may be needed by an application with a resizable dialog. The
+    <emphasis role="italic">wantSizeEnded</emphasis> method is for those cases.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">wantSizeEnded</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example informs the ooDialog framework that the dialog needs the EXITSIZEMOVE event notification. It explicity
+    specifies the name of the event handling method, even though the method name is the same as the default:
+<programlisting>
+<![CDATA[
+
+  self~wantSizeEnded('onSizeEnded', .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="evtResizingAdminEXITSIZEMOVE" xreflabel="EXITSIZEMOVE"><title>ExitSizeMove Event Handler</title>
+<indexterm><primary>ResizingAdmin class</primary><secondary>events</secondary><tertiary>EXITSIZEMOVE</tertiary></indexterm>
+<para>
+  The event handler for the exit size move event is invoked when the user has been dragging the sizing border of a resizable
+  dialog and releases the mouse button.
+</para>
+<para>
+  Whether the event handler must return a value and if the interpreter waits (or does not wait) for this return is specified
+  by using the <emphasis role="italic">willReply</emphasis> argument in the <xref linkend="mthWantSizeEnded"/> method. When
+  <emphasis role="italic">willReply</emphasis> is true, the event handler must return a value and the interpreter waits for
+  that return. Otherwise, the interpreter does not wait for the return and the event handler is not <emphasis
+  role="italic">required</emphasis> to return a value. Good practice would be to always return a value from an event handler.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSizeEnded unguarded
+  use arg
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method does not receive any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return for this event so any value can be returned. 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application that uses <xref linkend="clsControlDialog"/> dialogs as the pages in a
+    <xref linkend="clsTab"/> control. When the resizing of the dialog ends, the dialog used for page 5 needs to do some extra
+    processing, which is done in the placeButton() method:
+
+<programlisting>
+<![CDATA[
+
+::method onSizeEnded unguarded
+    expose tabContent needCalculation
+
+    needCalculation = .true
+
+    tabContent[5]~placeButton
+
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End ExitSizeMove Event Handler -->
+
+</section>  <!-- End ResizingAdmin::wantSizeEnded() -->
+
+</section>  <!-- End Section ResizingAdmin Mixin Class -->
+
+</chapter>

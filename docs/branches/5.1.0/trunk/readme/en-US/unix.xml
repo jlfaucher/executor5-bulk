@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "readme.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Notes XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<section><title>Unix-Like (Linux, Darwin, etc.,) Requirements, Installation and Configuration</title>
+
+<section><title>Hardware Requirements</title>
+<itemizedlist>
+<listitem><para>12 MB free disk space for the program
+</para></listitem>
+<listitem><para>13.5 MB free disk space for online documentation</para></listitem>
+<listitem><para>
+  IBM-compatible, Pentium or AMD processor, or higher, for an x86 32-bit or 64-bit
+  platform.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Software Requirements</title>
+<itemizedlist>
+<listitem>
+<para>
+  <emphasis role="bold">Linux</emphasis>
+  <itemizedlist>
+  <listitem>
+    <para>
+      Linux ELF system (i386 or x86_64.) Linux kernel version 2.4.1 or higher, with support for System V
+      IPC.
+    </para>
+  </listitem>
+  </itemizedlist>
+</para></listitem>
+<listitem>
+<para>
+  <emphasis role="bold">Solaris</emphasis>
+  <itemizedlist>
+  <listitem>
+    <para>
+      Solaris V2.8 or higher.
+    </para>
+  </listitem>
+  </itemizedlist>
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Installation and Configuration Information</title>
+<para>
+  This new version of Open Object Rexx cannot coexist with a previous installed version of Open Object
+  Rexx or IBM Object REXX on your system. If you have previously installed IBM Object Rexx or Open Object
+  Rexx, you must first de-install that program.
+</para>
+
+<section><title>Installation/Removal of the RPM Package</title>
+<note><title>Note</title>
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
+</para></note>
+<para>
+  To install the <computeroutput>rpm</computeroutput> package, use your rpm package manager. Refer to
+  your package manager for further information. The package manager adds orexx to your local
+  rpm-database. Select the appropriate package for your system. Although the 32-bit version of ooRexx can
+  be installed on some 64-bit Linux distributions it is recommended that the 64-bit version of ooRexx be
+  installed on all 64-bit Linux systems.
+</para>
+<para>
+  There may be several rpm packages available. Each package name will indicate the processor architecture
+  (i386, x86_64, etc.,) it is intended for, and the Linux distribution it was built on. In general,
+  the Linux distribution the package was compiled on does not make a difference. The ooRexx rpm will
+  install on any Linux system that supports rpms. However, sometimes, because of the libraries present on
+  a system, the ooRexx rpm will not install. For instance, the Fedora Core 10 rpm may not install on a
+  SuSE 9.3 system. Because of this, when resources are available, the ooRexx project will make available
+  rpm packages built for older Linux distributions.
+</para>
+<para>
+  To install with the command line rpm package manager, a typical command line might be:
+<programlisting>
+   rpm -i ooRexx-5.0.0-0.centos7.x86_64.rpm
+</programlisting>
+</para>
+<para>
+  Open Object Rexx is installed in the directory <computeroutput>/usr/local</computeroutput>. Links are
+  created in <computeroutput>/usr/lib</computeroutput> and <computeroutput>/usr/bin</computeroutput> for
+  the ooRexx shared libraries and executables respectively. Additional links are created in
+  <computeroutput>/usr/include</computeroutput> for the native API header files.
+</para>
+<para>
+  Use the rpm package manager to remove ooRexx from the system. The command line
+  <computeroutput>rpm</computeroutput> can also be used to remove the package from the system. The
+  command to enter is:
+</para>
+<programlisting>
+   rpm -e ooRexx
+</programlisting>
+</section>
+
+<section><title>Installation/Removal of the DEB Package</title>
+<note><title>Note</title>
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
+</para></note>
+<para>
+  Debian based Linux distributions (Ubuntu, Raspbian, etc.,) use the debian package manager.
+  Use the following command to install a <computeroutput>.deb</computeroutput> package
+  from the command line:
+<programlisting>
+<![CDATA[
+   dpkg -i <packageFile>
+]]>
+</programlisting>
+  For example:
+<programlisting>
+   dpkg -i ooRexx-5.0.0-0.ubuntu1604.x86_64.deb
+</programlisting>
+</para>
+<para>
+  Open Object Rexx is installed in the directory <computeroutput>/usr/local</computeroutput>.
+</para>
+<para>
+  The command <computeroutput>dpkg --purge</computeroutput> is used to remove ooRexx from the system. For
+  example:
+<programlisting>
+   dpkg --purge ooRexx
+</programlisting>
+  Or, use the same package manager you used to install to remove ooRexx from a debian based system.
+</para>
+</section>
+
+
+</section>
+
+<section><title>Configuration</title>
+<para>There is nothing to configure for a Unix/Linux installation.</para>
+</section>
+
+<section><title>Open Object Rexx and Other Rexx Interpreters</title>
+<para>
+  If you have other Rexx interpreters installed, you may have to set the PATH manually because Open
+  Object Rexx and the other Rexx interpreters may both use the name "rexx" for invoking the interpreter.
+  Interpreter error messages that begin with "Rexx: " indicate that another Rexx interpreter was called
+  instead of Open Object Rexx. You can verify which Rexx interpreter is running either by the form of the
+  error messages, by running <computeroutput>rexxtry</computeroutput> and executing SAY VERSION, or by
+  invoking <computeroutput>rexx -v</computeroutput>, which then should display information about the Rexx
+  interpreter that is invoked. If no information is displayed, it is not Open Object Rexx. If you don't
+  want the other Rexx interpreter to be invoked, you should remove it from the PATH, delete it, or rename
+  the <computeroutput>rexx</computeroutput> binary in the <computeroutput>/usr/bin</computeroutput>
+  directory to <computeroutput>orx</computeroutput> and use <computeroutput>orx</computeroutput> to
+  invoke the interpreter.
+</para>
+</section>
+
+<section><title>Exploring Open Object Rexx for Unix/Linux</title>
+<para>
+  Once you have installed the Open Object Rexx files you can run Rexx scripts by issuing the command
+  <computeroutput>rexx</computeroutput> followed by the name of your script at the command prompt. To
+  interactively try Rexx statements, from a command prompt type <computeroutput>rexx
+  rexxtry</computeroutput>. Enter <computeroutput>exit</computeroutput> to end the
+  program.
+</para>
+<para>
+  To help you explore programming in Open Object Rexx, the following sample programs are provided in the
+  <computeroutput>/usr/local/share/ooRexx</computeroutput>:
+</para>
+<variablelist>
+<varlistentry>
+<term><varname>ccreply.rex</varname></term>
+<listitem><para>concurrent program using REPLY
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>complex.cls</varname></term>
+<listitem><para>complex number class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>factor.rex</varname></term>
+<listitem><para>factorial program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>greply.rex</varname></term>
+<listitem><para>concurrent program using WAIT and NOWAIT
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>guess.rex</varname></term>
+<listitem><para>a guessing game
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>ktguard.rex</varname></term>
+<listitem><para>concurrent program using START and GUARD
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>makestring.rex</varname></term>
+<listitem><para>demonstrated the usage of the makestring method
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>month.rex</varname></term>
+<listitem><para>displays a calendar for the month of January
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>pipe.cls</varname></term>
+<listitem><para>a library of pipeline classes
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>properties.rex</varname></term>
+<listitem><para>shows usage of the .Properties class and some Sys functions
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qdate.rex</varname></term>
+<listitem><para>date query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>qtime.rex</varname></term>
+<listitem><para>time query program
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>rexxcps.rex</varname></term>
+<listitem><para>measures Rexx clauses per second
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>rexxtry.rex</varname></term>
+<listitem><para>interactively try out Rexx statements
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>scclient.rex scserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the .Socket class from socket.cls
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>semcls.cls</varname></term>
+<listitem><para>implements a semaphore class on ooRexx
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>sfclient.rex sfserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the external rxsock library
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>stack.rex</varname></term>
+<listitem><para>program that uses a stack class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usecomp.rex</varname></term>
+<listitem><para>program that uses the complex number class
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>usepipe.rex</varname></term>
+<listitem><para>program that uses the pipeline implementation
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<note><para>
+  To run these programs, you must either add the
+  <computeroutput>/usr/local/share/ooRexx</computeroutput> directory to the PATH or execute them
+  directly from the <computeroutput>/usr/local/share/ooRexx</computeroutput> directory.
+</para></note>
+</section>
+</section>
+

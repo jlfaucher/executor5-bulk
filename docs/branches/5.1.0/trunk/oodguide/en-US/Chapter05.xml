@@ -1,0 +1,679 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2012-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v01-01 15Mar13
+     5.1 - Dialog Initiation - using the newInstance class method.
+     5.2 - Using a binary resource file
+     5.3 - Dialog Controls
+     5.4 - Code Structure
+     5.5 - Dialog Design
+     5.6 - Controlling Cancel
+
+     Changes:
+     v01-00 03Jun12: First version
+     v01-01 15Mar13: Update to conform with typographic conventions.
+            15Aug13: Corrected folder names after folder structure change.
+-->
+
+<chapter id="chapFive">
+    <title>Using Binary Resource Dialogs</title>
+    <indexterm><primary>Binary Resource Dialogs</primary></indexterm>
+    <indexterm><primary>ProductView component</primary></indexterm>
+    <indexterm><primary>ResDialog</primary></indexterm>
+    <para>This chapter uses a "Product View" class as the context for discussing
+      the following topics:
+      first, <xref linkend="chap05-initdialog"/>;
+      second (<xref linkend="chap05-resfile"/>)
+      (that is, *.dll files) and the differences in using these as opposed to script resource files;
+      third <xref linkend="chap05-dlgcontrols"/> not met in previous exercises;
+      fourth some changes to <xref linkend="chap05-codestructure"/>;
+      fifth a brief visit to some <xref linkend="chap05-dlgdesign"/> considerations;
+      and sixth, <xref linkend="chap05-cancel"/>.
+    </para>
+    <para>But first, run <computeroutput>Startup.rex</computeroutput> in the
+      <computeroutput>Exercise05</computeroutput> folder. A ProductView dialog appears. Check out
+    the behavior of the dialog - there are several new behaviors compared to
+      <computeroutput>CustomerView</computeroutput>. In particular, aside from controls not used in
+    previous exercises, the behavior includes more realistic application-level edit checks - that
+    is, implementation of some (fairly trivial) "business rules". For example, menu-select
+      <menuchoice><guimenu>Actions</guimenu><guimenuitem>Update Product</guimenuitem></menuchoice>,
+    <!--<emphasis role="bold">Actions - Update Product</emphasis>-->
+      then change the UOM (Unit of Measure) from 6
+      to 20, and then press the <emphasis role="bold">Save Changes</emphasis> button.</para>
+
+  <section id="chap05-initdialog" xreflabel="Dialog Initiation">
+      <title>Dialog Initiation</title>
+      <!-- section 5.1 -->
+      <para>Previous exercise have used either the "application" or "startup" program, or a separate
+      ooRexx routine, for dialog initiation. By "initiation" is meant the two statements
+        "<computeroutput>dlg=.[DialogClassName]~new</computeroutput>" and
+        "<computeroutput>dlg~execute()</computeroutput>". In other words, the responsibility for
+      issuing these two initiation statements - which are essential for the creation of the dialog -
+      have previously been outside the dialog class. If they could be moved <emphasis role="italic"
+        >within</emphasis> the class, then encapsulation would be enhanced - always a desirable
+      thing. The question is, how? Well, ooRexx has a mature implementation of OO that (among other
+      things) allows for class methods (as opposed to instance methods). Using this feature of
+      ooRexx, the initiation statements can be quite happily moved into a class method. Thus the
+        <computeroutput>ProductView</computeroutput> class has a method called
+        <computeroutput>newInstance</computeroutput> which, with comments and "say" instructions removed, is
+      as follows:<programlisting><![CDATA[  ::METHOD newInstance CLASS PUBLIC UNGUARDED
+    .Application~setDefaults("O", "ProductView.h", .false)
+    dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
+    dlg~activate]]></programlisting>The <computeroutput>newInstance</computeroutput> method is
+      invoked from <computeroutput>Startup.rex</computeroutput> by the statement
+        <computeroutput>.ProductView~newInstance</computeroutput>. So all knowledge about initiating
+      a dialog is moved inside that dialog's class, and from now on this approach will be used. <indexterm>
+        <primary>newInstance</primary>
+        <secondary>Class method</secondary>
+      </indexterm>
+      <indexterm>
+        <primary>Class methods</primary>
+        <secondary>newInstance</secondary>
+      </indexterm>
+      Note also that the first parameter of the
+      <computeroutput>.ProductView~new()</computeroutput> statement allows file paths to be
+      specified.</para>
+  </section>
+    <!-- End of section 5.1 -->
+
+    <!-- section 5.2 -->
+  <section id="chap05-resfile" xreflabel="Using a Binary Resource File"><title>Using a Binary Resource File</title>
+<indexterm><primary>Binary resource files</primary></indexterm><indexterm><primary>Resource file</primary><secondary>Binary</secondary></indexterm>
+<indexterm><primary>Resource file</primary><secondary>Compiling</secondary></indexterm>
+  <section><title>DLL Compilation</title>     <!-- section 5.2.1 -->
+    <indexterm><primary>Compilation</primary><secondary>DLLs</secondary></indexterm>
+    <indexterm><primary>DLL</primary><secondary>Compiling</secondary></indexterm>
+    <para>ooDialog's <computeroutput>ResDialog</computeroutput> class (a subclass of
+          <computeroutput>UserDialog</computeroutput>) requires a resource-only DLL. A resource-only
+        DLL is a resource script (*.rc) file that has been compiled into binary (or *.dll) format.
+        Most resource editors have this function. ResEdit is capable compiling a *.rc file, but with
+        three caveats:</para>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>It must be done from the command line:</para>
+            <para><computeroutput> resedit -convert filename.rc filename.dll</computeroutput>
+            </para>
+          </listitem>
+          <listitem>
+            <para>At compile time, the *.h file and any *.bmp files must be in the same directory as
+              the .rc file. If present and referenced by the .rc file, *.bmp and *.ico files are
+              compiled into the DLL. </para>
+          </listitem>
+          <listitem>
+            <para>The version of ResEdit used at the time of writing was 1.5.10-Win32. Comments
+              about usage of ResEdit apply to this version, and may vary in later versions.</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+    <para>At run-time, a ResDialog class needs only the *.dll and the *.h files.
+      <indexterm><primary>Resource files</primary><secondary>ResDialog</secondary></indexterm>
+      <indexterm><primary>ResDialog</primary><secondary>Resource files needed</secondary></indexterm>
+    </para>
+    <para>Finally, it's worth mentioning the freely-available Microsoft SDK available at <ulink
+          url="http://msdn.microsoft.com/en-us/windows/desktop/bb980924">
+          <citetitle>Microsoft Windows Software Development</citetitle></ulink> which can also be
+        used for compiling resource-only DLLs. The resource compiler is called
+          <computeroutput>RC.exe</computeroutput>, and outputs a *.res file. This is them linked
+        using <computeroutput>link.exe</computeroutput> to produce the DLL. For example, the
+        following illustrates <computeroutput>ProductView.rc</computeroutput> being compiled then
+        linked to produce <computeroutput>ProductView.dll</computeroutput>: <programlisting><![CDATA[      C:\>rc ProductView.rc
+      Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+
+      C:\>link ProductView.res /NOENTRY /DLL /MACHINE:X86 /OUT:ProductView.dll
+      Microsoft (R) Incremental Linker Version 10.00.30319.01
+      Copyright (C) Microsoft Corporation.  All rights reserved.]]>      </programlisting>Successful
+        compilation depends on both the PATH and the "INCLUDE" environment variable containing the
+        appropriate settings, as follows (at the time of writing and assuming everything is on the
+        C: drive): <indexterm>
+          <primary>Compiling a resource file</primary>
+        </indexterm>
+        <programlisting><![CDATA[     PATHS
+        C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin;
+        C:\Program Files\Microsoft Visual Studio 10.0\VC\BIN;
+        C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE
+
+     'Include' Environment Variable:
+        INCLUDE=C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include;
+        C:\Program Files\Microsoft Visual Studio 10.0\VC\include]]></programlisting>
+      The first
+      two paths should be added automatically when the SDK is installed. If the third (or any of
+      the other two) is/are missing, then add it/them using the PATH command, e.g.: </para>
+    <para>
+      <computeroutput>path=%PATH%;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE
+      </computeroutput>
+    </para>
+    <para>
+      To see if the INCLUDE environment variable is present, enter
+      <computeroutput>set</computeroutput> on the command prompt and examine the output.
+      If it is not present, then enter the following in the command prompt:
+      </para>
+      <para>
+        <computeroutput>
+        C:\>set INCLUDE=C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include;C:\Program Files\Microsoft
+Visual Studio 10.0\VC\include</computeroutput>
+      </para>
+  </section>      <!-- End of section 5.2.1 -->
+
+  <section><title>Differences between RcDialog and ResDialog</title>  <!-- section 5.2.2 -->
+        <para>The Exercise05 folder contains a Product View component, the main class
+          <computeroutput>ProductView</computeroutput> being a subclass of the ooDialog
+          <computeroutput>ResDialog</computeroutput> class. The difference between
+          <computeroutput>ResDialog</computeroutput> and <computeroutput>RcDialog</computeroutput>
+        (aside from the resource file) is mainly in the handling of the menubar. Console outputs
+        from dialog creation for <computeroutput>CustomerView</computeroutput> (an
+          <computeroutput>RcDialog</computeroutput> subclass) and ProductView (a
+          <computeroutput>ResDialog</computeroutput> subclass) are as follows:
+          <programlisting><![CDATA[CustomerView                                ProductView
+
+StartCustomerView Routine-01: Start.         .ProductView-newInstance-01: Start.
+CustomerView-init-01.                        ProductView-init-01.
+CustomerView-createMenuBar-01.
+StartCustomerView Routine-02: dlg~activate.  .ProductView-newInstance-02: dlg~Activate.
+CustomerView-activate-01.                    ProductView-activate-01.
+CustomerView-initDialog-01.                  ProductView-initDialog-01
+]]></programlisting>There are two visible differences. First, as discussed above, instead of
+        creating the <computeroutput>ProductView</computeroutput> instance in a routine, as was the
+          case for CustomerView, the startup file invokes a class method - <computeroutput>newInstance</computeroutput>
+          - which does much the same as CustomerView's routine.</para>
+      <para>The second difference is the absence of a <computeroutput>createMenuBar</computeroutput> method.
+        Now this method was not strictly necessary in
+            <computeroutput>CustomerView</computeroutput> - the menu could have been created in the
+        <computeroutput>init</computeroutput> or the<computeroutput>initDialog</computeroutput> methods.
+            (See <xref linkend="apx-dlgsequences" /> for a
+          comparison of dialog startup methods in an <computeroutput>RcDialog</computeroutput>,
+          a <computeroutput>ResDialog</computeroutput> and a
+          <computeroutput>UserDialog</computeroutput>.)
+        </para>
+        <para>A third and less visible difference is that when a dialog has multiple resources such
+          as bitmaps and/or icons, the number of files required for an RcDialog class can result in
+          a minor file management challenge in the runtime environment. A ResDialog class, on the
+          other hand, needs only two files: the *.dll and the *.h. </para>
+      </section>
+      <!-- End of section 5.2.2 -->
+
+    </section>
+    <!-- End of section 5.2 -->
+
+    <section>
+      <title id="chap05-dlgcontrols" xreflabel="Dialog Controls">Dialog Controls</title>
+      <!-- section 5.3 -->
+      <para>There are five features of <computeroutput>ProductView</computeroutput>'s controls that
+        have not yet been introduced in this Guide. They are: radio buttons, a numeric-only edit
+        field, menu accelerators, an image control (in the "About" dialog), and
+        providing the dialog with minimize and maximize buttons (not really controls,
+        but useful to discuss here). </para>
+
+      <section>
+        <title>Radiobuttons</title>
+        <!-- section 5.3.1 -->
+        <indexterm>
+          <primary>Radio Button</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Controls</primary>
+          <secondary>RadioButton</secondary>
+        </indexterm>
+        <para> For Radio Buttons to operate automatically - i.e. when an "off" button is
+          clicked the previously "on" button goes off - they must be within a Group Box. This is defined in
+          the *.rc file first as a <computeroutput>GROUPBOX</computeroutput> control with the style
+          <computeroutput>WS_GROUP</computeroutput>. After this is defined,
+          the radio buttons (which must have the <computeroutput>AUTORADIOBUTTON</computeroutput> style)
+          are placed in the groupbox. However, the containment is done through the order of controls in
+          the *.rc file. To achieve this using ResEdit, first drag a Group Box control onto the dialog,
+          and set the
+          "Group" property to "True". Then drag the radio buttons from the controls palette into the
+          group box. Finally, and importantly, set the "Auto" behavior of each radio button to
+          "True" (this sets its style in the *rc file to <computeroutput>AUTORADIOBUTTON</computeroutput>
+          rather than just <computeroutput>RADIOBUTTON</computeroutput>). For a single group,
+          it is not necessary to set the "Group" property to
+          "True". However, if there are two or more independent group boxes, then it
+          <emphasis role="italic">is</emphasis> required in order to differentiate between the groups.</para>
+        <para>When initially displayed, no radiobuttons are "on". In the Product View, radiobuttons
+          show whether the size of the product is small, medium or large. Since size is an attribute
+          of the particular product being displayed (i.e. it's a field in the data that was
+          supposedly read from some database), the correct radiobutton must be turned on. This is
+          done in the <computeroutput>showData</computeroutput> method. </para>
+      </section>
+      <!-- end of section 5.3.1 -->
+
+      <section id="chap05-numedit">
+        <title>The Numeric Edit Control</title>
+        <indexterm><primary>Numeric edit control</primary></indexterm>
+        <indexterm><primary>Edit control</primary><secondary>Numeric-only</secondary></indexterm>
+        <!-- section 5.3.2 -->
+        <para>If you haven't tried entering an invalid number into the List Price or UOM fields of
+          Product View, then try it. You'll find that keying a non-digit (including "-" or "+"), or
+          keying more that two decimal digits in the Price field, or trying to key any decimals in
+          the UOM field, will all
+          result in a warning balloon being displayed. This behavior is provided by a mixin class
+          called <computeroutput>NumberOnlyEditEx.cls</computeroutput>, available from the ooDialog
+          "Samples" folder and copied into this User Guide's
+            <computeroutput>Exercise05\Support</computeroutput> folder for convenience.
+          <computeroutput>NumberOnlyEditEx</computeroutput> illustrates how a control can be extended
+          through ooRexx's mixin
+          capability. The mixin is applied when <computeroutput>NumberOnlyEditEx</computeroutput>
+          is "::required" - its first executable statement being:
+          <computeroutput>.Edit~inherit(.NumberOnlyEditEx, .EditControl)</computeroutput>,
+          with "Edit" being the name of ooDialog's Edit Control class. </para>
+        <para>Briefly, numeric-only edit controls are set up as follows (full details are in
+          the comments at the front of the <computeroutput>NumberOnlyEditEx.cls</computeroutput> file):
+        </para>
+          <orderedlist>
+            <listitem>
+              <para>Specify <computeroutput>::requires "Support\NumberOnlyEditEx.cls"</computeroutput>
+                at the top of the dialog class file.</para>
+            </listitem>
+            <listitem>
+              <para>Initialize the edit control (the one that's to be restricted to numeric-only entry) in the
+                <computeroutput>initDialog</computeroutput>
+                method by invoking the mixin's <computeroutput>initDecimalOnly</computeroutput>
+                method on the control instance. In <computeroutput>ProductView</computeroutput> this
+                is done for the product price control by this statement:
+<programlisting><![CDATA[prodControls[ecProdPrice]~initDecimalOnly(2,.false)]]>
+</programlisting>
+                The first parameter defines the allowable number of decimal places,
+                the second whether or not a sign is
+                allowed. As in <computeroutput>CustomerView</computeroutput> the controls are
+                grouped in the directory object <computeroutput>prodControls</computeroutput> for
+                ease of "exposing" them across methods; also, edit
+                control instances have the prefix "ec" in conformance with the
+                <link linkend='chap04-convs-names'>Naming Conventions</link><!--(<xref linkend="chap04-convs-names" />)-->
+                mentioned in Chapter 4.
+              </para>
+            </listitem>
+            <listitem><para>For each decimal-only edit control, a character event must be connected to an
+                event handler method in the dialog object (ooDialog's edit control
+                sends an event to the dialog when each character is entered). In
+                <computeroutput>ProductView</computeroutput>, this is done in the
+              <computeroutput>initDialog</computeroutput> method as follows:</para>
+<programlisting><![CDATA[    prodControls[ecProdPrice]~connectCharEvent(onChar)]]>
+</programlisting>
+            </listitem>
+            <listitem>
+              <para>Provide the event handler method. The event handler method <computeroutput>onChar</computeroutput>
+                in <computeroutput>ProductView</computeroutput> is as follows:
+<programlisting><![CDATA[    ::METHOD onChar UNGUARDED
+      -- called for each character entered in the price or UOM fields.
+      forward to (arg(6))]]>
+</programlisting>The sixth argument to the event handler is the control object
+                where the character event occurred, and the event must be forwarded to that object -
+                that is, to the eventful edit control. The event is then handled by the mixin class,
+                where the numeric-only editing is done.</para>
+            </listitem>
+          </orderedlist>
+      </section>
+      <!-- end of section 5.3.2 -->
+
+      <section id="chap05-accels">
+        <title>Menu Accelerators</title>
+        <!-- Section 5.3.3 -->
+        <indexterm><primary>Menus</primary><secondary>Accelerator key</secondary></indexterm>
+        <indexterm><primary>Accelerator key</primary><secondary>in menus</secondary></indexterm>
+        <para>Open the Product View dialog, and then press the Alt key on the keyboard, followed by
+          the down-arrow key. The <emphasis role="bold">Actions</emphasis> menu is first highlighted
+          and then opened. The top menu item is <emphasis role="bold">Update Product</emphasis>
+          - with an underscore beneath the "U".
+          Pressing the "U" key will then initiate the Update Product behavior. The
+          underlined letter is known as an "accelerator" key. It is produced by placing an ampersand
+          (&amp;) immediately before the letter that's to be the accelerator key in the *.rc file.
+          In <computeroutput>ProductView.rc</computeroutput>, you'll see the
+          <emphasis role="bold">Update</emphasis> menu item
+          defined as <computeroutput>MENUITEM "&amp;Update Product",IDM_PROD_UPDATE</computeroutput>.</para>
+        <para>Interestingly, if you mouse-click on the <emphasis role="bold">Actions</emphasis> menu
+          to open it, the "U" is not underscored - although pressing the "U" key still initiates the
+          update action. This is standard Windows behavior, and ooDialog does not change it
+          (although some third-party Windows apps such as Adobe's Reader do preserve the underscore
+          when a menu is mouse-opened).</para>
+      </section>
+      <!-- End of section 5.3.3 -->
+
+      <section id="chap05-about"><title>The "About" Dialog</title>  <!-- section 5.3.4 -->
+        <para>Product View has a "Help" menu with one entry: <emphasis role="bold">About...</emphasis>.
+          Clicking this menu item
+          surfaces a simple "about" dialog, containing an image of a well-wrapped product.
+          Double-clicking the image results in a message box acknowledging the action. This section
+          discusses firstly how the image is created, and second making the image "active". The code
+          for the About dialog is in the class <computeroutput>AboutDialog</computeroutput> towards
+          the end of the <computeroutput>ProductView.rex</computeroutput> file.</para>
+
+        <section id="chap05-imagecontrol"><title>Creating the Image</title> <!-- section 5.3.4.1 -->
+          <indexterm><primary>Image</primary><secondary>creating</secondary></indexterm>
+          <indexterm><primary>Creating an Image</primary></indexterm>
+          <para>An image is created by placing a bitmap (a file of type "*.bmp") into a "Picture
+            Control". The bitmap and Picture control are both defined in the *.rc file, but placing
+            the image into the picture control is done in code. The following sections provide more
+            detail.</para>
+
+        <section id="chap05-defimage"><title id="defimage.title">Defining the Image</title>
+            <!-- section 5.3.4.1.1 -->
+            <para>Assuming the bitmap image is already created as a bitmap file (a *.bmp file),
+              then, using ResEdit, the *.rc file is created as follows (assuming you've already
+              created a ResEdit project):</para>
+          <orderedlist>
+            <listitem><para>Select <emphasis role="bold">File --> Add a resource... --> Bitmap</emphasis>.
+              Two options are presented: "create from an existing file", or "create a new resource".
+              Click the former, which results in a File Open dialog.</para></listitem>
+            <listitem><para>Select the bitmap file and click <emphasis role="bold">Open</emphasis>.
+              This produces a <emphasis role="bold">Path designation</emphasis>
+              messagebox with two options: <emphasis role="bold">Absolute path</emphasis> or
+              <emphasis role="bold">Relative path</emphasis>. It is usually best to choose
+              "relative path". On clicking <emphasis role="bold">OK</emphasis> ...</para></listitem>
+            <listitem><para>...a bitmap resource (named <emphasis role="bold">IDB_BITMAP1</emphasis>
+              or some such) is added to the project and the bitmap image is displayed. If you want to
+              change the name, then right-click on the bitmap in the Resources pane and select
+              <emphasis role="bold">Rename</emphasis>. Note that the bitmap file is shown in the
+              bitmap resource's "Path" property</para></listitem>
+            <listitem><para>Finally, drag a Picture Control from the controls palette and place it in
+              the dialog. Then change the Picture Control's <emphasis role="bold">Notify</emphasis>,
+              <emphasis role="bold">Type</emphasis>, and <emphasis role="bold">RealSizeControl</emphasis>
+              attributes to <emphasis role="bold">True</emphasis>, <emphasis role="bold">Bitmap</emphasis>
+              and <emphasis role="bold">True</emphasis> respectively. These attributes define
+              the "styles" of the control to (respectively) issuing a mouse event, allowing a file
+              of type "bmp" to be displayed, and fitting the bitmap to the space available.</para>
+              <para>It's worth mentioning that the Picture Control is one of four types of
+              Static Control - text, graphics, image, and owner-drawn. In the *.rc file, these
+              are defined by their "styles". A "style" is an essential and basic concept in
+              Windows. While many styles are shown in the ooDialog Reference, the full
+              authoritative list of styles is found in the
+              <ulink url="http://msdn.microsoft.com/en-us/library/bb773169%28v=VS.85%29.aspx">
+              <citetitle>Microsoft Control Library</citetitle></ulink>. Look up the Static
+              Control, and you'll find around thirty different styles.
+              <indexterm><primary>Controls</primary><secondary>Styles</secondary></indexterm>
+              <indexterm><primary>Styles</primary><secondary>Controls</secondary></indexterm>
+              <indexterm><primary>Microsoft</primary><secondary>Controls Library</secondary></indexterm>
+              <indexterm><primary>Controls Library</primary></indexterm></para></listitem>
+          </orderedlist>
+        </section>
+        <!-- end of section 5.3.4.1.1 -->
+
+          <section>
+            <title>Mapping an Image to a Picture Control</title>
+            <!-- section 5.3.4.1.2 -->
+            <para>As mentioned above, the image (of a parcel) displayed in the About dialog is
+              referenced in the *.rc file, and hence is referenced in the *.dll file. What now needs
+              to happen is to associate the image with the static control that will contain it. This
+              is done in the dialog's <computeroutput>initDialog</computeroutput> method as
+              follows:<programlisting><![CDATA[
+        resImage = .ResourceImage~new( "", self)
+        image = resImage~getImage(IDB_PROD_ICON)
+        stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image)]]></programlisting>
+              The first statement creates an instance of ooDialog's
+              <computeroutput>ResourceImage</computeroutput> class.
+              The second statement uses the ResourceImages's <computeroutput>getImage</computeroutput>
+              method to return an instance of the <computeroutput>Image</computeroutput> class.
+              The last statement creates a static
+              control proxy and sets the image in it. (And the following two statements
+              in the method create a font and apply it to the static text in the dialog).</para>
+          </section>
+          <!-- end of section 5.3.4.1.2 -->
+
+        </section>
+        <!-- End of section 5.3.4.1 -->
+
+        <section>
+          <title>Making the Image "Active"</title>
+          <!-- Section 5.3.4.2 -->
+          <para>Making the image respond to mouse clicks is merely a matter of defining the
+            image-static control in the *.rc file as having the style <computeroutput>SS_NOTIFY</computeroutput>
+            which, using
+            ResEdit (and as mentioned in <xref linkend="chap05-defimage" />), merely requires the
+            "Notify" attribute to be set to "True". When the image is double-clicked, the dialog is
+            sent an event. This event is connected to the
+            <computeroutput>showMsgBox</computeroutput> event-handler method by the statement
+            <computeroutput>self~connectStaticNotify(... showMsgBox)</computeroutput>.
+            The <computeroutput>showMsgBox</computeroutput> method then displays a messagebox.
+            </para>
+          <para>You may notice the <computeroutput>leaving</computeroutput> method.
+          <indexterm><primary>leaving</primary><secondary>method</secondary></indexterm>
+          <indexterm><primary>methods</primary><secondary>leaving</secondary></indexterm>
+          This is invoked automatically when the underlying Windows dialog is being
+          closed. Its purpose is to allow for clean-up. In the case
+          of the About dialog, the two resources used (an image and a font) are released. This is
+          not really necessary in this simple application, but is a good habit to get into.</para>
+        </section>
+        <!-- End of section 5.3.4.2 -->
+
+      </section>
+      <!-- End of section 5.3.4 -->
+
+      <section><title>Minimize and Maximize Buttons</title>  <!-- Section 5.3.5 -->
+      <indexterm><primary>Minimize Button</primary></indexterm>
+      <indexterm><primary>Maximize Button</primary></indexterm>
+      <para>The Product View dialog has a minimize button and a disabled maximize button,
+      both at the top right of the dialog to the right of the title bar and to the left
+      of the close button. The minimize button is defined in the *.rc file.
+      When only one button
+      is specified, Windows automatically includes both buttons, but with the non-specified
+      button being disabled.
+      </para>
+      <para>If you look in <computeroutput>ProductView.rc</computeroutput> file, you will
+      see the following styles defined for the dialog (slightly re-formatted for readability):
+<programlisting><![CDATA[
+     STYLE DS_3DLOOK | DS_CENTER | DS_SHELLFONT  | WS_CAPTION | WS_VISIBLE |
+           WS_GROUP  | WS_POPUP  | WS_THICKFRAME | WS_SYSMENU]]></programlisting>
+      So where is the <computeroutput>WS_MINIMIZEBOX</computeroutput> style (as
+      mentioned in the ooDialog Reference)? Well, one of the curiosities of Windows, probably
+      historical, is that both the <computeroutput>WS_MINIMIZEBOX</computeroutput> style
+      and the <computeroutput>WS_GROUP</computeroutput> style (defined in the Windows
+      <computeroutput>WinUser.h</computeroutput> file) map to the same numeric value (0x00020000L).
+      Also, the <computeroutput>WS_MAXIMIZEBOX</computeroutput> and <computeroutput>WS_TABSTOP</computeroutput>
+      styles both map the same number (0x00010000L).
+      Clearly ResEdit likes the older form, and includes a <computeroutput>WS_GROUP</computeroutput>
+      when you specify a Minimize Box. Luckily, ooDialog accepts either.
+      </para>
+      <para>You might try adding either or both of the styles <computeroutput>WS_MINIMIZEBOX</computeroutput>
+        and <computeroutput>WS_MAXIMIZEBOX</computeroutput> to <computeroutput>CustomerView.rc</computeroutput>
+        in Exercise04. The line to change is the one starting: <computeroutput>STYLE DS_3DLOOK</computeroutput>.
+        Then run the exercise,and check the result. You should see the Customer dialog as before except for
+        the minimize and/or maximize buttons.
+      </para>
+      </section> <!-- End of section 5.3.5 -->
+      </section> <!-- End of section 5.3   -->
+
+<section id="chap05-codestructure" xreflabel="Code Structure"><title>Code Structure</title>  <!-- section 5.4 -->
+<para>Although broadly similar to the code structure in Exercise04, Exercise05
+  introduces several new structural concepts (at least new in this Guide). These are: the use of "data
+  types", differentiation between view data and application data, more than one dialog in a file,
+  externalized strings, and a more complex dialog design. </para>
+
+<section><title>Data Types</title>  <!-- Section 5.4.1 -->
+<indexterm><primary>Data Types</primary></indexterm><para>Most non-trivial software systems consist of a number of components.
+  Each of these could in principle be written in a different programming language (assuming of course that all
+  the languages share are supported by common invocation mechanisms). Within each component there are typically some number of
+  classes, and these interact privately. Because interaction between components tends to
+  be "data-heavy",
+  it is usual to define specific "data-only" classes, so that everyone can be sure of using the same data structures.
+  Examples are: a Customer data class, an Address data class, and a SalesOrder data class.
+  Each such class is often referred to as a "type" (a term that in some quarters is a synonym for "class").
+</para>
+<para>Our sample Sales Order application conforms with this idea, and so a number of "data types"
+      will be introduced. In Exercise05, the Product Data type (the class <computeroutput>ProductDT</computeroutput>
+  at the end of the <computeroutput>ProductModelData.rex</computeroutput> file)
+  specifies the attributes or fields required to fully define product data.
+  This class needs no methods, since the data elements of <computeroutput>ProductDT</computeroutput>
+  are defined as ooRexx attributes. Indeed, the single method in this class is merely a convenience
+  method that lists the contents of a <computeroutput>ProductDT</computeroutput> instance on the
+  console. This method is used (for illustration purposes only) in <computeroutput>ProductView</computeroutput>
+  at the end of the <computeroutput>saveChanges</computeroutput> method. </para>
+</section>  <!-- End of section 5.4.1 -->
+
+<section><title>View Data vs Application data</title>  <!-- Section 5.4.2 -->
+<para>There is often a difference between data that the user sees or enters on a dialog and the data
+          that flows between components in data types (just as there are differences between
+          data in a normalized database and data as used by application code). For example, on the
+          Product View dialog, a price is shown with two decimal digits after a decimal point. Price in the
+          <computeroutput>ProductDT</computeroutput> data type, on the other hand, has no decimal places
+          - it's expressed in units of 1/100s of the currency unit (that is, in cents if the currency unit is
+          the Dollar). Thus the price data type must be transformed both when displayed to the
+          user and when read in by the program.</para>
+<para>The principle for where to do the transformation is simple: do it as close to the screen as
+          possible (just as, at the other end, transformation to database formats are done as close
+          to the DB programming interface (e.g. SQL) as possible, meaning that most of the
+          application code across the system can use the same normative data formats.) Following
+          this principle, the first thing the event handler method <computeroutput>saveChanges</computeroutput>
+          does is to invoke the dialog's method <computeroutput>xformView2App</computeroutput>
+          (transform view to app format). For example, a new price may
+          have been entered with one or zero decimal digits, and so needs to be converted
+          correctly to a whole number of cents. Conversely, reformatting for display is
+          handled in the <computeroutput>showData</computeroutput> method. The end result is that all other
+          methods in <computeroutput>ProductView</computeroutput> can assume that data is in the
+          format defined by the data type. And this simplifies things a great deal - especially
+          given that one never wants to confuse 10000 for ten thousand dollars when it's really 100 dollars!</para>
+</section>  <!-- End of section 5.4.2 -->
+
+<section><title>Multiple Dialogs per File</title>  <!-- Section 5.4.3 -->
+  <para>The file <computeroutput>ProductView.rex</computeroutput> contains two dialogs - the
+    main <computeroutput>ProductView</computeroutput> class and the
+    <computeroutput>AboutDialog</computeroutput> class.
+    Note that the resources for both dialogs are defined in the
+      same ResEdit project, and hence in the same *.rc file. Thus both are compiled into the
+      <computeroutput>ProductView.dll</computeroutput> file. This means that the single statement
+      <computeroutput>.Application~setDefaults("O","ProductView.h",.false)</computeroutput> in
+    the <computeroutput>newInstance</computeroutput> method of the
+      <computeroutput>ProductView</computeroutput> class applies to the
+      <computeroutput>About</computeroutput> dialog as well.
+</para>
+<para>You may notice that the "About" dialog launched in <computeroutput>ProductView</computeroutput>'s
+  <computeroutput>about</computeroutput> method is modal. That is, the Product View window cannot be
+  accessed while the About window is open. This is because "About"
+  is launched using the <computeroutput>execute</computeroutput> method. Making an "about
+  box" modal seems quite reasonable. But in the next chapter, alternatives to
+  <computeroutput>execute</computeroutput> will be used in order to launch non-modal dialogs.
+</para>
+</section>  <!-- End of section 5.4.3 -->
+
+<section><title>Externalized Strings</title>  <!-- Section 5.4.4 -->
+  <para>It is generally deemed to be good practice to externalize any strings that are visible to
+          the user. This enables someone who needs to translate the application for use by speakers
+          of a different language to do so without touching any executable code. Providing such a
+          facility is often called "internationalization" or "I18N" for short. While this Guide does
+          not pretend to have addressed all I18N requirements, at least it indicates an
+          understanding of the need. Thus the human-readable strings that appear in the
+            <computeroutput>HRS</computeroutput> class ("HRS" = "Human-Readable Strings") at the end
+          of the <computeroutput>ProductView.rex</computeroutput> file are used for messages in
+          messageboxes. Other strings such as the static text on the dialogs, and text in the About
+          dialog are hard-coded either in code or in the *.rc file (and hence in the *.dll file).
+          While not good practice, this is done in the Exercises for code readability reasons - the
+          alternative being to add more code to the dialogs. </para>
+</section>  <!-- End of section 5.4.4 -->
+</section>  <!-- End of section 5.4 -->
+
+<section><title id="chap05-dlgdesign" xreflabel="Dialog Design">Designing a Dialog</title>  <!-- Section 5.5 -->
+  <indexterm><primary>Design of a dialog</primary></indexterm>
+  <indexterm><primary>Dialog</primary><secondary>Design</secondary></indexterm>
+  <para>A program does only what its programmer specifies. But a user could do anything. This is why
+    designing dialogs is often quite complicated. What could the user do? What must the dialog
+    do? These are two questions that sometimes seem to intertwine into an irresolvable mess. In
+    <computeroutput>ProductView</computeroutput>, the most complex piece of behavior is when
+    the user chooses the <emphasis role="bold">update</emphasis> menu item. A useful way to
+    plot the possible interactions is to use a UML Activity Diagram, with user actions on one
+    side and the corresponding program actions on the other. The following figure shows one
+    such diagram.</para>
+  <figure id="fig0501"><title>ProductView Behavior Diagram</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter05-image1.jpg" scale="50" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  <para>The main thing this diagram illustrates is how the user can go in circles
+    (should he/she wish to) without
+    affecting what the code needs to do. This is helped a great deal by providing a "refresh"
+    function, so that if the user gets mixed up in entering data, s/he can go back to the
+    beginning and start again. </para>
+</section>  <!-- End of section 5.5 -->
+
+<section id="chap05-cancel" xreflabel="Controlling Dialog Cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>
+<!-- Section 5.6 -->
+<para>Windows provides three ways for the user to cancel a dialog: by pressing the
+  <emphasis role="bold">Esc</emphasis> key, by clicking on the "close" icon at the extreme top right
+  of the dialog, or by clicking the <emphasis role="bold">close</emphasis> action on the system menu
+  (click the icon at the extreme top left of the window).
+   All three of these actions result in a "cancel" message being sent to the dialog, and
+   the default superclass behavior is silently to close the dialog. In general, since these default
+   actions are standard for all Windows dialogs, they should not be over-ridden except perhaps
+   to display an "are you sure?" message if, for example, the user is half-way through some unit
+   of work.</para>
+<para>The Product View code provides a simple illustration of this in that, depending on the
+          state of the dialog, a modal "are you sure you want to exit" message is displayed.
+          Product View can be said to have three states, as illustrated by the UML state diagram
+          below. In the diagram, ovals are states, and the lines between them are state transitions.
+          A solid circle is the start, and a smaller solid circle with a ring around it is the end.</para>
+  <figure id="fig0502">
+    <title>ProductView State Diagram</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter05-image2.jpg" scale="70" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+        <para>The three states are as follows:</para>
+          <orderedlist>
+            <listitem>
+              <para>The first state is called "closable" - that is, not in the process of being
+                updated. This state is in being when the value of the attribute
+                <computeroutput>dialogState</computeroutput> (defined in the
+                <computeroutput>::attribute</computeroutput> directive immediately after the
+                <computeroutput>::class</computeroutput> directive) is "closable". </para>
+            </listitem>
+            <listitem>
+              <para>The second state is called "in update" and is in being when the value of the
+                <computeroutput>dialogState</computeroutput> attribute is "inUpdate". If the user
+                selects any of the close actions in this state, then the third
+                state is entered. The "InUpdate" state is terminated by the user menu selecting
+                <emphasis role="bold">Refresh Data</emphasis> or pressing the
+                <emphasis role="bold">Save Changes</emphasis> button - either of which cause
+                the dialog to return to the "Closable" state. </para>
+            </listitem>
+            <listitem>
+              <para>The third state is the modal "exit messagebox" state which, depending on the user's
+                choice, either closes the dialog or returns to the "In Update" state.
+                If the user selects "close", then the dialog closes immediately. </para>
+            </listitem>
+          </orderedlist>
+  </section>  <!-- End of section 5.6 -->
+
+</chapter>

@@ -1,0 +1,918 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="xintdeb"><title>Debugging Aids</title>
+<para>In addition to the <xref linkend="keyTrace" xrefstyle="select:title"/>
+instruction there are the following debugging aids.</para>
+
+<section id="osidbg"><title>Interactive Debugging of Programs</title>
+<indexterm><primary>tracing</primary>
+<secondary>by interactive debug</secondary></indexterm>
+<indexterm><primary>user input and output</primary></indexterm>
+<para>The debug facility permits interactively controlled execution of a
+program. Adding the prefix character ? to the TRACE instruction,
+the TRACE function, or TRACE keyword of the ::OPTIONS directive.  For example,
+<computeroutput>TRACE ?I</computeroutput>,
+<computeroutput>TRACE(?I)</computeroutput>, or
+<computeroutput>::OPTIONS TRACE ?I</computeroutput> turns on interactive debugging
+and indicates to the user that interactive
+debugging is active. Further TRACE instructions in the program are ignored,
+and the language processor pauses after nearly all instructions that are traced
+at the console (see <xref linkend="debugexc" />
+for the exceptions). When
+the language processor pauses, the following debug actions are available:
+</para>
+<itemizedlist>
+<listitem><para>Entering a null line causes the language processor to continue
+with the execution until the next pause for debugging input. Repeatedly entering a
+null line, therefore, steps from pause point to pause point. For
+<computeroutput>TRACE ?A</computeroutput>,
+for example, this is equivalent to single-stepping through the program.
+</para></listitem>
+<listitem><para>Entering an equal sign (=)
+<indexterm><primary>= (equal sign)</primary>
+<secondary>immediate debug command</secondary></indexterm>
+with no surrounding whitespace causes the language processor to reexecute the
+clause last traced. For example, if an IF clause is about to take the wrong
+branch, you can change the value of the variables on which it depends, and then
+reexecute it.</para>
+<para>Once the clause has been reexecuted, the language processor pauses
+again.</para></listitem>
+<listitem><para>Anything else entered is treated as a line of one or more
+clauses, and processed immediately (that is, as though DO; line;
+END; had been inserted in the program). The same rules apply as for the INTERPRET
+instruction (for example, DO-END constructs must be complete). If an instruction
+contains a syntax error, a standard message is displayed and you are prompted
+for input again. Similarly, all other SIGNAL conditions are disabled while
+the string is processed to prevent unintentional transfer of control.</para>
+<para>During
+<indexterm><primary>RC (return code)</primary>
+<secondary>not set during interactive debug</secondary></indexterm>
+<indexterm><primary>.RS (return code)</primary>
+<secondary>not set during interactive debug</secondary></indexterm>
+interpretation of the string, no tracing takes place, except that nonzero
+return codes from commands are displayed. The special variable RC and the
+environment symbol .RS are not set by commands executed from the string. Once
+the string has been processed, the language processor pauses again for further
+debugging input.</para></listitem></itemizedlist>
+<para>Interactive debug is turned off in either of the following cases:</para>
+<itemizedlist>
+<listitem><para>A TRACE instruction uses the ? prefix while interactive
+debug is in effect</para></listitem>
+<listitem><para>At any time, if <computeroutput>TRACE O</computeroutput> or
+<computeroutput>TRACE</computeroutput> with no options
+is entered</para></listitem></itemizedlist>
+</section>
+
+<section id="debugexc"><title>Debugging Aids</title>
+<para>The numeric form of the TRACE instruction can be used to allow sections
+of the program to be executed without pause for debugging input.
+<computeroutput>TRACE n</computeroutput>
+(that is, a positive result) allows execution to continue, skipping
+the next <computeroutput>n</computeroutput> pauses (when interactive debugging
+is or becomes active). <computeroutput>TRACE -n</computeroutput> (that is, a
+negative result) allows execution to continue without
+pause and with tracing inhibited for <computeroutput>n</computeroutput> clauses
+that would otherwise
+be traced. The trace action a TRACE instruction selects is saved and restored
+across subroutine calls. This means that if you are stepping through a program
+(for example, after using <computeroutput>TRACE ?R</computeroutput> to trace
+results) and then enter
+a subroutine in which you have no interest, you can enter
+<computeroutput>TRACE O</computeroutput> to
+turn off tracing. No further instructions in the subroutine are traced, but
+on return to the caller, tracing is restored.</para>
+<para>Similarly, if you are interested only in a subroutine, you can put a
+<computeroutput>TRACE ?R</computeroutput> instruction at its start. Having
+traced the routine, the original
+status of tracing is restored and, if tracing was off on entry to the subroutine,
+tracing and interactive debugging are turned off until the next entry to the
+subroutine.</para>
+<para>Because any instructions can be executed in interactive debugging you have
+considerable control over the execution.</para>
+<para>The following are some examples: </para>
+<indexterm><primary>character input and output</primary></indexterm>
+<example>
+<title>Character inout and output</title>
+<programlisting>
+Say expr     /* displays the result of evaluating the         */
+             /* expression                                    */
+
+name=expr    /* alters the value of a variable                */
+
+Trace O      /* (or Trace with no options) turns off          */
+             /* interactive debugging and all tracing         */
+
+Trace ?A     /* turns off interactive debugging but           */
+             /* continues tracing all clauses                 */
+
+exit         /* terminates execution of the program           */
+
+do i=1 to 10; say stem.i; end
+             /* displays ten elements of the array stem.      */
+</programlisting>
+</example>
+<para>Exceptions: Some clauses cannot safely
+be reexecuted, and therefore the language processor does not pause after them,
+even if they are traced. These are:</para>
+<itemizedlist>
+<listitem><para>Any repetitive DO clause, on the second or subsequent time
+around the loop.</para></listitem>
+<listitem><para>All END clauses.</para></listitem>
+<listitem><para>All THEN, ELSE, OTHERWISE, or null clauses.</para></listitem>
+<listitem><para>All RETURN and EXIT clauses.</para></listitem>
+<listitem><para>All SIGNAL clauses (but the language processor pauses after the
+target label is traced).</para></listitem>
+<listitem><para>Any clause that causes a syntax error. They can be trapped by
+SIGNAL ON SYNTAX, but cannot be reexecuted.</para></listitem>
+</itemizedlist>
+<para>A pause occurs after a REPLY instruction, but the REPLY instruction
+cannot be reexecuted.</para>
+</section>
+
+<section id="rxtr"><title>RXTRACE Variable</title>
+<indexterm><primary>RXTRACE environment variable</primary></indexterm>
+<para>When the interpreter starts, it
+checks the setting of the special environment variable,
+<literal>RXTRACE</literal>.
+If <literal>RXTRACE</literal> has been set to
+<literal>ON</literal> (not case-sensitive), each time when starting
+a new Rexx procedure, the
+interpreter starts in interactive debug mode as if the Rexx instruction
+<computeroutput>TRACE &apos;?R&apos;</computeroutput> had been the first interpretable
+instruction. All other settings
+of <literal>RXTRACE</literal> are ignored.
+<literal>RXTRACE</literal> is only checked when starting
+a new Rexx interpreter, it is not checked each time when starting
+a new Rexx procedure.</para>
+</section>
+
+
+<section id="xdebugmt"><title>&added51;Debugging Multithreaded Programs</title>
+<indexterm><primary>multithreaded programs</primary><secondary>debugging</secondary></indexterm>
+<indexterm><primary>debugging</primary><secondary>multithreaded programs</secondary></indexterm>
+<indexterm><primary>concurrency</primary><secondary>debugging</secondary></indexterm>
+<indexterm><primary>multithreading</primary><secondary>debugging</secondary></indexterm>
+
+<para>ooRexx allows for executing different parts of ooRexx programs on multiple threads of execution,
+even using different Rexx interpreter instances, within a single operating system process.  This
+makes it difficult and at times even impossible to debug such multithreaded programs without any
+additional information about the specific execution context.  Relevant information for debugging
+multithreaded programs may be: the Rexx interpreter instance that executes an invocation
+("activation"), the operating system thread on which the activation is running,
+and whether a <xref linkend="xscope" xrefstyle="template:scope"/> lock
+is held for exclusive access of an object's attribute ("object variable") pool at that
+specific <xref linkend="xscope" xrefstyle="template:scope"/>.
+</para>
+
+<section id="xintdeb_un_guarded_meths" revisionflag="added"><title>About Debugging Guarded and Unguarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>debugging GUARDED and UNGUARDED methods</secondary></indexterm>
+</title>
+<para>While debugging multithreaded programs (c.f.  <xref linkend="xconcur" />, <xref
+linkend="keyGuard" />, <xref linkend="keyReply" />), it becomes important to realize whether a
+method is defined to be guarded or unguarded (see sub keywords GUARDED and UNGUARDED on the METHOD
+directive in <xref linkend="methd" />, and the methods SETGUARDED and SETUNGUARDED of the Method
+class in <xref linkend="clsMethod" />).
+</para>
+<section id="xintdeb_guarded_meths" revisionflag="added"><title>Rules for Running Guarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>rules for running GUARDED methods</secondary></indexterm>
+</title>
+<para>ooRexx ensures that guarded methods of the same scope (defined for the same class) cannot
+execute concurrently to protect access to its attribute pool (object variable pool).  To do so, a
+counter-based guard lock is maintained for each scope, which gets increased by one if a guarded
+method gets invoked and decreased by one upon return.  If a guarded method for the same scope gets
+invoked from another thread and the scope's guard lock counter is not zero, it gets blocked because
+another guarded method holding the guard lock is currently running in the same scope.  Once the
+scope's guard lock counter drops to 0 (no other guarded method runs currently), the blocked guarded
+method can acquire the guard lock, thereby increasing the guard lock counter to one and starting to
+run.
+</para>
+<itemizedlist>
+<listitem><para>Invoking a guarded method from the same thread will increase the guard lock counter
+by one and, upon return, will decrease it by one.  Invoking an unguarded method from the same thread
+will not change the guard lock counter.
+</para></listitem>
+<listitem><para>Invoking a guarded method from another thread for a scope in which a guarded method
+is currently running will block the invocation until the scope's guard lock counter drops to 0 (no
+other guarded method for the same scope is running anymore) and the guard lock becomes free.  In
+this situation, the blocked guarded method will succeed in acquiring the guard lock, increasing the
+guard lock counter to one, and starting running.
+</para></listitem>
+<listitem><para>If a REPLY keyword statement is processed in a currently guarded method, the
+remaining instructions of the guarded method will remain guarded.
+</para></listitem>
+<listitem><para>A GUARD ON keyword statement has no effect.
+</para></listitem>
+<listitem><para>A GUARD OFF keyword statement changes the guarded method to an unguarded method from
+that point on, in the process reducing the guard lock counter by one and removing the guard lock.
+</para></listitem>
+</itemizedlist>
+</section>
+<section id="xintdeb_unguarded_meths" revisionflag="added"><title>Rules for Running Unguarded Methods
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>rules for running UNGUARDED methods</secondary></indexterm>
+</title>
+<itemizedlist>
+<listitem><para>Unguarded methods can always run concurrently with any other method of the same
+scope.
+</para></listitem>
+<listitem><para>If a REPLY keyword statement is processed in a currently unguarded method, the
+remainder of the invocation will continue on a different thread, also unguarded.
+</para></listitem>
+<listitem><para>A GUARD ON keyword statement changes the unguarded method to a guarded method from
+that point on, in the process increasing the guard lock counter by one and acquiring the guard lock.
+</para></listitem>
+<listitem><para>A GUARD OFF keyword statement has no effect.
+</para></listitem>
+</itemizedlist>
+</section>
+</section>
+
+<section id="xintdeb_explanations" revisionflag="added"><title>Multithreaded Additions to TRACE
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>additions to TRACE</secondary></indexterm>
+</title>
+<para>To ease debugging of multithreaded programs the execution context
+will be displayed with a <emphasis role="italic">"multithreaded trace prefix string"</emphasis>
+in square brackets (see also the class method
+<xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="template:makeStringImpl"/> and
+the class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>" of the
+"<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject class"/>)
+in the following form, if the class attribute
+<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/> is set to "<literal>F</literal>" (full):</para>
+<para>"<literal>[R1 T2 I3 Gu A4 L5 *W]</literal>", where
+</para>
+<itemizedlist>
+<listitem><para>"<literal>R1</literal>": "<literal>R</literal>" stands for Rexx interpreter instance
+and the number (a counter) indicates which of the instances executes the current
+invocation (activation).
+</para></listitem>
+<listitem><para>"<literal>T2</literal>": "<literal>T</literal>" stands for (operating system)
+thread and the number (a counter) indicates on which of the currently existing threads the
+activity gets executed.
+</para></listitem>
+<listitem><para>"<literal>I3</literal>": "<literal>I</literal>" stands for invocation (activation)
+and the number (a counter) indicates which invocation gets executed on that thread (activity).
+</para></listitem>
+</itemizedlist>
+
+<para>
+If currently tracing methods then in addition the following information gets displayed:
+</para>
+<itemizedlist>
+<listitem><para>"<literal>G</literal>" or "<literal>U</literal>": this character indicates
+whether the method is defined to be guarded or unguarded (see
+<xref linkend="guamet" xrefstyle="select:title"/> in chapter <xref linkend="keyGuard" xrefstyle="select:title"/>).
+</para></listitem>
+<listitem><para>"<literal>g</literal>", "<literal>u</literal>" or "<literal> </literal>" (blank character):
+this character indicates whether the method is currently executing in a state that is opposite of the method's
+definition, i.e., <literal>g</literal> for an unguarded method that is currently guarded, or,
+<literal>u</literal> for a guarded method that is currently unguarded, or blank else
+(see
+<xref linkend="guamet" xrefstyle="select:title"/> in chapter <xref linkend="keyGuard" xrefstyle="select:title"/>).
+</para></listitem>
+<listitem><para>"<literal>A4</literal>": "<literal>A</literal>" stands for
+"attribute pool" (also known as "object variable dictionary")
+and the number (a counter) indicates which object variable dictionary
+of which <xref linkend="xscope" xrefstyle="template:scope"/>
+gets used in this invocation of the method.  Each object will
+have its own attribute pool which can be directly accessed by methods
+of the same <xref linkend="xscope" xrefstyle="template:scope"/>.
+Therefore the <literal>A</literal> indicator will refer to the same object and the same
+<xref linkend="xscope" xrefstyle="template:scope"/> if the number is the same.
+</para></listitem>
+<listitem><para>"<literal>L5</literal>": "<literal>L</literal>" stands for
+<xref linkend="xscope" xrefstyle="template:scope"/>
+<emphasis role="italic">lock count</emphasis> and the number (a counter)
+indicates how many object <xref linkend="xscope" xrefstyle="template:scope"/>
+lock reservations have taken place at that
+point in time. Whenever another
+<xref linkend="guamet" xrefstyle="template:guarded method"/> of the same
+<xref linkend="xscope" xrefstyle="template:scope"/> gets invoked the object's
+<xref linkend="xscope" xrefstyle="template:scope"/> lock count
+increases by one, upon return the object's
+<xref linkend="xscope" xrefstyle="template:scope"/> lock count decreases by one.
+</para></listitem>
+<listitem><para>"<literal>*</literal>" or "<literal> </literal>" (blank character):
+the asterisk indicates that the activity holds the object <xref linkend="xscope" xrefstyle="template:scope"/>
+lock. <xref linkend="guamet" xrefstyle="template:Guarded methods"/> are blocked, if they do not hold the
+object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+Methods in the unguarded state will never block.
+</para></listitem>
+<listitem><para>"<literal>W</literal>" or "<literal> </literal>" (blank character):
+the capital W indicates that the method is waiting on the guard condition to turn &true;.
+</para></listitem>
+</itemizedlist>
+
+<para>Notes:</para>
+<itemizedlist>
+<listitem><para>
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/>
+keyword instruction can be used within a method to
+change the state from guarded (synchronize on the object <xref linkend="xscope" xrefstyle="template:scope"/> lock) to
+unguarded (ignore the object scope lock) using unconditionally the keyword
+statement
+<xref linkend="guardonoff" xrefstyle="template:GUARD OFF"/>
+and vice versa (using unconditionally the keyword
+statement
+<xref linkend="guardonoff" xrefstyle="template:GUARD ON"/>).
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/> keyword statement can only execute after successfully
+acquiring the object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+The keyword instructions
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD ON WHEN someAttribute=someValue"/>"</emphasis>
+and
+<emphasis role="italic">"<xref linkend="guamet" xrefstyle="template:GUARD OFF WHEN someAttribute=someValue"/>"</emphasis>
+allow changing the state of the method
+to guarded or to unguarded depending on the value of
+an exposed attribute "someAttribute" which needs to get changed in another
+concurrently running method of the same <xref linkend="xscope" xrefstyle="template:scope"/>.
+Such attributes are known to be used as
+<emphasis role="italic">"control variables"</emphasis>
+to synchronize activities on different threads.
+The <xref linkend="keyGuard" xrefstyle="template:GUARD"/> keyword statement can only execute after successfully
+acquiring the object's <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+The "attribute pool" ("object variable dictionary") number represents a specific object at
+a specific <xref linkend="xscope" xrefstyle="template:scope"/>.
+</para></listitem>
+<listitem><para>
+Methods in the guarded state that do not possess the trailing asterisk
+are blocked, they are waiting for the object <xref linkend="xscope" xrefstyle="template:scope"/> lock.
+</para></listitem>
+<listitem><para>
+Methods in the unguarded state are never blocked. If you wish to directly change the value of any exposed
+attribute in the same
+<xref linkend="xscope" xrefstyle="template:scope"/>
+then make sure that the changes take place in the guarded state to inhibit concurrent
+updates from other threads to inhibit inconsistent states. Alternatively, the
+ooRexx semaphore classes (<xref linkend="clsEventSemaphore" xrefstyle="select:title"/>,
+<xref linkend="clsMutexSemaphore" xrefstyle="select:title"/>) could be used for that purpose.
+</para></listitem>
+<listitem><para>
+The layout of the bracketed (multithreaded) prefix is intentionally designed to make
+parsing and analyzing the trace output of complex multithreaded ooRexx programs easy.
+</para></listitem>
+</itemizedlist>
+<para>
+Starting with ooRexx 5.1, each traced line will be represented with an instance of its new class
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>.
+Its class attribute "<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>"
+is set to "<literal>N</literal>" (normal) by default.  If one needs the additional, multithreaded
+related trace information prefixed in square brackets then changing the class attribute
+"<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>"
+to "<literal>S</literal>" (standard) or to "<literal>F</literal>" (full, for complex multithreaded
+programs) will prepend it to each traced line.
+Each such <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/> instance
+will be sent as the argument to the <methodname>LINEOUT</methodname>
+message to the <literal>.traceOutput</literal> monitor object.
+As <literal>.traceOutput</literal> monitor needs a string value for display
+it will send the <methodname>request("STRING")</methodname> message to it, causing the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>'s
+<xref linkend="mthTraceObjectMakeString" xrefstyle="template:makeString"/>
+method to run and to return the string value that represents it.
+</para>
+<para>
+If one wishes to intercept the generated
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/> instances then
+one could take advantage of <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>'s
+class attribute <xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/>.
+</para>
+</section>
+
+
+<section id="xintdeb_examples" revisionflag="added"><title>Examples
+<indexterm><primary>debugging multithreaded programs</primary>
+<secondary>examples</secondary></indexterm>
+</title>
+
+<para>This section first introduces an example in which a multithreaded program gets traced to
+demonstrate that multithreaded related information are needed in order to become able to
+analyze the trace.
+The same program will get altered to take advantage of the new profiling
+(probing) option which allows for collecting the generated <emphasis role="italic">traceObjects</emphasis> and then use the
+different <xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+options to format the <emphasis role="italic">traceObjectS</emphasis> accordingly.
+The third example demonstrates how one can use
+<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>
+to freely format the trace line.
+</para>
+
+
+<section><title>Employing Normal TRACE for Debugging
+<indexterm><primary>debugging multithreaded programs</primary><secondary>examples</secondary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example creates multithreaded parts using the
+<xref linkend="keyReply" xrefstyle="template:REPLY keyword instruction"/>.
+To introduce some entropy the
+<xref linkend="bifRandom" xrefstyle="template:RANDOM()"/> built-in function (BIF)
+gets used for generating a random sleep time. The resulting trace output will
+not have any multithreading related information such that it becomes impossible to realize which
+statements get executed on which thread.
+<example id="ex.xintdeb_examples-normal">
+<title>Employing Normal (Default) TRACE
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  say "in" .context~name", before reply, nr="nr
+  trace results         -- trace results
+  reply                 -- return & execute rest on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)
+
+::routine pp      -- "pretty print": enquote argument in brackets
+  trace results         -- will turn on invocation entry/exit
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[in SHOW, before reply, nr=1
+    22 *-* reply                 -- return & execute rest on new thread
+in SHOW, before reply, nr=2
+    22 *-* reply                 -- return & execute rest on new thread
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.654"
+in SHOW, before reply, nr=3
+    24 *-* call sysSleep sleepTime  -- sleep
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+    22 *-* reply                 -- return & execute rest on new thread
+       >>>   "0.672"
+    24 *-* call sysSleep sleepTime  -- sleep
+    23 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.369"
+    24 *-* call sysSleep sleepTime  -- sleep
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 3]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 3]"
+a TEST: I got created as: [# 3]
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 1]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 1]"
+a TEST: I got created as: [# 1]
+       >>>   "0"
+    25 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_normal.rex".
+    29 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+       <I< Routine "PP" in package "G:\test_normal.rex".
+       >>>   "a TEST: I got created as: [# 2]"
+a TEST: I got created as: [# 2]
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+<section id="xintdeb_examples-profiling"><title>Exploiting TraceObject's Profiling/Probing and Formatting Capabilities
+<indexterm><primary>debugging multithreaded programs</primary><secondary>exploiting TraceObject capabilities</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>exploiting TraceObject capabilities</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>exploiting TraceObject capabilities</tertiary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example extends the previous one and demonstrates how to take advantage
+of the capabilities the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class offers:
+</para>
+<para>
+<itemizedlist>
+<listitem>
+<para>The class attribute
+<xref linkend="mthTraceObjectOptionSet" xrefstyle="template:option"/>
+gets set to <literal>P</literal> (profiling/probing) which will
+cause ooRexx to not send the created
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+to <literal>.traceOutput</literal> such that no trace line will get displayed.
+</para>
+</listitem>
+<listitem>
+<para>The class attribute
+<xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/>
+gets an array assigned such that each created
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+will be sent to it using the <methodname>APPEND</methodname> message.
+</para>
+</listitem>
+<listitem>
+<para>
+After the loop the main program sleeps for a second to wait long enough to be sure that all
+threads have completed and therefore all trace objects got generated and appended.
+</para>
+</listitem>
+<listitem>
+<para>
+Taking advantage of the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+formatting capabilities all trace objects collected in the array
+get displayed in a loop after setting the class attribute option to <literal>N</literal> (normal),
+<literal>T</literal> (thread),
+<literal>S</literal> (standard) and
+<literal>F</literal> (full). This way the collected trace objects get formatted such that
+more and more multithreaded related information gets revealed in the trace line.
+</para>
+</listitem>
+</itemizedlist>
+<example id="ex.xintdeb_examples-profiling">
+<title>Exploiting TraceObject's Profiling/Probing Capability for Debugging a Multithreaded Program
+<indexterm><primary>debugging multithreaded programs</primary><secondary>profiling/probing option</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>profiling/probing option</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>profiling/probing option</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[
+.TraceObject~option="P" -- set to "Profiling" ("Probing") mode
+arr=.array~new          -- use an array to collect the traceObjects
+.TraceObject~collector=arr -- assign array
+do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+call sysSleep 1         -- wait for the threads to end
+say "arr~items:" arr~items "traceObjects collected"
+.TraceObject~collector=.nil   -- stop collecting the traceObjects
+say
+say "now displaying the collected traceObjects in different formats:"
+do counter c1 opt over "N", "T", "S", "F"
+   .TraceObject~option=opt
+   say "run #" c1", .TraceObject~option:" .TraceObject~option
+   do traceObj over arr
+      say traceObj      -- will cause makeString message to be sent
+   end
+   say "---"
+end
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  say "in" .context~name", before reply, nr="nr
+  trace results         -- trace results
+  reply                 -- return & execute rest on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)
+
+::routine pp      -- "pretty print": enquote argument in brackets
+  trace results         -- will turn on invocation entry/exit
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[in SHOW, before reply, nr=1
+in SHOW, before reply, nr=2
+in SHOW, before reply, nr=3
+a TEST: I got created as: [# 3]
+a TEST: I got created as: [# 1]
+a TEST: I got created as: [# 2]
+arr~items: 33 traceObjects collected
+
+now displaying the collected traceObjects in different formats:
+run # 1, .TraceObject~option: N
+    38 *-* reply                 -- return & execute rest on new thread
+    38 *-* reply                 -- return & execute rest on new thread
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.563"
+    40 *-* call sysSleep sleepTime  -- sleep
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.614"
+    40 *-* call sysSleep sleepTime  -- sleep
+    38 *-* reply                 -- return & execute rest on new thread
+    39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>>   "0.237"
+    40 *-* call sysSleep sleepTime  -- sleep
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 3]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 3]"
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 1]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 1]"
+       >>>   "0"
+    41 *-* say self": I got created as:" pp("#" nr)
+       >I> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-* return "[" || arg(1) || "]"
+       >>>   "[# 2]"
+       <I< Routine "PP" in package "G:\test_show_off.rex".
+       >>>   "a TEST: I got created as: [# 2]"
+---
+run # 2, .TraceObject~option: T
+    38 *-1* reply                 -- return & execute rest on new thread
+    38 *-1* reply                 -- return & execute rest on new thread
+    39 *-2* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>2>   "0.563"
+    40 *-2* call sysSleep sleepTime  -- sleep
+    39 *-3* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>3>   "0.614"
+    40 *-3* call sysSleep sleepTime  -- sleep
+    38 *-1* reply                 -- return & execute rest on new thread
+    39 *-4* sleepTime=random(1,750)/1000   -- get random sleep time
+       >>4>   "0.237"
+    40 *-4* call sysSleep sleepTime  -- sleep
+       >>4>   "0"
+    41 *-4* say self": I got created as:" pp("#" nr)
+       >I4> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-4* return "[" || arg(1) || "]"
+       >>4>   "[# 3]"
+       <I4< Routine "PP" in package "G:\test_show_off.rex".
+       >>4>   "a TEST: I got created as: [# 3]"
+       >>2>   "0"
+    41 *-2* say self": I got created as:" pp("#" nr)
+       >I2> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-2* return "[" || arg(1) || "]"
+       >>2>   "[# 1]"
+       <I2< Routine "PP" in package "G:\test_show_off.rex".
+       >>2>   "a TEST: I got created as: [# 1]"
+       >>3>   "0"
+    41 *-3* say self": I got created as:" pp("#" nr)
+       >I3> Routine "PP" in package "G:\test_show_off.rex".
+    45 *-3* return "[" || arg(1) || "]"
+       >>3>   "[# 2]"
+       <I3< Routine "PP" in package "G:\test_show_off.rex".
+       >>3>   "a TEST: I got created as: [# 2]"
+---
+run # 3, .TraceObject~option: S
+[T1  I1  G  A1  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T1  I2  G  A2  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T2  I1  G  A1  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T2  I1  G  A1  L1  * ]        >>>   "0.563"
+[T2  I1  G  A1  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T3  I2  G  A2  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T3  I2  G  A2  L1  * ]        >>>   "0.614"
+[T3  I2  G  A2  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T1  I3  G  A3  L1  * ]     38 *-* reply                 -- return & execute rest on new thr
+[T4  I3  G  A3  L1  * ]     39 *-* sleepTime=random(1,750)/1000   -- get random sleep time
+[T4  I3  G  A3  L1  * ]        >>>   "0.237"
+[T4  I3  G  A3  L1  * ]     40 *-* call sysSleep sleepTime  -- sleep
+[T4  I3  G  A3  L1  * ]        >>>   "0"
+[T4  I3  G  A3  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T4  I4 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T4  I4 ]                   45 *-* return "[" || arg(1) || "]"
+[T4  I4 ]                      >>>   "[# 3]"
+[T4  I4 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T4  I3  G  A3  L1  * ]        >>>   "a TEST: I got created as: [# 3]"
+[T2  I1  G  A1  L1  * ]        >>>   "0"
+[T2  I1  G  A1  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T2  I5 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T2  I5 ]                   45 *-* return "[" || arg(1) || "]"
+[T2  I5 ]                      >>>   "[# 1]"
+[T2  I5 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T2  I1  G  A1  L1  * ]        >>>   "a TEST: I got created as: [# 1]"
+[T3  I2  G  A2  L1  * ]        >>>   "0"
+[T3  I2  G  A2  L1  * ]     41 *-* say self": I got created as:" pp("#" nr)
+[T3  I6 ]                      >I> Routine "PP" in package "G:\test_show_off.rex".
+[T3  I6 ]                   45 *-* return "[" || arg(1) || "]"
+[T3  I6 ]                      >>>   "[# 2]"
+[T3  I6 ]                      <I< Routine "PP" in package "G:\test_show_off.rex".
+[T3  I2  G  A2  L1  * ]        >>>   "a TEST: I got created as: [# 2]"
+---
+run # 4, .TraceObject~option: F
+[R1   T1   I1    G  A1    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T1   I2    G  A2    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T2   I1    G  A1    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T2   I1    G  A1    L1   * ]        >>>   "0.563"
+[R1   T2   I1    G  A1    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T3   I2    G  A2    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T3   I2    G  A2    L1   * ]        >>>   "0.614"
+[R1   T3   I2    G  A2    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T1   I3    G  A3    L1   * ]     38 *-* reply                 -- return & execute rest
+[R1   T4   I3    G  A3    L1   * ]     39 *-* sleepTime=random(1,750)/1000   -- get random s
+[R1   T4   I3    G  A3    L1   * ]        >>>   "0.237"
+[R1   T4   I3    G  A3    L1   * ]     40 *-* call sysSleep sleepTime  -- sleep
+[R1   T4   I3    G  A3    L1   * ]        >>>   "0"
+[R1   T4   I3    G  A3    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T4   I4   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T4   I4   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T4   I4   ]                         >>>   "[# 3]"
+[R1   T4   I4   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T4   I3    G  A3    L1   * ]        >>>   "a TEST: I got created as: [# 3]"
+[R1   T2   I1    G  A1    L1   * ]        >>>   "0"
+[R1   T2   I1    G  A1    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T2   I5   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T2   I5   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T2   I5   ]                         >>>   "[# 1]"
+[R1   T2   I5   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T2   I1    G  A1    L1   * ]        >>>   "a TEST: I got created as: [# 1]"
+[R1   T3   I2    G  A2    L1   * ]        >>>   "0"
+[R1   T3   I2    G  A2    L1   * ]     41 *-* say self": I got created as:" pp("#" nr)
+[R1   T3   I6   ]                         >I> Routine "PP" in package "G:\test_show_off.rex"
+[R1   T3   I6   ]                      45 *-* return "[" || arg(1) || "]"
+[R1   T3   I6   ]                         >>>   "[# 2]"
+[R1   T3   I6   ]                         <I< Routine "PP" in package "G:\test_show_off.rex"
+[R1   T3   I2    G  A2    L1   * ]        >>>   "a TEST: I got created as: [# 2]"
+---
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+<section id="xintdeb_examples-set-make-string"><title>Exploiting TraceObject's setMakeString Method
+<indexterm><primary>debugging multithreaded programs</primary><secondary>exploiting TraceObject's setMakeString method</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>exploiting TraceObject's setMakeString method</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>exploiting TraceObject's setMakeString method</tertiary></indexterm>
+</title>
+<!-- example begin -->
+<para>This example extends the previous one and demonstrates how to take advantage
+of the capabilities the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class offers, in this case its class method
+<xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/>:
+</para>
+<para>
+<itemizedlist>
+<listitem>
+<para>
+The program defines a method named "myMakeString" before any class directive which makes it a floating
+method.
+ooRexx will process all directives in the setup phase and if floating
+methods are encountered ooRexx will create a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+to store them under
+their names which can be accessed using the environment symbol <literal>.methods</literal>.
+</para>
+</listitem>
+<listitem>
+<para>
+The floating method "myMakeString" uses some of the entries of the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+instance supplied as its sole argument to create a trace string.
+</para>
+</listitem>
+<listitem>
+<para>
+In the main program (prolog) the
+<xref linkend="ooRexxTraceObjectClass" xrefstyle="template:TraceObject"/>
+class method <xref linkend="mthTraceObjectSetMakeString" xrefstyle="template:setMakeString"/> is used to assign
+the "myMakeString" method retrieved from the floating <literal>.methods</literal>
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>.
+</para>
+</listitem>
+</itemizedlist>
+<example id="ex.xintdeb_examples-set-make-string">
+<title>Exploiting TraceObject's setMakeString Method for Customizing the Trace Format
+<indexterm><primary>examples</primary><secondary>Multithreaded Program</secondary><tertiary>setMakeString</tertiary></indexterm>
+<indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>setMakeString</tertiary></indexterm>
+</title>
+<programlisting><![CDATA[  -- fetch & assign floating method
+.TraceObject~setMakeString(.methods~myMakeString)
+do 3
+  .test~new~show  -- create instance & send it the "show" message
+end
+
+   -- method defined before class, hence a floating method put into
+   -- this program's (package) .methods StringTable by ooRexx
+::method myMakeString   -- using entries NR, THREAD, TIMESTAMP, TRACELINE
+  use arg traceObj      -- fetch traceObject argument to format
+  return "  |" right(traceObj~nr,3) -
+         "-" traceObj~timeStamp~timeOfDay~makeString~left(12)"|" -
+         traceObj~traceLine~insert(traceObj~thread,9)
+
+::class test
+
+::method init     class -- class constructor
+  expose counter        -- access class attribute "counter"
+  counter=0             -- initialize to 0
+::method nextNr   class -- class method
+  expose counter        -- access class attribute "counter"
+  counter+=1            -- increase counter
+  return counter        -- return new value
+
+::method init           -- instance constructor
+  expose nr             -- access instance attribute "nr"
+  nr=self~class~nextNr  -- get & assign next serial number
+::method show           -- instance method
+  expose nr             -- access instance attribute "nr"
+  trace results         -- trace all statements
+  reply                 -- return & execute remainder on new thread
+  sleepTime=random(1,750)/1000   -- get random sleep time
+  trace off             -- turn off tracing
+  call sysSleep sleepTime  -- sleep
+  say self": I got created as:" pp("#" nr)   -- show infos for this instance
+
+::routine pp      -- "pretty print": enquotes argument in square brackets
+  trace results   -- trace statement and its result
+  return "[" || arg(1) || "]"
+]]></programlisting></example>
+Running the above program may yield an output like:
+<programlisting><![CDATA[  |   1 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   2 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   3 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
+  |   4 - 16:43:12.378|        >I2> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   5 - 16:43:12.378|     32 *-2* sleepTime=random(1,750)/1000   -- get random sleep time
+  |   6 - 16:43:12.378|        >>2>   "0.457"
+  |   7 - 16:43:12.378|        >I3> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   8 - 16:43:12.378|        >I4> Method "SHOW" with scope "TEST" in package "G:\test_myMakeString.rex".
+  |   9 - 16:43:12.378|     33 *-2* trace off             -- turn off tracing
+  |  10 - 16:43:12.378|     32 *-3* sleepTime=random(1,750)/1000   -- get random sleep time
+  |  11 - 16:43:12.378|     32 *-4* sleepTime=random(1,750)/1000   -- get random sleep time
+  |  12 - 16:43:12.378|        >>3>   "0.103"
+  |  13 - 16:43:12.378|        >>4>   "0.109"
+  |  14 - 16:43:12.378|     33 *-3* trace off             -- turn off tracing
+  |  15 - 16:43:12.378|     33 *-4* trace off             -- turn off tracing
+  |  16 - 16:43:12.494|     39 *-3* return "[" || arg(1) || "]"
+  |  17 - 16:43:12.494|        >>3>   "[# 2]"
+a TEST: I got created as: [# 2]
+  |  18 - 16:43:12.494|     39 *-4* return "[" || arg(1) || "]"
+  |  19 - 16:43:12.494|        >>4>   "[# 3]"
+a TEST: I got created as: [# 3]
+  |  20 - 16:43:12.842|     39 *-2* return "[" || arg(1) || "]"
+  |  21 - 16:43:12.842|        >>2>   "[# 1]"
+a TEST: I got created as: [# 1]
+]]></programlisting></para>
+<!-- example end -->
+</section>
+
+
+</section>
+
+
+</section>
+
+</chapter>

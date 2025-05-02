@@ -1,0 +1,558 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RexxExtensions Library XML File
+    #
+    # Copyright (c) 2016-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chpJson">
+<title>JSON Support</title>
+<para>
+The <classname><xref linkend="clsJson" xrefstyle="select:title"/></classname> class allows to create and
+process <emphasis role="italic">JSON (JavaScript Object Notation)</emphasis> strings.
+The <emphasis role="italic">JSON</emphasis> definition used for this implementation can be found at
+<ulink url="https://www.ietf.org/rfc/rfc4627.txt">https://www.ietf.org/rfc/rfc4627.txt</ulink>.
+</para>
+
+<note><para>
+This implementation does not transform into or from Unicode escape sequences in the form of &quot;\uXXXX&quot;.
+</para></note>
+
+<para>To use the <classname><xref linkend="clsJson" xrefstyle="select:title"/></classname> class, you must
+place the following directive in your script:
+<programlisting>
+::requires "json.cls"         -- get JSON support
+</programlisting>
+
+This will load the classes <classname><xref linkend="clsJson" xrefstyle="select:title"/></classname>
+and <classname><xref linkend="clsJsonBoolean" xrefstyle="select:title"/></classname>.
+</para>
+
+
+<para>Here is an example of using the JSON support of ooRexx for encoding a directory as a JSON string. </para>
+<example>
+<title>Using the JSON support.</title>
+<programlisting>
+obj=.Directory~new            -- a directory (a MapCollection)
+obj['Name']    ="Eli"         -- a string value
+obj['Children']=3             -- a number value
+obj['Parents']= .array~of('Eve', 'Adam')  -- an array value (an OrderedCollection)
+obj['Salary']  =.nil          -- no value at all (not employed)
+obj['rich']    =.json~false   -- use .Json's false (a JSONBoolean)
+
+say .JSON~toJson(obj)         -- show minimized JSON string
+say "---"
+say .JSON~toJson(obj,.true)   -- create and show legible JSON string
+
+::requires "json.cls"         -- get JSON support
+</programlisting>
+</example>
+
+<para>The program yields the following output:
+</para>
+<programlisting>
+{"Children":3,"Name":"Eli","Parents":["Eve","Adam"],"Salary":null,"rich":false}
+---
+{
+   "Children": 3,
+   "Name": "Eli",
+   "Parents": [
+      "Eve",
+      "Adam"
+   ],
+   "Salary": null,
+   "rich": false
+}
+</programlisting>
+
+<para>Here is an example of using the JSON support of ooRexx for decoding JSON strings. </para>
+<example>
+<title>Using the JSON support.</title>
+<programlisting>
+do i=1 to .resources~items
+   resName = "JSON_STRING_"i
+   jsonString = .resources~entry(resName)~makeString
+   say "round #" i", resource" resName":"
+   say
+   say "jsonString:" jsonString  -- show JSON string
+   say
+   d=.JSON~fromJSON(jsonString)  -- parse JSON string
+   say "after parsing (fromJSON), result in variable 'd' ("d"):"
+   say
+   say "Name      :" d["Name"]
+   say "Children  :" d["Children"]
+   parents = d["Parents"]
+   say "Parents   :" parents~toString(,',') "("parents~string")"
+   say "Salary    :" d["Salary"]
+   rich = d["rich"]
+   say "rich      :" rich "(a" rich~class~id")"
+   say "-"~copies(80)
+end
+
+::requires "json.cls"         -- get JSON support
+
+::resource JSON_STRING_1      -- minimized JSON string
+{"Children":3,"Name":"Eli","Parents":["Eve","Adam"],"Salary":null,"rich":false}
+::END
+
+::resource JSON_STRING_2      -- legible JSON string
+{
+   "Children": 3,
+   "Name": "Eli",
+   "Parents": [
+      "Eve",
+      "Adam"
+   ],
+   "Salary": null,
+   "rich": false
+}
+::END
+</programlisting>
+</example>
+
+<para>The program yields the following output:
+</para>
+<programlisting>
+round # 1, resource JSON_STRING_1:
+
+jsonString: {"Children":3,"Name":"Eli","Parents":["Eve","Adam"],"Salary":null,"rich":false}
+
+after parsing (fromJSON), result in variable 'd' (a Directory):
+
+Name      : Eli
+Children  : 3
+Parents   : Eve,Adam (an Array)
+Salary    : The NIL object
+rich      : 0 (a JSONBoolean)
+--------------------------------------------------------------------------------
+round # 2, resource JSON_STRING_2:
+
+jsonString: {
+   "Children": 3,
+   "Name": "Eli",
+   "Parents": [
+      "Eve",
+      "Adam"
+   ],
+   "Salary": null,
+   "rich": false
+}
+
+after parsing (fromJSON), result in variable 'd' (a Directory):
+
+Name      : Eli
+Children  : 3
+Parents   : Eve,Adam (an Array)
+Salary    : The NIL object
+rich      : 0 (a JSONBoolean)
+--------------------------------------------------------------------------------
+</programlisting>
+
+
+<!-- class overview section -->
+<section id="clsJsonBoolean">
+<title>JSONBoolean</title>
+<indexterm><primary>JSONBoolean</primary><secondary>Class</secondary></indexterm>
+
+
+<para>The <classname>JSONBoolean</classname> class can be used to test whether a boolean value is
+an instance of it and provides the following public class methods:
+</para>
+
+<simplelist type="vert" columns="1">
+   <member><methodname><xref linkend="mthJsonBooleanFalse" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonBooleanTrue" xrefstyle="select:title"/></methodname></member>
+</simplelist>
+
+
+<!-- method description -->
+<section id="mthJsonBooleanFalse">
+<title>false</title>
+<indexterm><primary>false</primary>
+<secondary>false class method</secondary></indexterm>
+<indexterm><primary>false class method</primary>
+<secondary>of JSONBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/jsonboolean_false.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+This class method returns the <emphasis role="italic">false</emphasis> value
+which behaves likes ooRexx' <emphasis role="italic">.false</emphasis> and can
+be therefore used interchangeably. Using this value allows the methods
+<methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname> and
+<methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname>
+to correctly create the JSON boolean <emphasis role="italic">false</emphasis> encodings.
+</para>
+</section>
+
+
+
+<!-- method description -->
+<section id="mthJsonBooleanTrue">
+<title>true</title>
+<indexterm><primary>true</primary>
+<secondary>true method</secondary></indexterm>
+<indexterm><primary>true method</primary>
+<secondary>of JSONBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/jsonboolean_true.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+This class method returns the <emphasis role="italic">true</emphasis> value
+which behaves likes ooRexx' <emphasis role="italic">.true</emphasis> and can
+be thererfore used interchangeably. Using this value allows the methods
+<methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname> and
+<methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname>
+to correctly create the JSON boolean <emphasis role="italic">true</emphasis> encodings.
+</para>
+</section>
+
+
+</section>
+
+
+
+
+
+<!-- class overview section -->
+<section id="clsJson">
+<title>JSON</title>
+<indexterm><primary>JSON</primary><secondary>Class</secondary></indexterm>
+
+
+<para>The <classname>JSON</classname> class provides the following public methods:
+</para>
+
+<simplelist type="vert" columns="1">
+   <member><methodname><xref linkend="mthJsonInit" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonFalse" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonFromJson" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonFromJsonFile" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname></member>
+   <member><methodname><xref linkend="mthJsonTrue" xrefstyle="select:title"/></methodname></member>
+</simplelist>
+
+
+<para><note>
+The methods
+<methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname> and
+<methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname> will render
+Rexx objects as follows:
+<para></para>
+
+<itemizedlist>
+<listitem><para>An instance of type <classname>String</classname>:
+replaces all double-quotes with the escape sequence <emphasis role="italic">\"</emphasis> and encloses
+the string value in double quotes, unless the string is a valid Rexx number in which case the string
+is used as is and no enquoting takes place
+</para>
+</listitem>
+
+<listitem><para>An instance of type <classname>MapCollection</classname>:
+creates a comma separated list of name/value pairs enclosed in curly brackets.
+</para>
+</listitem>
+
+<listitem><para>An instance of type <classname>OrderedCollection</classname>:
+creates a comma separated list of ordered values enclosed in square brackets.
+</para>
+</listitem>
+
+<listitem><para>An object that is <emphasis role="italic">.nil</emphasis> as the unquoted string
+<emphasis role="italic">null</emphasis>.
+</para>
+</listitem>
+
+<listitem><para>An object that has a method named <emphasis role="italic">makeJson</emphasis>
+(supporting the ooRexx <emphasis role="italic">request</emphasis> protocol for conversion to
+<emphasis role="italic">JSON</emphasis>): uses the string that <emphasis role="italic">makeJson</emphasis>
+is expected to return.
+</para>
+<para>The <classname>JSONBoolean</classname> <emphasis role="italic">false</emphasis> value will be
+rendered as the unquoted string <emphasis role="italic">false</emphasis>, the
+<emphasis role="italic">true</emphasis> value will be rendered as the unquoted string
+<emphasis role="italic">true</emphasis>.
+</para>
+</listitem>
+
+<listitem><para>An object that has a method named <emphasis role="italic">makeArray</emphasis>
+(supporting the ooRexx <emphasis role="italic">request</emphasis> protocol for conversion to an ooRexx
+<emphasis role="italic">Array</emphasis>): uses the returned array that <emphasis role="italic">makeArray</emphasis>
+is expected to return and renders it as an <classname>OrderedCollection</classname> (see above).
+</para>
+</listitem>
+
+<listitem><para>An object that has a method named <emphasis role="italic">makeString</emphasis>
+(supporting the ooRexx <emphasis role="italic">request</emphasis> protocol for conversion to an ooRexx
+<emphasis role="italic">String</emphasis>): uses the string that <emphasis role="italic">makeString</emphasis>
+is expected to return and renders it as a <classname>String</classname> (see above).
+</para>
+</listitem>
+
+<listitem><para>An object for which a conversion to JSON is unknown: sends the <methodname>string</methodname>
+message and renders the resulting string as a <classname>String</classname> (see above).
+</para>
+</listitem>
+
+</itemizedlist>
+
+
+</note></para>
+<para></para>
+
+
+<!-- method description: init -->
+<section id="mthJsonInit">
+<title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of JSON class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of JSON class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>init</methodname> method initializes the JSON parser.
+</para>
+</section>
+
+
+
+<!-- method description -->
+<section id="mthJsonFalse">
+<title>false</title>
+<indexterm><primary>false</primary>
+<secondary>false class method</secondary></indexterm>
+<indexterm><primary>false class method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_false.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+This class method returns the <classname><xref linkend="clsJsonBoolean" xrefstyle="select:title"/></classname>
+<emphasis role="italic">false</emphasis> value
+which behaves likes ooRexx' <emphasis role="italic">.false</emphasis> and can
+be therefore used interchangeably. Using this value allows the methods
+<methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname> and
+<methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname>
+to correctly create the JSON boolean <emphasis role="italic">false</emphasis> encoding.
+</para>
+</section>
+
+
+
+<!-- method description: fromJSON -->
+<section id="mthJsonFromJson">
+<title>fromJSON</title>
+<indexterm><primary>JSON</primary>
+<secondary>fromJSON method</secondary></indexterm>
+<indexterm><primary>fromJSON method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_fromjson.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>fromJSON</methodname> class and instance method creates and returns a Rexx object from the
+<emphasis role="italic">JSON</emphasis> encoded <emphasis role="italic">string</emphasis>.
+</para>
+
+<para><note>
+If the JSON string contained boolean values they will be represented by the respective
+<classname>JSONBoolean</classname>&nbsp;
+<methodname><xref linkend="mthJsonBooleanTrue" xrefstyle="select:title"/></methodname> or
+<methodname><xref linkend="mthJsonBooleanFalse" xrefstyle="select:title"/></methodname>
+values which are compatible with ooRexx'
+<emphasis role="italic">.true</emphasis> (the string/number <emphasis role="italic">1</emphasis>) or
+<emphasis role="italic">.false</emphasis> (the string/number <emphasis role="italic">0</emphasis>) values.
+</note></para>
+<para></para>
+
+</section>
+
+
+<!-- method description: fromJSON -->
+<section id="mthJsonFromJsonFile">
+<title>fromJSONFile</title>
+<indexterm><primary>JSON</primary>
+<secondary>fromJSONFile method</secondary></indexterm>
+<indexterm><primary>fromJSONFile method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_fromjson_file.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>fromJSONFile</methodname> class method reads the JSON encoded data from
+<emphasis role="italic">fileName</emphasis>, creates and returns a Rexx object from
+the <emphasis role="italic">JSON</emphasis> encoded
+<emphasis role="italic">string</emphasis>.
+</para>
+
+<para><note>
+If the JSON string contained boolean values they will be represented by the respective
+<classname>JSONBoolean</classname>&nbsp;
+<methodname><xref linkend="mthJsonBooleanTrue" xrefstyle="select:title"/></methodname> or
+<methodname><xref linkend="mthJsonBooleanFalse" xrefstyle="select:title"/></methodname>
+values which are compatible with ooRexx'
+<emphasis role="italic">.true</emphasis> (the string/number <emphasis role="italic">1</emphasis>) or
+<emphasis role="italic">.false</emphasis> (the string/number <emphasis role="italic">0</emphasis>) values.
+</note></para>
+<para></para>
+
+</section>
+
+
+<!-- method description: toJSON -->
+<section id="mthJsonToJson">
+<title>toJSON</title>
+<indexterm><primary>JSON</primary>
+<secondary>toJSON method</secondary></indexterm>
+<indexterm><primary>toJSON method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_tojson.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>toJSON</methodname> class and instance method creates and returns a
+<emphasis role="italic">JSON</emphasis> encoded string representing
+<emphasis role="italic">rexxObject</emphasis>.
+
+If the optional <emphasis role="italic">legible</emphasis> argument is omitted then a minimized JSON
+string (does not contain any ignorable whitespace) gets created (defaults to <emphasis
+role="italic">.false</emphasis>).
+If the <emphasis role="italic">legible</emphasis> argument is supplied with a value of <emphasis
+role="italic">.true</emphasis> a legible JSON string gets created, which includes ignorable
+whitespace to ease reading for humans.
+</para>
+</section>
+
+<!-- method description: toJSON -->
+<section id="mthJsonToJsonFile">
+<title>toJSONFile</title>
+<indexterm><primary>JSON</primary>
+<secondary>toJSONFile method</secondary></indexterm>
+<indexterm><primary>toJSONFile method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_tojson_file.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+The <methodname>toJSONFile</methodname> class method writes the
+<emphasis role="italic">JSON</emphasis> encoded string representing
+<emphasis role="italic">rexxObject</emphasis> to <emphasis role="italic">fileName</emphasis>.
+
+If the optional <emphasis role="italic">legible</emphasis> argument is omitted then a minimized JSON
+string (does not contain any ignorable whitespace) gets created (defaults to <emphasis
+role="italic">.false</emphasis>).
+If the <emphasis role="italic">legible</emphasis> argument is supplied with a value of <emphasis
+role="italic">.true</emphasis> a legible JSON string gets created, which includes ignorable
+whitespace to ease reading for humans.
+</para>
+
+
+</section>
+
+
+
+<!-- method description -->
+<section id="mthJsonTrue">
+<title>true</title>
+<indexterm><primary>true</primary>
+<secondary>true method</secondary></indexterm>
+<indexterm><primary>true method</primary>
+<secondary>of JSON class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json_true.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>
+This class method returns the <classname><xref linkend="clsJsonBoolean" xrefstyle="select:title"/></classname>
+<emphasis role="italic">true</emphasis> value
+which behaves likes ooRexx' <emphasis role="italic">.true</emphasis> and can
+be therefore used interchangeably. Using this value allows the methods
+<methodname><xref linkend="mthJsonToJson" xrefstyle="select:title"/></methodname> and
+<methodname><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></methodname>
+to correctly create the JSON boolean <emphasis role="italic">true</emphasis> encoding.
+</para>
+</section>
+
+
+</section>
+
+
+
+</chapter>
+

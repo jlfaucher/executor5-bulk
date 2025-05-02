@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "ooRexxBuild.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Build Machine Document XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter><title>Guest Operating Systems</title>
+
+<section><title>Overview of platforms and operating systems</title>
+
+<para>ooRexx is built on both native platforms and in virtual machines. This
+is a listing of all the platforms 2025-04-05 in the order of appearance:
+</para>
+</section>
+
+<section><title>Overview of Physical Machines</title>
+<para>ooRexx is built on these platforms
+</para>
+
+<itemizedlist>
+    <listitem><para>Marks-M4-Mac Mark Hesslings M4 Mac on ARM64 hardware, running macOS 15.3.1 (Sequoia);
+    </para></listitem>
+    <listitem><para>ams-02 René's Raspberry Pi 4 Model B (aarch64) running Ubuntu 22.04.5 LTS;
+    </para></listitem>
+    <listitem><para>pos-MacPro-12Core: Mac Pro 5,1 (2010), Dual Processor 6-Core Intel Xeon @ 2,93 GHz, Memory: 96 GB. running macOS 10.13.6 (High Sierra);
+    </para></listitem>
+    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox for all Linux, Unix and further platforms, running macOS 15.3.1 (Sequoia);
+    </para></listitem>
+    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 armv7l Quad Core Processor, ARM 32 bit Running Debian 11 (Bullseye);
+    </para></listitem>
+    <listitem><para>pos-Pi-3BPlus Raspberry PI 3B+, SoC: Broadcom BCM2837B0 Quad-Core A53 (ARMv8+) 64-bit aarch64 Running Debian 11 (Bullseye);
+    </para></listitem>
+    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM)  x64-based i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, Hosting all Windows VMs running 64-bit Windows 10;
+    </para></listitem>
+    <listitem><para>ubuntu16 Erich's Ubuntu 16.04 agent;
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Overview of Windows VMs</title>
+<para>ooRexx is built and tested on these platforms in 32 and 64 bit versions, No installers for these platforms are uploaded, rather the installers build for Windows 10 on pos-Windows are used for all supported versions of Windows (see below):
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-Windows7 VM with 1CPU, 2GB memory, 500GB SSD, build and test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows8 VM with 1CPU, 2GB memory, 500GB SSD, build and test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows10 VM with 1CPU, 2GB memory, 500GB SSD, build and test 32 and 64-bit ooRexx
+    </para></listitem>
+    <listitem><para>pos-vbox-Windows11 VM with 1CPU, 2GB memory, 100GB SSD, build and test 32 and 64-bit ooRexx
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Overview of macOS VMs</title>
+    <para>There are currently no macOS VMs for building ooRexx. Builds and tests are made for High Sierra on Intel hardware and for Sequoia on Intel and ARM64 (M or Apple Silicon hardware). There is a "Fat" binary uploaded that can be used on both platforms for all supported OS versions from High Sierra and forward.
+    </para>
+</section>
+
+<section><title>Overview of Debian descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version and installers prepared
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-Debian11 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Debian 11, build .deb package
+    </para></listitem>
+    <listitem><para>pos-vbox-Ubuntu24 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Ubuntu 24.04 LTS build .deb package
+    </para></listitem>
+    <listitem><para>pos-vbox-LinuxMint21 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Linux Mint 21, build .deb package
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Overview of RPM descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version and installers prepared
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-CentOS9 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on CentOS 9, build .rpm package
+    </para></listitem>
+    <listitem><para>pos-vbox-Fedora40 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Fedora 40, build  .rpm package
+    </para></listitem>
+    <listitem><para>pos-vbox-OpenSuse15 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on OpenSuse 15.6 (Leap), build .rpm package
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Overview of BSD descendant VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-FreeBSD14 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on FreeBSD 14.1, build .pkg package
+    </para></listitem>
+    <listitem><para>pos-vbox-OpenBSD7 VM with 1CPU, 2GB memory, 16GB SSD,
+        build and test 64-bit ooRexx on OpenBSD 7.6, no package is built currently
+    </para></listitem>
+    <listitem><para>pos-vbox-NetBSD9 VM with 1CPU, 2GB memory, 100GB SSD,
+        build and test 64-bit ooRexx on NetBSD 9.3, only Portable package is built currently
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>>Overview of Arch Linux VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-Manjaro VM with 1CPU, 2GB memory,
+        500GB SSD, build and test 64-bit ooRexx on Manjaro, only Portable package is built currently
+    </para></listitem>
+    <listitem><para>pos-vbox-ArchLinux VM with 1CPU, 2GB memory,
+        500GB SSD, build and test 64-bit ooRexx on ArchLinux, only Portable package is built currently
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>>Overview of other UNIX VMs</title>
+<para>ooRexx is built on these platforms in 64 bit version
+</para>
+
+<itemizedlist>
+    <listitem><para>pos-vbox-OpenIndiana VM with 1CPU, 2GB memory,
+        500GB SSD, build and test 64-bit ooRexx on Open Indiana 5.11, only Portable package is built currently
+    </para></listitem>
+    <listitem><para>pos-vbox-Solaris11 VM with 1CPU, 4GB memory,
+        32GB SSD, build and test 64-bit ooRexx on Solaris 11, only Portable package is built currently
+    </para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>>Overview of experimental VMs</title>
+<para>ooRexx is NOT built on these platforms, used for experiments only
+</para>
+
+<itemizedlist>
+    <listitem><para>Minix 3.3 VM with 1CPU, 1GB memory, 500GB SSD
+    </para></listitem>
+    <listitem><para>Minix 3.4 VM with 1CPU, 1GB memory, 500GB SSD
+    </para></listitem>
+    <listitem><para>Android 9 VM with 1CPU, 4GB memory, 500GB SSD
+    </para></listitem>
+    <listitem><para>Android LinageOS 14 VM with 1CPU, 2GB memory, 100GB SSD
+    </para></listitem>
+</itemizedlist>
+</section>
+
+</chapter>
+

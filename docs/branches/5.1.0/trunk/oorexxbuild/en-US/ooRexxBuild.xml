@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "ooRexxBuild.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Build Machine Document XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<book>
+	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<chapter><title>Release Build Environment Description</title>
+
+<section><title>Requirements</title>
+
+<para>In early 2007 the Rexx Language Association and the Open Object Rexx
+Development Team determined that it was time to provide a build environment
+for the Open Object Rexx (ooRexx) application. An environment was needed that
+met the following requirements:
+</para>
+
+<itemizedlist>
+<listitem><para>Provide Internet access so that anyone could obtain an up-to-date
+build release of ooRexx.
+</para></listitem>
+<listitem><para>Provide a variety of software build environments for multiple
+operating systems.
+</para></listitem>
+<listitem><para>Provide an automated solution for each supported build
+environment so that a minimum of human interaction is needed to perform a
+build of ooRexx.
+</para></listitem>
+<listitem><para>Make all builds available to the Internet. Only keep 30 days
+of builds available.
+</para></listitem>
+<listitem><para>Support the Subversion (SVN) source repositories.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Solution</title>
+
+<para>From these requirements a plan was established to implement them. Several
+decisions were made early on that influenced the final design.
+</para>
+
+<itemizedlist>
+<listitem><para>Rather than purchasing individual servers for each operating
+system to be supported it was determined that a better solution would be to
+purchase one large server and use the Linux kernel Virtual Machine (KVM)
+environment to provide support for multiple operating systems.
+</para></listitem>
+<listitem><para>Since the ooRexx Project is an open source project it was
+determined anyone should be able to get access to a build.
+</para></listitem>
+<listitem><para>It was determined that we should use Fedora Linux to host the
+KVM environment. This would ease security concerns and provide the easiest setup.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>Update 2018-2023</title>
+
+<para>After having been hosted in a cloud solution for some time, with some
+performance problems, it was decided to try to migrate the build system to
+an environment more in line with the solution initially drawn up.
+It was agreed that the requirements were essentially the same as before.
+Rather than using a Linux kernel Virtual Machine (KVM) environment,
+Virtalbox from Oracle was chosen. VirtualBox is one of the world's most
+popular open source, cross-platform, virtualization platforms and seemed
+a good choice, in particular since there was limited knowledge of the
+Linux kernel Virtual Machine in the team.
+</para>
+</section>
+
+<section><title>New Solution</title>
+
+<itemizedlist>
+<listitem><para>The current solution implements a Jenkins open source
+automation client/server solution. It was determined that rather than
+running all the software on one single powerful (and expensive) server, a
+better solution would be to use one server as a controller, running the
+Jenkins webserver, and to connect to distributed agents provided by volounteers.
+This is also the recommended setup for Jenkins, since running agent tasks on
+the controller is deprecated for safety reasons. This also requires only a
+moderatly powerful server and the build system is easily scalable. Initially
+one server and three agents were donated to the project (Windows, macOS and
+Raspberry PI Linux agents) and further remote agents were contributed later.
+</para></listitem>
+<listitem><para>During 2021 and 2022 it was once again experimented with
+virtualisation, this time using Virtualbox running on a machine separated from
+the Jenkins controller.
+</para></listitem>
+<listitem><para>The server used as Controller was set up using Ubuntu, whereas
+the machine hosting Virtualbox was a macOS machine. Since macOS can only be
+installed in a VM running on true Apple hardware, this provided the additional
+advantage that all kinds of platforms could be set up in virtual machines
+(Windows, macOS, Linux, Unix).
+</para></listitem>
+<listitem><para>During 2023 all the Windows VMs were moved to a separate
+machine running Virtualbox under Windows 10 to see if this would alleviate
+some problems experienced with the testing framworks sometimes hanging upon
+completion. Unfortunately this did not improve the situation but since new
+licenses were required for every installation it was decided to keep the
+Windows VMs on a machine running Windows. The official ooRexx installer for
+Windows is built on Windows 10 natively. Building natively does not show the
+problem with hangs seen in VMs.
+</para></listitem>
+</itemizedlist>
+</section>
+</chapter>
+
+<chapter><title>Build Machine (Controller) Functional Description</title>
+
+<para>The following is the server hardware configuration to support the
+ooRexx build environment:
+</para>
+
+<simplelist>
+<member>Dell T20 server
+</member>
+<member>Quad Core Intel<trademark class="registered"></trademark>
+Xeon<trademark class="registered"></trademark> 3.2 GHz CPU
+</member>
+<member>12GiB DDR3
+</member>
+<member>System disk: Crucial BX500 240 GB 3D NAND SATA 2,5-Zoll SSD
+</member>
+<member>Data disk: 1 TB TOSHIBA DT01ACA100 (MS2OA7S0)
+</member>
+<member>Backup disk: WDC Western Digital WD5000AAVS-00ZTB0 (01.01B01)
+</member>
+<member>CDROM/DVD R/W
+</member>
+</simplelist>
+
+<para>The following operating system and ooRexx is currently installed on the
+Controller (2025-04-19):
+</para>
+
+<itemizedlist>
+<listitem><para>Ubuntu 24.04 LTS
+</para></listitem>
+<listitem><para>ooRexx version 5.1.0beta (current beta is built for Ubuntu 24.04)
+</para></listitem>
+</itemizedlist>
+
+<section><title>Build Host User Accounts</title>
+
+<para>After Ubuntu was installed on the Controller one user account was
+established to own everything concerning the build process and administration of
+the server. The account name was <emphasis role="italic">jenkins</emphasis>.
+This account is very important because it will own the shared files for
+the guest operating systems.
+</para>
+
+<para>A <emphasis role="italic">jenkins</emphasis> account is used on all
+physical machines, whereas a <emphasis role="italic">osboxes</emphasis> account
+is used on all virtual machines. More about this later.
+</para>
+</section>
+
+<section><title>Disk Layout</title>
+
+<para>The Jenkins server is using a 240 GB SSD as a system disk and a 1 TB
+HDD for Data. The system disk is using the standard partitioning for Ubuntu.
+</para>
+</section>
+
+<section><title>Operating System Installation</title>
+
+<para>Ubuntu was downloaded from https://ubuntu.com. The LTS version of
+Ubuntu was chosen to keep maintenance low. A download was chosen that can
+be used from a USB memory stick and all the installation process was run
+through with most if not all option set to default.
+The instructions on setting up guest operating systems are described in
+the sections describing each individual guest OS.
+</para>
+</section>
+</chapter>
+
+<xi:include href="virtualbox.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="guestos.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="admin.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="releases.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Common_Content/Notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Common_Content/CPLv1.0.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="Revision_History.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<index />
+
+</book>

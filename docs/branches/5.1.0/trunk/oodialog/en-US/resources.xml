@@ -1,0 +1,3536 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "https://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodialog.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chapResources" xreflabel="resources"><title>Resources</title>
+<indexterm><primary>Resources</primary></indexterm>
+<para>
+  In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
+  Windows-based application.  Usually, the binary data is attached to one of the application's executable
+  files (*.exe or *.dll.)  However, the binary data can also be generated dynamically in memory. (Which
+  is common in ooDialog, for example the dialog template for a UserDialog is generated in memory.)
+</para>
+<para>
+  The data in standard resources describes things familiar to ooDialog programmers like, dialog boxes,
+  icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator tables,
+  string-table entries, message-table entries, and other resources that ooDialog does not currently have
+  support for, but may support in the future.
+</para>
+<para>
+  This chapter describes ooDialog classes that provide access to Windows resources.  The classes allow
+  the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an area of
+  ooDialog that is slated for future improvements.
+</para>
+
+
+<section id="sctResourceClasses"><title>Resource Classes</title>
+<para> The classes listed in the following table are documented in this chapter:
+<table id="tblResourcesClasses" frame="all"> <title>ooDialog Resource Classes</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Class</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Image <xref linkend="clsImage"/></entry>
+<entry>Objects used to work with and manipulate images.</entry>
+</row>
+<row>
+<entry>ImageList <xref linkend="clsImageList"/></entry>
+<entry>Objects used to efficiently manage large sets of images.</entry>
+</row>
+<row>
+<entry>Mouse <xref linkend="clsMouse"/></entry>
+<entry>Objects used to efficiently manage large sets of images.</entry>
+</row>
+<row>
+<entry>ResourceImage <xref linkend="clsResourceImage"/></entry>
+<entry>Objects used to represent modules that contain resources.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="clsImage" xreflabel="Image"><title>Image Class</title>
+<indexterm><primary>Image class</primary></indexterm>
+<para>
+  The Image class is used to work with and manipulate images.  Currently, the image types supported include bitmaps,
+  icons, cursors (cursors are a type of icon), and enhanced metafiles.  The enhanced metafile support is very limited at
+  this time.
+</para>
+<para>
+  The class supports loading images from files, from resources contained in any executable files (*.exe and *.dll,) from
+  the files associated with the ooDialog program, and from the generally available system resources.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>.Image</computeroutput> class is the future direction that
+  ooDialog will take for working with images, including bitmaps.  This is a more flexible approach than the older bitmap
+  methods used when ooDialog was first developed.  It will allow access to more of the modern features of the Windows
+  user interface than the older approach does.  The older bitmap methods were designed to work with Windows 3.1 and have
+  a number of limitations.  The ooDialog programmer is strongly encouraged to migrate her code towards the .Image
+  class.  The older bitmap methods should be considered deprecated, to a degree.  Unfortunately, replacement methods for
+  all of the older bitmap methods have not as yet been implemented.  So, the older methods may still be necessary for
+  some situations.
+</para>
+<para id="paraClsImageRelease">
+  A loaded image takes up some small part of the systems's resources. It is common to release an image
+  when the programmer is done with it.  The .Image class has the
+<xref linkend="mthReleaseClsImage"/> method to allow the programmer to release the image, if
+  desired.  It is <emphasis role="bold">important</emphasis> to note that when the ooDialog program ends,
+  that is when the ooRexx interpreter process ends, the Windows operating system cleans up all the system
+  resources associated with any images used in the ooDialog program.  Not releasing images does no harm
+  and the ooDialog programmer should not be unduly worried about this aspect of images.
+</para>
+<para>
+  In addition, when images are loaded as shared, the operating system completely manages them.  Shared
+  images should not be released.  The .Image class tracks which images are loaded as shared and will not
+  call the underlying API to release a shared image. So, again, the ooDialog programmer does not need to
+  worry about mistakenly releasing a shared image.  Once an image is released, it is no longer valid and
+  the object can not be used as an argument to methods requiring a valid image.  This applies to shared
+  images also, even though they are not actually released.
+</para>
+<para>
+  Why then would the ooDialog programmer want to release images?  The main reason would be to minimize
+  the memory footprint of an application.  In a normal ooDialog program, with five to ten images,
+  releasing the images would have no noticeable impact on the memory footprint. However, in a long
+  running Rexx program that opened and closed a lot of dialogs that used images, releasing the images as
+  the dialogs were closed would make a difference in the long run.  The operating system would not clean
+  up the resources used by the images until the main Rexx program ended.  If the main program ran for
+  days, or maybe was never intended to be shut down, it would make sense to release images that were no
+  longer needed.
+</para>
+
+<section id="sctMethodsImageClass"><title>Method Table</title>
+
+<para>
+  Instances of the <computeroutput>Image</computeroutput> class implement the methods listed in the following table:
+</para>
+
+<table id="tblImageMethods" frame="all">
+<title>Methods of the <computeroutput>Image</computeroutput> Class</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthColorRef"/></entry>
+<entry>Provides a way to construct a COLORREF from the red, green, and blue values of a color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFromFilesClsImage"/></entry>
+<entry>Returns an array of <computeroutput>.Image</computeroutput> objects when given an array of file names.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFromIDsClsImage"/></entry>
+<entry>Uses an array of resource IDs to instantiate and return an array of <computeroutput>.Image</computeroutput> objects.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetBValue"/></entry>
+<entry>Returns the blue component of a RGB color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetGValue"/></entry>
+<entry>Returns the green component of a RGB color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetImageClsImage"/></entry>
+<entry>Instantiates a new <computeroutput>.Image</computeroutput> object from either an image file or from one of the system images.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetRValue"/></entry>
+<entry>Returns the red component of a RGB color.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsImage"/></entry>
+<entry>Image objects can not be instantiated from Rexx code using the <emphasis role="italic">new</emphasis>, other class methods are used.</entry>
+</row>
+<row>
+<entry><xref linkend="mthToIDClsImage"/></entry>
+<entry>Used to translate a symbolic name to its integer value</entry>
+</row>
+<row>
+<entry><xref linkend="mthUserIcon"/></entry>
+<entry>Returns a new image object from an icon resource added to the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthHandleClsImage"/></entry>
+<entry>Returns the Windows system handle to the image this object represents.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsNullClsImage"/></entry>
+<entry>Tests if the image object is valid.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseClsImage"/></entry>
+<entry>Releases the operating system resources used for the image.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSystemErrorCodeClsImage"/></entry>
+<entry>Reflects any system error codes that are detected while working with an image object.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+<section id="mthColorRef" xreflabel="colorRef"><title>colorRef (Class Method)</title>
+<indexterm><primary>colorRef</primary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.Image~colorRef(--+---+--+-----+--+-----+--)-----------------><
+                     +-R-+  +-,-G-+  +-,-B-+
+]]>
+</programlisting>
+
+<para>
+  The Windows API uses a COLORREF to specify a RGB color.  This is a 32-bit number with a
+  hexadecimal format of: <computeroutput>0x00bbggrr</computeroutput>. The
+  <computeroutput>colorRef</computeroutput>() method provides a way to construct a COLORREF from the red,
+  green, and blue values.  Each color value (red, green, or blue) is a whole number in the range of 0 to
+  255 inclusive.
+</para>
+<para>
+  Windows also defines 2 special values for a COLORREF, CLR_NONE and CLR_DEFAULT. To get the numeric
+  value for either of these values use CLR_NONE or CLR_DEFAULT for the R argument. E.g.,
+  <computeroutput>ref = .Image~colorRef("CLR_NONE")</computeroutput>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    All the arguments are optional, with 0 being the default for any omitted argument.
+    <variablelist>
+      <varlistentry><term>R</term>
+      <listitem>
+        <para>
+          The red component of the RGB color, or one of the CLR_NONE / CLR_DEFAULT keywords. Case is not
+          significant for either of the two keywords.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>G</term>
+      <listitem>
+        <para>
+          The green component of the RGB value.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>B</term>
+      <listitem>
+        <para>
+          The blue component of the RGB value.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is a valid RGB color, specified as a COLORREF.  Some method arguments related to images
+      or colors require a COLORREF.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+<programlisting>
+<![CDATA[
+ ref = .Image~colorRef(245, 89, 255)
+ say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
+ say
+
+::requires 'oodPlain.cls'
+
+/* Output:
+
+A fancy purple: 16734709 (0x00FF59F5)
+
+*/
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::colorRef() [class method] -->
+
+
+<section id="mthFromFilesClsImage" xreflabel="fromFiles"><title>fromFiles (Class method)</title>
+<indexterm><primary>fromFiles</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromFiles(--files--+--------+--+--------+--+---------+--)---><
+                       +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Gets an array of .Image objects, using an array of file names.  This method is useful to load more
+  than one image at a time, when all the images have the same specifications, type, size, and flags.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>files</term>
+      <listitem>
+        <para>
+          An array of file names to use to instantiate the .Image objects.  The array can contain any
+          number of file names, but it can not be sparse.  That is, each index of the array must contain
+          a file name.  If an incorrect item is detected in the array, then a syntax error is raised and
+          no images are returned.
+        </para>
+        <para>
+          On the other hand, if there is an error with the Win32 API loading an image, then no syntax
+          error is raised.  The index in the array for that image is left empty.  One way to check for
+          this type of error is to compare the number of items in the returned array with the number of
+          items in file name array.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Specifies the type of the image, bitmap, icon, or cursor. You can use
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for one of the following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_LOADFROMFILE.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns an array of .Image objects, one object for each image that was loaded from a
+      file successfully.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+      <programlisting>
+      <![CDATA[
+
+
+      ]]>
+      </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::fromFiles() [class method] -->
+
+<section id="mthFromIDsClsImage" xreflabel="fromIDs"><title>fromIDs (Class method)</title>
+<indexterm><primary>fromIDs</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromIDs(--ids,--+--------+--+--------+--+---------+--)------><
+                    +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Uses an array of resource IDs to instantiate and return an array of .Image objects.  This method loads
+  the system image resources referenced by the resource IDs in the array.  The images must all be the
+  same type and size, and use the same load flags.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>ids</term>
+      <listitem>
+        <para>
+          An array of resource IDs to use to instantiate the .Image objects.  The array can contain any
+          number of IDs, but it can not be sparse.  That is, each index of the array must contain a
+          number.  If an incorrect item is detected in the array, then a syntax error is raised and no
+          images are returned.
+        </para>
+        <para>
+          On the other hand, if there is an error with the Win32 API loading an image, then no syntax
+          error is raised.  The index in the array for that image is left empty.  One way to check for
+          this type of error is to compare the number of items in the returned array with the number of
+          items in ID array.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Specifies the type of the image: bitmap, icon, or cursor. You can use
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_ICON
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED | LR_DEFAULTSIZE.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns an array of .Image objects, one object for each system image that was loaded
+      successfully.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+
+
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::fromIDs() [class method] -->
+
+<section id="mthGetBValue" xreflabel="getBValue"><title>getBValue (Class Method)</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.Image~getBValue(--colorRef--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the blue component of a RGB color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+      <para>
+        A RGB color, a COLORREF. See the <xref linkend="mthColorRef"/> method for a brief discussion of these terms.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the blue component of the specified RGB color.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <link linkend="exampleGetRValueClsImage">example</link> for the <emphasis role="italic">getRValue</emphasis>
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::getBValue() [class method] -->
+
+<section id="mthGetGValue" xreflabel="getGValue"><title>getGValue (Class Method)</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.Image~getGValue(--colorRef--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the green component of a RGB color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single argument is:
+      <variablelist>
+        <varlistentry><term>colorRef</term>
+        <listitem>
+          <para>
+            A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
+            brief discussion of these terms.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the green component of the specified RGB color.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <link linkend="exampleGetRValueClsImage">example</link> for the <emphasis role="italic">getRValue</emphasis>
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::getGValue() [class method] -->
+
+<section id="mthGetImageClsImage" xreflabel="getImage"><title>getImage (Class method)</title>
+<indexterm><primary>getImage</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImage(--id--+--------+--+--------+--+---------+--)-------><
+                   +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new .Image object from either an image file or from one of the system images.  When id
+  is a number then the corresponding system image is used.  Otherwise, id is taken to be the name of an
+  image file.  File names can be either relative or absolute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        If not a number, then id must be the name of a stand-alone image file.
+      </para>
+      <para>
+        If id is a number than it is taken to be the resource id of an image provided by the system.  The
+        following are the symbolic names for all the system images. You can use
+        the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for any of the
+        following symbols:
+        <simplelist type='vert' columns='4'>
+        <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
+        <member>IDI_EXCLAMATION</member> <member>IDI_ASTERISK</member> <member>IDI_WINLOGO</member>
+        <member></member> <member></member> <member></member>
+        <member></member> <member></member> <member></member>
+        <member></member>
+
+        <member>OCR_NORMAL</member> <member>OCR_IBEAM</member> <member>OCR_WAIT</member>
+        <member>OCR_CROSS</member> <member>OCR_UP</member> <member>OCR_SIZENWSE</member>
+        <member>OCR_SIZENESW</member> <member>OCR_SIZEWE</member> <member>OCR_SIZENS</member>
+        <member>OCR_SIZEALL</member> <member>OCR_NO</member> <member>OCR_HAND</member>
+        <member>OCR_APPSTARTING</member>
+
+        <member>OBM_CLOSE</member> <member>OBM_UPARROW</member> <member>OBM_DNARROW</member>
+        <member>OBM_RGARROW</member> <member>OBM_LFARROW</member> <member>OBM_REDUCE</member>
+        <member>OBM_ZOOM</member> <member>OBM_RESTORE</member> <member>OBM_REDUCED</member>
+        <member>OBM_ZOOMD</member> <member>OBM_RESTORED</member> <member>OBM_UPARROWD</member>
+        <member>OBM_DNARROWD</member>
+
+        <member>OBM_RGARROWD</member> <member>OBM_LFARROWD</member> <member>OBM_DNARROW</member>
+        <member>OBM_COMBO</member> <member>OBM_UPARROWI</member> <member>OBM_DNARROWI</member>
+        <member>OBM_RGARROWI</member> <member>OBM_LFARROWI</member> <member>OBM_SIZE</member>
+        <member>OBM_BTSIZE</member> <member>OBM_CHECK</member> <member>OBM_CHECKBOXES</member>
+        <member>OBM_BTNCORNERS</member>
+        </simplelist>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type</term>
+    <listitem>
+      <para>
+        A number between 0 and 255 that specifies the type of the image: bitmap, icon, or cursor. You can use
+        the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
+        following symbols:
+        <simplelist type='horiz' columns='2'>
+        <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+        <member>IMAGE_CURSOR</member>
+        </simplelist>
+      </para>
+      <para>
+        The default is IMAGE_BITMAP.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>size</term>
+    <listitem>
+      <para>
+        A <xref linkend="clsSize"/> object that specifies the size of the image.
+      </para>
+      <para>
+        The default is a size of 0x0.  Under most circumstances this indicates that the actual size of
+        the image should be used.  However, the MSDN <xref linkend="defWindowsDoc"/>
+        documentation should be consulted for other meanings.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>flags</term>
+    <listitem>
+      <para>
+        The load resource flags for the LoadImage() API.  The flags are one or more of the following
+        symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+        value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+        the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
+        symbols if needed.
+        <simplelist type='horiz' columns='2'>
+        <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+        <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+        <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+        <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+        <member>LR_VGACOLOR</member>
+        </simplelist>
+      </para>
+      <para>
+        When id specifies a file name, the default flags are LR_LOADFROMFILE, othewise the default flags
+        are LR_SHARED | LR_DEFAULTSIZE.  Note that the system images must be loaded as shared.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      A .Image object that represents the image specified.  If an error happened, the object may not be
+      valid.  Use the <xref linkend="mthIsNullClsImage"/> method to check if the image is
+      valid.  If there was an error, <xref linkend="dotSystemErrorCode"/> may help
+      to determine the error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    flags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_SHARED), -
+                        .Image~toID(LR_LOADMAP3DCOLORS))
+
+    questionIcon = .Image~getImage(.Image~toID(IDI_QUESTION),              -
+                                   .Image~toID(IMAGE_ICON),                -
+                                   .Size~new(0, 0), flags)
+    if questionIcon~isNull then do
+      say 'Error getting the question icon.  Error code:' .systemErrorCode
+    end
+
+    /* Note that you can always use the raw numeric value for the args.
+     * This works just as well:
+     */
+    questionIcon = .Image~getImage(32514, 1, .Size~new(0, 0), 36928)
+    if questionIcon~isNull then do
+      say 'Error getting the question icon.  Error code:' .systemErrorCode
+    end
+
+    ]]>
+    </programlisting>
+    </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::getImage() [class method] -->
+
+
+<section id="mthGetRValue" xreflabel="getRValue"><title>getRValue (Class Method)</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.Image~getRValue(--colorRef--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the red component of a RGB color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single argument is:
+      <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
+          brief discussion of these terms.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the red component of the specified RGB color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting id="exampleGetRValueClsImage">
+    <![CDATA[
+      progressBar = self~newProgressBar("IDC_PB_FILES")
+      if progressBar <> .nil then do
+        purple = .Image~colorRef(245, 89, 255)
+
+        say 'Going to set the background color for the progress bar'
+        oldColor = progressBar~backgroundColor(purple)
+
+        say 'Old background color was:' oldColor '(0x'oldColor~d2x')'
+        say '  Red:  ' .Image~getRValue(oldColor)
+        say '  Green:' .Image~getGValue(oldColor)
+        say '  Blue: ' .IMage~getBValue(oldColor)
+        say
+      end
+
+      /* Output might be:
+
+      Going to set the background color for the progress bar
+      Old background color was: 11460781 (0xAEE0AD)
+        Red:   173
+        Green: 224
+        Blue:  174
+
+      */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::getRValue() [class method] -->
+
+<section id="mthNewClsImage" xreflabel="new"><title>new (Class method)</title>
+<indexterm><primary>new</primary>
+<secondary>Image class</secondary></indexterm>
+
+<para>
+  The Image class does not allow new Image objects to be instantiated from Rexx code using the new()
+  method.  New Image objects are obtained through one of the other Image class methods, or they are
+  returned from methods of other classes.
+</para>
+<para>
+  These methods are used to create new Image object(s).
+  <simplelist type='horiz' columns='1'>
+  <member>Image (class) method:<xref linkend="mthGetImageClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthFromFilesClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthFromIDsClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthUserIcon"/></member>
+  <member>ResourceImage (instance) method:<xref linkend="mthGetImageClsResourceImage"/></member>
+  <member>ResourceImage (instance) method:<xref linkend="mthGetImagesClsResourceImage"/></member>
+  </simplelist>
+</para>
+</section>  <!-- End Image::new() [class method] -->
+
+<section id="mthToIDClsImage" xreflabel="toID"><title>toID (Class method)</title>
+<indexterm><primary>id</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--toID(--symbolicName--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">toID</emphasis> method is used to translate a symbolic name to its
+  integer value.  In general the symbolic name is related to images or color.  Many of the arguments to
+  the methods of classes related to images use the integer value of a symbolic ID in the Windows API.
+  This method allows the programmer to use the symbolic ID without knowing what the actual integer value
+  is.
+</para>
+<para>
+  Take for example the task of retrieving the 'Question' icon resource from the system using the
+<xref linkend="mthGetImageClsImage"/> method.  The ooDialog programmer could
+  either use the numerical value of 32514 or use the <emphasis role="italic">toID</emphasis> method as
+  follows.  Note that the two invocations of getImage() are equivalent:
+</para>
+  <programlisting>
+  <![CDATA[
+    qIcon = .Image~getImage(.Image~toID(IDI_QUESTION))
+
+    qIcon = .Image~getImage(32514)
+  ]]>
+  </programlisting>
+<para>
+  The symbolic ID keywords are spelled exactly as Microsoft spells them in the
+  MSDN <xref linkend="defWindowsDoc"/> which allows the ooDialog to easily look up the meaning
+  of any single ID while at the same time reducing the documentation task for the ooDialog
+  developers.  The keywords are case sensitive and must be all in upper-case.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single required argument is:
+      <variablelist>
+        <varlistentry><term>symbolicName</term>
+        <listitem>
+          <para>
+            The symbolic name whose numeric value is desired.  There any number of symbolic names
+            and they are not listed here.  Rather the symbolic names are listed in the documentation
+            for the methods they are applicable to.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is the numeric value of the symbol.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    say 'The numeric value of the IDI_WINLOGO symbol is:' .Image~toID(IDI_WINLOGO)
+    /*
+      Output on the console would be:
+
+      The numeric value of the IDI_WINLOGO symbol is: 32517
+    */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::id() [class method] -->
+
+<section id="mthUserIcon" xreflabel="userIcon"><title>userIcon (Class method)</title>
+<indexterm><primary>userIcon</primary></indexterm>
+<indexterm><primary>userIcon</primary><secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userIcon(--dlg--,--id--+---------+--+---------+--)----------><
+                           +-,-size--+  +-,-opts--+
+]]>
+</programlisting>
+
+<para>
+  Returns a new <computeroutput>Image</computeroutput> object from an icon resource added to the dialog through the
+ <xref linkend="mthAddIconResource"/>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object to which the user icon was added.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+       The resource ID of the icon. Can be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>size [optional]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsSize"/> object that specifies the size of the image.
+    </para>
+    <para>
+      If this argument is omitted, a size of 0 is used. Under most circumstances this indicates that the actual size of
+      the icon should be used.  However, if LR_DEFAULTSIZE is used as one of the flags in the <emphasis
+      role="italic">opts</emphasis> argument, then the width and height specified by the system metric values for icons
+      is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A whole number that specifies the flags that control how the operating system loads the icon. The flags are one or
+      more of the following symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct
+      numeric value for any of the following symbols. The <xref linkend="mthOrClsDlgUtil"/> method of the
+<xref linkend="clsDlgUtil"/> class can be used to combine more than one of the symbols if needed.
+      <simplelist type='horiz' columns='2'>
+      <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+      <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+      <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+      <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+      <member>LR_VGACOLOR</member>
+      </simplelist>
+    </para>
+    <para>
+      The default value is LR_LOADFROMFILE. The flags for this method, must include LR_LOADFROMFILE and can not contain
+      LR_SHARED. If this argument is specified by the programmer, the value is checked, and corrected if necessary. See
+      the remarks section for some additional comments.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An image object, which may be a <xref linkend="mthIsNullClsImage"/> image on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For most usage, the Rexx programmer would do one of the following things:
+    <itemizedlist>
+    <listitem>
+    <para>
+      Omit the <emphasis role="italic">size</emphasis> and <emphasis role="italic">flags</emphasis> arguments. This
+      would load the icon using the actual size of the icon. If multiple icon images are included in the file, then the
+      first image found would be used.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      Omit the <emphasis role="italic">size</emphasis> and include the LR_DEFAULTSIZE flag in the <emphasis
+      role="italic">flags</emphasis>. This would load the using the system metric values for icons.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      Specify the size for the loaded image and omit the <emphasis role="italic">flags</emphasis> argument.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+    This method uses the LoadImage() Windows API to actually load the icon image. For more advanced uses of this method,
+    consult the MSDN <xref linkend="defWindowsDoc"/> documentation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected. This includes an invalid symbolic ID.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example adds an icon resource to the dialog through the
+ <xref linkend="mthAddIconResource"/> method and then uses that icon for the image in a
+ <xref linkend="clsStatic"/> image control.
+<programlisting>
+<![CDATA[
+
+  dlg = .SimpleDialog~new("Simple.rc", IDD_DIALOG1, , 'Simple.h')
+  if dlg~initCode = 0 then do
+    dlg~addIconResource(IDI_ENHANCED_QUESTION_MARK, 'fancyQuestion.ico')
+    dlg~execute("SHOWTOP", IDI_CORPORATE_IMAGE)
+  end
+
+::method initDialog
+  expose iconControl
+
+  iconControl = self~newStatic(IDC_ICON_QUESTION)
+  if iconControl <> .nil then do
+    questionMark = .Image~userIcon(self, IDI_ENHANCED_QUESTION_MARK, .Size~new(64, 64) )
+    if \ questionMark~isNull then iconControl~setIcon(questionMark)
+  end
+
+  self~connectButtonEvent(IDC_PB_YES, "CLICKED", onYes)
+  self~connectButtonEvent(IDC_PB_NO, "CLICKED", onNo)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::userIcon() [class method] -->
+
+
+<section id="mthHandleClsImage" xreflabel="handle"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the Windows system handle to the image this object represents.  It is an error to invoke this
+  method if the image is null, or after the image has been released.
+</para>
+<para>
+   Currently, the handle is only useful for display.  In the ooDialog framework, methods that use images
+   for arguments, use the .Image object, not the image handle.  Older methods that use a bitmap handle
+   for a argument will not work with this handle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The method does not have an argument.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the handle to the image.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    hIcon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
+    say 'hIcon:  ' hIcon
+    say ' handle:' hIcon~handle
+
+    /* Output to the console might be (on a 64-bit Windows system)
+
+       hIcon:  an Image
+       handle: 0x000000000001002B
+    */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::handle() -->
+
+
+<section id="mthReleaseClsImage" xreflabel="release"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases the image.  This will free up operating system resources used for the image.  See the
+  introduction to the <link linkend="paraClsImageRelease">Image</link> class for some discussion on releasing an image.
+</para>
+<para>
+  Once an image object has been released, it is an error to use the object.  However, the
+<xref linkend="mthIsNullClsImage"/> and
+<xref linkend="mthSystemErrorCodeClsImage"/> methods can always be used.  The isNull()
+  method will return <computeroutput>.true</computeroutput> after an image object has been released.
+  Shared images should not be released, the operating system manages them.  To prevent the programmer
+  from accidentally releasing a shared image, the .Image object tracks which images are loaded as shared
+  and does not release a shared image if the programmer requests it.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            No error detected.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>non-zero</term>
+        <listitem>
+          <para>
+            The operating system error code.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example, when the user presses the Test button, the current image for the static control is
+      replaced by the system question mark image. The old image is no longer needed and it is released.
+      <programlisting>
+      <![CDATA[
+      ::method onTest
+
+        iconControl = self~newStatic(IDC_ICON_QUESTION)
+        if iconControl <> .nil then do
+          hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
+          say 'Question icon:' hQuestion~handle
+          if hQuestion~isNull then do
+            say 'error code:' .systemErrorCode
+          end
+          else do
+            image = iconControl~setImage(hQuestion)
+            say 'Swapped images:'
+            say '  new icon:' hQuestion~handle
+            say '  old icon:' image~handle
+
+            -- The old image is no longer needed.
+            ret = image~release
+            say 'Released old image return:' ret '.SystemErrorCode:' .systemErrorCode
+          end
+        end
+
+        /* Output on the screen, on a 64-bit system, might be:
+
+         Question icon: 0x000000000001002B
+         Swapped images:
+           new icon: 0x000000000001002B
+           old icon: 0x0000000001120639
+         Released old image return: 0 .SystemErrorCode: 0
+
+        */
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::release() -->
+
+
+<section id="mthIsNullClsImage" xreflabel="isNull"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The isNull() method tests if the image object is valid.  The image will be null if an error occurred
+  when it was loaded, or if the image has been released.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns <computeroutput>.true</computeroutput> if the image is not valid, is null, and
+      <computeroutput>.false</computeroutput> if the image is not null.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example the programmer wanted to load the system question mark icon, but used the wrong
+      image type.  (He uses IMAGE_BITMAP instead of IMAGE_ICON.)  The system will refuse to load the
+      image.  To test if the image was loaded okay, use the isNull() method.  Note that the getImage()
+      method set the .SystemErrorCode.  As in all software, the error codes are not always that
+      informative.
+      <programlisting>
+      <![CDATA[
+      hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_BITMAP))
+      if hQuestion~isNull then do
+        say 'System Error code:' .systemErrorCode
+        say '  System message:  ' SysGetErrorText(.systemErrorCode)
+      end
+
+      /* Output would be:
+
+      System Error code: 1814
+        System message:   The specified resource name cannot be found in the image file.
+
+      */
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::isNull() -->
+
+
+<section id="mthSystemErrorCodeClsImage" xreflabel="systemErrorCode"><title>systemErrorCode</title>
+<indexterm><primary>systemErrorCode</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--systemErrorCode------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The systemErrorCode attribute of the image object will reflect any system error codes that are detected
+  while working with an image object.  This is the same error code as the
+  <xref linkend="dotSystemErrorCode"/> is set to.  This can be useful if the programmer
+  wants to check for an error code at some point when it is possible that .systemErrorCode has been
+  reset.  (See the example below.)
+</para>
+<para>
+   Like the <xref linkend="mthIsNullClsImage"/> method this method can be invoked even when
+   the image is not valid.  However, it should not be used to check if the image is valid because it is
+   possible for the value to be 0 and the image to be null.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The value is usually 0, but may be a system error code if one was detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example the system error code attribute for an image is checked at a point in the
+      life-cycle of the application when checking the <computeroutput>.systemErrorCode</computeroutput>
+      would be meaningless:
+      <programlisting>
+      <![CDATA[
+      ::method onYes
+        expose hIcon
+
+        -- Need to release the icon image, but it is not always valid.
+        if \ hIcon~isNull then hIcon~release
+        else do
+          say 'The icon image is not valid.'
+          say '  Error when it was loaded:' hIcon~systemErrorCode
+          say '  System message:          ' SysGetErrorText(hIcon~systemErrorCode)
+        end
+        return self~ok:super
+
+      /* Output might be:
+
+      The icon image is not valid.
+        Error when it was loaded: 2
+        System message:           The system cannot find the file specified.
+
+      */
+
+      /* Note that the below was the error that caused the above.  The file name
+       * is actually 'shaveIce.ico' not shavedIce.ico.
+       */
+
+        if iconControl <> .nil then do
+          hIcon = .Image~getImage("shavedIce.ico", .Image~toID(IMAGE_ICON))
+          ...
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::systemErrorCode() -->
+
+</section>  <!--   End Image class -->
+
+<section id="clsImageList" xreflabel="ImageList"><title>ImageList Class</title>
+<indexterm><primary>ImageList class</primary></indexterm>
+<para>
+  An image list is a object used to efficiently manage large sets of images.  Either icons or bitmaps.
+  In an image list, all images are the same size and are accessed by a zero-based index. The images are
+  in screen device format. Optionally, each image in the list can have a matching monochrome bitmap that
+  is used as a mask to draw the image transparently.
+</para>
+<para>
+  The .ImageList object acts as an interface to the underlying operating system Image List, which
+  Microsoft calls a control. Although Microsoft calls the Image List a control and  documents it with the
+  other dialog controls, it is not a control in the same sense as button, edit, or list-view controls. It
+  is not a window, all dialog controls are windows.  It does not send or receive window messages. Use the
+  MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on exactly how
+  Image Lists work.
+</para>
+<para>
+  When an image list is no longer needed, it can be released.  This frees up the system resources used
+  for the images and the image list.  The programmer releases an image list by using the
+<xref linkend="mthReleaseClsImageList"/> method.  Once an image list is released it can no
+  longer be used.  It is an error to invoke any method on the released object, except for the
+<xref linkend="mthIsNullClsImageList"/> method.  The isNull() method can be invoked any time to
+  test if an image list is valid or not. It should go without saying that a programmer should not release
+  an image list that is in use.
+</para>
+<para>
+  Future versions of the .ImageList are intended to provide a complete interface to the underlying Image
+  List control.  At this time not all functionality is implemented.
+</para>
+
+<section id="sctMethodsImageListClass"><title>Method Table</title>
+
+<para>
+  Instances of the ImageList class implement the methods listed in the following table:
+</para>
+
+<table id="tblImageListMethods" frame="all">
+<title>Image Instance Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateClsImageList"/></entry>
+<entry>Creates a new empty image list of the type specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsImageList"/></entry>
+<entry>Currently it is not intended for the ooDialog programmer to instantiate an image list object directly using the new method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddClsImageList"/></entry>
+<entry>Adds one or more bitmap images to the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddIcon"/></entry>
+<entry>Adds an icon or cursor image to the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddImagesClsImageList"/></entry>
+<entry>Adds a number of images to the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddMaskedClsImageList"/></entry>
+<entry>Adds one or more bitmap images, along with a mask to the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDuplicateClsImageList"/></entry>
+<entry>Creates a duplicate image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCountClsImageList"/></entry>
+<entry>Determines the number of images in the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetIconClsImageList"/></entry>
+<entry>Creates and returns an icon image from an image and mask in this image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetImageSizeClsImageList"/></entry>
+<entry>Determines the size of the images in the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHandleClsImageList"/></entry>
+<entry>Returns the Windows system handle to the image list this object represents.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsNullClsImageList"/></entry>
+<entry>Used to check if an image list is valid.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveClsImageList"/></entry>
+<entry>Removes the image at the specified index from the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveAllClsImageList"/></entry>
+<entry>Removes all images from the image list.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseClsImageList"/></entry>
+<entry>Releases the resource module so that the operating system can reclaim the system resources used by the image list.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+<section id="mthCreateClsImageList" xreflabel="create"><title>create (Class method)</title>
+<indexterm><primary>create</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--create(--+--------+-+---------+-+---------+-+--------+--)---><
+             +--size--+ +-,-flags-+ +-,-count-+ +-,-grow-+
+]]>
+</programlisting>
+
+<para>
+  Creates a new empty image list of the type specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>size [optional]</term>
+      <listitem>
+        <para>
+          A <xref linkend="clsSize"/> object that specifies the size of a single image in the
+          image list.  All images in an image list have the same size. The size is specified in pixels.
+        </para>
+        <para>
+          If this argument is omitted the system default size for an icon is used.  This size can vary
+          depending on which version of Windows is running and whether the user has selected to use large
+          icons or not.  A typical size is 32 x 32 (in pixels.)
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags [optional]</term>
+      <listitem>
+        <para>
+          The flags that specify the type of image list to create. The flags are one or more of the following
+          symbols, but can include only one ILC_COLOR* value. You can use
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for any of the
+          following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of the
+<xref linkend="clsDlgUtil"/> class can be used to combine the symbols.
+        </para>
+        <para>
+          <simplelist type='horiz' columns='2'>
+          <member>ILC_MASK</member>     <member>ILC_COLOR24</member>
+          <member>ILC_COLOR</member>    <member>ILC_COLOR32</member>
+          <member>ILC_COLORDDB</member> <member>ILC_PALETTE</member>
+          <member>ILC_COLOR4</member>   <member>ILC_MIRROR</member>
+          <member>ILC_COLOR8</member>   <member>ILC_PERITEMMIRROR</member>
+          <member>ILC_COLOR16</member>
+          </simplelist>
+          <variablelist>
+            <varlistentry><term>ILC_MASK</term>
+            <listitem>
+            <para>
+              The image list contains two bitmaps, one of which is used as a mask. The mask is a monochrome bitmap. If
+              this value is omitted, the image list contains only one bitmap.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR</term>
+            <listitem>
+            <para>
+              Indicates to use the default image list type when none of the other ILC_COLOR* flags are used. Usually the
+              default is ILC_COLOR4. However, with older display drivers the default may be ILC_COLORDDB.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLORDDB</term>
+            <listitem>
+            <para>
+              The image list uses a device-dependent bitmap.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR4</term>
+            <listitem>
+            <para>
+              The image list uses a 4-bit, 16-color, device-independent bitmap, DIB, section for the bitmap
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR8</term>
+            <listitem>
+            <para>
+              The image list uses an 8-bit DIB section. The color table use the same colors as the halftone palette.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR16</term>
+            <listitem>
+            <para>
+              Use a 16-bit (32/64k-color) DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR24</term>
+            <listitem>
+            <para>
+              Use a 24-bit DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR32</term>
+            <listitem>
+            <para>
+              Use a 32-bit DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_PALETTE</term>
+            <listitem>
+            <para>
+              Microsoft has this flag but it is not implemented. ooDialog accepts the flag in case it is implemented in
+              future versions of Windows.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_MIRROR</term>
+            <listitem>
+            <para>
+              Languages such as Hebrew or Arabic that read right-to-left can be mirrored by Windows. When an image list
+              is created on a mirrored version of Windows, the images are mirrored. I.e.,, they are flipped to display
+              from right to left. This flag on mirrored versions of Windows instructs to OS to not automatically mirror
+              the images.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_PERITEMMIRROR</term>
+            <listitem>
+            <para>
+              This flag is ignored unless ILC_MIRROR is also used. It should be used when the image list contains a
+              strip of images.
+            </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>count [optional]</term>
+      <listitem>
+        <para>
+          The initial size for the image list. The size is the number of images the image list contains. When this
+          argument is omitted the default is 6.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>grow [optional]</term>
+      <listitem>
+        <para>
+          The amount by which the image list can grow if the operating system needs to resize the image list to make
+          room for more images. The default value when omitted is 0.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      A new, empty, image list is returned.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> It is theoretical possible for this method to fail and the returned image
+      list to be null. However, in practice, it is virtually impossible to cause a failure.  Using a size of 0 x 0 seems
+      about the only way.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the
+      MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the arguments to
+      this method.
+    </para>
+    <para>
+      The ILC_MIRROR and ILC_PERITEMMIRROR flags require
+      Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+ <xref linkend="mthComCtl32Version"/>() method to determine the current version of
+      the library.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <programlisting>
+  <![CDATA[
+  -- We set the flags to create a 24 bit color, masked image list.
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
+
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+  ]]>
+  </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::create() [class method] -->
+
+
+<section id="mthNewClsImageList" xreflabel="new"><title>new (Class method)</title>
+<indexterm><primary>new</primary>
+<secondary>ImageList class</secondary></indexterm>
+<para>
+  Currently it is not intended for the ooDialog programmer to instantiate an image list object directly
+  using the new method.  This may change in the future and will be documented at that time, if the
+  intention changes.  .ImageList objects are instantiated using the
+<xref linkend="mthCreateClsImageList"/> method.
+</para>
+</section>  <!-- End ImageList::new() [class method] -->
+
+<section id="mthAddClsImageList" xreflabel="add"><title>add</title>
+<indexterm><primary>add</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--add(--image-+---------+--)-------------------><
+                +-,-mask--+
+]]>
+</programlisting>
+
+<para>
+  Adds a bitmap image or images to the image list.  The number of images is inferred from the width of
+  the added bitmap.  Optionally adds the mask for the bitmap(s).  If the image list does not use a mask,
+  the mask argument is ignored, even if it is present.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>image</term>
+      <listitem>
+        <para>
+          The .Image object that represents the image to add.  This must be a bitmap image.  The width of
+          the image determines the number of images added.  (Remember all images in a image list are the
+          same size.)
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mask</term>
+      <listitem>
+        <para>
+          The mask(s) to use with the image(s).  This must be a bitmap image.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      On success, the index of the first image added is returned, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example sets the image list for a list-view control.  The images are loaded from psdemolv.bmp
+      which is a bitmap 16 pixels high by 64 pixels wide, containing 4 individual images.  Since the
+      image list is created with a size of 16 x 16, when the add() method is used, the image list infers
+      that the bitmap is 4 images.
+      <programlisting>
+      <![CDATA[
+      -- Set the images for the items in the list-view.
+      image = .Image~getImage("bmp\psdemolv.bmp")
+      imageList = .ImageList~create(.Size~new(16, 16), .Image~toID(ILC_COLOR8), 4, 0)
+      if \image~isNull,  \imageList~isNull then do
+         imageList~add(image)
+         lc~setImageList(imageList, .Image~toID(LVSIL_SMALL))
+
+         -- The image list makes a copy of the bitmap, so we can release it now.
+         image~release
+      end
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::add() -->
+
+
+<section id="mthAddIcon" xreflabel="addIcon"><title>addIcon</title>
+<indexterm><primary>addIcon</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addIcon(--image--)---------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds an icon or cursor image to the image list.  If the image list is masked, then both the image and
+  mask bitmaps of the icon or cursor are  copied. If it is not masked, then only the image bitmap is
+  copied.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The only argument is:
+    <variablelist>
+      <varlistentry><term>image</term>
+      <listitem>
+        <para>
+          The .Image object that represents the image to add.  This must be an icon or cursor image.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the index of the added icon or cursor on success, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      Here the system icon images are loaded and then displayed in a list-view. Each icon will show in
+      the list-view with the text for the icon being its numeric resource ID. Since the system icons are
+      shared, the icon images are not released after they are added to the image list.
+
+<programlisting>
+<![CDATA[
+  ids = .array~new()
+  ids[ 1] = .Image~toID(IDI_APPLICATION)
+  ids[ 2] = .Image~toID(IDI_HAND)
+  ids[ 3] = .Image~toID(IDI_QUESTION)
+  ids[ 4] = .Image~toID(IDI_EXCLAMATION)
+  ids[ 5] = .Image~toID(IDI_ASTERISK)
+  ids[ 6] = .Image~toID(IDI_WINLOGO)
+
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR8), .Image~toID(ILC_MASK))
+
+  imageList = .ImageList~create(.Size~new(32, 32), flags, 20, 10)
+
+  do i = 1 to ids~items
+    image = .Image~getImage(ids[i], .Image~toID(IMAGE_ICON))
+    imageList~addIcon(image)
+  end
+
+  list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
+
+  do i = 1 to ids~items
+    list~add(ids[i], i - 1)
+  end
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addIcon() -->
+
+
+<section id="mthAddImagesClsImageList" xreflabel="addImages"><title>addImages</title>
+<indexterm><primary>addImages</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addImages(--images--+---------+--)-----------><
+                        +-,-cRef--+
+]]>
+</programlisting>
+
+<para>
+  Adds a number of images to the image list.  The images are supplied in a non-sparse array and must all
+  be of the same type.
+</para>
+<para>
+  The images are added to the image list in the same order as they exist in the array.  If an error
+  occurs in the middle of processing the images, the method returns at that point.  This means that
+  images prior to the error will exist in the image list, but no images in the array after the error will
+  be placed in the image list.  Which images were placed in the image list can be determined by the
+  return value of this method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>images</term>
+      <listitem>
+        <para>
+          An array of non-null .Image objects.  The array must not be sparse, that is each index in the
+          array must contain an .Image object.  The images can be bitmaps, icons, or cursors, but each
+          image in the array must be the same type. (Remember that cursors are icons, so that the array
+          can contain a mixture of icons and cursors.) Bitmaps can not be mixed with icons or cursors.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cRef</term>
+      <listitem>
+        <para>
+          A <xref linkend="mthColorRef"/> that is used to generate the mask if the image
+          list is a masked image list.  See the
+<xref linkend="mthAddMaskedClsImageList"/> method for more details on this argument.
+          This argument is ignored if the images are not bitmaps, or if the image list is not masked.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the image list index of the last successfully added image, or -1 if no images
+      were added.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example creates an image list from a number icons and then displays them in a list-view
+      control in a dialog.
+      <programlisting>
+      <![CDATA[
+      list  = self~newListView(IDC_LV_IMAGES)
+
+      files1 = .array~new()
+      files1[ 1] = "Bee.ico"
+      files1[ 2] = "Camera.ico"
+      files1[ 3] = "Camera1.ico"
+      files1[ 4] = "Default.ico"
+      files1[ 5] = "Disabled.ico"
+      files1[ 6] = "Hot.ico"
+      files1[ 7] = "Lamp.ico"
+      files1[ 8] = "Mountain.ico"
+      files1[ 9] = "Normal.ico"
+      files1[10] = "Penguin.ico"
+      files1[11] = "Picture.ico"
+      files1[12] = "Pushed.ico"
+      files1[13] = "Question32.ico"
+      files1[14] = "Search32.ico"
+      files1[15] = "Skull.ico"
+      files1[16] = "Stolen.ico"
+      files1[17] = "Window.ico"
+
+      size = .Size~new(32, 32)
+
+      images = .Image~fromFiles(files1, .Image~toID(IMAGE_ICON), size)
+      if images~items <> files1~items then do
+        say 'Error loading images.'
+        say '  System error:' .systemErrorCode
+        say '  Message:     ' SysGetErrorText(.systemErrorCode)
+        return
+      end
+
+      count = images~items
+      flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
+
+      imageList = .ImageList~create(size, flags, 20, 10);
+
+      lastAdded = imageList~addImages(images)
+      if lastAdded <> (count - 1) then do
+        -- Not all images were added.  We just ignore this and display
+        -- in the list-view what was added.
+      end
+
+      -- Set the image list for the list-view's normal icons.
+      list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
+
+      -- Add an item to the list-view for each image.  The
+      -- text for each item will be the icon file name and
+      -- the icon will be the image we loaded.
+      do i = 0 to lastAdded
+        list~add(files1[i + 1], i)
+      end
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addImages() -->
+
+
+<section id="mthAddMaskedClsImageList" xreflabel="addMasked"><title>addMasked</title>
+<indexterm><primary>addMasked</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addMasked(--image-,-cRef--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a bitmap image, or images, to the image list.  The COLORREF cRef is used to generate the mask.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>image</term>
+      <listitem>
+        <para>
+          The .Image object that represents the image to add.  This must be a bitmap image.  The width of
+          the image determines the number of images added.  (Remember all images in a image list are the
+          same size.)
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cRef</term>
+      <listitem>
+        <para>
+          The <xref linkend="mthColorRef"/> to use to generate the mask. In the added image,
+          each pixel that matches this color is changed to black, and the corresponding bit in the mask
+          is set to 1.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      On success, the index of the first added image is returned, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example comes from a dialog with a Tab control.  An image list is used to set an icon for each
+      tab.  Each icon is a colored letter on a white background.  Using a white color to generate the
+      mask causes the image to be drawn transparently.  The colored letter itself shows, and the rest of
+      the image lets the underlying color show through.
+      <programlisting>
+      <![CDATA[
+      -- Add all the tabs, including the index into the image list for an icon for
+      -- each tab.
+      tc~addFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, ,   -
+                    "Purple", 4, ,  "Cyan", 5, , "Gray", 6)
+
+      -- Create a COLORREF (pure white) and load our bitmap.
+      cRef = .Image~colorRef(255, 255, 255)
+      image = .Image~getImage("bmp\psdemoTab.bmp")
+
+      -- Create our image list, as a masked image list.
+      imageList = .ImageList~create(.Size~new(16, 16),                   -
+                                    .DlgUtil~or(.Image~toID(ILC_COLOR24),  -
+                                    .Image~toID(ILC_MASK)),                -
+                                     10, 0)
+
+      if \image~isNull,  \imageList~isNull then do
+         imageList~addMasked(image, cRef)
+         tc~setImageList(imageList)
+
+         image~release
+      end
+
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addMasked() -->
+
+
+<section id="mthDuplicateClsImageList" xreflabel="duplicate"><title>duplicate</title>
+<indexterm><primary>duplicate</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--duplicate------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Creates a duplicate image list.  All information in the original image list is copied to the new image
+  list.  (Overlay images are not copied, but ooDialog does not have support for image list overlay images
+  at this time.)  The two image lists are independent.  Adding, or removing, images from one image list
+  has no effect on the other.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is a copy of the image list.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Duplicate()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This fictious example is from a point-of-sale application for a restaurant.  The customer is
+      presented with a list-view of menu items, each list-view item has a colorful icon depicting the
+      selection.  The customers place their orders through the application and wait-people then bring
+      them their meal when it is ready.  The dinner menu has all the items that the lunch menu does, plus
+      some more.  The customer can choose whether to order from the lunch menu or the dinner menu, so the
+      lunch menu image list has to remain unchanged.
+      <programlisting>
+      <![CDATA[
+      ::method getDinnerImageList private
+        use strict arg lunchImageList
+
+        dinnerList = lunchImageList~duplicate
+        fileArray = self~getDinnerImageFiles
+        dinnerList~addImages(fileArray)
+
+      return dinnerList
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::duplicate() -->
+
+
+<section id="mthGetCountClsImageList" xreflabel="getCount"><title>getCount</title>
+<indexterm><primary>getCount</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCount-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the number of images in the image list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns the number of images currently in the image list.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_ImageCount()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageListCount private
+      use strict arg imageList
+      say 'Image list:' imageList~handle 'has' imagelist~getCount 'images.'
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Image list: 0x00000000000ED420 has 17 images.
+      */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::getCount() -->
+
+
+<section id="mthGetIconClsImageList" xreflabel="getIcon"><title>getIcon</title>
+<indexterm><primary>getIcon</primary><secondary>ImageList class</secondary></indexterm>
+<indexterm><primary>ImageList class</primary><secondary>getIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getIcon(--index--+--------------+--+-----------+--)------------------------><
+                     +-,-drawStyle--+  +-,-ovrLay--+
+]]>
+</programlisting>
+
+<para>
+  Creates and returns an icon image from an image and mask in this image list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The one-based index of the image in this list.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>drawStyle [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces. These keywords specify the drawing style that the
+      returned icon is created with. Case is not significant. The default if this argument is omitted is NORMAL. Note that
+      several of the keywords have the exact same meaning. This is intentional on Microsoft's part:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BLEND       </member>
+        <member>BLEND25     </member>
+        <member>BLEND50     </member>
+        <member>FOCUS       </member>
+        <member>MASK        </member>
+        <member>NORMAL      </member>
+        <member>SELECTED    </member>
+        <member>TRANSPARENT </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BLEND</term>
+        <listitem>
+        <para>
+          Draws the image, blending 50 percent with the system highlight color. This value has no effect if the image list
+          does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BLEND25</term>
+        <listitem>
+        <para>
+          Draws the image, blending 25 percent with the system highlight color. This value has no effect if the image list
+          does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BLEND50</term>
+        <listitem>
+        <para>
+          Draws the image, blending 50 percent with the system highlight color. This value has no effect if the image list
+          does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUS</term>
+        <listitem>
+        <para>
+          Draws the image, blending 25 percent with the system highlight color. This value has no effect if the image list
+          does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MASK</term>
+        <listitem>
+        <para>
+          Draws the mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NORMAL</term>
+        <listitem>
+        <para>
+          Draws the image using the background color for the image list. If the background color is the CLR_NONE value, the
+          image is drawn transparently using the mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SELECTED</term>
+        <listitem>
+        <para>
+          Draws the image, blending 50 percent with the system highlight color. This value has no effect if the image list
+          does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRANSPARENT</term>
+        <listitem>
+        <para>
+          Draws the image transparently using the mask, regardless of the background color. This value has no effect if the
+          image list does not contain a mask.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ovrLay [optional]</term>
+    <listitem>
+    <para>
+      The one-based index of the overlay image in this list. See the remarks section.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a valid icon <xref linkend="clsImage"/>, or the <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The overlay image is drawn transparently over the primary image, that is the icon, returned from this method. The
+    overlay image must be added to the image list separately. ooDialog has not yet implemented a method for adding overlay
+    images to the image list. That is intended for a future enhancement. Therefore, at this time, the <emphasis
+    role="italic">ovrlay</emphasis> argument has no meaning.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from an application that uses a resource only DLL. The DLL contains the dialog template for the
+    application and a bitmap of images. The bitmap contains a series of 20 images side by side. Each image is 16 by 16
+    pixels. The bitmap is used to create an image list, then an icon can be retrieved from the image list for any of the
+    images in the bitmap file using the <emphasis role="italic">getIcon</emphasis> method and the index of the image in the
+    bitmap:
+<programlisting>
+<![CDATA[
+  ri = .ResourceImage~new(self)
+  imageBMP = ri~getImage(IDI_ICONS_IL)
+
+  imageList = .ImageList~create(.Size~new(16, 16), 'COLOR32', 20, 0)
+  imageList~add(imageBMP)
+  imageBMP~release
+
+  icon = imageList~getIcon(1)
+  statusBar~setIcon(icon, 1)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::getIcon() -->
+
+
+<section id="mthGetImageSizeClsImageList" xreflabel="getImageSize"><title>getImageSize</title>
+<indexterm><primary>getImageSize</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageSize---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the size of the images in the image list.  All images in any single image list have the same
+  size.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size of the images in the image list is returned in a <xref linkend="clsSize"/>
+      object.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_IconSize()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageListSize private
+      use strict arg imageList
+      s = imageList~getImageSize
+      h = s~height 'pixels high'
+      w = s~width 'pixels wide'
+      say 'Image list:' imageList~handle 'contains images' h 'by' w
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Image list: 0x00000000000DCB20 contains images 32 pixels high by 32 pixels wide
+      */
+
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::getImageSize() -->
+
+
+<section id="mthHandleClsImageList" xreflabel="handle"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the Windows system handle to the image list this object represents.  It is an error to invoke
+  this method if the image list is null, or after the image has been released.
+</para>
+<para>
+   At this time, the handle is only useful for display.  In the ooDialog framework, methods that use
+   image lists for arguments, use the .ImageList object, not the image list handle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There is no argument to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the image list handle.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageList private
+      use strict arg imageList
+      say 'Currently using this image list:' imageList~handle
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Currently using this image list: 0x00000000000DCB20
+      */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::handle() -->
+
+
+<section id="mthIsNullClsImageList" xreflabel="isNull"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Used to check if an image list is valid. This method can be invoked on any image list, even after it
+  has been released.  An image list will always be null after it has been released.  It is conceivable
+  that, if an error occurs during an image list creation, the returned image list might be null.
+  However, this is extremely unlikely.  Therefore, for all practical purposes, an image list will only be
+  null after it has been released.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns true if the image list is null, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example comes from some test code.
+      <programlisting>
+      <![CDATA[
+      -- See if we can create an image list with no size.
+      imageList = .ImageList~create(.Size~new(0, 0), .Image~toID(ILC_COLOR24),  20, 10)
+      if imageList~isNull then do
+        say 'Can not create a 0 x 0 image list.'
+        return .false
+      end
+
+      return .true
+
+      /*
+        Output will be:
+
+        Can not create a 0 x 0 image list.
+
+      */
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::isNull() -->
+
+
+<section id="mthReleaseClsImageList" xreflabel="release"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases the image list allowing the operating system to reclaim the resources used by the image list.
+  Once the image list has been released, it can no longer be used.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example comes from a program that runs continuously.  During the life-cycle of the application
+      it displays and then closes a dialog that creates some image lists.  The image lists are always
+      different depending on the state of things.  Each time the dialog closes, it releases the image
+      lists it created to free up the operating system resources.
+      <programlisting>
+      <![CDATA[
+      ::method ok
+        self~cleanUp
+        return self~ok:super
+
+      ::method cancel
+        self~cleanUp
+        return self~cancel:super
+
+      ::method cleanUp private
+        expose coolTempImages warningImages buildingStatusImages
+
+        if coolTempImages \== .nil then coolTempImages~release
+        if warningImages \== .nil then warningImages~release
+        if buildingStatusImages \== .nil then buildingStatusImages~release
+
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::release() -->
+
+
+<section id="mthRemoveClsImageList" xreflabel="remove"><title>remove</title>
+<indexterm><primary>remove</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--remove(--index--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes the image at <emphasis role="italic">index</emphasis> from the image list.  When the image is
+  removed, all the indexes in the list are adjusted.  I.e., if the image at index 2 is removed, the image
+  at index 3 becomes index 2, the image at index 4 becomes index 3, etc..
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The single argument is:
+    <variablelist>
+      <varlistentry><term>index</term>
+      <listitem>
+        <para>
+          The one-based index of the image to remove.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns true on success, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Remove()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example comes from the fictious point-of-sale application for a restaurant.  Sometimes the
+      chef runs out of a menu item and the item is then removed from the list-view so that the customers
+      can no longer order it.  (Rigorous error checking is not done because the application was written
+      by one of the waiters.)
+      <programlisting>
+      <![CDATA[
+      ::method removeFromMenu private
+        use strict arg index
+
+        menu = self~newListView(IDC_LV_MENU)
+
+        bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
+        bigIcons~remove(index)
+
+        smallIcons = menu~getImageList(.Image~toID(LVSIL_SMALL))
+        smallIcons~remove(index)
+
+        stateIcons = menu~getImageList(.Image~toID(LVSIL_STATE))
+        stateIcons~remove(index)
+
+        menu~delete(index)
+
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::remove() -->
+
+
+<section id="mthRemoveAllClsImageList" xreflabel="removeAll"><title>removeAll</title>
+<indexterm><primary>removeAll</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeAll------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes all images from the image list.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns true on success, false otherwise.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_RemoveAll()</computeroutput> API. The
+      MSDN <xref linkend="defWindowsDoc"/> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is a continuation of the fictious restaurant point-of-sale application.  The waiter
+      that wrote the application did not like to work past the normal closing time.  The application has
+      a feature that removes all the menu items as it gets near closing time to prevent customers from
+      ordering something they do not have time to finish eating.  (However, the waiter noticed that he
+      often got huge tips from customers that had drinks after their meal.)
+      <programlisting>
+      <![CDATA[
+      ::method stopOrders private
+
+        menu = self~newListView(IDC_LV_MENU)
+
+        bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
+        bigIcons~removeAll
+
+        smallIcons = menu~getImageList(.Image~toID(LVSIL_SMALL))
+        smallIcons~removeAll
+
+        stateIcons = menu~getImageList(.Image~toID(LVSIL_STATE))
+        stateIcons~removeAll
+
+        menu~deleteAll
+
+        self~addAfterDinnerDrinks(menu)
+
+      return 0
+
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::removeAll() -->
+
+
+</section>  <!--   End ImageList class -->
+
+
+<section id="clsResourceImage" xreflabel="ResourceImage"><title>ResourceImage Class</title>
+<indexterm><primary>ResourceImage class</primary></indexterm>
+<para>
+  Resource Images represent modules that contain resources.  These modules are binary executable files,
+  which on Windows are for all practical purposes .exe and .dll files. Before an application can use a
+  resource in a module, the resource must be loaded from the module into memory. Once in memory, the
+  application needs a handle to the specific resource in order to work with it.
+</para>
+<para>
+  The ResourceImage class contains methods and function to assist in the loading of resources into memory
+  and obtaining handles to the desired resources.  ooDialog has always had, limited, access to resources
+  in modules through the <xref linkend="clsResDialog"/> class.  The ResourceImage class
+  expands that access, both improving it and making the access available in any ooDialog program, with or
+  without ResDialog objects. The class supports the loading of, and obtaining handles to, resources from
+  any binary executable file.
+</para>
+<para>
+  The class provides the <xref linkend="mthReleaseClsResourceImage"/> method to free up
+  system resources if a module containing the resources is no longer needed.  The
+  general <link linkend="paraClsImageRelease">remarks</link> concerning freeing the
+  <xref linkend="clsImage"/> class are applicable here.  The release() method will ignore requests
+  to release the module when it is known absolutely that the module should not be released, such as in
+  the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
+  programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
+  class will do as requested.  As with the images that the .Image class represents, the system resources
+  used by the module the ResourceImage class represents will be automatically cleaned up when the
+  interpreter process ends.  The <link linkend="paraClsImageRelease">comments</link> about why would a programmer want to
+  release resources in the <computeroutput>Image</computeroutput> class remarks are equally apropos here.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>ResourceImage</computeroutput> class is new in ooDialog as of
+  ooRexx version 4.0.0. Its first implementation supports image resources and provides the basic framework upon which to
+  expand in the future.
+</para>
+
+<section id="sctMethodsResourceImageClass"><title>Method Table</title>
+
+<para>
+  Instances of the ResourceImage class implement the methods listed in the following table:
+</para>
+
+<table id="tblResourceImageMethods" frame="all">
+<title>ResourceImage Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsResourceImage"/></entry>
+<entry>Instantiates a new resource image that represents the executable module specified by the <emphasis role="italic">fileOrDlg</emphasis> argument.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetImageClsResourceImage"/></entry>
+<entry>Loads the specified image resource in the module and returns a new <computeroutput>.Image</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetImagesClsResourceImage"/></entry>
+<entry>Loads a number of image resources from the module.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHandleClsResourceImage"/></entry>
+<entry>Returns the Windows system handle for the resource module.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsNullClsResourceImage"/></entry>
+<entry>Determines if the resource image is valid.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseClsResourceImage"/></entry>
+<entry>Releases the resource module so that the operating system can reclaim the system resources.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSystemErrorCodeClsResourceImage"/></entry>
+<entry>Reflects any system error codes that are detected while working with an image object.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+
+<section id="mthNewClsResourceImage" xreflabel="new"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--fileOrDlg--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new resource image that represents the executable module specified by <emphasis
+  role="italic">fileOrDlg</emphasis>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The single arguments is:
+  <variablelist>
+    <varlistentry><term>fileOrDlg [required]</term>
+    <listitem>
+    <para>
+      This argument must be either a string file name or a dialog object. If <emphasis role="italic">fileOrDlg</emphasis> is
+      a string, it specifies the file name of an executable module containing resources that the ooDialog program
+      wants to access. If it is a dialog object in the current program, then it specifies that the module containing the
+      resources is one of the modules already available to the program.  That is, either the
+      <computeroutput>oodialog.dll</computeroutput> module, or the module used for instantiating a <xref
+      linkend="mthNewClsResDialog"/> <computeroutput>ResDialog</computeroutput> object.
+    </para>
+    <para>
+      If the dialog object is a <xref linkend="clsResDialog"/> it specifies the module used to instantiate the dialog object.
+      If the dialog object is not a <emphasis role="italic">ResDialog</emphasis> then it specifies the oodialog.dll module,
+      which is always loaded in any ooDialog program.
+    </para>
+    <para>
+      If <emphasis role="italic">fileOrDlg</emphasis> is a string file name, then the file name alone is sufficient. The
+      operating system will search the path for the file as it normally does when a program is executed.  If the module is
+      not in the path then a full, or relative, file name is required.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a new <emphasis role="italic">ResourceImage</emphasis> object. This object may be null if an error occurred.  Use
+    the <xref linkend="mthIsNullClsResourceImage"/> method to check for this.  Both the <xref linkend="dotSystemErrorCode"/>
+    or the <xref linkend="mthSystemErrorCodeClsResourceImage"/> method should contain an error code if the object is null.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example instantiates a resource image using the oodialog.dll module and uses it to load
+    the generally available icon resources from that module.  The icons are then displayed in a
+    list-view control.
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose list
+
+  list  = self~newListView(IDC_LV_IMAGES)
+
+  ids = .array~new()
+  ids[1] = self~constDir[IDI_DLG_OODIALOG]
+  ids[2] = self~constDir[IDI_DLG_APPICON]
+  ids[3] = self~constDir[IDI_DLG_APPICON2]
+  ids[4] = self~constDir[IDI_DLG_OOREXX]
+
+  size = .Size~new(.SM~cxIcon, .SM~cyIcon)
+
+  oodModule = .ResourceImage~new(self)
+  icons = oodModule~getImages(ids, 'ICON', size)
+
+  imageList = .ImageList~create(size, 'COLOR24 MASK', 4, 0)
+  imageList~addImages(icons)
+
+  list~setImageList(imageList, 'NORMAL'
+
+  names = .array~new()
+  names[1] = "IDI_DLG_OODIALOG"
+  names[2] = "IDI_DLG_APPICON"
+  names[3] = "IDI_DLG_APPICON2"
+  names[4] = "IDI_DLG_OOREXX"
+
+  do i = 1 to ids~items
+    list~add(names[i] '('ids[i]')', i - 1)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Resource::new() [class method] -->
+
+<section id="mthGetImageClsResourceImage" xreflabel="getImage"><title>getImage</title>
+<indexterm><primary>getImage</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImage(--id--+--------+--+--------+--+---------+--)-------><
+                   +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Loads the specified image resource in the module and returns a new
+<xref linkend="clsImage"/> object.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used
+  here. This method is very similar to the <xref linkend="mthGetImageClsImage"/> method of the .Image
+  class. The documentation for that method may provide additional insight.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource id of the image in the module.
+        </para>
+        <para>
+          <emphasis role="bold">Note:</emphasis> At this time symbolic IDs are not supported for this argument.  That
+            restriction may be lifted in a future version of ooDialog.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Specifies the type of the image: bitmap, icon, or cursor. You can use
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation for
+          <computeroutput>LoadImage()</computeroutput> should be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns an .Image object that represents the specified image resource in the module.
+      The image may be null if an error occurred, for instance if no image resource was found.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example uses a ResDialog with a static control that displays a bitmap image.  The image for
+      the static control is obtained from the resource-only DLL used by the ResDialog.
+      <programlisting>
+      <![CDATA[
+      ::class SimpleDialog subclass ResDialog
+      ...
+
+      ::method initDialog
+        ...
+        resources = .ResourceImage~new("simpleImage.dll", self)
+        image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        ...
+        picture = self~newStatic(IDC_BMP_PICTURE)
+        oldImage = picture~setImage(image)
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::getImage() [class method?] -->
+
+
+<section id="mthGetImagesClsResourceImage" xreflabel="getImages"><title>getImages</title>
+<indexterm><primary>getImages</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImages(--ids,--+--------+--+--------+--+---------+--)----><
+                      +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Loads a number of image resources from the module. An array of resource IDs is used to specify which
+  image resources.  All the image resources must have the same characteristics.  That is they must all be
+  the same type and use the same flags.  If the type is bitmap, and the flags include LR_DEFAULTSIZE, and
+  the size is 0 x 0, then the size of the image will be the actual resource size.  Otherwise, all the
+  images also need to be the same size.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API
+    used here.  This method is very similar to the <xref linkend="mthFromIDsClsImage"/> method of the
+    .Image class. The documentation for that method can provide additional information.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>ids</term>
+      <listitem>
+        <para>
+          An array of the resource IDs of the image resources in the module.  The array can contain
+          any number of IDs, but it can not be sparse.  That is, each index of the array must contain a
+          number.  If an incorrect item is detected in the array, then a syntax error is raised and no
+          images are returned.
+        </para>
+        <para>
+          If there is an error with an individual image resource, then the index in the array for that
+          image is left empty.  One way to check for this type of error is to compare the number of items
+          in the returned array with the number of items in ID array.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Specifies the type of the image: bitmap, icon, or cursor. You can use
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return will be an array of .Image objects, one for each resource ID specified in the
+      <computeroutput>ids</computeroutput> array, if there is no error.  If there is an error loading the
+      image of any specified ID, the corresponding index in the returned array will be empty.
+    </para>
+    <para>
+      If there is an error, both the <xref linkend="dotSystemErrorCode"/> and the
+ <xref linkend="mthSystemErrorCodeClsResourceImage"/> attribute of this
+      resource image will be set (to the same code.)  It is conceivable that an error could occur where
+      the system does not set an error code, but unlikely.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. You can use
+      the MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the
+      interaction between the flags, size, and type arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following is a complete working dialog.  Four bitmap images are used.  Each time the user
+      clicks the next button, the next image is displayed.
+    </para>
+    <para>
+      An array is constructed containing the resource IDs of the 4 images.  A new resource image object
+      is instantiated from the <computeroutput>images.dll</computeroutput> module.  The getImages()
+      method is then used to get an array of 4 .Image objects, using the array of resource IDs.
+      <programlisting>
+      <![CDATA[
+      /* Simple Dialog to display some images */
+
+        dlg = .SimpleDialog~new( , 'simpleImage.h')
+        if dlg~initCode = 0 then do
+          dlg~createCenter(200, 247, "Simple Image Viewer", "", , "MS Shell Dlg 2", 8)
+          dlg~execute("SHOWTOP", 14)
+        end
+
+      return 0
+      -- End of entry point.
+
+      ::requires "ooDialog.cls"
+
+      ::class SimpleDialog subclass UserDialog
+
+      ::method defineDialog
+
+        self~createStatic(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
+        self~createStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
+        self~createPushButton(IDC_PB_NEXT, 10, 223, 50, 14, , "Next", onNext)
+        self~createPushButton(IDOK, 140, 223, 50, 14, "DEFAULT", "Ok")
+
+      ::method initDialog
+        expose picture images description descriptions nextImage
+
+        ids = .array~new
+        ids[ 1] = self~constDir[ID_BMP_IMAGE1]
+        ids[ 2] = self~constDir[ID_BMP_IMAGE2]
+        ids[ 3] = self~constDir[ID_BMP_IMAGE3]
+        ids[ 4] = self~constDir[ID_BMP_IMAGE4]
+
+        descriptions = .array~new
+        descriptions[1] = "Conrad, King of the Hill"
+        descriptions[2] = "Berk, Squint Eye"
+        descriptions[3] = "Cienna, Deer in the Headlights"
+        descriptions[4] = "Vail, The Flower Child"
+
+        picture = self~newStatic(IDC_BMP_PICTURE)
+        description = self~newStatic(IDC_ST_DESCRIPTION)
+        self~connectButtonEvent(IDC_PB_NEXT, "CLICKED", onNext)
+
+        nextImage = 1
+        module = .ResourceImage~new("images.dll")
+        images = module~getImages(ids)
+
+        self~onNext
+
+      ::method onNext
+        expose picture description images descriptions nextImage
+
+        if nextImage > images~items then nextImage = 1
+
+        picture~setImage(images[nextImage])
+
+        description~setText(descriptions[nextImage])
+        nextImage += 1
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::getImages() -->
+
+
+<section id="mthHandleClsResourceImage" xreflabel="handle"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the Windows system handle for the resource module.  It is an error to invoke this method if the
+  resource image is null, or after the resource image has been released.
+</para>
+<para>
+   At this time, the handle is only useful for display.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the handle for the module the resource image represents.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      ::method showHandles
+
+        oodMod = .ResourceImage~new("oodialog.dll", self)
+        resMod = .ResourceImage~new("simpleImage.dll", self)
+
+        say 'The oodialog.dll module handle is:        ' oodMod~handle
+        say 'The resource module for this ResDialog is:' resMod~handle
+
+
+      /* The output, for a ResDialog, might be:
+
+         The oodialog.dll module handle is:         0x009E0000
+         The resource module for this ResDialog is: 0x00AF0000
+      */
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::handle() -->
+
+
+<section id="mthIsNullClsResourceImage" xreflabel="isNull"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the resource image is valid.  <computeroutput>isNull()</computeroutput> will always
+  return <computeroutput>.true</computeroutput> after the resource image has been released.  It will also
+  return <computeroutput>.true</computeroutput> if there was an error instantiating a new resource image
+  object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns <computeroutput>.true</computeroutput> if the object is null, otherwise
+      <computeroutput>.false</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      It is a good idea to check that a new resource image object is valid before using it.
+      <programlisting>
+      <![CDATA[
+      ::method initDialog
+        ...
+        resourceModule = .ResourceImage~new("simpleImage.dll", self)
+        if \ resourceModule~isNull the do
+          image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        else do
+          -- Some error handling here.
+        end
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::isNull() -->
+
+
+<section id="mthReleaseClsResourceImage" xreflabel="release"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases the resource module so that the operating system can reclaim the system resources.  After the
+  resource image has been released it can no longer be used.  The programmer should not release the
+  resource image while resources loaded from the module are still in use.
+</para>
+<para>
+  If the resource image represents the <computeroutput>oodialog.dll</computeroutput> module, or the
+  module used for a ResDialog, then the resource image should never be released.  The
+  <computeroutput>release()</computeroutput> method will ignore release requests in those situations.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method return the system error code, which will be zero if there is no error, and non-zero if
+      there is an error. The <xref linkend="dotSystemErrorCode"/> is also set to
+      this value.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <xref linkend="dotSystemErrorCode"/>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example, the images for an image list are loaded from a resource module.  The resource
+      module is no longer needed after the image list is created. Since an image list makes a copy of the
+      images added to it, once the image list has all the images added to it, the resource image can be
+      released.
+      <programlisting>
+      <![CDATA[
+      ::method getImages private
+        use strict arg resourceIDs, size, ilFlags
+
+        imageList = .ImageList~create(size, ilFlags, 20, 10);
+
+        module = .ResourceImage~new("zooImages.dll")
+        images = module~getImages(resourceIDs)
+        imageList~addImages(images)
+
+        do i = 1 to images~items
+          images[i]~release
+        end
+        module~release
+
+        return imageList
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::release() -->
+
+
+<section id="mthSystemErrorCodeClsResourceImage" xreflabel="systemErrorCode"><title>systemErrorCode</title>
+<indexterm><primary>systemErrorCode</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--systemErrorCode------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  When a method for a resource image is invoked that sets the
+  <xref linkend="dotSystemErrorCode"/>, the systemErrorCode attribute of the resource
+  image object is also set. This can be useful if the programmer wants to check for an error code at some
+  point when it is possible that .systemErrorCode has been reset.
+</para>
+<para>
+  This method can always be invoked, even if the resource image is null.  It is very similar to the
+<xref linkend="mthSystemErrorCodeClsImage"/> method of the .Image class and the
+  documentation for that method is generally applicable here.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      This method does not take any arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is a system error code, which will usually be 0, no error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example uses the <computeroutput>systemErrorCode</computeroutput> attribute to get more
+      information on a possible error, rather than the <computeroutput>.systemErrorCode</computeroutput>.
+      <programlisting>
+      <![CDATA[
+      ::method initDialog
+        ...
+        mod = .ResourceImage~new("simpleImage.dll", self)
+        if mod~isNull the do
+          self~writeToLog("Error with resource module simpleImage.dll")
+          self~writeToLog("  RC: " mod~systemErrorCode)
+          self~writeToLog("  msg:" SysGetErrorText(mod~systemErrorCode)
+          return
+        end
+
+        image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        ...
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::systemErrorCode() -->
+
+</section>  <!--   End ResourceImage class  -->
+
+
+</chapter>

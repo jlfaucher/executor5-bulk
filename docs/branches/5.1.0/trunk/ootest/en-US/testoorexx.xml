@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "ootest.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: RxSock TCP/IP Socket Functions Reference
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="chapOverview"><title>Overview of ooTest</title>
+<indexterm><primary>ooTest</primary>
+<secondary>overview</secondary></indexterm>
+<para>
+  The primary purpose of ooTest is to throughly test the ooRexx interpreter and its distribution
+  pacakages.  In general, to throughly test software involves automating as much as possible of the
+  testing.  The ooTest framework provides the foundation for automatically executing tests.  It currently
+  contains little or no components that would aid in automating the writing of tests.
+</para>
+<note><title>Note</title><para>
+  This document is written for the 4.0.0 and later versions of ooTest.  It makes no effort to cover the
+  3.2.0 verison of ooTest, or explain any differences between the 3.2.0 and 4.0.0 versions.  There are
+  differences.
+</para></note>
+<para>
+  ooTest also contains all the tests written to date to that the ooRexx team uses to test ooRexx.  This
+  makes ooTest itself more than just a framework.  It is the sum of the tests themselves, the framework
+  to write the tests, and any other components used in the over all process of testing the ooRexx
+  package.
+</para>
+<para>
+  This document serves as a reference to the different components of ooTest.  It explains how to execute
+  the tests, intepret the results, and gives some guidence on writing new tests.  There is very little
+  involved in obtaining and settin up ooTest. Indeed there is very little set up involved in ooTest. It
+  is merely a matter of placing the ooTest files on the system used to test.
+</para>
+
+<section id="getOOTest"><title>Install ooTest</title>
+<indexterm><primary>installing ooTest</primary></indexterm>
+<indexterm><primary>install</primary>
+<secondary>ooTest</secondary></indexterm>
+
+<para>
+  Getting and installing ooTest is extremely easy.  There is no set up involved, you merely place the
+  ooTest directory structure on somewhere convenient on your system.  The best method of obtaining the
+  ooTest directory structure is to use a Subversion client to check out the ooTest repository.
+  Subversion is widely avaliable, easy to install, and easy to use.  Directions for obtaining Subversion
+  have been posted numerous times to the lists related to ooRexx.  There is a wealth of information on
+  this subject on the Internet, simply use Google.
+</para>
+<para>
+  Once you have a Subversion client, the following command will check out ooTest and place its directory
+  structure in the subdirectory named <computeroutput>ooTest.4.0.0</computeroutput>. The subdirectory can
+  be named anything you wish.
+<programlisting>
+<![CDATA[
+C:\>svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/test/trunk ooTest.4.0.0
+]]>
+</programlisting>
+  The command is exactly the same on any operating system.
+</para>
+<para>
+  The other way to obtain ooTest is to download one of the ooTest snapshots from the ooRexx project on
+  SourceForge.  The drawback to this method is that the latest snapshot may not be current and you can
+  not use the Subversion tools to keep your copy of ooTest up-to-date.  To download a snapshot go to this
+  link on SourceForge:
+  <ulink url="https://sourceforge.net/project/showfiles.php?group_id=119701&amp;package_id=251951">
+  <citetitle>SourceForge.net: Open Object Rexx Files</citetitle></ulink> and download the appropriate
+  file.  Then either untar or unzip the file whereever is convenient. For example:
+<programlisting>
+<![CDATA[
+C:\>unzip ooTest-4.0.0-snapshot04_windows.i386.zip
+]]>
+</programlisting>
+  Once the directory structure is placed on your system, you are ready to go. Use the driver program,
+  testOORexx.rexx (<xref linkend="chapTestOORexx" />) to execute some tests. The tests should run and
+  print out some statistics. This will ensure ooTest is working. The rest of this book goes into detail
+  on all aspects of ooTest.
+</para>
+</section>
+
+<section id="ooTestFoundation"><title>History, Foundation</title>
+<indexterm><primary>ooTest</primary>
+<secondary>history</secondary></indexterm>
+<indexterm><primary>ooTest</primary>
+<secondary>foundation</secondary></indexterm>
+
+<para>
+  ooTest started out as ooRexxUnit.  ooRexxUnit is a <emphasis role="italic">generic</emphasis> testing
+  framework designed to serve as a unit testing framework for anyone to use to test their Rexx programs.
+  It is patterned after jUnit and originally strove to emulate jUnit as closely as possible.  As a
+  publicly released piece of software it was constrained by typical needs, such as providing backward
+  compatibility, limiting changes that require the user to make changes to their exisiting testing
+  efforts, etc..
+</para>
+<para>
+  Over time it became apparent that the constraints of ooRexxUnit were a hinderance to the ooRexx testing
+  effort.  Therefore, the ooTest framework was put in place.  ooTest sits on top of ooRexxUnit, but it is
+  not designed to be a generic testing framework, does not guarentee backward compatibility, and does not
+  strive to closely emulate jUnit.  The idea behind this was to leave ooRexxUnit as a generic testing
+  framework for any one to use, and focus the ooTest framework on specificaly testing ooRexx.
+</para>
+<para>
+  However, because of its history, ooTest is conceptualy similar to jUnit.  If you understand jUnit
+  concepts, you will have little trouble understanding ooTest.  The main difference is that jUnit is
+  primarily a unit testing framework, while ooTest is primarily an automation framework, that heavily
+  supports unit testing.
+</para>
+<para>
+  From the perspective of writing test cases, ooTest is very jUnit-like.  The terminology of ooTest is
+  very similar to that of jUnit.  ooTest uses test cases, test case classes, test suites, test results,
+  test runners, and asserts, just as jUnit does.  ooTest uses the same design patterns that jUnit uses.
+  Hardly surprising as ooRexxUnit was modeled after jUnit.  jUnit has generated many tutorial and primer
+  types of documentation on the Internet.  Google 'jUnit tutorial' or 'jUnit primer' and browse some of
+  the simpler ones.  This will quickly give you a grasp of ooTest test cases.
+</para>
+</section>
+
+<section id="testConcepts"><title>Testing Concepts Used in ooTest</title>
+<indexterm><primary>Test</primary>
+<secondary>concepts</secondary></indexterm>
+
+<para>
+  ooTest is a way of writing defined repeatable tests, collecting and storing the tests, and executing
+  all or some of those tests, now and in the future.  With ooTest, all tests are to test the ooRexx
+  interpreter and its distribution package.  The purpose of a test is to demonstrate that some facet of
+  the interpreter works, both now and at the next point in time the test is executed.  To do this ooTest
+  uses objects and the following loosely discusses these objects and how they fit together.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Test Case</emphasis></term>
+  <listitem>
+    <para>
+      The test case is the basic concept of ooTest.  It is what the collection of defined repeatable
+      tests is built upon.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Assertion</emphasis></term>
+  <listitem>
+    <para>
+      x.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+</chapter>
+

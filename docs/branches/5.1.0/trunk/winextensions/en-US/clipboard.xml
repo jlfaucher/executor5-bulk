@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWindowsClipboard"><title>The WindowsClipboard Class</title>
+<indexterm><primary>WindowsClipboard class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsClipboard class</secondary></indexterm>
+<para>
+  The WindowsClipboard class provides methods to interact with a clipboard. Typically a clipboard is used
+  to transfer data back and forth between different windows in a graphical user interface.
+</para>
+<para>
+  The WindowsClipboard class is not a built-in class. It is defined in the
+  <computeroutput>winSystm.cls</computeroutput> file. This means, you must use a
+  <computeroutput>::requires</computeroutput> statement to use its functionality, as follows:
+</para>
+<programlisting>
+<![CDATA[
+::requires "winSystm.cls"
+]]>
+</programlisting>
+<para><emphasis role="bold">Methods the WindowsClipboard Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>copy</para></listitem>
+<listitem><para>makeArray</para></listitem>
+<listitem><para>paste</para></listitem>
+<listitem><para>empty</para></listitem>
+<listitem><para>isDataAvailable</para></listitem>
+<listitem><para>locale</para></listitem></itemizedlist>
+
+<section id="copywc"><title>copy</title>
+<indexterm><primary>copy method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>copy method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_copy.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Empties the clipboard and copies the specified text to it.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is omitted or is an empty
+string, the text (which should be an ANSI string) is converted to Unicode by
+the system.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is "UNICODE", the text
+(which should be a UTF-16 string) is put as-is in the clipboard.</para>
+<para>For any other value of <emphasis role="italic">codepage</emphasis>,
+the text (which should be a string encoded in <emphasis role="italic">codepage
+</emphasis>) is converted to Unicode using the Rexx utility <computeroutput>
+SysToUnicode</computeroutput>. The arguments <emphasis role="italic">codepage
+</emphasis> and <emphasis role="italic">translateflags</emphasis> are passed to
+<computeroutput>SysToUnicode</computeroutput>.
+They are described in the ooRexx reference documentation.</para>
+
+<example id="ex.windowsclipboard-copy">
+<title>WindowsClipboard class - copy method</title>
+<programlisting>
+clipboard = .WindowsClipboard~new
+clipboard~copy("Noel")                              -- ANSI text
+clipboard~copy("4E00 6F00 EB00 6C00"x, "UNICODE")   -- UTF-16 text (stored as-is)
+clipboard~copy("Noël", "UTF8")                      -- SysToUnicode is used
+clipboard~copy("Noël", "UTF8", "ERR_INVALID_CHARS") -- SysToUnicode is used
+</programlisting>
+</example>
+</section>
+
+<section id="mkarwc"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If the content of the clipboard is a string with newline characters
+in it, makeArray can be used to split up the string into individual
+lines. An array is returned containing those lines.</para>
+</section>
+
+<note><title>Note</title>
+<para>This method is limited to the default codepage.
+If you need to specify a codepage then use:
+</para>
+<programlisting>
+.WindowsClipboard~new~paste("UTF8")~makeArray
+</programlisting>
+</note>
+
+<section id="pastewc"><title>paste</title>
+<indexterm><primary>paste method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>paste method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_paste.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Retrieves the text data stored on the clipboard.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is omitted or is an empty
+string, the clipboard contents is converted from Unicode by the system and
+returned as an ANSI string.</para>
+<para>If <emphasis role="italic">codepage</emphasis> is "UNICODE", the clipboard
+contents is returned as a UTF-16 string.</para>
+<para>For any other value of <emphasis role="italic">codepage</emphasis>, the
+clipboard contents is converted from Unicode using the Rexx utility
+<computeroutput>SysFromUnicode</computeroutput> and returned as a string encoded
+in <emphasis role="italic">codepage</emphasis>. The arguments
+<emphasis role="italic">codepage</emphasis>,
+<emphasis role="italic">mappingflags</emphasis> and
+<emphasis role="italic">defaultchar</emphasis> are passed to
+<computeroutput>SysFromUnicode</computeroutput>.
+They are described in the ooRexx reference documentation.</para>
+
+<example id="ex.windowsclipboard-paste">
+<title>WindowsClipboard class - paste method</title>
+<programlisting>
+clipboard = .WindowsClipboard~new
+text = clipboard~paste                              -- ANSI text
+text = clipboard~paste("UNICODE")                   -- UTF-16 (returned as stored)
+text = clipboard~paste("UTF8")                      -- SysFromUnicode is used
+text = clipboard~paste("CP1252", "DEFAULTCHAR","#") -- SysFromUnicode is used
+</programlisting>
+</example>
+</section>
+
+<section id="emptywc"><title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Empties the clipboard.</para>
+</section>
+
+<section id="isdataavailablewc"><title>isDataAvailable</title>
+<indexterm><primary>isDataAvailable method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isDataAvailable method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_isdataavailable.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns 1 if the text data is available on the clipboard. If no data is
+available, 0 is returned.</para>
+</section>
+
+<section id="localewc"><title>locale</title>
+<indexterm><primary>locale method</primary>
+<secondary>of WindowsClipboard class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>locale method</secondary>
+<tertiary>of WindowsClipboard class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/clipboard/clipboard_locale.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the locale name associated with the text in the clipboard.</para>
+<para>For example: "de-DE_phoneb" where</para>
+<itemizedlist>
+<listitem>"de" is the primary language</listitem>
+<listitem>"DE" is the sublanguage (optional)</listitem>
+<listitem>"phoneb" is the sort order (optional)</listitem>
+</itemizedlist>
+</section>
+
+</chapter>
+
+

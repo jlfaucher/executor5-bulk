@@ -1,0 +1,1106 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWindowObject"><title>The WindowObject Class</title>
+<indexterm><primary>WindowsObject class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsObject class</secondary></indexterm>
+<para>
+  The WindowObject class provides methods to query, manipulate, and interact with a particular window or
+  one of its child windows.
+</para>
+<para>
+  Access to the WindowObject class requires that the following directive appear in the Rexx program.
+</para>
+<programlisting>
+::requires 'winSystm.cls'
+</programlisting>
+<para>
+  <emphasis role="bold">Note.</emphasis> Prior to the release of ooRexx 4.0.0, the WindowsObject class
+  was implemented using the original external function API. That API required that the external functions
+  be registered with the interpreter. For the most part this was done transparently to the Rexx
+  programmer. However, with the WindowsObject class there was one scenario where the registration was not
+  done and prior documentation provided a work around.
+</para>
+<para>
+  Starting with ooRexx 4.0.0, that work around is not needed.  There no longer is any need for the
+  programmer to register external functions at all. Requiring
+  <computeroutput>winSystm.cls</computeroutput> is all that is needed from ooRexx 4.0.0 and on. Disregard
+  the previous documentation concerning external functions.
+</para>
+
+<para><emphasis role="bold">Methods the WindowObject Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>assocWindow</para></listitem>
+<listitem><para>childAtPosition</para></listitem>
+<listitem><para>coordinates</para></listitem>
+<listitem><para>disable</para></listitem>
+<listitem><para>enable</para></listitem>
+<listitem><para>enumerateChildren</para></listitem>
+<listitem><para>findChild</para></listitem>
+<listitem><para>first</para></listitem>
+<listitem><para>firstChild</para></listitem>
+<listitem><para>focusItem</para></listitem>
+<listitem><para>focusNextItem</para></listitem>
+<listitem><para>focusPreviousItem</para></listitem>
+<listitem><para>getStyle</para></listitem>
+<listitem><para>handle</para></listitem>
+<listitem><para>hide</para></listitem>
+<listitem><para>id</para></listitem>
+<listitem><para>isMenu</para></listitem>
+<listitem><para>last</para></listitem>
+<listitem><para>maximize</para></listitem>
+<listitem><para>menu</para></listitem>
+<listitem><para>minimize</para></listitem>
+<listitem><para>moveTo</para></listitem>
+<listitem><para>next</para></listitem>
+<listitem><para>owner</para></listitem>
+<listitem><para>previous</para></listitem>
+<listitem><para>processMenuCommand</para></listitem>
+<listitem><para>pushButton</para></listitem>
+<listitem><para>resize</para></listitem>
+<listitem><para>restore</para></listitem>
+<listitem><para>sendChar</para></listitem>
+<listitem><para>sendCommand</para></listitem>
+<listitem><para>sendKey</para></listitem>
+<listitem><para>sendKeyDown</para></listitem>
+<listitem><para>sendKeyUp</para></listitem>
+<listitem><para>sendMenuCommand</para></listitem>
+<listitem><para>sendMessage</para></listitem>
+<listitem><para>sendMouseClick</para></listitem>
+<listitem><para>sendSyscommand</para></listitem>
+<listitem><para>sendText</para></listitem>
+<listitem><para>state</para></listitem>
+<listitem><para>systemMenu</para></listitem>
+<listitem><para>title</para></listitem>
+<listitem><para>title=</para></listitem>
+<listitem><para>toForeground</para></listitem>
+<listitem><para>wclass</para></listitem></itemizedlist>
+
+<section id="assocwindowwo"><title>assocWindow</title>
+<indexterm><primary>assocWindow method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>assocWindow method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_assocwindow.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Assigns a new window <emphasis role="italic">handle</emphasis> to the
+WindowObject instance.</para>
+</section>
+
+<section id="handlewo"><title>handle</title>
+<indexterm><primary>handle method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>handle method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_handle.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the handle of the associated window.</para>
+</section>
+
+<section id="titlewo"><title>title</title>
+<indexterm><primary>title method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>title method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_title.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the title of the window.</para>
+</section>
+
+<section id="titlenewwo"><title>title=</title>
+<indexterm><primary>title= method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>title= method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_title_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets a new title for the window.</para>
+</section>
+
+<section id="wclasswo"><title>wclass</title>
+<indexterm><primary>wclass method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wclass method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_wclass.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the class of the window associated with the WindowObject instance.
+</para>
+</section>
+
+<section id="idwo"><title>id</title>
+<indexterm><primary>id method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>id method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_id.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the numeric ID of the window.</para>
+</section>
+
+<section id="coordinateswo"><title>coordinates</title>
+<indexterm><primary>coordinates method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>coordinates method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_coordinates.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the upper left and the lower right corner positions of the window
+in the format &quot;left,top,right,bottom&quot;.</para>
+</section>
+
+<section id="statewo"><title>state</title>
+<indexterm><primary>state method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>state method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_state.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns information about the window state. The returned state can contain
+one or more of the following constants:</para>
+<itemizedlist>
+<listitem><para>&quot;Enabled&quot; or &quot;Disabled&quot;</para></listitem>
+<listitem><para>&quot;Visible&quot; or &quot;Invisible&quot;</para></listitem>
+<listitem><para>&quot;Zoomed&quot; or &quot;Minimized&quot;</para></listitem>
+<listitem><para>&quot;Foreground&quot;</para></listitem></itemizedlist>
+</section>
+
+<section id="getstylewo"><title>getStyle</title>
+<indexterm><primary>getStyle method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getStyle method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_getstyle.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns the style and extended style flags of the window. This method is intended for use by
+  programmers that have some knowledge of the Windows API and would not be much use to Rexx programmers
+  that do not have any understanding of that API.
+</para>
+<para>
+  The styles are returned in a string of two words. The first word is the window style and the second
+  word is the extend window style. Each word is in the format:
+  <computeroutput>0xAAAAAAAA</computeroutput> where A represents any hexadecimal digit. If an error
+  happens, the numerical system error code is returned instead of a string with two words.
+</para>
+<example id="ex.getStyle-function">
+<title>getStyle</title>
+<programlisting>
+<![CDATA[
+
+-- This function will return an array with all matching windows.  An empty array
+-- signals no match.
+windows = fuzzyFindWindows(deskTop, text)
+
+if windows~items > 0 then do wnd over windows
+  say 'Found this window.'
+  say '  Title:   ' wnd~title
+  say '  Class:   ' wnd~wClass
+  say '  Position:' wnd~coordinates
+  say '  Styles:  ' wnd~getStyle
+  say
+end
+
+/* Output might be:
+
+Found this window.
+  Title:    GetMenuState Function - MSDN Library - Microsoft Document Explorer
+  Class:    wndclass_desked_gsk
+  Position: 0,0,1152,800
+  Styles:   0x16cf0000 0xc0040900
+
+Found this window.
+  Title:    C:\work.ooRexx\3.x\main
+  Class:    ExploreWClass
+  Position: 0,25,1150,804
+  Styles:   0x16cf0000 0xc0000900
+
+*/
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="restorewo"><title>restore</title>
+<indexterm><primary>restore method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>restore method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Activates and displays the associated window. If the window is minimized
+or maximized, it is restored to its original size and position.</para>
+</section>
+
+<section id="hidewo"><title>hide</title>
+<indexterm><primary>hide method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hide method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_hide.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Hides the associated window and activates another window.</para>
+</section>
+
+<section id="minimizewo"><title>minimize</title>
+<indexterm><primary>minimize method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>minimize method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_minimize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Minimizes the associated window and activates the next higher-level
+window.</para>
+</section>
+
+<section id="maximizewo"><title>maximize</title>
+<indexterm><primary>maximize method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>maximize method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_maximize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Maximizes the associated window.</para>
+</section>
+
+<section id="resizewo"><title>resize</title>
+<indexterm><primary>resize method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>resize method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_resize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Resizes the associated window to the specified width and height. The width
+and height are specified in screen coordinates.</para>
+</section>
+
+<section id="enablewo"><title>enable</title>
+<indexterm><primary>enable method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>enable method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_enable.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Enables the associated window if it was disabled.</para>
+</section>
+
+<section id="disablewo"><title>disable</title>
+<indexterm><primary>disable method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disable method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_disable.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Disables the associated window.</para>
+</section>
+
+<section id="movetowo"><title>moveTo</title>
+<indexterm><primary>moveTo method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>moveTo method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_moveto.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Moves the associated window to the specified position
+(<emphasis role="italic">x,y</emphasis>). Specify
+the new position in screen pixels.</para>
+</section>
+
+<section id="toforegroundwo"><title>toForeground</title>
+<indexterm><primary>toForeground method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>toForeground method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_toforeground.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Makes the associated window the foreground window.</para>
+</section>
+
+<section id="focusnextitemwo"><title>focusNextItem</title>
+<indexterm><primary>focusNextItem method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>focusNextItem method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_focusnextitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the input focus to the next child window of the associated window.
+</para>
+</section>
+
+<section id="focuspreviousitemwo"><title>focusPreviousItem</title>
+<indexterm><primary>focusPreviousItem method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>focusPreviousItem method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_focuspreviousitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the input focus to the previous child window of the associated
+window.</para>
+</section>
+
+<section id="focusitemwo"><title>focusItem</title>
+<indexterm><primary>focusItem method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>focusItem method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_focusitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the input focus to the child window associated with the specified
+WindowObject instance <emphasis role="italic">wndObject</emphasis>.</para>
+<para>The following example sets the input focus to the last child window:
+</para>
+<example id="ex.focusItem-function">
+<title>focusItem</title>
+<programlisting>
+ dlg = wndmgr~find("TestDialog")
+    if dlg \= .Nil then do
+        fChild = dlg~firstChild
+        lChild = fChild~last
+        dlg~focusItem(lChild)
+    end
+</programlisting>
+</example>
+</section>
+
+<section id="findchildwo"><title>findChild</title>
+<indexterm><primary>findChild method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>findChild method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_findchild.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the child
+window with the specified <emphasis role="italic">label</emphasis>. If the
+associated window does not
+own such a window, the .Nil object is returned.</para>
+</section>
+
+<section id="childatpositionwo"><title>childAtPosition</title>
+<indexterm><primary>childAtPosition method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>childAtPosition method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_childatposition.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the child
+window at the specified client position (<emphasis role="italic">x,y</emphasis>).
+The coordinates that are relative to the upper left corner of the associated
+window must be specified
+in screen pixels. To retrieve top-level windows,
+use method windowAtPosition (<xref linkend="windowatpositionwm" />).</para>
+</section>
+
+<section id="nextwo"><title>next</title>
+<indexterm><primary>next method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>next method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_next.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the next
+window of the same level as the associated window. If the associated window
+is the last window of a level, the .Nil object is returned.</para>
+</section>
+
+<section id="previouswo"><title>previous</title>
+<indexterm><primary>previous method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>previous method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_previous.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the previous
+window of the same level as the associated window. If the associated window
+is the first window of a level, the .Nil object is returned.</para>
+</section>
+
+<section id="firstwo"><title>first</title>
+<indexterm><primary>first method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>first method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_first.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the first
+window of the same level as the associated window.</para>
+</section>
+
+<section id="lastwo"><title>last</title>
+<indexterm><primary>last method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>last method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_last.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the last
+window of the same level as the associated window.</para>
+</section>
+
+<section id="ownerwo"><title>owner</title>
+<indexterm><primary>owner method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>owner method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_owner.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the window
+that owns the associated window (parent). If the associated window is a
+top-level window, the .Nil object is returned.</para>
+</section>
+
+<section id="firstchildwo"><title>firstChild</title>
+<indexterm><primary>firstChild method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>firstChild method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_firstchild.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the WindowObject class associated with the first
+child window of the associated window. If no child window exists, the .NIL
+object is returned.</para>
+</section>
+
+<section id="enumeratechildrenwo"><title>enumerateChildren</title>
+<indexterm><primary>enumerateChildren method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>enumerateChildren method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_enumeratechildren.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a stem that stores information about the
+child windows of the associated
+window. &quot;Stem.0&quot; contains the number of child windows. The returned
+stem contains as many records as child windows. The first record is stored
+at &quot;Stem.1&quot; continued by increments of 1. Each record contains the
+following entries, where each entry starts with an exclamation mark (!):</para>
+<variablelist>
+<varlistentry><term>!Handle</term>
+<listitem><para>The handle of the window.
+</para></listitem></varlistentry>
+<varlistentry><term>!Title</term>
+<listitem><para>
+</para></listitem></varlistentry>
+<varlistentry><term>!Class</term>
+<listitem><para>The window class.
+</para></listitem></varlistentry>
+<varlistentry><term>!State</term>
+<listitem><para>
+</para></listitem></varlistentry>
+<varlistentry><term>!Coordinates</term>
+<listitem><para>
+</para></listitem></varlistentry>
+<varlistentry><term>!Children</term>
+<listitem><para>1 if the window has child windows, 0 if is has none.
+</para></listitem></varlistentry>
+<varlistentry><term>!Id</term>
+<listitem><para>
+</para></listitem></varlistentry>
+</variablelist>
+<example id="ex.enumerateChildren-function">
+<title>enumerateChildren</title>
+<programlisting>
+      wo = winmgr~find("TestDialog")
+        enum. = wo~enumerateChildren
+        do i = 1 to enum.0   /* number of children */
+           say "---"
+           say "Handle:" enum.i.!Handle
+           say "Title:" enum.i.!Title
+           say "Class:" enum.i.!Class
+           say "Id:" enum.i.!Id
+           say "Children:" enum.i.!Children
+           say "State:" enum.i.!State
+           say "Rect:" enum.i.!Coordinates
+        end
+</programlisting>
+</example>
+</section>
+
+<section id="sendmessagewo"><title>sendMessage</title>
+<indexterm><primary>sendMessage method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendMessage method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendmessage.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a message to the associated window.</para>
+</section>
+
+<section id="sendcommandwo"><title>sendCommand</title>
+<indexterm><primary>sendCommand method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendCommand method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendcommand.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a WM_COMMAND message to the associated window. WM_COMMAND is
+sent, for example, when a button is pressed, where
+<emphasis role="italic">command</emphasis> is the button ID.</para>
+</section>
+
+<section id="sendmenucommandwo"><title>sendMenuCommand</title>
+<indexterm><primary>sendMenuCommand method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendMenuCommand method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendmenucommand.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects the menu item <emphasis role="italic">id</emphasis> of the
+associated window. Method idOf (<xref linkend="idofmo" />) returns the
+ID of a menu item.</para>
+</section>
+
+<section id="sendmouseclickwo"><title>sendMouseClick</title>
+<indexterm><primary>sendMouseClick method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendMouseClick method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendmouseclick.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Simulates a mouse click event in the associated window.</para>
+<para>Arguments:</para>
+<para>The arguments are:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">which</emphasis></term>
+<listitem><para>Specifies which mouse button is simulated. LEFT is the default.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">kind</emphasis></term>
+<listitem><para>Selects the simulated mouse action. DBLCLK is the default.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">x,y</emphasis></term>
+<listitem><para>Specifies the coordinates of the mouse click event, in screen
+coordinates, relative to the upper left corner of the window.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">ext</emphasis></term>
+<listitem><para>Can be one or more of the following strings:
+<variablelist>
+<varlistentry><term>LEFTDOWN</term>
+<listitem><para>Simulates the pressed left mouse button.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHTDOWN</term>
+<listitem><para>Simulates the pressed right mouse button.
+</para></listitem></varlistentry>
+<varlistentry><term>MIDDLEDOWN</term>
+<listitem><para>Simulates the pressed middle mouse button.
+</para></listitem></varlistentry>
+<varlistentry><term>SHIFT</term>
+<listitem><para>Simulates the pressed Shift key.
+</para></listitem></varlistentry>
+<varlistentry><term>CONTROL</term>
+<listitem><para>Simulates the pressed Control key.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sendsyscommandwo"><title>sendSyscommand</title>
+<indexterm><primary>sendSyscommand method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendSyscommand method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendsyscommand.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a WM_SYSCOMMAND message to the associated window. These messages
+are normally sent when the user selects a command in the Window menu.</para>
+<para>Argument:</para>
+<para>The only argument is:</para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">command</emphasis></term>
+<listitem><para>One of the commands listed in the syntax diagram:
+<variablelist>
+<varlistentry><term>SIZE</term>
+<listitem><para>Puts the window in size mode.
+</para></listitem></varlistentry>
+<varlistentry><term>MOVE</term>
+<listitem><para>Puts the window in move mode.
+</para></listitem></varlistentry>
+<varlistentry><term>MINIMIZE</term>
+<listitem><para>Minimizes the window.
+</para></listitem></varlistentry>
+<varlistentry><term>MAXIMIZE</term>
+<listitem><para>Maximizes the window.
+</para></listitem></varlistentry>
+<varlistentry><term>NEXTWINDOW</term>
+<listitem><para>Moves to the next window.
+</para></listitem></varlistentry>
+<varlistentry><term>PREVWINDOW</term>
+<listitem><para>Moves to the previous window.
+</para></listitem></varlistentry>
+<varlistentry><term>CLOSE</term>
+<listitem><para>Closes the window.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>Scrolls vertically.
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>Scrolls horizontally.
+</para></listitem></varlistentry>
+<varlistentry><term>ARRANGE</term>
+<listitem><para>Arranges the window.
+</para></listitem></varlistentry>
+<varlistentry><term>RESTORE</term>
+<listitem><para>Restores the window to its normal position and size.
+</para></listitem></varlistentry>
+<varlistentry><term>TASKLIST</term>
+<listitem><para>Activates the Start menu.
+</para></listitem></varlistentry>
+<varlistentry><term>SCREENSAVE</term>
+<listitem><para>Executes the screen-saver application specified in the [boot]
+section of the SYSTEM.INI file.
+</para></listitem></varlistentry>
+<varlistentry><term>CONTEXTHELP</term>
+<listitem><para>Changes the cursor to a question mark with a pointer. If the
+user then clicks on a control in the dialog box, the control receives a
+WM_HELP message.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="pushbuttonwo"><title>pushButton</title>
+<indexterm><primary>pushButton method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>PushButton method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_pushbutton.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects the button with the specified
+<emphasis role="italic">label</emphasis> within the associated
+window and sends the corresponding WM_COMMAND message. If the button's
+label contains a mnemonic (underscored letter), you must specify an ampersand
+(&amp;) in front of it. You can also use this method to select radio buttons
+and check or uncheck check boxes.</para>
+</section>
+
+<section id="sendkeywo"><title>sendKey</title>
+<indexterm><primary>sendKey method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendKey method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendkey.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends all messages (CHAR, KEYDOWN, and KEYUP) that would be sent by
+pressing a specific key on the keyboard. Character keys (a to z) are not
+case-sensitive.</para>
+<para>If the <emphasis role="italic">alt</emphasis> argument is 1, the Alt key
+flag is set, which is equal
+to pressing the specified key together with the Alt key.</para>
+<para>The <emphasis role="italic">Ext</emphasis> argument must be 1 if the key
+is an extended key, such as a right Ctrl or a right Shift.</para>
+<para>For a list of key names, refer to
+<xref linkend="virtualkeys" />.</para>
+</section>
+
+<section id="sendcharwo"><title>sendChar</title>
+<indexterm><primary>sendChar method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendChar method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendchar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a WM_CHAR message to the associated window. If the
+<emphasis role="italic">alt</emphasis> argument
+is 1, a pressed Alt key is simulated.</para>
+</section>
+
+<section id="sendkeydownwo"><title>sendKeyDown</title>
+<indexterm><primary>sendKeyDown method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendKeyDown method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendkeydown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a WM_KEYDOWN message to the associated window. The
+<emphasis role="italic">ext</emphasis> argument
+must be 1 if the key is an extended key, such as a right Ctrl or a right Shift.
+</para>
+<para>For a list of key names, refer to
+<xref linkend="virtualkeys" />.</para>
+</section>
+
+<section id="sendkeyupwo"><title>sendKeyUp</title>
+<indexterm><primary>sendKeyUp method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendKeyUp method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendkeyup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a WM_KEYUP message to the associated window. The
+<emphasis role="italic">ext</emphasis> argument
+must be 1 if the key is an extended key, such as a right Ctrl or a right Shift.
+</para>
+<para>For a list of key names, refer to
+<xref linkend="virtualkeys" />.</para>
+</section>
+
+<section id="sendtextwo"><title>sendText</title>
+<indexterm><primary>sendText method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendText method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_sendtext.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sends a (case-sensitive) text to the associated window by sending a
+sequence of WM_CHAR, WM_KEYDOWN, and WM_KEYUP messages.</para>
+</section>
+
+<section id="menuwo"><title>menu</title>
+<indexterm><primary>menu method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>menu method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_menu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the MenuObject class that refers to the menu of
+the associated window.</para>
+</section>
+
+<section id="systemmenuwo"><title>systemMenu</title>
+<indexterm><primary>systemMenu method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>systemMenu method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_systemmenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the MenuObject class that refers to the system
+menu of the associated window.</para>
+</section>
+
+<section id="ismenuwo"><title>isMenu</title>
+<indexterm><primary>isMenu method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isMenu method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_ismenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns 1 if the associated window is a menu, otherwise 0.</para>
+</section>
+
+<section id="processmenucommandwo"><title>processMenuCommand</title>
+<indexterm><primary>processMenuCommand method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ProcessMenuCommand method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winobj/winobj_processmenucommand.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects an item of the menu or submenu of the associated window. You can
+specify as many submenus as necessary to get to the required item.</para>
+</section>
+</chapter>
+

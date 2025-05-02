@@ -1,0 +1,2828 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oosqlite.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooSqlite XML file.
+    #
+    # Copyright (c) 2012-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<section id="clsOOSQLiteStmt"><title>The ooSQLiteStmt Class</title>
+<indexterm><primary>ooSQLiteStmt class</primary></indexterm>
+<para>
+  The <computeroutput>ooSQLiteStmt</computeroutput> class represents a prepared statement in SQLite. An instance of this
+  object represents a single SQL statement. This object is usually referred to as a <emphasis
+  role="italic">prepared statement</emphasis>, a <emphasis role="italic">compiled SQL statement</emphasis> or simply as a
+  <emphasis role="italic">statement</emphasis>.
+</para>
+<para>
+  The life time of a statement object generally goes like this:
+  <itemizedlist>
+  <listitem>
+  <para>
+    Instantiate a <link linkend="mthNewClsStmt">new</link> statement.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Bind values to host parameters using one of the <emphasis role="italic">bind</emphasis> methods such as <link
+    linkend="mthBindText">bindText</link>, <link linkend="mthBindInt">bindInt</link>, or <link
+    linkend="mthBindNull">bindNull</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+   Execute the SQL by <link linkend="mthStepClsStmt">step</link> one or more times.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Possibly, reset the statement using <link linkend="mthReset">reset</link>, then go back to step 2. Do this zero or more
+    times.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Release the system resources used by the statement by invoking <link linkend="mthFinalize">finalize</link>.
+  </para>
+  </listitem>
+  </itemizedlist>
+</para>
+
+<section id="sctMethodsOOSQLiteStmt"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with prepared statement objects using the ooSQLiteStmt class.
+</para>
+<table id="tblOOSQLiteStmtMethods" frame="all">
+<title>ooSQLiteStmt Methods and Attributes</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsStmt">new</link></entry>
+<entry>Instantiates a new ooSQLite prepared statement.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrFinalized">finalized</link></entry>
+<entry>Reflects the finialized state of this statement.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNullClsOOSQLiteStmt"/></entry>
+<entry>Reflects the representation for the SQL NULL value that is returned by the interpreter, for this statment, for database values that are NULL.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+<section id="mthNewClsStmt"><title>new (Class method)</title>
+<indexterm><primary>new</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--dbConn--,--sql--+----------+--)--------><
+                          +-,-format-+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>ooSQLiteStmt</computeroutput> object and prepares the statement SQL to be executed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>dbConn [required]</term>
+      <listitem>
+      <para>
+        The open <link linkend="clsOOSQLiteConnection">connection</link> to the database that the statement will be executed
+        on.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>sql</term>
+      <listitem>
+      <para>
+        The SQL statement to be prepared for execution
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>format [optional]</term>
+      <listitem>
+      <para>
+        This argument can be used to specify the default format of the result row(s) coming out of the execution of this
+        statement. This argument sets the <link linkend="atrRecordFormatClsStmt">recordFormat</link> attribute. If this
+        argument is omitted the default <link linkend="atrRecordFormatClsConn">format</link> value of the <emphasis
+        role="italic">dbConn</emphasis> argument is used to set the attribute.
+      </para>
+      <para>
+        If specified, it must be one of the ooSQLite Result Set Format <link linkend="sctOOSQLiteSpecific">Constants</link>
+        that define how a result set is formatted.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a newly instatiated <computeroutput>ooSQLiteConnection</computeroutput>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::new() -->
+
+
+<section id="atrInitCodeClsStmt"><title>initCode (Attribute)</title>
+<indexterm><primary>initCode</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>initCode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">initCode set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::initCode() [attribute]  -->
+
+
+<section id="atrFinalized"><title>finalized (Attribute)</title>
+<indexterm><primary>finalized</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>finalized</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--finalized-----------------------------------------------------><
+
+>>--finalized-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the finialized state of this statement.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">finalized get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this statement has been finialized, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">finalized set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::finalized() [attribute]  -->
+
+
+<section id="atrLastErrCodeClsStmt"><title>lastErrCode (Attribute)</title>
+<indexterm><primary>lastErrCode</primary><secondary>ooSQLiteStmt class</secondary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>lastErrCode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastErrCode-----------------------------------------------------><
+
+>>--lastErrCode-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">lastErrCode</emphasis> attribute reflects the last error code recorded by ooSQLite.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of this attribute is the last error code recorded by ooSQLite for this prepared statement.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
+  <listitem>
+  <para>
+    The Rexx programmer can not set the value of the last error code, it is set internally by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      The last error code attribute is similar to the <link linkend="atrLastErrMsgClsStmt">lastErrMsg</link> attribute.
+      Its value is the last status code recorded by ooSQLite. The <emphasis role="italic">lastErrCode</emphasis> and the
+      <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
+      the message that goes with the error code.
+    </para>
+    <para>
+      Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLiteConnection</link>, an
+      <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
+      linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+      a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+      hold the last error message and code recorded by ooSQLite.
+    </para>
+    <para>
+      The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+      object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+      role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+      In general, these objects do not update the attributes after every method invocation.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::lastErrCode() [attribute]  -->
+
+
+<section id="atrLastErrMsgClsStmt"><title>lastErrMsg (Attribute)</title>
+<indexterm><primary>lastErrMsg</primary><secondary>ooSQLiteStmt class</secondary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>lastErrMsg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastErrMsg-----------------------------------><
+
+>>--lastErrMsg-=-varName-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">errMsg get:</emphasis></term>
+  <listitem>
+  <para>
+    This attribute holds the value of the last error message recorded by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">errMsg set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the value of this attribute. It is set internally by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The last error message attribute is similar to the <link linkend="atrLastErrCodeClsStmt">lastErrCode</link>
+    attribute. Its value is the last status message recorded by ooSQLite. The <emphasis
+    role="italic">lastErrCode</emphasis> and the <emphasis role="italic">lastErrMsg</emphasis> attributes are always
+    updated together. The error message is always the message that goes with the error code.
+  </para>
+  <para>
+    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLiteConnection</link>, an
+    <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
+    linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+    hold the last error message and code recorded by ooSQLite.
+  </para>
+  <para>
+    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+    In general, these objects do not update the attributes after every method invocation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    In some circumstances, the error message from the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errmsg</ulink> API is copied into the <emphasis
+    role="italic">lastErrMsg</emphasis>. At other times the error message is specific to ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example initializes a new ooSQLiteStmt object. When the <link linkend="atrInitCodeClsStmt">initCode</link>
+    attribute is checked, it is seen that an error ocurred, and the last error message is printed to the screen:
+<programlisting>
+<![CDATA[
+
+
+  stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM fooods ORDER BY name;')
+  if stmt~initCode <> 0 then do
+    say 'ooSQLiteStmt initialization error:' stmt~initCode
+    say '  Error code:' stmt~initCode '('stmt~lastErrMsg')'
+
+  /*  output would be similar to:
+
+  ooSQLiteStmt initialization error: 1
+    Error code: 1 (no such table: fooods)
+
+  */
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::lastErrMsg() [attribute]  -->
+
+
+<section id="atrNullClsOOSQLiteStmt" xreflabel="null"><title>null (Attribute)</title>
+<indexterm><primary>null</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>null</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--null-----------------------------------------><
+
+>>--null = nullObj-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the representation for the SQL NULL value that is returned by the interpreter, for this statment, for database
+  values that are NULL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">null get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current object the interpreter uses for this statement for the SQL NULL value. If the programmer has not
+    changed this attribute, its value is the value of the <xref linkend="atrNullClsOOSQLiteConnection"/> attribute of the
+    database connection this statement is assigned to. Normally this is the <computeroutput>.nil</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">null set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to either the <computeroutput>.nil</computeroutput> object, or some alternative <emphasis
+    role="italic">string</emphasis> value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default, ooSQLite uses the <computeroutput>.nil</computeroutput> object to represent the SQL NULL value. Queries for
+    values stored in the database will return the <computeroutput>.nil</computeroutput> object for any value that is SQL
+    NULL. However, by changing the value of the <emphasis role="italic">null</emphasis> attribute, the Rexx programmer can
+    change the value the interpreter returns for NULL when this statement is executed. Typically this would be done when the
+    returned values are going to be displayed as text and the programmer would prefer to work with a string directly.
+    Perhaps <emphasis role="italic">NULL</emphasis>, or <emphasis role="italic">no value</emphasis>.
+  </para>
+  <para>
+    When a <computeroutput>ooSQLiteStmt</computeroutput> object is instantiated, the <emphasis role="italic">null</emphasis>
+    attribute is assigned the value of the <xref linkend="atrNullClsOOSQLiteConnection"/> object that is used to instantiate
+    the statement.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this attribute does not affect the value the programmer must use to assign a
+    SQL NULL to the database. The programmer must use the <computeroutput>.nil</computeroutput> object for that.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    This attribute is provided by ooSQLite, there is no similar feature provided by SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the <emphasis role="italic">null</emphasis> attribute of the statment to <emphasis role="italic">no
+    value</emphasis>. This allows the application to invoke the <emphasis role="italic">left</emphasis> method on the
+    returned value without having to check that the return is the <computeroutput>.nil</computeroutput> object. Note that
+    invoking the <emphasis role="italic">left</emphasis> method on the <computeroutput>.nil</computeroutput> object will
+    raise a syntax condition:
+<programlisting>
+<![CDATA[
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  stmt = .ooSQLiteStmt~new(dbConn, sql)
+  stmt~null = 'no value'
+
+  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say '='~copies(80)
+
+  do while stmt~step == stmt~ROW
+    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::nullObj() [attribute]  -->
+
+
+<section id="atrRecordFormatClsStmt"><title>recordFormat (Attribute)</title>
+<indexterm><primary>recordFormat</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>recordFormat</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--recordFormat-----------------------------------------------------><
+
+>>--recordFormat-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">recordFormat get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">recordFormat set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::recordFormat() [attribute]  -->
+
+
+<section id="mthBindBlob"><title>bindBlob</title>
+<indexterm><primary>bindBlob</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindBlob</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindBlob(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindBlob() -->
+
+
+<section id="mthBindDouble"><title>bindDouble</title>
+<indexterm><primary>bindDouble</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindDouble</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindDouble(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindDouble() -->
+
+
+<section id="mthBindInt"><title>bindInt</title>
+<indexterm><primary>bindInt</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindInt</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindInt(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindInt() -->
+
+
+<section id="mthBindInt64"><title>bindInt64</title>
+<indexterm><primary>bindInt64</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindInt64</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindInt64(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindInt64() -->
+
+
+<section id="mthBindNull"><title>bindNull</title>
+<indexterm><primary>bindNull</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindNull</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindNull(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindNull() -->
+
+
+<section id="mthBindParameterCount"><title>bindParameterCount</title>
+<indexterm><primary>bindParameterCount</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindParameterCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindParameterCount(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindParameterCount() -->
+
+
+<section id="mthBindParameterIndex"><title>bindParameterIndex</title>
+<indexterm><primary>bindParameterIndex</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindParameterIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindParameterIndex(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindParameterIndex() -->
+
+
+<section id="mthBindParameterName"><title>bindParameterName</title>
+<indexterm><primary>bindParameterName</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindParameterName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindParameterName(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindParameterName() -->
+
+
+<section id="mthBindText"><title>bindText</title>
+<indexterm><primary>bindText</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindText() -->
+
+
+<section id="mthBindValue"><title>bindValue</title>
+<indexterm><primary>bindValue</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindValue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindValue(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindValue() -->
+
+
+<section id="mthBindZeroBlob"><title>bindZeroBlob</title>
+<indexterm><primary>bindZeroBlob</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>bindZeroBlob</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--bindZeroBlob(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::bindZeroBlob() -->
+
+
+<section id="mthClearBindings"><title>clearBindings</title>
+<indexterm><primary>clearBindings</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>clearBindings</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clearBindings(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::clearBindings() -->
+
+
+<section id="mthColumnBlob"><title>columnBlob</title>
+<indexterm><primary>columnBlob</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnBlob</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnBlob(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnBlob() -->
+
+
+<section id="mthColumnBytes"><title>columnBytes</title>
+<indexterm><primary>columnBytes</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnBytes</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnBytes(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnBytes() -->
+
+
+<section id="mthColumnCount"><title>columnCount</title>
+<indexterm><primary>columnCount</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnCount(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnCount() -->
+
+
+<section id="mthColumnDataBaseName"><title>columnDataBaseName</title>
+<indexterm><primary>columnDataBaseName</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnDataBaseName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnDataBaseName(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnDataBaseName() -->
+
+
+<section id="mthColumnDeclType"><title>columnDeclType</title>
+<indexterm><primary>columnDeclType</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnDeclType</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnDeclType(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnDeclType() -->
+
+
+<section id="mthColumnDouble"><title>columnDouble</title>
+<indexterm><primary>columnDouble</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnDouble</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnDouble(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnDouble() -->
+
+
+<section id="mthColumnIndex"><title>columnIndex</title>
+<indexterm><primary>columnIndex</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnIndex(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnIndex() -->
+
+
+<section id="mthColumnInt"><title>columnInt</title>
+<indexterm><primary>columnInt</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnInt</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnInt(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnInt() -->
+
+
+<section id="mthColumnInt64"><title>columnInt64</title>
+<indexterm><primary>columnInt64</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnInt64</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnInt64(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnInt64() -->
+
+
+<section id="mthColumnName"><title>columnName</title>
+<indexterm><primary>columnName</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnName(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnName() -->
+
+
+<section id="mthColumnOriginName"><title>columnOriginName</title>
+<indexterm><primary>columnOriginName</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnOriginName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnOriginName(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnOriginName() -->
+
+
+<section id="mthColumnTableName"><title>columnTableName</title>
+<indexterm><primary>columnTableName</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnTableName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnTableName(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnTableName() -->
+
+
+<section id="mthColumnText"><title>columnText</title>
+<indexterm><primary>columnText</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnText() -->
+
+
+<section id="mthColumnType"><title>columnType</title>
+<indexterm><primary>columnType</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnType</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnType(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnType() -->
+
+
+<section id="mthColumnValue"><title>columnValue</title>
+<indexterm><primary>columnValue</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>columnValue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnValue(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::columnValue() -->
+
+
+<section id="mthDataCount"><title>dataCount</title>
+<indexterm><primary>dataCount</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>dataCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dataCount(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::dataCount() -->
+
+
+<section id="mthDbHandle"><title>dbHandle</title>
+<indexterm><primary>dbHandle</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>dbHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dbHandle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::dbHandle() -->
+
+
+<section id="mthFinalize"><title>finalize</title>
+<indexterm><primary>finalize</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>finalize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--finalize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::finalize() -->
+
+
+<section id="mthReset"><title>reset</title>
+<indexterm><primary>reset</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>reset</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--reset(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::reset() -->
+
+
+<section id="mthStepClsStmt"><title>step</title>
+<indexterm><primary>step</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>step</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--step(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::step() -->
+
+
+<section id="mthStmtBusy"><title>stmtBusy</title>
+<indexterm><primary>stmtBusy</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>stmtBusy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--stmtBusy(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::stmtBusy() -->
+
+
+<section id="mthstmtReadonly"><title>stmtReadonly</title>
+<indexterm><primary>stmtReadonly</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>stmtReadonly</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--stmtReadonly(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::stmtReadonly() -->
+
+
+<section id="mthStmtStatus"><title>stmtStatus</title>
+<indexterm><primary>stmtStatus</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>stmtStatus</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--stmtStatus(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::stmtStatus() -->
+
+
+<section id="mthValue"><title>value</title>
+<indexterm><primary>value</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>value</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--value(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::value() -->
+
+
+</section>

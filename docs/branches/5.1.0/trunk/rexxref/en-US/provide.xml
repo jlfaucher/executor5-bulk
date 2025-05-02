@@ -1,0 +1,1076 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="provide"><title>Objects and Classes</title>
+<indexterm><primary>object method</primary></indexterm>
+<para>This chapter provides an overview of the Rexx class structure.</para>
+<para>A Rexx object consists of object methods
+<indexterm><primary>class methods</primary></indexterm>
+and object variables ("attributes"). Sending
+a message to an object causes the object to perform some action; a method
+whose name matches the message name defines the action that is performed.
+Only an object's methods can access the object variables belonging to
+an object. EXPOSE instructions within an object's methods specify which object
+variables the methods will use. Any variables not exposed are local to the method and
+are dropped on return from a method.</para>
+<para>You can create
+an object by sending a message to a class object&mdash;typically a "new" method. An object created from a
+class is an <emphasis>instance</emphasis> of that class.
+The methods a class defines
+for its instances are called the <emphasis>instance methods</emphasis>
+<indexterm><primary>instance methods</primary></indexterm>
+of that class. These are the object methods that are available for every instance of the class.  Classes can also
+define <emphasis>class methods</emphasis>, which are a class's own
+object methods.</para>
+
+<note><title>Note</title>
+<para>When referring to instance methods (for objects
+other than classes) or class methods (for classes), this book uses the
+term <emphasis>methods</emphasis> when the meaning is clear from the context.
+When referring to instance methods and class methods of classes, this book uses
+the qualified terms to avoid possible confusion.</para></note>
+
+<section id="typcla"><title>Types of Classes</title>
+<para>There are four kinds of classes: </para>
+<itemizedlist>
+<listitem><para>Object classes</para></listitem>
+<listitem><para>Mixin classes</para></listitem>
+<listitem><para>Abstract classes</para></listitem>
+<listitem><para>Metaclasses</para></listitem></itemizedlist>
+<para> The following sections explain these.</para>
+
+<section id="objcla"><title>Object Classes</title>
+<indexterm><primary>object classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>object</tertiary></indexterm>
+<para>An <emphasis>object class</emphasis> is a factory
+for producing objects. An object class creates objects (instances) and provides
+methods that these objects can use. An object acquires the instance methods
+of the class to which it belongs at the time of its creation. If a class gains
+additional methods, objects created before the definition of these methods
+do not acquire the new or changed methods.</para>
+<para>The instance variables within an object are created on demand whenever a method
+EXPOSEs an object variable.  The class creates the object instance, defines the methods
+the object has, and the object instance completes the job of constructing the object.
+</para>
+<para>
+The <xref linkend="clsString" xrefstyle="template:String class"/> and the
+<xref linkend="clsArray" xrefstyle="template:Array class"/>
+are examples of object classes.</para>
+</section>
+
+<section id="xmixin"><title>Mixin Classes</title>
+<indexterm><primary>mixin classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>mixin</tertiary></indexterm>
+<para>Classes can inherit from more than the single superclass from
+which they were created. This is called
+<emphasis>multiple inheritance</emphasis>. Classes designed
+to add a set of instance and class
+methods to other classes are called <emphasis>mixin classes</emphasis>,
+or simply mixins.</para>
+<para>You can add mixin methods to an existing class by sending an INHERIT
+message or using the INHERIT option on the <xref linkend="clasdi" xrefstyle="select:title"/> directive.
+In either case, the class to be inherited must be a mixin. During both class
+creation and multiple inheritance, subclasses inherit both class and instance
+methods from their superclasses.</para>
+<para>Mixins are always associated
+<indexterm><primary>base class for mixins</primary></indexterm>
+with a <emphasis>base class</emphasis>, which is the mixin's first non-mixin
+superclass. Any subclass of the mixin's base class can (directly or indirectly)
+inherit a mixin; other classes cannot.  For example, a mixin class created
+as a subclass of the Array class can only be inherited by other Array subclasses.
+Mixins that use the Object class as a base class can be inherited by any class.
+</para>
+<para>To create a new mixin class, you send a MIXINCLASS message to an existing
+class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
+is also an object class and can create instances of the class.</para>
+</section>
+
+<section id="abscla"><title>Abstract Classes</title>
+<indexterm><primary>abstract class, definition</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>abstract</tertiary></indexterm>
+<para><emphasis>Abstract classes</emphasis> provide definitions for instance
+methods and class methods
+but are not intended to create instances. Abstract classes often define the
+message interfaces that subclasses should implement.</para>
+<para>You create an abstract class
+by specifying the ABSTRACT subkeyword on the ::CLASS directive.
+Trying to create an instance from an abstract class will result in an error.
+</para>
+<para>
+It is possible to create abstract methods or attributes on a class.
+Abstract methods or attributes are
+placeholders that subclasses are expected to override.  Failing to provide a real
+method or attribute implementation will result in an error when the abstract version is called.
+</para>
+</section>
+
+<section id="xmetac"><title>Metaclasses</title>
+<indexterm><primary>metaclasses</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>metaclass</tertiary></indexterm>
+<para>A <emphasis>metaclass</emphasis> is a class you
+can use to create another class.
+The Class class is the metaclass of all the classes
+Rexx provides. This means that instances of .Class are themselves classes.
+The Class class is like a factory for producing the factories that produce
+objects.</para>
+<para>To change the behavior of an object that is an instance, you generally
+use subclassing. For example, you can create Statarray, a subclass of the
+<xref linkend="clsArray" xrefstyle="template:Array class"/>.
+The statArray class can include a
+method for computing a total of all the numeric elements of an array.</para>
+<example>
+<title>Creating an array subclass</title>
+<programlisting>
+/* Creating an array subclass for statistics */
+
+::class statArray subclass array public
+
+::method init    /*  Initialize running total and forward to superclass */
+  expose total
+  total = 0
+  forward class (super)
+
+::method put     /*  Modify to increment running total */
+  expose total
+  use arg value
+  total = total + value  /* Should verify that value is numeric!!! */
+  forward class (super)
+
+::method "[]="   /*  Modify to increment running total */
+  forward message "PUT"
+
+::method remove  /*  Modify to decrement running total */
+  expose total
+  use arg index
+  forward message "AT" continue
+  total = total - result
+  forward class (super)
+
+::method average /*  Return the average of the array elements */
+  expose total
+  return total / self~items
+
+::method total   /*  Return the running total of the array elements */
+  expose total
+  return total
+</programlisting>
+</example>
+<para>You can use this method on the individual array
+<emphasis>instances</emphasis>, so it is an
+<emphasis>instance method</emphasis>.</para>
+<para>However, if you want to change the behavior of the factory producing the
+arrays, you need a new class method. One way to do
+this is to use the ::METHOD directive with the CLASS option. Another way to
+add a <emphasis>class</emphasis> method is to create a new metaclass that
+changes the behavior
+of the Statarray class. A new metaclass is a subclass of .class.</para>
+<para>You can use a metaclass by specifying it in a SUBCLASS or MIXINCLASS
+message or on a ::CLASS directive with the METACLASS option.</para>
+<para>If you are adding a highly specialized class method useful only for a
+particular class, use the ::METHOD directive with the CLASS option. However,
+if you are adding a class method that would be useful for many classes, such
+as an instance counter that counts how many instances a class creates,
+you use a metaclass.</para>
+<para>The following examples add a class method that keeps a running total of
+instances created. The first version uses the ::METHOD directive with the
+CLASS option. The second version uses a metaclass.</para>
+<para><emphasis role="bold">Version 1</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>metaclass</secondary></indexterm>
+<example>
+<title>Adding a CLASS method</title>
+<programlisting>
+/* Adding a class method using ::METHOD */
+
+a = .point~new(1,1)               /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)               /* create another point instance */
+say "Created point instance" b
+c = .point~new(3,3)               /* create another point instance */
+say "Created point instance" c
+                                  /* ask the point class how many */
+                                  /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+
+
+::class point public                /* create Point class           */
+
+::method init class
+  expose instanceCount
+  instanceCount = 0                 /* Initialize instanceCount     */
+  forward class (super)             /* Forward INIT to superclass   */
+
+::method new class
+  expose instanceCount              /* Creating a new instance      */
+  instanceCount = instanceCount + 1 /* Bump the count               */
+  forward class (super)             /* Forward NEW to superclass    */
+
+::method instances class
+  expose instanceCount              /* Return the instance count    */
+  return instanceCount
+
+
+::method init
+  expose xVal yVal                  /* Set object variables         */
+  use arg xVal, yVal                /* as passed on NEW             */
+
+::method string
+  expose xVal yVal                  /* Use object variables         */
+  return "("xVal","yVal")"          /* to return string value       */
+</programlisting>
+
+<para><emphasis role="bold">Version 2</emphasis></para>
+<programlisting>
+/* Adding a class method using a metaclass  */
+
+a = .point~new(1,1)                    /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)
+say "Created point instance" b
+c = .point~new(3,3)
+say "Created point instance" c
+                                       /* ask the point class how many */
+                                       /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+::class InstanceCounter subclass class /* Create a new metaclass that */
+                                       /* will count its instances     */
+::method init
+  expose instanceCount
+  instanceCount = 0                    /* Initialize instanceCount     */
+  forward class (super)                /* Forward INIT to superclass   */
+
+::method new
+  expose instanceCount                 /* Creating a new instance      */
+  instanceCount = instanceCount + 1    /* Bump the count               */
+  forward class (super)                /* Forward NEW to superclass    */
+
+::method instances
+expose instanceCount                   /* Return the instance count    */
+return instanceCount
+
+
+::class point public metaclass InstanceCounter  /* Create Point class */
+                                       /* using InstanceCounter metaclass */
+::method init
+  expose xVal yVal                     /* Set object variables         */
+  use arg xVal, yVal                   /* as passed on NEW             */
+
+::method string
+  expose xVal yVal                     /* Use object variables         */
+  return "("xVal","yVal")"             /* to return string value       */
+</programlisting>
+</example>
+</section>
+</section>
+
+<section id="xcremet"><title>Creating and Using Classes and Methods</title>
+<para>You can define a class using either directives or messages.</para>
+<para>To define a class using directives, you place a ::CLASS directive after the
+main part of your source program:</para>
+<programlisting>
+::class "Account"
+</programlisting>
+<para>This creates an Account class that is a subclass of the Object class.  Object
+is the default superclass if one is not specified.
+See <xref linkend="clsObject" /> for details.
+The string &quot;Account&quot;
+is a string identifier for the new class.  The string identifier is both the internal
+class name and the name of the <xref linkend="ensym" xrefstyle="template:environment symbol"/>
+used to locate your new class instance.
+</para>
+<para>Now you can use <xref linkend="methd" xrefstyle="select:title"/> directive to add methods to your new class. The
+::METHOD directives must immediately follow the ::CLASS directive that creates
+the class. </para>
+<example>
+<title>Adding a method</title>
+<programlisting>
+::method type
+  return "an account"
+
+::method "name="
+  expose name
+  use arg name
+
+::method name
+  expose name
+  return name
+</programlisting>
+</example>
+<para>This adds the methods TYPE, NAME, and NAME= to the Account class.</para>
+<para>You can create a subclass of the Account class and define a method for
+it: </para>
+<example>
+<title>Adding a method</title>
+<programlisting>
+::class "Savings" subclass account
+::method type
+return "a savings account"
+</programlisting>
+</example>
+<para>Now you can create an instance of the Savings class with the
+<xref linkend="mthClassNew" xrefstyle="select:title"/> method and send TYPE, NAME, and NAME= messages
+to that instance:</para>
+<example>
+<title>Invoking a method</title>
+<programlisting>
+asav = .savings~new
+say asav~type
+asav~name = "John Smith"
+</programlisting>
+</example>
+<para>The Account class methods NAME and NAME= create a pair of access methods
+to the account object variable NAME. The following directive sequence creates
+the NAME and NAME= methods: </para>
+<example>
+<title>Defining SET and GET methods</title>
+<programlisting>
+::method "name="
+  expose name
+  use arg name
+
+::method name
+  expose name
+  return name
+</programlisting>
+</example>
+
+<para>You can replace this with a single <xref linkend="attrd" xrefstyle="select:title"/> directive.
+For example, the directive </para>
+<programlisting>
+::attribute name
+</programlisting>
+<para>adds two methods, NAME and NAME= to a class. These methods perform the
+same function as the NAME and NAME= methods in the original example. The NAME
+method returns the current value of the object variable NAME; the NAME= method
+assigns a new value to the object variable NAME.</para>
+<para>In addition to defining operational methods and attribute methods, you can add
+"constant" methods to a class using the
+<xref linkend="constantd" xrefstyle="select:title"/> directive.
+The ::CONSTANT directive will create both a class method and an instance method to the class
+definition.  The constant method will always return the same constant value, and can be
+invoked by sending a message to either the class or an instance method.  For example, you
+might add the following constant to your Account class:</para>
+<programlisting>
+::constant checkingMinimum 200
+</programlisting>
+<para>This value can be retrieved using either of the following methods</para>
+<example>
+<title>Retrieving method values</title>
+<programlisting>
+  say .Account~checkingMinimum    -- displays "200"
+  asave = .savings~new
+  say asave~checkingMinimum       -- also displays "200"
+</programlisting>
+</example>
+
+<section id="usingcl"><title>Using Classes</title>
+<para>When you create a new class, it is always a subclass of an existing class.
+You can create new classes with the ::CLASS directive or by sending the SUBCLASS
+or MIXINCLASS message to an existing class. If you specify neither the SUBCLASS
+nor the MIXINCLASS option on the ::CLASS directive, the superclass for the
+new class is the Object class, and it is not a mixin class.</para>
+<para>Example of creating a new class using a message: </para>
+<programlisting>
+persistence = .object~mixinclass("Persistence")
+myarray=.array~subclass("myarray")~~inherit(persistence)
+</programlisting>
+<para>Example of creating a new class using the directive:</para>
+<programlisting>
+::class persistence mixinclass object
+::class myarray subclass array inherit persistence
+</programlisting>
+</section>
+
+<section id="xscope"><title>Scope</title>
+<indexterm><primary>method</primary>
+<secondary>scope</secondary></indexterm>
+<indexterm><primary>scope</primary>
+<secondary>description</secondary></indexterm>
+<para>A <emphasis>scope</emphasis> refers to the methods
+and object variables defined for a single class (not including the superclasses).
+Only methods defined in a
+particular scope can access the object variables within that scope. This means
+that object variables in a subclass can have the same names as object variables
+used by a superclass, because the variables are created at different scopes.
+The <xref linkend="mthMethodScope" xrefstyle="template:scope"/> method of
+the <xref linkend="clsMethod" xrefstyle="template:Method class"/>
+returns the scope (a class object or &nil;).
+</para>
+</section>
+
+<section id="usesem">
+<title>Defining Instance Methods with SETMETHOD or ENHANCED</title>
+<para>In Rexx, methods are usually associated with instances using classes, but
+it is also possible to add methods directly to an instance using the
+<xref linkend="mthObjectSetMethod" xrefstyle="template:setMethod"/> or
+<xref linkend="mthClassEnhanced" xrefstyle="select:title"/> method.
+</para>
+<para>All subclasses of the Object class inherit SETMETHOD. You can use
+SETMETHOD to create one-off objects, objects that must be absolutely
+unique so that a class that is capable of creating other instances is not
+necessary. The Class class also provides an ENHANCED method that lets you
+create new instances of a class with additional methods. The methods and the
+object variables defined on an object with SETMETHOD or ENHANCED form a separate
+scope, like the scopes the class hierarchy defines.</para>
+</section>
+
+<section id="methna"><title>Method Names</title>
+<para>A method
+name can be any string. When an object receives a message, the language processor
+searches for a method whose name matches the message name in uppercase.</para>
+
+<note><title>Note</title>
+<para>The language processor also translates the specified name of all
+methods added to objects into uppercase characters.</para></note>
+<para>You must surround a method name with quotation marks when it contains
+characters that are not allowed in a symbol (for example, the operator
+characters). The following example creates a new class (the Cost class),
+defines a new method (%), creates an instance of the Cost class (mycost),
+and sends a <computeroutput>%</computeroutput> message
+to <computeroutput>mycost</computeroutput>: </para>
+
+<example>
+<title>Accessing a method</title>
+<programlisting>
+cost=.object~subclass("A cost")
+cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
+mycost=cost~new
+mycost~"%"        /* Produces:  Enter a price.             */
+                  /* If the user specifies a price of 100, */
+                  /* produces: 107.00                      */
+</programlisting>
+</example>
+</section>
+
+<section id="xmeths"><title>Default Search Order for Method Selection</title>
+<indexterm><primary>method</primary>
+<secondary>search order</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>selection</secondary>
+<tertiary>search order</tertiary></indexterm>
+<indexterm><primary>default</primary>
+<secondary>search order for methods</secondary></indexterm>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>default</tertiary></indexterm>
+<para>The search order for a method name matching the message is for: </para>
+<orderedlist>
+<listitem><para>A method the object itself defines with
+<xref linkend="mthObjectSetMethod" xrefstyle="template:setMethod"/> or
+<xref linkend="mthClassEnhanced" xrefstyle="select:title"/>.
+</para></listitem>
+<listitem><para>A method the object's class defines. (Note that an object
+acquires the instance methods of the class to which it belongs at the time of
+its creation. If a class gains additional methods, objects created before the
+definition of these methods do not acquire these methods.)</para></listitem>
+<listitem><para>A method that a superclass of the object's class defines.
+This is also limited to methods that were available when the object was created.
+The order of the <xref linkend="mthClassInherit" xrefstyle="select:title"/>
+messages sent to an object's
+class determines the search order of the superclass method definitions.
+</para></listitem></orderedlist>
+<para>This search order places methods of a class before methods of its
+superclasses so that a class can supplement or override inherited methods.
+</para>
+<para>If the language processor does not find a match for the message name, the
+language processor checks the object for a method name UNKNOWN. If it exists,
+the language processor calls the UNKNOWN method and returns as the message
+result any result the UNKNOWN method returns. The UNKNOWN method arguments
+are the original message name and a Rexx array containing the original message
+arguments.</para>
+<para>If the object does not have an UNKNOWN method, the language processor
+raises a NOMETHOD condition.  If there are no active traps for the NOMETHOD condition,
+a syntax error is raised.
+</para>
+</section>
+
+<section id="unkno"><title>Defining an UNKNOWN Method</title>
+<para>When an object that receives a message does not have a matching message
+name, the language processor checks if the object has a method named UNKNOWN.
+If the object has an UNKNOWN method, the language processor calls UNKNOWN,
+passing two arguments. The first argument is the name of the method that was
+not located. The second argument is an array containing the arguments passed
+with the original message.</para>
+<para>For example, the following UNKNOWN method will print out the name of
+the invoked method and then invoke the same method on another object.  This
+can be used track the messages that are sent to an object:</para>
+<example>
+<title>Defining an UNKNOWN method</title>
+<programlisting>
+<![CDATA[
+::method unknown
+expose target      -- will receive all of the messages
+use arg name, arguments
+say name "invoked with" arguments~toString
+-- send along the message with the original args
+forward to(target) message(name) arguments(arguments)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="chsrod"><title>Changing the Search Order for Methods</title>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>changing the search order for methods</primary></indexterm>
+<para>You can change the usual search order for methods by
+specifying a colon and a class symbol after the message name.
+The class symbol can be a variable name or an environment symbol. It identifies
+the class object to be used as the starting point for the method search.</para>
+<para>The class object must be a superclass of the class defining the active
+method, or, if you used <methodname>setMethod</methodname> to define the
+active method, the object's own class.
+The class symbol is usually the special variable
+<xref linkend="xsuper" xrefstyle="template:SUPER"/>,
+but it can be any <xref linkend="ensym" xrefstyle="template:environment symbol"/>
+or variable name whose value is a valid class.</para>
+
+<para>Suppose you create an Account class that is a subclass of the Object
+class, define a TYPE method for the Account class, and create the Savings class
+that is a subclass of Account. You could define a TYPE method for the Savings
+class as follows: </para>
+<programlisting>
+savings~define("TYPE", &apos;return "a savings account"&apos;)
+</programlisting>
+<para>You could change the search order by using the following line: </para>
+<programlisting>
+savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
+</programlisting>
+<para>This changes the search order so that the language processor searches for
+the TYPE method first in the Account superclass (rather than in the Savings
+subclass). When you create an instance of the Savings class
+(<computeroutput>asav</computeroutput>)
+and send a TYPE message to <computeroutput>asav</computeroutput>:</para>
+<programlisting>
+say asav~type
+</programlisting>
+<para><computeroutput>an account (savings)</computeroutput> is displayed.
+The TYPE method of the Savings class calls the TYPE method of the Account
+class, and adds the string <computeroutput>(savings)</computeroutput> to the
+results.</para>
+</section>
+
+<section id="pubpri"><title>Public, Package-Scope, and Private Methods</title>
+<indexterm><primary>method</primary>
+<secondary>public</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>private</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>package-scope</secondary></indexterm>
+<indexterm><primary>public method</primary></indexterm>
+<indexterm><primary>private method</primary></indexterm>
+<indexterm><primary>package-scope method</primary></indexterm>
+<para>A method can be public, package-scope, or private.
+</para>
+<para>Any object can send a message that runs a public method.
+</para>
+<para>A package-scope method can only be invoked from methods or routines
+defined in the same package as the package-scope method.
+</para>
+<para>A private method can only be invoked from specific calling contexts.
+These contexts are:
+<orderedlist>
+<listitem><para>From within a method owned by the same class as the target.  This is frequently
+the same object, accessed via the special variable SELF.  Private methods of an object can also
+be accessed from other instances of the same class (or subclass instances).
+</para></listitem>
+<listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
+<example>
+<title>Referencing methods</title>
+<programlisting>
+<![CDATA[
+::class Savings
+::method newCheckingAccount CLASS
+  instance = self~new
+  instance~makeChecking
+  return instance
+
+::method makeChecking private
+  expose checking
+  checking = .true
+]]>
+</programlisting>
+</example>
+<para>The newCheckingAccount CLASS method is able to invoke the makeChecking method because
+the scope of the makeChecking method is .Savings.
+</para></listitem>
+<listitem><para>From within an instance (or subclass instance) of a class to a private class
+method of its class.  For example:</para>
+<example>
+<title>Referencing methods</title>
+<programlisting>
+<![CDATA[
+::class Savings
+::method init class
+  expose counter
+  counter = 0
+
+::method allocateAccountNumber private class
+  expose counter
+  counter = counter + 1
+  return counter
+
+::method init
+  expose accountNumber
+  accountNumber = self~class~allocateAccountNumber
+]]>
+</programlisting>
+</example>
+<para>The instance init method of the Savings class is able to invoke the allocateAccountNumber private
+method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
+</listitem>
+</orderedlist>
+</para>
+<para>Private methods include methods at different scopes within the same object.
+This allows superclasses to make methods available to their subclasses while
+hiding those methods from other objects. A private method is like an internal
+subroutine. It shields the internal information of an object to outsiders, but allowing
+objects to share information with each other and their defining classes.
+</para>
+</section>
+
+<section id="creo"><title>Initialization</title>
+<para>Any object requiring initialization at creation time must define an INIT
+method. If this method is defined, the class object runs the INIT method after
+the object is created. If an object has more than one INIT method (for example,
+it is defined in several classes), each INIT method must forward the INIT
+message up the hierarchy to complete the object's initialization.</para>
+
+<example>
+<title>Instance initialization</title>
+<programlisting>
+asav = .savings~new(1000.00, 6.25)
+say asav~type
+asav~name = "John Smith"
+
+::class Account
+
+::method INIT
+  expose balance
+  use arg balance
+
+::method TYPE
+  return "an account"
+
+::method name attribute
+
+::class Savings subclass Account
+
+::method INIT
+  expose interest_rate
+  use arg balance, interest_rate
+  self~init:super(balance)
+
+::method type
+  return "a savings account"
+</programlisting>
+</example>
+<para>The NEW method of the Savings class object creates a new Savings object
+and calls the INIT method of the new object. The INIT method arguments are
+the arguments specified on the NEW method. In the Savings INIT method, the
+line: </para>
+<example>
+<title>Instance initialization</title>
+<programlisting>
+self~init:super(balance)
+</programlisting>
+</example>
+<para> calls the INIT method of
+the Account class, using just the balance argument specified on the NEW message.
+</para>
+</section>
+
+<section id="obdes"><title>Object Destruction and Uninitialization</title>
+<para>Object destruction is implicit. When an object is no longer in use, Rexx
+automatically reclaims its storage. If the object has allocated other system
+resources, you must release them at this time. (Rexx cannot release these
+resources, because it is unaware that the object has allocated them.)</para>
+<para>Similarly, other uninitialization processing may be needed, for example,
+by a message object holding an unreported error. An object requiring
+uninitialization
+should define an UNINIT method. If this method is defined, Rexx runs it before
+reclaiming the object's storage. If an object has more than one UNINIT method
+(defined in several classes), each UNINIT method is responsible for sending
+the UNINIT method up the object hierarchy.</para>
+</section>
+
+<section id="reqstr"><title>Required String Values</title>
+<para>Rexx requires a string value in a number of contexts within instructions
+and built-in function calls. </para>
+<itemizedlist>
+<listitem><para>DO statements containing
+<emphasis role="italic">exprr</emphasis> or
+<emphasis role="italic">exprf</emphasis></para></listitem>
+<listitem><para>Substituted values in compound variable names</para></listitem>
+<listitem><para>Commands to external environments</para></listitem>
+<listitem><para>Commands and environment names on ADDRESS instructions
+</para></listitem>
+<listitem><para>Strings for ARG, PARSE, and PULL instructions to be parsed
+</para></listitem>
+<listitem><para>Parenthesized targets on CALL instructions</para></listitem>
+<listitem><para>Subsidiary variable lists on DROP, EXPOSE, and PROCEDURE
+instructions</para></listitem>
+<listitem><para>Instruction strings on INTERPRET instructions</para></listitem>
+<listitem><para>DIGITS, FORM, and FUZZ values on NUMERIC instructions</para>
+</listitem>
+<listitem><para>Options strings on OPTIONS instructions</para></listitem>
+<listitem><para>Data queue strings on PUSH and QUEUE instructions</para>
+</listitem>
+<listitem><para>Label names on SIGNAL VALUE instructions</para></listitem>
+<listitem><para>Trace settings on TRACE VALUE instructions</para></listitem>
+<listitem><para>Arguments to built-in functions</para></listitem>
+<listitem><para>Data for PUSH and QUEUE instructions to be processed</para>
+</listitem>
+<listitem><para>Data for the SAY instruction to be displayed</para></listitem>
+<listitem><para>Rexx dyadic operators when the receiving object (the object to
+the left of the operator) is a string</para></listitem></itemizedlist>
+<para>If you supply an object other than a string in these contexts, by default
+the language processor converts it to some string representation and uses
+this. However, the programmer can cause the language processor to raise the
+NOSTRING condition when the supplied object does not have an equivalent string
+value.</para>
+<para>To obtain a string value, the language processor sends a <code>request("STRING")</code>
+message to the object. Strings and other objects that have string values return
+the appropriate string value for Rexx to use. (This happens automatically
+for strings and for subclasses of the String class because they inherit a
+suitable <methodname>makeString</methodname> method from the String class.)
+For this mechanism to work correctly, you must provide a <methodname>makeString</methodname>
+method for any other objects with string values.</para>
+<para>For other objects without string values (that is, without a <methodname>makeString</methodname>
+method), the action taken depends on the setting of the NOSTRING condition
+trap. If the NOSTRING condition is being trapped (see
+<xref linkend="condtra" />),
+the language processor raises the NOSTRING condition. If the NOSTRING condition
+is not being trapped, the language processor sends a
+<xref linkend="mthObjectString" xrefstyle="select:title"/> message to the
+object to obtain its readable string representation and uses this string.
+</para>
+<!-- @@ not true any more
+<para>When comparing a string object with &nil;, if
+the NOSTRING condition is being trapped, then</para>
+<programlisting>
+if string = .nil
+</programlisting>
+<para>will raise the NOSTRING condition, whereas</para>
+<programlisting>
+if .nil = string
+</programlisting>
+<para>will not as the NIL object's "=" method does not expect
+a string as an argument.</para>
+-->
+<example>
+<title>Comparing to the .nil object</title>
+<programlisting>
+d = .directory~new
+say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
+signal on nostring
+say substr(d,5,7)         /* Raises the NOSTRING condition */
+say substr(d~string,3,6)  /* Displays "Direct" */
+</programlisting>
+</example>
+<para>For arguments to Rexx object methods, different rules apply.
+<variablelist>
+<varlistentry><term>For <classname>String</classname> arithmetic, comparison, and concatenation methods:</term>
+<listitem><para>These methods always require a string argument, so first
+a <code>request("STRING")</code> message is sent to the argument object.
+If <methodname>request</methodname> returns &nil; because the argument object
+does not have a <methodname>makeString</methodname> method, and the NOSTRING
+condition is not being trapped, a
+<xref linkend="mthObjectString" xrefstyle="select:title"/> message is sent to
+the object to obtain its string representation.
+</para></listitem></varlistentry>
+<varlistentry><term>For all other methods:</term>
+<listitem><para>When a method expects a string as an argument, the
+argument object is sent the <code>request("STRING")</code> message.
+If <methodname>request</methodname> returns &nil;, the method raises an error.
+</para></listitem></varlistentry>
+</variablelist>
+</para>
+</section>
+
+<section id="concurr"><title>Concurrency</title>
+<para>Rexx supports concurrency, multiple methods running
+simultaneously on a single object. See
+<xref linkend="xconcur" />  for a full
+description of concurrency.</para>
+</section>
+</section>
+
+<section id="classmeth"><title>Overview of Classes Provided by Rexx</title>
+<para>This section gives a brief overview of the classes and methods
+Rexx defines.</para>
+
+<section id="chi"><title>The Class Hierarchy</title>
+<para>Rexx provides the following classes belonging to the
+<xref linkend="clsObject" xrefstyle="template:Object class"/>.
+</para>
+<para>The classes are in a class hierarchy with an inheriting class indented below its
+superclass or mixin class.
+Classes inheriting from multiple mixin classes are only listed below one of these mixin classes.
+</para>
+
+<para>
+  <!-- commented ArgUtil (deprecated, won't document) -->
+  <!-- $GENERATED-20190301-START rexxrefClassHierarchy -->
+  <simplelist>
+  <member><xref linkend="clsAlarm" xrefstyle="template:Alarm class"/></member>
+  <member><xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification class"/></member>
+<!--
+  <member><xref linkend="clsArgUtil" xrefstyle="template:ArgUtil class"/></member>
+-->
+  <member><xref linkend="clsBuffer" xrefstyle="template:Buffer class"/></member>
+  <member><xref linkend="clsClass" xrefstyle="template:Class class"/></member>
+  <member><xref linkend="clsCollection" xrefstyle="template:Collection class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsBag" xrefstyle="template:Bag class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsDirectory" xrefstyle="template:Directory class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsProperties" xrefstyle="template:Properties class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsRelation" xrefstyle="template:Relation class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsSet" xrefstyle="template:Set class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsStem" xrefstyle="template:Stem class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsStringTable" xrefstyle="template:StringTable class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsTraceObject" xrefstyle="template:TraceObject class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsTable" xrefstyle="template:Table class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsArray" xrefstyle="template:Array class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsList" xrefstyle="template:List class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsQueue" xrefstyle="template:Queue class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsSetCollection" xrefstyle="template:SetCollection class"/></member>
+  <member><xref linkend="clsComparable" xrefstyle="template:Comparable class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsDateTime" xrefstyle="template:DateTime class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsFile" xrefstyle="template:File class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsString" xrefstyle="template:String class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan class"/></member>
+  <member><xref linkend="clsComparator" xrefstyle="template:Comparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsCaselessColumnComparator" xrefstyle="template:CaselessColumnComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsCaselessComparator" xrefstyle="template:CaselessComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsCaselessDescendingComparator" xrefstyle="template:CaselessDescendingComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsColumnComparator" xrefstyle="template:ColumnComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsDescendingComparator" xrefstyle="template:DescendingComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsInvertingComparator" xrefstyle="template:InvertingComparator class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator class"/></member>
+  <member><xref linkend="clsInputStream" xrefstyle="template:InputStream class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsInputOutputStream" xrefstyle="template:InputOutputStream class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsStream" xrefstyle="template:Stream class"/></member>
+  <member><xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsMessage" xrefstyle="template:Message class"/></member>
+  <member><xref linkend="clsMethod" xrefstyle="template:Method class"/></member>
+  <member><xref linkend="clsMonitor" xrefstyle="template:Monitor class"/></member>
+  <member><xref linkend="clsMutableBuffer" xrefstyle="template:MutableBuffer class"/></member>
+  <member><xref linkend="clsObject" xrefstyle="template:Object class"/></member>
+  <member><xref linkend="clsOrderable" xrefstyle="template:Orderable class"/></member>
+  <member><xref linkend="clsOutputStream" xrefstyle="template:OutputStream class"/></member>
+  <member><xref linkend="clsPackage" xrefstyle="template:Package class"/></member>
+  <member><xref linkend="clsPointer" xrefstyle="template:Pointer class"/></member>
+  <member><xref linkend="clsRexxContext" xrefstyle="template:RexxContext class"/></member>
+  <member><xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/></member>
+  <member><xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue class"/></member>
+  <member><xref linkend="clsRoutine" xrefstyle="template:Routine class"/></member>
+  <member><xref linkend="clsStackFrame" xrefstyle="template:StackFrame class"/></member>
+  <member><xref linkend="clsSupplier" xrefstyle="template:Supplier class"/></member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier class"/></member>
+  <member><xref linkend="clsTicker" xrefstyle="template:Ticker class"/></member>
+  <member><xref linkend="clsValidate" xrefstyle="template:Validate class"/></member>
+  <member><xref linkend="clsVariableReference" xrefstyle="template:VariableReference class"/></member>
+  <member><xref linkend="clsWeakReference" xrefstyle="template:WeakReference class"/></member>
+  </simplelist>
+  <!-- $GENERATED-20190301-END rexxrefClassHierarchy -->
+</para>
+
+<para>Note that there might also be other classes available, depending
+on the operating system.  Additional classes may be accessed by using an
+appropriate <code>::requires</code> directive to load the class definitions.</para>
+
+<!-- @@ these figures were already broken in 4.2; completely removing them for now
+<para>The following figures show Rexx built-in classes.</para>
+
+<figure float="1">
+<title id="meths1">Classes and Inheritance (part 1 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses1.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths2">Classes and Inheritance (part 2 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses2.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths3">Classes and Inheritance (part 3 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses3.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths4">Classes and Inheritance (part 4 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses4.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths5">Classes and Inheritance (part 5 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses5.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths6">Classes and Inheritance (part 6 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses6.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 7 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses7.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths8">Classes and Inheritance (part 8 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses8.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths9">Classes and Inheritance (part 9 of 9)</title>
+<mediaobject>
+<imageobject>
+<!@@ Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! @@>
+<imagedata fileref="images/ooRexxClasses9.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+end of removed broken figure @@ -->
+</section>
+
+<section id="methodsbyclass"><title>Class Library Notes</title>
+<para>The chapters that follow describe the classes and other objects that Rexx
+provides and their available methods. Rexx provides the objects listed in
+these sections and they are generally available through
+<xref linkend="ensym" xrefstyle="template:environment symbols"/>.
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>In the method descriptions in the chapters that follow, methods
+that return a result begin with the word "returns".</para></listitem>
+<listitem><para>For <methodname>[]</methodname> and <methodname>[]=</methodname> methods,
+the syntax diagrams include
+the index or indexes within the brackets. These diagrams are intended to show
+how you can use these methods. For example, to set the element <code>(2, 3)</code>
+of a &multidimarray; named <emphasis role="italic">matrix</emphasis> to
+<literal>0</literal>, you would typically use the syntax:
+<programlisting>matrix[2, 3] = 0
+</programlisting>
+</para>
+<para>rather than:
+<programlisting>matrix~&quot;[]=&quot;(0, 2, 3)
+</programlisting>
+</para>
+<para>
+even though the latter is valid and equivalent. For more information,
+see <xref linkend="mssg" /> and
+<xref linkend="msgit" />.</para></listitem>
+<listitem><para>When the argument of a method must be a specific kind of object (such
+as array, class, method, or string) the variable you specify must be of the
+same class as the required object or be able to produce an object of the
+required kind in response to a conversion message. In particular, subclasses
+are acceptable in place of superclasses (unless overridden in a way that
+changes superclass behavior), because they inherit a suitable conversion method
+from their Rexx superclass.</para>
+<para>The <xref linkend="mthObjectIsA" xrefstyle="select:title"/> method
+of the Object class can perform this validation.
+</para></listitem>
+</orderedlist>
+</section>
+</section>
+</chapter>

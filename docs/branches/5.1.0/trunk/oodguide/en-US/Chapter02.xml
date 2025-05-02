@@ -1,0 +1,412 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2012-2025, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter02 - In The Beginning				  v01-03 12Jan13
+
+     Changes:
+     v01-00 31May12: First version.
+     v01-01 29Jly12: Delete reference to (spurious) "Exercise01".
+     v01-02 02Jan13: Change chapter title from "In The Beginning" to "Hello ooDialog World".
+     v01-03 12Jan13: Minor clean-up after another proof-read.
+-->
+
+<chapter id="chapTwo"><title>Hello ooDialog World</title>
+<indexterm><primary>overview</primary></indexterm>
+<para>
+  The purpose of ooDialog is to enable ooRexx developers to provide users with
+  a graphical user interface or "GUI". A GUI is a collection of windows and dialogs.
+  Each contains a number of controls, such as edit controls, push buttons, list
+  boxes, and so forth. The user keys data into controls (e.g. types into an edit
+  control) or manipulates controls with a mouse (e.g. selects an item in a
+  listbox). Some of these actions invoke application code which in turn
+  makes some change to the window or dialog, or causes some other action such as
+  data access, or both.
+</para>
+<para>
+Before continuing, it's worth distinguishing between a "window" and a "dialog".
+A dialog is a stylized form of window that is familiar to most users. As dialogs
+have evolved they have become more useful, and can now provide the user interface
+function for many applications. Also, a dialog is drawn by the operating system,
+while drawing a normal window is mostly the programmer's responsibility. Thus
+producing an application needs much less programming work because the ooRexx
+programmer doesn't need to know or understand the low-level mechanics of drawing
+to the screen. In summary, dialogs now have many window functions, and are much
+easier to produce. And it's this that makes ooDialog a particularly useful
+extension to ooRexx.
+</para>
+<para>
+  There are three general areas of concern in designing an ooDialog application:
+<itemizedlist>
+<listitem><para>Designing the appearance of a dialog</para></listitem>
+<listitem><para>Designing the desired user interactions with the dialog</para></listitem>
+<listitem><para>Designing the code that implements both appearance and interactions</para></listitem>
+</itemizedlist>
+</para>
+<para>
+  And there are three corresponding areas of implementation concern:
+<itemizedlist>
+<listitem><para>Laying out the dialog</para></listitem>
+<listitem><para>Implementing the actions requested by users of a dialog</para></listitem>
+<listitem><para>Showing the results of those actions to the user.</para></listitem>
+</itemizedlist>
+</para>
+<para>
+  This document does not pretend to be a guide to best practice in the areas of
+  design, although it tries to conform with good design principles. However,
+  this document <emphasis role="italic">does</emphasis> aim to familiarize
+  readers with the essentials of ooDialog application implementation.
+</para>
+<para>
+  So, before starting the first exercise, please make sure that you have
+  downloaded and installed the latest versions of ooRexx and ooDialog. Please
+  also run one or more of the samples in <computeroutput>Start --> All Programs
+  --> Open Object Rexx --> ooRexx Samples --> ooDialog </computeroutput> to
+  ensure that your installation works properly.
+</para>
+<para><emphasis role="bold"><emphasis role="italic">And please do use the
+  ooDialog Reference for details on any ooDialog class, method
+  or function mentioned in this Guide.</emphasis></emphasis>
+</para>
+<section id="sctGettingStarted"><title>Getting Started</title>
+<para>
+  The first exercise creates and displays a blank dialog with the title "Hello World!".
+  Try running it - it's the file <emphasis role="bold">HelloWorld.rex</emphasis> in the folder
+  <emphasis role="bold">C:\Program Files\ooRexx\samples\oodialog\userGuide\exercises\Exercise02</emphasis>
+  (exercise numbers map to chapter numbers). <xref linkend="fig01" /> shows what you should see.
+  <indexterm><primary>Exercise location</primary></indexterm>
+  <indexterm><primary>Location</primary><secondary>of Exercises></secondary></indexterm>
+</para>
+<para>
+  The Command Prompt window that appears with the <emphasis role="bold">Hello World</emphasis>
+  dialog can be useful
+  for debugging, but it can be dispensed with, and later we'll find out how.
+  For now, let's look at the <emphasis role="bold">Hello World</emphasis> code (excluding comments):
+</para>
+    <figure id="fig01"><title>The 'Hello World' Dialog</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter02-Image1.jpg" scale="70" />
+       </imageobject>
+     </mediaobject>
+    </figure>
+<para>
+  First, there's code that kicks things off:
+<programlisting><![CDATA[
+      dlg = .HelloWorld~new
+      dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+]]></programlisting>
+    The first statement creates an instance of the class <computeroutput>HelloWorld</computeroutput>,
+    and assigns the instance to the variable <computeroutput>dlg</computeroutput>
+    (the <computeroutput>HelloWorld</computeroutput> class is defined in the third part of the code).
+    The second statement invokes the <computeroutput>execute</computeroutput> method of
+    <computeroutput>HelloWorld</computeroutput>, and it is this that displays the dialog.
+    The first parameter <computeroutput>SHOWTOP</computeroutput> is one of several ways of defining
+    how the dialog is surfaced (see the ooDialog Reference for details).
+    The second parameter states that the icon at the extreme top left of the dialog should be the
+    normal ooRexx icon. This graphic is termed a "resource" in ooDialog, and there are a number
+    of such predefined constants (again, see the ooDialog Reference for details).
+    </para>
+    <para>
+    Note that the usual naming conventions are observed: upper camel case for classes
+    (e.g. <computeroutput>HelloWorld</computeroutput>) and lower camel case for
+    variables (including of course instance variables - e.g. <computeroutput>dlg</computeroutput>).
+</para>
+<para>
+  Second, there's a directive to ooRexx to use ooDialog:
+<programlisting><![CDATA[
+      ::REQUIRES "ooDialog.cls"
+]]></programlisting>
+    This directive allows all the classes defined by ooDialog to be accessible to our program.
+    If this statement is absent, then the following error appears on the initiating command prompt:
+<programlisting><![CDATA[
+      16 *-* ::class 'HelloWorld' subclass UserDialog
+      Error 98 running ... Exercise02\HelloWorld.rex line 58: Execution error
+      Error 98.909:  Class "USERDIALOG" not found
+]]></programlisting>
+    Note that it's <computeroutput>UserDialog</computeroutput> (the superclass
+    for <computeroutput>HelloWorld</computeroutput>) that's not found.
+    This is because the <computeroutput>::requires ooDialog.cls</computeroutput> statement
+    not only says we're using ooDialog, but also provides
+    access to all the classes provided <emphasis role="italic">by</emphasis> ooDialog.
+</para>
+<para>
+  Finally, there's the definition of the class <computeroutput>HelloWorld</computeroutput>:
+<programlisting><![CDATA[
+  ::CLASS HelloWorld SUBCLASS UserDialog
+    ::METHOD init
+      forward class (super) continue
+      self~create(30, 30, 257, 123, "Hello World", "CENTER")
+]]></programlisting>
+  The first line defines a class called <computeroutput>HelloWorld</computeroutput> as a subclass of
+  the ooDialog-provided class <computeroutput>UserDialog</computeroutput>
+  (and yet again, but finally, see the ooDialog Reference for full details).
+  Among other things, <computeroutput>UserDialog</computeroutput> enables the programmer to define
+  the dialog layout in code. This can get cumbersome in more complex dialogs, and later we'll
+  meet a simpler way of defining the dialog layout.
+</para>
+<para>
+  The second line defines the <computeroutput>init</computeroutput> method of
+  <computeroutput>HelloWorld</computeroutput>, and the third line forwards the
+  <computeroutput>init</computeroutput> message to the superclass which then
+  does the heavy work of creating the dialog.
+  But why use <computeroutput>forward</computeroutput> instead of
+  <computeroutput>self~init:super</computeroutput>? The reason is that
+  <computeroutput>forward</computeroutput> applies not only to the method but
+  also to all its arguments, whatever these may be. Which is exactly what's required here.
+</para>
+<para>
+  Finally, the last line sends a <computeroutput>create</computeroutput> message to
+  <computeroutput>self</computeroutput> and hence to <computeroutput>UserDialog</computeroutput>.
+  This method defines the "template" to be used for the dialog. The parameters are as follows:
+  <itemizedlist>
+    <listitem><para>
+      The first two parameters define, in "dialog units", the x and y position on the screen
+      of the top left corner of the dialog. Dialog units (rather than pels) are used to
+      provide device independence.
+    </para></listitem>
+    <listitem><para>
+      The third and fourth parameters define the width and height of the dialog, again in dialog units.
+    </para></listitem>
+    <listitem><para>
+      The fifth parameter is the dialog's title, and the last parameter -
+      <computeroutput>CENTER</computeroutput> - is the dialog "style" (of which
+      there are several). <computeroutput>CENTER</computeroutput> states
+      that regardless of the first two parameters, the dialog will be positioned in
+      the center of the screen. Styles are an important part of dialog definition.
+      Try removing the <computeroutput>CENTER</computeroutput>
+      parameter (and its preceding comma of course) and see what happens.
+      Then replace the <computeroutput>CENTER</computeroutput> parameter, and
+      (just to make sure that you've replaced it correctly) run the program again,
+      and this time try to re-size the dialog. You can't. Then replace
+      <computeroutput>"CENTER"</computeroutput> by <computeroutput>"CENTER THICKFRAME"</computeroutput>
+      and re-run the program. The dialog now has a sizable border. Thus styles
+      not only affect appearance, they can also define behavior.
+    </para></listitem>
+  </itemizedlist>
+</para>
+<para>With this instance of the <computeroutput>HelloWorld</computeroutput> class having
+  been set up properly, the dialog is actually surfaced (made visible) by the
+  <computeroutput>execute</computeroutput> message (handled by HelloWorld's superclass)
+  sent by the second statement in the program which was:
+<programlisting><![CDATA[
+      dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+]]></programlisting>
+</para>
+<para>
+Now let's add some behavior to the dialog. We're going to build a "Words of Wisdom"
+dialog that will display words of wisdom when a button is pressed.
+</para>
+</section>
+
+<section id="visBehavior"><title>Visible Behavior</title>
+<para>This section is in two parts. First we create a dialog that invites the user to press a button
+for more "words of wisdom" - but the button doesn't work. Second, we make the button work. In this way,
+we both add to the way dialogs are populated with controls, and also show how user input is handled.
+</para>
+<section id="vizBehavior1"> <!-- should be numbered 2.2.1 I think) -->
+ <title>Adding Controls to the Dialog</title>
+<para>
+  First, try running <computeroutput>Wow.rex</computeroutput> from  the
+  <computeroutput>Exercises\Exercise02</computeroutput> folder ("Wow" being short
+  for "Words of Wisdom"). You should see a dialog entitled
+  "Words of Wisdom" which is blank with the exception of some (alleged) words of wisdom
+  and two push-buttons. One of these does nothing, the other (Cancel) closes the dialog.
+  These buttons are examples of "controls" - sometimes called "widgets" - that populate a dialog
+  and enable both display of information and user interaction with the dialog.
+</para>
+<para>
+  Now let's look at the code.
+  The first seven lines (excluding comments and blank lines)
+  are essentially the same as the first seven in <computeroutput>HelloWorld.rex</computeroutput>:
+<programlisting><![CDATA[
+    dlg = .WordsOfWisdom~new
+    dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+    ::REQUIRES "ooDialog.cls"
+    ::CLASS 'WordsOfWisdom' SUBCLASS UserDialog
+    ::METHOD init
+      forward class (super) continue
+      self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
+]]></programlisting>
+  However, a <emphasis role="italic">defineDialog</emphasis> method has been added:
+<programlisting><![CDATA[
+  ::METHOD defineDialog
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom")
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(-1, 40, 40, 200, 20, , -
+     "Complex problems have simple solutions"||.endofline||"- which are wrong.")
+]]></programlisting>
+  This method is invoked automatically by the superclass, and consists of three
+  statements each of which creates a control. The first two each create a pushbutton:
+  <itemizedlist>
+    <listitem><para>
+      A "More Wisdom" pushbutton, which has been given the resource ID of "901"
+      (the first parameter). Controls are identified
+      by numbers (IDs) or, as we'll see later, by symbolic names. You can pick
+      any number although numbers -1 and 1 through 50 are pre-defined by ooDialog.
+      For example, resource ID "1" is an "OK" button.
+      Resource numbers or IDs identify controls to the underlying
+      Windows platform, and can be given in either numeric or symbolic form, as will
+      be discussed in Chapter 3.
+      <indexterm><primary>Resource numbers</primary></indexterm>
+      Each control should have a different number (although there
+      are some situations, which will be met later, where it's useful for two or
+      more controls to have the same number). The next four parameters define the
+      position of the button in the dialog, and the sixth ("DEFAULT") specifies that this button
+      is to be the default action for pressing the enter key. The seventh parameter
+      is the text shown on the button.
+    </para></listitem>
+    <listitem><para>
+      A "Cancel" pushbutton, whose ID <computeroutput>IDCANCEL</computeroutput>
+      makes this button perform the standard dialog cancel action - that is, close
+      the dialog without saving any changes. (An OK button should save
+      any changes made by the user, and then close the dialog - preferably with an
+      intervening "Save changes?" message box with options "Yes", "No, and "Cancel".)
+    </para></listitem>
+   </itemizedlist>
+  The third statement creates some static text (text that cannot be changed by the user),
+  with the text itself as the last parameter. The first parameter is the resource number
+  "-1" which is the pre-defined resource ID for a Static Text control (although
+  you can use other numbers above 50 - for example if you want to distinguish
+  between different static text controls or when you want to programmatically change
+  the text - neither of which is  a requirement here).
+  The next four parameters define the size and position of the static text control.
+  Last but not least is the text to be displayed. This text comprises the initial
+  (and so far only) "words of wisdom".
+</para>
+<para>
+  Now we need to make the <emphasis role="bold">More wisdom</emphasis> button work,
+  which we now do in <computeroutput>Wow2.rex</computeroutput>.
+</para>
+
+</section>
+
+<section id="visBehavior2"><title>Making The Controls Work</title>
+<para>
+  First, run <computeroutput>Wow2.rex</computeroutput>. When you click the
+  <emphasis role="bold">More wisdom</emphasis> pushbutton,
+  you see different text appearing in the center of the screen, replacing the previous text.
+  By the way, you'll also see debug information appear on the command prompt each time you
+  click the <emphasis role="bold">More wisdom</emphasis> button - there's
+  a "say" statement in the code that's not mentioned here, but you can easily find it.
+  The real question at the moment is: how do we create the pushbutton's visible behavior?
+</para>
+<para>
+  When a control is actioned by a user (e.g. pressing a pushbutton),  we need some way in the
+  program of kicking off a method that provides a visible response. Remember that a key
+  principle of UI design is that of least astonishment: if the user is astonished by what
+  the computer is doing in response to a wholly innocent user interaction with some UI widget,
+  then that principle is breached. Of course, astonishment can be pleasant or unpleasant; and
+  if you can create ooDialog GUIs which <emphasis role="italic">pleasantly</emphasis> astonish
+  their users, then you probably don't need to read this Guide.
+</para>
+<para>
+  In ooDialog, there are a number of ways of connecting a user action
+  to a method. However, a user action is actually signaled by an event emitted from the underlying
+  Windows GUI software infrastructure. ooDialog connects that event to
+  a method in the ooRexx dialog object. So the source of the event (the user action) is not ooDialog.
+  This means that if you want to capture a user action that the Windows infrastructure doesn't
+  capture (for example hovering the mouse over an edit control), then there's no way ooDialog
+  can do it either.
+</para>
+<para>
+  Having said that, one of the simplest ways of having a user action connected to an ooRexx
+  method is by supplying the name of the method as a parameter of the actionable control.
+  And, since a pushbutton control provides for just such an approach, that's what we'll do here.
+  The first lines of code in <computeroutput>Wow2.rex</computeroutput> - down to the
+  <computeroutput>defineDialog</computeroutput> method - are almost identical to those of
+  <computeroutput>wow.rex</computeroutput>, with two significant changes.
+  The method is as follows:
+<programlisting><![CDATA[
+  ::method defineDialog
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(101, 40, 40, 200, 40, , "Click 'More wisdom'")
+]]></programlisting>
+</para>
+<para>
+  The two significant changes are as follows. Firstly, the statement
+  <computeroutput>self~createPushButton</computeroutput>
+  has an additional parameter <computeroutput>okClicked</computeroutput>.
+  This is the name of the method that is automatically invoked by ooDialog when the user
+  clicks on the <emphasis role="bold">More wisdom</emphasis> pushbutton. Secondly,
+  the statement <computeroutput>self~createStaticText</computeroutput> has the
+  ID 101 rather than -1 since we want to have the text changed when the "More Wisdom"
+  button is pressed. Also, the space for text to be displayed has increased from
+  20 to 40, and the initial text has been changed to "Click 'More wisdom'".
+</para>
+<para>
+  However, the major change to the program is the new <computeroutput>okClicked</computeroutput> method that
+  picks a "words of wisdom" text and displays it. Pseudocode for this method is as follows:
+<programlisting><![CDATA[
+  Method okClicked
+    Create array 'arrWow' and add a 'words of wisdom' text strings to each of seven
+    array elements.
+    Create an object representing the static text field
+    Pick a "words of wisdom" text randomly from 'arrWow'
+    Show that text in the static text field.
+    return
+]]></programlisting>
+  Have a look at it the code that implements this method in <computeroutput>Wow2.rex</computeroutput>.
+  Note that the penultimate pseudocode statement above - "show that text in
+  the static text field" - is implemented in two steps. First the statement
+  <computeroutput>newText = self~newStatic(101)</computeroutput>
+  creates an object that represents the static text control, the resource number 101
+  defining the control to be represented. Second, that object is used to change the control's text
+  in the statement <computeroutput>newText~setText(arrWow[i])</computeroutput>.
+</para>
+<para>Finally, you may ask why a full code listing is not shown here. The reason
+  is that I'd really rather not.
+  Why not? Doesn't it work? Well, yes, the code works OK. But the design is
+  not good. Aside from performance considerations (the code creates and populates a new
+  array each time the button is clicked), there is absolutely no separation of design concerns.
+  And this is arguably the most important thing for any application - especially one with a GUI.
+  There are three important areas of design concern - UI display and interaction, the
+  "business" that the dialog performs (here the business of selecting the text),
+  and the provision of persistent data (here the seven strings comprising the "words of wisdom").
+  But we'll start to fix this in the next chapter.
+</para>
+</section>
+</section>
+</chapter>

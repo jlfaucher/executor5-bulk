@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "winextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Windows Extensions SGML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    # Author(s):
+    #
+    #########################################################################
+-->
+
+<chapter id="clsMenuObject"><title>The MenuObject Class</title>
+<indexterm><primary>MenuObject class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>MenuObject class</secondary></indexterm>
+<para>
+  The MenuObject class provides methods to query, manipulate, and  interact with the menu or submenu of a
+  window.
+</para>
+<para>
+  Use of the MenuObjects requires that the following directive appear in the Rexx program.
+</para>
+<programlisting>
+::requires 'winSystm.cls'
+</programlisting>
+<para><emphasis role="bold">Methods the MenuObject Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>findItem</para></listitem>
+<listitem><para>findSubmenu</para></listitem>
+<listitem><para>idOf</para></listitem>
+<listitem><para>ischecked</para></listitem>
+<listitem><para>isMenu</para></listitem>
+<listitem><para>isSubMenu</para></listitem>
+<listitem><para>isSeparator</para></listitem>
+<listitem><para>items</para></listitem>
+<listitem><para>processItem</para></listitem>
+<listitem><para>submenu</para></listitem>
+<listitem><para>textOf(id)</para></listitem>
+<listitem><para>textOf(position)</para></listitem></itemizedlist>
+
+<section id="ismenumo"><title>isMenu</title>
+<indexterm><primary>isMenu method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isMenu method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_ismenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns 1 if the associated window is a menu, otherwise 0.</para>
+</section>
+
+<section id="issubmenumo"><title>isSubMenu</title>
+<indexterm><primary>isSubMenu method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isSubMenu method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_issubmenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is a submenu
+  of this menu, otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the
+  first menu item is at position 0.
+</para>
+</section>
+
+<section id="ischeckedmo"><title>isChecked</title>
+<indexterm><primary>isChecked method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isChecked method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_ischecked.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is checked,
+  otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the first menu item is
+  at position 0. Submenus and separators can be be checked.
+</para>
+<para>
+  This method can not be 100% reliable. Some applications do not set the check mark for a menu item until
+  the menu is displayed. To be confident of the result, the programmer should first test how a specific
+  application behaves.
+</para>
+</section>
+
+<section id="isseparatormo"><title>isSeparator</title>
+<indexterm><primary>isSeparator method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isSeparator method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_isseparator.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is a
+  separator line, otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the
+  first menu item is at position 0.
+</para>
+</section>
+
+<section id="itemsmo"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the number of menu items contained in the associated menu.</para>
+</section>
+
+<section id="idofmo"><title>idOf</title>
+<indexterm><primary>idOf method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>idOf method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_idof.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the ID of the menu item at the specified
+<emphasis role="italic">position</emphasis>, starting with 0.</para>
+</section>
+
+<section id="textofpositionmo"><title>textOf(position)</title>
+<indexterm><primary>textOf(position) method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>textOf(position) method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_textof_pos.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the text of the menu item at the specified
+<emphasis role="italic">position</emphasis>, starting
+with 0. A mnemonic (underscored letter) is represented by a leading ampersand
+(&amp;). If the menu item contains an accelerator, it is separated by a tab.
+</para>
+</section>
+
+<section id="textofidmo"><title>textOf(id)</title>
+<indexterm><primary>textOf(id) method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>textOf(id) method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_textof_id.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the text of menu item <emphasis role="italic">id</emphasis>.
+A mnemonic is represented by a leading ampersand (&amp;). If the menu item
+contains an accelerator, it is separated by a tab.</para>
+</section>
+
+<section id="submenumo"><title>submenu</title>
+<indexterm><primary>submenu method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>submenu method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_submenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the MenuObject class that is associated with the
+submenu at the specified <emphasis role="italic">position</emphasis>,
+starting with 0. If no submenu
+exists at this position, the .Nil object is returned.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+sub = menu~submenu(5)
+    if sub \= .Nil then do
+         say "Items:" sub~items
+    end
+</programlisting>
+</section>
+
+<section id="findsubmenumo"><title>findSubmenu</title>
+<indexterm><primary>findSubmenu method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>findSubmenu method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_findsubmenu.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an instance of the MenuObject class that is associated with the
+submenu with the specified <emphasis role="italic">label</emphasis>.
+If the associated menu does not
+contain such a submenu, the .Nil object is returned.</para>
+</section>
+
+<section id="finditemmo"><title>findItem</title>
+<indexterm><primary>findItem method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>findItem method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_finditem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the ID of the menu item <emphasis role="italic">label</emphasis>.
+If the specified label
+does not include an accelerator, the comparison excludes the accelerators
+of the menu items. If no menu item is found that matches the specified label,
+0 is returned.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+f = menu~findItem("&amp;Tools" || "9"x || "Ctrl+T")
+    if f \= 0 then menu~processItem(f)
+</programlisting>
+</section>
+
+<section id="processitemmo"><title>processItem</title>
+<indexterm><primary>processItem method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>processItem method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/menuobj/menuobj_processitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Selects the menu item <emphasis role="italic">id</emphasis>. This causes
+a WM_COMMAND to be sent to the window owning the menu.</para>
+</section>
+
+</chapter>
+

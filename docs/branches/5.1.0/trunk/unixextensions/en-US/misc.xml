@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "unixextensions.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Unix Extensions XML file.
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # https://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="misc"><title id="misc.title">Miscellaneous Functions</title>
+
+<para>This chapter covers the available miscellaneous functions.</para>
+
+
+<section id="utlSysCrypt"><title>SysCrypt</title>
+<indexterm><primary>SysCrypt</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syscrypt.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an encrypted version of <emphasis>str</emphasis>.</para>
+<para>This function uses the <filename>crypt()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">str</emphasis></term>
+<listitem><para>The string to be encrypted.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">salt</emphasis></term>
+<listitem><para>The encryption salt must be two characters for the default
+DES encryption.
+Depending on the platform, other salt lengths may be required for encryptions
+like MD5, Blowfish, SHA-256, or SHA-512.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the encrypted string or a zero-length string on an error.</para>
+<example id="sysCrypt">
+<title>SysCrypt</title>
+<programlisting>
+<![CDATA[
+/* encrypt a password */
+
+encstr = SysCrypt("password", "3A")
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysGetsid"><title>SysGetSID</title>
+<indexterm><primary>SysGetsid</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgetsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<!-- http://man7.org/linux/man-pages/man2/getsid.2.html -->
+<para>Gets the session ID of the calling process, or returns the session
+ID of the process with process ID <emphasis role="italic">pid</emphasis>.
+</para>
+<para>The session ID of a process is the process group ID of the session
+leader.
+</para>
+<para>This function uses the <filename>getsid()</filename>
+C API to perform the action.</para>
+
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">pid</emphasis></term>
+<listitem><para><computeroutput>0</computeroutput> or a valid process ID.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the session ID of the calling process if
+<emphasis role="italic">pid</emphasis> is <computeroutput>0</computeroutput>.
+Otherwise returns the session ID of the process with process ID
+<emphasis role="italic">pid</emphasis>.
+</para>
+<para>On an error, <computeroutput>-1</computeroutput> is returned.
+</para>
+<example id="sysGetSID">
+<title>SysGetSID</title>
+<programlisting><![CDATA[/* get the session id of the calling process */
+
+mysid = SysGetSID(0)
+]]></programlisting>
+</example>
+</section>
+
+
+<section id="utlSysGeterrno"><title>SysGeterrno</title>
+<indexterm><primary>SysGeterrno</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgeterrno.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the errno numeric value.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the numeric errno value.</para>
+<example id="sysGeterrno">
+<title>SysGeterrno</title>
+<programlisting>
+<![CDATA[
+/* get the errno */
+
+errno = SysGeterrno()
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysGeterrnomsg"><title>SysGeterrnomsg</title>
+<indexterm><primary>SysGeterrnomsg</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgeterrnomsg.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a short description of the errno value.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">errno</emphasis></term>
+<listitem><para>The numeric errno value.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns a short description of the errno value.
+If the message is not available it returns the string "Unknown".</para>
+<example id="sysGeterrnomsg">
+<title>SysGeterrnomsg</title>
+<programlisting>
+<![CDATA[
+/* get the errno message */
+
+say SysGeterrnomsg(26)
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysGetsizeofptr"><title>SysGetsizeofptr</title>
+<indexterm><primary>SysGetsizeofptr</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgetsizeofptr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Gets the size (in bits) of a pointer.</para>
+<para>This function uses the <filename>sizeof(void *)</filename>
+C macro to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns 32 or 64 in most cases.</para>
+<example id="sysGetsizeofptr">
+<title>SysGetsizeofptr</title>
+<programlisting>
+<![CDATA[
+/* get the pointer size */
+
+addrmode = SysGetsizeofptr()
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysSetsid"><title>SysSetsid</title>
+<indexterm><primary>SysSetsid</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syssetsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Set the session id.</para>
+<para>This function uses the <filename>setsid()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the new sid or -1 on an error.</para>
+<example id="sysSetsid">
+<title>SysSetsid</title>
+<programlisting>
+<![CDATA[
+/* set the session id to zero */
+
+call SysSetsid 0
+]]>
+</programlisting>
+</example>
+</section>
+
+
+<section id="utlSysSignal"><title>SysSignal</title>
+<indexterm><primary>SysSignal</primary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syssignal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the disposition of a signal to either SIG_IGN (ignore) or SIG_DFL (default).</para>
+<note><title>Note</title><para>You should be VERY careful when calling this function as it can
+cause problems with the Rexx interpreter. If you don't know what you are doing then you
+should not call this function.</para>
+</note>
+<para>This function uses the <filename>signal()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">signum</emphasis></term>
+<listitem><para>The signal number to change. This is an integer and corresponds to the
+set of system signal numbers. The following is a partial list of valid values:
+<programlisting>
+SIGHUP	   1 Hangup (POSIX)
+SIGINT	   2 Terminal interrupt (ANSI)
+SIGQUIT	   3 Terminal quit (POSIX)
+SIGILL	   4 Illegal instruction (ANSI)
+SIGTRAP	   5 Trace trap (POSIX)
+SIGIOT	   6 IOT Trap (4.2 BSD)
+SIGBUS	   7 BUS error (4.2 BSD)
+SIGFPE	   8 Floating point exception (ANSI)
+SIGKILL	   9 Kill(can't be caught or ignored) (POSIX)
+SIGUSR1	  10 User defined signal 1 (POSIX)
+SIGSEGV	  11 Invalid memory segment access (ANSI)
+SIGUSR2	  12 User defined signal 2 (POSIX)
+SIGPIPE	  13 Write on a pipe with no reader, Broken pipe (POSIX)
+SIGALRM	  14 Alarm clock (POSIX)
+SIGTERM	  15 Termination (ANSI)
+SIGSTKFLT 16 Stack fault
+SIGCHLD	  17 Child process has stopped or exited, changed (POSIX)
+SIGCONT	  18 Continue executing, if stopped (POSIX)
+SIGSTOP	  19 Stop executing(can't be caught or ignored) (POSIX)
+SIGTSTP	  20 Terminal stop signal (POSIX)
+SIGTTIN	  21 Background process trying to read, from TTY (POSIX)
+SIGTTOU	  22 Background process trying to write, to TTY (POSIX)
+SIGURG	  23 Urgent condition on socket (4.2 BSD)
+SIGXCPU	  24 CPU limit exceeded (4.2 BSD)
+SIGXFSZ	  25 File size limit exceeded (4.2 BSD)
+SIGVTALRM 26 Virtual alarm clock (4.2 BSD)
+SIGPROF	  27 Profiling alarm clock (4.2 BSD)
+SIGWINCH  28 Window size change (4.3 BSD, Sun)
+SIGIO	  29 I/O now possible (4.2 BSD)
+SIGPWR	  30 Power failure restart (System V)
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem><para>An option specifying the signal action.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"DEFAULT"</term>
+<listitem><para>The default action is to be set.
+</para></listitem></varlistentry>
+<varlistentry><term>"IGNORE"</term>
+<listitem><para>Ignore this signal.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns previous signal value. This is meaningless to the Rexx programmer.</para>
+<example id="sysSignal">
+<title>SysSignal</title>
+<programlisting>
+<![CDATA[
+/* Cause alarm signals to be ignored */
+call SysSignal 14, "ignore"
+
+/* Cause terminal interrupts to take the default action */
+call SysSignal 2, "default"
+
+/* Cause HUPs to be ignored */
+call SysSignal 1, "I"
+]]>
+</programlisting>
+</example>
+</section>
+
+</chapter>
+

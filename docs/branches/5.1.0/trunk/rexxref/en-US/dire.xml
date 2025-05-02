@@ -1,0 +1,1306 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference XML File
+    #
+    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="dire"><title>Directives</title>
+<para>A Rexx program contains one or more executable code units.
+<emphasis role="italic">Directive instructions</emphasis> separate these executable units. A
+directive begins
+with a double colon (::) and is a nonexecutable instruction. For example,
+it cannot appear in a string for the INTERPRET instruction to be interpreted.
+The first directive instruction in a program marks the end of the main executable
+section of the program.</para>
+<para>For a program containing directives, all directives are processed first
+to set up the program's classes, methods, and routines. Then any program code
+in the main code unit (preceding the first directive) is processed. This code
+can use any classes, methods, and routines that the directives established.</para>
+
+<para>Supported directives are
+<xref linkend="annotd" xrefstyle="select:title"/>,
+<xref linkend="attrd" xrefstyle="select:title"/>,
+<xref linkend="clasdi" xrefstyle="select:title"/>,
+<xref linkend="constantd" xrefstyle="select:title"/>,
+<xref linkend="methd" xrefstyle="select:title"/>,
+<xref linkend="optionsd" xrefstyle="select:title"/>,
+<xref linkend="requ" xrefstyle="select:title"/>,
+<xref linkend="resourced" xrefstyle="select:title"/>, and
+<xref linkend="routd" xrefstyle="select:title"/>.
+</para>
+<para>A directive requires a semicolon (<computeroutput>;</computeroutput>) as a terminating delimiter
+unless the end of a line implies it.</para>
+
+<section id="annotd" revisionflag="added"><title>&added50;::ANNOTATE</title>
+<indexterm><primary>::ANNOTATE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::ANNOTATE</secondary></indexterm>
+<indexterm><primary>annotation</primary>
+<secondary>creation</secondary></indexterm>
+<indexterm><primary>ATTRIBUTE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>CONSTANT subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>METHOD subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>ROUTINE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+
+<para>The ::ANNOTATE directive creates annotations to the package, its
+classes, methods, attributes, constants, or routines.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/annotate.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The ::ANNOTATE directive can add metadata information (called "annotations")
+in the form of <emphasis role="italic">name/value</emphasis> pairs to
+the current package, or any of its classes, methods, attributes,
+constants, and routines.</para>
+
+<para>An annotation <emphasis role="italic">attribute</emphasis>,
+<emphasis role="italic">class</emphasis>,
+<emphasis role="italic">constant</emphasis>,
+<emphasis role="italic">method</emphasis>, and
+<emphasis role="italic">routine</emphasis> must be a valid class name,
+constant name, method name, or routine name defined with its respective
+directive in the same source program.</para>
+
+<para>The annotation <emphasis role="italic">name</emphasis> must be a
+symbol that is taken as a constant; a literal string is not
+allowed.
+The annotation <emphasis role="italic">value</emphasis> must be a
+single literal string, a symbol, or a valid number, optionally preceded
+by a plus or minus sign, that is taken as a constant.</para>
+
+<example id="ex.directives-annotate">
+<title>ANNOTATE directive</title>
+<indexterm><primary>examples</primary>
+<secondary>::ANNOTATE directive</secondary></indexterm>
+<programlisting>
+::annotate package author "B. Fox"                 -- annotate current package
+
+::class command
+
+::attribute address
+::attribute command
+
+::method init
+use strict arg command, address = ""
+self~command = command
+self~address = address
+
+::annotate class command languagelevel "6.05"      -- annotate class COMMAND
+::annotate attribute command os "unix windows mac" -- annotate attribute COMMAND
+::annotate method init version "100" maxParms 2    -- annotate method INIT
+</programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+  <listitem><para>Each ::ANNOTATE directive, except for ::ANNOTATE
+  PACKAGE, must be placed <emphasis role="bold">after</emphasis> its
+  respective ::ATTRIBUTE, ::CLASS, ::CONSTANT, ::METHOD, or ::ROUTINE
+  directive in the sourcefile.</para></listitem>
+
+  <listitem><para>When annotating non-floating attributes, constants, or
+  methods, the ::ANNOTATE directive must precede any following ::CLASS
+  directive.</para></listitem>
+
+  <listitem><para>An annotation for an attribute, a method, or a routine
+  should be placed <emphasis role="bold">after</emphasis> any
+  attribute/method/routine code body, as ::ANNOTATE, like any other
+  directive, will end the code body.</para></listitem>
+
+  <listitem><para>A subclass of an annotated class will not inherit any
+  annotations of its superclass or mixinclass.</para></listitem>
+
+  <listitem><para>A copy of an annotated method, package, or routine
+  object will keep any existing annotations.</para></listitem>
+
+  <listitem><para>The ::ANNOTATE directive cannot be used to annotate
+  packages, classes, methods, attributes, constants, and routines
+  which are provided by Rexx or have been made available through a
+  ::REQUIRES directive.</para></listitem>
+
+  <listitem><para>Currently Rexx does not use or predefine any
+  specific annotation <emphasis role="italic">names</emphasis>.</para>
+  </listitem>
+
+  <listitem><para>To query an annotation <emphasis role="italic">name/value</emphasis>
+  pair, to get a list of all attached annotation
+  <emphasis role="italic">name/value</emphasis> pairs, or to add new or
+  change existing annotations, use
+  <itemizedlist spacing="compact">
+    <listitem><para>the Package methods <xref linkend="mthPackageAnnotation" xrefstyle="select:title"/> and <xref linkend="mthPackageAnnotations" xrefstyle="select:title"/>,</para></listitem>
+    <listitem><para>the Class methods <xref linkend="mthClassAnnotation" xrefstyle="select: title"/> and <xref linkend="mthClassAnnotations" xrefstyle="select: title"/>,</para></listitem>
+    <listitem><para>the Method methods <xref linkend="mthMethodAnnotation" xrefstyle="select: title"/> and <xref linkend="mthMethodAnnotations" xrefstyle="select: title"/>, or</para></listitem>
+    <listitem><para>the Routine methods <xref linkend="mthRoutineAnnotation" xrefstyle="select: title"/> and <xref linkend="mthRoutineAnnotations" xrefstyle="select: title"/>.</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+
+</orderedlist>
+
+</section>
+
+
+<section id="attrd" revisionflag="changed"><title>&changed50;::ATTRIBUTE</title>
+<indexterm><primary>::ATTRIBUTE directive</primary></indexterm>
+<indexterm><primary>directives</primary><secondary>::ATTRIBUTE</secondary></indexterm>
+<indexterm><primary>attribute</primary><secondary>creation</secondary></indexterm>
+<indexterm><primary>GET subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>SET subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>GUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNGUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>ABSTRACT subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>DELEGATE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+
+<para>The ::ATTRIBUTE directive creates attribute methods and defines the
+method properties.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/attribute.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The ::ATTRIBUTE directive creates accessor methods for object instance
+variables.  An accessor method allows an object instance variable to be
+retrieved or assigned a value.  ::ATTRIBUTE can create an attribute getter
+method, a setter method, or the getter/setter pair.</para>
+<para>The <emphasis role="italic">name</emphasis> is a literal string or
+a symbol that is taken as a constant.  The <emphasis role="italic">name</emphasis> must also be
+a valid Rexx variable name. The ::ATTRIBUTE directive creates methods
+in the class specified in the most recent ::CLASS directive.  If no ::CLASS
+directive precedes an ::ATTRIBUTE directive, the attribute methods are not
+associated with a class but are accessible to the main (executable) part of a
+program through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::ATTRIBUTE directive can appear for any method name not associated with a class.
+</para>
+<para>If you do not specify either <option>GET</option> or <option>SET</option>,
+::ATTRIBUTE will create two attribute methods with the
+names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
+These are the methods for getting and setting an attribute.  These generated methods are
+equivalent to the following code sequences: </para>
+<example id="ex.directives-attribute">
+<title>ATTRIBUTE directive equivalent code</title>
+<programlisting>
+::method name         -- attribute get method
+  expose name         -- establish direct access to object variable (attribute)
+  use strict arg      -- enforce zero parameters
+  return name         -- return object variable&apos;s current value
+
+::method "NAME="      -- attribute set method
+  expose name         -- establish direct access to object variable (attribute)
+  use strict arg name -- retrieve argument and assign it to the object variable
+</programlisting>
+</example>
+<para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
+If <option>GET</option> or <option>SET</option> are not specified, the pair of methods will be automatically
+generated.  In that case, there is no method code body following the directive,
+so another directive (or the end of the program) must follow the
+::ATTRIBUTE directive.
+</para>
+<para>If <option>GET</option> or <option>SET</option> is specified, only the single get or set attribute method is generated.
+Specifying separate
+<option>GET</option> or <option>SET</option> ::ATTRIBUTE directives allows the methods to be created with different properties.
+For example, the
+sequence:</para>
+<programlisting>
+::attribute name get
+::attribute name set private
+</programlisting>
+<para>will create a <methodname>NAME</methodname> method with PUBLIC access and a <methodname>NAME=</methodname> method with PRIVATE access.</para>
+<para>The <option>GET</option> and <option>SET</option> options may also be used to override the default method body generated for the attribute.  This
+is frequently used so the SET attribute method can perform new value validation.</para>
+<example id="ex.directives-attribute-getset">
+<title>ATTRIBUTE directive &mdash; get and set methods</title>
+<programlisting>
+::attribute size get
+::attribute size set
+  expose size     /* establish direct access to object variable (attribute) */
+  use arg value   /* retrieve argument                                      */
+  if datatype(value, "Whole") = .false | value &lt; 0  then
+    raise syntax 93.906 array ("size", value)
+  size=value
+</programlisting>
+</example>
+<para>If you specify the <option>CLASS</option> option, the created methods are class
+methods. See <xref linkend="provide" />. The attribute methods are
+associated with the class specified on the most recent ::CLASS directive. The
+::ATTRIBUTE must be preceded by a ::CLASS directive if <option>CLASS</option> is
+specified.</para>
+<para>If <option>ABSTRACT</option> is specified, then all created methods will be marked as ABSTRACT and will
+raise an error if directly invoked.
+For ABSTRACT methods there is no method code body following the directive,
+so another directive (or the end of the program) must follow the
+::ATTRIBUTE directive.</para>
+
+<para revisionflag="added">&added50;If <option>DELEGATE</option> is specified, execution of get method
+<emphasis role="italic">name</emphasis>
+and set method
+<emphasis role="italic">name=</emphasis> (depending on whether <option>GET</option> or <option>SET</option>
+or none of these two is specified on the ::ATTRIBUTE directive)
+is delegated to object
+<emphasis role="italic">delegatename</emphasis>.
+It is a common design pattern to delegate method execution to an
+embedded object.
+The directive for such a delegation
+<programlisting>
+::attribute name delegate delegateName
+</programlisting>
+is equivalent to the following code sequence:
+<example id="ex.directives-attribute-delegate-equivalent">
+<title>DELEGATE subkeyword equivalent code</title>
+<programlisting>
+::method name
+expose delegateName
+forward to(delegateName)
+
+::method "NAME="
+expose delegateName
+forward to(delegateName)
+</programlisting>
+</example>
+</para>
+
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a method in an external native library that will be invoked as the
+named method.  The
+<emphasis role="italic">spec</emphasis> is a literal string containing a series
+of whitespace-delimited tokens defining the external method.  The first token
+must be <literal>LIBRARY</literal>, which indicates the method resides in a native library
+of the type allowed on a ::REQUIRES directive.  The second token must identify
+the name of the external library. The external library is located using
+platform-specific mechanisms for loading libraries. For Unix-like systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified, the ::METHOD
+name is used.  The target package method name is case insensitive.</para>
+<para>If the <option>GET</option> or <option>SET</option> option is not specified with the <option>EXTERNAL</option> option, then
+two method objects need to be created.  The target method name is appended to
+the string "GET" to derive the name of the getter attribute method.  To generate
+the setter attribute method, the name is appended to the string "SET".
+If <option>GET</option> or <option>SET</option> is specified and the method name is not specified within
+<emphasis role="italic">spec</emphasis>, then the target library method name
+is generated by concatenating <emphasis role="italic">name</emphasis>
+with "GET" or "SET" as appropriate.  If the method name is specified in
+<emphasis role="italic">spec</emphasis> and <option>GET</option> or <option>SET</option> is specified, the spec
+name will be used unchanged.
+</para>
+<indexterm><primary>examples</primary>
+<secondary>::ATTRIBUTE directive</secondary>
+<tertiary>EXTERNAL option</tertiary></indexterm>
+
+<example id="ex.directives-attribute-getsetrename">
+<title>ATTRIBUTE directive &mdash; naming the get and set methods</title>
+<programlisting>
+-- maps "NAME" method to "GETNAME and
+-- "NAME=" to "SETNAME"
+::ATTRIBUTE name EXTERNAL "LIBRARY mylib"
+-- maps "ADDRESS" method to "GETADDRESS"
+::ATTRIBUTE address GET EXTERNAL "LIBRARY mylib"
+-- maps "ADDRESS=" method to "setHomeAddress"
+::ATTRIBUTE address SET EXTERNAL "LIBRARY mylib setHomeAddress"
+</programlisting>
+</example>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify all options in any order.
+</para></listitem>
+
+<listitem><para>If you specify the <option>PACKAGE</option> option, the methods
+are created with a package-scope, if you specify the <option>PRIVATE</option>
+option, the created methods are private methods.
+Package-scope and private methods have restricted access rules on how
+they can be invoked.
+See <xref linkend="pubpri" />
+for details of how these methods can be used.
+If you omit the <option>PACKAGE</option> or <option>PRIVATE</option> option,
+or specify <option>PUBLIC</option>, the method is a public method
+that any sender can activate.
+</para></listitem>
+
+<listitem><para>If you
+<indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
+specify the <option>UNGUARDED</option> option, the methods can be called while other methods are
+active on the same object. If you do not specify <option>UNGUARDED</option>, the method requires
+exclusive use of the object variable pool; it can run only if no other method
+that requires exclusive use of the object variable pool is active on the same
+object.</para></listitem>
+<listitem><para>If you specify the <option>PROTECTED</option> option, the methods are
+protected methods. (See
+<xref linkend="secman" /> for more information.)
+If you omit the <option>PROTECTED</option> option or specify <option>UNPROTECTED</option>, the methods are not
+protected.
+</para></listitem>
+<listitem><para>It is an error to specify ::ATTRIBUTE more than once within a
+class definition that creates a duplicate get or set method.
+</para></listitem>
+</orderedlist>
+
+</section>
+
+<section id="clasdi"><title>::CLASS</title>
+<indexterm><primary>::CLASS directive</primary></indexterm>
+<indexterm><primary>directives</primary><secondary>::CLASS</secondary></indexterm><indexterm><primary>METACLASS subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>SUBCLASS subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>MIXINCLASS subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary> <secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>INHERIT subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+<indexterm><primary>ABSTRACT subkeyword</primary><secondary>in a CLASS directive</secondary></indexterm>
+
+<para>The ::CLASS directive causes the interpreter to create a Rexx class.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/class.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+
+<para>The ::CLASS directive creates a Rexx class named
+<emphasis role="italic">classname</emphasis>. The
+<emphasis role="italic">classname</emphasis>
+is a literal string or symbol that is taken as a constant.
+The created class is available to programs through the Rexx environment symbol
+.<emphasis role="italic">classname</emphasis>. The
+<emphasis role="italic">classname</emphasis> acquires all methods defined by
+subsequent ::METHOD directives until the end of the program or another ::CLASS
+directive is found. Only null clauses (comments or blank lines) can appear
+between a ::CLASS directive and any following directive instruction or the
+end of the program. Only one ::CLASS directive can appear for
+<emphasis role="italic">classname</emphasis> in a program.</para>
+<para>If you specify the <option>METACLASS</option> option, the instance methods of the
+<emphasis role="italic">metaclass</emphasis> class become class methods of the
+<emphasis role="italic">classname</emphasis> class.
+(See <xref linkend="provide" />.) The
+<emphasis role="italic">metaclass</emphasis> and
+<emphasis role="italic">classname</emphasis> are literal
+strings or symbols that are taken as constants. In the search order for methods,
+the metaclass methods precede inherited class methods and follow any class
+methods defined by ::METHOD directives with the <option>CLASS</option> option.</para>
+<para>If you specify the <option>PUBLIC</option> option, the class is visible beyond its containing
+Rexx program to any other program that references this program with a
+<xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>.
+If you do not specify the <option>PUBLIC</option> option,
+the class is visible only within its containing Rexx program. All public classes
+defined within a program are used before PUBLIC classes created with the same
+name.</para>
+<para>If you specify the <option>SUBCLASS</option> option, the class becomes a subclass of the
+class <emphasis role="italic">sclass</emphasis> for inheritance of instance and
+class methods. The <emphasis role="italic">sclass</emphasis>
+is a literal string or symbol that is taken as a constant.</para>
+<para>If you specify the <option>MIXINCLASS</option> option, the class becomes a subclass of the
+class <emphasis role="italic">mclass</emphasis>
+for inheritance of instance and class methods. You can
+add the new class instance and class methods to existing classes by using
+the <option>INHERIT</option> option on a ::CLASS directive or by sending an <methodname>INHERIT</methodname> message
+to an existing class. If you specify neither the <option>SUBCLASS</option> nor the <option>MIXINCLASS</option>
+option, the class becomes a non-mixin subclass of the Object class.
+</para>
+<para>If you specify the <option>ABSTRACT</option> option, the class will be marked as an
+abstract class.
+Trying to create an instance of an abstract class will raise an error.
+Only subclasses of abstract classes will allow to create instances from.
+</para>
+<para>If you specify the <option>INHERIT</option> option, the class inherits instance methods
+and class methods from the classes <emphasis role="italic">iclasses</emphasis>
+in their order of appearance
+(leftmost first). This is equivalent to sending a series of
+<xref linkend="mthClassInherit" xrefstyle="select:title"/> messages
+to the class object, with each <methodname>inherit</methodname> message
+(except the first) specifying
+the preceding class in <emphasis role="italic">iclasses</emphasis>
+as the <emphasis role="italic">classpos</emphasis> argument.
+As with the <methodname>inherit</methodname> message,
+each of the classes in <emphasis role="italic">iclasses</emphasis>
+must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
+is a whitespace-separated list of literal strings or symbols that are taken as
+constants. If you omit the <option>INHERIT</option> option, the class inherits only from
+<emphasis role="italic">sclass</emphasis>.</para>
+<para>
+<indexterm><primary>examples</primary>
+<secondary>::CLASS directive</secondary></indexterm>
+<example id="ex.directives-class">
+<title>CLASS directive</title>
+<programlisting>
+::class rectangle
+::method area    /* defined for the RECTANGLE class */
+  expose width height
+  return width*height
+
+::class triangle
+::method area    /* defined for the TRIANGLE class */
+  expose width height
+  return width*height/2
+</programlisting>
+</example>
+</para>
+<para>The ::CLASS directives in a program are processed in the order in which
+they appear. If a ::CLASS directive has a dependency on ::CLASS directives
+that appear later in the program, processing of the directive is deferred
+until all of the class's dependencies have been processed.</para>
+<example id="ex.directives-class-deferredproc">
+<title>CLASS directive deferred processing</title>
+<programlisting>
+::class savings subclass account  /* requires the ACCOUNT class */
+::method type
+  return "a Savings Account"
+
+::class account
+::method type
+  return "an Account"
+</programlisting>
+</example>
+<para>The Savings class in the preceding example is not created until the Account
+class that appears later in the program has been created. </para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify the options <option>METACLASS</option>, <option>MIXINCLASS</option>, <option>SUBCLASS</option>, and
+PUBLIC in any order. </para></listitem>
+<listitem><para>If you specify <option>INHERIT</option>, it must be the last option.</para></listitem>
+</orderedlist>
+</section>
+
+<section id="constantd" revisionflag="changed"><title>&changed50;::CONSTANT</title>
+<indexterm><primary>::CONSTANT directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::CONSTANT</secondary></indexterm>
+<indexterm><primary>attribute</primary>
+<secondary>creation</secondary></indexterm>
+
+<para>The ::CONSTANT directive creates methods that return constant
+values for a class and its instances.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/constant.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>A ::CONSTANT directive defines a method that returns a constant value.
+This is useful for creating named constants associated with a class.
+</para>
+<para>The <emphasis role="italic">name</emphasis> is a literal string or
+a symbol that is taken as a constant.  A method of the given name is created as
+both an instance method and a class method of the most recent ::CLASS directive.
+A ::CLASS directive is not required before a ::CONSTANT directive.
+If no ::CLASS directive precedes ::CONSTANT, a single &quot;floating&quot;
+constant method is created that is not associated with a class but is accessible
+through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::CONSTANT directive can appear for any method name not associated with a class.
+</para>
+<para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
+a return result that is specified by <emphasis role="italic">value</emphasis>.
+If specified, the constant <emphasis role="italic">value</emphasis> must be a single
+literal string, a symbol that is taken as a constant, or an expression enclosed
+in parentheses.
+Also permitted is the single character &quot;<literal>-</literal>&quot; or
+&quot;<literal>+</literal>&quot; followed by a symbol that is a valid number.
+If <emphasis role="italic">value</emphasis> is omitted, the constant
+<emphasis role="italic">name</emphasis> will return its value in uppercase.
+</para>
+<para>Here are some examples of valid constants:
+<example id="ex.constant">
+<title>CONSTANT examples</title>
+<programlisting><![CDATA[
+::class MathConstants public
+::constant pi 3.14159265
+::constant author "Isaac Asimov"
+::constant absolute_zero -273.15
+::constant e ( rxcalcexp(1) )
+::constant eSquare (self~e ** 2)
+::constant primes (2, 3, 5, 7, 11, 13)
+
+::class Search
+::constant caseless
+
+::requires rxmath library
+]]></programlisting>
+</example>
+</para>
+<para>A ::CONSTANT directive is a shorthand syntax for creating constants
+associated with a class.  The created name constant can be accessed using either
+the class object or an instance of the class itself.</para>
+<example id="ex.constant-access">
+<title>CONSTANT access examples</title>
+<programlisting><![CDATA[
+say "Pi is" .MathConstants~pi    -- displays "Pi is 3.14159265"
+instance = .MathConstants~new
+say "Pi is" instance~pi          -- also displays "Pi is 3.14159265"
+
+say .Search~caseless             -- "CASELESS"
+
+::class MathConstants public
+::constant pi 3.14159265
+
+::class Search
+::constant caseless
+]]></programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Calculated ::CONSTANT directives (where
+<emphasis role="italic">value</emphasis> is an expression enclosed in
+parentheses) can reference any other constant ::CONSTANT directives (where
+<emphasis role="italic">value</emphasis> is omitted, a single literal string,
+a symbol that is taken as a constant, or a valid number optionally preceded
+by &quot;<literal>-</literal>&quot; or &quot;<literal>+</literal>&quot;).
+For a calculated ::CONSTANT directive to reference another calculated
+::CONSTANT directive, the referenced directive must be defined earlier in
+order of appearance.
+Forward references to calculated ::CONSTANT directives are not allowed.
+</para></listitem>
+<listitem><para>For a floating ::CONSTANT directive the constant
+<emphasis role="italic">value</emphasis> must be a single literal string,
+or a symbol that is taken as a constant.
+An expression enclosed in parentheses is not allowed.
+</para></listitem>
+<listitem><para>A ::CONSTANT directive cannot have a method body.
+</para></listitem>
+</orderedlist>
+</section>
+
+<section id="methd"><title>::METHOD</title>
+<indexterm><primary>::METHOD directive</primary></indexterm>
+<indexterm><primary>directives</primary><secondary>::METHOD</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>creation</secondary></indexterm>
+<indexterm><primary>ATTRIBUTE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>GUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>UNGUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>UNPROTECTED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PROTECTED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>ABSTRACT subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>DELEGATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+
+<para>The ::METHOD directive creates a method object and defines the method
+attributes.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/method.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>A ::METHOD directive creates method objects that may be associated with a
+class instance.  The created method may be from Rexx code, mapped to method in
+an external native library, or automatically generated.  The type of method is
+determined by the combination of options specified.</para>
+<para>The <emphasis role="italic">methodname</emphasis> is a literal string or
+a symbol that is taken as a constant. The method is defined as
+<emphasis role="italic">methodname</emphasis> in the class specified
+in the most recent ::CLASS directive. Only one ::METHOD directive can appear
+for any <emphasis role="italic">methodname</emphasis> in a class.</para>
+<para>A ::CLASS directive is not required before a ::METHOD directive. If no
+::CLASS directive precedes ::METHOD, the method is not associated with a class
+but is accessible to the main (executable) part of a program through the
+<xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::METHOD directive can appear for any method name not associated with a class.
+</para>
+<para>If you specify the <option>CLASS</option> option, the method is a class
+method. See <xref linkend="provide" />. The method is
+associated with the class specified on the most recent ::CLASS directive. The
+::METHOD directive must follow a ::CLASS directive when the <option>CLASS</option> option is
+used.
+</para>
+<para>If <option>ABSTRACT</option> is specified, then the created method will be marked as
+an abstract method and will raise an error if directly invoked.
+For abstract methods there is no method code body following the directive,
+so another directive (or the end of the program) must follow the
+::METHOD directive.
+</para>
+<para>If <option>ABSTRACT</option>, <option>ATTRIBUTE</option>, <option>DELEGATE</option>, or <option>EXTERNAL</option> is not specified, the ::METHOD
+directive starts a section of method code which is ended by another directive or
+the end of the program. The ::METHOD is not included in the source of the
+created METHOD object.
+</para>
+<example id="ex.method-1">
+<title>METHOD examples</title>
+<programlisting>
+r = .rectangle~new(20,10)
+say "Area is" r~area       /* Produces "Area is 200" */
+
+::class rectangle
+
+::method area              /* defined for the RECTANGLE class */
+  expose width height
+  return width*height
+
+::method init
+  expose width height
+  use arg width, height
+
+::method perimeter
+  expose width height
+  return (width+height)*2
+</programlisting>
+</example>
+<para>If you specify the <option>ATTRIBUTE</option> option, method variable accessor methods are
+created.  In addition to generating a method named
+<emphasis role="italic">methodname</emphasis>, another method named
+<emphasis role="italic">methodname=</emphasis> is created.  The first method
+returns the value of object instance variable that matches the method name.
+The second method assigns a new value to the object instance variable.</para>
+<para>For example, the directive
+<programlisting>::method name attribute
+</programlisting>
+creates two methods, <methodname>NAME</methodname> and <methodname>NAME=</methodname>,
+equivalent to the following code sequences:
+<programlisting>
+::method name         -- attribute get method
+  expose name         -- establish direct access to object variable (attribute)
+  use strict arg      -- enforce zero parameters
+  return name         -- return object variable&apos;s current value
+
+::method "NAME="      -- attribute set method
+  expose name         -- establish direct access to object variable (attribute)
+  use strict arg name -- retrieve argument and assign it to the object variable
+</programlisting>
+</para>
+<para>Using the <option>ATTRIBUTE</option> option is equivalent to using the
+<xref linkend="attrd" xrefstyle="select:title"/> directive.
+</para>
+
+<para>If you specify the <option>ABSTRACT</option> option, the method creates an ABSTRACT method placeholder.
+ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
+implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
+</para>
+
+<para revisionflag="added">&added50;If <option>DELEGATE</option> is specified, execution of method
+<emphasis role="italic">name</emphasis> is delegated to object
+<emphasis role="italic">delegatename</emphasis>.
+It is a common design pattern to delegate method execution to an
+embedded object.
+The directive for such a delegation
+<programlisting>
+::method name delegate delegateName
+</programlisting>
+is equivalent to the following code sequence:
+<example id="ex.directives-method-delegate-equivalent">
+<title>DELEGATE subkeyword equivalent code</title>
+<programlisting>
+::method name
+expose delegateName
+forward to(delegateName)
+</programlisting>
+</example>
+</para>
+
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a method in an external native library that will be invoked as the
+named method.  The
+<emphasis role="italic">spec</emphasis> is a literal string containing a series
+of whitespace delimited tokens defining the external method.  The first token
+must be <literal>LIBRARY</literal>, which indicates the method resides in a native library
+of the type allowed on a ::REQUIRES directive.  The second token must identify
+the name of the external library. The external library is located using
+platform-specific mechanisms for loading libraries. For Unix-like systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified, the ::METHOD
+name is used.  The target package method name is case insensitive.</para>
+<indexterm><primary>examples</primary>
+<secondary>::METHOD directive</secondary>
+<tertiary>EXTERNAL option</tertiary></indexterm>
+<example id="ex.method-external-1">
+<title>METHOD EXTERNAL examples</title>
+<programlisting>
+-- creates method INIT from method RegExp_Init in library rxregexp
+::METHOD INIT EXTERNAL "LIBRARY rxregexp RegExp_Init"
+
+-- creates method RegExp_Parse from library rxregexp
+::METHOD RegExp_Parse EXTERNAL "LIBRARY rxregexp"
+</programlisting>
+</example>
+
+<para>If the <option>ATTRIBUTE</option> option is specified with the <option>EXTERNAL</option> option, then two
+method objects need to be created.  The target method name is appended to the
+string "GET" to derive the name of the getter attribute method.  To generate the
+setter attribute method, the name is appended to the string "SET".</para>
+<example id="ex.method-external-2">
+<title>METHOD EXTERNAL examples</title>
+<programlisting>
+-- maps "NAME" method to "GETNAME and
+-- "NAME=" to "SETNAME"
+::METHOD name ATTRIBUTE EXTERNAL "LIBRARY mylib"
+
+-- maps "ADDRESS" method to "GETMyAddress and
+-- "ADDRESS=" to "SETMyAddress"
+::METHOD address ATTRIBUTE EXTERNAL "LIBRARY mylib MyAddress"
+</programlisting>
+</example>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify all options in any order.
+</para></listitem>
+
+<listitem><para>If you specify the <option>PACKAGE</option> option, the method
+is created with a package-scope, if you specify the <option>PRIVATE</option>
+option, the created method is a private method.
+Package-scope and private methods have restricted access rules on how
+they can be invoked.
+See <xref linkend="pubpri" />
+for details of how these methods can be used.
+If you omit the <option>PACKAGE</option> or <option>PRIVATE</option> option,
+or specify <option>PUBLIC</option>, the method is a public method
+that any sender can activate.
+</para></listitem>
+
+<listitem><para>If you
+<indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm> specify
+the <option>UNGUARDED</option> option, the method can be called while other methods are active on
+the same object. If you do not specify <option>UNGUARDED</option>, the method requires exclusive
+use of the object variable pool; it can run only if no other method that
+requires exclusive use of the object variable pool is active on the same
+object.</para></listitem>
+<listitem><para>If you specify the <option>PROTECTED</option> option, the method is a protected
+method. (See <xref linkend="secman" /> for more information.)
+If you omit the <option>PROTECTED</option> option or specify <option>UNPROTECTED</option>, the method is
+not protected.</para></listitem>
+<listitem><para>If you specify <option>ATTRIBUTE</option>, <option>ABSTRACT</option>, or <option>EXTERNAL</option>, another
+directive (or the end of the program) must follow the ::METHOD directive.
+</para></listitem>
+<listitem><para>It is an error to specify ::METHOD more than once within the same
+class and use the same <emphasis role="italic">methodname</emphasis>.
+</para></listitem>
+</orderedlist>
+
+</section>
+
+<section id="optionsd" revisionflag="changed"><title>&changed50;::OPTIONS</title>
+<indexterm><primary>::OPTIONS directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::OPTIONS</secondary></indexterm>
+
+<para>The ::OPTIONS directive defines default values for numeric, trace, and
+other runtime settings for all Rexx code contained within a package.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/options.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Any of the options may be specified on a single ::OPTIONS directive in any
+order.  If an option is specified more than once, the last specified value
+will the be one used.  If more than one ::OPTIONS directive appears in a source
+file, the options are processed in the order they appear and the effect is
+accumulative. If a given option type is specified on more than one directive, the
+last specified will be the value used.
+</para>
+<para>The specified options will override the normal default settings for all Rexx
+code contained in the source file.  For example,
+<programlisting>::OPTIONS DIGITS 20</programlisting>
+would direct that all method and routine code defined in this source package
+execute with an initial <xref linkend="keyNumeric" xrefstyle="select:title"/> DIGITS setting of
+20 digits.  The ::OPTIONS directive controls only the initial setting.  A method
+or routine may change the current setting with the NUMERIC DIGITS instruction as normal.
+The values specified with ::OPTIONS only apply to code that appears in the same source file.
+It does not apply to code in other source files that may reference or use this code.
+For example, a subclass of a class defined in this source package will not inherit the
+::OPTIONS settings if the subclass code is located in a different source package.
+</para>
+<para>The following options may be specified on an ::OPTIONS directive:</para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="5*" />
+<tbody>
+<row><entry><option>DIGITS</option>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>DIGITS option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls the precision to which arithmetic operations and
+built-in functions are evaluated.
+The value <emphasis role="italic">digits</emphasis> must be a symbol or string
+that is a valid positive whole number value and must be larger than the
+current FUZZ ::OPTIONS setting.
+The package value can be retrieved using the Package class
+<xref linkend="mthPackageDigits" xrefstyle="select:title"/> method.
+</para>
+<para>There is no limit to the value for DIGITS
+(except the amount of storage available), but high precisions are likely to
+require a great amount of processing time. It is recommended that you use
+the default value whenever possible.</para>
+</entry></row>
+<row><entry><option>FORM</option>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>FORM option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls the form of exponential notation
+for the result of arithmetic
+operations and built-in functions. This can be either <option>SCIENTIFIC</option> (in which
+case only one, nonzero digit appears before the decimal point) or <option>ENGINEERING</option>
+(in which case the power of 10 is always a multiple of 3). The default is
+<option>SCIENTIFIC</option>. The subkeywords <option>SCIENTIFIC</option> or <option>ENGINEERING</option> must be specified as
+symbols.
+The package value can be retrieved using the Package class
+<xref linkend="mthPackageForm" xrefstyle="select:title"/> method.
+</para>
+</entry></row>
+<row><entry><option>FUZZ</option>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>FUZZ option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls how many digits, at full precision, are ignored during
+a <xref linkend="numcom" xrefstyle="template:numeric comparison"/> operation.
+The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
+that is a valid positive whole number value and must be smaller than the
+current DIGIT ::OPTIONS setting.
+The package value can be retrieved using the Package class
+<xref linkend="mthPackageFuzz" xrefstyle="select:title"/> method.
+</para>
+<para>NUMERIC FUZZ temporarily
+reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
+numeric comparison. The numbers are subtracted under a precision of DIGITS
+minus FUZZ digits during the comparison and are then compared with 0.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry>&added50;<option>ALL</option>
+<indexterm><primary>::OPTIONS directive</primary><secondary>ALL option</secondary></indexterm>
+</entry>
+<entry>
+<para>is a shortcut for all six ::OPTIONS <emphasis role="italic">condition</emphasis>
+directives <option>ERROR</option>, <option>FAILURE</option>, <option>LOSTDIGITS</option>,
+<option>NOSTRING</option>, <option>NOTREADY</option>, and <option>NOVALUE</option>.
+</para>
+<para>::OPTIONS ALL SYNTAX sets all six <emphasis role="italic">condition</emphasis>s
+to raise SYNTAX, while ::OPTIONS ALL CONDITION sets all of them to their default state.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry>&added50;<option>ERROR</option> <option>FAILURE</option> <option>LOSTDIGITS</option> <option>NOSTRING</option> <option>NOTREADY</option> <option>NOVALUE</option>
+<indexterm><primary>::OPTIONS directive</primary><secondary>ERROR option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>FAILURE option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>LOSTDIGITS option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOSTRING option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOTREADY option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary><secondary>NOVALUE option</secondary></indexterm>
+</entry>
+<entry>
+<para>
+controls whether an ERROR, FAILURE, LOSTDIGITS, NOSTRING, NOTREADY, or NOVALUE
+condition event raises its associated condition, or raises a SYNTAX condition.
+</para>
+<para>
+If ::OPTIONS <emphasis role="italic">condition</emphasis> CONDITION is in effect,
+which is the default, the <emphasis role="italic">condition</emphasis> event
+raises its associated condition as usual.
+If ::OPTIONS <emphasis role="italic">condition</emphasis> SYNTAX is in effect,
+a SYNTAX condition is raised instead.
+</para>
+<para>To override an ::OPTIONS
+<emphasis role="italic">condition</emphasis> SYNTAX package default, you can use
+<xref linkend="keySignal" xrefstyle="select:title"/> ON
+<emphasis role="italic">condition</emphasis>,
+SIGNAL OFF <emphasis role="italic">condition</emphasis>,
+SIGNAL ON ANY, or SIGNAL OFF ANY, to raise the associated condition,
+or raise no condition at all.
+For <emphasis role="italic">condition</emphasis>s <option>ERROR</option>,
+<option>FAILURE</option>, and <option>NOTREADY</option> you can also use
+<xref linkend="keyCall" xrefstyle="select:title"/> ON
+<emphasis role="italic">condition</emphasis>,
+CALL OFF <emphasis role="italic">condition</emphasis>,
+CALL ON ANY, or CALL OFF ANY, to raise the associated condition,
+or raise no condition at all.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry>&added50;<option>PROLOG</option> <option>NOPROLOG</option>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>PROLOG option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>NOPROLOG option</secondary></indexterm>
+</entry>
+<entry>
+<para>
+controls whether prolog code (any code in the source program that comes
+before the first directive) is run when another program requires it
+through a <xref linkend="requ" xrefstyle="select:title"/> directive.
+</para>
+<para>
+If ::OPTIONS PROLOG is in effect, any prolog code is run as usual when
+the source program is being required using a :REQUIRES directive.
+If ::OPTIONS NOPROLOG is in effect, any prolog code is not
+run.
+The default is ::OPTIONS PROLOG.
+</para>
+</entry></row>
+
+<row><entry><option>TRACE</option>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>TRACE option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls the tracing action (that is, how much is displayed to the user) during the processing of
+all Rexx code contained in the package. Tracing describes some or all of the clauses in a program,
+producing descriptions of clauses as they are processed. TRACE is mainly used for debugging.
+The value <emphasis role="italic">trace</emphasis> must be one of the
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
+valid for the <xref linkend="keyTrace" xrefstyle="select:title"/> instruction.
+The package value can be retrieved using the Package class
+<xref linkend="mthPackageTrace" xrefstyle="select:title"/> method.
+</para>
+</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+
+<section id="requ"><title>::REQUIRES</title>
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::REQUIRES</secondary></indexterm>
+<indexterm><primary>LIBRARY subkeyword</primary>
+<secondary>in a REQUIRES directive</secondary></indexterm>
+
+<para>The ::REQUIRES directive specifies that the program requires access to
+the classes and objects of the Rexx program
+<emphasis role="italic">programname</emphasis>.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/requires.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>If the <option>LIBRARY</option> option is not specified, all public classes and routines
+defined in the named program are made available to the executing program. The
+<emphasis role="italic">programname</emphasis> is a literal string or a symbol that is
+taken as a constant. The string or symbol
+<emphasis role="italic">programname</emphasis> can be any string or symbol that is valid
+as the target of a CALL instruction. The program <emphasis
+role="italic">programname</emphasis> is called as an external routine with no
+arguments.
+The program is searched for using the
+<xref linkend="filesearch" xrefstyle="template:external program search order"/>.
+</para>
+<para>If any Rexx code precedes the first directive in
+<emphasis role="italic">programname</emphasis> then that code is executed at the
+time the ::REQUIRES is processed by the
+interpreter. This will be executed prior to executing the main Rexx program in
+the file that specifies the ::REQUIRES statement.
+</para>
+<para>If the <option>LIBRARY</option> option is specified, <emphasis role="italic">programname</emphasis>
+is the name of an external native library that is required by this program. The
+library will be loaded using platform-specific mechanisms, which generally means
+the library name is case sensitive.  Any routines defined in the library will be
+made available to all programs running in the process. If the native library
+cannot be loaded, the program will not be permitted to run.  All LIBRARY
+::REQUIRES directives will be processed before ::REQUIRES for Rexx programs,
+which will ensure that the native libraries are available to the initialization
+code of the Rexx packages.
+</para>
+
+<para revisionflag="added">&added50;If the <option>NAMESPACE</option> option is specified,
+<emphasis role="italic">namespace</emphasis> must be a symbol that is
+taken as a constant; a literal string is not allowed.
+</para>
+<para>
+The <option>NAMESPACE</option> option attaches the qualifier
+<emphasis role="italic">namespace</emphasis> to the package loaded by the
+::REQUIRES directive.
+To distinguish public classes or public routines of the same name in
+different ::REQUIRES files, use a namespace-qualified symbol of the form
+<emphasis role="italic">namespace</emphasis><literal>:</literal><emphasis role="italic">class</emphasis> or
+<emphasis role="italic">namespace</emphasis><literal>:</literal><emphasis role="italic">routine</emphasis>.
+For details see <xref linkend="namespacesym" />.
+</para>
+
+<para>::REQUIRES directives can be placed anywhere after the main section of
+code in the package.  The order of ::REQUIRES directives determines the search
+order for classes and routines defined in the named programs and also the load
+order of the referenced files.  Once a program is loaded by a ::REQUIRES
+statement in a program, other references to that same program by ::REQUIRES
+statements in other programs will resolve to the previously loaded program.  The
+initialization code for the ::REQUIRES file will only be executed on the first
+reference.
+</para>
+<para>The following example illustrates that two programs, ProgramA and ProgramB,
+can both access classes and routines that another program, ProgramC, contains.
+(The code at the beginning of ProgramC runs prior to the start of the main
+Rexx program.)</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/MultipleRequires.png" scale="70" />
+</imageobject>
+</mediaobject>
+
+<para>The language processor uses local routine definitions within a program
+in preference to routines of the same name accessed through ::REQUIRES directives.
+Local class definitions within a program override classes of the same name
+in other programs accessed through ::REQUIRES directives.</para>
+<para>Another directive, or the end of the program, must follow a ::REQUIRES
+directive. Only null clauses can appear between them.</para>
+
+</section>
+
+<section id="resourced" revisionflag="added"><title>&added50;::RESOURCE</title>
+<indexterm><primary>::RESOURCE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::RESOURCE</secondary></indexterm>
+<indexterm><primary>LIBRARY subkeyword</primary>
+<secondary>in a RESOURCE directive</secondary></indexterm>
+
+<para>The ::RESOURCE directive allows to include associated data
+directly in the program code.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resource.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resourcedata.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resourceend.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The ::RESOURCE directive allows to include lines of
+<emphasis role="italic">resource_data</emphasis>
+of almost arbitrary form directly within the source program.</para>
+
+<para>The resource <emphasis role="italic">name</emphasis> must be a
+symbol or a literal string that is taken as a constant.
+The optional resource end <emphasis role="italic">delimiter</emphasis>
+must be a symbol or a literal string that is taken as a constant.
+If <emphasis role="italic">delimiter</emphasis> is not specified, it
+defaults to the string "::END".</para>
+
+<indexterm><primary>examples</primary>
+<secondary>::RESOURCE directive</secondary></indexterm>
+<example id="ex.directives-resource">
+<title>RESOURCE directive</title>
+<programlisting>
+::resource greyCat end "-"
+La nuit, tous les chats sont gris
+---------------------------------
+
+::resource "brown fox"
+The quick brown fox jumps over the lazy dog
+::END
+
+::resource nollop end ANONYMOUS
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+ANONYMOUS TYPESETTER
+</programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+  <listitem><para>Specifying more than one ::RESOURCE directive with
+  the same resource <emphasis role="italic">name</emphasis> is an error.
+  </para></listitem>
+
+  <listitem><para>The terminating resource end
+  <emphasis role="italic">delimiter</emphasis> must start in the first
+  column and is case-sensitive.
+  Any text following on the same line as the terminating
+  <emphasis role="italic">delimiter</emphasis> is ignored.
+  </para></listitem>
+
+  <listitem><para>Although <emphasis role="italic">resource_data</emphasis>
+  may include almost arbitrary data (including any Rexx code), it is
+  not well-suited for inclusion of binary data.
+  Including special characters like
+  <xref linkend="line-end" xrefstyle="template:line-end"/>
+  or <xref linkend="end-of-file" xrefstyle="template:end-of-file"/>
+  may cause unwanted results.
+  </para></listitem>
+
+  <listitem><para>Resource data is accessible through the
+  <xref linkend="resourcese" xrefstyle="template:.RESOURCES built-in object"/>,
+  and the Package class methods <xref linkend="mthPackageResource" xrefstyle="select:title"/>
+  and <xref linkend="mthPackageResources" xrefstyle="select:title"/>.
+  </para></listitem>
+</orderedlist>
+
+</section>
+
+<section id="routd"><title>::ROUTINE</title>
+<indexterm><primary>::ROUTINE directive</primary></indexterm>
+<indexterm><primary>directives</primary><secondary>::ROUTINE</secondary></indexterm>
+<indexterm><primary>PRIVATE subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>PUBLIC subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary><tertiary>LIBRARY routine</tertiary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary><secondary>in a ROUTINE directive</secondary><tertiary>REGISTERED routine</tertiary></indexterm>
+
+<para>The ::ROUTINE directive creates named routines within a program.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/routine.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The <emphasis role="italic">routinename</emphasis>
+is a literal string or a symbol that is taken as a constant.
+Only one ::ROUTINE directive can appear for any
+<emphasis role="italic">routinename</emphasis> in a program.</para>
+<para>If the <option>EXTERNAL</option> option is not specified, the ::ROUTINE directive starts a
+routine, which is ended by another directive or the end of the program.
+</para>
+<para>If you specify the <option>PUBLIC</option> option, the routine is visible beyond its containing
+Rexx program to any other program that references this program with a ::REQUIRES
+directive. If you do not specify the <option>PUBLIC</option> option, or specify the <option>PRIVATE</option> option, the routine is visible
+only within its containing Rexx program.</para>
+<para>Routines you define with the ::ROUTINE directive behave like external routines.
+In the search order for routines, they follow internal routines and built-in
+functions but precede all other external routines.</para>
+<indexterm><primary>examples</primary>
+<secondary>::ROUTINE directive</secondary></indexterm>
+<example id="ex.directive-routine">
+<title>ROUTINE examples</title>
+<programlisting>
+
+::class c
+::method a
+call r "A"  /* displays "In method A" */
+
+::method b
+call r "B"  /* displays "In method B" */
+
+::routine r
+use arg name
+say "In method" name
+</programlisting>
+</example>
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a routine in an external native library that will be defined as the
+named routine for this program.  The <emphasis role="italic">spec</emphasis> is
+a literal string containing a series of whitespace delimited tokens defining the
+external function.  The first token identifies the type of native routine to
+locate:</para>
+<variablelist>
+<varlistentry><term><literal>LIBRARY</literal></term>
+<listitem><para>Identifies a routine in an external native library of the type
+supported by the ::REQUIRES directive.  The second token must identify the name
+of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-like systems,
+the library name is case-sensitive.  The third token is optional and specifies
+the name of the routine within the library package.  If not specified, the
+::ROUTINE name is used.  The routine name is not case sensitive.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>REGISTERED</literal></term>
+<listitem><para>Identifies a routine in an older-style Rexx function package.
+The second token must identify the name of the external library. The external
+library is located using platform-specific mechanisms for loading libraries.
+For Unix-like systems, the library name is case-sensitive. The third token is
+optional and specifies the name of the function within the library package.  If
+not specified, the ::ROUTINE name is used.  Loading of the function will be
+attempted using the name as given and as all uppercase.  Using <literal>REGISTERED</literal> is the
+equivalent of loading an external function using the
+<xref linkend="bifRxfuncadd" xrefstyle="select:title"/> built-in function.
+</para></listitem></varlistentry>
+</variablelist>
+<indexterm><primary>examples</primary>
+<secondary>::ROUTINE directive</secondary>
+<tertiary>EXTERNAL option</tertiary></indexterm>
+<example id="ex.directive-routine-registered">
+<title>ROUTINE EXTERNAL examples</title>
+<programlisting>
+
+-- load a function from rxmath library
+::routine RxCalcPi external "LIBRARY rxmath"
+-- same function, but a different internal name
+::routine Pi external "LIBRARY rxmath RxCalcPi"
+-- same as call rxfuncadd "SQLLoadFuncs", "rexxsql", "SQLLoadFuncs"
+::routine SQLLoadFuncs EXTERNAL "REGISTERED rexxsql SQLLoadFuncs"
+
+</programlisting>
+</example>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>It is an error to specify ::ROUTINE with the same routine name more than
+once in the same program. It is not an error to have a local ::ROUTINE with
+the same name as another ::ROUTINE in another program that the ::REQUIRES
+directive accesses. The language processor uses the local ::ROUTINE definition
+in this case.</para></listitem>
+<listitem><para>Calling an external Rexx program as a function is similar to calling an
+internal routine. For an external routine, however, the caller's variables
+are hidden and the internal values (NUMERIC settings, for example) start with
+their defaults.</para></listitem>
+</orderedlist>
+
+<note><title>Note</title>
+<para>If you specify the same ::ROUTINE
+<emphasis role="italic">routinename</emphasis> more than once in different
+programs, the last one is used. Using more than one ::ROUTINE
+<emphasis role="italic">routinename</emphasis> in the same program produces
+an error.</para></note>
+</section>
+</chapter>
