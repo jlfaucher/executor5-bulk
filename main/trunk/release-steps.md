@@ -85,7 +85,7 @@ There is a step-by-step list to follow for this phase.
        to be added to `CHANGES`
 
     3) change all tickets with the status `pending` and `accepted` with no pending work items
-       to `closed` using `bulk-edit`:
+       to `closed` using `bulk-edit` (categories: Bugs, Feature-requests, Documentation, Patches):
 
        - for each ticket category choose `Searches` in the left column towards the bottom
 
