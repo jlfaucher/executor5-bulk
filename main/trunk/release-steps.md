@@ -201,12 +201,15 @@ Step 3.
 
         svn mkdir docs/releases/5.1.0
         svn move  docs/branches/5.1.0/trunk docs/releases/5.1.0/trunk
+        svn rm    docs/branches/5.1.0
 
         svn mkdir main/releases/5.1.0
         svn move  main/branches/5.1.0/trunk main/releases/5.1.0/trunk
+        svn rm    main/branches/5.1.0
 
         svn mkdir test/releases/5.1.0
         svn move  test/branches/5.1.0/trunk test/releases/5.1.0/trunk
+        svn rm    test/branches/5.1.0
 
         svn ci -m "Creating main/releases/5.1.0 to conclude release process."
 
