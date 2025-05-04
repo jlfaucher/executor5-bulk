@@ -1,6 +1,6 @@
 2022-12-15, Release Steps for ooRexx 5.0.0 as a role model
 2025-04-29, Updated for 5.1.0 release
-2025-05-01/02, Updated for 5.1.0 release
+2025-05-01/03, Updated for 5.1.0 release
 ===
 
 Step 1.
@@ -140,6 +140,14 @@ Step 2.
   cf. <https://sourceforge.net/p/oorexx/code-0/12539/#diff-1> changes to:
 
       main/trunk/CMakeLists.txt   -- update the release version information to the next release.
+                section:
+                        # The version of ooRexx to make
+                        set (ORX_API_LEVEL 4)
+                        set (ORX_MAJOR 5)
+                        set (ORX_MINOR 2)
+                        set (ORX_MOD_LVL 0)
+                        set (ORX_BLD_LVL 0)
+
       main/trunk/platform/windows/rexx32.exe.manifest
       main/trunk/platform/windows/rexx64.exe.manifest
 
@@ -188,6 +196,19 @@ Step 3.
         svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk -m "Creating main/releases/5.1.0 to conclude release process."
         svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk -m "Creating docs/releases/5.1.0 to conclude release process."
         svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.1.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk -m "Creating test/releases/5.1.0 to conclude release process."
+
+    alternative (locally from oorexx/code-0 directory)vely:
+
+        svn mkdir docs/releases/5.1.0
+        svn move  docs/branches/5.1.0/trunk docs/releases/5.1.0/trunk
+
+        svn mkdir main/releases/5.1.0
+        svn move  main/branches/5.1.0/trunk main/releases/5.1.0/trunk
+
+        svn mkdir test/releases/5.1.0
+        svn move  test/branches/5.1.0/trunk test/releases/5.1.0/trunk
+
+        svn ci -m "Creating main/releases/5.1.0 to conclude release process."
 
   - change into docs/trunk/tools and run
 
