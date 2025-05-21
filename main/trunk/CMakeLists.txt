@@ -41,14 +41,16 @@
 #/*----------------------------------------------------------------------------*/
 message(STATUS "CMake version is ${CMAKE_VERSION}")
 if (APPLE)
-    # apple builds with prior cmake version have an @rpath problem
-    cmake_minimum_required (VERSION 3.12)
+    # macOS builds with cmake prior version 3.12 have an alleged @rpath issue
+    cmake_minimum_required (VERSION 3.12...99.99)
+elseif (WIN32)
+    # Windows
+    # CMP0091 introduced in 3.15 must stay OLD for our /MD -> /MT hack to work
+    cmake_minimum_required (VERSION 2.8.12...3.14)
 else ()
     # for other platforms
-    cmake_minimum_required (VERSION 2.8.12)
+    cmake_minimum_required (VERSION 2.8.12...99.99)
 endif ()
-# CMP0091 introduced in 3.15 must stay OLD for our /MD -> /MT hack to work
-cmake_policy(VERSION 2.8...3.3)
 
 # must come before the project command
 # 10.13.6 High Sierra is the minimum system supported
@@ -565,7 +567,6 @@ macro(create_install_symlink target)
              TARGET ${target}
              POST_BUILD
              COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ln -sf ${targetName} ${linkName}
-             DEPENDS ${target}
              # COMMENT "--> ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}: [ln -sf ${targetName} ${linkName} DEPENDS ${target}]"
          )
 
@@ -2282,10 +2283,8 @@ set (run_rexx_create_script ${CMAKE_CURRENT_SOURCE_DIR}/support/portable/createP
 
 if (WIN32)
    set (rexx_exe_cpu ${NSIS_CPU})
-   set (rexx_exe_opsys win)
    set (rexx_exe_shell_ft cmd)
 else  () # Unix
-   exec_program("uname" ARGS "-s" OUTPUT_VARIABLE rexx_exe_opsys) # execute_process() did not work out
    set (rexx_exe_shell_ft sh)
 
    if( APPLE AND BUILD_OSX_UNIVERSAL_BINARIES )
@@ -2294,15 +2293,13 @@ else  () # Unix
       set(rexx_exe_cpu ${CMAKE_SYSTEM_PROCESSOR})
    endif ()
 endif ()
-string(TOLOWER ${rexx_exe_opsys} rexx_exe_opsys) # make sure operating system is lowercase
 string(TOLOWER "${CMAKE_BUILD_TYPE}" rexx_build_type)
 
 if (DEFINED CPACK_PACKAGE_FILE_NAME)
-   # 2023-01-05: use the installation package name, if defined
+   # use the installation package name, if defined
    set (zip_name "${CPACK_PACKAGE_FILE_NAME}-portable-${rexx_build_type}")
 else ()
-   # 2023-01-05: field sequence should follow as close as possible the installation package name
-   # set (zip_name "${CPACK_PACKAGE_NAME}-${ORX_VER_STR}-${ORX_BLD_LVL}.${rexx_exe_opsys}.${ORX_ARCHITECTURE}-${rexx_exe_cpu}-portable-${rexx_build_type}")
+   # field sequence should follow as closely as possible the installation package name
    set (zip_name "${CPACK_PACKAGE_NAME}-${ORX_VER_STR}-${ORX_BLD_LVL}.${OS_DIST}.${rexx_exe_cpu}-portable-${rexx_build_type}")
 endif ()
 
