@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -203,19 +203,16 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
     // loop until we find a unique name
     while (true)
     {
-        char numstr[10];
-        // get the random number as a set of 9 character digits
-        snprintf(numstr, sizeof(numstr), "%09zu", num);
+        size_t n = num;
 
         // now substitute our generated characters for the filler characters
-        int i = 9 - j;
-
         for (int x = 0; fileTemplate[x] != 0; x++)
         {
             // if we have a filler, fill it in
             if (fileTemplate[x] == filler)
             {
-                buffer[x] = numstr[i++];
+                buffer[x] = '0' + n % 10;
+                n = n / 10;
             }
         }
 
@@ -360,7 +357,7 @@ void TreeFinder::findFiles()
  * The file specification consists of the search string as sent by the Rexx
  * user, with possibly some glob characters added.
  *
- * If the file speicfication ends in a slash ('\') or a period ('.') or two
+ * If the file specification ends in a (back)slash or a period ('.') or two
  * periods ('..'), then a wild card specification ('*') is
  * appended.
  *
@@ -373,7 +370,7 @@ void TreeFinder::findFiles()
  * named: MyFile a command of "dir MyFile." will produce a listing of "MyFile".
  *
  * In this case we want to leave the file specification alone. that is, do not
- * append a "*.*". A command of "dir *." will produce a directory listing of all
+ * append a '*'. A command of "dir *." will produce a directory listing of all
  * files that do not have an extension.
  */
 void TreeFinder::validateFileSpec()

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -138,6 +138,11 @@ inline RexxString *stringArgument(RexxObject *object, size_t position)
     if (object == OREF_NULL)
     {
         missingArgument(position);
+        // missingArgument() will not return although, technically, it could
+        // and gcc 11.4 issues warning: 'this' pointer is null [-Wnonnull] when
+        // MutableBuffer::appendRexx calls stringArgument(OREF_NULL, ARG_ONE)
+        // To avoid this warning we add a return here
+        return GlobalNames::NULLSTRING;
     }
     return object->requiredString(position);
 }

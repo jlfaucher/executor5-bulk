@@ -1608,12 +1608,16 @@ RexxString *RexxString::upper()
         // copy the data over, uppercasing as we go.
         while (data < endData)
         {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
             *outdata++ = Utilities::toUpper(*data++);
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
         }
         // we know this string does not contain lowercase characters
         newstring->setUpperOnly();
@@ -1695,12 +1699,16 @@ RexxString *RexxString::lower()
         // copy the data over, lowercasing as we go.
         while (data < endData)
         {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
             *outdata++ = Utilities::toLower(*data++);
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
         }
         // we know this string does not contain uppercase characters
         newstring->setLowerOnly();
@@ -1799,12 +1807,16 @@ RexxString *RexxString::lower(size_t offset, size_t _length)
     // now lowercase in place
     for (size_t i = 0; i < _length; i++)
     {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
         *data = Utilities::toLower(*data);
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
         data++;
     }
     return newstring;
@@ -1834,12 +1846,16 @@ RexxString *RexxString::upper(size_t offset, size_t _length)
     // now uppercase in place
     for (size_t i = 0; i < _length; i++)
     {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
         *data = Utilities::toUpper(*data);
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
         data++;
     }
     return newstring;
@@ -2255,12 +2271,16 @@ RexxString *RexxString::newUpperString(const char * string, size_t length)
 
     while (indata < endData)
     {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
         *outdata++ = Utilities::toUpper(*indata++);
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
     }
     // flag as containing only uppercase characters
     newObj->setUpperOnly();

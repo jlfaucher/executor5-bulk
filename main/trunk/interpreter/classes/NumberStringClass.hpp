@@ -132,7 +132,19 @@ class NumberString : public NumberStringBase
            current += len;
        }
        inline void append(const char *d, size_t l)  { memcpy(current, d, l); current += l; }
-       inline void append(char c) { *current++ = c; }
+       inline void append(char c)
+       {
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+           *current++ = c;
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+       }
        inline void addDigits(const char *d, wholenumber_t len)
        {
            for (wholenumber_t i = 0; i < len; i++)

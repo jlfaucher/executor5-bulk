@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -99,6 +99,12 @@ RexxString *RexxString::bitAnd(RexxString *string2, RexxString *pad)
     memcpy(target, padString, maxLength);
 
     // now peform the AND operation between the two strings
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     while (minLength--)
     {
         *target = *target & *source++;
@@ -111,6 +117,9 @@ RexxString *RexxString::bitAnd(RexxString *string2, RexxString *pad)
         *target = *target & padChar;
         target++;
     }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
     return retval;
 }
@@ -168,6 +177,12 @@ RexxString *RexxString::bitOr(RexxString *string2, RexxString *pad)
     memcpy(target, padString, maxLength);
 
     // now peform the AND operation between the two strings
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     while (minLength--)
     {
         *target = *target | *source++;
@@ -180,6 +195,9 @@ RexxString *RexxString::bitOr(RexxString *string2, RexxString *pad)
         *target = *target | padChar;
         target++;
     }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
     return retval;
 }
@@ -235,6 +253,12 @@ RexxString *RexxString::bitXor(RexxString *string2, RexxString *pad)
     memcpy(target, padString, maxLength);
 
     // now peform the XOR operation between the two strings
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     while (minLength--)
     {
         *target = *target ^ *source++;
@@ -247,6 +271,9 @@ RexxString *RexxString::bitXor(RexxString *string2, RexxString *pad)
         *target = *target ^ padChar;
         target++;
     }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
     return retval;
 }

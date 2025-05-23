@@ -459,12 +459,16 @@ RexxString *RexxString::reverse()
     // now perform the whole length copy
     while (length--)
     {
-// avoid GCC warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-// (or similar) in gcc 10 and above, due to our RexxString char stringData[4]
+// avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+// (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
         *string++ = *end--;
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
     }
 
     return retval;
