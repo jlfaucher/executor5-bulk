@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2024-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -134,9 +134,12 @@ else
 
 ::method test_fromunicode_codepages
   -- symbolic code page names, don't test SYMBOL or UTF7
-  do cp over "ACP CONSOLE MACCP OEMCP THREAD_ACP UTF8"~subWords
+  do cp over "ACP CONSOLE MACCP OEMCP THREAD_ACP"~subWords
     self~assertSame("0 A", SysFromUnicode(.Unicode~A, cp, , , s.) s.!text, "code page" cp)
   end
+  -- CP_UTF8 is missing prior to Windows 10 2018
+  self~assertSame("0 A", SysFromUnicode(.Unicode~A, "UTF8", , , s.) s.!text, -
+   "UTF8 is known to fail prior to Windows 10 2018")
   -- code page numbers (just a small selection of many possible)
   do cp over 437, 850, 1252, 65001
     self~assertSame("0 A", SysFromUnicode(.Unicode~A, cp, , , s.) s.!text)
@@ -159,7 +162,8 @@ else
   self~assertSame(0, SysFromUnicode(.Unicode~A, 850, "NO_BEST_FIT", , s.))
 
   -- ERR_INVALID_CHARS is valid with codepages UTF8 or 54936 only
-  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "Err_Invalid_Chars", , s.))
+  self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "Err_Invalid_Chars", , s.), -
+   "UTF8 is known to fail prior to Windows 10 2018")
   -- in addition we have this undocumented alias
   self~assertSame(0, SysFromUnicode(.Unicode~A, "utf8", "ERR_INVALID", , s.))
 
@@ -324,14 +328,15 @@ else
 
   -- three flags allowed together
   self~assertSame(0, SysToUnicode("A", 850, "precomposed err_invalid_chars useglyphchars", s.))
-  -- to do: more COMPOSITE tests
+  -- to do: more PRECOMPOSED tests
 
 
 ::method test_tofromunicode
   -- UTF-8 text converted to Windows Unicode and back to UTF-8 should return unchanged
   do line over .resources~wikipedia
     self~assertSame("0 0" line, -
-     SysToUnicode(line, "utf8", , s.) SysFromUnicode(s.!text, "utf8", , , s.) s.!text)
+     SysToUnicode(line, "utf8", , s.) SysFromUnicode(s.!text, "utf8", , , s.) s.!text, -
+      "UTF8 is known to fail prior to Windows 10 2018")
   end
 
   -- even for a multi-line conversion
