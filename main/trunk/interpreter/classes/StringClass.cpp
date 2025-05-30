@@ -1610,12 +1610,12 @@ RexxString *RexxString::upper()
         {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
             *outdata++ = Utilities::toUpper(*data++);
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
         }
@@ -1701,12 +1701,12 @@ RexxString *RexxString::lower()
         {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
             *outdata++ = Utilities::toLower(*data++);
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
         }
@@ -1809,12 +1809,12 @@ RexxString *RexxString::lower(size_t offset, size_t _length)
     {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
         *data = Utilities::toLower(*data);
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
         data++;
@@ -1848,12 +1848,12 @@ RexxString *RexxString::upper(size_t offset, size_t _length)
     {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
         *data = Utilities::toUpper(*data);
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
         data++;
@@ -2273,12 +2273,12 @@ RexxString *RexxString::newUpperString(const char * string, size_t length)
     {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
         *outdata++ = Utilities::toUpper(*indata++);
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
     }

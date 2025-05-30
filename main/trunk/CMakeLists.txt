@@ -319,6 +319,12 @@ if (WIN32)
    endif ()
    file(TO_NATIVE_PATH ${EXE_MANIFEST_FILE} EXE_MANIFEST_FILE)
    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
+
+   # tell rc.exe to suppress its banner: assume support for -nologo since VS 16.0
+   if (${MSVC_VERSION} GREATER 1818)
+      set (CMAKE_RC_FLAGS "-nologo")
+   endif ()
+
    add_definitions(/DORX_VER=${ORX_MAJOR}
             /DORX_REL=${ORX_MINOR}
             /DORX_MOD=${ORX_MOD_LVL}
@@ -439,16 +445,14 @@ if (NOT WIN32) # Unix header files, libraries, and functions
   check_symbol_exists(KERN_PROC_ARGV "sys/types.h;sys/sysctl.h" HAVE_KERN_PROC_ARGV)
   check_struct_has_member("struct stat" st_mtim sys/stat.h HAVE_STAT_ST_MTIM)
   check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STAT_ST_MTIMESPEC)
-endif ()
 
-set (PACKAGE ${PROJECT_NAME})
-set (PACKAGE_BUGREPORT "https://sourceforge.net/projects/oorexx/")
-set (PACKAGE_NAME ${PROJECT_NAME})
-set (PACKAGE_STRING ${PROJECT_NAME})
-set (PACKAGE_TARNAME "oorexx.tar")
-set (PACKAGE_URL "https://www.oorexx.org/")
-set (PACKAGE_VERSION ${ORX_VER_STR})
-set (VERSION ${ORX_VER_STR})
+  message(STATUS "-- determine available pragmas --")
+  check_c_source_compiles("void main() {
+    #pragma GCC diagnostic ignored \"-Wstringop-overflow\"
+    }" HAVE_PRAGMA_GCC_STRINGOPOVERFLOW FAIL_REGEX "warning")
+message(STATUS "HAVE_PRAGMA_GCC_STRINGOPOVERFLOW is ${HAVE_PRAGMA_GCC_STRINGOPOVERFLOW}")
+
+endif ()
 
 # Configure files config.h
 configure_file(config.h.in.cmake ${PROJECT_BINARY_DIR}/config.h)

@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from CMake.  */
+/* CMake to create config.h from config.h.in.cmake */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H
@@ -120,27 +120,6 @@
 /* Define to 1 if KERN_PROC_PATHNAME is a valid symbol */
 #cmakedefine HAVE_KERN_PROC_PATHNAME
 
-/* Name of package */
-#define PACKAGE ${PACKAGE}
-
-/* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT ${PACKAGE_BUGREPORT}
-
-/* Define to the full name of this package. */
-#define PACKAGE_NAME ${PACKAGE_NAME}
-
-/* Define to the full name and version of this package. */
-#define PACKAGE_STRING ${PACKAGE_STRING}
-
-/* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME ${PACKAGE_TARNAME}
-
-/* Define to the home page for this package. */
-#define PACKAGE_URL ${PACKAGE_URL}
-
-/* Define to the version of this package. */
-#define PACKAGE_VERSION ${PACKAGE_VERSION}
-
-/* Version number of package */
-#cmakedefine VERSION ${VERSION}
+/* Define to 1 if GCC diagnostic stringop-overflow is available */
+#cmakedefine HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 

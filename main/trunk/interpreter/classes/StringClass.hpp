@@ -96,12 +96,12 @@ class RexxString : public RexxObject
          {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
              *current++ = c;
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
          }

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -136,12 +136,12 @@ class NumberString : public NumberStringBase
        {
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
            *current++ = c;
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
        }

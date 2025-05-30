@@ -101,7 +101,7 @@ RexxString *RexxString::bitAnd(RexxString *string2, RexxString *pad)
     // now peform the AND operation between the two strings
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
@@ -117,7 +117,7 @@ RexxString *RexxString::bitAnd(RexxString *string2, RexxString *pad)
         *target = *target & padChar;
         target++;
     }
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
 
@@ -179,7 +179,7 @@ RexxString *RexxString::bitOr(RexxString *string2, RexxString *pad)
     // now peform the AND operation between the two strings
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
@@ -195,7 +195,7 @@ RexxString *RexxString::bitOr(RexxString *string2, RexxString *pad)
         *target = *target | padChar;
         target++;
     }
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
 
@@ -255,7 +255,7 @@ RexxString *RexxString::bitXor(RexxString *string2, RexxString *pad)
     // now peform the XOR operation between the two strings
 // avoid warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
 // (or similar) in gcc 12 and above, due to our RexxString char stringData[4]
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
@@ -271,7 +271,7 @@ RexxString *RexxString::bitXor(RexxString *string2, RexxString *pad)
         *target = *target ^ padChar;
         target++;
     }
-#ifdef __GNUC__
+#ifdef HAVE_PRAGMA_GCC_STRINGOPOVERFLOW
 #pragma GCC diagnostic pop
 #endif
 
