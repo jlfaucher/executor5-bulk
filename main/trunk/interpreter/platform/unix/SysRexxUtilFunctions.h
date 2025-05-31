@@ -1,4 +1,6 @@
 
+// macOS doesn't support any of the sem_xxx functions
+#if !defined __APPLE__
     INTERNAL_ROUTINE(SysCreateMutexSem,      SysCreateMutexSem)
     INTERNAL_ROUTINE(SysOpenMutexSem,        SysOpenMutexSem)
     INTERNAL_ROUTINE(SysCloseMutexSem,       SysCloseMutexSem)
@@ -10,6 +12,7 @@
     INTERNAL_ROUTINE(SysResetEventSem,       SysResetEventSem)
     INTERNAL_ROUTINE(SysPostEventSem,        SysPostEventSem)
     INTERNAL_ROUTINE(SysWaitEventSem,        SysWaitEventSem)
+#endif
     INTERNAL_ROUTINE(SysSetPriority,         SysSetPriority)
     INTERNAL_ROUTINE(SysFork,                SysFork)
     INTERNAL_ROUTINE(SysWait,                SysWait)
