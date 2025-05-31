@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -946,7 +946,7 @@ bool utcToLocal(time_t utc, int64_t *loc)
     // a negative UTC/DST offset which extends into the prior day
     // we'll have to subtract a full day from 'offset' to compensate
     if (local.tm_year < gmt.tm_year ||
-        local.tm_year == gmt.tm_year && local.tm_yday < gmt.tm_yday)
+       (local.tm_year == gmt.tm_year && local.tm_yday < gmt.tm_yday))
     {
         offset -= 24 * 3600;
     }
@@ -954,7 +954,7 @@ bool utcToLocal(time_t utc, int64_t *loc)
     // similar to above, if we're dealing with a positive UTC/DST offset extending
     // into the next day, we'll have to add a full day to 'offset' to compensate
     if (local.tm_year > gmt.tm_year ||
-        local.tm_year == gmt.tm_year && local.tm_yday > gmt.tm_yday)
+       (local.tm_year == gmt.tm_year && local.tm_yday > gmt.tm_yday))
     {
         offset += 24 * 3600;
     }
@@ -994,8 +994,8 @@ bool localToUtc(int64_t loc, time_t *utc)
     // distinguishing those cases.  So we'll accept -1 as valid if the
     // date was either 1969-12-31 or 1970-01-01.
     return *utc != (time_t)-1 ||
-      local.tm_year == 1969 - 1900 && local.tm_mon == 12 - 1 && local.tm_mday == 31 ||
-      local.tm_year == 1970 - 1900 && local.tm_mon == 1 - 1 && local.tm_mday == 1;
+      (local.tm_year == 1969 - 1900 && local.tm_mon == 12 - 1 && local.tm_mday == 31) ||
+      (local.tm_year == 1970 - 1900 && local.tm_mon == 1 - 1 && local.tm_mday == 1);
 }
 
 

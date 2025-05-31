@@ -612,6 +612,9 @@ RexxRoutine0(RexxStringObject, SysVersion)
 }
 
 
+// macOS doesn't support any of the sem_xxx functions
+#if !defined __APPLE__
+
 /*************************************************************************
 * Semaphore data struct                                                  *
 *************************************************************************/
@@ -1069,6 +1072,9 @@ RexxRoutine1(int, SysCloseMutexSem, uintptr_t, vhandle)
     free(semdata);
     return 0;
 }
+
+// macOS doesn't support above sem_xxx functions
+#endif
 
 
 /*************************************************************************

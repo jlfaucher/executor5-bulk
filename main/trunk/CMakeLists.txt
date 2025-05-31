@@ -450,7 +450,6 @@ if (NOT WIN32) # Unix header files, libraries, and functions
   check_c_source_compiles("void main() {
     #pragma GCC diagnostic ignored \"-Wstringop-overflow\"
     }" HAVE_PRAGMA_GCC_STRINGOPOVERFLOW FAIL_REGEX "warning")
-message(STATUS "HAVE_PRAGMA_GCC_STRINGOPOVERFLOW is ${HAVE_PRAGMA_GCC_STRINGOPOVERFLOW}")
 
 endif ()
 
