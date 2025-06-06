@@ -1,0 +1,173 @@
+
+Necessary steps to perform when making a new release for ooRexx
+
+The following examples assumes working from a remote computer using ssh/scp,
+amend as necessary.
+
+1. All the footwork done for a release (Ricks document release-steps.md, copyright update etc)
+   and a Release Candidate in main/branches/5.2/trunk (check this before using the script)
+
+2. Make a complete backup of Jenkins using jenkinsTotalBup.sh, date it and if possible  store away to DATA disk.
+
+   ssh -p 2208 jenkins@build.oorexx.org
+   bash jenkinstotalbup.sh
+   mv jenkinsTotalBup.zip  jenkinsTotalBup_2025-06-05.zip
+
+3. Zip and copy the jobs from Jenkins back with full path
+
+   zip -r var.zip /var/lib/jenkins/jobs/* 
+   scp -P 2216 var.zip jenkins@build.oorexx.org:/Users/jenkins/Downloads
+   rm var.zip
+   exit
+
+IMPORTANT
+
+4. On the machine where the documentation is built make a complete copy of the
+   Documentation job folder ooRexx-docs-build -> ooRexx-docs-build-COPY
+   In this way it can be restored if something goes wrong
+
+   and thereafter clean out all old build files in ooRexx-docs-build
+   zip, html, fo, pdf and delete version files both old and new
+   also SVN should be deleted
+
+5. Extract var.zip WITH COMPLETE PATH /var/lib/jenkins/jobs/* to a work folder
+   Copy Modifybuildjobs.rex to the same folder
+
+   unzip var.zip
+   cp -r var ReleaseTest/var
+
+NOTE: Work folder can be on Jenkins Controller itself or on another machine
+Examples here assume working on a remote machine
+
+6. In the script Modifybuildjobs.rex check these items (example for 5.1.1)
+
+   Modify Modifybuildjobs.rex to include the correct new paths
+   needle = current path
+   newneedle = the release path
+
+-- needle1 for all build jobs, also for source package build
+   needle1     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/trunk</remote>'
+   newneedle1  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.1/trunk</remote>'
+
+-- needle 2 and needle3 are for the documentation build
+-- remember we must build the complete release documentation once before we build the installers
+   needle2     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/trunk</remote>'
+   newneedle2  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk</remote>'
+
+   needle3     ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/trunk /home/frs/project/oorexx/oorexx-docs/5.2.0beta'
+   newneedle3  ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk /home/frs/project/oorexx/oorexx-docs/5.1.1'
+
+-- ooRexx-sourceforge-upload and ooRexx-sourceforge-zip-installer-upload can take 3 arguments:
+-- the upload folder tail part
+-- the version number indicated in the filename
+-- the min revision, set to release number
+   needle4     ='rexx jenkinsArtifactUpload.rex 5.2.0beta 5.2.0 0'
+   newneedle4  ='rexx jenkinsArtifactUpload.rex 5.1.1 5.1.1 12973'
+
+   needle5     ='rexx jenkinsZIPArtifactUpload.rex 5.2.0beta 5.2.0 0'
+   newneedle5  ='rexx jenkinsZIPArtifactUpload.rex 5.1.1 5.1.1 12973'
+
+-- ooRexx tests jobs new 2025-04-30
+   needle6     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/trunk</remote>'
+   newneedle6  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.1/trunk</remote>'
+
+7. Run Modifybuildjobs.rex
+   This will find and modify all needles with newneedles in all jobs
+
+NOTE: In order to be successful most builds need a fresh copy of the documentation. Since the revision
+information is depending on how the documentation was built we need to make a build first to create the documentation and then build the artifacts with the correct documentation.
+
+8. Log in to Sourceforge and create one NON-STAGED folder for the new documentation build 
+   /projects/oorexx/files/oorexx-docs/5.1.1
+   important! Wget does not work well with staged folders set it STAGED after upload is finished
+
+9. Create 2 STAGED folders on Sourceforge
+   /projects/oorexx/files/oorexx/5.1.1
+   /projects/oorexx/files/oorexx/5.1.1/portable
+
+IMPORTANT step 10 and 11 might be unnecessary but done to limit damage when things go wrong
+
+10. In Jenkins main screen set all physical machines to offline,
+   also Built-in-Node (Controller), make a remark
+   "Offline for Release work P.O. Jonsson 2025-06-05"
+
+   For machine used to build the documentation disable all other
+   jobs -> Nodes -> pos MacPro 16Core
+   -> job -> Configure -> turn "Enabled" to off and save these:
+   ooRexx-docs-buildutils-check
+   ooRexx-macOS14-X86_64-build
+   ooRexx-macOS14-X86_64-test
+   ooRexx-source-package-build
+
+11. Turn all virtual machines off (on Mac and Win)
+
+Now only ooRexx-docs-build is active and we are ready for switching
+
+12. Stop Jenkins from running on Jenkins master
+   From remote use ssh to connect to jenkins controller
+
+   ssh -p 2208 jenkins@build.oorexx.org
+   sudo systemctl stop jenkins or sudo service jenkins stop
+   exit
+   This is absolutely essential to do before anything else.
+
+13. Copy back the modified folders from .../jobs to /var/lib/jenkins/jobs
+   This is done from remote workdir (in my case from .../ReleaseTest)
+
+   Try this first and compare /Downloads to /jobs. If ok do the copy below
+   scp -rpP 2208 var/lib/jenkins/jobs/* jenkins@build.oorexx.org:/home/jenkins/Downloads
+
+   scp -rpP 2208 var/lib/jenkins/jobs/* jenkins@build.oorexx.org:/var/lib/jenkins/jobs
+
+14. Start jenkins again
+   ssh -p 2208 jenkins@build.oorexx.org
+   sudo service jenkins start
+   If all goes well the build of the documentation should start and
+   upload to Sourceforge folder under oorexx-docs
+
+15. When the documentation is completely built start by setting one or
+   a few platforms (Win, MacOS, Ubuntu) active again and launch a build,
+   make sure it/they build ok, activate the upload and zipupload jobs
+   manually and check that the built are ok 
+
+16. When all are ok and checked by others release the remaining jobs and
+   turn on all VMs monitor that all platforms are built.
+
+17. Check the Sourceforge folder, it might be that some older items got uploaded
+   This is normally prevented by the switches to the uploading script but inevitably
+   there will be a few older builds that need to be deleted manually
+
+MOVING BACK TO TRUNK AFTER A BUGGFIX RELEASE 5.1.0 -> 5.1.1
+
+1. as soon as all artifacts have been uploaded stop Jenkins from running on Jenkins master
+   From remote use ssh to connect to jenkins controller
+
+   ssh -p 2208 jenkins@build.oorexx.org
+   sudo systemctl stop jenkins
+   exit
+
+IMPORTANT
+2. On the machine where the documentation is built restore earlier documentation build
+   rename ooRexx-docs-build      -> ooRexx-docs-build-RELEASE 
+   copy   ooRexx-docs-build-COPY -> ooRexx-docs-build-520 (safety copy)
+   rename ooRexx-docs-build-COPY -> ooRexx-docs-build
+
+3. Copy back the non-modified /var/lib/jenkins/jobs
+   Navigate to where the original unmodified files reside
+
+   Try this first and compare /Downloads to /jobs. If ok do the copy below
+   scp -rpP 2208 var/lib/jenkins/jobs/* jenkins@build.oorexx.org:/home/jenkins/Downloads
+
+   scp -rpP 2208 var/lib/jenkins/jobs/* jenkins@build.oorexx.org:/var/lib/jenkins/jobs
+
+   Start jenkins again
+   ssh -p 2208 jenkins@build.oorexx.org
+   sudo systemctl start jenkins
+
+4. Check that everything looks ok and that all platforms are connected
+
+MOVING TO THE NEXT BETA AFTER RELEASE 5.1.1 -> 5.2.0
+Basically this is the same procedure as for the release, only with different paths.
+Use a fresh copy of the non-modified /var/lib/jenkins/jobs and modify Modifybuildjobs.rex
+for the upcoming beta, repeat process 1-17 above after the trunk have been set to the next level
+ 
