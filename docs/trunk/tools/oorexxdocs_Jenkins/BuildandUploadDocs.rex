@@ -2,7 +2,7 @@
 /*
 # -----------------------------------------------------------------------------
 #
-# Copyright (c) 2022-2024 Rexx Language Association. All rights reserved.
+# Copyright (c) 2022-2025 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -48,8 +48,11 @@
 #    use existing build script
 # 4: Upload the newly built documents to sourceforge
 #
+# Change 2025-06-05 Update the script to set 5.2.0beta as default;
+# both parameters should be set on commandline or a new release will fail
+# Change 2025-05-27 ootest and oorexxbuild included in build and upload again
 # Change 2024-09-15 Buggfix, now accept two parameters on the command line
-# CHANGE 2023-12-20 Changes to support using the bld_orx tools
+# Change 2023-12-20 Changes to support using the bld_orx tools
 # (ooRexx programs) rather than the shell scripts to build the documents;
 # runs the shell scripts if all of ooRexx programs are not present
 # Change 2023-01-02 add 3 zipfiles containing all pdf+html files;
@@ -62,16 +65,12 @@
 # ------------------------------------------------------------------------------
 */
 
---  sandbox test paths for next release, sfdocfolder must be created first on sourceforge
---  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/sandbox/po/docs/branches/5.1/trunk'
---  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/sandbox/po/docs/releases/5.1.0/trunk'
-
---  real paths for 5.1.0, which one should we chose
---  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk'
+--  sandbox test paths for 5.1.1 release, sfdocfolder must be created first on sourceforge
 --  sfRoot = 'svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk'
+--  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.1
 
 --  real path for Sourceforge, create manually and delete after test (staged 3 days)
---  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0'
+--  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.2.0beta'
 
   parse arg input1 input2
 
@@ -82,7 +81,7 @@
 
 /* Here is where we upload the built documentation on sourceforge	*/
 /* Should be given as input to the script, fallback if not		*/
-  if input2 = '' then sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.0beta'
+  if input2 = '' then sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.2.0beta'
   else sfdocfolder = input2~strip
 
 say 'Debug sfRoot' sfRoot
@@ -111,8 +110,11 @@ say 'Debug sfdocfolder' sfdocfolder
 /* These are all books that need to be checked              */
 /* rexxgtk excluded from upload 2022-12-20              */
 /* ooconsole excluded from upload 2023-01-01                */
+/* ootest and oorexxbuild included in upload again 2025-05-27 */
+/* Change 2025-05-27 ootest and oorexxbuild included in build and upload again */
+
 /* to enable add this to list below and to DocRevisions.txt     */
-   outArray = .array~of("oodguide r1", "oodialog r1", "oorexxbuild r1", "oosqlite r1", "ootest r1", "orxncurses r1", "readme r1", "rexxapi r1", "rexxextensions r1", "rexxpg r1", "rexxref r1", "rxftp r1", "rxmath r1", "rxsock r1", "unixextensions r1", "winextensions r1")
+   outArray = .array~of("readme r1", "rexxref r1", "rexxapi r1", "rexxextensions r1", "rexxpg r1", "rxftp r1", "rxmath r1", "rxsock r1", "unixextensions r1", "winextensions r1", "oodguide r1", "oodialog r1", "oosqlite r1", "orxncurses r1", "ootest r1", "oorexxbuild r1")
 
 /* These are the unix command used with full path           */
   svncmd  = '/usr/local/bin/svn'

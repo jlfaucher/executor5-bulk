@@ -12,6 +12,10 @@ Once launched the script will set up its own working environment.
 As of 27.12.2023 the script can use the universal rexx build scripts from
 bldoc_orx folder rather than the shell scripts originally used.
 
+As of 2024-09-15 the script accepts two parameters on the command line:
+Parameter 1 = sfRoot the root folder for the documentation in svn repository
+Parameter 2 = sfdocfolder where to upload the built documentation on source forge
+
 To use the rexx scripts rather than the shell scripts simply copy the
 content of the entire folder bldoc_orx to the DocBuild folder.
 
