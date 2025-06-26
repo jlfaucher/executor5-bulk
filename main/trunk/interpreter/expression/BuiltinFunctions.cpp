@@ -900,11 +900,11 @@ BUILTIN(ARG)
     else if (option == OREF_NULL)
     {
         // verify this is a positive integer value
-        size_t position = n->getValue();
+        wholenumber_t position = n->getValue();
         positive_integer(position, ARG, IntegerOne);
 
         // out of range is just a null string
-        if (size < position)
+        if (size < (size_t)position)
         {
             return GlobalNames::NULLSTRING;
         }
@@ -924,7 +924,7 @@ BUILTIN(ARG)
     else
     {
         // get the postition value, which is the same for all options
-        size_t position = n->getValue();
+        wholenumber_t position = n->getValue();
         positive_integer(position, ARG, IntegerOne);
 
         switch (Utilities::toUpper(option->getChar(0)))
@@ -937,7 +937,7 @@ BUILTIN(ARG)
                     return new_array(size, arglist);
                 }
                 // if greater than the size, this is an empty array
-                else if (position > size)
+                else if ((size_t)position > size)
                 {
 
                     return new_array();
@@ -945,14 +945,14 @@ BUILTIN(ARG)
                 else
                 {
                     // extract the sub array
-                    return new_array(size - position + 1, &arglist[position - 1]);
+                    return new_array(size - (size_t)position + 1, &arglist[position - 1]);
                 }
                 break;
 
             // 'E'xist
             case 'E':
                 // out of range is always false
-                if (position > size)
+                if ((size_t)position > size)
                 {
                     return TheFalseObject;
                 }
@@ -963,7 +963,7 @@ BUILTIN(ARG)
             // 'O'mitted argument?
             case 'O':
                 // out if range is an omitted arg
-                if (position > size)
+                if ((size_t)position > size)
                 {
                     return TheTrueObject;
                 }
@@ -973,7 +973,7 @@ BUILTIN(ARG)
 
             // 'N'ormal, which is the same as the position and no argument
             case 'N':
-                if (position > size)
+                if ((size_t)position > size)
                 {
                     return GlobalNames::NULLSTRING;
                 }

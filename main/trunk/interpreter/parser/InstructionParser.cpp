@@ -231,7 +231,7 @@ RexxInstruction* LanguageParser::nextInstruction()
 
             // we need an expression following the op token, again, using the rest of the
             // instruction.
-            RexxInternalObject *subexpression = parseSubExpression(TERM_EOC);
+            RexxInternalObject *subexpression = parseExpression(TERM_EOC);
             if (subexpression == OREF_NULL)
             {
                 syntaxError(Error_Invalid_expression_general, second);
@@ -244,7 +244,7 @@ RexxInstruction* LanguageParser::nextInstruction()
         {
             ProtectedObject p(term);
             // we need an expression following the op token
-            RexxInternalObject *subexpression = parseSubExpression(TERM_EOC);
+            RexxInternalObject *subexpression = parseExpression(TERM_EOC);
             if (subexpression == OREF_NULL)
             {
                 syntaxError(Error_Invalid_expression_general, second);
@@ -911,7 +911,7 @@ RexxInstruction* LanguageParser::assignmentNew(RexxToken  *target)
     // so far, we only know that the target is a symbol.  Verify that this
     // really is a variable symbol.  This handles raising an error if not valid.
     needVariable(target);
-    // everything after the "=" is the expression that is assigned to the variable.
+    // everything after the "=" is the expression that is as to the variable.
     // The expression is required.
     RexxInternalObject *expr = requiredExpression(TERM_EOC, Error_Invalid_expression_assign);
 
