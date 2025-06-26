@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -387,6 +387,14 @@ return testResult
    arr1 = .array~of("Mike", "Rick", "Fred", "Rick")
    self~expectSyntax(93.907)
    t1 = arr1[.nil]
+
+-- bug # 2025 (https://sourceforge.net/p/oorexx/bugs/2025/)
+::method "test_bug_2025"
+   a=1,2,3
+   self~assertIsA(a,.array)
+
+   a[1]=1,2,3
+   self~assertIsA(a[1],.array)
 
 
 ::options novalue error
