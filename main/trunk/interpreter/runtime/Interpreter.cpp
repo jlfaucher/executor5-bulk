@@ -236,12 +236,15 @@ bool Interpreter::terminateInterpreter()
         // the libraries (it needs to pass a RexxThreadContext
         // pointer out to package unloaders, if they are defined)
         InstanceBlock tmpInstance;
-        InstanceAttacherDetacher instAttDet(tmpInstance.instance);
+        // make sure that attaching and detaching is done for this particular block
+        {
+            InstanceAttacherDetacher instAttDet(tmpInstance.instance);
 
-        // run whatever uninits we can before we start releasing the libraries
-        memoryObject.lastChanceUninit();
+            // run whatever uninits we can before we start releasing the libraries
+            memoryObject.lastChanceUninit();
 
-        PackageManager::unload();
+            PackageManager::unload();
+        }
     }
     catch (ActivityException)
     {
