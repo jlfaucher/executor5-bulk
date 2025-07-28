@@ -248,14 +248,4 @@ public:
 };
 
 
-class InstanceAttacherDetacher
-{
-public:
-    InstanceAttacherDetacher(InterpreterInstance *i);
-    ~InstanceAttacherDetacher();
-
-    InterpreterInstance  *instance;    // interpreter instance
-};
-
-
 #endif

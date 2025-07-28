@@ -235,16 +235,11 @@ bool Interpreter::terminateInterpreter()
         // to shut down so that the package manager can unload
         // the libraries (it needs to pass a RexxThreadContext
         // pointer out to package unloaders, if they are defined)
-        InstanceBlock tmpInstance;
-        // make sure that attaching and detaching is done for this particular block
-        {
-            InstanceAttacherDetacher instAttDet(tmpInstance.instance);
+        InstanceBlock instance;
+        // run whatever uninits we can before we start releasing the libraries
+        memoryObject.lastChanceUninit();
 
-            // run whatever uninits we can before we start releasing the libraries
-            memoryObject.lastChanceUninit();
-
-            PackageManager::unload();
-        }
+        PackageManager::unload();
     }
     catch (ActivityException)
     {
@@ -489,30 +484,6 @@ InstanceBlock::~InstanceBlock()
     // terminate the instance
     instance->terminate();
 }
-
-
-/**
- * Make sure that attachThread() and detachThread() get carried out for the
- * supplied InterpreterInstance.
- *
- * @param i InterpreterInstance
- */
-InstanceAttacherDetacher::InstanceAttacherDetacher(InterpreterInstance *i)
-{
-    // Get an instance.
-    instance = i;
-    instance->InterpreterInstance::attachThread();
-}
-
-/**
- * Carry out detachThread() for the instance, if going out of scope.
- */
-InstanceAttacherDetacher::~InstanceAttacherDetacher()
-{
-    // detach from the instance
-    instance->InterpreterInstance::detachThread();
-}
-
 
 
 /**
