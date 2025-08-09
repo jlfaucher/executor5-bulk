@@ -621,18 +621,19 @@ parse var books 1 Eliot 1 Evans
 <tertiary>length</tertiary></indexterm>
 <indexterm><primary>positional patterns</primary>
 <secondary>length</secondary></indexterm>
-is a number with a (<computeroutput>&gt;</computeroutput>) or
-(<computeroutput>&lt;</computeroutput>) preceding it. It can also be an
-expression within parentheses, with a (<computeroutput>&gt;</computeroutput>)
-or (<computeroutput>&lt;</computeroutput>) preceding the left
-parenthesis; for details see
-<xref linkend="varpat" />.</para>
+is a number with a <literal>&gt;</literal> or <literal>&lt;</literal> preceding it.
+It can also be an expression within parentheses, with a <literal>&gt;</literal>
+or <literal>&lt;</literal> preceding the left parenthesis;
+for details see <xref linkend="varpat" />.
+</para>
 <para>The number specifies the length at which the source
-string is to be split, relative to the current position.. The &gt; or &lt; indicates movement right or left,
+string is to be split, relative to the current position.
+The <literal>&gt;</literal> or <literal>&lt;</literal> indicates movement right or left,
 respectively, from the start of the string (for the first pattern) or from
 the position of the last match. The position of the last match is the first
 character of the last match. Here is the same example as for relative positional
-patterns done with length positional patterns: </para>
+patterns done with length positional patterns:
+</para>
 <example>
 <title>Parsing with relative positional patterns</title>
 <programlisting>
@@ -646,15 +647,16 @@ do n=1 to 3
 end                                             /* same results  */
 </programlisting>
 </example>
-<para>Whitespace characters between the trigger and the number are
-insignificant. Therefore,
-<computeroutput>&gt;10</computeroutput> and
-<computeroutput>&gt;&nbsp;10</computeroutput> have the same meaning. Note that
-&gt;0 &lt;0 and are valid length positional pattern.</para>
-<para>The &gt; length pattern and the + relative positional pattern are interchangeable except in
-the special case of the value 0.  A &gt;0 pattern will split the string into a null string and leave
-the match position unchanged.  This is particularly useful for parsing off length-qualified fields
-from a string.</para>
+<para>Whitespace characters between the trigger and the number are insignificant.
+Therefore, <literal>&gt;10</literal> and <literal>&gt;&nbsp;10</literal> have the same meaning.
+Note that <literal>&gt;0</literal> and <literal>&lt;0</literal> are valid length positional patterns.
+</para>
+<para>The <literal>&gt;</literal> length pattern and the <literal>+</literal> relative
+positional pattern are interchangeable except in the special case of the value <literal>0</literal>.
+A <literal>&gt;0</literal> pattern will split the string into a null string and leave
+the match position unchanged.
+This is particularly useful for parsing off length-qualified fields from a string.
+</para>
 <example>
 <title>Parsing with length patterns</title>
 <programlisting>
@@ -668,11 +670,13 @@ parse var line len +2 first +(len) len +2 middle +(len) len +2 last +(len)
 say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "05Twain" "Twain"
 </programlisting>
 </example>
-<para>The &lt; length pattern will move the position the indicated position to the left, and split
-the string between the original position and the movement position.  At of the operation, the current
-position is returned to the original position.  This movement is equivalent to using a negative relative
-pattern followed by a positive relative pattern for the same length.  This operation allows for easy
-extraction of characters that precede a string match.</para>
+<para>The <literal>&lt;</literal> length pattern will move the position to the left,
+and split the string between the original position and the movement position.
+At the end of the operation, the current position is returned to the original position.
+This movement is equivalent to using a negative relative pattern followed by a
+positive relative pattern for the same length.
+This operation allows for easy extraction of characters that precede a string match.
+</para>
 <example>
 <title>Parsing with length patterns</title>
 <programlisting>
