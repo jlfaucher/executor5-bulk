@@ -227,20 +227,36 @@ necessary, to the precision specified by the NUMERIC DIGITS instruction.</para>
 <para>The values are rounded as follows: 5 through 9 are rounded up, and 0
 through 4 are rounded down.</para>
 
+<section id="multiplication"><title>Multiplication</title>
+<para>The numbers are multiplied together ("long multiplication") resulting
+in a number that may be as long as the sum of the lengths of the two operands.
+For example <literal>xxx.xxx * yy.yyyyy</literal>
+becomes <literal>zzzzz.zzzzzzzz</literal>.
+The result is then rounded, counting from the first significant digit of the
+result, to the current setting of NUMERIC DIGITS.
+</para>
+</section>
+
 <section id="power"><title>Power</title>
 <indexterm><primary>absolute value</primary>
 <secondary>used with power</secondary></indexterm>
 <para>The ** (power) operator
 raises a number to a power, which can be positive, negative, or
-<computeroutput>0</computeroutput>. The power must be a whole number.
-The second term in the operation must be a whole number and is rounded to
+<literal>0</literal>.
+The power must be a whole number and is rounded to
 DIGITS digits, if necessary, as described in
 <xref linkend="nudbr" />.
 If negative, the absolute value of the power is
 used, and the result is inverted (that is, the number 1 is divided by the
-result). For calculating the power, the number is multiplied by itself for
-the number of times expressed by the power. Trailing zeros are then removed
-as though the result were divided by 1.</para>
+result).
+For calculating the power, instead of multiplying the number by itself
+for the number of times expressed by the power, a more efficient
+<emphasis role="italic">exponentiation by squaring</emphasis>
+algorithm is used, which requires far fewer multiplications.
+The result of these multiplications is inverted for negative power values,
+rounded to NUMERIC DIGITS digits, if necessary, and trailing zeros
+are then removed as though the result were divided by 1.
+</para>
 </section>
 
 <section id="intedivis"><title>Integer Division</title>
