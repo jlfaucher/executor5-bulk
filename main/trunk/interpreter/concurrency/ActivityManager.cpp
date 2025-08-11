@@ -568,6 +568,8 @@ Activity *ActivityManager::createNewActivity(Activity *parent)
  */
 void ActivityManager::clearActivityPool()
 {
+    ResourceSection lock;                // critical section, protect interaction with activity queues
+
     Activity *activity = (Activity *)availableActivities->pull();
     while (activity != OREF_NULL)
     {
@@ -591,6 +593,8 @@ void ActivityManager::clearActivityPool()
  */
 bool ActivityManager::poolActivity(Activity *activity)
 {
+    // ResourceSection lock held by caller: bool InterpreterInstance::poolActivity(Activity *activity
+
     // are we shutting down or have too many threads in the pool?
     if (processTerminating || availableActivities->items() > MAX_THREAD_POOL_SIZE)
     {
