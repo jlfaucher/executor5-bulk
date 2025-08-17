@@ -299,7 +299,6 @@ bool InterpreterInstance::detachThread(Activity *activity)
     {
         terminationSem.post();
     }
-    ActivityManager::releaseAccess();   // hack kudos to Dom Wise (20250817 e-mail on developer list), remove kernel lock again
     return true;
 }
 
