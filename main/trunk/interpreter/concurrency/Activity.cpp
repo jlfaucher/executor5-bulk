@@ -311,7 +311,7 @@ void Activity::clearLocalReferences()
  * We're leaving the current thread.  So we need to deactivate
  * this.
  */
-void Activity::exitCurrentThread()
+void Activity::exitCurrentThread(bool dispatch)
 {
     // deactivate the nesting level
     deactivate();
@@ -322,7 +322,7 @@ void Activity::exitCurrentThread()
     }
     // this activity owned the kernel semaphore before entering here...release it
     // now.
-    releaseAccess();
+    releaseAccess(dispatch);
 }
 
 
@@ -2180,14 +2180,14 @@ bool Activity::setTrace(bool on)
 /**
  * Release exclusive access to the kernel
  */
-void Activity::releaseAccess()
+void Activity::releaseAccess(bool dispatch)
 {
     // make sure we're really the holder on this
     if (ActivityManager::currentActivity == this)
     {
         // reset the numeric settings
         Numerics::setDefaultSettings();
-        ActivityManager::releaseAccess();
+        ActivityManager::releaseAccess(dispatch);
     }
 }
 

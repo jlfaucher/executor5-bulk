@@ -727,14 +727,17 @@ void ActivityManager::exit(int retcode)
 /**
  * release the kernel access and make sure waiting activites are woken up.
  */
-void ActivityManager::releaseAccess()
+void ActivityManager::releaseAccess(bool dispatch)
 {
     DispatchSection lock;                // need the dispatch queue lock
 
     // since we're releasing the semaphore, give any queued activities a nudge
     // forward in the request process.
-    dispatchNext();
-
+    if (dispatch)
+    {
+        dispatchNext();
+    }
+    
     // now release the kernel lock
     unlockKernel();
 }

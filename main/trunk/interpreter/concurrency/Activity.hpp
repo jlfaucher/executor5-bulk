@@ -183,7 +183,7 @@ class Activity : public RexxInternalObject
     bool        setTrace(bool);
     inline void yieldControl() { releaseAccess(); requestAccess(); }
     void        yield();
-    void        releaseAccess();
+    void        releaseAccess(bool dispatch = true);
     void        requestApiAccess();
     void        requestAccess();
     void        setupCurrentActivity();
@@ -261,7 +261,7 @@ class Activity : public RexxInternalObject
     void inheritSettings(Activity *parent);
     void setupExits();
     void enterCurrentThread();
-    void exitCurrentThread();
+    void exitCurrentThread(bool dispatch = true);
     void run(ActivityDispatcher &target);
     void run(CallbackDispatcher &target);
     void run(TrappingDispatcher &target);

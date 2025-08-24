@@ -531,15 +531,15 @@ bool InterpreterInstance::terminate()
         sysInstance.terminate();
 
         // ok, deactivate this again...this will return the activity because the terminating
-        // flag is on.
-        current->exitCurrentThread();
+        // flag is on. Don't nudge the dispatch queue yet
+        current->exitCurrentThread(false);
     }
     // do the release in a catch block to ensure we really release this
     catch (NativeActivation *)
     {
         // ok, deactivate this again...this will return the activity because the terminating
-        // flag is on.
-        current->exitCurrentThread();
+        // flag is on. Don't nudge the dispatch queue yet
+        current->exitCurrentThread(false);
 
     }
 
@@ -559,6 +559,9 @@ bool InterpreterInstance::terminate()
     commandHandlers = OREF_NULL;
     requiresFiles = OREF_NULL;
 
+    // Release the kernel lock (with the usual nudge to the dispatch queue) as a
+    // new activity may have been created for cleanup causing an extra kernel lock
+    ActivityManager::releaseAccess(); 
 
     // tell the main interpreter controller we're gone.
     Interpreter::terminateInterpreterInstance(this);

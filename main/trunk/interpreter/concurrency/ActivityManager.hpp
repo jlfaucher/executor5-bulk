@@ -95,7 +95,7 @@ public:
         kernelSemaphore.release();
     }
 
-    static void releaseAccess();
+    static void releaseAccess(bool dispatch = false);
     static bool lockKernelImmediate();
     static void createLocks();
     static void closeLocks();
