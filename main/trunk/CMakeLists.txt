@@ -1473,6 +1473,7 @@ if (WIN32)
    add_executable(oodialog_exe WIN32 ${build_extensions_oodialog_dir}/oodWinMain.cpp
                                      ${build_extensions_oodialog_dir}/oodShared.cpp
                                      ${build_extensions_oodialog_dir}/ooDialogWinMain.rc)
+   add_dependencies(oodialog_exe oodialog)                                      
 # We need to override the PDB output file name for oodialog.exe so it doesn't overwrite
 # the file for oodialog.dll, which essentially makes oodialog undebuggable on Windows
 # we want to append, which is a little bit of a pain.
@@ -1510,6 +1511,7 @@ if (WIN32)
    add_executable(oodialog_com ${build_extensions_oodialog_dir}/oodMain.cpp
                                ${build_extensions_oodialog_dir}/oodShared.cpp
                                ${build_extensions_oodialog_dir}/ooDialogMain.rc)
+   add_dependencies(oodialog_com oodialog_exe)
 # We need to override the PDB output file name for oodialog.com so it doesn't overwrite
 # the file for oodialog.dll, which essentially makes oodialog undebuggable on Windows
 # we want to append, which is a little bit of a pain.
