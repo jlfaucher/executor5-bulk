@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2025 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -753,6 +753,180 @@ self~assertEquals(countThreadId_in_CSF,2)
        <I< Method "M_S" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
        <I< Method "M_WAIT" with scope "TEST" in package "testCallerStackFrame_ReplyStart".
        <I< Routine "testCallerStackFrame_ReplyStart" in package "testCallerStackFrame_ReplyStart".
+::END
+
+
+
+/* ========================================================================== */
+::method test_traceObject_collector_and_notify_class_attributes
+
+callerName="testTraceObjectCollectorAndNotifyClassAttributes"
+
+r=.routine~new(callerName, .resources~test_traceObject_collector_and_notify_class_attributes)
+resArr=r~call         -- note: this is a method call to an object!
+
+   -- collector class attribute values
+cRefArray =resArr[1]~refArray
+cCpyArray=resArr[1]~atAppendArray   -- values at creation time, must be different
+
+   -- notify class attribute values
+nRefArray    =resArr[2]~refArray
+nCpyArray   =resArr[2]~atAppendArray   -- values at creation time, must be identical
+
+   -- same number of entries all over?
+self~assertEquals(cRefArray~items, cCpyArray~items)
+self~assertEquals(nRefArray~items, nCpyArray~items)
+self~assertEquals(nRefArray~items, cRefArray~items)
+
+do i=1 to cRefArray~items
+   cTrObj1=cRefArray[i]    -- collector traceObject
+   cTrObj2=cCpyArray[i]    -- collector traceObject
+   nTrObj1=nRefArray[i]    -- notify traceObject
+   nTrObj2=nCpyArray[i]    -- notify traceObject
+
+      -- traceObjects in cRefArray, nRefArry, nCpyArray must be identical
+   self~assertSame(    cTrObj1, nTrObj1 ) -- traceObjects identical
+   self~assertNotSame( cTrObj1, cTrObj2 ) -- traceObjects must not be identical (a copy)
+   self~assertNotSame( nTrObj1, nTrObj2 ) -- traceObjects must not be identical (a copy)
+
+      -- check collector traceObjects
+   self~assertEquals( 3, cTrObj2~items)    -- only the entries NUMBER, OPTION, TIMESTAMP must be available
+   self~assertFalse( cTrObj1~items = cTrObj2~items )
+   self~assertEquals( cTrObj1~number   , cTrObj2~number )
+   self~assertEquals( cTrObj1~position , cTrObj2~position )
+   self~assertEquals( cTrObj1~timeStamp, cTrObj2~timeStamp )
+
+   call check4IdenticalContent cTrObj1, nTrObj1
+   call check4IdenticalContent nTrObj1, nTrObj2
+end
+return
+
+check4IdenticalContent: procedure expose self
+  use strict arg trObj1, trObj2
+  do idx over trObj1~allIndexes
+     self~assertEquals(trObj1[idx], trObj2[idx])
+  end
+  return
+
+::resource test_traceObject_collector_and_notify_class_attributes
+   bDebug=.false     -- do not show debug output; if .true, show debug output
+
+   oCollector=.TestAppendHandler~new
+   oNotify   =.TestAppendHandler~new
+
+   .traceObject~option="P"             -- set profiling option
+   .traceObject~collector=oCollector   -- set object to append to
+   .traceObject~notify   =oNotify      -- set object to notify via append message
+
+   trace results
+   do i=1 to 3
+      nop
+   end
+   trace off
+
+   .traceObject~option="N"             -- reset class attribute
+   .traceObject~collector=.nil         -- reset class attribute
+   .traceObject~notify   =.nil         -- reset class attribute
+
+   if bDebug=.true then
+   do
+      -- for debugging, show trace
+      do counter c trObj over oNotify~refArray
+         say c~right(2)":" trObj
+      end
+
+      --
+      say "----------------------- check collector vs. notify:"
+      say "oNotify"
+      notifyRefArr =oNotify~refArray
+      say "notfiyRefArr~defaultname:" notifyRefArr~defaultname "~items="notifyRefArr~items
+      notifyCopyArr=oNotify~atAppendArray
+      say "notifyCopyArr~defaultname:" notifyCopyArr~defaultname "~items="notifyCopyArr~items
+      do i=1 to notifyRefArr~items
+         say i~right(2)":" "notifyRefArr["i"]~items="notifyRefArr[i]~items "notifyCopyArr["i"]~items="notifyCopyArr[i]~items
+      end
+
+      say "----------------------- check collector vs. notify:"
+      say "oCollector"
+      collectorRefArr =oCollector~refArray
+      say "notifyRefArr~defaultname:" collectorRefArr~defaultname "~items="collectorRefArr~items
+      collectorCopyArr=oCollector~atAppendArray
+      say "collectorCopyArr~defaultname:" collectorCopyArr~defaultname "~items="collectorCopyArr~items
+      do i=1 to notifyRefArr~items
+         say i~right(2)":" "collectorRefArr["i"]~items="notifyRefArr[i]~items "collectorCopyArr["i"]~items="collectorCopyArr[i]~items
+      end
+      say "-----------------------"
+      say
+
+
+      say "===> testing oNotify~refArray entries are the same as oCollector~refArray entries:"
+      do i=1 to notifyRefArr~items
+         say "  test refArr:  notify==collector?  i="pp(i~right(2))":" pp(notifyRefArr[i]  ==collectorRefArr[i])
+         say "  test copyArr: notify\==collector? i="pp(i~right(2))":" pp(notifyCopyArr[i]\==collectorCopyArr[i])
+      end
+
+      say "===> testing oCollector~atAppendArray with oCollector~refArray entries:"
+      do i=1 to notifyRefArr~items
+         copyTrObj=collectorCopyArr[i]
+         refTrObj =collectorRefArr[i]
+         say "  i="pp(i~right(2))":" "/ 3 entries?" pp(copyTrObj~items=3) -
+             "/ copy<>ref entries?" pp(copyTrObj~items<>refTrObj~items) -
+             "/ copy identical to ref entries?"  -
+             pp( copyTrObj['NUMBER']=refTrObj['NUMBER'] & copyTrObj['TIMESTAMP']=refTrObj['TIMESTAMP'] -
+               & copyTrObj['OPTION']=refTrObj['OPTION'] )
+      end
+   end
+
+   .traceObject~collector=.nil         -- set object to append to
+   .traceObject~notify   =.nil         -- set object to notify via append message
+   return oCollector, oNotify    -- return array of both TestAppendHandlers
+
+
+   /* Class to support testing the collector and notify class attributes of .TraceObject. */
+   ::class TestAppendHandler
+
+   ::method init
+     expose refArray atAppendArray
+     myArr=.array~new
+     refArray      = .array~new  -- array that holds a reference to the traceObjects
+     atAppendArray = .array~new  -- array that holds a copy of the traceObjects at APPEND handling time
+
+   ::method refArray      attribute    -- an array of traceObject references
+   ::method atAppendArray attribute    -- an array of traceObject copies to reflect state at append time
+
+
+   /* Intercept the append message. */
+   ::method append               -- add a condition handler to get to learn any problems
+     expose refArray atAppendArray
+     signal on syntax name any   -- have a condition handler to make sure we clear any conditions in here
+     use arg traceObj
+     refArray     ~append(traceObj)       -- append reference
+     atAppendArray~append(traceObj~copy)  -- append a copy to test state at APPEND time
+     return
+
+   any:  -- handler shows condition object, but does not propagate the condition to allow TRACE to proceed properly
+     say .context~name "#" .line":" condition('c') "has occurred! traceObj=["traceObj"]"
+     co=condition('o')
+     call showConditionObject co -- display all condition information
+     -- do not propagate such that the condition remains cleared to allow to continue ...
+
+      -- show condition object's entries
+   ::routine showConditionObject
+     use strict arg co
+     do idx over co~allindexes~sort
+        if wordpos(idx,"ADDITIONAL STACKFRAMES TRACEBACK")>0 then
+        do
+           say "  ["idx"]:" co[idx]~defaultName "("co[idx]~items "items)"
+           do counter c s over co[idx]
+              say "      " "#" c~right(2)":" s~string
+           end
+        end
+        else say "  ["idx"]:" co[idx]
+     end
+     return
+
+   ::routine pp
+     return "["arg(1)"]"
 ::END
 
 
