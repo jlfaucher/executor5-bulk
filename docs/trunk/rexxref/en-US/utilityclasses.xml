@@ -11236,6 +11236,8 @@ instance of this class gets created for each traced clause and the traced contex
    <member><xref linkend="mthTraceObjectCounterGet" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTraceObjectMakeStringImpl" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTraceObjectNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectNotifyGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTraceObjectNotifySet" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTraceObjectOptionGet" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTraceObjectOptionSet" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTraceObjectSetMakeString" xrefstyle="select:title"/></member>
@@ -11267,6 +11269,10 @@ controls globally how the trace line gets formatted.
 <emphasis role="italic"><xref linkend="mthTraceObjectCollectorSet" xrefstyle="template:collector"/></emphasis>
 can be used to collect all created <emphasis role="italic">traceObjects</emphasis> and analyze them
 programmatically at a later time.
+If you need a real-time full inspection capability, then use the
+<classname>TraceObject</classname> class attribute
+<emphasis role="italic"><xref linkend="mthTraceObjectNotifySet" xrefstyle="template:collector"/></emphasis> instead.
+
 For further information about debugging multithreaded programs using
 <xref linkend="keyTrace" xrefstyle="template:TRACE"/> and this class
 see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
@@ -11354,6 +11360,27 @@ to the supplied object. If object is not &nil; then from that moment on the
 method will send newly created <emphasis role="italic">traceObjects</emphasis> using the
 <methodname>APPEND</methodname> message to the collector object.
 </para>
+
+<note><title>Note</title>
+<para>
+At the time of this <methodname>APPEND</methodname> message, the
+<emphasis role="italic">traceObject</emphasis> will only
+have the entries <emphasis role="italic">"NUMBER"</emphasis>, <emphasis role="italic">"OPTION"</emphasis>,
+and <emphasis role="italic">"TIMESTAMP"</emphasis> set.
+
+All other entries will be added to the <emphasis role="italic">traceObject</emphasis>
+while the current trace gets processed further, such that accessing
+<emphasis role="italic">traceObjects</emphasis>
+after the trace will have all entries set.
+
+Should there be a need for full real-time access to all entries of a
+<emphasis role="italic">traceObject</emphasis>, then one needs to
+use the
+<member><xref linkend="mthTraceObjectNotifySet" xrefstyle="template:NOTIFY"/></member>
+class attribute instead.
+
+</para></note>
+
 <note><title>Note</title>
 <para>
 Any <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
@@ -11787,6 +11814,84 @@ entries:
 </tbody>
 </tgroup>
 </informaltable>
+
+
+
+<!-- Class TraceObject - method notify (get) ============================== -->
+<section id="mthTraceObjectNotifyGet" revisionflag="added"><title>&added52;notify (Class Method)</title>
+<indexterm><primary>notify method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>notify method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+<para>
+The <emphasis role="italic">notify</emphasis>
+class attribute controls whether created <emphasis role="italic">traceObjects</emphasis> get collected or not.
+If its value is set to &nil; (default) then <emphasis role="italic">traceObjects</emphasis> are not
+collected.
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_notify_get.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the current value of the class attribute
+<emphasis role="italic">notify</emphasis>.
+</para>
+</section>
+
+<!-- Class TraceObject - method notify (set) ============================== -->
+<section id="mthTraceObjectNotifySet" revisionflag="added"><title>&added52;notify= (Class Method)</title>
+<indexterm><primary>notify= method</primary>
+<secondary>of TraceObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>notify= method</secondary>
+<tertiary>of TraceObject class</tertiary></indexterm>
+<para>
+The class attribute <emphasis role="italic">notify</emphasis>
+controls whether created <emphasis role="italic">traceObjects</emphasis> get collected or not.
+If its value is set to &nil; (default) then <emphasis role="italic">traceObjects</emphasis> are not
+collected.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/traceobject_notify_set.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the class attribute <emphasis role="italic">notify</emphasis>
+to the supplied object. If the object is not &nil; then from that moment on, the
+fully initialized <emphasis role="italic">traceObjects</emphasis>
+will get sent as the argument to the
+<methodname>APPEND</methodname> message to the notify object.
+</para>
+
+<note><title>Note</title>
+<para>
+At the time of this <methodname>APPEND</methodname> message, the
+<emphasis role="italic">traceObject</emphasis> will have all entries set,
+which may be important for real-time processing.
+</para></note>
+
+<note><title>Note</title>
+<para>
+Any <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
+understands the <methodname>APPEND</methodname> message such that one can use e.g.
+the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection classes"/>
+<xref linkend="clsArray" xrefstyle="template:Array"/> or
+<xref linkend="clsList" xrefstyle="template:List"/>
+for collecting the <emphasis role="italic">traceObjects</emphasis>.
+</para>
+<para>One could also create a class with an <methodname>APPEND</methodname> method and use
+an instance of it assigned to the <methodname>NOTIFY</methodname>
+class object, and thereby become able to process each freshly created
+<emphasis role="italic">traceObject</emphasis> in real-time, if
+this is considered to be necessary.
+</para></note>
+</section>
+
 
 
 <!-- Class TraceObject - method opton (get) ============================== -->
