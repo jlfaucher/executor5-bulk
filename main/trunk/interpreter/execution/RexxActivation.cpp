@@ -5211,6 +5211,13 @@ StringTable * RexxActivation::createTraceObject(Activity *activity, RexxActivati
         }
     }
 
+    // get NOTIFY class object
+    RexxObject *notify = (StringTable *) getRexxPackageTraceObject()->messageSend(GlobalNames::NOTIFY, OREF_NULL, 0, result);
+    if (notify != TheNilObject)
+    {
+        notify->sendMessage(GlobalNames::APPEND, traceObject, result); // append to NOTIFY object
+    }
+
     return traceObject;
 }
 

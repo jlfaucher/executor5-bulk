@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -3991,11 +3991,12 @@ nomethod:
 
 ---------------------- class level ----------------------
 ::method    activate    class
-  expose option collector counter makeStringMethod
+  expose option collector counter makeStringMethod notify
   self~activate:super
   option   ='N'         -- normal (makeString returns the TRACELINE entry)
   collector=.nil        -- no appending to the collector will take place
   makeStringMethod = .nil
+  notify   =.nil        -- no appending to the notify object will take place
   counter  =0           -- value will be used to number the TraceObject instances
 
 ::method    new         class    -- a new instance gets requested
@@ -4014,6 +4015,8 @@ nomethod:
 ::attribute collector   class       -- .nil or an object that does understand APPEND(object)
 
 ::attribute counter     get class   -- we only allow get access
+
+::attribute notify      class       -- .nil or an object that does understand APPEND(object)
 
 ::attribute option      set class
   expose option

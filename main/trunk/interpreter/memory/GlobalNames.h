@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -269,6 +269,7 @@ GLOBAL_NAME(INVOCATION,          "INVOCATION")          // TraceObject: a counte
 GLOBAL_NAME(ISGUARDED,           "ISGUARDED")           // TraceObject: .true/.false (method definition)
 GLOBAL_NAME(ISWAITING,           "ISWAITING")           // TraceObject: .true/.false (.true if guard condition yields "0")
 GLOBAL_NAME(LINE,                "LINE")                // TraceObject: message and index name (StackFrame and StringTable)
+GLOBAL_NAME(NOTIFY,              "NOTIFY")              // TraceObject: NOTIFY class object attribute
 GLOBAL_NAME(OPTION,              "OPTION")              // TraceObject: option at creation time
 GLOBAL_NAME(RECEIVER,            "RECEIVER")            // TraceObject: the receiver of a message
 GLOBAL_NAME(SCOPELOCKCOUNT,      "SCOPELOCKCOUNT")      // TraceObject: a counter (number, reserveCount)
