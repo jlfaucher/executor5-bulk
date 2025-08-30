@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2982,7 +2982,6 @@ BUILTIN(ENDLOCAL)
     return SystemInterpreter::popEnvironment(context);
 }
 
-
 /**
  * Qualify a stream name.
  */
@@ -2999,6 +2998,44 @@ BUILTIN(QUALIFY)
     QualifiedName qualified_name(name->getStringData());
     return new_string(qualified_name);
 }
+
+/**
+ *  Invoke the garbage collector.
+ */
+BUILTIN(GC)
+{
+    const size_t GC_Min = 0;
+    const size_t GC_Max = 1;
+    const size_t GC_force = 1;
+
+    check_args(GC);
+
+    RexxString *force = optional_string(GC, force);
+
+    bool bRunGC=false;  // default to not run in release mode
+
+    if (force != OREF_NULL) // argument given, check whether argument starts with "F" for "force" ...
+    {
+        const char *forceData = force->getStringData();
+        if (forceData[0]!='f' && forceData[0]!='F')
+        {
+            reportException(Error_Incorrect_call_list, "GC", IntegerOne, new_string("\"force\", \"Force\", \"f\", \"F\"",26), force);
+        }
+        bRunGC=true;        // run the garbage collector in release mode
+    }
+
+#ifdef _DEBUG           // in debug mode always run the GC
+    bRunGC=true;
+#endif
+
+    if (bRunGC)
+    {
+        memoryObject.collectAndUninit(false);   // keep stack
+        return TheTrueObject;   // indicate we called the garbage collector
+    }
+    return TheFalseObject;      // indicate we did not call the garbage collector
+}
+
 
 // the following builtin function table must maintain the same order
 // as the BuiltinCode type defined by the RexxToken class.
@@ -3085,5 +3122,6 @@ pbuiltin LanguageParser::builtinTable[] =
     &builtin_function_ENDLOCAL         ,
     &builtin_function_SETLOCAL         ,
     &builtin_function_QUALIFY          ,
+    &builtin_function_GC               ,
 };
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2020 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -191,6 +191,7 @@ KeywordEntry RexxToken::builtinFunctions[] =
     KeywordEntry("FORM",           BUILTIN_FORM),
     KeywordEntry("FORMAT",         BUILTIN_FORMAT),
     KeywordEntry("FUZZ",           BUILTIN_FUZZ),
+    KeywordEntry("GC",             BUILTIN_GC),
     KeywordEntry("INSERT",         BUILTIN_INSERT),
     KeywordEntry("LASTPOS",        BUILTIN_LASTPOS),
     KeywordEntry("LEFT",           BUILTIN_LEFT),
@@ -272,6 +273,7 @@ KeywordEntry RexxToken::builtinFunctions[] =
     KeywordEntry("FORM",           BUILTIN_FORM),
     KeywordEntry("FORMAT",         BUILTIN_FORMAT),
     KeywordEntry("FUZZ",           BUILTIN_FUZZ),
+    KeywordEntry("GC",             BUILTIN_GC),
     KeywordEntry("INSERT",         BUILTIN_INSERT),
     KeywordEntry("LASTPOS",        BUILTIN_LASTPOS),
     KeywordEntry("LEFT",           BUILTIN_LEFT),
