@@ -2859,6 +2859,33 @@ Returns the current setting of <xref linkend="keyNumericFuzz"/>.<!-- xreflabel -
 </section>
 
 
+<section id="bifGC"><title>GC &added52;</title>
+<para>
+<indexterm><primary>GC function</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>functions</primary>
+<secondary>GC</secondary></indexterm>
+<indexterm><primary>built-in functions</primary>
+<secondary>GC</secondary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/gc.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+<para>
+Returns <emphasis role="italic">.true</emphasis> if the garbage collector was called, <emphasis
+role="italic">.false</emphasis> else.  This function should be used with great care as explicitly
+invoking the garbage collector imposes quite a burden on a running system and can severely affect
+applications.  Therefore, garbage collection invocations should be best left to the interpreter.  If
+invoked from a debug version of ooRexx (<emphasis role="italic">.RexxInfo~debug=.true</emphasis>),
+the garbage collector will always be called.  If invoked from a release version of ooRexx
+(<emphasis role="italic">.RexxInfo~debug=.false</emphasis>), the garbage collector will not be
+called, unless the optional argument <emphasis role="italic">force</emphasis> is supplied.
+</para>
+</section>
+
+
 <section id="bifInsert"><title>INSERT</title>
 <indexterm><primary>INSERT function</primary>
 <secondary>description</secondary></indexterm>
