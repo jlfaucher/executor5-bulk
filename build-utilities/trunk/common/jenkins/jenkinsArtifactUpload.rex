@@ -124,19 +124,20 @@ end
 
 do artifact over successful
 
--- say 'artifact' artifact 
--- say 'artifact~ooRexx' artifact~ooRexx
--- say 'artifact~name' artifact~name
--- say 'artifact~revision~dataType("Whole")' artifact~revision~dataType("Whole")
--- say 'artifact~revision' artifact~revision
--- say 'minimumRevision.[artifact~platform]' minimumRevision.[artifact~platform]
+ say 'artifact' artifact 
+ say 'artifact~ooRexx' artifact~ooRexx
+ say 'artifact~name' artifact~name
+ say 'artifact~revision~dataType("Whole")' artifact~revision~dataType("Whole")
+ say 'artifact~revision' artifact~revision
+ say 'minimumRevision.[artifact~platform]' minimumRevision.[artifact~platform]
 
   select
     when \artifact~ooRexx then
       say "" "cannot identify name"~left(28) artifact~name
     when \artifact~revision~dataType("Whole") then
       say "" "cannot identify revision"~left(28) artifact~name
-    when artifact~revision >= minimumRevision.[artifact~platform] then do
+--    when artifact~revision >= minimumRevision.[artifact~platform] then do
+    when artifact~revision > minimumRevision.[artifact~platform] then do
       say "" "to be uploaded"~left(28) artifact~name
       toBeUploaded~append(artifact)
     end
