@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -42,6 +42,8 @@
 /******************************************************************************/
 #include "RexxCore.h"
 #include "TraceSetting.hpp"
+#include "GlobalNames.hpp"
+
 #include <ctype.h>
 
 const TraceSetting::TraceFlags TraceSetting::defaultTraceFlags(TraceSetting::traceNormal, TraceSetting::traceFailures);
@@ -237,4 +239,52 @@ bool TraceSetting::parseTraceSetting(RexxString *value, char &badOption)
         }
     }
     return true;
+}
+
+
+/**
+ * Return the long (full) name of the trace option in effect.
+ *
+ * @return The long (full) name of the trace setting.
+ */
+RexxString *TraceSetting::toStringLong()
+{
+    // we need to decode the flags to generate the actual setting.
+    if (tracingNormal())
+    {
+        return GlobalNames::NORMAL;
+    }
+    if (tracingIntermediates())
+    {
+        return GlobalNames::INTERMEDIATES;
+    }
+    if (tracingResults())
+    {
+        return GlobalNames::RESULTS;
+    }
+    if (tracingAll())
+    {
+        return GlobalNames::ALL;
+    }
+    if (tracingCommands())
+    {
+        return GlobalNames::COMMANDS;
+    }
+    if (tracingErrors())
+    {
+        return GlobalNames::ERRORNAME;  // GlobalNames::ERROR; in MSCPP causes: error C2589: 'constant': illegal token on right side of '::', error C2059: syntax error: '::'
+    }
+    if (tracingFailures())
+    {
+        return GlobalNames::FAILURE;
+    }
+    if (tracingLabels())
+    {
+        return GlobalNames::LABELS;
+    }
+    if (isTraceOff())
+    {
+        return GlobalNames::OFF;
+    }
+    return new_string("?n/a?");
 }

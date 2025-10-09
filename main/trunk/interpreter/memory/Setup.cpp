@@ -1194,6 +1194,7 @@ StartClassDefinition(Package)
         AddMethod("Prolog", PackageClass::getMainRexx, 0);
         AddMethod("FindProgram", PackageClass::findProgramRexx, 1);
         AddMethod("Local", PackageClass::getPackageLocal, 0);
+        AddProtectedMethod("Options", PackageClass::options, 2);
 
     CompleteMethodDefinitions();
 

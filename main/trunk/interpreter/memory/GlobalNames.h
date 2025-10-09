@@ -281,3 +281,10 @@ GLOBAL_NAME(TRACEOBJECT,         "TRACEOBJECT")         // TraceObject: class na
 GLOBAL_NAME(TYPE,                "TYPE")                // TraceObject: message and index name (StackFrame and StringTable)
 GLOBAL_NAME(VARIABLE,            "VARIABLE")            // TraceObject: a StringTable with NAME, VALUE, ASSIGNMENT: .true/.false
 
+GLOBAL_NAME(PROLOG,              "PROLOG")              // Package: Options method
+GLOBAL_NAME(NOPROLOG,            "NOPROLOG")            // Package: Options method
+GLOBAL_NAME(COMMANDS,            "COMMANDS")            // TraceSetting (cf. Package: Options method)
+GLOBAL_NAME(INTERMEDIATES,       "INTERMEDIATES")       // TraceSetting (cf. Package: Options method)
+GLOBAL_NAME(LABELS,              "LABELS")              // TraceSetting (cf. Package: Options method)
+GLOBAL_NAME(RESULTS,             "RESULTS")             // TraceSetting (cf. Package: Options method)
+

@@ -932,6 +932,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(PackageClass::getMainRexx),
     CPPM(PackageClass::findProgramRexx),
     CPPM(PackageClass::getPackageLocal),
+    CPPM(PackageClass::options),
 
     CPPM(PackageClass::newRexx),
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2166,4 +2166,358 @@ DirectoryClass *PackageClass::getPackageLocal()
         setField(packageLocal, new_directory());
     }
     return packageLocal;
+}
+
+
+/** Allow retrieving all current options as a string, querying and setting individual
+ *  options. If setting an individual option the previous value gets returned.
+ */
+RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValue)
+{
+    RexxString * strOptionName  = optionalStringArgument(optionName, OREF_NULL, "optionName");
+    RexxString * strNewValue    = optionalStringArgument(newValue,   OREF_NULL, "newValue");
+
+    TraceSetting ts=packageSettings.traceSettings;
+
+    if (strOptionName==OREF_NULL)
+    {
+        if (strNewValue!=OREF_NULL)
+        {
+            stringArgument(optionName, ARG_ONE);  // if newValue given, optionName must be present as well
+        }
+
+        char buf[256]="";
+        sprintf(buf, "::OPTIONS DIGITS %lld FORM %s FUZZ %lld ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
+                getDigits(),
+                getForm()                                   ? "ENGINEERING" : "SCIENTIFIC",
+                getFuzz(),
+                packageSettings.isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
+                packageSettings.isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                packageSettings.isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
+                packageSettings.isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                packageSettings.isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                packageSettings.isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                packageSettings.isPrologEnabled()           ? "PROLOG" : "NOPROLOG" ,
+                ts.tracingNormal()              ? "NORMAL"        :
+                      ts.tracingIntermediates() ? "INTERMEDIATES" :
+                      ts.tracingResults()       ? "RESULTS"       :
+                      ts.tracingAll()           ? "ALL"           :
+                      ts.tracingCommands()      ? "COMMANDS"      :
+                      ts.tracingErrors()        ? "ERROR"         :
+                      ts.tracingFailures()      ? "FAILURE"       :
+                      ts.tracingLabels()        ? "LABELS"        :
+                      ts.isTraceOff()           ? "OFF"           :
+                      "?n/a?"
+              );
+
+        return new_string(buf);
+    }
+
+    // optionName is supplied, fetch current value
+    RexxObject * currentValue = OREF_NULL; // TheNilObject;
+
+    typedef enum
+    {
+        unknown,
+        all,            // only if setting option
+        digits,
+        error,
+        failure,
+        form,
+        fuzz,
+        lostdigits,
+        nostring,
+        notready,
+        novalue,
+        prolog,
+        trace
+    } OptionsFlags;
+
+    OptionsFlags of = unknown;
+
+    size_t length = strOptionName->getLength();
+    // check option name, get current value which we always return
+    switch (Utilities::toUpper(strOptionName->getChar(0)))
+    {
+    case 'A':   // all
+        if (strNewValue==OREF_NULL)
+        {
+            stringArgument(strNewValue, ARG_TWO);  // all: only available if setting the trace options
+        }
+        of = all;
+        break;
+
+    case 'D':   // digits
+        of = digits;
+        currentValue = new_integer(getDigits());
+        break;
+
+    case 'E':   // digits
+        of = error;
+        currentValue = packageSettings.isErrorSyntaxEnabled() ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+        break;
+
+    case 'F':   // failure, form, fuzz
+        if (length>1)
+        {
+            switch (Utilities::toUpper(strOptionName->getChar(1)))
+            {
+            case 'A':   // FAilure
+                of = failure;
+                currentValue = packageSettings.isFailureSyntaxEnabled() ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+
+            case 'O':   // FOrm
+                of = form;
+                currentValue = getForm() ? GlobalNames::ENGINEERING : GlobalNames::SCIENTIFIC;
+                break;
+
+            case 'U':   // FUzz
+                of = fuzz;
+                currentValue = new_integer(getFuzz());
+                break;
+            }
+        }
+        break;
+
+    case 'L':   // lostdigits
+        of = lostdigits;
+        currentValue = packageSettings.isLostdigitsSyntaxEnabled() ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+        break;
+
+    case 'N':   // NOString, NOTready, NOValue
+        if (length>2)
+        {
+            if (Utilities::toUpper(strOptionName->getChar(1))!= 'O')
+            {
+                break;
+            }
+
+            switch (Utilities::toUpper(strOptionName->getChar(2)))
+            {
+            case 'S':   // nostring
+                of = nostring;
+                currentValue = packageSettings.isNostringSyntaxEnabled() ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+
+            case 'T':   // notready
+                of = notready;
+                currentValue = packageSettings.isNotreadySyntaxEnabled()   ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+
+            case 'V':   // novalue
+                of = novalue;
+                currentValue = packageSettings.isNovalueSyntaxEnabled()    ?
+                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+            }
+        }
+        break;
+
+    case 'P':   // Prolog
+        of = prolog;
+        currentValue = packageSettings.isPrologEnabled() ?
+                                           GlobalNames::PROLOG : GlobalNames::NOPROLOG;
+        break;
+
+    case 'T':   // Trace
+        of = trace;
+        currentValue = ts.toStringLong();
+        break;
+    }
+
+    if (of == unknown)  // no known option name, raise error
+    {
+        if (strNewValue==OREF_NULL)     // querying individual option values ?
+        {
+            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"Digits Error FAilure FOrm FUzz Lostdigits NOString NOTready NOValue Prolog Trace\""), strOptionName);
+        }
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"All Digits Error FAilure FOrm FUzz Lostdigits NOString NOTready NOValue Prolog Trace\""), strOptionName);
+    }
+
+    if (strNewValue==OREF_NULL)     // we are done, return current value
+    {
+        return currentValue;
+    }
+
+    // setting an option to a new value
+    length = strNewValue -> getLength();
+    if (length<1)
+    {
+        reportException(Error_Incorrect_method_user_defined,new_string("argument 2 must not be empty"));
+    }
+
+    // check argument, set option, return previous value
+    switch (of)
+    {
+    case all:   // set all conditions
+        {
+            // get current package settings
+            char buf[256]="";
+            sprintf(buf, "ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s",
+                    packageSettings.isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
+                    packageSettings.isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                    packageSettings.isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
+                    packageSettings.isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                    packageSettings.isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                    packageSettings.isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION"
+                  );
+            currentValue = new_string(buf);
+
+            char c = Utilities::toUpper(strNewValue->getChar(0));
+            bool syntax = true;
+            if (c=='S' || c=='C')
+            {
+                syntax = (c=='S');
+                if (syntax)
+                {
+                    packageSettings.enableErrorSyntax();
+                    packageSettings.enableFailureSyntax();
+                    packageSettings.enableLostdigitsSyntax();
+                    packageSettings.enableNostringSyntax();
+                    packageSettings.enableNotreadySyntax();
+                    packageSettings.enableNovalueSyntax();
+                }
+                else
+                {
+                    packageSettings.disableErrorSyntax();
+                    packageSettings.disableFailureSyntax();
+                    packageSettings.disableLostdigitsSyntax();
+                    packageSettings.disableNostringSyntax();
+                    packageSettings.disableNotreadySyntax();
+                    packageSettings.disableNovalueSyntax();
+                }
+            }
+            else    // raise exception
+            {
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Syntax Condition\""), strNewValue);
+            }
+        }
+        break;
+
+    case digits:
+        {
+            wholenumber_t newDigits = numberArgument(strNewValue,2);
+            if (newDigits<1)
+            {
+                reportException(Error_Incorrect_method_positive, new_integer(2), strNewValue);
+            }
+            packageSettings.setDigits(newDigits);
+        }
+        break;
+
+    case error:
+    case failure:
+    case lostdigits:
+    case nostring:
+    case notready:
+    case novalue:
+        {
+            char c = Utilities::toUpper(strNewValue->getChar(0));
+            if (c=='S' || c=='C')
+            {
+                if (c=='S')
+                {
+                    switch (of)
+                    {
+                        case error:      packageSettings.enableErrorSyntax(); break;
+                        case failure:    packageSettings.enableFailureSyntax(); break;
+                        case lostdigits: packageSettings.enableLostdigitsSyntax(); break;
+                        case nostring:   packageSettings.enableNostringSyntax(); break;
+                        case notready:   packageSettings.enableNotreadySyntax(); break;
+                        case novalue:    packageSettings.enableNovalueSyntax(); break;
+                    }
+                }
+                else
+                {
+                    switch (of)
+                    {
+                        case error:      packageSettings.disableErrorSyntax(); break;
+                        case failure:    packageSettings.disableFailureSyntax(); break;
+                        case lostdigits: packageSettings.disableLostdigitsSyntax(); break;
+                        case nostring:   packageSettings.disableNostringSyntax(); break;
+                        case notready:   packageSettings.disableNotreadySyntax(); break;
+                        case novalue:    packageSettings.disableNovalueSyntax(); break;
+                    }
+                }
+            }
+            else    // raise exception
+            {
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Syntax Condition\""), strNewValue);
+            }
+        }
+        break;
+
+    case form:
+        {
+            char c = Utilities::toUpper(strNewValue->getChar(0));
+            if (c=='E' || c=='S')
+            {
+                packageSettings.setForm(c=='E');
+            }
+            else    // raise exception
+            {
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Engineering Scientific\""), strNewValue);
+            }
+        }
+        break;
+
+    case fuzz:
+        {
+            size_t newFuzz = nonNegativeArgument(strNewValue, 2);
+            size_t currentDigits = packageSettings.getDigits();
+            if (newFuzz>=currentDigits)
+            {
+                char info[256]="";
+                sprintf(info, "NUMERIC FUZZ value %zd must be smaller than NUMERIC DIGITS (current value=%zd)",
+                        newFuzz, currentDigits);
+                reportException((RexxErrorCodes)Rexx_Error_Invalid_whole_number_user_defined, new_string(info));
+            }
+
+            packageSettings.setFuzz(newFuzz);
+        }
+        break;
+
+    case prolog:
+        {
+            char c = Utilities::toUpper(strNewValue->getChar(0));
+            if (c=='P' || c=='N')
+            {
+                if (c=='P')
+                {
+                    packageSettings.enableProlog();
+                }
+                else
+                {
+                    packageSettings.disableProlog();
+                }
+            }
+            else    // raise exception
+            {
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Prolog Noprolog\""), strNewValue);
+            }
+        }
+        break;
+
+    case trace:
+        {
+                // from DirectiveParser.cpp, TRACE subkeyword
+            char badOption = 0;
+            TraceSetting settings;
+            // validate the setting
+            if (!settings.parseTraceSetting(strNewValue, badOption))
+            {
+                reportException(Error_Invalid_trace_trace, new_string(&badOption, 1));
+            }
+            // poke into the package
+            packageSettings.traceSettings=settings;
+        }
+        break;
+    }
+    return currentValue;
 }
