@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -121,7 +121,7 @@ wholenumber_t numberArgument(RexxObject *argument, size_t position)
     // converted using the ARGUMENT_DIGITS value
     if (!argument->numberValue(value, Numerics::ARGUMENT_DIGITS))
     {
-        reportException(Error_Incorrect_method_whole, argument);
+        reportException(Error_Incorrect_method_whole, position, argument);
     }
     return value;
 }
