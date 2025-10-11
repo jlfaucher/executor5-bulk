@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -786,6 +786,229 @@ return
   self~assertSame("DEF", package~routines["ROUTINE1"]~call)
   self~assertSame("DEF", package~local~packageTest)
 
+
+
+::method test_options
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+
+   -- ~options
+  expected="::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
+  self~assertEquals(expected, pkg~options)
+  self~assertEquals(9,pkg~options("DIGITS"))
+  self~assertEquals(9,pkg~options("D",6))
+  self~assertEquals(6,pkg~options("DIGITS"))
+
+  self~assertEquals("SCIENTIFIC" ,pkg~options("FORM"))
+  self~assertEquals("SCIENTIFIC" ,pkg~options("FO","E"))
+  self~assertEquals("ENGINEERING",pkg~options("fo"))
+
+  self~assertEquals(0,pkg~options("fuzz"))
+  self~assertEquals(0,pkg~options("Fu","4"))
+  self~assertEquals(4,pkg~options("fu"))
+
+  self~assertEquals("CONDITION",pkg~options("error"))
+  self~assertEquals("CONDITION",pkg~options("e","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("E"))
+
+  self~assertEquals("CONDITION",pkg~options("failure"))
+  self~assertEquals("CONDITION",pkg~options("fa","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("FA"))
+
+  self~assertEquals("CONDITION",pkg~options("lostdigits"))
+  self~assertEquals("CONDITION",pkg~options("l","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("l"))
+
+  self~assertEquals("CONDITION",pkg~options("nostring"))
+  self~assertEquals("CONDITION",pkg~options("nos","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOS"))
+
+  self~assertEquals("CONDITION",pkg~options("novalue"))
+  self~assertEquals("CONDITION",pkg~options("nov","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOV"))
+
+  self~assertEquals("CONDITION",pkg~options("notready"))
+  self~assertEquals("CONDITION",pkg~options("not","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOt"))
+
+  self~assertEquals("PROLOG"  ,pkg~options("proplog"))
+  self~assertEquals("PROLOG"  ,pkg~options("prolog","n"))
+  self~assertEquals("NOPROLOG",pkg~options("prolog","p"))
+  self~assertEquals("PROLOG"  ,pkg~options("prolog","n"))
+  self~assertEquals("NOPROLOG",pkg~options("prolog"))
+
+  self~assertEquals("NORMAL"       ,pkg~options("trace"))
+  self~assertEquals("NORMAL"       ,pkg~options("trace","all"))
+  self~assertEquals("ALL"          ,pkg~options("trace","results"))
+  self~assertEquals("RESULTS"      ,pkg~options("trace","intermediates"))
+  self~assertEquals("INTERMEDIATES",pkg~options("trace","labels"))
+  self~assertEquals("LABELS"       ,pkg~options("trace","error"))
+  self~assertEquals("ERROR"        ,pkg~options("trace","failure"))
+  self~assertEquals("FAILURE"      ,pkg~options("trace","commands"))
+  self~assertEquals("COMMANDS"     ,pkg~options("trace","off"))
+  self~assertEquals("OFF"          ,pkg~options("trace","normal"))
+
+  self~assertEquals("NORMAL"       ,pkg~options("trace"))
+  self~assertEquals("NORMAL"       ,pkg~options("trace","a"))
+  self~assertEquals("ALL"          ,pkg~options("trace","r"))
+  self~assertEquals("RESULTS"      ,pkg~options("trace","i"))
+  self~assertEquals("INTERMEDIATES",pkg~options("trace","l"))
+  self~assertEquals("LABELS"       ,pkg~options("trace","e"))
+  self~assertEquals("ERROR"        ,pkg~options("trace","f"))
+  self~assertEquals("FAILURE"      ,pkg~options("trace","c"))
+  self~assertEquals("COMMANDS"     ,pkg~options("trace","o"))
+  self~assertEquals("OFF"          ,pkg~options("trace","n"))
+
+  options_02="::OPTIONS DIGITS 6 FORM ENGINEERING FUZZ 4 ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX NOPROLOG TRACE NORMAL"
+  self~assertEquals(options_02, pkg~options)
+
+  curr4all_1="ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX"
+  self~assertEquals(curr4all_1,pkg~options("all","condition"))
+  curr4all_2="ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION"
+  self~assertEquals(curr4all_2,pkg~options("all","syntax"))
+
+  self~assertEquals(curr4all_1,pkg~options("a","c"))
+  self~assertEquals(curr4all_2,pkg~options("a","s"))
+
+::method test_options_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]"; found "XYZ".
+  pkg~options("XYZ")
+
+::method test_options_all_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("all","wrong")
+
+-- tests for NUMERIC DIGITS | FORM | FUZZ ... ------------------------------------------
+::method test_options_digital_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.907)
+  -- Method argument 2 must be a positive whole number; found "-1".
+  pkg~options("digital",-1)
+
+::method test_options_digital_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.907)
+  -- Method argument 2 must be a positive whole number; found "-1".
+  pkg~options("digital",0)
+
+::method test_options_digital_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(33.1)
+  -- Value of NUMERIC DIGITS ("4") must exceed value of NUMERIC FUZZ ("5").
+  pkg~options("fuzz",5)
+  pkg~options("digital",4)
+
+::method test_options_digital_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.905)
+  -- Method argument 2 must be a whole number; found "abc".
+  pkg~options("digits","abc")
+
+::method test_options_form_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "E[ngineering] S[cientific]"; found "wrong".
+  pkg~options("form","wrong")
+
+::method test_options_fuzz_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "-1".
+  pkg~options("fuzz",-1)
+
+::method test_options_fuzz_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(26.900)
+  -- NUMERIC FUZZ value 19 must be smaller than NUMERIC DIGITS (current value=9).
+  pkg~options("fuzz",19)
+
+::method test_options_fuzz_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "abc".
+  pkg~options("fuzz","abc")
+
+::method test_options_fuzz_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "abc".
+  pkg~options("fuzz","abc")
+
+-- tests for CONDITIONS ... ------------------------------------------
+::method test_options_condition_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("error","wrong")
+
+::method test_options_condition_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("failure","wrong")
+
+::method test_options_condition_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("lostdigits","wrong")
+
+::method test_options_condition_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("nostring","wrong")
+
+::method test_options_condition_argerror_5
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("notready","wrong")
+
+::method test_options_condition_argerror_6
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("novalue","wrong")
+
+-- test for PROLOG  ... ------------------------------------------
+::method test_options_prolog_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "N[oprolog] P[rolog]"; found "wrong".
+  pkg~options("prolog","wrong")
+
+-- test for TRACE   ... ------------------------------------------
+::method test_options_trace_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", .resources~package4options)~call
+  self~expectSyntax(24.1)
+  -- TRACE request letter must be one of "ACEFILNOR"; found "w".
+  pkg~options("trace","wrong")
+
+
 -- source code of our context test routine
 ::resource "tstDefined"
 
@@ -814,6 +1037,10 @@ return
 
 ::routine TstRoutine
   return "Routine"
+
+::resource package4options   -- return a package with standard options
+  return .context~package
+::END
 
 
 ::options all syntax
