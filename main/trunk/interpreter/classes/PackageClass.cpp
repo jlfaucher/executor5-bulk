@@ -2335,9 +2335,9 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     {
         if (strNewValue==OREF_NULL)     // querying individual option values ?
         {
-            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"Digits Error FAilure FOrm FUzz Lostdigits NOString NOTready NOValue Prolog Trace\""), strOptionName);
+            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]\""), strOptionName);
         }
-        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"All Digits Error FAilure FOrm FUzz Lostdigits NOString NOTready NOValue Prolog Trace\""), strOptionName);
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll] D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]\""), strOptionName);
     }
 
     if (strNewValue==OREF_NULL)     // we are done, return current value
@@ -2345,6 +2345,8 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         return currentValue;
     }
 
+
+    // ***********************************************************************
     // setting an option to a new value
     length = strNewValue -> getLength();
     if (length<1)
@@ -2395,7 +2397,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             }
             else    // raise exception
             {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Syntax Condition\""), strNewValue);
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] S[yntax]\""), strNewValue);
             }
         }
         break;
@@ -2403,10 +2405,18 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     case digits:
         {
             wholenumber_t newDigits = numberArgument(strNewValue,2);
+
             if (newDigits<1)
             {
                 reportException(Error_Incorrect_method_positive, new_integer(2), strNewValue);
             }
+
+            wholenumber_t currFuzz = getFuzz();
+            if (newDigits <= currFuzz)
+            {
+                reportException(Error_Expression_result_digits, newDigits, currFuzz);
+            }
+
             packageSettings.setDigits(newDigits);
         }
         break;
@@ -2448,7 +2458,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             }
             else    // raise exception
             {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Syntax Condition\""), strNewValue);
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] S[yntax]\""), strNewValue);
             }
         }
         break;
@@ -2462,7 +2472,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             }
             else    // raise exception
             {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Engineering Scientific\""), strNewValue);
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"E[ngineering] S[cientific]\""), strNewValue);
             }
         }
         break;
@@ -2474,7 +2484,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             if (newFuzz>=currentDigits)
             {
                 char info[256]="";
-                sprintf(info, "NUMERIC FUZZ value %zd must be smaller than NUMERIC DIGITS (current value=%zd)",
+                sprintf(info, "NUMERIC FUZZ value (\"%zd\") must be smaller than NUMERIC DIGITS (\"%zd\")",
                         newFuzz, currentDigits);
                 reportException((RexxErrorCodes)Rexx_Error_Invalid_whole_number_user_defined, new_string(info));
             }
@@ -2499,7 +2509,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             }
             else    // raise exception
             {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"Prolog Noprolog\""), strNewValue);
+                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"N[oprolog] P[rolog]\""), strNewValue);
             }
         }
         break;
