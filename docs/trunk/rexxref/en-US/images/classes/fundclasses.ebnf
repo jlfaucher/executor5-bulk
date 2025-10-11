@@ -417,6 +417,13 @@ package_loadpackage ::= 'loadPackage(' name ( ',' source )? ')'
 package_name ::= 'name'
 
 package_namespaces ::= 'namespaces'
+
+package_options ::= 'options(' (
+                             ('"All"'', newValue') 
+                             | 
+                             'option' (', newValue')? )?
+                             ')'
+
 package_prolog ::= 'prolog'
 
 package_publicclasses ::= 'publicClasses'
