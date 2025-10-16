@@ -2331,8 +2331,12 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         currentValue = packageSettings.toString();
         break;
 
-    case 'S':   // SetOption (::OPTIONS string)
+    case 'S':   // SetPackageOptions (::OPTIONS string)
         of = setoptionFlag;
+        if (strNewValue == OREF_NULL)  // this option mandates a second argument!
+        {
+            reportException(Error_Incorrect_method_minarg, new_integer(2));
+        }
         currentValue = packageSettings.toString();
         break;
 
