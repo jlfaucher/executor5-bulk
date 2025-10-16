@@ -309,6 +309,18 @@ return testResult
   self~assertEquals(new1, new2)
   self~assertEquals(ori1, ori3)
 
+::method test_options_setPackageOptions_Error_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.900)
+  --  argument is not an ::OPTIONS directive.
+  pkg~options("SetPackageSettings","wrong")
+
+::method test_options_setPackageOptions_Error_2
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.901)
+  --   Not enough arguments for method; 2 expected.
+  pkg~options("SetPackageSettings")
+
 
 
 -- tests for overriding related options
