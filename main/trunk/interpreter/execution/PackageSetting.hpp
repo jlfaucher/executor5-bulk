@@ -115,6 +115,34 @@ class PackageSetting
     inline void   disableProlog() { packageOptions[NoProlog] = true; }
     inline bool   isPrologEnabled() { return !packageOptions[NoProlog]; }
 
+    // Return the package settings encoded as an ::OPTIONS string without trailing semi-colon.
+    RexxString *toString()
+    {
+        char buf[256]="";
+        snprintf(buf, 256, "::OPTIONS DIGITS %lld FORM %s FUZZ %lld ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
+                         getDigits(),
+                         getForm()                   ? "ENGINEERING" : "SCIENTIFIC",
+                         getFuzz(),
+                         isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
+                         isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                         isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
+                         isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                         isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                         isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                         isPrologEnabled()           ? "PROLOG" : "NOPROLOG" ,
+                traceSettings.tracingNormal()        ? "NORMAL"        :
+                traceSettings.tracingIntermediates() ? "INTERMEDIATES" :
+                traceSettings.tracingResults()       ? "RESULTS"       :
+                traceSettings.tracingAll()           ? "ALL"           :
+                traceSettings.tracingCommands()      ? "COMMANDS"      :
+                traceSettings.tracingErrors()        ? "ERROR"         :
+                traceSettings.tracingFailures()      ? "FAILURE"       :
+                traceSettings.tracingLabels()        ? "LABELS"        :
+                traceSettings.isTraceOff()           ? "OFF"           : "?n/a?"
+              );
+        return new_string(buf);
+    }
+
     NumericSettings numericSettings;       // the package numeric settings
     TraceSetting    traceSettings;         // the package trace setting
     FlagSet<PackageFlags> packageOptions;  // additional enabled options

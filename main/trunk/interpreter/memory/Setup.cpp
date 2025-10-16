@@ -1154,6 +1154,7 @@ EndClassDefinition(Routine);
 StartClassDefinition(Package)
 
         AddClassMethod("New", PackageClass::newRexx, A_COUNT);
+        AddClassProtectedMethod("GlobalOptions", PackageClass::clzOptions, 2);
 
     CompleteClassMethodDefinitions();
 

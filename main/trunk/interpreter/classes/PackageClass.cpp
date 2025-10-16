@@ -66,6 +66,11 @@
 
 #include <stdio.h>
 
+
+PackageSetting PackageClass::psOverridePackageSettings;
+bool           PackageClass::needOverrideSettingsInialization = true;
+wholenumber_t  PackageClass::overrideCount = 0;
+
 // singleton class instance
 RexxClass *PackageClass::classInstance = OREF_NULL;
 
@@ -132,6 +137,12 @@ PackageClass::PackageClass(RexxString *p, ProgramSource *s)
     source = s;
     // we always start out at the default language level
     requiredLanguageLevel = DefaultLanguageLevel;
+
+    if (needOverrideSettingsInialization)   // one-time initialization
+    {
+        needOverrideSettingsInialization = false;   // no need to do it again
+        psOverridePackageSettings.setDefault();     // initialize
+    }
 }
 
 
@@ -2171,89 +2182,74 @@ DirectoryClass *PackageClass::getPackageLocal()
 
 /** Allow retrieving all current options as a string, querying and setting individual
  *  options. If setting an individual option the previous value gets returned.
+ *
+ *  @param optionName optional, denotes the option to query or to set
+ *  @param newValue optional, if present replaces the current value of optionName
+ *  @return a string, if no arguments supplied, otherwise the value of the option
+ *          at invocation time
  */
 RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValue)
 {
     RexxString * strOptionName  = optionalStringArgument(optionName, OREF_NULL, "optionName");
     RexxString * strNewValue    = optionalStringArgument(newValue,   OREF_NULL, "newValue");
 
+    saveInitialPackageSettings();
+
     TraceSetting ts=packageSettings.traceSettings;
 
     if (strOptionName==OREF_NULL)
     {
-        if (strNewValue!=OREF_NULL)
+        if (strNewValue!=OREF_NULL)     // no option for newValue given
         {
-            stringArgument(optionName, ARG_ONE);  // if newValue given, optionName must be present as well
+            stringArgument(optionName, ARG_ONE);  // will raise error
         }
-
-        char buf[256]="";
-        sprintf(buf, "::OPTIONS DIGITS %lld FORM %s FUZZ %lld ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
-                getDigits(),
-                getForm()                                   ? "ENGINEERING" : "SCIENTIFIC",
-                getFuzz(),
-                packageSettings.isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
-                packageSettings.isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
-                packageSettings.isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
-                packageSettings.isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
-                packageSettings.isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
-                packageSettings.isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
-                packageSettings.isPrologEnabled()           ? "PROLOG" : "NOPROLOG" ,
-                ts.tracingNormal()              ? "NORMAL"        :
-                      ts.tracingIntermediates() ? "INTERMEDIATES" :
-                      ts.tracingResults()       ? "RESULTS"       :
-                      ts.tracingAll()           ? "ALL"           :
-                      ts.tracingCommands()      ? "COMMANDS"      :
-                      ts.tracingErrors()        ? "ERROR"         :
-                      ts.tracingFailures()      ? "FAILURE"       :
-                      ts.tracingLabels()        ? "LABELS"        :
-                      ts.isTraceOff()           ? "OFF"           :
-                      "?n/a?"
-              );
-
-        return new_string(buf);
+        return packageSettings.toString();
     }
 
     // optionName is supplied, fetch current value
-    RexxObject * currentValue = OREF_NULL; // TheNilObject;
+    RexxObject * currentValue = OREF_NULL;
 
     typedef enum
     {
-        unknown,
-        all,            // only if setting option
-        digits,
-        error,
-        failure,
-        form,
-        fuzz,
-        lostdigits,
-        nostring,
-        notready,
-        novalue,
-        prolog,
-        trace
+        unknownFlag,
+        allFlag,            // only if setting option
+        digitsFlag,
+        errorFlag,
+        failureFlag,
+        formFlag,
+        fuzzFlag,
+        initialPackageSettingsFlag,
+        lostdigitsFlag,
+        nostringFlag,
+        notreadyFlag,
+        novalueFlag,
+        prologFlag,
+        resetFlag,
+        setoptionFlag,
+        traceFlag
     } OptionsFlags;
 
-    OptionsFlags of = unknown;
+    OptionsFlags of = unknownFlag;
 
     size_t length = strOptionName->getLength();
     // check option name, get current value which we always return
     switch (Utilities::toUpper(strOptionName->getChar(0)))
     {
     case 'A':   // all
-        if (strNewValue==OREF_NULL)
+        if (strNewValue==OREF_NULL)     // all: only available if setting the trace options
         {
-            stringArgument(strNewValue, ARG_TWO);  // all: only available if setting the trace options
+            stringArgument(strNewValue, ARG_TWO);   // will create exception
         }
-        of = all;
+        of = allFlag;
         break;
 
     case 'D':   // digits
-        of = digits;
+        of = digitsFlag;
         currentValue = new_integer(getDigits());
         break;
 
     case 'E':   // digits
-        of = error;
+        of = errorFlag;
         currentValue = packageSettings.isErrorSyntaxEnabled() ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
         break;
@@ -2264,26 +2260,31 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             switch (Utilities::toUpper(strOptionName->getChar(1)))
             {
             case 'A':   // FAilure
-                of = failure;
+                of = failureFlag;
                 currentValue = packageSettings.isFailureSyntaxEnabled() ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
                 break;
 
             case 'O':   // FOrm
-                of = form;
+                of = formFlag;
                 currentValue = getForm() ? GlobalNames::ENGINEERING : GlobalNames::SCIENTIFIC;
                 break;
 
             case 'U':   // FUzz
-                of = fuzz;
+                of = fuzzFlag;
                 currentValue = new_integer(getFuzz());
                 break;
             }
         }
         break;
 
+    case 'I':   // initial package settings after compile() in LanguageParser::generatingProgram()
+        of = initialPackageSettingsFlag;
+        currentValue = getInitialPackageSettings().toString();
+        break;
+
     case 'L':   // lostdigits
-        of = lostdigits;
+        of = lostdigitsFlag;
         currentValue = packageSettings.isLostdigitsSyntaxEnabled() ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
         break;
@@ -2299,19 +2300,19 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
             switch (Utilities::toUpper(strOptionName->getChar(2)))
             {
             case 'S':   // nostring
-                of = nostring;
+                of = nostringFlag;
                 currentValue = packageSettings.isNostringSyntaxEnabled() ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
                 break;
 
             case 'T':   // notready
-                of = notready;
+                of = notreadyFlag;
                 currentValue = packageSettings.isNotreadySyntaxEnabled()   ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
                 break;
 
             case 'V':   // novalue
-                of = novalue;
+                of = novalueFlag;
                 currentValue = packageSettings.isNovalueSyntaxEnabled()    ?
                                            GlobalNames::SYNTAX : GlobalNames::CONDITION;
                 break;
@@ -2320,28 +2321,42 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         break;
 
     case 'P':   // Prolog
-        of = prolog;
+        of = prologFlag;
         currentValue = packageSettings.isPrologEnabled() ?
                                            GlobalNames::PROLOG : GlobalNames::NOPROLOG;
         break;
 
+    case 'R':   // Reset (no arg allowed!)
+        of = resetFlag;
+        currentValue = packageSettings.toString();
+        break;
+
+    case 'S':   // SetOption (::OPTIONS string)
+        of = setoptionFlag;
+        currentValue = packageSettings.toString();
+        break;
+
     case 'T':   // Trace
-        of = trace;
+        of = traceFlag;
         currentValue = ts.toStringLong();
         break;
     }
 
-    if (of == unknown)  // no known option name, raise error
+    if (of == unknownFlag)  // no known option name, raise error
     {
         if (strNewValue==OREF_NULL)     // querying individual option values ?
         {
-            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]\""), strOptionName);
+            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits] E[rror] FA[ilure] FO[rm] FU[zz] I[]nitialOptions L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] R[esetOptions] S[etOptions] T[race]\""), strOptionName);
         }
-        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll] D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]\""), strOptionName);
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll] D[igits] E[rror] FA[ilure] FO[rm] FU[zz] I[]nitialOptions L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] R[esetOptions] S[etOptions] T[race]\""), strOptionName);
     }
 
     if (strNewValue==OREF_NULL)     // we are done, return current value
     {
+        if (of == resetFlag)
+        {
+            packageSettings = getInitialPackageSettings();
+        }
         return currentValue;
     }
 
@@ -2357,7 +2372,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     // check argument, set option, return previous value
     switch (of)
     {
-    case all:   // set all conditions
+    case allFlag:   // set all conditions
         {
             // get current package settings
             char buf[256]="";
@@ -2402,7 +2417,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case digits:
+    case digitsFlag:
         {
             wholenumber_t newDigits = numberArgument(strNewValue,2);
 
@@ -2421,12 +2436,12 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case error:
-    case failure:
-    case lostdigits:
-    case nostring:
-    case notready:
-    case novalue:
+    case errorFlag:
+    case failureFlag:
+    case lostdigitsFlag:
+    case nostringFlag:
+    case notreadyFlag:
+    case novalueFlag:
         {
             char c = Utilities::toUpper(strNewValue->getChar(0));
             if (c=='S' || c=='C')
@@ -2435,24 +2450,24 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
                 {
                     switch (of)
                     {
-                        case error:      packageSettings.enableErrorSyntax(); break;
-                        case failure:    packageSettings.enableFailureSyntax(); break;
-                        case lostdigits: packageSettings.enableLostdigitsSyntax(); break;
-                        case nostring:   packageSettings.enableNostringSyntax(); break;
-                        case notready:   packageSettings.enableNotreadySyntax(); break;
-                        case novalue:    packageSettings.enableNovalueSyntax(); break;
+                        case errorFlag:      packageSettings.enableErrorSyntax(); break;
+                        case failureFlag:    packageSettings.enableFailureSyntax(); break;
+                        case lostdigitsFlag: packageSettings.enableLostdigitsSyntax(); break;
+                        case nostringFlag:   packageSettings.enableNostringSyntax(); break;
+                        case notreadyFlag:   packageSettings.enableNotreadySyntax(); break;
+                        case novalueFlag:    packageSettings.enableNovalueSyntax(); break;
                     }
                 }
                 else
                 {
                     switch (of)
                     {
-                        case error:      packageSettings.disableErrorSyntax(); break;
-                        case failure:    packageSettings.disableFailureSyntax(); break;
-                        case lostdigits: packageSettings.disableLostdigitsSyntax(); break;
-                        case nostring:   packageSettings.disableNostringSyntax(); break;
-                        case notready:   packageSettings.disableNotreadySyntax(); break;
-                        case novalue:    packageSettings.disableNovalueSyntax(); break;
+                        case errorFlag:      packageSettings.disableErrorSyntax(); break;
+                        case failureFlag:    packageSettings.disableFailureSyntax(); break;
+                        case lostdigitsFlag: packageSettings.disableLostdigitsSyntax(); break;
+                        case nostringFlag:   packageSettings.disableNostringSyntax(); break;
+                        case notreadyFlag:   packageSettings.disableNotreadySyntax(); break;
+                        case novalueFlag:    packageSettings.disableNovalueSyntax(); break;
                     }
                 }
             }
@@ -2463,7 +2478,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case form:
+    case formFlag:
         {
             char c = Utilities::toUpper(strNewValue->getChar(0));
             if (c=='E' || c=='S')
@@ -2477,7 +2492,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case fuzz:
+    case fuzzFlag:
         {
             size_t newFuzz = nonNegativeArgument(strNewValue, 2);
             size_t currentDigits = packageSettings.getDigits();
@@ -2493,7 +2508,13 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case prolog:
+    case initialPackageSettingsFlag:
+        {
+            // inital packageSettings must not be changed
+            reportException(Error_Incorrect_method_maxarg, new_integer(1));
+        }
+
+    case prologFlag:
         {
             char c = Utilities::toUpper(strNewValue->getChar(0));
             if (c=='P' || c=='N')
@@ -2514,7 +2535,20 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         }
         break;
 
-    case trace:
+    case resetFlag:   // Reset (no arg allowed!)
+        {
+            // a Reset must not have a second argument
+            reportException(Error_Incorrect_method_maxarg, new_integer(1));
+        }
+        break;
+
+    case setoptionFlag:   // SetOption (::OPTIONS string)
+        {
+            setPackageSettings(strNewValue, false, this);
+        }
+        break;
+
+    case traceFlag:
         {
                 // from DirectiveParser.cpp, TRACE subkeyword
             char badOption = 0;
@@ -2531,3 +2565,174 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     }
     return currentValue;
 }
+
+
+
+/** Allows querying and setting the override options 'OverridePackageSettings' and
+ *  'CountOverride'. If 'CountOverride' is not '0' then each called/required
+ *  program/package gets its package settings overrided, and 'countOverride'
+ *  gets decremented by '-1'.
+ *
+ *  @param optionName mandatory, denotes the option to query or to set
+ *  @param newValue optional, if present replaces the current value of optionName
+ *  @return a string, if no arguments supplied, otherwise the value of the option
+ *          at invocation time
+ */
+RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newValue)   // class level (override related)
+{
+    RexxString * strOptionName  = stringArgument(optionName, "optionName"); // first argument mandatory
+    RexxString * strNewValue    = optionalStringArgument(newValue,   OREF_NULL, "newValue");
+
+    RexxObject * currentValue   = OREF_NULL;
+
+    typedef enum
+    {
+        unknownFlag,
+        overrideSettingsFlag,   // "SettingsOverride"
+        overrideCountFlag       // "CountOverride"
+    } OptionsFlags;
+
+    OptionsFlags of = unknownFlag;
+
+    size_t length = strOptionName->getLength();
+    // check option name, get current value which we always return
+    switch (Utilities::toUpper(strOptionName->getChar(0)))
+    {
+    case 'O':   // "OverridePackageSettings"
+        of = overrideSettingsFlag;
+        currentValue = psOverridePackageSettings.toString();
+        break;
+
+    case 'C':   // "CountOverrides"
+        of = overrideCountFlag;
+        currentValue = new_integer(overrideCount);
+        break;
+    }
+
+    if (of == unknownFlag)  // no known option name, raise error
+    {
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"O[verridePackageSettings] C[ountOverrides]\""), strOptionName);
+    }
+
+    if (strNewValue==OREF_NULL)     // we are done, return current value
+    {
+        return currentValue;
+    }
+
+    // ***********************************************************************
+    // setting an option to a new value
+    if (strNewValue -> getLength() < 1)
+    {
+        reportException(Error_Incorrect_method_user_defined,new_string("argument 2 must not be empty"));
+    }
+
+    // check argument, set option, return previous value
+    switch (of)
+    {
+    case overrideSettingsFlag:   // "OverrideSettings" (PackageSetting)
+        {
+            setPackageSettings(strNewValue);
+        }
+        break;
+
+    case overrideCountFlag:   // "CountOverrides"
+        {
+            overrideCount = numberArgument(strNewValue, 2);
+        }
+        break;
+    }
+    return currentValue;
+}
+
+
+/**
+ *  Uses the 'newValue' string's settings (must be formatted as a single ::OPTIONS directive)
+ *  for the overriding options. To inhibit injections neither semi-colons, nor carriage
+ *  return nor linefeed characters are allowed in this string.
+ *
+ *  Note: overriding takes place only, if overrideCount is not 0; if the value is positive, then
+ *  eventually the overrideCount will hit 0 (allows for limiting number of overrides; if the
+ *  value is negative, it will be a global override as overrideCount will not hit 0, such that
+ *  all packages get overridden.
+ *
+ *  @param newValue a string containing the ::OPTIONS directive to override from now on
+ *  @param setOverride by default true, sets the psOverridePackageSettings, else package -> packageSettings
+ *  @param package if not setOverride, the PackageClass object, otherwise OREF_NULL
+ *  @return previous psOverridePackageSettings or packageSettings depending on setOverride
+ */
+PackageSetting PackageClass::setPackageSettings(RexxString *newValue, bool setOverride, PackageClass * package)
+{
+    if (newValue == OREF_NULL )   // error # 93911
+    {
+        reportException((RexxErrorCodes) Rexx_Error_Incorrect_method_null, 2);
+    }
+
+    if (newValue == TheNilObject)
+    {
+        reportException(Error_Incorrect_method_user_defined, new_string("override package settings argument must not be \".nil\""));
+    }
+
+        // check that we have a single directive in hand (no semi-colons, no cr-lf)
+    const char *cData = newValue -> getStringData();
+    size_t length = newValue-> getLength();
+    bool colonSeen = false;
+    char  hint[128]="";
+    const char *p=cData;
+
+    for (size_t i=0; *p && i<length; i++, p++)
+    {
+        if (*p == ' ' || *p == '\t')    // skip whitespace
+        {
+            continue;
+        }
+
+        if ( !colonSeen )       // first non-white character a colon?
+        {
+            colonSeen = (*p == ':');
+            if ( !colonSeen )   // error, cannot be a directive
+            {
+                // reportException(...) 93.900
+                reportException(Error_Incorrect_method_user_defined, new_string("argument is not an ::OPTIONS directive"));
+            }
+            continue;
+        }
+
+        // now only look for semi-colons, cr or lf which could be used for injection attacks
+        switch (*p)
+        {
+        case ';':   snprintf(hint, 32, "\";\" (end of clause)");
+                    break;
+        case '\r':  snprintf(hint, 32,"\"%02x\"x (CR)", *p);
+                    break;
+        case '\n':  snprintf(hint, 32,"\"%02x\"x (LF)", *p);
+                    break;
+        default:
+            break;
+        }
+
+        if (hint[0] != 0)    // illegal character found
+        {
+            char info[128]="";
+            snprintf(info, 128, "argument must not contain a semi-colon, CR, or LF, found: %s", hint);
+            // reportError(...) 93.900
+            reportException(Error_Incorrect_method_user_defined, new_string(info));
+        }
+    }
+
+        // create a routine from the ::options string, fetch packageSettings and assign it to psOverridePackageSettings
+    PackageSetting tmp = (setOverride ? psOverridePackageSettings : package -> packageSettings);   // get current override packageSettings
+        // create routine from single ::directive string, then use its packageSettings
+    Protected<BufferClass> program_buffer = new_buffer(cData, length);
+    RoutineClass *routine = LanguageParser::createRoutine(new_string("PackageSettingsFromOptionsDirectiveString"), program_buffer, OREF_NULL);     // no sourceContext
+    PackageSetting newSettings = routine -> getPackage() -> getSettings();
+    if (setOverride)
+    {
+        psOverridePackageSettings = newSettings;
+    }
+    else
+    {
+        package -> packageSettings = newSettings;
+    }
+    return tmp;     // return previous override packageSetting
+}
+

@@ -226,7 +226,51 @@ public:
            void addNamespace(RexxString *name, PackageClass *package);
            DirectoryClass *getPackageLocal();
 
-           RexxObject    *options(RexxString *name, RexxString *newValue);
+
+           RexxObject    *options(RexxString *optionName, RexxString *newValue);      // package related
+           RexxObject    *clzOptions(RexxString *optionName, RexxString *newValue);   // class level (override related)
+
+    inline PackageSetting getPackageSettings(){ return packageSettings; }
+    inline void           setPackageSettings(const PackageSetting &s) { packageSettings = s; }
+
+    inline void           saveInitialPackageSettings()  // save initial packageSettings if not already done so
+                          {
+                              if (!savedInitialPackageSettings)
+                              {
+                                  initialPackageSettings = packageSettings;
+                                  savedInitialPackageSettings = true;
+                              }
+                          };
+
+    inline PackageSetting getInitialPackageSettings()   // no override might have happened so far
+                          {
+                              saveInitialPackageSettings();
+                              return initialPackageSettings;
+                          }
+
+    /* Overriding takes place only, if overrideCount is not 0. Each override will decrease
+       overrideCount by 1. If overrideCount is positive, then eventually the overrideCount will
+       drop to 0 which will stop overriding (allows for limiting number of overrides). If the
+       overrideCount is negative, it will be a global override as overrideCount will never
+       arrive at 0, such that all packages that get called/required get overridden.
+
+       @param package to override
+       @return true if override got carried out, false else
+    */
+    inline static bool overridePackageSettings(PackageClass *package)
+    {
+        if (overrideCount != 0)
+        {
+            package -> saveInitialPackageSettings();
+            package -> setPackageSettings(psOverridePackageSettings);
+            overrideCount--;    // if count is positive it gets reduced, eventually hitting 0 and stopping there
+            return true;        // indicate we carried out override
+        }
+        return false;           // indicate we did not override
+    }
+
+        // used for both, psOverridePackageSettings or package's packageSettings
+    static PackageSetting setPackageSettings(RexxString *newValue, bool setOverride = true, PackageClass *package = OREF_NULL);
 
 protected:
 
@@ -268,6 +312,13 @@ protected:
 
     PackageSetting packageSettings;       // the settings we use at run time.
     DirectoryClass *packageLocal;         // the .local values attached to this package
+
+    PackageSetting initialPackageSettings;// the settings determined after compile() in LanguageParser::generateProgram()
+    bool savedInitialPackageSettings;     // true, if initial packageSettings got saved in initialPackageSettings
+
+    static wholenumber_t overrideCount;   // overrideCount: 0=no override, each non-0 override reduces it by 1
+    static PackageSetting psOverridePackageSettings;
+    static bool  needOverrideSettingsInialization;  // psOverridePackageSettings needs a one time initialization
 
     // settings inherited from ::options statements
     intptr_t reserved[11];                // some reserved values for compatible expansion

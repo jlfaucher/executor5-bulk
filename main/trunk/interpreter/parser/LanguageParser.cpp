@@ -654,6 +654,8 @@ RoutineClass *LanguageParser::generateProgram(PackageClass *sourceContext)
 {
     // initialize, and compile all of the source.
     compileSource();
+    // override of program/package setting, if enabled
+    PackageClass::overridePackageSettings(package);
     // get the main section of the source package and make a method
     // object from it.  This is the package "main" executable.
     package->mainExecutable = new RoutineClass(name, mainSection);
@@ -665,6 +667,7 @@ RoutineClass *LanguageParser::generateProgram(PackageClass *sourceContext)
     // context before doing the install so that anything from the parent
     // context is visible during the install processing.
     package->inheritPackageContext(sourceContext);
+
     // return the main executable.
     return (RoutineClass *)package->mainExecutable;
 }
