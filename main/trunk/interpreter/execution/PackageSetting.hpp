@@ -119,7 +119,7 @@ class PackageSetting
     RexxString *toString()
     {
         char buf[256]="";
-        snprintf(buf, 256, "::OPTIONS DIGITS %lld FORM %s FUZZ %lld ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
+        snprintf(buf, 256, "::OPTIONS DIGITS %zd FORM %s FUZZ %zd ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
                          getDigits(),
                          getForm()                   ? "ENGINEERING" : "SCIENTIFIC",
                          getFuzz(),
