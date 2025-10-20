@@ -2131,7 +2131,6 @@ void PackageClass::runProlog(Activity *activity)
     if (isPrologEnabled())
     {
         ProtectedObject dummy;
-
         // if we have initcode, then by definition, the leading section has been created as
         // a routine.
         ((RoutineClass *)mainExecutable)->call(activity, getProgramName(), NULL, 0, GlobalNames::REQUIRES, OREF_NULL, EXTERNALCALL, dummy);

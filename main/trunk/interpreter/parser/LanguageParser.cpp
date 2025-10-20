@@ -667,7 +667,6 @@ RoutineClass *LanguageParser::generateProgram(PackageClass *sourceContext)
     // context before doing the install so that anything from the parent
     // context is visible during the install processing.
     package->inheritPackageContext(sourceContext);
-
     // return the main executable.
     return (RoutineClass *)package->mainExecutable;
 }
@@ -853,6 +852,8 @@ void LanguageParser::initializeForDirectives()
  */
 void LanguageParser::installPackage()
 {
+    // override of program/package setting, if enabled
+    PackageClass::overridePackageSettings(package);
     package->install();
 }
 
