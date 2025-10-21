@@ -3620,6 +3620,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
  <row><entry>
   <simplelist>
    <member><xref linkend="mthPackageNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPackageGlobalOptions" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
    <member><xref linkend="mthPackageAddClass" xrefstyle="select:title"/></member>
@@ -3701,6 +3702,49 @@ If not specified, the newly created package will inherit the class and
 routine search scope from the caller of new method.
 </para>
 </section>
+
+<section id="mthPackageGlobalOptions" revisionflag="changed"><title>&added52;globalOptions (Class Method)</title>
+<indexterm><primary>globalOptions method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>globalOptions method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_global_options.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>This method allows to override the package settings of programs (packages) that
+get loaded or required, after this method got executed.
+</para>
+
+<para>
+The following are valid <emphasis role="italic">option</emphasis>s.
+(Only the first capitalized letter is needed; all characters following it are ignored.)</para>
+<variablelist>
+<varlistentry><term><option>OverrideOption</option></term>
+<listitem><para>returns the current override settings formatted
+as an <xref linkend="optionsd" xrefstyle="select:title"/> directive.  If the second argument is
+given, then it needs to be formatted as an <xref linkend="optionsd" xrefstyle="select:title"/>
+directive and determines how the package options get overridden from that moment
+on.</para></listitem></varlistentry>
+
+<varlistentry><term><option>CountOverrides</option></term>
+<listitem><para>returns its current value, which by default is set to <code>0</code> which inhibits that
+overrides take place. Supplying a positive value as the second argument will set this option and determines
+the number of times an override should take place. A negative number like <code>-1</code> will
+cause the overriding to be always applied.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>It is possible to override individual package options
+by taking advantage of <xref linkend="mthPackageOptions" xrefstyle="select:title"/>.
+</para></note>
+</section>
+
 
 <section id="mthPackageAddClass"><title>addClass</title>
 <indexterm><primary>addClass method</primary>
@@ -4324,33 +4368,48 @@ value, and the previous value is returned.
 </para>
 <para>This method allows querying and changing the package settings (cf.
 <xref linkend="optionsd" xrefstyle="select:title"/>). The changes take effect for
-the next invocation of a package's routine or method.
+the next invocation of a routine or method from the package.
 </para>
 <para>The following option names in the first column can be used for the first argument,
-and the values in the second column can be used to change the setting (only the capital
-letters need to be given).
+and the values in the second column can be used to change the setting. Note:
+Only the leading capitalized letters are needed; all characters following tehm are ignored.
 </para>
 
 
 <informaltable frame="none" colsep="1" rowsep="1" pgwide="0">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="1*"/>
+<colspec colnum="1" colwidth="2*"/>
 <colspec colnum="2" colwidth="4*"/>
 <thead>
 <row><entry><emphasis role="bold">option</emphasis></entry><entry><emphasis role="bold">newValue</emphasis></entry></row>
 </thead>
 <tbody>
-<row><entry><option>"Digits"</option></entry><entry><para>e.g., "<literal>11</literal>" (a whole positive number, must be bigger than fuzz)</para></entry></row>
-<row><entry><option>"FUzz"</option></entry><entry><para>e.g., "<literal>3</literal>" (a whole number, must be smaller than digits)</para></entry></row>
+<row><entry><option>"All"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>": sets all condition related options</para></entry></row>
+<row><entry><option>"Digits"</option></entry><entry><para>E.g., "<literal>11</literal>" (a whole positive number, must be bigger than fuzz)</para></entry></row>
+<row><entry><option>"Error"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"FAilure"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"FUzz"</option></entry><entry><para>E.g., "<literal>3</literal>" (a whole number, must be smaller than digits)</para></entry></row>
 <row><entry><option>"FOrm"</option></entry><entry><para>"<literal>Engineering</literal>", "<literal>Scientific</literal>"</para></entry></row>
-<row><entry><option>"All"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"Error"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"FAilure"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"Lostdigits"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"NOString"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"NOTready"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"NOValue"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"InitialPackageSettings"</option></entry><entry><para>This option must not have a  <emphasis role="italic">newValue</emphasis> argument!
+                          It merely returns a string encoded as an
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before any override took place.
+                          </para></entry></row>
+<row><entry><option>"Lostdigits"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"NOString"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"NOTready"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"NOValue"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
 <row><entry><option>"Prolog"</option></entry><entry><para>"<literal>Noprolog</literal>", "<literal>Prolog</literal>"</para></entry></row>
+<row><entry><option>"Reset"</option></entry><entry><para>This option must not have a <emphasis role="italic">newValue</emphasis> argument!
+                          Returns a string encoded as an
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before resetting
+                          all options to the initial pacakge settings.
+                          </para></entry></row>
+<row><entry><option>"SetPackageSettings"</option></entry><entry><para>The argument must be a string encoded as an
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive. This will also reset all options not listed in the string to
+                          their default values. Returns a string encoded as an
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before resetting them
+                          to the package's initial settings.
+                          </para></entry></row>
 <row><entry><option>"Trace"</option></entry><entry><para>"<literal>All</literal>",
                                                        "<literal>Commands</literal>",
                                                        "<literal>Error</literal>",
@@ -4361,6 +4420,7 @@ letters need to be given).
                                                        "<literal>Off</literal>",
                                                        "<literal>Results</literal>"
                                                  </para></entry></row>
+
 </tbody>
 </tgroup>
 </informaltable>
@@ -4374,6 +4434,10 @@ The output may be a string like:
 ]]>
 </programlisting></example>
 </para>
+<note><title>Note</title>
+<para>It is possible to override package options for programs/packages that get loaded or required dynamically
+by taking advantage of <xref linkend="mthPackageGlobalOptions" xrefstyle="select:title"/>.
+</para></note>
 </section>
 
 

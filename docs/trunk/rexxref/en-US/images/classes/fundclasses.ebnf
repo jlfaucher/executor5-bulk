@@ -373,6 +373,10 @@ routine_source ::= 'source'
 
 package_new ::= 'new(' name ',' source? ( ',' context )? ')'
 
+package_global_options ::= 'globalOptions(' ( ( '"OverrideOptions"'   ( ',' 'optionsDirective' )? )  | 
+                                                '"CountOverrides"' ( ',' 'count' )? )  
+                                        ')'
+
 package_addclass ::= 'addClass(' name ',' class ')'
 
 package_addpackage ::= 'addPackage(' package (',' namespace)? ')'
