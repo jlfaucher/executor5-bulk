@@ -2585,6 +2585,13 @@ n = ENDLOCAL()                   /* restores the initial environment */
 </para>
 <para>For additional examples, see
 <xref linkend="bifSetlocal" />.</para>
+
+<note>
+  <title>Note</title>
+  <para>When used under Windows, ENDLOCAL
+  always fails and returns <literal>0</literal>.</para>
+</note>
+
 </section>
 
 
@@ -4065,7 +4072,7 @@ SETLOCAL is restored upon exiting the procedure.</para>
 /* Current path is "user/bin" */
 n = SETLOCAL()           /* saves all environment settings */
 /* Now use the VALUE function to change the PATH variable */
-p = VALUE("Path","home/user/bin"."ENVIRONMENT")
+p = VALUE("Path","home/user/bin","ENVIRONMENT")
 /* Programs in directory home/user/bin can now be run */
 n = ENDLOCAL()           /* restores initial environment including */
                          /* the changed PATH variable, which is    */
@@ -4073,6 +4080,13 @@ n = ENDLOCAL()           /* restores initial environment including */
 </programlisting>
 </example>
 </para>
+
+<note>
+  <title>Note</title>
+  <para>When used under Windows, SETLOCAL
+  always fails and returns <literal>0</literal>.</para>
+</note>
+
 </section>
 
 
