@@ -388,11 +388,14 @@ return testResult
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("call" fn2, "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("call" fn3, "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
   file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
 
    -- globally override
@@ -409,11 +412,14 @@ return testResult
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("call" fn2, "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("call" fn3, "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
   file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
 
    -- globally override
@@ -430,11 +436,14 @@ return testResult
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("call" fn2, "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("call" fn3, "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
   file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
 
    -- globally override
@@ -451,12 +460,15 @@ return testResult
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("return .context~package", "::requires" fn2, "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("::requires" fn3, "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
-  file3~create( (                  "::options digits 18 fuzz 3") )
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
+  file3~create( (                           "::options digits 18 fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -484,12 +496,15 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("return .context~package", "::requires" fn2, "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("::requires" fn3, "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
-  file3~create( (                  "::options digits 18 fuzz 3") )
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
+  file3~create( (                           "::options digits 18 fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -515,12 +530,15 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   fn1=fn_base"_a.rex"
   fn2=fn_base"_b.rex"
   fn3=fn_base"_c.rex"
-  file1 = .TemporaryTestFile~new(self, fn1)
-  file1~create( ("return .context~package", "::requires" fn2, "::options digits 10 fuzz 1") )
-  file2 = .TemporaryTestFile~new(self, fn2)
-  file2~create( ("::requires" fn3, "::options digits 14 fuzz 2") )
-  file3 = .TemporaryTestFile~new(self, fn3)
-  file3~create( (                  "::options digits 18 fuzz 3") )
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
+  file3~create( (                           "::options digits 18 fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -669,6 +687,9 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
 
 ::routine pp
   return "["arg(1)"]"
+
+::routine quote
+  return '"'arg(1)'"'
 
 
 ::options all syntax
