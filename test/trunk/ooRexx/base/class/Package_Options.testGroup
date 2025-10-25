@@ -53,7 +53,7 @@ return testResult
 
 ::class "Package_Options.testGroup" subclass ooTestCase public
 
-::constant standardOptionsDirective "::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
+::constant standardOptionsDirective "::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
 
 ::method setUp       -- make sure we reset these global settings
   .package~globalOptions('overridePackageSettings', self~standardOptionsDirective)
@@ -68,7 +68,7 @@ return testResult
   pkg=.routine~new("package4options", "return .context~package")~call
 
    -- ~options
-  expected="::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
+  expected="::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
   self~assertEquals(expected, pkg~options)
   self~assertEquals(9,pkg~options("DIGITS"))
   self~assertEquals(9,pkg~options("D",6))
@@ -134,7 +134,7 @@ return testResult
   self~assertEquals("COMMANDS"     ,pkg~options("trace","o"))
   self~assertEquals("OFF"          ,pkg~options("trace","n"))
 
-  options_02="::OPTIONS DIGITS 6 FORM ENGINEERING FUZZ 4 ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX NOPROLOG TRACE NORMAL"
+  options_02="::OPTIONS DIGITS 6 FORM ENGINEERING FUZZ 4 NUMERIC NOINHERIT ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX NOPROLOG TRACE NORMAL"
   self~assertEquals(options_02, pkg~options)
 
   curr4all_1="ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX"
@@ -223,6 +223,79 @@ return testResult
   self~expectSyntax(93.906)
   -- Method argument 2 must be zero or a positive whole number; found "abc".
   pkg~options("fuzz","abc")
+
+
+::method test_options_numeric_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~assertEquals("NOINHERIT", pkg~options('numeric'))
+
+  self~assertEquals("NOINHERIT", pkg~options('numeric', 'i'))
+  self~assertEquals("INHERIT"  , pkg~options('nu'))
+
+  self~expectSyntax(93.914)
+  --  Method argument 2 must be one of "I[nherit] N[oInherit]"; found "x".
+  pkg~options('nu','x')    -- wrong argument
+
+::method test_options_numeric_2
+   -- let the package carry out the assertions, hence supplying the testcase object
+  r  =.routine~new("package4options", .resources~test_options_numeric_2)
+  pkg=r~callWith(.array~of(self))   -- supply the test case object for assertions
+
+   ::resource test_options_numeric_2 END "   ::END"
+      use strict arg testCaseObj
+
+      pkg = .context~package
+      testCaseObj~assertEquals("NOINHERIT", pkg~options('numeric'))
+
+      val_main       = digits() fuzz() form() 1/171
+      val_main_internal_calc = calc()
+      val_main_routine_calc1 = calc1()
+
+      testCaseObj~assertEquals(val_main, val_main_internal_calc)
+      testCaseObj~assertEquals(val_main, val_main_routine_calc1)
+
+      numeric digits 30
+
+      val_main_b       = digits() fuzz() form() 1/171
+      val_main_internal_calc_b = calc()
+      val_main_routine_calc1_b = calc1()
+
+      testCaseObj~assertEquals(val_main_b, val_main_internal_calc_b)
+      testCaseObj~assertEquals(val_main, val_main_routine_calc1_b)   -- no inheritance defined
+
+      oldValue = pkg~options('numeric','inherit')  -- now inherit numeric settings in routines and methods of this package
+      testCaseObj~assertEquals("NOINHERIT",oldValue)
+      val_main_routine_calc1_c = calc1()
+      testCaseObj~assertEquals(val_main_b, val_main_routine_calc1_c) -- inheritance now defined
+
+      return pkg
+
+      calc: procedure
+         return digits() fuzz() form() 1/171
+
+      ::routine calc1
+         return digits() fuzz() form() 1/171
+
+      ::routine pp
+        return "["arg(1)"]"
+   ::END
+
+
+::method test_options_numeric_arg_error_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+
+
+::method test_require_options_numeric_error_1
+  --  Symbol expected after the NUMERIC subdirective keyword.
+  self~expectSyntax(20.935)
+  pkg=.routine~new("package4options", "return .context~package ; ::options numeric")~call
+
+::method test_require_options_numeric_error_2
+  -- Subdirective NUMERIC must be followed by one of the keywords INHERIT or NOINHERIT; found "NIXINOXI".
+  self~expectSyntax(25.935)
+  pkg=.routine~new("package4options", "return .context~package ; ::options numeric nixinoxi")~call
+
+
 
 -- tests for CONDITIONS ... ------------------------------------------
 ::method test_options_condition_argerror_1
