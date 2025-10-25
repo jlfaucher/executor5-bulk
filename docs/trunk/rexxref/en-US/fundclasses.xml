@@ -4360,7 +4360,7 @@ to the static <xref linkend="optionsd" xrefstyle="select:title"/> directive.
 Sending the <methodname>options</methodname> message without an argument will return a string encoded as an
 <xref linkend="optionsd" xrefstyle="select:title"/> directive
 denoting all the current settings of the package, e.g., "<literal>::OPTIONS DIGITS 9 FORM
-SCIENTIFIC FUZZ 0 ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY
+SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY
 CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL</literal>"
 </para>
 <para>
@@ -4386,12 +4386,12 @@ Only the leading capitalized letters are needed; all characters following them a
 <row><entry><emphasis role="bold">option</emphasis></entry><entry><emphasis role="bold">newValue</emphasis></entry></row>
 </thead>
 <tbody>
-<row><entry><option>"All"</option></entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>": sets all condition related options</para></entry></row>
-<row><entry><option>"Digits"</option></entry><entry><para>E.g., "<literal>11</literal>" (a whole positive number, must be bigger than fuzz)</para></entry></row>
+<row><entry><option>"All"</option> (conditions)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>": sets all condition related options</para></entry></row>
+<row><entry><option>"Digits"</option> (numeric setting)</entry><entry><para>E.g., "<literal>11</literal>" (a whole positive number, must be bigger than fuzz)</para></entry></row>
 <row><entry><option>"Error"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
 <row><entry><option>"FAilure"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
-<row><entry><option>"FUzz"</option></entry><entry><para>E.g., "<literal>3</literal>" (a whole number, must be smaller than digits)</para></entry></row>
-<row><entry><option>"FOrm"</option></entry><entry><para>"<literal>Engineering</literal>", "<literal>Scientific</literal>"</para></entry></row>
+<row><entry><option>"FUzz"</option> (numeric setting)</entry><entry><para>E.g., "<literal>3</literal>" (a whole number, must be smaller than digits)</para></entry></row>
+<row><entry><option>"FOrm"</option> (numeric setting)</entry><entry><para>"<literal>Engineering</literal>", "<literal>Scientific</literal>"</para></entry></row>
 <row><entry><option>"InitialPackageSettings"</option></entry><entry><para>This option must not have a  <emphasis role="italic">newValue</emphasis> argument!
                           It merely returns a string encoded as an
                           <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before any override took place.
@@ -4400,17 +4400,18 @@ Only the leading capitalized letters are needed; all characters following them a
 <row><entry><option>"NOString"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
 <row><entry><option>"NOTready"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
 <row><entry><option>"NOValue"</option> (condition)</entry><entry><para>"<literal>Condition</literal>", "<literal>Syntax</literal>"</para></entry></row>
+<row><entry><option>"NUmeric"</option> (numeric settings)</entry><entry><para>"<literal>Inherit</literal>", "<literal>Noinherit</literal>"</para></entry></row>
 <row><entry><option>"Prolog"</option></entry><entry><para>"<literal>Noprolog</literal>", "<literal>Prolog</literal>"</para></entry></row>
 <row><entry><option>"Reset"</option></entry><entry><para>This option must not have a <emphasis role="italic">newValue</emphasis> argument!
                           Returns a string encoded as an
                           <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before resetting
-                          all options to the initial pacakge settings.
+                          all options to the initial package settings.
                           </para></entry></row>
 <row><entry><option>"SetPackageSettings"</option></entry><entry><para>The argument must be a string encoded as an
                           <xref linkend="optionsd" xrefstyle="select:title"/> directive. This will also reset all options not listed in the string to
                           their default values. Returns a string encoded as an
-                          <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before resetting them
-                          to the package's initial settings.
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive, representing the package settings before setting them
+                          to the new values.
                           </para></entry></row>
 <row><entry><option>"Trace"</option></entry><entry><para>"<literal>All</literal>",
                                                        "<literal>Commands</literal>",
@@ -4432,7 +4433,7 @@ Only the leading capitalized letters are needed; all characters following them a
 <programlisting><![CDATA[say .context~package~options
 ]]></programlisting>
 The output may be a string like:
-<programlisting><![CDATA[::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL
+<programlisting><![CDATA[::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL
 ]]>
 </programlisting></example>
 </para>
