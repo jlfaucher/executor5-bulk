@@ -1307,7 +1307,7 @@ void LanguageParser::optionsDirective()
                     break;
                 }
 
-            // ::OPTIONS NUMERIC PROPAGATE | NOPROPAGATE
+            // ::OPTIONS NUMERIC INHERIT | NOINHERIT
             case SUBDIRECTIVE_NUMERIC:
                 {
                     token = nextReal();
@@ -1318,12 +1318,12 @@ void LanguageParser::optionsDirective()
 
                     switch (token->subKeyword())
                     {
-                        // NUMERIC NOPROPAGATE (default)
+                        // NUMERIC NOINHERIT (default)
                         case SUBKEY_NOINHERIT:
                             package->disableNumericInherit();
                             break;
 
-                        // NUMERIC PROPAGATE
+                        // NUMERIC INHERIT
                         case SUBKEY_INHERIT:
                             package->enableNumericInherit();
                             break;
