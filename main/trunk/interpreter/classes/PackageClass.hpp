@@ -183,6 +183,10 @@ public:
     inline bool isPrologEnabled() { return packageSettings.isPrologEnabled() && initCode != OREF_NULL; }
     inline RoutineClass *getMain() { return (RoutineClass *)mainExecutable; }
 
+    inline void   enableNumericInherit() { packageSettings.enableNumericInherit(); }
+    inline void   disableNumericInherit() { packageSettings.disableNumericInherit(); }
+    inline bool   isNumericInheritEnabled() { return packageSettings.isNumericInheritEnabled(); }
+
            RexxString    *getTrace();
            ProgramSource *detachSource();
            void           attachSource(ProgramSource *s);

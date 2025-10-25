@@ -2222,6 +2222,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         nostringFlag,
         notreadyFlag,
         novalueFlag,
+        numericInheritFlag,
         prologFlag,
         resetFlag,
         setoptionFlag,
@@ -2234,124 +2235,156 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     // check option name, get current value which we always return
     switch (Utilities::toUpper(strOptionName->getChar(0)))
     {
-    case 'A':   // all
-        if (strNewValue==OREF_NULL)     // all: only available if setting the trace options
-        {
-            stringArgument(strNewValue, ARG_TWO);   // will create exception
-        }
-        of = allFlag;
-        break;
-
-    case 'D':   // digits
-        of = digitsFlag;
-        currentValue = new_integer(getDigits());
-        break;
-
-    case 'E':   // digits
-        of = errorFlag;
-        currentValue = packageSettings.isErrorSyntaxEnabled() ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
-        break;
-
-    case 'F':   // failure, form, fuzz
-        if (length>1)
-        {
-            switch (Utilities::toUpper(strOptionName->getChar(1)))
+        case 'A':   // all
             {
-            case 'A':   // FAilure
-                of = failureFlag;
-                currentValue = packageSettings.isFailureSyntaxEnabled() ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
-                break;
-
-            case 'O':   // FOrm
-                of = formFlag;
-                currentValue = getForm() ? GlobalNames::ENGINEERING : GlobalNames::SCIENTIFIC;
-                break;
-
-            case 'U':   // FUzz
-                of = fuzzFlag;
-                currentValue = new_integer(getFuzz());
-                break;
-            }
-        }
-        break;
-
-    case 'I':   // initial package settings after compile() in LanguageParser::generatingProgram()
-        of = initialPackageSettingsFlag;
-        currentValue = getInitialPackageSettings().toString();
-        break;
-
-    case 'L':   // lostdigits
-        of = lostdigitsFlag;
-        currentValue = packageSettings.isLostdigitsSyntaxEnabled() ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
-        break;
-
-    case 'N':   // NOString, NOTready, NOValue
-        if (length>2)
-        {
-            if (Utilities::toUpper(strOptionName->getChar(1))!= 'O')
-            {
+                if (strNewValue==OREF_NULL)     // all: only available if setting the trace options
+                {
+                    stringArgument(strNewValue, ARG_TWO);   // will create exception
+                }
+                of = allFlag;
                 break;
             }
 
-            switch (Utilities::toUpper(strOptionName->getChar(2)))
+        case 'D':   // digits
             {
-            case 'S':   // nostring
-                of = nostringFlag;
-                currentValue = packageSettings.isNostringSyntaxEnabled() ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
-                break;
-
-            case 'T':   // notready
-                of = notreadyFlag;
-                currentValue = packageSettings.isNotreadySyntaxEnabled()   ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
-                break;
-
-            case 'V':   // novalue
-                of = novalueFlag;
-                currentValue = packageSettings.isNovalueSyntaxEnabled()    ?
-                                           GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                of = digitsFlag;
+                currentValue = new_integer(getDigits());
                 break;
             }
-        }
-        break;
 
-    case 'P':   // Prolog
-        of = prologFlag;
-        currentValue = packageSettings.isPrologEnabled() ?
-                                           GlobalNames::PROLOG : GlobalNames::NOPROLOG;
-        break;
+        case 'E':   // digits
+            {
+                of = errorFlag;
+                currentValue = packageSettings.isErrorSyntaxEnabled() ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+            }
 
-    case 'R':   // Reset (no arg allowed!)
-        of = resetFlag;
-        currentValue = packageSettings.toString();
-        break;
+        case 'F':   // failure, form, fuzz
+            {
+                if (length>1)
+                {
+                    switch (Utilities::toUpper(strOptionName->getChar(1)))
+                    {
+                    case 'A':   // FAilure
+                        of = failureFlag;
+                        currentValue = packageSettings.isFailureSyntaxEnabled() ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                        break;
 
-    case 'S':   // SetPackageOptions (::OPTIONS string)
-        of = setoptionFlag;
-        if (strNewValue == OREF_NULL)  // this option mandates a second argument!
-        {
-            reportException(Error_Incorrect_method_minarg, new_integer(2));
-        }
-        currentValue = packageSettings.toString();
-        break;
+                    case 'O':   // FOrm
+                        of = formFlag;
+                        currentValue = getForm() ? GlobalNames::ENGINEERING : GlobalNames::SCIENTIFIC;
+                        break;
 
-    case 'T':   // Trace
-        of = traceFlag;
-        currentValue = ts.toStringLong();
-        break;
+                    case 'U':   // FUzz
+                        of = fuzzFlag;
+                        currentValue = new_integer(getFuzz());
+                        break;
+                    }
+                }
+                break;
+            }
+
+        case 'I':   // initial package settings after compile() in LanguageParser::generatingProgram()
+            {
+                of = initialPackageSettingsFlag;
+                currentValue = getInitialPackageSettings().toString();
+                break;
+            }
+
+        case 'L':   // lostdigits
+            {
+                of = lostdigitsFlag;
+                currentValue = packageSettings.isLostdigitsSyntaxEnabled() ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                break;
+            }
+
+        case 'N':   // NUmeric, NOString, NOTready, NOValue
+            {
+                if (length>1 && Utilities::toUpper(strOptionName->getChar(1))== 'U')
+                {
+                    of = numericInheritFlag;
+                    currentValue = packageSettings.isNumericInheritEnabled()   ?
+                                               GlobalNames::INHERIT : GlobalNames::NOINHERIT;
+                    break;
+                }
+                if (length>2)
+                {
+                    if (Utilities::toUpper(strOptionName->getChar(1))!= 'O')
+                    {
+                        break;
+                    }
+
+                    switch (Utilities::toUpper(strOptionName->getChar(2)))
+                    {
+                    case 'S':   // nostring
+                        of = nostringFlag;
+                        currentValue = packageSettings.isNostringSyntaxEnabled() ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                        break;
+
+                    case 'T':   // notready
+                        of = notreadyFlag;
+                        currentValue = packageSettings.isNotreadySyntaxEnabled()   ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                        break;
+
+
+                    case 'V':   // novalue
+                        of = novalueFlag;
+                        currentValue = packageSettings.isNovalueSyntaxEnabled()    ?
+                                                   GlobalNames::SYNTAX : GlobalNames::CONDITION;
+                        break;
+                    }
+                }
+                break;
+            }
+
+        case 'P':   // Prolog
+            {
+                of = prologFlag;
+                currentValue = packageSettings.isPrologEnabled() ?
+                                                   GlobalNames::PROLOG : GlobalNames::NOPROLOG;
+                break;
+            }
+
+        case 'R':   // Reset (no arg allowed!)
+            {
+                of = resetFlag;
+                currentValue = packageSettings.toString();
+                break;
+            }
+
+        case 'S':   // SetPackageOptions (::OPTIONS string)
+            {
+                of = setoptionFlag;
+                if (strNewValue == OREF_NULL)  // this option mandates a second argument!
+                {
+                    reportException(Error_Incorrect_method_minarg, new_integer(2));
+                }
+                currentValue = packageSettings.toString();
+                break;
+            }
+
+        case 'T':   // Trace
+            {
+                of = traceFlag;
+                currentValue = ts.toStringLong();
+                break;
+            }
+        default:
+            break;
     }
 
     if (of == unknownFlag)  // no known option name, raise error
     {
         if (strNewValue==OREF_NULL)     // querying individual option values ?
         {
-            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits] E[rror] FA[ilure] FO[rm] FU[zz] I[]nitialOptions L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] R[esetOptions] S[etOptions] T[race]\""), strOptionName);
+            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits], E[rror], FA[ilure], FO[rm], FU[zz], I[nitialOptions], L[ostdigits], NU[meric], NOS[tring], NOT[ready], NOV[alue], P[rolog], R[esetOptions], S[etOptions] or T[race]\""), strOptionName);
         }
-        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll] D[igits] E[rror] FA[ilure] FO[rm] FU[zz] I[]nitialOptions L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] R[esetOptions] S[etOptions] T[race]\""), strOptionName);
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll], D[igits], E[rror], FA[ilure], FO[rm], FU[zz], I[nitialOptions], L[ostdigits], NU[meric], NOS[tring], NOT[ready], NOV[alue], P[rolog], R[esetOptions], S[etOptions] or T[race]\""), strOptionName);
     }
 
     if (strNewValue==OREF_NULL)     // we are done, return current value
@@ -2375,196 +2408,218 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     // check argument, set option, return previous value
     switch (of)
     {
-    case allFlag:   // set all conditions
-        {
-            // get current package settings
-            char buf[256]="";
-            sprintf(buf, "ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s",
-                    packageSettings.isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
-                    packageSettings.isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
-                    packageSettings.isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
-                    packageSettings.isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
-                    packageSettings.isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
-                    packageSettings.isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION"
-                  );
-            currentValue = new_string(buf);
-
-            char c = Utilities::toUpper(strNewValue->getChar(0));
-            bool syntax = true;
-            if (c=='S' || c=='C')
+        case allFlag:   // set all conditions
             {
-                syntax = (c=='S');
-                if (syntax)
+                // get current package settings
+                char buf[512]="";
+                snprintf(buf, 512, "ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s",
+                        packageSettings.isErrorSyntaxEnabled()      ? "SYNTAX" : "CONDITION",
+                        packageSettings.isFailureSyntaxEnabled()    ? "SYNTAX" : "CONDITION",
+                        packageSettings.isLostdigitsSyntaxEnabled() ? "SYNTAX" : "CONDITION",
+                        packageSettings.isNostringSyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                        packageSettings.isNotreadySyntaxEnabled()   ? "SYNTAX" : "CONDITION",
+                        packageSettings.isNovalueSyntaxEnabled()    ? "SYNTAX" : "CONDITION"
+                      );
+                currentValue = new_string(buf);
+
+                char c = Utilities::toUpper(strNewValue->getChar(0));
+                bool syntax = true;
+                if (c=='S' || c=='C')
                 {
-                    packageSettings.enableErrorSyntax();
-                    packageSettings.enableFailureSyntax();
-                    packageSettings.enableLostdigitsSyntax();
-                    packageSettings.enableNostringSyntax();
-                    packageSettings.enableNotreadySyntax();
-                    packageSettings.enableNovalueSyntax();
-                }
-                else
-                {
-                    packageSettings.disableErrorSyntax();
-                    packageSettings.disableFailureSyntax();
-                    packageSettings.disableLostdigitsSyntax();
-                    packageSettings.disableNostringSyntax();
-                    packageSettings.disableNotreadySyntax();
-                    packageSettings.disableNovalueSyntax();
-                }
-            }
-            else    // raise exception
-            {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] S[yntax]\""), strNewValue);
-            }
-        }
-        break;
-
-    case digitsFlag:
-        {
-            wholenumber_t newDigits = numberArgument(strNewValue,2);
-
-            if (newDigits<1)
-            {
-                reportException(Error_Incorrect_method_positive, new_integer(2), strNewValue);
-            }
-
-            wholenumber_t currFuzz = getFuzz();
-            if (newDigits <= currFuzz)
-            {
-                reportException(Error_Expression_result_digits, newDigits, currFuzz);
-            }
-
-            packageSettings.setDigits(newDigits);
-        }
-        break;
-
-    case errorFlag:
-    case failureFlag:
-    case lostdigitsFlag:
-    case nostringFlag:
-    case notreadyFlag:
-    case novalueFlag:
-        {
-            char c = Utilities::toUpper(strNewValue->getChar(0));
-            if (c=='S' || c=='C')
-            {
-                if (c=='S')
-                {
-                    switch (of)
+                    syntax = (c=='S');
+                    if (syntax)
                     {
-                        case errorFlag:      packageSettings.enableErrorSyntax(); break;
-                        case failureFlag:    packageSettings.enableFailureSyntax(); break;
-                        case lostdigitsFlag: packageSettings.enableLostdigitsSyntax(); break;
-                        case nostringFlag:   packageSettings.enableNostringSyntax(); break;
-                        case notreadyFlag:   packageSettings.enableNotreadySyntax(); break;
-                        case novalueFlag:    packageSettings.enableNovalueSyntax(); break;
+                        packageSettings.enableErrorSyntax();
+                        packageSettings.enableFailureSyntax();
+                        packageSettings.enableLostdigitsSyntax();
+                        packageSettings.enableNostringSyntax();
+                        packageSettings.enableNotreadySyntax();
+                        packageSettings.enableNovalueSyntax();
+                    }
+                    else
+                    {
+                        packageSettings.disableErrorSyntax();
+                        packageSettings.disableFailureSyntax();
+                        packageSettings.disableLostdigitsSyntax();
+                        packageSettings.disableNostringSyntax();
+                        packageSettings.disableNotreadySyntax();
+                        packageSettings.disableNovalueSyntax();
                     }
                 }
-                else
+                else    // raise exception
                 {
-                    switch (of)
+                    reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] or S[yntax]\""), strNewValue);
+                }
+                break;
+            }
+
+        case digitsFlag:
+            {
+                wholenumber_t newDigits = numberArgument(strNewValue,2);
+
+                if (newDigits<1)
+                {
+                    reportException(Error_Incorrect_method_positive, new_integer(2), strNewValue);
+                }
+
+                wholenumber_t currFuzz = getFuzz();
+                if (newDigits <= currFuzz)
+                {
+                    reportException(Error_Expression_result_digits, newDigits, currFuzz);
+                }
+
+                packageSettings.setDigits(newDigits);
+                break;
+            }
+
+        case errorFlag:
+        case failureFlag:
+        case lostdigitsFlag:
+        case nostringFlag:
+        case notreadyFlag:
+        case novalueFlag:
+            {
+                char c = Utilities::toUpper(strNewValue->getChar(0));
+                if (c=='S' || c=='C')
+                {
+                    if (c=='S')
                     {
-                        case errorFlag:      packageSettings.disableErrorSyntax(); break;
-                        case failureFlag:    packageSettings.disableFailureSyntax(); break;
-                        case lostdigitsFlag: packageSettings.disableLostdigitsSyntax(); break;
-                        case nostringFlag:   packageSettings.disableNostringSyntax(); break;
-                        case notreadyFlag:   packageSettings.disableNotreadySyntax(); break;
-                        case novalueFlag:    packageSettings.disableNovalueSyntax(); break;
+                        switch (of)
+                        {
+                            case errorFlag:      packageSettings.enableErrorSyntax(); break;
+                            case failureFlag:    packageSettings.enableFailureSyntax(); break;
+                            case lostdigitsFlag: packageSettings.enableLostdigitsSyntax(); break;
+                            case nostringFlag:   packageSettings.enableNostringSyntax(); break;
+                            case notreadyFlag:   packageSettings.enableNotreadySyntax(); break;
+                            case novalueFlag:    packageSettings.enableNovalueSyntax(); break;
+                        }
+                    }
+                    else
+                    {
+                        switch (of)
+                        {
+                            case errorFlag:      packageSettings.disableErrorSyntax(); break;
+                            case failureFlag:    packageSettings.disableFailureSyntax(); break;
+                            case lostdigitsFlag: packageSettings.disableLostdigitsSyntax(); break;
+                            case nostringFlag:   packageSettings.disableNostringSyntax(); break;
+                            case notreadyFlag:   packageSettings.disableNotreadySyntax(); break;
+                            case novalueFlag:    packageSettings.disableNovalueSyntax(); break;
+                        }
                     }
                 }
-            }
-            else    // raise exception
-            {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] S[yntax]\""), strNewValue);
-            }
-        }
-        break;
-
-    case formFlag:
-        {
-            char c = Utilities::toUpper(strNewValue->getChar(0));
-            if (c=='E' || c=='S')
-            {
-                packageSettings.setForm(c=='E');
-            }
-            else    // raise exception
-            {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"E[ngineering] S[cientific]\""), strNewValue);
-            }
-        }
-        break;
-
-    case fuzzFlag:
-        {
-            size_t newFuzz = nonNegativeArgument(strNewValue, 2);
-            size_t currentDigits = packageSettings.getDigits();
-            if (newFuzz>=currentDigits)
-            {
-                char info[256]="";
-                sprintf(info, "NUMERIC FUZZ value (\"%zd\") must be smaller than NUMERIC DIGITS (\"%zd\")",
-                        newFuzz, currentDigits);
-                reportException((RexxErrorCodes)Rexx_Error_Invalid_whole_number_user_defined, new_string(info));
-            }
-
-            packageSettings.setFuzz(newFuzz);
-        }
-        break;
-
-    case initialPackageSettingsFlag:
-        {
-            // inital packageSettings must not be changed
-            reportException(Error_Incorrect_method_maxarg, new_integer(1));
-        }
-
-    case prologFlag:
-        {
-            char c = Utilities::toUpper(strNewValue->getChar(0));
-            if (c=='P' || c=='N')
-            {
-                if (c=='P')
+                else    // raise exception
                 {
-                    packageSettings.enableProlog();
+                    reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"C[ondition] or S[yntax]\""), strNewValue);
                 }
-                else
+                break;
+            }
+
+        case formFlag:
+            {
+                char c = Utilities::toUpper(strNewValue->getChar(0));
+                if (c=='E' || c=='S')
                 {
-                    packageSettings.disableProlog();
+                    packageSettings.setForm(c=='E');
                 }
+                else    // raise exception
+                {
+                    reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"E[ngineering] or S[cientific]\""), strNewValue);
+                }
+                break;
             }
-            else    // raise exception
+
+        case fuzzFlag:
             {
-                reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"N[oprolog] P[rolog]\""), strNewValue);
+                size_t newFuzz = nonNegativeArgument(strNewValue, 2);
+                size_t currentDigits = packageSettings.getDigits();
+                if (newFuzz>=currentDigits)
+                {
+                    char info[512]="";
+                    snprintf(info, 512, "NUMERIC FUZZ value (\"%zd\") must be smaller than NUMERIC DIGITS (\"%zd\")",
+                            newFuzz, currentDigits);
+                    reportException((RexxErrorCodes)Rexx_Error_Invalid_whole_number_user_defined, new_string(info));
+                }
+
+                packageSettings.setFuzz(newFuzz);
+                break;
             }
-        }
-        break;
 
-    case resetFlag:   // Reset (no arg allowed!)
-        {
-            // a Reset must not have a second argument
-            reportException(Error_Incorrect_method_maxarg, new_integer(1));
-        }
-        break;
-
-    case setoptionFlag:   // SetOption (::OPTIONS string)
-        {
-            setPackageSettings(strNewValue, false, this);
-        }
-        break;
-
-    case traceFlag:
-        {
-                // from DirectiveParser.cpp, TRACE subkeyword
-            char badOption = 0;
-            TraceSetting settings;
-            // validate the setting
-            if (!settings.parseTraceSetting(strNewValue, badOption))
+        case initialPackageSettingsFlag:
             {
-                reportException(Error_Invalid_trace_trace, new_string(&badOption, 1));
+                // inital packageSettings must not be changed
+                reportException(Error_Incorrect_method_maxarg, new_integer(1));
             }
-            // poke into the package
-            packageSettings.traceSettings=settings;
-        }
-        break;
+
+        case numericInheritFlag:
+            {
+                char c = Utilities::toUpper(strNewValue->getChar(0));
+                if (c=='I' || c=='N')
+                {
+                    if (c=='I')
+                    {
+                        packageSettings.enableNumericInherit();
+                    }
+                    else
+                    {
+                        packageSettings.disableNumericInherit();
+                    }
+                }
+                else    // raise exception
+                {
+                    reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"I[nherit] or N[oInherit]\""), strNewValue);
+                }
+                break;
+            }
+
+        case prologFlag:
+            {
+                char c = Utilities::toUpper(strNewValue->getChar(0));
+                if (c=='P' || c=='N')
+                {
+                    if (c=='P')
+                    {
+                        packageSettings.enableProlog();
+                    }
+                    else
+                    {
+                        packageSettings.disableProlog();
+                    }
+                }
+                else    // raise exception
+                {
+                    reportException(Error_Incorrect_method_list, new_integer(2), new_string("\"N[oprolog] or P[rolog]\""), strNewValue);
+                }
+                break;
+            }
+
+        case resetFlag:   // Reset (no arg allowed!)
+            {
+                // a Reset must not have a second argument
+                reportException(Error_Incorrect_method_maxarg, new_integer(1));
+            }
+
+        case setoptionFlag:   // SetOption (::OPTIONS string)
+            {
+                setPackageSettings(strNewValue, false, this);
+                break;
+            }
+
+        case traceFlag:
+            {
+                    // from DirectiveParser.cpp, TRACE subkeyword
+                char badOption = 0;
+                TraceSetting settings;
+                // validate the setting
+                if (!settings.parseTraceSetting(strNewValue, badOption))
+                {
+                    reportException(Error_Invalid_trace_trace, new_string(&badOption, 1));
+                }
+                // poke into the package
+                packageSettings.traceSettings=settings;
+                break;
+            }
+        default:
+            break;
     }
     return currentValue;
 }
@@ -2614,7 +2669,7 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
 
     if (of == unknownFlag)  // no known option name, raise error
     {
-        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"O[verridePackageSettings] C[ountOverrides]\""), strOptionName);
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"O[verridePackageSettings] or C[ountOverrides]\""), strOptionName);
     }
 
     if (strNewValue==OREF_NULL)     // we are done, return current value

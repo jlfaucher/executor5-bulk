@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -100,9 +100,9 @@ public:
     static void createLocks();
     static void closeLocks();
     static void init();
-    static RexxActivation *newActivation(Activity *activity, RoutineClass *routine, RexxCode *code, RexxString *calltype, RexxString *environment, ActivationContext context);
+    static RexxActivation *newActivation(Activity *activity, RexxActivation *parent, RoutineClass *routine, RexxCode *code, RexxString *calltype, RexxString *environment, ActivationContext context);
     static RexxActivation *newActivation(Activity *activity, RexxActivation *parent, RexxCode *code, ActivationContext context);
-    static RexxActivation *newActivation(Activity *activity, MethodClass *method, RexxCode *code);
+    static RexxActivation *newActivation(Activity *activity, RexxActivation *parent, MethodClass *method, RexxCode *code);
     static NativeActivation *newNativeActivation(Activity *activity, RexxActivation *parent);
     static NativeActivation *newNativeActivation(Activity *activity);
     static Activity *createNewActivity();

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -411,11 +411,11 @@ void ActivityManager::shutdown()
  *
  * @return The newly created activation.
  */
-RexxActivation *ActivityManager::newActivation(Activity *activity, RoutineClass *routine, RexxCode *code, RexxString *calltype, RexxString *environment, ActivationContext context)
+RexxActivation *ActivityManager::newActivation(Activity *activity, RexxActivation *parent, RoutineClass *routine, RexxCode *code, RexxString *calltype, RexxString *environment, ActivationContext context)
 {
     // in heavily multithreaded environments, the activation cache is a source for race conditions
     // that can lead to crashes.  Just unconditionally create a new actvation
-    return new RexxActivation(activity, routine, code, calltype, environment, context);
+    return new RexxActivation(activity, parent, routine, code, calltype, environment, context);
 }
 
 
@@ -449,11 +449,11 @@ RexxActivation *ActivityManager::newActivation(Activity *activity, RexxActivatio
  *
  * @return The newly created activation.
  */
-RexxActivation *ActivityManager::newActivation(Activity *activity, MethodClass *method, RexxCode *code)
+RexxActivation *ActivityManager::newActivation(Activity *activity, RexxActivation *parent, MethodClass *method, RexxCode *code)
 {
     // in heavily multithreaded environments, the activation cache is a source for race conditions
     // that can lead to crashes.  Just unconditionally create a new actvation
-    return new RexxActivation(activity, method, code);
+    return new RexxActivation(activity, parent, method, code);
 }
 
 
@@ -737,7 +737,7 @@ void ActivityManager::releaseAccess(bool dispatch)
     {
         dispatchNext();
     }
-    
+
     // now release the kernel lock
     unlockKernel();
 }

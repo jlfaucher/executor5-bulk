@@ -288,3 +288,4 @@ GLOBAL_NAME(INTERMEDIATES,       "INTERMEDIATES")       // TraceSetting (cf. Pac
 GLOBAL_NAME(LABELS,              "LABELS")              // TraceSetting (cf. Package: Options method)
 GLOBAL_NAME(RESULTS,             "RESULTS")             // TraceSetting (cf. Package: Options method)
 
+GLOBAL_NAME(NOINHERIT,           "NOINHERIT")           // new ::options subdirective numeric

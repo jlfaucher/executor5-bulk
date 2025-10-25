@@ -322,6 +322,8 @@ typedef enum
     SUBKEY_NORMAL,
     SUBKEY_APPEND,
     SUBKEY_REPLACE,
+    SUBKEY_NOINHERIT,
+    SUBKEY_INHERIT,
 } InstructionSubKeyword;
 
 
@@ -400,6 +402,7 @@ typedef enum
     SUBDIRECTIVE_LOSTDIGITS,
     SUBDIRECTIVE_NOSTRING,
     SUBDIRECTIVE_NOTREADY,
+    SUBDIRECTIVE_NUMERIC,
 } DirectiveSubKeyword;
 
 

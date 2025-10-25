@@ -127,7 +127,7 @@ RexxActivation::RexxActivation()
  * @param _method   The method being invoked.
  * @param _code     The code to execute.
  */
-RexxActivation::RexxActivation(Activity* _activity, MethodClass * _method, RexxCode *_code)
+RexxActivation::RexxActivation(Activity* _activity, RexxActivation *_parent, MethodClass * _method, RexxCode *_code)
 {
     clearObject();                 // start with a fresh object
     activity = _activity;          // save the activity pointer
@@ -150,6 +150,12 @@ RexxActivation::RexxActivation(Activity* _activity, MethodClass * _method, RexxC
 
     // initialize from the package-defined settings
     inheritPackageSettings();
+
+    // inherit numeric settings
+    if (_parent != NULL && packageObject->isNumericInheritEnabled())
+    {
+          this->settings.packageSettings.numericSettings = _parent->settings.packageSettings.numericSettings;
+    }
 
     if (_method->isGuarded())            // make sure we set the appropriate guarded state
     {
@@ -264,7 +270,7 @@ RexxActivation::RexxActivation(Activity *_activity, RexxActivation *_parent, Rex
  * @param env       The default address environment
  * @param context   The type of call context.
  */
-RexxActivation::RexxActivation(Activity *_activity, RoutineClass *_routine, RexxCode *_code,
+RexxActivation::RexxActivation(Activity *_activity, RexxActivation *_parent, RoutineClass *_routine, RexxCode *_code,
     RexxString *calltype, RexxString *env, ActivationContext context)
 {
     clearObject();
@@ -285,6 +291,12 @@ RexxActivation::RexxActivation(Activity *_activity, RoutineClass *_routine, Rexx
 
     // initialize with the package-defined settings
     inheritPackageSettings();
+
+    // inherit numeric settings
+    if (_parent != NULL && packageObject->isNumericInheritEnabled())
+    {
+          this->settings.packageSettings.numericSettings = _parent->settings.packageSettings.numericSettings;
+    }
 
     // save the source also
     settings.parentCode = code;

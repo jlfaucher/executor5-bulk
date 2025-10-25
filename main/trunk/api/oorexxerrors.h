@@ -184,6 +184,7 @@
 #define Rexx_Error_Symbol_expected_after_stem_keyword                     20932
 #define Rexx_Error_Symbol_expected_address_with                           20933
 #define Rexx_Error_Symbol_expected_counter                                20934
+#define Rexx_Error_Symbol_expected_numeric_subdirective                   20935
 #define Rexx_Error_Invalid_data                                           21000
 #define Rexx_Error_Invalid_data_user_defined                              21900
 #define Rexx_Error_Invalid_data_nop                                       21901
@@ -251,6 +252,7 @@
 #define Rexx_Error_Invalid_subkeyword_address_error                       25932
 #define Rexx_Error_Invalid_subkeyword_address_with_io_option              25933
 #define Rexx_Error_Invalid_subkeyword_address_with_option                 25934
+#define Rexx_Error_Invalid_subkeyword_numeric_subdirective                25935
 #define Rexx_Error_Invalid_whole_number                                   26000
 #define Rexx_Error_Invalid_whole_number_repeat                            26002
 #define Rexx_Error_Invalid_whole_number_for                               26003

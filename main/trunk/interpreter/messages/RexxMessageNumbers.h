@@ -756,6 +756,8 @@
 #define Error_Invalid_argument_bad_date_msg                          836
 #define Error_Incorrect_method_request_type_msg                      837
 #define Error_Execution_circular_requires_msg                        838
+#define Error_Symbol_expected_numeric_subdirective_msg               839
+#define Error_Invalid_subkeyword_numeric_subdirective_msg            840
 
 
 #endif

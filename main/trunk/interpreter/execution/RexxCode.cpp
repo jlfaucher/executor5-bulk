@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -181,7 +181,7 @@ void RexxCode::call(Activity *activity, RoutineClass *routine, RexxString *routi
     // check the stack space before proceeding
     activity->checkStackSpace();
     // create a new activity to run this and add to the stack.
-    RexxActivation *newacta = ActivityManager::newActivation(activity, routine, this, calltype, environment, context);
+    RexxActivation *newacta = ActivityManager::newActivation(activity, activity->getCurrentRexxFrame(), routine, this, calltype, environment, context);
     activity->pushStackFrame(newacta);
     // have the activation run this code.  The return result is passed back through result.
     newacta->run(OREF_NULL, routineName, argPtr, argcount, OREF_NULL, result);
@@ -204,7 +204,7 @@ void RexxCode::run(Activity *activity, MethodClass *method, RexxObject *receiver
     RexxString *msgname, RexxObject**argPtr, size_t argcount, ProtectedObject &result)
 {
     // create a new activation object and push it on the top of the stack.
-    RexxActivation *newacta = ActivityManager::newActivation(activity, method, this);
+    RexxActivation *newacta = ActivityManager::newActivation(activity, activity->getCurrentRexxFrame(), method, this);
     activity->pushStackFrame(newacta);
     // run the method.  The result is returned via the ProtectedObject reference.
     newacta->run(receiver, msgname, argPtr, argcount, OREF_NULL, result);

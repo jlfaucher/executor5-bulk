@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1235,7 +1235,6 @@ void LanguageParser::optionsDirective()
                     {
                         case SUBDIRECTIVE_SYNTAX:
                         {
-
                             package->enableNotreadySyntax();
                             break;
                         }
@@ -1305,6 +1304,35 @@ void LanguageParser::optionsDirective()
                 {
                     // this option is just the keyword...flip on the prolog in the package
                     package->enableProlog();
+                    break;
+                }
+
+            // ::OPTIONS NUMERIC PROPAGATE | NOPROPAGATE
+            case SUBDIRECTIVE_NUMERIC:
+                {
+                    token = nextReal();
+                    if (!token->isSymbol())
+                    {
+                        syntaxError(Error_Symbol_expected_numeric_subdirective, token);
+                    }
+
+                    switch (token->subKeyword())
+                    {
+                        // NUMERIC NOPROPAGATE (default)
+                        case SUBKEY_NOINHERIT:
+                            package->disableNumericInherit();
+                            break;
+
+                        // NUMERIC PROPAGATE
+                        case SUBKEY_INHERIT:
+                            package->enableNumericInherit();
+                            break;
+
+                        // bad keyword
+                        default:
+                            syntaxError(Error_Invalid_subkeyword_numeric_subdirective, token);
+                            break;
+                    }
                     break;
                 }
 
