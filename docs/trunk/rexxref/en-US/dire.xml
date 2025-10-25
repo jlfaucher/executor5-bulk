@@ -878,7 +878,11 @@ The value <emphasis role="italic">digits</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be larger than the
 current FUZZ ::OPTIONS setting.
 The package value can be retrieved using the Package class
-<xref linkend="mthPackageDigits" xrefstyle="select:title"/> method.
+<xref linkend="mthPackageDigits" xrefstyle="select:title"/> method
+or
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/>
+method, which in addition allows for setting the package value as well.
+
 </para>
 <para>There is no limit to the value for DIGITS
 (except the amount of storage available), but high precisions are likely to
@@ -898,7 +902,10 @@ case only one, nonzero digit appears before the decimal point) or <option>ENGINE
 <option>SCIENTIFIC</option>. The subkeywords <option>SCIENTIFIC</option> or <option>ENGINEERING</option> must be specified as
 symbols.
 The package value can be retrieved using the Package class
-<xref linkend="mthPackageForm" xrefstyle="select:title"/> method.
+<xref linkend="mthPackageForm" xrefstyle="select:title"/> method
+or
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/>
+method, which in addition allows for setting the package value as well.
 </para>
 </entry></row>
 <row><entry><option>FUZZ</option>
@@ -912,12 +919,29 @@ The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be smaller than the
 current DIGIT ::OPTIONS setting.
 The package value can be retrieved using the Package class
-<xref linkend="mthPackageFuzz" xrefstyle="select:title"/> method.
+<xref linkend="mthPackageFuzz" xrefstyle="select:title"/> method
+or
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/>
+method, which in addition allows for setting the package value as well.
 </para>
 <para>NUMERIC FUZZ temporarily
 reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
 numeric comparison. The numbers are subtracted under a precision of DIGITS
 minus FUZZ digits during the comparison and are then compared with 0.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry><option>NUMERIC</option> &added52;
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>NUMERIC option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls whether the numeric settings of the caller should be inherited in routines and
+methods of the package.  This can be either <option>INHERIT</option> or <option>NOINHERIT</option>
+(default).  The subkeywords <option>INHERIT</option> or <option>NOINHERIT</option> must be specified
+as symbols.
+The package value can be retrieved and changed using the Package class
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/> method.
 </para>
 </entry></row>
 
@@ -931,6 +955,10 @@ directives <option>ERROR</option>, <option>FAILURE</option>, <option>LOSTDIGITS<
 </para>
 <para>::OPTIONS ALL SYNTAX sets all six <emphasis role="italic">condition</emphasis>s
 to raise SYNTAX, while ::OPTIONS ALL CONDITION sets all of them to their default state.
+</para>
+<para>
+The package values can be retrieved and changed using the Package class
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/> method.
 </para>
 </entry></row>
 
@@ -946,6 +974,10 @@ to raise SYNTAX, while ::OPTIONS ALL CONDITION sets all of them to their default
 <para>
 controls whether an ERROR, FAILURE, LOSTDIGITS, NOSTRING, NOTREADY, or NOVALUE
 condition event raises its associated condition, or raises a SYNTAX condition.
+</para>
+<para>
+The package values can be retrieved and changed using the Package class
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/> method.
 </para>
 <para>
 If ::OPTIONS <emphasis role="italic">condition</emphasis> CONDITION is in effect,
@@ -984,6 +1016,10 @@ before the first directive) is run when another program requires it
 through a <xref linkend="requ" xrefstyle="select:title"/> directive.
 </para>
 <para>
+The package value can be retrieved and changed using the Package class
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/> method.
+</para>
+<para>
 If ::OPTIONS PROLOG is in effect, any prolog code is run as usual when
 the source program is being required using a :REQUIRES directive.
 If ::OPTIONS NOPROLOG is in effect, any prolog code is not
@@ -1006,6 +1042,9 @@ The value <emphasis role="italic">trace</emphasis> must be one of the
 valid for the <xref linkend="keyTrace" xrefstyle="select:title"/> instruction.
 The package value can be retrieved using the Package class
 <xref linkend="mthPackageTrace" xrefstyle="select:title"/> method.
+or
+<xref linkend="mthPackageOptions" xrefstyle="select:title"/>
+method, which in addition allows for setting the package value as well.
 </para>
 </entry></row>
 </tbody>
