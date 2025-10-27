@@ -146,11 +146,9 @@ endif()
 endif()
 message(STATUS "Revision Number is ${ORX_BLD_LVL}")
 
-if (WIN32)
-# find a xalan executable, but only on windows for now.
-    FIND_PROGRAM(XALAN_EXECUTABLE xalan
-       DOC "xalan command line xslt converter")
-endif()
+FIND_PROGRAM(XALAN_EXECUTABLE Xalan
+   DOC "Xalan command line xslt converter")
+message(STATUS "XALAN_EXECUTABLE is ${XALAN_EXECUTABLE}")
 
 # The following supports the versioning of the rexx shared libraries
 # This defines the oorexx library version. For ooRexx this should always be the
@@ -1475,7 +1473,7 @@ if (WIN32)
    add_executable(oodialog_exe WIN32 ${build_extensions_oodialog_dir}/oodWinMain.cpp
                                      ${build_extensions_oodialog_dir}/oodShared.cpp
                                      ${build_extensions_oodialog_dir}/ooDialogWinMain.rc)
-   add_dependencies(oodialog_exe oodialog)                                      
+   add_dependencies(oodialog_exe oodialog)
 # We need to override the PDB output file name for oodialog.exe so it doesn't overwrite
 # the file for oodialog.dll, which essentially makes oodialog undebuggable on Windows
 # we want to append, which is a little bit of a pain.
