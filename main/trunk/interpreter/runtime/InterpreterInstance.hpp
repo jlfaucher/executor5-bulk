@@ -88,8 +88,8 @@ public:
     bool terminate();
     void waitForCompletion();
     void attachToProcess();
-    Activity *enterOnCurrentThread();
-    Activity *attachThread();
+    Activity *enterOnCurrentThread(bool &activityCreated);
+    Activity *attachThread(bool &activityCreated);
     int attachThread(RexxThreadContext *&attachedContext);
     bool detachThread();
     bool detachThread(Activity *activity);

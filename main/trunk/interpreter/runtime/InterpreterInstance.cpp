@@ -197,7 +197,8 @@ void InterpreterInstance::setSecurityManager(RexxObject *m)
  */
 int InterpreterInstance::attachThread(RexxThreadContext *&attachedContext)
 {
-    Activity *activity = attachThread();
+    bool activityCreated = false;
+    Activity *activity = attachThread(activityCreated);
     attachedContext = activity->getThreadContext();
     // When we attach, we get the current lock.  We need to ensure we
     // release this before returning control to the outside world.
@@ -211,8 +212,9 @@ int InterpreterInstance::attachThread(RexxThreadContext *&attachedContext)
  *
  * @return The attached activity.
  */
-Activity *InterpreterInstance::attachThread()
+ Activity *InterpreterInstance::attachThread(bool &activityCreated)
 {
+    activityCreated = false;
     // first check for an existing activity
     Activity *oldActivity = findActivity();
     // do we have an activity for this already? There are possible
@@ -241,6 +243,7 @@ Activity *InterpreterInstance::attachThread()
     // we need to get a new activity set up for this particular thread
     // NB: The activity manager handles the special case of an activity
     // on the dispatch queue.
+    activityCreated = true;
     Activity *activity = ActivityManager::attachThread();
 
     // The creation of the new activity also made that activity the current
@@ -419,10 +422,10 @@ Activity* InterpreterInstance::findActivity()
  * @return The activity object associated with this thread/instance
  *         combination.
  */
-Activity* InterpreterInstance::enterOnCurrentThread()
+Activity* InterpreterInstance::enterOnCurrentThread(bool &newActivity)
 {
-    // attach this thread to the current activity
-    Activity *activity = attachThread();
+    // attach this thread to the current activity and record if a new activity was created for this
+    Activity *activity = attachThread(newActivity);
     // indicate this is a nested entry
     activity->activate();
     // from this point forward, we want to be the active activity, so
@@ -510,14 +513,14 @@ bool InterpreterInstance::terminate()
     }
 
     Activity *current;
-
+    bool activityCreated = false;
     try
     {
         // if everything has terminated, then make sure we run the uninits before shutting down.
         // This activity is currently the current activity.  We're going to run the
         // uninits on this one, so reactivate it until we're done running. If we were not actually
         // called on an attached thread, an attach will be performed.
-        current = enterOnCurrentThread();
+        current = enterOnCurrentThread(activityCreated);
 
         // this might be holding some local references. Make sure we clear these
         // before running the garbage collector
@@ -559,9 +562,11 @@ bool InterpreterInstance::terminate()
     commandHandlers = OREF_NULL;
     requiresFiles = OREF_NULL;
 
-    // Release the kernel lock (with the usual nudge to the dispatch queue) as a
-    // new activity may have been created for cleanup causing an extra kernel lock
-    ActivityManager::releaseAccess(); 
+    // If a new activity was created release the kernel lock again with dispatch nudge; otherwise just nudge the dispatch queue
+    if (activityCreated)
+      ActivityManager::releaseAccess(); 
+    else
+      ActivityManager::dispatchNext();  
 
     // tell the main interpreter controller we're gone.
     Interpreter::terminateInterpreterInstance(this);
