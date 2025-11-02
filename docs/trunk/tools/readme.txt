@@ -123,7 +123,7 @@ make sure to update this file.
 
 - oorexxdocs_bildutils-check
 
-        - contains an additional script used by the Jenkins framework to 
+        - contains an additional script used by the Jenkins framework to
           (i) see if any changes have been made to the readme.txt file and
           (ii) upload it to sourceforge when there are amendments.
           This script is intended for use by the developers only.
@@ -137,3 +137,5 @@ make sure to update this file.
         - The ooRexx project uses a free tool "RailDiagramGenerator" for creating
           its syntax diagrams from ebnf. For more information read the
           RailDiagramGenerator-readme.txt
+
+(touched for testing on 2025-11-02)
