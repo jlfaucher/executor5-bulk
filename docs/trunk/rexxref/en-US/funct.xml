@@ -77,24 +77,30 @@ term (such as a string) would be valid, using the following notation:</para>
 <indexterm><primary>names</primary>
 <secondary>of functions</secondary></indexterm>
 <para>The <emphasis role="italic">function_name</emphasis> is a literal string
-or a single symbol, which is taken to be a constant.</para>
-<para>There can be any number of expressions, separated by commas,
-<indexterm><primary>, (comma)</primary>
-<secondary>separator of arguments</secondary></indexterm>
-<indexterm><primary>, (comma)</primary>
-<secondary>in function calls</secondary></indexterm>
-<indexterm><primary>comma</primary>
-<secondary>in function calls</secondary></indexterm>
-<indexterm><primary>comma</primary>
-<secondary>separator of arguments</secondary></indexterm>
-between the
-<indexterm><primary>parentheses</primary>
-<secondary>in function calls</secondary></indexterm>
+or a single symbol, which is taken as a constant. When it is a symbol,
+it can be optionally preceeded by a
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>
+followed by a colon.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/function_name.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>There can be any number of expressions, separated by commas,<indexterm>
+<primary>, (comma)</primary><secondary>separator of arguments
+</secondary></indexterm><indexterm><primary>, (comma)</primary><secondary>in function calls
+</secondary></indexterm><indexterm><primary>comma</primary><secondary>in function calls
+</secondary></indexterm><indexterm><primary>comma</primary><secondary>separator of arguments
+</secondary></indexterm>
+between the<indexterm>
+<primary>parentheses</primary><secondary>in function calls
+</secondary></indexterm>
 parentheses. These expressions are called the arguments to the function. Each
 argument expression can include further function calls.</para>
 <para>Note that the left parenthesis must be adjacent to the name of the function,
 with no whitespace characters in between. (A blank operator would be assumed at
-this point instead.) Only a comment can appear between the name and the left
+this point instead.) Only a standard comment can appear between the name and the left
 parenthesis.
 </para>
 <para>The arguments
