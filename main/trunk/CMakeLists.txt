@@ -52,12 +52,6 @@ else ()
     cmake_minimum_required (VERSION 2.8.12...99.99)
 endif ()
 
-# Policy CMP0069 is not set: INTERPROCEDURAL_OPTIMIZATION is enforced when enabled.
-# The ``OLD`` behavior for this policy is to add IPO flags only for Intel compiler on Linux.
-# The ``NEW`` behavior for this policy is to add IPO flags for the current compiler or produce an error if CMake does not know the flags.
-# To use check_ipo_supported(), policy CMP0069 must be set to NEW; otherwise, a fatal error will occur.
-cmake_policy(SET CMP0069 NEW)
-
 # must come before the project command
 # 10.13.6 High Sierra is the minimum system supported
 if( APPLE AND BUILD_OSX_UNIVERSAL_BINARIES )
@@ -310,23 +304,6 @@ if (CMAKE_VERSION VERSION_LESS "3.1")
   endif ()
 else ()
   set (CMAKE_CXX_STANDARD 11)
-endif ()
-
-# Interprocedural optimization (IPO), also known as link-time optimization (LTO)
-# Optional IPO. Do not use IPO if it's not supported by compiler.
-include(CheckIPOSupported)
-check_ipo_supported (RESULT result OUTPUT output)
-if (result)
-  message (STATUS "IPO is supported")
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message (STATUS "IPO is not activated for a Debug build")
-    set (CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-  else ()
-    set (CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-  endif ()
-else ()
-  message (WARNING "IPO is not supported: ${output}")
-  set (CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 endif ()
 
 include_directories(${PROJECT_BINARY_DIR})
