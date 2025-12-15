@@ -1,0 +1,157 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.rexx_command.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: rexx_command.testGroup - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "rexx_command.testGroup" public subclass ooTestCase
+
+::method init
+  expose outLines
+  forward class (super) continue
+  outLines = .array~new -- will hold all console output
+
+::method test_noArgs
+  expose outLines
+  outLines~empty
+  /* the command without arguments  */
+  theCmd = 'rexx'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(-1, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_unknownSW
+  expose outLines
+  outLines~empty
+  /* the command with an unknown option/switch  */
+  theCmd = 'rexx -?'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(-1, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optV1
+  expose outLines
+  outLines~empty
+  /* the v option (lower case)  */
+  theCmd = 'rexx -v'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optV2
+  expose outLines
+  outLines~empty
+  /* the V option (upper case)  */
+  theCmd = 'rexx -V'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optV3
+  expose outLines
+/* disabled until fix applied
+  if .ooRexxUnit.OSName == 'WINDOWS' then do
+      outLines~empty
+      /* the v option with a / prefix   */
+      theCmd = 'rexx /v'
+      theRC = issueCmd(theCmd, outLines)
+      self~assertRC(0, theRC)
+      self~assertFalse(outLines~isEmpty)
+  end   */
+
+::method test_optV4
+  expose outLines
+/* disabled until fix applied
+  if .ooRexxUnit.OSName == 'WINDOWS' then do
+      outLines~empty
+      /* the V option with a / prefix   */
+      theCmd = 'rexx /V'
+      theRC = issueCmd(theCmd, outLines)
+      self~assertRC(0, theRC)
+      self~assertFalse(outLines~isEmpty)
+  end   */
+
+::method test_optV5
+  expose outLines
+  outLines~empty
+  /* the v option preceded by an unknown option */
+  theCmd = 'rexx -? -v'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optV6
+  expose outLines
+  outLines~empty
+  /* the v option followed by an unknown option */
+  theCmd = 'rexx -v -?'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optE
+  expose outLines
+  outLines~empty
+  /* the e option with quoted arguments */
+  theCmd = 'rexx -e "say arg(1)" a "b c" d'
+  expected = 'a b c d'
+/* disabled until fix applied
+  if .ooRexxUnit.OSName == 'WINDOWS' then do
+      expected = 'a "b c" d'
+  end   */
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertSame(expected, outlines[1])
+-- End of class: rexx_command.testGroup
