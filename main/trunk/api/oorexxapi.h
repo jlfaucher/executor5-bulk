@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -244,7 +244,8 @@ typedef struct _RexxMethodEntry
 #define REXX_LANGUAGE_6_03 0x00000603
 #define REXX_LANGUAGE_6_04 0x00000604
 #define REXX_LANGUAGE_6_05 0x00000605
-#define REXX_CURRENT_LANGUAGE_LEVEL REXX_LANGUAGE_6_05
+#define REXX_LANGUAGE_6_06 0x00000606
+#define REXX_CURRENT_LANGUAGE_LEVEL REXX_LANGUAGE_6_06
 
 #define STANDARD_PACKAGE_HEADER sizeof(RexxPackageEntry), REXX_PACKAGE_API_NO,
 

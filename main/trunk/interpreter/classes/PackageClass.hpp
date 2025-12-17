@@ -164,7 +164,7 @@ public:
     inline const TraceSetting &getTraceSetting() { return packageSettings.getTraceSetting(); }
     inline const PackageSetting &getSettings() { return packageSettings; }
     inline bool  isRexxPackage() { return this == TheRexxPackage; }
-    inline void  setLanguageLevel(LanguageLevel l) { requiredLanguageLevel = l; }
+    inline void  setLanguageLevel(LanguageLevel l) { if (l>requiredLanguageLevel) requiredLanguageLevel = l; }
     inline LanguageLevel getLanguageLevel() { return requiredLanguageLevel; }
     inline void enableErrorSyntax() { packageSettings.enableErrorSyntax(); }
     inline void disableErrorSyntax() { packageSettings.disableErrorSyntax(); }

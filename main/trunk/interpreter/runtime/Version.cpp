@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,9 +49,6 @@
 
 RexxString *Interpreter::versionNumber = OREF_NULL;
 
-const char *Interpreter::languageLevel = "6.05";
-
-
 /**
  * Generate a version number string for the interpreter.
  *
@@ -79,7 +76,7 @@ RexxString *Interpreter::getVersionString()
 #else
                         "32",
 #endif
-                        languageLevel, day, month, year);
+                        Interpreter::getLanguageLevelString(), day, month, year);
         versionNumber = new_string(buffer);  /* return as a rexx string           */
     }
     return versionNumber;

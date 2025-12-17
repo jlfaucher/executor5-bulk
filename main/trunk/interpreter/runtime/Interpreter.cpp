@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -72,6 +72,10 @@ RexxObject *Interpreter::localServer = OREF_NULL;
 // the interpreter active state flag
 bool Interpreter::active = false;
 
+// the interpreter languageLevel as a string
+char *Interpreter::languageLevel=NULL;  // set by getLanguageLevelString(), originally in Version.cpp
+
+
 // exit return codes.
 const int RC_OK         = 0;
 const int RC_LOGIC_ERROR  = 2;
@@ -82,6 +86,23 @@ const int RC_LOGIC_ERROR  = 2;
 void Interpreter::init()
 {
     interpreterInstances = new_queue();
+}
+
+
+/** Create and return a const char* version string (to replace the static definition in Version.cpp).
+ * @return a const char* version string
+*/
+const char *Interpreter::getLanguageLevelString()
+{
+    if (languageLevel==NULL)
+    {
+        languageLevel = new char[8];
+        snprintf(languageLevel, 8, "%d.%02d",
+          (REXX_CURRENT_LANGUAGE_LEVEL & 0x0000FF00) >> 8,
+           REXX_CURRENT_LANGUAGE_LEVEL & 0x000000FF
+          );
+    }
+    return (const char*) languageLevel;
 }
 
 
