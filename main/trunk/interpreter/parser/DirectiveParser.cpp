@@ -991,6 +991,7 @@ void LanguageParser::optionsDirective()
                     }
                     // set this in the package object
                     package->setDigits(digits);
+                    package->setExplicitDigitsOption();
                     break;
                 }
 
@@ -1020,6 +1021,7 @@ void LanguageParser::optionsDirective()
                             syntaxError(Error_Invalid_subkeyword_form, token);
                             break;
                     }
+                    package->setExplicitFormOption();
                     break;
                 }
 
@@ -1047,6 +1049,7 @@ void LanguageParser::optionsDirective()
                         reportException(Error_Expression_result_digits, package->getDigits(), fuzz);
                     }
                     package->setFuzz(fuzz);
+                    package->setExplicitFuzzOption();
                     break;
                 }
 
@@ -1070,6 +1073,7 @@ void LanguageParser::optionsDirective()
                     }
                     // poke into the package
                     package->setTraceSetting(settings);
+                    package->setExplicitTraceOption();
                     break;
                 }
 
@@ -1100,6 +1104,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::NOVALUE, token->value());
                     }
+                    package->setExplicitNovalueOption();
                     break;
                 }
 
@@ -1129,6 +1134,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::ERRORNAME, token->value());
                     }
+                    package->setExplicitErrorOption();
                     break;
                 }
 
@@ -1159,6 +1165,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::FAILURE, token->value());
                     }
+                    package->setExplicitFailureOption();
                     break;
                 }
 
@@ -1189,6 +1196,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::LOSTDIGITS, token->value());
                     }
+                    package->setExplicitLostdigitsOption();
                     break;
                 }
 
@@ -1219,6 +1227,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::NOSTRING, token->value());
                     }
+                    package->setExplicitNostringOption();
                     break;
                 }
 
@@ -1248,6 +1257,7 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::NOTREADY, token->value());
                     }
+                    package->setExplicitNotreadyOption();
                     break;
                 }
 
@@ -1288,6 +1298,12 @@ void LanguageParser::optionsDirective()
                         default:
                             syntaxError(Error_Invalid_subkeyword_following, GlobalNames::ALL, token->value());
                     }
+                    package->setExplicitErrorOption();
+                    package->setExplicitFailureOption();
+                    package->setExplicitLostdigitsOption();
+                    package->setExplicitNostringOption();
+                    package->setExplicitNotreadyOption();
+                    package->setExplicitNovalueOption();
                     break;
                 }
 
@@ -1296,6 +1312,8 @@ void LanguageParser::optionsDirective()
                 {
                     // this option is just the keyword...flip off the prolog in the package
                     package->disableProlog();
+                    package->clearExplicitPrologOption();   // in case we processed already an "::OPTIONS PROLOG"
+                    package->setExplicitNoprologOption();
                     break;
                 }
 
@@ -1304,6 +1322,8 @@ void LanguageParser::optionsDirective()
                 {
                     // this option is just the keyword...flip on the prolog in the package
                     package->enableProlog();
+                    package->clearExplicitNoprologOption(); // in case we processed already an "::OPTIONS NOPROLOG"
+                    package->setExplicitPrologOption();
                     break;
                 }
 
@@ -1333,6 +1353,7 @@ void LanguageParser::optionsDirective()
                             syntaxError(Error_Invalid_subkeyword_numeric_subdirective, token);
                             break;
                     }
+                    package->setExplicitNumericOption();
                     break;
                 }
 

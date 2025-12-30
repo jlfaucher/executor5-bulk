@@ -67,7 +67,6 @@ typedef enum
 } PackageFlags;
 
 
-
 /**
  * A class for processing different numeric settings
  */
@@ -126,16 +125,16 @@ class PackageSetting
         char buf[512]="";
         snprintf(buf, 512, "::OPTIONS DIGITS %zd FORM %s FUZZ %zd NUMERIC %s ERROR %s FAILURE %s LOSTDIGITS %s NOSTRING %s NOTREADY %s NOVALUE %s %s TRACE %s",
                          getDigits(),
-                         getForm()                   ? "ENGINEERING" : "SCIENTIFIC",
+                         getForm()                   ? "ENGINEERING"      : "SCIENTIFIC",
                          getFuzz(),
-                         isNumericInheritEnabled()   ? "INHERIT"     : "NOINHERIT",
-                         isErrorSyntaxEnabled()      ? "SYNTAX"      : "CONDITION",
-                         isFailureSyntaxEnabled()    ? "SYNTAX"      : "CONDITION",
-                         isLostdigitsSyntaxEnabled() ? "SYNTAX"      : "CONDITION",
-                         isNostringSyntaxEnabled()   ? "SYNTAX"      : "CONDITION",
-                         isNotreadySyntaxEnabled()   ? "SYNTAX"      : "CONDITION",
-                         isNovalueSyntaxEnabled()    ? "SYNTAX"      : "CONDITION",
-                         isPrologEnabled()           ? "PROLOG"      : "NOPROLOG" ,
+                         isNumericInheritEnabled()   ? "INHERIT"          : "NOINHERIT",
+                         isErrorSyntaxEnabled()      ? "SYNTAX"           : "CONDITION",
+                         isFailureSyntaxEnabled()    ? "SYNTAX"           : "CONDITION",
+                         isLostdigitsSyntaxEnabled() ? "SYNTAX"           : "CONDITION",
+                         isNostringSyntaxEnabled()   ? "SYNTAX"           : "CONDITION",
+                         isNotreadySyntaxEnabled()   ? "SYNTAX"           : "CONDITION",
+                         isNovalueSyntaxEnabled()    ? "SYNTAX"           : "CONDITION",
+                         isPrologEnabled()           ? "PROLOG"           : "NOPROLOG" ,
                 traceSettings.tracingNormal()        ? "NORMAL"        :
                 traceSettings.tracingIntermediates() ? "INTERMEDIATES" :
                 traceSettings.tracingResults()       ? "RESULTS"       :

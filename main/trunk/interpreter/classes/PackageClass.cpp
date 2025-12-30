@@ -2128,7 +2128,7 @@ RexxObject *PackageClass::getMainRexx()
 void PackageClass::runProlog(Activity *activity)
 {
     // if the prolog is enabled, run the prolog now
-    if (isPrologEnabled())
+    if (isPrologEnabled() && initCode != OREF_NULL)
     {
         ProtectedObject dummy;
         // if we have initcode, then by definition, the leading section has been created as
@@ -2226,7 +2226,8 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
         prologFlag,
         resetFlag,
         setoptionFlag,
-        traceFlag
+        traceFlag,
+        explicitlyDefinedOptionsFlag,
     } OptionsFlags;
 
     OptionsFlags of = unknownFlag;
@@ -2374,6 +2375,14 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
                 currentValue = ts.toStringLong();
                 break;
             }
+
+        case 'X':   // explicitly defined options on ::OPTIONS directive
+            {
+                of = explicitlyDefinedOptionsFlag;
+                currentValue = optionsExplicitlySetToString();
+                break;
+            }
+
         default:
             break;
     }
@@ -2382,7 +2391,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
     {
         if (strNewValue==OREF_NULL)     // querying individual option values ?
         {
-            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits], E[rror], FA[ilure], FO[rm], FU[zz], I[nitialOptions], L[ostdigits], NU[meric], NOS[tring], NOT[ready], NOV[alue], P[rolog], R[esetOptions], S[etOptions] or T[race]\""), strOptionName);
+            reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[igits], E[rror], FA[ilure], FO[rm], FU[zz], I[nitialOptions], L[ostdigits], NU[meric], NOS[tring], NOT[ready], NOV[alue], P[rolog], R[esetOptions], S[etOptions], T[race] or X[explicitlyDefined]\""), strOptionName);
         }
         reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"A[ll], D[igits], E[rror], FA[ilure], FO[rm], FU[zz], I[nitialOptions], L[ostdigits], NU[meric], NOS[tring], NOT[ready], NOV[alue], P[rolog], R[esetOptions], S[etOptions] or T[race]\""), strOptionName);
     }
@@ -2618,6 +2627,13 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
                 packageSettings.traceSettings=settings;
                 break;
             }
+
+    case explicitlyDefinedOptionsFlag:  // do not allow changing an invariant
+        {
+            // inital packageSettings must not be changed
+            reportException(Error_Incorrect_method_maxarg, new_integer(1));
+        }
+
         default:
             break;
     }
@@ -2628,7 +2644,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
 
 /** Allows querying and setting the override options 'OverridePackageSettings' and
  *  'CountOverride'. If 'CountOverride' is not '0' then each called/required
- *  program/package gets its package settings overrided, and 'countOverride'
+ *  program/package gets its package settings overridden, and 'countOverride'
  *  gets decremented by '-1'.
  *
  *  @param optionName mandatory, denotes the option to query or to set
@@ -2703,6 +2719,96 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
 }
 
 
+/* Override default options that are not explicitly set in a package using psOverridePackageSettings.
+   Overriding takes place only, if overrideCount is not 0. Each override will decrease
+   overrideCount by 1. If overrideCount is positive, then eventually the overrideCount will
+   drop to 0 which will stop overriding (allows for limiting the number of overrides). If the
+   overrideCount is negative, it will be a global override as overrideCount will never
+   arrive at 0, such that all packages that get called/required get overridden.
+
+   @param package to override
+   @return true if override got carried out, false else
+*/
+bool PackageClass::overridePackageSettings(PackageClass *package)
+{
+    if (overrideCount != 0 )
+    {
+        package -> saveInitialPackageSettings();
+
+        // only override, if option was not explicitly set in the package
+        if (! package -> isExplicitDigitsOption())
+        {
+           package -> setDigits( psOverridePackageSettings.getDigits());
+        }
+        if (! package -> isExplicitFormOption())
+        {
+           package -> setForm( psOverridePackageSettings.getForm());
+        }
+        if (! package -> isExplicitFuzzOption())
+        {
+           package -> setFuzz( psOverridePackageSettings.getFuzz());
+        }
+        if (! package -> isExplicitNumericOption())
+        {
+           psOverridePackageSettings.isNumericInheritEnabled() ?
+               package -> enableNumericInherit() :
+               package -> disableNumericInherit();
+        }
+        if (! package -> isExplicitErrorOption())
+        {
+           psOverridePackageSettings.isErrorSyntaxEnabled() ?
+               package -> enableErrorSyntax() :
+               package -> disableErrorSyntax();
+        }
+        if (! package -> isExplicitFailureOption())
+        {
+           psOverridePackageSettings.isFailureSyntaxEnabled() ?
+               package -> enableFailureSyntax() :
+               package -> disableFailureSyntax();
+        }
+        if (! package -> isExplicitLostdigitsOption())
+        {
+           psOverridePackageSettings.isLostdigitsSyntaxEnabled() ?
+               package -> enableLostdigitsSyntax() :
+               package -> disableLostdigitsSyntax();
+        }
+        if (! package -> isExplicitNostringOption())
+        {
+           psOverridePackageSettings.isNostringSyntaxEnabled() ?
+               package -> enableNostringSyntax() :
+               package -> disableNostringSyntax();
+        }
+        if (! package -> isExplicitNotreadyOption())
+        {
+           psOverridePackageSettings.isNotreadySyntaxEnabled() ?
+               package -> enableNotreadySyntax() :
+               package -> disableNotreadySyntax();
+        }
+        if (! package -> isExplicitNovalueOption())
+        {
+           psOverridePackageSettings.isNovalueSyntaxEnabled() ?
+               package -> enableNovalueSyntax() :
+               package -> disableNovalueSyntax();
+        }
+        if (! package -> isExplicitPrologOption())
+        {
+           psOverridePackageSettings.isPrologEnabled() ?
+               package -> enableProlog() :
+               package -> disableProlog();
+        }
+        if (! package -> isExplicitTraceOption())
+        {
+            package -> setTraceSetting(psOverridePackageSettings.getTraceSetting());
+        }
+
+        overrideCount--;    // if count is positive it gets reduced, eventually hitting 0 and stopping there
+        return true;        // indicate we carried out override
+    }
+    return false;           // indicate we did not override
+}
+
+
+
 /**
  *  Uses the 'newValue' string's settings (must be formatted as a single ::OPTIONS directive)
  *  for the overriding options. To inhibit injections neither semi-colons, nor carriage
@@ -2730,7 +2836,7 @@ PackageSetting PackageClass::setPackageSettings(RexxString *newValue, bool setOv
         reportException(Error_Incorrect_method_user_defined, new_string("override package settings argument must not be \".nil\""));
     }
 
-        // check that we have a single directive in hand (no semi-colons, no cr-lf)
+        // check that we have a single directive in hand (no semi-colons, no cr-lf) to inhibit code injections
     const char *cData = newValue -> getStringData();
     size_t length = newValue-> getLength();
     bool colonSeen = false;
@@ -2792,5 +2898,39 @@ PackageSetting PackageClass::setPackageSettings(RexxString *newValue, bool setOv
         package -> packageSettings = newSettings;
     }
     return tmp;     // return previous override packageSetting
+}
+
+
+/* Returns the package's explicitly set options as a blank delimited string of ::OPTIONS subkeywords.
+*  The subkeywords are in the same order as the OPTIONS string, starting out with the numeric related
+*   options, the syntax/condition related options, the prolog options and the trace option.
+*
+*  @return returns the package's explicitly set options as a blank delimited string of ::OPTIONS subkeywords
+*/
+RexxString *PackageClass::optionsExplicitlySetToString()
+{
+    char buf[128]="";
+    snprintf(buf, 128, "%s%s%s%s%s%s%s%s%s%s%s%s%s",
+                     isExplicitDigitsOption()     ? "DIGITS "     : "",     // NUMERIC related
+                     isExplicitFormOption()       ? "FORM "       : "",     // NUMERIC related
+                     isExplicitFuzzOption()       ? "FUZZ "       : "",     // NUMERIC related
+                     isExplicitNumericOption()    ? "NUMERIC "    : "",     // NUMERIC related
+                     isExplicitErrorOption()      ? "ERROR "      : "",     // SYNTAX/CONDITION related
+                     isExplicitFailureOption()    ? "FAILURE "    : "",     // SYNTAX/CONDITION related
+                     isExplicitLostdigitsOption() ? "LOSTDIGITS " : "",     // SYNTAX/CONDITION related
+                     isExplicitNostringOption()   ? "NOSTRING "   : "",     // SYNTAX/CONDITION related
+                     isExplicitNotreadyOption()   ? "NOTREADY "   : "",     // SYNTAX/CONDITION related
+                     isExplicitNovalueOption()    ? "NOVALUE "    : "",     // SYNTAX/CONDITION related
+                     isExplicitNoprologOption()   ? "NOPROLOG "   : "",     //
+                     isExplicitPrologOption()     ? "PROLOG "     : "",     //
+                     isExplicitTraceOption()      ? "TRACE "      : "" );   //
+
+    size_t len=strlen(buf);
+    if (len>0) { len--; }
+    if (buf[len]==' ')      // remove trailing blank, if any
+    {
+        buf[len]='\0';
+    }
+    return new_string(buf);
 }
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,7 +49,7 @@
 // on enum values.
 
 // this is defined as a template so we can specify what enums are stored here.
-template<typename TEnum, int TMaxFlags = 8>
+template<typename TEnum, int TMaxFlags = 16>
 class FlagSet
 {
  public:

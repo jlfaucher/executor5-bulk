@@ -99,7 +99,7 @@ int main (int argc, char **argv) {
                 case 'O': {
                     overrideCount = 1;  // default to a one time override (for program_name only)
                     char c = *(cp+1);   // get second character
-                    if ( c=='g' || c=='G' ) // override package options globally ?
+                    if ( c=='d' || c=='D' ) // override package default options, unless explicitly defined in package
                     {
                         overrideCount = -1; // override globally
                     }
@@ -148,7 +148,7 @@ int main (int argc, char **argv) {
     if (program_name == NULL)  {
                                          /* give a simple error message       */
         fprintf(stderr,"\n");
-        fprintf(stderr,"Syntax is \"rexx [-o[g] \"options\"] filename [arguments]\"\n");
+        fprintf(stderr,"Syntax is \"rexx [-o[d] \"options\"] filename [arguments]\"\n");
         fprintf(stderr,"or        \"rexx -e program_string [arguments]\"\n");
         fprintf(stderr,"or        \"rexx -v\".\n");
         return -1;
