@@ -150,7 +150,7 @@ return testResult
   pkg=.routine~new("package4options", "return .context~package")~call
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]"; found "XYZ".
-  pkg~options("XYZ")
+  pkg~options("_XYZ_")
 
 ::method test_options_all_argerror_1
    -- get package with standard OPTIONS set
@@ -395,15 +395,15 @@ return testResult
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
   .package~globalOptions("count", -1)
    call (fn1)
    rc1=result
-   self~assertEquals(9, result)
+   self~assertEquals(16, rc1)
    self~assertEquals(-4, .package~globalOptions("count"))
 
 
@@ -419,15 +419,15 @@ return testResult
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
   .package~globalOptions("count", 1)
    call (fn1)
    rc1=result
-   self~assertEquals(35, result)
+   self~assertEquals(28, rc1)
    self~assertEquals(0, .package~globalOptions("count"))
 
 
@@ -443,15 +443,15 @@ return testResult
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
-  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options digits 14 fuzz 2") )
-  file3~create( (                      "return digits()   ", "::options digits 18 fuzz 3") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
   .package~globalOptions("count", 2)
    call (fn1)
    rc1=result
-   self~assertEquals(24, result)
+   self~assertEquals(22, rc1)
    self~assertEquals(0, .package~globalOptions("count"))
 
 
@@ -467,8 +467,8 @@ return testResult
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
-  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
-  file3~create( (                           "::options digits 18 fuzz 3") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -476,7 +476,7 @@ return testResult
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
-   self~assertEquals(9, sum)
+   self~assertEquals(16, sum)
    self~assertEquals(-4, .package~globalOptions("count"))
    return
 
@@ -503,8 +503,8 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
-  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
-  file3~create( (                           "::options digits 18 fuzz 3") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -512,7 +512,7 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
-   self~assertEquals(35, sum)
+   self~assertEquals(28, sum)
    self~assertEquals(0, .package~globalOptions("count"))
    return
 
@@ -537,8 +537,8 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   fn2   =file2~fullName
   fn3   =file3~fullName
   file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
-  file2~create( ("::requires" quote(fn3),   "::options digits 14 fuzz 2") )
-  file3~create( (                           "::options digits 18 fuzz 3") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
 
    -- globally override
   .package~globalOptions("override", "::options digits 3 fuzz 0")
@@ -546,7 +546,7 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
-   self~assertEquals(24, sum)
+   self~assertEquals(22, sum)
    self~assertEquals(0, .package~globalOptions("count"))
    return
 
