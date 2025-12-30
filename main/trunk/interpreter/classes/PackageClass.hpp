@@ -329,7 +329,7 @@ public:
     // Override default options that are not explicitly set in a package using psOverridePackageSettings
     static bool overridePackageSettings(PackageClass *package);
 
-        // used for both, psOverridePackageSettings or package's packageSettings
+    // used for both, psOverridePackageSettings or package's packageSettings
     static PackageSetting setPackageSettings(RexxString *newValue, bool setOverride = true, PackageClass *package = OREF_NULL);
 
     // Return the package's explicitly set options as a blank delimited string of ::OPTIONS subkeywords
