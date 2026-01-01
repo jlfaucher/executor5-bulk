@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -56,12 +56,12 @@ return testResult
 ::constant standardOptionsDirective "::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
 
 ::method setUp       -- make sure we reset these global settings
-  .package~globalOptions('overridePackageSettings', self~standardOptionsDirective)
-  .package~globalOptions('countOverride'          , 0                            )
+  .package~defaultOptions('defineDefaultOptions', self~standardOptionsDirective)
+  .package~defaultOptions('countOverride'          , 0                            )
 
 ::method tearDown    -- make sure we reset these global settings
-  .package~globalOptions('overridePackageSettings', self~standardOptionsDirective)
-  .package~globalOptions('countOverride'          , 0                            )
+  .package~defaultOptions('defineDefaultOptions', self~standardOptionsDirective)
+  .package~defaultOptions('countOverride'          , 0                            )
 
 ::method test_options
    -- get package with standard OPTIONS set
@@ -398,13 +398,13 @@ return testResult
   file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
   file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", -1)
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", -1)
    call (fn1)
    rc1=result
    self~assertEquals(16, rc1)
-   self~assertEquals(-4, .package~globalOptions("count"))
+   self~assertEquals(-4, .package~defaultOptions("count"))
 
 
 ::method test_options_override_counter_call_1_plus   -- will override exactly once
@@ -422,13 +422,13 @@ return testResult
   file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
   file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", 1)
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 1)
    call (fn1)
    rc1=result
    self~assertEquals(28, rc1)
-   self~assertEquals(0, .package~globalOptions("count"))
+   self~assertEquals(0, .package~defaultOptions("count"))
 
 
 ::method test_options_override_counter_call_2_plus   -- will override exactly twice
@@ -446,13 +446,13 @@ return testResult
   file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
   file3~create( (                      "return digits()   ", "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", 2)
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 2)
    call (fn1)
    rc1=result
    self~assertEquals(22, rc1)
-   self~assertEquals(0, .package~globalOptions("count"))
+   self~assertEquals(0, .package~defaultOptions("count"))
 
 
 ::method test_options_override_counter_requires_1_minus  -- will override all packages
@@ -470,14 +470,14 @@ return testResult
   file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
   file3~create( (                           "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", -1)
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", -1)
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
    self~assertEquals(16, sum)
-   self~assertEquals(-4, .package~globalOptions("count"))
+   self~assertEquals(-4, .package~defaultOptions("count"))
    return
 
 sumPackageDigits: procedure      -- sum digits() of package and all imported packages
@@ -506,14 +506,14 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
   file3~create( (                           "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", 1)
+   -- override once
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 1)
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
    self~assertEquals(28, sum)
-   self~assertEquals(0, .package~globalOptions("count"))
+   self~assertEquals(0, .package~defaultOptions("count"))
    return
 
 sumPackageDigits: procedure      -- sum digits() of package and all imported packages
@@ -540,14 +540,14 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
   file3~create( (                           "::options           fuzz 3") )
 
-   -- globally override
-  .package~globalOptions("override", "::options digits 3 fuzz 0")
-  .package~globalOptions("count", 2)
+   -- override twice
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 2)
    call (fn1)
    pkg=result     -- fetch returned package
    sum = sumPackageDigits(pkg, 0)
    self~assertEquals(22, sum)
-   self~assertEquals(0, .package~globalOptions("count"))
+   self~assertEquals(0, .package~defaultOptions("count"))
    return
 
 sumPackageDigits: procedure      -- sum digits() of package and all imported packages
@@ -601,78 +601,78 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
 ::method test_class_options_optionNameError_1
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("A")
+  .package~defaultOptions("A")
 
 ::method test_class_options_optionNameError_2
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("D")
+  .package~defaultOptions("_nixi_")
 
 ::method test_class_options_optionNameError_3
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("FO")
+  .package~defaultOptions("FO")
 
 ::method test_class_options_optionNameError_4
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("FU")
+  .package~defaultOptions("FU")
 
 ::method test_class_options_optionNameError_5
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("E")
+  .package~defaultOptions("E")
 
 ::method test_class_options_optionNameError_6
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("FAI")
+  .package~defaultOptions("FAI")
 
 ::method test_class_options_optionNameError_7
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("L")
+  .package~defaultOptions("L")
 
 ::method test_class_options_optionNameError_8
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("NOS")
+  .package~defaultOptions("NOS")
 
 ::method test_class_options_optionNameError_9
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("NOT")
+  .package~defaultOptions("NOT")
 
 ::method test_class_options_optionNameError_10
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("NOV")
+  .package~defaultOptions("NOV")
 
 ::method test_class_options_optionNameError_11
   self~expectSyntax(93.914)
   -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
-  .package~globalOptions("T")
+  .package~defaultOptions("T")
 
    -- option newValue wrong
 ::method test_class_options_override_option_argerror_1
    -- get package with standard OPTIONS set
   self~expectSyntax(93.900)
   -- argument is not an ::OPTIONS directive.
-  .package~globalOptions("overrideSettings","wrong")
+  .package~defaultOptions("defineDefaultOptions","wrong")
 
 ::method test_class_options_override_argerror_2
   self~expectSyntax(93.905)
    -- get package with standard OPTIONS set
   -- Method argument 2 must be a whole number; found "wrong".
-  .package~globalOptions("countOverride","wrong")
+  .package~defaultOptions("countOverride","wrong")
 
 
 ::method test_class_options_defaults
-  self~assertNotNil(.package~globalOptions("override"))
-  self~assertEquals(self~standardOptionsDirective, .package~globalOptions("override"))
+  self~assertNotNil(.package~defaultOptions("defineDefaultOptions"))
+  self~assertEquals(self~standardOptionsDirective, .package~defaultOptions("defineDefaultOptions"))
 
-  self~assertNotNil(.package~globalOptions("count"))
-  self~assertEquals(0, .package~globalOptions("count"))
+  self~assertNotNil(.package~defaultOptions("count"))
+  self~assertEquals(0, .package~defaultOptions("count"))
 
 
 /* TODO:
