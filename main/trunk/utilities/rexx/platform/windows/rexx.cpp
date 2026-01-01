@@ -203,10 +203,10 @@ int main (int argc, char **argv) {
             // if something goes wrong a condition will be set
             RexxObjectPtr clzPackage = pgmThrdInst -> FindClass("PACKAGE");
             // set override options
-            result  = pgmThrdInst -> SendMessage2(clzPackage, "GLOBALOPTIONS",
-                                          pgmThrdInst -> CString("O"),      // OverridePackageOptions
+            result  = pgmThrdInst -> SendMessage2(clzPackage, "DEFAULTOPTIONS",
+                                          pgmThrdInst -> CString("D"),      // DefineDefaultOptions
                                           pgmThrdInst -> NewStringFromAsciiz(overrideString));
-            result  = pgmThrdInst -> SendMessage2(clzPackage, "GLOBALOPTIONS",
+            result  = pgmThrdInst -> SendMessage2(clzPackage, "DEFAULTOPTIONS",
                                           pgmThrdInst -> CString("C"),      // CountOverrides
                                           pgmThrdInst -> Int64ToObject(overrideCount));
         }

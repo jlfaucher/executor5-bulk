@@ -2662,8 +2662,8 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
     typedef enum
     {
         unknownFlag,
-        overrideSettingsFlag,   // "SettingsOverride"
-        overrideCountFlag       // "CountOverride"
+        defineDefaultOptionsFlag,   // "DefineDefaultOptions"
+        overrideCountFlag           // "CountOverride"
     } OptionsFlags;
 
     OptionsFlags of = unknownFlag;
@@ -2672,8 +2672,8 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
     // check option name, get current value which we always return
     switch (Utilities::toUpper(strOptionName->getChar(0)))
     {
-    case 'O':   // "OverridePackageSettings"
-        of = overrideSettingsFlag;
+    case 'D':   // "DefineDefaultOptions"
+        of = defineDefaultOptionsFlag;
         currentValue = psOverridePackageSettings.toString();
         break;
 
@@ -2685,7 +2685,7 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
 
     if (of == unknownFlag)  // no known option name, raise error
     {
-        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"O[verridePackageSettings] or C[ountOverrides]\""), strOptionName);
+        reportException(Error_Incorrect_method_list, new_integer(1), new_string("\"D[efineDefaultOptions] or C[ountOverrides]\""), strOptionName);
     }
 
     if (strNewValue==OREF_NULL)     // we are done, return current value
@@ -2703,7 +2703,7 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
     // check argument, set option, return previous value
     switch (of)
     {
-    case overrideSettingsFlag:   // "OverrideSettings" (PackageSetting)
+    case defineDefaultOptionsFlag:   // "DefineDefaultOptions" (PackageSetting)
         {
             setPackageSettings(strNewValue);
         }
