@@ -373,8 +373,8 @@ routine_source ::= 'source'
 
 package_new ::= 'new(' name ',' source? ( ',' context )? ')'
 
-package_global_options ::= 'globalOptions(' ( ( '"OverrideOptions"'   ( ',' 'optionsDirective' )? )  | 
-                                                '"CountOverrides"' ( ',' 'count' )? )  
+package_default_options ::= 'defaultOptions(' ( ( '"DefineDefaultOptions"'   ( ',' 'optionsDirective' )? )  |
+                                                '"CountOverrides"' ( ',' 'count' )? )
                                         ')'
 
 package_addclass ::= 'addClass(' name ',' class ')'
@@ -423,8 +423,8 @@ package_name ::= 'name'
 package_namespaces ::= 'namespaces'
 
 package_options ::= 'options(' (
-                             ('"All"'', newValue') 
-                             | 
+                             ('"All"'', newValue')
+                             |
                              'option' (', newValue')? )?
                              ')'
 

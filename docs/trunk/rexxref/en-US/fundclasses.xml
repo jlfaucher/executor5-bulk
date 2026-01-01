@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2026, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -3620,7 +3620,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
  <row><entry>
   <simplelist>
    <member><xref linkend="mthPackageNew" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthPackageGlobalOptions" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPackageDefaultOptions" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
    <member><xref linkend="mthPackageAddClass" xrefstyle="select:title"/></member>
@@ -3703,41 +3703,43 @@ routine search scope from the caller of new method.
 </para>
 </section>
 
-<section id="mthPackageGlobalOptions" revisionflag="changed"><title>&added52;globalOptions (Class Method)</title>
+<section id="mthPackageDefaultOptions" revisionflag="changed"><title>&added52;defaultOptions (Class Method)</title>
 <para>
-<indexterm><primary>globalOptions method</primary>
+<indexterm><primary>defaultOptions method</primary>
 <secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>globalOptions method</secondary>
+<secondary>defaultOptions method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_global_options.svg" scale="55" />
+<imagedata fileref="images/classes/package_default_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
 </para>
 
-<para>This method allows to override the package settings of programs (packages) that
-get loaded or required, after this method got executed.
+<para>This method allows to define the default package settings of programs (packages) that
+get loaded or required. Note: if options are explicitly set in a called or required program
+(package), then such options will prevail, i.e., they will not get changed.
 </para>
 
 <para>
 The following are valid <emphasis role="italic">option</emphasis>s.
 (Only the first capitalized letter is needed; all characters following it are ignored.)</para>
 <variablelist>
-<varlistentry><term><option>OverrideOption</option></term>
-<listitem><para>returns the current override settings formatted
+<varlistentry><term><option>DefineDefaultOptions</option></term>
+<listitem><para>returns the current default options settings formatted
 as an <xref linkend="optionsd" xrefstyle="select:title"/> directive.  If the second argument is
 given, then it needs to be formatted as an <xref linkend="optionsd" xrefstyle="select:title"/>
-directive and determines how the package options get overridden from that moment
-on.</para></listitem></varlistentry>
+directive and determines the new default package options.
+</para></listitem></varlistentry>
 
 <varlistentry><term><option>CountOverrides</option></term>
 <listitem><para>returns its current value, which by default is set to <code>0</code> which inhibits that
-overrides take place. Supplying a positive value as the second argument will set this option and determines
-the number of times an override should take place. A negative number like <code>-1</code> will
-cause the overriding to be always applied.
+overrides using the defined default package options take place.  Supplying a positive value as the
+second argument will set this option and determines the number of times an override with the defined
+default package options should take place.  A negative number like <code>-1</code> will cause the
+overriding to be always applied.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -4423,7 +4425,20 @@ Only the leading capitalized letters are needed; all characters following them a
                                                        "<literal>Off</literal>",
                                                        "<literal>Results</literal>"
                                                  </para></entry></row>
-
+<row><entry><option>"X"</option> (e<emphasis role="bold">X</emphasis>plicitly set option)</entry><entry><para>This option must not have a <emphasis role="italic">newValue</emphasis> argument!
+                          Returns a blank-delimited string listing the package's explicitly defined options using the
+                          <xref linkend="optionsd" xrefstyle="select:title"/> directive(s), i.e., one or  more of
+                          <literal>"DIGITS"</literal>, <literal>"FORM"</literal>, <literal>"FUZZ"</literal>, <literal>"NUMERIC"</literal>,
+                          <literal>"ERROR"</literal>, <literal>"FAILURE"</literal>, <literal>"LOSTDIGITS"</literal>, <literal>"NOSTRING"</literal>,
+                          <literal>"NOTREADY"</literal>, <literal>"NOVALUE"</literal>, <literal>"NOPROLOG"</literal>, <literal>"PROLOG"</literal>,
+                          <literal>"TRACE"</literal>.</para>
+                          <para>E.g., if this subfunctions returns a string like <literal>"DIGITS TRACE"</literal>, then the
+                          package defined explicitly an
+                          <literal>"::OPTIONS DIGITS xyz1"</literal> directive, an <literal>"::OPTIONS TRACE zyx1"</literal> directive, or
+                          a single <literal>"::OPTIONS DIGITS xyz1 TRACE zyx1"</literal> or <literal>"::OPTIONS TRACE zyx1 DIGITS xyz1"</literal> directive,
+                          where <literal>xyz1</literal> denotes a whole positive number and <literal>zyx1</literal> denotes one of
+                          the trace suboptions like <literal>A</literal> (for "trace all").
+                          </para></entry></row>
 </tbody>
 </tgroup>
 </informaltable>
@@ -4438,8 +4453,8 @@ The output may be a string like:
 </programlisting></example>
 </para>
 <note><title>Note</title>
-<para>It is possible to override package options for programs/packages that get loaded or required dynamically
-by taking advantage of <xref linkend="mthPackageGlobalOptions" xrefstyle="select:title"/>.
+<para>It is possible to change the default package options for programs/packages that get loaded or required dynamically
+by taking advantage of <xref linkend="mthPackageDefaultOptions" xrefstyle="select:title"/>.
 </para></note>
 </section>
 
