@@ -675,12 +675,152 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   self~assertEquals(0, .package~defaultOptions("count"))
 
 
+::method test_option_x  -- will override all packages
+  test_options = ("::OPTIONS DIGITS 8"               ,"DIGITS"      ), -
+                 ("::OPTIONS FUZZ 2"                 ,"FUZZ"        ), -
+                 ("::OPTIONS FORM ENGINEERING"       ,"FORM"        ), -
+                 ("::OPTIONS NUMERIC INHERIT"        ,"NUMERIC"     ), -
+                 ("::OPTIONS ALL SYNTAX"             ,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE"), -
+                 ("::OPTIONS ERROR SYNTAX"           ,"ERROR"       ), -
+                 ("::OPTIONS FAILURE SYNTAX"         ,"FAILURE"     ), -
+                 ("::OPTIONS LOSTDIGITS SYNTAX"      ,"LOSTDIGITS"  ), -
+                 ("::OPTIONS NOSTRING SYNTAX"        ,"NOSTRING"    ), -
+                 ("::OPTIONS NOTREADY SYNTAX"        ,"NOTREADY"    ), -
+                 ("::OPTIONS NOVALUE SYNTAX"         ,"NOVALUE"     ), -
+                 ("::OPTIONS NOPROLOG"               ,"NOPROLOG"    ), -
+                 ("::OPTIONS TRACE OFF"              ,"TRACE"       )
+
+  newLine = .endOfLine
+  test_options_items = test_options~items
+  base_code=("use arg nr, testcase, arr;"                                  , -
+             "testcase~assertSame(arr[2], .context~package~options('X')); ", -
+             "return .nil;")
+
+  fn_base=.context~name
+  do counter c arr over test_options
+     code=base_code~copy~~append(arr[1])
+     name=fn_base"_"c~right(2,0)
+     routine=.routine~new(name, code)
+     routine~callWith((c,self,arr))
+  end
+
+
+
+
+
+::method test_default_options_overrides  -- will override all packages
+  default_options = "DIGITS 15", "FUZZ 5", "FORM SCIENTIFIC", "NUMERIC NOINHERIT",   -
+                    "ERROR CONDITION", "FAILURE CONDITION", "LOSTDIGITS CONDITION",  -
+                    "NOSTRING CONDITION", "NOTREADY CONDITION", "NOVALUE CONDITION", -
+                    "PROLOG", "TRACE N"
+  str_options     = "::OPTIONS" default_options~toString('L',' ')
+
+  test_options = ("::OPTIONS DIGITS 8"               ,"DIGITS"      ), -
+                 ("::OPTIONS FUZZ 2"                 ,"FUZZ"        ), -
+                 ("::OPTIONS FORM ENGINEERING"       ,"FORM"        ), -
+                 ("::OPTIONS NUMERIC INHERIT"        ,"NUMERIC"     ), -
+                 ("::OPTIONS ALL SYNTAX"             ,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE"), -
+                 ("::OPTIONS ERROR SYNTAX"           ,"ERROR"       ), -
+                 ("::OPTIONS FAILURE SYNTAX"         ,"FAILURE"     ), -
+                 ("::OPTIONS LOSTDIGITS SYNTAX"      ,"LOSTDIGITS"  ), -
+                 ("::OPTIONS NOSTRING SYNTAX"        ,"NOSTRING"    ), -
+                 ("::OPTIONS NOTREADY SYNTAX"        ,"NOTREADY"    ), -
+                 ("::OPTIONS NOVALUE SYNTAX"         ,"NOVALUE"     ), -
+                 ("::OPTIONS NOPROLOG"               ,"NOPROLOG"    ), -
+                 ("::OPTIONS TRACE OFF"              ,"TRACE"       )
+
+
+  test_options_items = test_options~items
+  base_code=("use arg testcase, arr; testcase~assertSame(arr[2], .context~package~options('X')); ")
+
+  .package~defaultOptions("defineDefaultOptions", str_options)
+  .package~defaultOptions("counter", -1) -- apply to all called programs
+
+  base_code=.resources~test_default_options_overrides
+  fn_base=.context~name
+  do counter c arr over test_options
+     code=base_code~copy~~append(arr[1])
+     name=fn_base"_"c~right(2,0)
+     routine=.routine~new(name, code)
+     a=routine~callWith((self,default_options,str_options,arr))
+  end
+
+
+
+  ::RESOURCE test_default_options_overrides END "  ::END"
+  use strict arg testCase, arrDefaultOptions, str_options, arrTestOptions
+
+  thisPkg=.context~package
+  initialOptions    = thisPkg~options('I')  -- returns the initial ::OPTIONS string
+  definedOptions    = thisPkg~options('X')  -- returns a string of explicitly set option names
+  currentOptions    = thisPkg~options       -- returns an ::OPTIONS string
+
+     -- note: the testdata do not contain PROLOG as an option name in the test options
+  option_names = "DIGITS", "FUZZ", "FORM", "NUMERIC", "ERROR", "FAILURE", "LOSTDIGITS", -
+                 "NOSTRING", "NOTREADY", "NOVALUE", "PROLOG", "NOPROLOG", "TRACE"
+  option_names_all = "ERROR", "FAILURE", "LOSTDIGITS", "NOSTRING", "NOTREADY", "NOVALUE"
+
+  do xOpt over definedOptions
+     initialWPos = wordPos(xOpt, initialOptions)
+     testCase~assertNotEquals(initialWPos,0)       -- option name must be contained
+
+     currWPos = wordPos(xOpt, currentOptions)
+     testCase~assertNotEquals(currentWPos,0)       -- option name must be contained
+
+     definedWPos = wordPos(xOpt, definedOptions)
+     testCase~assertNotEquals(definedWPos,0)       -- option name must be contained
+
+     testWPos = wordPos(xOpt, arrTestOptions[2])  -- defined option must be the same as test option used
+     testCase~assertNotEquals(testWPos,0)
+
+        -- must not be overridden with defaultOptions
+     parse value arrTestOptions[1] with . optionName optionValue
+     if optionName="ALL", wordpos(xopt,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")>0 then
+     do
+        testCase~assertEquals(word(currWPos+1, 1), optionValue)
+     end
+     else
+     do
+        if xopt="NOPROLOG" then    -- testoptions do not define "PROLOG"
+        do
+           testCase~assertEquals(xopt, word(currentOptions, currWpos, 1))  -- must not be overridden
+        end
+        else
+        do
+           testCase~assertEquals(subword(currentOptions, currWPos, 2), subword(arrTestOptions[1], 2, 2))
+        end
+     end
+
+        -- must be overridden with defaultOptions
+     do tmpOpt over option_names
+        if tmpOpt="ALL", wordpos(xopt,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")>0 then
+           iterate  -- will be checked one by one above
+
+        if tmpOpt=xopt then iterate   -- we just handled this special case already above
+
+        if tmpOpt="PROLOG"then
+        do
+           if xopt<>"NOPROLOG" then
+              testCase~assertEquals(.true, wordPos(' PROLOG', currentOptions)>0, "currentOptions must have PROLOG set")
+        end
+        else
+        do
+           currValue   =subword(currentOptions, currWPos, 2)
+           testCase~assertEquals(currValue, optionName optionValue, "currValue must be the same as default optionValue")
+        end
+     end
+  end
+  return .nil
+
+  ::END
+
+
+
+
 /* TODO:
 
       - initialPackageSettings
       - options / setOptions
-      - countOverrides
-
 */
 
 
