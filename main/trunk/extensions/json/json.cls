@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -87,6 +87,12 @@
 
     crlf = .rexxInfo~endOfLine   -- get the platform's endOfLine character(s)
 
+    pkgLocal=.context~package~local
+    pkgLocal~js.eJS  = eJS
+    pkgLocal~js.uJS  = uJS
+    pkgLocal~js.ctrl = ctrl
+    pkgLocal~js.crlf = crlf
+
 
 /** Utility class method to ease reading JSON files into an ooRexx object.
 *
@@ -155,8 +161,8 @@
     expose buffer
     use strict arg rexxObject, legible=(.false) -- default to minimized JSON
 
-  if arg()=2 then       -- check supplied argument
-     .Validate~logical("legible",legible) -- test for logical value 0 or 1
+    if arg()=2 then       -- check supplied argument
+       .Validate~logical("legible",legible) -- test for logical value 0 or 1
 
     buffer = .mutablebuffer~new()
     if legible then  -- human readable (adds ignorable whitespace)
@@ -171,8 +177,8 @@
     use strict arg rexxObject
 
     select
-        when rexxObject~isA(.string) then do
-            self~parseRexxString(rexxObject)
+        when rexxObject~isA(.jsonString) then do
+           buffer~append(rexxObject~makeJson)
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxArray(rexxObject)
@@ -185,6 +191,9 @@
         end
         when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
            buffer~append(rexxObject~makeJson)
+        end
+        when rexxObject~isA(.string) then do
+           self~parseRexxString(rexxObject)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObject(rexxObject~makearray())
@@ -267,8 +276,8 @@
     expose buffer leadin
     use strict arg rexxObject, level=0, leadin="   "
     select
-        when rexxObject~isA(.string) then do
-            self~parseRexxStringLegible(rexxObject,,level)
+        when rexxObject~isA(.jsonString) then do
+           buffer~append(rexxObject~makeJson)
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxOrderedCollectionLegible(rexxObject,level)
@@ -281,6 +290,9 @@
         end
         when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
            buffer~append(rexxObject~makeJson)
+        end
+        when rexxObject~isA(.string) then do
+            self~parseRexxStringLegible(rexxObject,,level)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObjectLegible(rexxObject~makearray, level+1)
@@ -413,6 +425,7 @@ return .nil
         when char == '"' then do
             jsonPos = jsonPos + 1
             return self~parseJSONstring()
+            -- return self~parseJSONstring()
         end
         otherwise return self~parseJSONother()
     end
@@ -583,7 +596,8 @@ parseError: raise propagate
         end
         else if char == '"' then do
             jsonPos = jsonPos + 1
-            return rexxString~string
+            return .jsonString~new(rexxString~string)
+            -- return rexxString~string
         end
         else do
             -- append to the string up to the next quote or backslash
@@ -761,3 +775,37 @@ parseError: raise propagate
   if value=.true then return "true"
   return "false"
 
+
+/* ========================================================================= */
+
+/** An ooRexx class that represents a JSON string value. To force numeric values
+*   to be encoded as Json strings, use this class, e.g.
+*   jstring=.JsonString~new("123456789")
+*/
+::class "JsonString" subclass string  public
+
+::method makeJson    -- escape logic from .JSON::parseRexxString
+   rexxObject = self~makeString
+   buffer=.MutableBuffer~new
+
+   if rexxObject~dataType('n') then
+      buffer~append('"',rexxObject,'"')
+   else
+   do
+      eJS=.js.eJS    -- save environment lookups from now on
+      buffer~append('"')
+      do i = 1 to rexxObject~length
+         char = rexxObject~substr(i, 1)
+         if char = "\", rexxObject~match(i + 1, "u"), rexxObject~substr(i + 2, 4)~dataType("x") then do
+            -- balanced with our special handling of \uXXXX escape
+            -- sequences (keep as-is), we also keep them as-is here
+            buffer~append(rexxObject~substr(i, 6))
+            i += 5
+         end
+         else if eJS~hasIndex(char) then buffer~append(eJS[char])
+         else if char <= '1f'x then buffer~append("\u00", char~c2x)
+         else buffer~append(char)
+      end
+      buffer~append('"')
+   end
+   return buffer~string
