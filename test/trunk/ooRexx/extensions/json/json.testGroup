@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2023 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -511,6 +511,32 @@ else
    "spouse": null
 }
 ::END
+
+
+::method test_jstring_and_datatypes
+
+  jsonData=.resources~test_jstring_and_datatypes_testdata[1]
+  dir=.Json~fromJson(jsonData)
+
+  self~assertIsA( dir["City"]["S"],                         .String)
+  self~assertIsA( dir["RecruitedAt"]["N"],                  .jsonString)
+
+  self~assertIsA( dir["TestValues"][1]["TestNumber"]["TN"], .String)
+  self~assertNull(dir["TestValues"][2]["TestNull"]["TNULL"])
+  self~assertIsA( dir["TestValues"][3]["TestTrue"]["TT"],   .jsonBoolean)
+  self~assertIsA( dir["TestValues"][4]["TestFalse"]["TF"],  .jsonBoolean)
+
+  -- roundtrip
+  jsonData2=.Json~toJson(dir)    -- minimal
+  self~assertSame(jsonData,jsonData2)
+
+
+  -- minimal JSON
+  ::resource test_jstring_and_datatypes_testdata end "  ::END"
+{"City":{"S":"None"},"RecruitedAt":{"N":"1629381678"},"TestValues":[{"TestNumber":{"TN":123456789}},{"TestNull":{"TNULL":null}},{"TestTrue":{"TT":true}},{"TestFalse":{"TF":false}},{"TestEscapes":{"TE":"<--.\b.\t.\n.\f.\r.\".\\.\/.-->"}},{"TestBlank1":{"TB1":" "}},{"TestBlank2":{"TB2":"  "}},{"TestNullString":{"TNS":""}}]}
+  ::END
+
+
 
 
 /* ******************************************************* */
