@@ -761,33 +761,44 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
   option_names_all = "ERROR", "FAILURE", "LOSTDIGITS", "NOSTRING", "NOTREADY", "NOVALUE"
 
   do xOpt over definedOptions
-     initialWPos = wordPos(xOpt, initialOptions)
-     testCase~assertNotEquals(initialWPos,0)       -- option name must be contained
+     allInHand?=(xopt="ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")
+     if allInHand? then
+     do
+        testCase~assertEquals(arrTestOptions[1],"::OPTIONS ALL SYNTAX")
+        iterate
+     end
+     else
+     do
+        initialWPos = wordPos(xOpt, initialOptions)
+        testCase~assertNotEquals(initialWPos,0,"initialWPos")       -- option name must be contained
+     end
 
-     currWPos = wordPos(xOpt, currentOptions)
-     testCase~assertNotEquals(currentWPos,0)       -- option name must be contained
+     currentWPos = wordPos(xOpt, currentOptions)
+     if currentWPos=0, xopt="NOPROLOG" then  -- testdata dependent (NOPROLOG option, but currently only PROLOG)
+        iterate
+     testCase~assertNotEquals(currentWPos,0,"currentWPos")       -- option name must be contained
 
      definedWPos = wordPos(xOpt, definedOptions)
-     testCase~assertNotEquals(definedWPos,0)       -- option name must be contained
+     testCase~assertNotEquals(definedWPos,0,"definedWPos")       -- option name must be contained
 
      testWPos = wordPos(xOpt, arrTestOptions[2])  -- defined option must be the same as test option used
-     testCase~assertNotEquals(testWPos,0)
+     testCase~assertNotEquals(testWPos,0,"testWPos")
 
         -- must not be overridden with defaultOptions
      parse value arrTestOptions[1] with . optionName optionValue
      if optionName="ALL", wordpos(xopt,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")>0 then
      do
-        testCase~assertEquals(word(currWPos+1, 1), optionValue)
+        testCase~assertEquals(word(currentWPos+1, 1), optionValue)
      end
      else
      do
         if xopt="NOPROLOG" then    -- testoptions do not define "PROLOG"
         do
-           testCase~assertEquals(xopt, word(currentOptions, currWpos, 1))  -- must not be overridden
+           testCase~assertEquals(xopt, word(currentOptions, currentWpos, 1))  -- must not be overridden
         end
         else
         do
-           testCase~assertEquals(subword(currentOptions, currWPos, 2), subword(arrTestOptions[1], 2, 2))
+           testCase~assertEquals(subword(currentOptions, currentWPos, 2), subword(arrTestOptions[1], 2, 2))
         end
      end
 
@@ -805,7 +816,7 @@ sumPackageDigits: procedure      -- sum digits() of package and all imported pac
         end
         else
         do
-           currValue   =subword(currentOptions, currWPos, 2)
+           currValue   =subword(currentOptions, currentWPos, 2)
            testCase~assertEquals(currValue, optionName optionValue, "currValue must be the same as default optionValue")
         end
      end
