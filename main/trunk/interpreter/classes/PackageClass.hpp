@@ -380,6 +380,7 @@ protected:
     PackageSetting initialPackageSettings;// the settings determined after compile() in LanguageParser::generateProgram()
     bool savedInitialPackageSettings;     // true, if initial packageSettings got saved in initialPackageSettings
 
+    // cf. documentation for Package's class method "defaultOptions"
     static wholenumber_t overrideCount;   // overrideCount: 0=no override, each non-0 override reduces it by 1
     static PackageSetting psOverridePackageSettings;
     static bool  needOverrideSettingsInialization;  // psOverridePackageSettings needs a one time initialization
