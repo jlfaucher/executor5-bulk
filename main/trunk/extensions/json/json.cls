@@ -177,8 +177,8 @@
     use strict arg rexxObject
 
     select
-        when rexxObject~isA(.jsonString) then do
-           buffer~append(rexxObject~makeJson)
+        when rexxObject~isA(.string) then do
+           call string2json buffer, rexxObject
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxArray(rexxObject)
@@ -191,9 +191,6 @@
         end
         when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
            buffer~append(rexxObject~makeJson)
-        end
-        when rexxObject~isA(.string) then do
-           self~parseRexxString(rexxObject)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObject(rexxObject~makearray())
@@ -276,8 +273,8 @@
     expose buffer leadin
     use strict arg rexxObject, level=0, leadin="   "
     select
-        when rexxObject~isA(.jsonString) then do
-           buffer~append(rexxObject~makeJson)
+        when rexxObject~isA(.string) then do
+           call string2json buffer, rexxObject
         end
         when rexxObject~isA(.OrderedCollection) then do
             self~parseRexxOrderedCollectionLegible(rexxObject,level)
@@ -290,9 +287,6 @@
         end
         when rexxObject~hasMethod('makejson') then do    -- object can render itself as a JSON string; handles .JsonBoolean as well
            buffer~append(rexxObject~makeJson)
-        end
-        when rexxObject~isA(.string) then do
-            self~parseRexxStringLegible(rexxObject,,level)
         end
         when rexxObject~hasMethod('makearray') then do
             self~parseRexxObjectLegible(rexxObject~makearray, level+1)
@@ -783,13 +777,27 @@ parseError: raise propagate
 *   jstring=.JsonString~new("123456789")
 */
 ::class "JsonString" subclass string  public
+::method makeJSON unguarded
+  buffer=.MutableBuffer~new
+  call string2json buffer, self
+  return buffer~string
 
-::method makeJson    -- escape logic from .JSON::parseRexxString
-   rexxObject = self~makeString
-   buffer=.MutableBuffer~new
+
+/* ========================================================================= */
+/** A routine that creates a Json encoding for a string. In case the string is an
+*   instance of the JsonString class, and the value is numeric, then it gets
+*   encoded as a quoted Json string. If the value is numeric and the instance is
+*   an instance of the String class, then the value gets encoded as a Json number
+*   (no quotes).
+*/
+::routine string2json
+   use arg buffer, rexxObject
 
    if rexxObject~dataType('n') then
-      buffer~append('"',rexxObject,'"')
+   do
+      if rexxObject~isA(.jsonString) then buffer~append('"',rexxObject,'"')   -- as a string (quoted)
+                                     else buffer~append(rexxObject)           -- as a number
+   end
    else
    do
       eJS=.js.eJS    -- save environment lookups from now on
@@ -803,9 +811,10 @@ parseError: raise propagate
             i += 5
          end
          else if eJS~hasIndex(char) then buffer~append(eJS[char])
-         else if char <= '1f'x then buffer~append("\u00", char~c2x)
-         else buffer~append(char)
+         else if char <= '1f'x      then buffer~append("\u00", char~c2x)
+         else                            buffer~append(char)
       end
       buffer~append('"')
    end
-   return buffer~string
+   return
+
