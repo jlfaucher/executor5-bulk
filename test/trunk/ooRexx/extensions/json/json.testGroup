@@ -518,18 +518,58 @@ else
   jsonData=.resources~test_jstring_and_datatypes_testdata[1]
   dir=.Json~fromJson(jsonData)
 
-  self~assertIsA( dir["City"]["S"],                         .String)
-  self~assertIsA( dir["RecruitedAt"]["N"],                  .jsonString)
+  self~assertIsA(    dir["City"]["S"],                          .String)
+  self~assertEquals( dir["City"]["S"],                          "None")
 
-  self~assertIsA( dir["TestValues"][1]["TestNumber"]["TN"], .String)
-  self~assertNull(dir["TestValues"][2]["TestNull"]["TNULL"])
-  self~assertIsA( dir["TestValues"][3]["TestTrue"]["TT"],   .jsonBoolean)
-  self~assertIsA( dir["TestValues"][4]["TestFalse"]["TF"],  .jsonBoolean)
+  self~assertIsA(    dir["RecruitedAt"]["N"],                   .JsonString)
+  self~assertEquals( dir["RecruitedAt"]["N"],                   "1629381678")
 
-  -- roundtrip
+  self~assertIsA(    dir["TestValues"][1]["TestNumber"]["TN"],  .String)
+  self~assertEquals( dir["TestValues"][1]["TestNumber"]["TN"],  123456789)
+
+  self~assertNull(   dir["TestValues"][2]["TestNull"]["TNULL"])
+
+  self~assertIsA(    dir["TestValues"][3]["TestTrue"]["TT"],    .jsonBoolean)
+  self~assertTrue(   dir["TestValues"][3]["TestTrue"]["TT"])
+
+  self~assertIsA(    dir["TestValues"][4]["TestFalse"]["TF"],   .jsonBoolean)
+  self~assertFalse(  dir["TestValues"][4]["TestFalse"]["TF"])
+
+  self~assertIsA(    dir["TestValues"][5]["TestEscapes"]["TE"], .String)
+  -- "<--.\b.\t.\n.\f.\r.\".\\.\/.-->"
+  val="<--." || '08'x"." || "09"x"." || "0A"x"." || "0C"x"." || "0D"x"."".\./.-->"
+  self~assertEquals( dir["TestValues"][5]["TestEscapes"]["TE"],val)
+
+  self~assertIsA(    dir["TestValues"][6]["TestBlank1"]["TB1"], .String)
+  self~assertSame(dir["TestValues"][6]["TestBlank1"]["TB1"], " ")
+
+  self~assertIsA(    dir["TestValues"][7]["TestBlank2"]["TB2"], .String)
+  self~assertSame(dir["TestValues"][7]["TestBlank2"]["TB2"], "  ")
+
+  self~assertIsA(    dir["TestValues"][8]["TestNullString"]["TNS"],  .String)
+  self~assertSame(dir["TestValues"][8]["TestNullString"]["TNS"], "")
+
+  -- roundtrips
   jsonData2=.Json~toJson(dir)    -- minimal
+  dir2=.Json~fromJson(jsonData2) -- minimal
+  jsonData3=.Json~toJson(dir2)
+
+  self~assertSame(jsonData2,jsonData3)
   self~assertSame(jsonData,jsonData2)
 
+  -- a JsonString, value gets quoted as a string
+  val=.jsonString~new(12345)
+  self~assertIsA(val, .String)
+  self~assertIsA(val, .JsonString)
+  self~assertEquals(val~makeJson,'"12345"')
+  self~assertTrue(datatype(val,'n'))
+
+  -- a String, in JSON a number
+  val=12345
+  self~assertIsA(val, .String)
+  self~assertFalse(val~isA(.JsonString))
+  self~assertEquals(val,'12345')
+  self~assertTrue(datatype(val,'n'))
 
   -- minimal JSON
   ::resource test_jstring_and_datatypes_testdata end "  ::END"
