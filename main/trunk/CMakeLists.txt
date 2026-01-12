@@ -264,7 +264,7 @@ else ()
    set (CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
    if (APPLE)
-       SET (CMAKE_INSTALL_RPATH "@executable_path/../lib")
+       SET (CMAKE_INSTALL_RPATH "@executable_path/../lib;@executable_path/../Libraries")
    else ()
        # using $ORIGIN/.. instead of ${CMAKE_INSTALL_PREFIX} allows the package
        # to be relocated during installation, but this comes at a cost: we can't
