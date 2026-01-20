@@ -40,7 +40,7 @@
 /* MSInternetExplorer_search.rex: OLE Automation with ooRexx          */
 /*                                                                    */
 /* Using events with the Internet Explorer:                           */
-/* Search for the string "Cloud" on the IBM web page and go randomly   */
+/* Search for the string "Cloud" on the IBM web page and go randomly  */
 /* to one of the found sites.                                         */
 /*                                                                    */
 /* Note that this sample no longer seems to work using IE9 on         */
@@ -109,7 +109,6 @@ if cloudlinks~items < 1 then do
   ret = RxMessageBox(msg, "Done", "OK", "INFORMATION")
   signal on syntax   -- in case the user closes the MSIE window before the RxMessageBox
   myIE~quit
-syntax:
   return 99
 end
 
@@ -125,12 +124,14 @@ myIE~wait
 /* wait for user to acknowledge, then shut down example */
 call RxMessageBox "We're now at a" hint, "Done", "OK", "INFORMATION"
 
-signal on syntax  -- in case the user closes the MSIE window before the RxMessageBox
+signal on syntax name syntax2  -- in case the user closes the MSIE window before the RxMessageBox
 myIE~quit
-syntax:
+syntax2:
 
 exit
 
+syntax:
+  return 99
 
 
 /* this class is derived from OLEObject and contains two methods */
