@@ -427,9 +427,10 @@ end of the program. Only one ::CLASS directive can appear for
 <emphasis role="italic">metaclass</emphasis> class become class methods of the
 <emphasis role="italic">classname</emphasis> class.
 (See <xref linkend="provide" />.) The
-<emphasis role="italic">metaclass</emphasis> and
-<emphasis role="italic">classname</emphasis> are literal
-strings or symbols that are taken as constants. In the search order for methods,
+<emphasis role="italic">metaclass</emphasis> is a literal
+string or an optionally
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>-qualified
+symbol that is taken as a constant. In the search order for methods,
 the metaclass methods precede inherited class methods and follow any class
 methods defined by ::METHOD directives with the <option>CLASS</option> option.</para>
 <para>If you specify the <option>PUBLIC</option> option, the class is visible beyond its containing
@@ -442,10 +443,16 @@ name.</para>
 <para>If you specify the <option>SUBCLASS</option> option, the class becomes a subclass of the
 class <emphasis role="italic">sclass</emphasis> for inheritance of instance and
 class methods. The <emphasis role="italic">sclass</emphasis>
-is a literal string or symbol that is taken as a constant.</para>
+is a literal string or an optionally
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>-qualified
+symbol that is taken as a constant.</para>
 <para>If you specify the <option>MIXINCLASS</option> option, the class becomes a subclass of the
 class <emphasis role="italic">mclass</emphasis>
-for inheritance of instance and class methods. You can
+for inheritance of instance and class methods.
+The <emphasis role="italic">mclass</emphasis>
+is a literal string or an optionally
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>-qualified
+symbol that is taken as a constant. You can
 add the new class instance and class methods to existing classes by using
 the <option>INHERIT</option> option on a ::CLASS directive or by sending an <methodname>INHERIT</methodname> message
 to an existing class. If you specify neither the <option>SUBCLASS</option> nor the <option>MIXINCLASS</option>
@@ -468,8 +475,10 @@ as the <emphasis role="italic">classpos</emphasis> argument.
 As with the <methodname>inherit</methodname> message,
 each of the classes in <emphasis role="italic">iclasses</emphasis>
 must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
-is a whitespace-separated list of literal strings or symbols that are taken as
-constants. If you omit the <option>INHERIT</option> option, the class inherits only from
+is a whitespace-separated list of literal strings or optionally
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>-qualified
+symbols that are taken as constants.
+If you omit the <option>INHERIT</option> option, the class inherits only from
 <emphasis role="italic">sclass</emphasis>.</para>
 <para>
 <indexterm><primary>examples</primary>
