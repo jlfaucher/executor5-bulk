@@ -8160,6 +8160,10 @@ set, the stem name concatenated with the final index string is returned.</para>
 default value is returned.
 If no default value has been assigned, the stem name is returned. </para>
 
+<para>See also method <xref linkend="mthStemAt" xrefstyle="select:title"/>,
+which is a synonym for this method.
+</para>
+
 <note><title>Note</title>
 <para>You cannot use the <methodname>[]</methodname> method in a DROP or PROCEDURE instruction.
 </para></note>
@@ -8234,11 +8238,26 @@ re-initialize the stem and remove all existing assigned indexes.
 </imageobject>
 </mediaobject>
 
-<para>Returns the item associated with the specified
-<emphasis role="italic">tail</emphasis>. &nil; is returned
-if the stem has no item associated
-with the specified <emphasis role="italic">tail</emphasis>.
+<para>
+Returns the item associated with the specified
+<emphasis role="italic">index</emphasis>es. Each
+<emphasis role="italic">index</emphasis> is an expression; use commas to
+separate the expressions. The Stem object concatenates the
+<emphasis role="italic">index</emphasis> string values, separating
+them with a period (.), to create a derived index. A null string (&quot;&quot;)
+is used for any omitted expressions. The resulting string is the index of the target stem
+item. If the stem has no item associated with the specified final
+<emphasis role="italic">index</emphasis>, the stem default value is returned.
+If a default value has not been
+set, the stem name concatenated with the final index string is returned.</para>
+<para>If you do not specify <emphasis role="italic">index</emphasis>, the stem
+default value is returned.
+If no default value has been assigned, the stem name is returned. </para>
+
+<para>See also method <xref linkend="mthStemAtGet" xrefstyle="select:title"/>,
+which is a synonym for this method.
 </para>
+
 </section>
 
 <section id="mthStemEmpty"><title>empty</title>
