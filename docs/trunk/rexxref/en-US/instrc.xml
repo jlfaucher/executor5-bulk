@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2025, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2026, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -635,7 +635,7 @@ language processor then parses the string values.</para></listitem>
 </mediaobject>
 
 <para>CALL calls a routine (if you specify
-<emphasis role="italic">name</emphasis> or
+<emphasis role="italic">routinename</emphasis> or
 <emphasis role="italic">expr</emphasis>) or controls the trapping
 of certain conditions (if you specify ON or OFF).</para>
 <para>To control trapping, you specify OFF or ON and the condition you want to
@@ -647,9 +647,17 @@ The <emphasis role="italic">trapname</emphasis> is a symbol or string
 taken as a constant.
 All information on condition traps is contained in
 <xref linkend="condtra" />.</para>
-<para>To call a routine, specify <emphasis role="italic">name</emphasis>,
-which must be a literal string or symbol that is taken as a constant.
-The routine called can be: </para>
+<para>To call a routine, specify <emphasis role="italic">routinename</emphasis>,
+which must be a literal string or a symbol that is taken as a constant.
+When it is a symbol, it can be optionally preceeded by a
+<xref linkend="namespacesym" xrefstyle="template:namespace"/>
+followed by a colon.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/routinename.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<para>The routine called can be: </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">An internal routine</emphasis></term>
 <listitem><para>A subroutine that is in the same program as the CALL
@@ -676,7 +684,7 @@ types of external routines.
 </variablelist>
 <indexterm><primary>subroutines</primary>
 <secondary>forcing built-in or external reference</secondary></indexterm>
-<para>If <emphasis role="italic">name</emphasis> is a literal string
+<para>If <emphasis role="italic">routinename</emphasis> is a literal string
 (that is, specified in quotation marks), the search for internal routines is bypassed,
 and only a built-in function or an external routine is called. Note that
 built-in function names are in uppercase. Therefore, a literal string call
@@ -713,7 +721,7 @@ or ARG built-in function in the called routine accesses these objects while
 the called routine is running. You can omit expressions, if appropriate, by
 including extra commas.</para>
 <para>The CALL then branches to the routine called
-<emphasis role="italic">name</emphasis>, using exactly
+<emphasis role="italic">routinename</emphasis>, using exactly
 the same mechanism as function calls. See
 <xref linkend="funct" />. The search
 order is as follows: </para>
@@ -723,7 +731,7 @@ order is as follows: </para>
 <varlistentry><term><emphasis role="bold">Internal routines</emphasis></term>
 <listitem><para>These are sequences of instructions inside the same program,
 starting at the label that matches
-<emphasis role="italic">name</emphasis> in the CALL instruction. If you specify
+<emphasis role="italic">routinename</emphasis> in the CALL instruction. If you specify
 the routine name in quotation marks, then an internal routine is not considered
 for that search order. The RETURN instruction completes the execution of an
 internal routine.
