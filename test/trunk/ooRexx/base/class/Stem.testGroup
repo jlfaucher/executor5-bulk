@@ -822,11 +822,9 @@ makeColl: procedure
 
 /* add test cases for of and do over */
 
---5.2.0 allows empty OF method calls
---::method "test_of_01"
---  self~expectSyntax(97.1)
---                              -- Object "The NIL object" does not understand message "+".
---  d1=.stem~of()
+::method "test_of_01"
+  d1=.stem~of()
+  self~assertTrue(d1~isEmpty)
 
 ::method "test_of_02"
   self~expectSyntax(93.903)

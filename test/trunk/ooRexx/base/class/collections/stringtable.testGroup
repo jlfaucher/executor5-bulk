@@ -299,11 +299,9 @@ return testResult
 
 /* add test cases for of and do over for 12.10.2014 Walter Pachl */
 
---5.2.0 allows empty OF method calls
---::method "test_of_01"
---  self~expectSyntax(97.1)
---                              -- Object "The NIL object" does not understand message "+".
---  d1=.stringtable~of()
+::method "test_of_01"
+  d1=.stringtable~of()
+  self~assertTrue(d1~isEmpty)
 
 ::method "test_of_02"
   self~expectSyntax(93.903)

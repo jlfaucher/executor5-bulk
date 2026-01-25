@@ -839,11 +839,9 @@ makeColl: procedure
   self~expectSyntax(88.909) -- Argument .. must have a string value
   a~unknown(.nil, .nil)
 
---5.2.0 allows empty OF method calls
---::method "test_of_01"
---  self~expectSyntax(97.1)
---                              -- Object "The NIL object" does not understand message "+".
---  d1=.directory~of()
+::method "test_of_01"
+  d1=.directory~of()
+  self~assertTrue(d1~isEmpty)
 
 ::method "test_of_02"
   self~expectSyntax(93.903)
