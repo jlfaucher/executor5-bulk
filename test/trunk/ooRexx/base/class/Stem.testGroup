@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -822,10 +822,11 @@ makeColl: procedure
 
 /* add test cases for of and do over */
 
-::method "test_of_01"
-  self~expectSyntax(97.1)
-                              -- Object "The NIL object" does not understand message "+".
-  d1=.stem~of()
+--5.2.0 allows empty OF method calls
+--::method "test_of_01"
+--  self~expectSyntax(97.1)
+--                              -- Object "The NIL object" does not understand message "+".
+--  d1=.stem~of()
 
 ::method "test_of_02"
   self~expectSyntax(93.903)
