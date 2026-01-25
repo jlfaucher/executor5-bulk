@@ -4881,7 +4881,7 @@ SUBWORD("Now is the  time",5)      ->    ""
 <computeroutput>VAR</computeroutput> if it is the name of a variable, that is,
 a symbol that has been assigned a value. Otherwise, it returns
 <computeroutput>LIT</computeroutput>, indicating that it is either
-a constant symbol or a symbol that has not yet been assigned a value, that
+a constant symbol, an environment symbol, or a symbol that has not yet been assigned a value, that
 is, a literal.</para>
 <para>As with symbols in Rexx expressions, lowercase characters in
 <emphasis role="italic">name</emphasis> are translated to uppercase and
@@ -4901,10 +4901,11 @@ before it is passed to the function.</para></note>
 <programlisting>
 /* following: Drop A.3;  J=3 */
 SYMBOL("J")      ->   "VAR"
-SYMBOL(J)        ->   "LIT" /* has tested "3"     */
-SYMBOL("a.j")    ->   "LIT" /* has tested A.3     */
-SYMBOL(2)        ->   "LIT" /* a constant symbol  */
-SYMBOL("*")      ->   "BAD" /* not a valid symbol */
+SYMBOL(J)        ->   "LIT" /* has tested "3"        */
+SYMBOL("a.j")    ->   "LIT" /* has tested A.3        */
+SYMBOL(2)        ->   "LIT" /* a constant symbol     */
+SYMBOL(".TRUE")  ->   "LIT" /* an environment symbol */
+SYMBOL("*")      ->   "BAD" /* not a valid symbol    */
 </programlisting>
 </example>
 </para>
