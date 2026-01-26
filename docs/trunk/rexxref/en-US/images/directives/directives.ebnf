@@ -42,9 +42,9 @@ requires ::= '::REQUIRES' programname ( 'LIBRARY' |
                                         'NAMESPACE' namespace
                                       )?
 
-resource ::= '::RESOURCE' name ( 'END' delimiter )?
+resource ::= '::RESOURCE' name ( 'END' delimiter )? (";" ignored_data1)?
 resourcedata ::= resource_data*
-resourceend ::= ( '::END' | delimiter ) ignored_data?
+resourceend ::= ( '::END' | delimiter ) ignored_data2?
 
 routine ::= '::ROUTINE' routinename ( 'PRIVATE' | 'PUBLIC' )? ( 'EXTERNAL' spec )?
 
