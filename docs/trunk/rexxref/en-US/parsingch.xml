@@ -337,7 +337,7 @@ either of the following: </para>
 <listitem><para>One or more characters within quotation marks.
 </para></listitem></varlistentry>
 <varlistentry><term>Variable string pattern</term>
-<listitem><para>A variable within parentheses with no plus
+<listitem><para>An expression within parentheses with no plus
 (<computeroutput>+</computeroutput>), minus
 (<computeroutput>-</computeroutput>), or equal sign
 (<computeroutput>=</computeroutput>) before the left parenthesis. (See
@@ -530,8 +530,8 @@ lastname =11 first =21 pseudonym
 <indexterm><primary>positional patterns</primary>
 <secondary>relative</secondary></indexterm>
 is a number with a plus (<computeroutput>+</computeroutput>) or
-minus (<computeroutput>-</computeroutput>) sign preceding it. It can also be a
-variable within parentheses, with a plus (<computeroutput>+</computeroutput>)
+minus (<computeroutput>-</computeroutput>) sign preceding it. It can also be an
+expression within parentheses, with a plus (<computeroutput>+</computeroutput>)
 or minus (<computeroutput>-</computeroutput>) sign preceding the left
 parenthesis; for details see
 <xref linkend="varpat" />.</para>
@@ -828,7 +828,7 @@ parse var name fn init (strngptrn) ln
 </programlisting>
 </para>
 <para>If no equal, plus sign, minus sign, &gt;, or &lt; precedes the parenthesis that is before
-the variable name, the character string value of the variable is then treated
+the expression, the character string value of the expression is then treated
 as a string pattern. The expression can reference variables that have been set earlier in
 the same template.
 <indexterm><primary>examples</primary>
@@ -854,7 +854,7 @@ parse var date month 3 delim +1 day +2 (delim) year
 
 <para>If an equal, a plus, a minus sign, &gt; or &lt; precedes the left parenthesis, the
 value of the expression is treated as an absolute, relative positional, or length positional pattern.
-The value of the expression must be a positive whole number or zero.</para>
+In that case, the value of the expression must be a positive whole number or zero.</para>
 <para>The expression can reference variables that have been set earlier in the same template.
 In the following example, the first two fields specify the starting-character
 positions of the last two fields.
