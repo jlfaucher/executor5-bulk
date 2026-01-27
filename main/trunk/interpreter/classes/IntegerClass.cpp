@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1455,10 +1455,10 @@ RexxObject *RexxInteger::andOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
     // there's no short cutting in Rexx, so we need  to validate all arguments.
-    RexxObject *otherTruth = booleanObject(other->truthValue(Error_Logical_value_method));
-    return (!truthValue(Error_Logical_value_method)) ? TheFalseObject : otherTruth;
+    bool        lhsTruth =                      truthValue(Error_Logical_value_method);
+    RexxObject *rhsTruth = booleanObject(other->truthValue(Error_Logical_value_method));
+    return (!lhsTruth) ? TheFalseObject : rhsTruth;
 }
-
 
 /**
  * Logically OR two objects together
@@ -1470,8 +1470,9 @@ RexxObject *RexxInteger::andOp(RexxObject *other)
 RexxObject *RexxInteger::orOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
-    RexxObject *otherTruth = booleanObject(other->truthValue(Error_Logical_value_method));
-    return truthValue(Error_Logical_value_method) ? TheTrueObject : otherTruth;
+    bool        lhsTruth =                      truthValue(Error_Logical_value_method);
+    RexxObject *rhsTruth = booleanObject(other->truthValue(Error_Logical_value_method));
+    return lhsTruth ? TheTrueObject : rhsTruth;
 }
 
 
@@ -1485,15 +1486,16 @@ RexxObject *RexxInteger::orOp(RexxObject *other)
 RexxObject *RexxInteger::xorOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
-    bool truth = other->truthValue(Error_Logical_value_method);
+    bool lhsTruth =        truthValue(Error_Logical_value_method);
+    bool rhsTruth = other->truthValue(Error_Logical_value_method);
 
-    if (!truthValue(Error_Logical_value_method))
+    if (!lhsTruth)
     {
-        return booleanObject(truth);
+        return booleanObject( rhsTruth);
     }
     else
     {
-        return booleanObject(!truth);
+        return booleanObject(!rhsTruth);
     }
 }
 

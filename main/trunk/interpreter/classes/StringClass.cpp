@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1958,9 +1958,10 @@ RexxObject *RexxString::andOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
 
-    bool otherTruth = other->truthValue(Error_Logical_value_method);
+    bool lhsTruth =        truthValue(Error_Logical_value_method);
+    bool rhsTruth = other->truthValue(Error_Logical_value_method);
     // perform the operation
-    return booleanObject(truthValue(Error_Logical_value_method) && otherTruth);
+    return booleanObject(lhsTruth && rhsTruth);
 }
 
 
@@ -1975,9 +1976,10 @@ RexxObject *RexxString::orOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
 
-    bool otherTruth = other->truthValue(Error_Logical_value_method);
+    bool lhsTruth =        truthValue(Error_Logical_value_method);
+    bool rhsTruth = other->truthValue(Error_Logical_value_method);
 
-    return booleanObject(truthValue(Error_Logical_value_method) || otherTruth);
+    return booleanObject(lhsTruth || rhsTruth);
 }
 
 
@@ -1992,10 +1994,11 @@ RexxObject *RexxString::xorOp(RexxObject *other)
 {
     requiredArgument(other, ARG_ONE);
 
-    bool otherTruth = other->truthValue(Error_Logical_value_method);
+    bool lhsTruth =        truthValue(Error_Logical_value_method);
+    bool rhsTruth = other->truthValue(Error_Logical_value_method);
 
     // != in C++ is essentially an exclusive OR.
-    return booleanObject(truthValue(Error_Logical_value_method) != otherTruth);
+    return booleanObject(lhsTruth != rhsTruth);
 }
 
 
