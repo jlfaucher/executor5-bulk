@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -498,5 +498,38 @@ return testResult
    x=+1e-5a()
 
 
+::method "test_88"
+   self~expectSyntax((34.901,"A"))
+   x = a & b
 
+::method "test_89"
+   self~expectSyntax((34.901,"B"))
+   x = 1 & b
 
+::method "test_90"
+   self~expectSyntax((34.901,"A"))
+   x = a & 1
+
+::method "test_91"
+   self~expectSyntax((34.901,"A"))
+   x = a | b
+
+::method "test_92"
+   self~expectSyntax((34.901,"B"))
+   x = 1 | b
+
+::method "test_93"
+   self~expectSyntax((34.901,"A"))
+   x = a | 1
+
+::method "test_94"
+   self~expectSyntax((34.901,"A"))
+   x = a && b
+
+::method "test_95"
+   self~expectSyntax((34.901,"B"))
+   x = 1 && b
+
+::method "test_96"
+   self~expectSyntax((34.901,"A"))
+   x = a && 1
