@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -174,9 +174,7 @@ RexxString *RexxString::insert(RexxString  *newStrObj, RexxInteger *position, Re
     newStrObj = stringArgument(newStrObj, ARG_ONE);
     size_t newStringLength = newStrObj->getLength();
 
-    // we're parsing this as a length argument because a postion of zero
-    // is valid for insert
-    size_t insertPosition = optionalLengthArgument(position, 0, ARG_TWO);
+    size_t insertPosition = optionalNonNegative(position, 0, ARG_TWO);
     size_t insertLength = optionalLengthArgument(_length, newStringLength, ARG_THREE);
 
     // default pad character is a blank
