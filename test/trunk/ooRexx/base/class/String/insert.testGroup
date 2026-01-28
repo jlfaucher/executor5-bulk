@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -121,7 +121,7 @@ return testResult
     self~assertSame(substr(.v10000,1,50000,' ')||'A', copies('5F'x,10000)~insert('A','5E+4'))
 
 ::method 'test022'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = copies('5F'x,10000)~insert('A','5E+9999')
 
 ::method 'test023'
@@ -154,22 +154,22 @@ return testResult
     self~assertSame('AbCdEfG    abcdefghijklmnopqrstuvwxyz1234', 'AbCdEfG'~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
 
 ::method 'test032'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = .v30~insert('A',1.2)
 
 ::method 'test033'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = .v30~insert('A','-31')
 
 ::method 'test034'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     if .ooRexxUnit.architecture == 32 then
         xre = 'hasdghj'~insert('A',1E10)
     else
         xre = 'hasdghj'~insert('A',1E19)
 
 ::method 'test035'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = 'hasdghj'~insert('A','cc'x)
 
 ::method 'test036'
@@ -282,7 +282,7 @@ return testResult
     self~assertSame('A2*7 7+7+7+', 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2))
 
 ::method 'test070'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699','699-698',5*2)
 
 ::method 'test071'
@@ -307,7 +307,7 @@ return testResult
     self~assertSame('NA**V.', nv.~insert('A',1,3,'*'))
 
 ::method 'test077'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = 'B'~insert('A',nv.10,3,'*')
 
 ::method 'test078'
@@ -319,14 +319,14 @@ return testResult
     xre = 'B'~insert('A',1,3,nval)
 
 ::method 'test080'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test082'
     self~assertSame('NA**V.', nv.~insert('A',1,3,'*'))
 
 ::method 'test083'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = 'B'~insert('A',nv.10,3,'*')
 
 ::method 'test084'
@@ -338,7 +338,7 @@ return testResult
     xre = 'B'~insert('A',1,3,nval)
 
 ::method 'test086'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test087'
@@ -486,7 +486,7 @@ return testResult
     self~assertSame('NV.', nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
 
 ::method 'test124'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = '*'~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')
 
 ::method 'test125'
@@ -494,7 +494,7 @@ return testResult
     xre = '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,nv,'x')
 
 ::method 'test126'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test127'
@@ -504,7 +504,7 @@ return testResult
     self~assertSame('NV.', nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
 
 ::method 'test129'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = '*'~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')
 
 ::method 'test130'
@@ -516,7 +516,7 @@ return testResult
     xre = '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,.nil)
 
 ::method 'test132'
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test133'
