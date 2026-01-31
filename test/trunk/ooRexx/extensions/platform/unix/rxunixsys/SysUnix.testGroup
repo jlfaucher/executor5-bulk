@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -274,7 +274,8 @@ else
     -- we ignore them
     initial = SysListXattr(f)
     -- returns -1 instead of an Array if no extended attribute support
-    self~assertIsA(initial, .Array, "may fail if file system has no support for extended attributes")
+    -- we run this as a silent failure as NetBSD 9.3 ffs file system has no support
+    self~assertIsA(initial, .Array, "tracker bug #xxxx: known to fail on file systems with no support for extended attributes")
     self~assertSame("", SysGetXattr(f, "user.author"))
     self~assertSame(-1, SysRemoveXattr(f, "user.author"))
 
@@ -370,9 +371,14 @@ else
     if .Rexxinfo~platform == "DARWIN", id~startsWith("$") then
       iterate
 
+    -- NetBSD crypt() does not support the $2b$, $3$, $5$, and $6$ formats and
+    -- returns the string "*0" or a $1$ encryption instead.  Ignore this.
+    if .Rexxinfo~platform == "NETBSD", ("$2b", "$3$", "$5$", "$6$")~hasItem(id~left(3)) then
+      iterate
+
     supported~append(name)
 
-    -- the returned data shoud match key plus expected hash chars
+    -- the returned data should match key plus expected hash chars
     self~assertSame(key~length + returned, r~length, "crypt("pw"," key") should return" key~length + returned "characters, but returned" r~length .endofline r)
 
     -- the returned data should start with id plus salt, except for Blowfish,
