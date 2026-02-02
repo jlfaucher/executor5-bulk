@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -53,6 +53,17 @@ return testResult
 ::requires 'ooTest.frm'
 ::requires 'FileUtils.cls'
 
+::resource "showArgs"   -- code for the test program
+-- program to display various items related to its invocation
+    say 'The arguments string is ['arg(1)']'
+    argcnt = .syscargs~items
+    if argcnt = 1 then
+        say 'There is 1 entry in .SYSCARGS:'
+    else
+        say 'There are' argcnt 'entries in .SYSCARGS:'
+    say '['.syscargs~toString(, ", ")']'
+::END
+
 /* class: rexx_command.testGroup - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
@@ -62,11 +73,12 @@ return testResult
   expose outLines
   forward class (super) continue
   outLines = .array~new -- will hold all console output
+  .TemporaryTestFile~new(self, 'showArgs.rex')~~createFromResource(showArgs)
 
 ::method test_noArgs
   expose outLines
   outLines~empty
-  /* the command without arguments  */
+  /* the command without arguments    */
   theCmd = 'rexx'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(-1, theRC)
@@ -75,7 +87,7 @@ return testResult
 ::method test_unknownSW
   expose outLines
   outLines~empty
-  /* the command with an unknown option/switch  */
+  /* the command with an unknown option/switch    */
   theCmd = 'rexx -?'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(-1, theRC)
@@ -93,7 +105,7 @@ return testResult
 ::method test_optV2
   expose outLines
   outLines~empty
-  /* the V option (upper case)  */
+  /* the V option (upper case)    */
   theCmd = 'rexx -V'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(0, theRC)
@@ -101,32 +113,30 @@ return testResult
 
 ::method test_optV3
   expose outLines
-/* disabled until fix applied
   if .ooRexxUnit.OSName == 'WINDOWS' then do
       outLines~empty
-      /* the v option with a / prefix   */
+      /* the v option with a / prefix */
       theCmd = 'rexx /v'
       theRC = issueCmd(theCmd, outLines)
       self~assertRC(0, theRC)
       self~assertFalse(outLines~isEmpty)
-  end   */
+  end
 
 ::method test_optV4
   expose outLines
-/* disabled until fix applied
   if .ooRexxUnit.OSName == 'WINDOWS' then do
       outLines~empty
-      /* the V option with a / prefix   */
+      /* the V option with a / prefix */
       theCmd = 'rexx /V'
       theRC = issueCmd(theCmd, outLines)
       self~assertRC(0, theRC)
       self~assertFalse(outLines~isEmpty)
-  end   */
+  end
 
 ::method test_optV5
   expose outLines
   outLines~empty
-  /* the v option preceded by an unknown option */
+  /* the v option preceded by an unknown option   */
   theCmd = 'rexx -? -v'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(0, theRC)
@@ -135,23 +145,248 @@ return testResult
 ::method test_optV6
   expose outLines
   outLines~empty
-  /* the v option followed by an unknown option */
+  /* the v option followed by an unknown option   */
   theCmd = 'rexx -v -?'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(0, theRC)
   self~assertFalse(outLines~isEmpty)
 
-::method test_optE
+::method test_optEnoCode
   expose outLines
   outLines~empty
-  /* the e option with quoted arguments */
-  theCmd = 'rexx -e "say arg(1)" a "b c" d'
-  expected = 'a b c d'
-/* disabled until fix applied
-  if .ooRexxUnit.OSName == 'WINDOWS' then do
-      expected = 'a "b c" d'
-  end   */
+  /* the e option without program string  */
+  theCmd = 'rexx -e'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(-1, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optE1
+  expose outLines
+  outLines~empty
+  /* the e option with a null program string  */
+  theCmd = 'rexx -e ""'
   theRC = issueCmd(theCmd, outLines)
   self~assertRC(0, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE2
+  expose outLines
+  outLines~empty
+  /* the e option with a blank program string */
+  theCmd = 'rexx -e " "'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE3
+  expose outLines
+  outLines~empty
+  /* the e option with a program string of a line comment */
+  theCmd = 'rexx -e "--"'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE4
+  expose outLines
+  outLines~empty
+  /* the e option with a program string of a nop  */
+  theCmd = 'rexx -e "nop"'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE5
+  expose outLines
+  outLines~empty
+  /* the e option with a program string of a return   */
+  theCmd = 'rexx -e "return 8"'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(8, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE6
+  expose outLines
+  outLines~empty
+  /* the e option with a program string of 2 instructions */
+  theCmd = 'rexx -e "nop;return 0"'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertTrue(outLines~isEmpty)
+
+::method test_optE7
+  expose outLines
+  outLines~empty
+  /* the e option with a program that says the arguments - none   */
+  theCmd = 'rexx -e "say ''[''arg(1)'']''"'
+  expected = '[]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(1, outLines~items)
+  self~assertSame(expected, outLines[1])
+
+::method test_optE8
+  expose outLines
+  outLines~empty
+  /* the e option with a program that says the arguments - one    */
+  theCmd = 'rexx -e "say ''[''arg(1)'']''" Uno'
+  expected = '[Uno]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(1, outLines~items)
+  self~assertSame(expected, outLines[1])
+
+::method test_optE9
+  expose outLines
+  outLines~empty
+  /* the e option with a program that says the arguments - one w/ ""  */
+  theCmd = 'rexx -e "say ''[''arg(1)'']''" "Eins"'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected = '["Eins"]'
+  else
+      expected = '[Eins]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(1, outLines~items)
+  self~assertSame(expected, outLines[1])
+
+::method test_optE10
+  expose outLines
+  outLines~empty
+  /* the e option with a program that says the arguments - two    */
+  theCmd = 'rexx -e "say ''[''arg(1)'']''" Dos 2.0'
+  expected = '[Dos 2.0]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(1, outLines~items)
+  self~assertSame(expected, outLines[1])
+
+::method test_optE11
+  expose outLines
+  outLines~empty
+  /* the e option with quoted arguments   */
+  theCmd = 'rexx -e "say ''[''arg(1)'']''" a "b c" d'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected = '[a "b c" d]'
+  else
+      expected = '[a b c d]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(1, outLines~items)
   self~assertSame(expected, outlines[1])
+
+::method test_passingArgs0
+  expose outLines
+  outLines~empty
+  /* passing args to a program file - none    */
+  theCmd = 'rexx showArgs.rex'
+  expected1 = '[]'
+  expected2 = 0
+  expected3 = '[]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,1))
+  self~assertSame(expected2, outlines[2]~word(3))
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs1
+  expose outLines
+  outLines~empty
+  /* passing args to a program file - one */
+  theCmd = 'rexx showArgs.rex just1'
+  expected1 = '[just1]'
+  expected2 = 1
+  expected3 = '[just1]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,1))
+  self~assertSame(expected2, outlines[2]~word(3))
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs2
+  expose outLines
+  outLines~empty
+  /* passing args to a program file - one w/ ""   */
+  theCmd = 'rexx showArgs.rex "quoted"'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected1 = '["quoted"]'
+  else
+      expected1 = '[quoted]'
+  expected2 = 1
+  expected3 = '[quoted]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,1))
+  self~assertSame(expected2, outlines[2]~word(3))
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs3
+  expose outLines
+  outLines~empty
+  /* passing args to a program file - two */
+  theCmd = 'rexx showArgs.rex two too!'
+  expected1 = '[two too!]'
+  expected2 = 2
+  expected3 = '[two, too!]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,2))
+  self~assertSame(expected2, outlines[2]~word(3))
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs4
+  expose outLines
+  outLines~empty
+  /* passing args to a program file - quoted multiple words   */
+  theCmd = 'rexx showArgs.rex l "m n" o'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected1 = '[l "m n" o]'
+  else
+      expected1 = '[l m n o]'
+  expected2 = 3
+  expected3 = '[l, m n, o]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,4))
+  self~assertSame(expected2, outlines[2]~word(3))
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs5
+  expose outLines
+  outLines~empty
+  /* passing args to a program file w/ unknown option */
+  theCmd = 'rexx -? showArgs.rex Ho Ho'
+  expected1 = '[Ho Ho]'
+  expected2 = 2
+  expected3 = '[Ho, Ho]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,2))
+  self~assertSame(expected2, outlines[2]~word(3),'SYSCARGS wrong:' outlines[3])
+  self~assertSame(expected3, outlines[3])
+
+::method test_optOnoString1
+  expose outLines
+  outLines~empty
+  /* the o option without an options string   */
+  theCmd = 'rexx -o'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(-1, theRC)
+  self~assertFalse(outLines~isEmpty)
+
+::method test_optOnoString2
+  expose outLines
+  outLines~empty
+  /* the od option without an options string  */
+  theCmd = 'rexx -od'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(-1, theRC)
+  self~assertFalse(outLines~isEmpty)
+
 -- End of class: rexx_command.testGroup
