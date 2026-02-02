@@ -97,6 +97,9 @@ int main (int argc, char **argv) {
 
                 case 'o':     // override package options, cf. Package' globalOptions documentation
                 case 'O': {
+                    if ( argc == i+1 ) {
+                      break;
+                    }
                     overrideCount = 1;  // default to a one time override (for program_name only)
                     char c = *(cp+1);   // get second character
                     if ( c=='d' || c=='D' ) // override package default options, unless explicitly defined in package
@@ -130,6 +133,7 @@ int main (int argc, char **argv) {
                     return 0;
 
                 default:                 /* ignore other switches             */
+                    argc_base++;
                     break;
             }
         } else {                         /* convert into an argument string   */

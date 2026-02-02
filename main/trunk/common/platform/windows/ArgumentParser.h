@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -139,7 +139,7 @@ PCONSTRXSTRING getArguments(const char **program, const char *argptr, size_t *co
     }
     else {
         nextArgument(FALSE, argptr, &i, &len, FALSE);             /* skip REXX*.EXE */
-        /* need to skip any switches before the script name/-e switch   */
+        /* need to skip any switches before the script name/-e or -o[d] switch  */
         const char *tmp = nextArgument(FALSE, argptr, &i, &len, FALSE);       /* skip REXX script or -e switch */
         while (tmp && strlen(tmp) > 1 && (tmp[0] == '/' || tmp[0] == '-') && !lastSW) {
             /* the following test ensure that the -e switch on rexx.exe is not included in the arguments */
@@ -147,6 +147,11 @@ PCONSTRXSTRING getArguments(const char **program, const char *argptr, size_t *co
             /* affects rexxhide, rexxpaws, etc, that all use this code; may not be important             */
             if (tmp[1] == 'e' || tmp[1] == 'E') {   /* no more switches after -e    */
                 lastSW = true;
+            }
+            else if (tmp[1] == 'o' || tmp[1] == 'O') {   /* no more switches after -o    */
+                lastSW = true;
+                /* need to step over option string too  */
+                tmp = nextArgument(FALSE, argptr, &i, &len, FALSE);
             }
             tmp = nextArgument(FALSE, argptr, &i, &len, FALSE);
         }
