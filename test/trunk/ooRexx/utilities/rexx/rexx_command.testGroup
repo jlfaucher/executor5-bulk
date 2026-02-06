@@ -70,11 +70,15 @@ return testResult
 ::class "rexx_command.testGroup" public subclass ooTestCase
 
 ::method init
-  expose outLines showArgs
+  expose outLines
   forward class (super) continue
   outLines = .array~new -- will hold all console output
-  sa=.TemporaryTestFile~new(self, 'showArgs.rex')~~createFromResource(showArgs)
-  showArgs = sa~fullname  -- full name of the test program
+
+::method makeTestPgm
+  sa = .TemporaryTestFile~new(self, 'showArgs.rex')
+  if \sa~exists then
+      sa~createFromResource(showArgs)
+  return sa~fullname  -- full name of the test program
 
 ::method test_noArgs
   expose outLines
@@ -257,8 +261,9 @@ return testResult
   self~assertSame(expected, outlines[1])
 
 ::method test_passingArgs0
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file - none    */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs
   expected1 = '[]'
   expected2 = 0
@@ -271,8 +276,9 @@ return testResult
   self~assertSame(expected3, outlines[3])
 
 ::method test_passingArgs1
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file - one */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs 'just1'
   expected1 = '[just1]'
   expected2 = 1
@@ -285,8 +291,9 @@ return testResult
   self~assertSame(expected3, outlines[3])
 
 ::method test_passingArgs2
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file - one w/ ""   */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs '"quoted"'
   if .ooRexxUnit.OSName == 'WINDOWS' then
       expected1 = '["quoted"]'
@@ -302,8 +309,9 @@ return testResult
   self~assertSame(expected3, outlines[3])
 
 ::method test_passingArgs3
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file - two */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs 'two too!'
   expected1 = '[two too!]'
   expected2 = 2
@@ -316,8 +324,9 @@ return testResult
   self~assertSame(expected3, outlines[3])
 
 ::method test_passingArgs4
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file - quoted multiple words   */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs 'l "m n" o'
   if .ooRexxUnit.OSName == 'WINDOWS' then
       expected1 = '[l "m n" o]'
@@ -333,8 +342,9 @@ return testResult
   self~assertSame(expected3, outlines[3])
 
 ::method test_passingArgs5
-  expose outLines showArgs
+  expose outLines
   /* passing args to a program file w/ unknown option */
+  showArgs = self~makeTestPgm
   theCmd = 'rexx -?' showArgs 'Ho Ho'
   expected1 = '[Ho Ho]'
   expected2 = 2
