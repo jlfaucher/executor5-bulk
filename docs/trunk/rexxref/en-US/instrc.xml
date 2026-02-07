@@ -78,10 +78,12 @@ unless the end of a line implies it.</para>
 <secondary>as free standing clause</secondary></indexterm>
 <indexterm><primary>WHEN</primary>
 <secondary>as free standing clause</secondary></indexterm>
-<para>A keyword instruction is recognized <emphasis>only</emphasis> if its
-keyword is the first token in a clause and if the second token does not start
-with an equal (=) character (implying an assignment) or a colon (implying
-a label).  The keywords ELSE, END, OTHERWISE, THEN, and WHEN are treated in
+<para>A keyword instruction is recognized <emphasis>only</emphasis> if
+its keyword is the first token in a clause,
+the second token does not start with
+an equal (=) character (implying an assignment) or a colon (implying a label),
+and the whole instruction does not have the form of a message instruction.
+The keywords ELSE, END, OTHERWISE, THEN, and WHEN are treated in
 the same way. Note that any clause that starts with a keyword defined by Rexx
 cannot be a command. Therefore, </para>
 <programlisting>
