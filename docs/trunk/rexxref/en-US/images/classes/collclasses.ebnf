@@ -575,7 +575,7 @@ stem_at ::= 'at(' index? (',' index?)* ')'
 
 stem_empty ::= 'empty'
 
-stem_hasindex ::= 'hasIndex(' tail ')'
+stem_hasindex ::= 'hasIndex(' index? (',' index?)* ')'
 
 stem_hasitem ::= 'hasItem(' value ')'
 
@@ -587,9 +587,9 @@ stem_items ::= 'items'
 
 stem_makearray ::= 'makeArray'
 
-stem_put ::= 'put(' item ',' tail ')'
+stem_put ::= 'put(' item (',' index? (',' index?)*)? ')'
 
-stem_remove ::= 'remove(' tail ')'
+stem_remove ::= 'remove(' index? (',' index?)* ')'
 
 stem_removeitem ::= 'removeItem(' item ')'
 

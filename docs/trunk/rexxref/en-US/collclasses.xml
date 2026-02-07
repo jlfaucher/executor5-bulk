@@ -8193,6 +8193,10 @@ If you specify no
 new default stem value is assigned. Assigning a new default value will
 re-initialize the stem and remove all existing assigned indexes.
 </para>
+
+<para>See also method <xref linkend="mthStemPut" xrefstyle="select:title"/>.
+</para>
+
 </section>
 
 <section id="mthStemAllIndexes"><title>allIndexes</title>
@@ -8291,10 +8295,13 @@ which is a synonym for this method.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the Stem
-contains any item associated with a stem tail
-<emphasis role="italic">tail</emphasis>,
-or &false;.</para>
+<para>Returns &true; if the stem contains any item associated
+with the specified index. The final index is derived by concatenation of each of
+the <emphasis role="italic">index</emphasis> arguments together with a "."
+separator.
+If you specify no
+<emphasis role="italic">index</emphasis> arguments, the method always returns &true;.
+</para>
 </section>
 
 <section id="mthStemHasItem"><title>hasItem</title>
@@ -8401,10 +8408,19 @@ value. The items appear in the array in an unspecified order.
 </imageobject>
 </mediaobject>
 
-<para>Replaces any existing item associated with the specified
-<emphasis role="italic">tail</emphasis> with
-the new item <emphasis role="italic">item</emphasis>.
+<para>Makes <emphasis role="italic">item</emphasis> a member of the stem collection and associates it
+with the specified index. The final index is derived by concatenation of each of
+the <emphasis role="italic">index</emphasis> arguments together with a "."
+separator.
+If you specify no
+<emphasis role="italic">index</emphasis> arguments, a
+new default stem value is assigned. Assigning a new default value will
+re-initialize the stem and remove all existing assigned indexes.
 </para>
+
+<para>See also method <xref linkend="mthStemPutSet" xrefstyle="select:title"/>.
+</para>
+
 </section>
 
 <section id="mthStemRemove"><title>remove</title>
@@ -8420,9 +8436,14 @@ the new item <emphasis role="italic">item</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns and removes from the stem the member item with index
-<emphasis role="italic">tail</emphasis>. Returns &nil; if no item has index
-<emphasis role="italic">tail</emphasis>.
+<para>Returns and removes from the stem the member
+with the specified index. The final index is derived by concatenation of each of
+the <emphasis role="italic">index</emphasis> arguments together with a "."
+separator.
+If you specify no <emphasis role="italic">index</emphasis>,
+the stem default value is returned, if one has been assigned,
+and then the default value is removed;
+otherwise the stem name is returned.
 </para>
 </section>
 
