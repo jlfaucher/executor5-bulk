@@ -2,7 +2,7 @@
 -- note: the above hashbang is intentional: will run the archive's bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2021-2024 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2021-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -57,7 +57,7 @@
                   - 20220209, rgf: changed "test.rex" to "testoorexx.rex"
                   - 20231113, rgf: changed eCopy for Unix to "cp -RpPf" as suggested by P.O.
                   - 20240609, rgf: changed eCopy for Windows to "copy /y" (overwrite),
-                  - 20260208, P.O. Jonsson correcting typo in line 237 (now 238)
+                  - 20260208, P.O. Jonsson renaming error in line 237 (now 238)
 
 */
 
@@ -235,7 +235,7 @@ end
       call sysFileTree zipDir"/librexxapi.dylib", "files.", "FOS"
    else
       call sysFileTree zipDir"/librexxapi.so", "files.", "FOS"
-   if files.0 = 0 then raise syntax 40.900 array ('cannot find "librexxapi.so" shared object/dynamic library in any subdirectory of "'zipDir'"')
+   if files.0 = 0 then raise syntax 40.900 array ('cannot find "librexxapi" shared object/dynamic library in any subdirectory of "'zipDir'"')
    sourceRootDir=filespec("location",files.1) -- note contains trailing "/"
    source        = quote(sourceRootDir)'*'
    targetDir     = targetRootDir'/lib'
