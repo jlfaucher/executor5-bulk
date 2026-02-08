@@ -57,8 +57,11 @@
                   - 20220209, rgf: changed "test.rex" to "testoorexx.rex"
                   - 20231113, rgf: changed eCopy for Unix to "cp -RpPf" as suggested by P.O.
                   - 20240609, rgf: changed eCopy for Windows to "copy /y" (overwrite),
-                                   copy support/portable/readme.txt
+                  - 20260208, P.O. Jonsson correcting typo in line 237 (now 238)
+
 */
+
+trace r
 
 local=.context~package~local     -- get package's local directory
 local~leadin="+--->"       -- lead in to ease spotting in sea of output
@@ -234,7 +237,7 @@ end
       call sysFileTree zipDir"/librexxapi.dylib", "files.", "FOS"
    else
       call sysFileTree zipDir"/librexxapi.so", "files.", "FOS"
-   if files.0 = 0 then raise syntax 40.900 array ('cannot find "rexxapi" shared object/dynamic library in any subdirectory of "'zipDir'"')
+   if files.0 = 0 then raise syntax 40.900 array ('cannot find "librexxapi.so" shared object/dynamic library in any subdirectory of "'zipDir'"')
    sourceRootDir=filespec("location",files.1) -- note contains trailing "/"
    source        = quote(sourceRootDir)'*'
    targetDir     = targetRootDir'/lib'
