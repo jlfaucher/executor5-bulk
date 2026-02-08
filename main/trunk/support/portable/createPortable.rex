@@ -61,8 +61,6 @@
 
 */
 
-trace r
-
 local=.context~package~local     -- get package's local directory
 local~leadin="+--->"       -- lead in to ease spotting in sea of output
 local~lw    =17            -- width of debug labels
