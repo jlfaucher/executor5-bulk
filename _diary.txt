@@ -1,0 +1,138 @@
+Executor5-bulk is a full Git clone of ooRexx5.
+Executor5 is a partial Git clone of ooRexx5.
+Executor is a partial Git clone of ooRexx4.2.
+
+2014 was the year of a very drastic overhaul of ooRexx for Git Merge:
+files were renamed, moved, classes and methods were renamed, moved,
+and a multitude of cosmetic changes were made.
+ooRexx5 was borned.
+
+Executor5 was created because it was not possible to merge the changes made to
+ooRexx5 into the Executor Github repository.
+
+Twelve years later, Executor5-bulk was created to test the feasibility and
+usability of a complete Git clone of ooRexx's SVN repository. The directory
+organization is identical to that of SVN: branches and releases are
+subdirectories, not Git branches or Git tags. This should facilitate support for
+future SVN branches.
+
+Executor5 and Executor5-bulk are not synchronized.
+Some changes made to Executor5, such as low-level MT trace at the semaphore/
+mutex level, will not be applied to Executor5-bulk. And vice-versa.
+
+
+===============================================================================
+2026 feb 15
+
+Creation of the Github repository Executor5-bulk.
+
+Inspired by
+https://stackoverflow.com/questions/60009188/cloning-a-large-svn-repository-from-sourceforge-with-git-svn-clone
+
+The key point is that the Git clone is created from a local backup of the SVN
+repository. It's fast, no time-out.
+No attempt is made to create Git branches from SVN releases and branches.
+Instead, the SVN folder organization is reproduced as-is in the Git repo.
+Anyway, it would not be possible to create Git branches because there are
+several roots (docs, main, ooDialog, rexxgtk, test, websites).
+No attempt to map SVN usernames to Git names and emails
+(e.g., john = John Doe <john@example.com>), but that could be easily done.
+
+
+The procedure:
+
+# https://sourceforge.net/p/forge/documentation/svn/#h-backups
+$ cd /local/rexx/oorexx
+$ rsync -av svn.code.sf.net::p/oorexx/code-0 oorexx.svn
+# around 10 min.
+# size = 538 667 304 bytes (635,3 MB on disk) for 26 512 items
+
+
+$ git svn clone file://`pwd`/oorexx.svn oorexx.git > git_svn_clone.log 2>&1
+# around 40 min
+# 2,4 GB on disk for 75 217 items
+# 1,98 GB on disk for 75 212 items
+
+$ cd /local/rexx/oorexx/oorexx.git
+$ git svn info
+    Path: .
+    URL: file:///local/rexx/oorexx/oorexx.svn
+    Repository Root: file:///local/rexx/oorexx/oorexx.svn
+    Repository UUID: 0b6cbdbe-3aab-466e-b73a-abd511dda0a2
+    Revision: 13100
+    Node Kind: directory
+    Schedule: normal
+    Last Changed Author: perolovjonsson
+    Last Changed Rev: 13100
+    Last Changed Date: 2026-02-08 22:53:25 +0100 (Sun, 08 Feb 2026)
+
+
+# https://git-scm.com/docs/git-svn#Documentation/git-svn.txt-svn-remoteltnamegtrewriteRoot
+
+# the order is important!
+$ git config --local svn-remote.svn.rewriteRoot `git config --local --get svn-remote.svn.url`
+$ git config --local svn-remote.svn.url https://svn.code.sf.net/p/oorexx/code-0
+
+$ git svn info
+    Path: .
+    URL: file:///local/rexx/oorexx/oorexx.svn
+    Repository Root: https://svn.code.sf.net/p/oorexx/code-0
+    Repository UUID: 0b6cbdbe-3aab-466e-b73a-abd511dda0a2
+    Revision: 13100
+    Node Kind: directory
+    Schedule: normal
+    Last Changed Author: perolovjonsson
+    Last Changed Rev: 13100
+    Last Changed Date: 2026-02-08 22:53:25 +0100 (Sun, 08 Feb 2026)
+# It's normal to still see the local URL.
+# It must be kept because the history depends on it.
+# The new commits will be taken from the Repository Root.
+# The repository's UUID is identical to that of SourceForge.
+
+
+# Now preparing to push the local clone to github.
+# First, rename oorexx.git to executor5-bulk
+$ cd /local/rexx/oorexx
+$ mv oorexx.git executor5-bulk
+
+# Create the github repository executor5-bulk
+<not described>
+
+# Push the local clone to github.
+$ git remote add origin git@github.com:jlfaucher/executor5-bulk.git
+$ git status
+    On branch master
+    nothing to commit (use -u to show untracked files)
+$ git branch -M main
+$ git status
+    On branch main
+    nothing to commit (use -u to show untracked files)
+$ git push -u origin main
+
+
+# Fetch and rebase latest SVN changes
+git svn rebase
+
+
+# For those who do not wish to clone the entire git repository, it will be
+# possible to obtain a subset of it.
+git clone --filter=blob:none --no-checkout https://github.com/jlfaucher/executor5-bulk.git executor5-bulk.subset
+# 340 MB
+cd executor5-bulk.subset
+git sparse-checkout init --cone
+git sparse-checkout set main/trunk
+git sparse-checkout add incubator/regex
+git sparse-checkout add docs/trunk
+git sparse-checkout add test/trunk
+git checkout
+# 438 MB instead of 1.98 GB
+
+
+===============================================================================
+History of merges.
+
+rev 13100
+
+Remember, to merge the last changes from SVN:
+cd /local/rexx/oorexx/executor5-bulk
+git svn rebase
