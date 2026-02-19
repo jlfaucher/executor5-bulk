@@ -22,6 +22,61 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 feb 19
+
+[Unicode]
+
+Implement RFE #864 Add Unicode (UTF-8) support to syntax error 13.1
+https://sourceforge.net/p/oorexx/feature-requests/864/
+When the invalid byte is the begining of an UTF_8 bytes sequence then
+    display the UTF-8 character.
+    display the bytes sequence (1 to 4 hexadecimal digits).
+Otherwise the default behavior is applied:
+    display the invalid byte as a character.
+    display its two hexadecimal digits.
+
+Validation:
+scripts/unicode/incorrect_character.rex
+
+Output:
+    1: say a {= 1
+         5 *-* say a {
+         5 *-* interpret s      -- Error 13.1:  Incorrect character in program "{" ('7B'X).
+    Incorrect character in program "{" ('7B'X).
+    Error code= 13.1
+
+    2: say a ¬= 1
+         6 *-* say a ¬
+         6 *-* interpret s      -- Error 13.1:  Incorrect character in program "¬" ('C2AC'X).
+    Incorrect character in program "¬" ('C2AC'X).
+    Error code= 13.1
+
+    3: say a €= 1
+         7 *-* say a €
+         7 *-* interpret s      -- Error 13.1:  Incorrect character in program "€" ('E282AC'X).
+    Incorrect character in program "€" ('E282AC'X).
+    Error code= 13.1
+
+    4: say a 🦖= 1
+         8 *-* say a 🦖
+         8 *-* interpret s     -- Error 13.1:  Incorrect character in program "🦖" ('F09FA696'X).
+    Incorrect character in program "🦖" ('F09FA696'X).
+    Error code= 13.1
+
+    5: "say a " || "C0"x || "= 1"
+        13 *-* say a ?
+        13 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('C0'X).
+    Incorrect character in program "?" ('C0'X).
+    Error code= 13.1
+
+    6: "say a " || "80"x || "= 1"
+        16 *-* say a ?
+        16 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('80'X).
+    Incorrect character in program "?" ('80'X).
+    Error code= 13.1
+
+
+===============================================================================
 2026 feb 18
 
 [Unicode]
