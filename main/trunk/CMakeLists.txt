@@ -639,6 +639,14 @@ install(TARGETS rexxapi RUNTIME DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
 set_target_properties(rexxapi PROPERTIES SOVERSION ${ORX_API_LEVEL})
 create_install_symlink(rexxapi)
 
+##################### utf8proc ###########################
+
+if (WIN32)
+    # To avoid warning LNK4217
+    add_definitions(/DUTF8PROC_STATIC)
+endif ()
+
+
 #################### librexx.so ##########################
 # Sources for librexx.so
 set (interpreter_api_sources ${build_interpreter_api_dir}/CallContextStubs.cpp
@@ -654,7 +662,8 @@ set (classes_support_sources ${build_classes_support_dir}/HashCollection.cpp
             ${build_classes_support_dir}/CompoundVariableTable.cpp
             ${build_classes_support_dir}/CompoundVariableTail.cpp
             ${build_classes_support_dir}/RexxDateTime.cpp
-            ${build_classes_support_dir}/StringUtil.cpp)
+            ${build_classes_support_dir}/StringUtil.cpp
+            ${build_classes_support_dir}/Unicode/utf8proc/utf8proc.c)
 set (classes_sources ${build_classes_dir}/ArrayClass.cpp
             ${build_classes_dir}/BagClass.cpp
             ${build_classes_dir}/BufferClass.cpp
