@@ -63,6 +63,14 @@
 #include "StringUtil.hpp"
 #include "PackageManager.hpp"
 #include "SystemInterpreter.hpp"
+#include "StemClass.hpp"
+#include "NativeActivation.hpp"
+
+// conflict between oorexx PlatformDefinitions.h and Microsoft dwrite.h
+#ifdef delimiter
+  #undef delimiter
+#endif
+#include "CustomMessageBoxW.h"
 
 #define DIRLEN        256                   /* length of a directory          */
 
@@ -145,12 +153,16 @@ void SystemInterpreter::restoreEnvironment(void *CurrentEnv)
  * @param style  Pointer to the MessageBox style flags collected so far. On
  *               return this will be augmented with the additional styles.
  *
+ * @param help   Pointer to the help flag. Will be set to true if "HELP".
+ *
+ * @param custom Pointer to the custom flag. Will be set to true if "CUSTOM".
+ *
  * @return True on no error, false if the user passed an unrecognizable keyword
  *         and a condition should be raised.
  *
  * @note   Assumes other is not NULL.
  */
-static bool addMBStyle(CSTRING other, ULONG *style)
+static bool addMBStyle(CSTRING other, ULONG *style, bool *help, bool *custom)
 {
     char *token;
     AutoFree str = strdup(other);
@@ -168,7 +180,7 @@ static bool addMBStyle(CSTRING other, ULONG *style)
         // Modal category.  MB_APPLMODAL is the default.
         MB_SYSTEMMODAL,
         MB_TASKMODAL,
-        // Miscellaneous catetgory.  There is no default here.  MB_SETFOREGROUND
+        // Miscellaneous category.  There is no default here.  MB_SETFOREGROUND
         // is already set.  MB_SERVICE_NOTIFICATION_NT3X makes no sense since NT
         // is not supported
         MB_DEFAULT_DESKTOP_ONLY,
@@ -187,7 +199,7 @@ static bool addMBStyle(CSTRING other, ULONG *style)
         // Modal category.
         "SYSTEMMODAL",
         "TASKMODAL",
-        // Miscellaneous catetgory.
+        // Miscellaneous category.
         "DEFAULTDESKTOP",
         "RIGHT",
         "RTLREADING",
@@ -209,6 +221,16 @@ static bool addMBStyle(CSTRING other, ULONG *style)
                 extraStyle |= extraFlag[i];
                 break;
             }
+            if ( !stricmp(token, "HELP") )
+            {
+                *help = true;
+                break;
+            }
+            if ( !stricmp(token, "CUSTOM") )
+            {
+                *custom = true;
+                break;
+            }
         }
 
         if ( i == count )
@@ -222,6 +244,58 @@ static bool addMBStyle(CSTRING other, ULONG *style)
 
     *style = *style | extraStyle;
     return true;
+}
+
+/**
+ * Helper function for sysMessageBox().
+ * Convert to Unicode using the external function "SysToUnicode".
+ *
+ * @param context        The current activation context.
+ * @param string         The string to convert to Unicode.
+ * @param codePage       The string's code page passed to SysToUnicode,
+ *                       or "UNICODE" if the string is already UTF-16.
+ * @param translateFlags The flags passed to SysToUnicode.
+ * @param stem           The stem passed to SysToUnicode.
+ * @param tail           The tail to protect the string returned by SysToUnicode.
+ * @param errorCode      The address of the variable to return the error code.
+ * @return               The UTF-16 string, or NULL.
+ */
+static LPCWSTR toUnicode(RexxActivation *context, RexxString *string, RexxString *codePage, RexxString *translateFlags, StemClass *stem, const char *tail, wholenumber_t *errorCode)
+{
+    *errorCode = 0;
+
+    if (string == NULL) return (LPCWSTR)NULL;
+
+    size_t stringLength =  string->getLength();
+    if (stringLength == 0)
+    {
+        static const char *empty = "\0\0";
+        return (LPCWSTR)empty;
+    }
+
+    if (codePage->strCaselessCompare("UNICODE"))
+    {
+        // The string is already UTF-16, no need to convert to unicode
+        return (LPCWSTR)string->getStringData();
+    }
+
+    Protected<RexxString> functionName = new_string("SYSTOUNICODE");
+    RexxObject *arguments[] = {string, codePage, translateFlags, stem};
+    size_t argumentsCount = sizeof(arguments) / sizeof(RexxObject *);
+    ProtectedObject result;
+    SystemInterpreter::invokeExternalFunction(context, context->getActivity(), functionName, arguments, argumentsCount, GlobalNames::FUNCTION, result);
+
+    *errorCode = ((RexxInteger *)(RexxObject *)result)->getValue();
+    if (*errorCode != 0)
+    {
+        return (LPCWSTR)NULL;
+    }
+
+    RexxString *stringUTF16 = (RexxString *)stem->getElement("!TEXT");
+    // protect because !TEXT will be overwritten on the next call
+    stem->setElement(tail, stringUTF16);
+    // It's safe to return this stringData because the string is protected by the stem
+    return (LPCWSTR)stringUTF16->getStringData();
 }
 
 /*********************************************************************/
@@ -239,10 +313,27 @@ static bool addMBStyle(CSTRING other, ULONG *style)
 /*                      Button = The message box button style.       */
 /*                      Icon   = The message box icon style.         */
 /*                      Other  = Additional message box styles.      */
+/*                      CodePage = The text and title code page.     */
+/*                      TranslateFlags = flags for SysToUnicode.     */
+/*                                                                   */
+/*   Notes:             If codePage is omitted or is an empty string,*/
+/*                      the text and title (which should be ANSI     */
+/*                      strings) are converted from ACP to Unicode   */
+/*                      by the system.                               */
+/*                                                                   */
+/*                      If codePage is "UNICODE", the text and title */
+/*                      (which should be UTF-16 strings) are         */
+/*                      displayed as-is.                             */
+/*                                                                   */
+/*                      For any other value of codepage, the text    */
+/*                      and title (which should be strings encoded   */
+/*                      in codepage) are converted from codepage to  */
+/*                      Unicode using the Rexx utility SysToUnicode. */
 /*                                                                   */
 /*********************************************************************/
-RexxRoutine5(int, sysMessageBox, CSTRING, text, OPTIONAL_CSTRING, title,
-             OPTIONAL_CSTRING, button, OPTIONAL_CSTRING, icon, OPTIONAL_CSTRING, other)
+RexxRoutine7(int, sysMessageBox, RexxStringObject, text, OPTIONAL_RexxStringObject, title,
+             OPTIONAL_CSTRING, button, OPTIONAL_CSTRING, icon, OPTIONAL_CSTRING, other,
+             OPTIONAL_RexxStringObject, codePage, OPTIONAL_RexxStringObject, translateFlags)
 {
     ULONG       style;                   /* window style flags         */
     int         maxCnt;                  /* Max loop count             */
@@ -357,17 +448,53 @@ RexxRoutine5(int, sysMessageBox, CSTRING, text, OPTIONAL_CSTRING, title,
 
     }
 
+    bool help = false;
+    bool custom = false;
     if ( other != NULL )
     {
-        if ( ! addMBStyle(other, &style) )
+        if ( ! addMBStyle(other, &style, &help, &custom) )
         {
             // User specified an invalid key word for one of the extra styles.
             context->InvalidRoutine();
             return 0;
         }
     }
+    if (help) style |= MB_HELP;
 
-    return MessageBox(NULL, text, title, style);
+    if (codePage != NULL && context->StringLength(codePage) != 0)
+    {
+        // The user provided a code page, let's switch to Unicode...
+        RexxActivation *activation = contextToActivation(context)->findRexxContext();
+        if (activation == OREF_NULL)
+        {
+            // activation can be NULL, when no parent Rexx context.
+            // In this case, it's not possible to call SYSTOUNICODE.
+            context->InvalidRoutine();
+            return 0;
+        }
+        // Declared here, not in toUnicode, to protect the result of toUnicode
+        Protected<StemClass> pstem = new StemClass(OREF_NULL);
+
+        wholenumber_t textError = 0;
+        LPCWSTR textW = toUnicode(activation, (RexxString *)text, (RexxString *)codePage, (RexxString *)translateFlags, (StemClass *)pstem, "PROTECTED_TEXTW", &textError);
+
+        wholenumber_t titleError = 0;
+        LPCWSTR titleW = toUnicode(activation, (RexxString *)title, (RexxString *)codePage, (RexxString *)translateFlags, (StemClass *)pstem, "PROTECTED_TITLEW", &titleError);
+
+        if (textError != 0 || titleError != 0)
+        {
+            context->InvalidRoutine();
+            return 0;
+        }
+
+        if (custom) return CustomMessageBoxW(NULL, textW, titleW, style);
+        return MessageBoxW(NULL, textW, titleW, style);
+    }
+
+    // Legacy ACP (ANSI code page)
+    const char *textA = text ? context->StringData(text) : NULL;
+    const char *titleA = title ? context->StringData(title) : NULL;
+    return MessageBoxA(NULL, textA, titleA, style);
 }
 
 

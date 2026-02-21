@@ -22,6 +22,102 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 feb 21
+
+[Windows]
+
+For users (like me) who prefer not to enable the UTF-8 beta option:
+Added codepage and translateflags parameters to RxMessageBox.
+
+Motivated by:
+https://sourceforge.net/p/oorexx/discussion/408478/thread/ec4123a46d/
+2025 Mar 22 [oorexx:discussions] Output text in Russian in RxMessageBox()
+
+RxMessageBox(text [, title] [, button] [,icon] [, option]    [, codepage [, translateflags]])
+                                                 *updated*       *new*          *new*
+
+new CUSTOM option.
+new HELP option.
+codepage = The text and title code page.
+translateflags = flags for SysToUnicode.
+
+- If codePage is omitted or is an empty string, the text and title (which should
+  be ANSI strings) are converted from ACP to Unicode by the system.
+
+- If codePage is "UNICODE", the text and title (which should be UTF-16 strings)
+  are displayed as-is.
+
+- For any other value of codepage, the text and title (which should be strings
+  encoded in codepage) are converted from codepage to Unicode using the Rexx
+  utility SysToUnicode.
+
+- The standard MessageBoxW is used by default to display Unicode strings.
+  If the CUSTOM option is specified then a custom MessageBoxW is used.
+  The custom MessageBoxW displays emojis in colors using the "Segoe UI Emoji"
+  font that carries the full-color COLR/CPAL emoji glyphs on Windows 10+.
+  The emojis in the caption are still displayed in black and white.
+
+- If the HELP option is specified then a Help button is added to the message
+  box. This is applicable to any button style, so more general than the HELP
+  button style.
+
+- The HELP button style is not documented, but is supported.
+  The message box contains two push buttons: OK and Help.
+
+The behavior of the custom MessageBoxW is different from the standard
+MessageBoxW regarding the effect of the Help button:
+
+- Standard MessageBoxW: When the user clicks the Help button or presses F1, the
+  system sends a WM_HELP message to the owner window. The message box is not
+  closed. Since RxMessageBox creates a message box with no owner window, the
+  WM_HELP message is not sent.
+
+- Custom MessageBoxW: When the user clicks the Help button, the message box is
+  closed and the value 9 is returned. The F1 key has no effect.
+
+When displaying long multi-line text with many emojis using the CUSTOM option,
+there is a noticeable lag between the dialog box display and the text display.
+AI can't do better. It's definitely not me who can make this better.
+
+
+It remains to support:
+
+    Modality:
+        MB_APPLMODAL (default, already supported)
+        MB_SYSTEMMODAL
+        MB_TASKMODAL
+
+    Other options:
+        MB_SETFOREGROUND
+        MB_DEFAULT_DESKTOP_ONLY
+        MB_TOPMOST
+        MB_RIGHT
+        MB_RTLREADING
+        MB_SERVICE_NOTIFICATION
+
+
+Validation:
+scripts/unicode/rxmessagebox.rex
+
+Careful!
+The following tests performed from the CLI will not display Unicode strings
+correctly:
+rexx -e "say RxMessageBox('Père Noël 🎅', /*title*/, /*button*/, /*icon*/, /*options*/, 65001)"
+rexx -e "chcp; text = 'Père Noël 🎅'; say text; say text~c2x; say RxMessageBox(text, text, /*button*/, /*icon*/, /*options*/, 65001)"
+
+This is not a limitation or bug of the extended RxMessageBox.
+Under Windows, character strings passed to rexx.exe from the CLI are encoded in
+the ACP code page (or the OEM code page, not sure which one is used...),
+regardless of the console code page (chcp).
+Examples, when OEM = 437 and ACP = 1252:
+    chcp 437 &   rexx -e "s = 'Père Noël 🎅'; say s s~c2x"      -- PΦre Noδl ?? 50E87265204E6FEB6C203F3F
+    chcp 850 &   rexx -e "s = 'Père Noël 🎅'; say s s~c2x"      -- PÞre NoÙl ?? 50E87265204E6FEB6C203F3F
+    chcp 1252 &  rexx -e "s = 'Père Noël 🎅'; say s s~c2x"      -- Père Noël ?? 50E87265204E6FEB6C203F3F
+    chcp 65001 & rexx -e "s = 'Père Noël 🎅'; say s s~c2x"      -- P�re No�l ?? 50E87265204E6FEB6C203F3F
+    chcp 65001 & rexx -e "s = 'PÈRE NOËL 🎅'; say s s~c2x"      -- P�RE NO�L ?? 50C85245204E4FCB4C203F3F
+
+
+===============================================================================
 2026 feb 19
 
 [Unicode]
