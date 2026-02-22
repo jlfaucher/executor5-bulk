@@ -1,0 +1,135 @@
+--------------------------------------------------------------------------------
+/dev/null   open read only fails
+--------------------------------------------------------------------------------
+
+To investigate:
+
+The lines "fileHandle..." are displayed by this printf that I added at the end of SysFile::getStreamTypeInfo
+    printf("fileHandle %i isTTY = %i\n", fileHandle, isTTY);
+
+/local/rexx/oorexx/executor5-bulk/scripts/stream$ rexx -e "say .stream~new('/dev/null')~~open('read')~state"
+fileHandle 3 isTTY = 0
+fileHandle 0 isTTY = 1
+fileHandle 1 isTTY = 1
+fileHandle 2 isTTY = 1
+ERROR
+
+/local/rexx/oorexx/executor5-bulk/scripts/stream$ rexx -e "say .stream~new('/dev/null')~~open('write')~state"
+fileHandle 3 isTTY = 0
+fileHandle 0 isTTY = 1
+fileHandle 1 isTTY = 1
+fileHandle 2 isTTY = 1
+fileHandle 5 isTTY = 0
+READY
+
+
+Debug open read
+
+const char *StreamInfo::streamOpen(const char *options)
+{
+...
+    if (read_only)
+    {
+        // the stream must exist if opened for READ only
+        if (!SysFileSystem::fileExists(qualified_name))             <== return false for /dev/null
+        {
+            char work[32];
+            snprintf(work, sizeof(work), "ERROR:%d", ENOENT);
+            // raise a notready condition
+            notreadyError(ENOENT, context->NewStringFromAsciiz(work));
+        }
+        // and clear all of the write information
+        charWritePosition = 0;
+        lineWritePosition = 0;
+        lineWriteCharPosition = 0;
+    }
+
+
+There is no such test of existence for open write.
+That explains the ERROR / READY above.
+
+
+$ ll /dev/null
+crw-rw-rw-  1 root  wheel  0x3000002 Feb 22 23:54 /dev/null
+
+
+/**
+ * Test if a given file exists.
+ *
+ * @param fname  The target file name.
+ *
+ * @return true if the file exists, false otherwise.
+ */
+bool SysFileSystem::fileExists(const char *fname)
+{
+    struct stat64 filestat;              // file attributes
+    int rc;                              // stat function return code
+
+    rc = stat64(fname, &filestat);
+    if (rc == 0)
+    {
+        if (S_ISREG(filestat.st_mode))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+                                -----------
+                                AI feedback
+                                -----------
+
+That's the bug.
+`fileExists` returns `false` for `/dev/null` because `S_ISREG` is false for
+character devices, even though `stat64` succeeds (rc == 0).
+
+The fix depends on intent.
+Since the check in `streamOpen` is really "does this path exist and can we read it", you could either:
+
+**Option 1:
+Fix `fileExists` to also accept character devices (and maybe block devices):**
+
+```c
+if (S_ISREG(filestat.st_mode) || S_ISCHR(filestat.st_mode) || S_ISBLK(filestat.st_mode))
+{
+    return true;
+}
+```
+But this changes the semantics of `fileExists` for all its callers, which may not be desirable.
+
+**Option 2: Add a separate check in `streamOpen` for non-regular-file paths:**
+
+```c
+if (read_only)
+{
+    if (!SysFileSystem::fileExists(qualified_name) && !SysFileSystem::pathExists(qualified_name))
+    {
+        // raise notready...
+    }
+}
+```
+Where `pathExists` just checks `stat64` returns 0, regardless of file type.
+
+**Option 3: The most targeted fix — change the check in `streamOpen` directly:**
+
+```c
+if (read_only)
+{
+    struct stat64 filestat;
+    if (stat64(qualified_name, &filestat) != 0)
+    {
+        char work[32];
+        snprintf(work, sizeof(work), "ERROR:%d", ENOENT);
+        notreadyError(ENOENT, context->NewStringFromAsciiz(work));
+    }
+    ...
+}
+```
+
+This replaces the `fileExists` call with a raw `stat64`, which succeeds for `/dev/null`
+and any other existing path regardless of type.
+This is probably the cleanest fix since the intent here is just "does this path exist",
+not "is this a regular file".
+
