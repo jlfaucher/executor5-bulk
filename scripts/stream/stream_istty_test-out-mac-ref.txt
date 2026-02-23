@@ -1,0 +1,59 @@
+output=stream_istty_test-out.txt
+
+rexx stream_istty.rex "$output"
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" 1> /dev/stdout
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" 2> /dev/stdout
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" dont_stdout 1> /dev/null
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: NO        
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" 2> /dev/null
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: NO        
+
+echo test | rexx stream_istty.rex "$output"
+     stdin  streamType: TRANSIENT  isTTY: NO        
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+echo test | cat /dev/stdin | rexx stream_istty.rex "$output"
+     stdin  streamType: TRANSIENT  isTTY: NO        
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" < /dev/stdin
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+echo test > in.tmp.txt && rexx stream_istty.rex "$output" < in.tmp.txt
+     stdin  streamType: PERSISTENT isTTY: NO        
+     stdout streamType: TRANSIENT  isTTY: YES       
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" > out.tmp.txt && cat out.tmp.txt
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: PERSISTENT isTTY: NO        
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx stream_istty.rex "$output" | cat
+     stdin  streamType: TRANSIENT  isTTY: YES       
+     stdout streamType: TRANSIENT  isTTY: NO        
+     stderr streamType: TRANSIENT  isTTY: YES       
+
+rexx -e "say .stream~new('/dev/null')~~open('read')~query('isTTY')"
+     UNKNOWN

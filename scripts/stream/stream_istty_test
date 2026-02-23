@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# Set of test cases for
+# #867 Determine whether a stream is associated with a terminal
+# https://sourceforge.net/p/oorexx/feature-requests/867/
+
+# Usage:
+# ./stream_istty_test
+# Do not redirect stdout or stderr, this will disrupt the results.
+#
+# Output:
+# Displays the test cases and their output both to stdout
+# and to stream_istty_test-out.txt
+
+execute()
+{
+    # Display the command
+    echo "$1"
+    echo "$1" >> "$output"
+
+    # Execute the command
+    eval "$1"
+}
+
+
+# Don't use this function to execute stream_istty.rex!
+# The redirection would disrupt the results.
+execute_display()
+{
+    # Display the command
+    display "$1"
+
+    # Execute the command
+    result=$(eval "$1" 2>&1)
+    display_indented "$result"
+}
+
+
+display()
+{
+    echo "$1"
+    echo "$1" >> "$output"
+}
+
+
+display_indented()
+{
+    # Align with the indentation used by stream_istty.rex.
+    # say indent text -- 5 spaces (4 + 1)
+    echo "     $1"
+    echo "     $1" >> "$output"
+}
+
+
+# Updated by stream_istty.rex which adds text with each execution
+output="stream_istty_test-out.txt"
+rm -f "$output"
+
+display "output=$output"
+display ""
+
+execute 'rexx stream_istty.rex "$output"'
+
+execute 'rexx stream_istty.rex "$output" 1> /dev/stdout'
+
+execute 'rexx stream_istty.rex "$output" 2> /dev/stdout'
+
+# Pass dont_stdout to indicate to not use stdout, because stdout is discarded
+execute 'rexx stream_istty.rex "$output" dont_stdout 1> /dev/null'
+
+execute 'rexx stream_istty.rex "$output" 2> /dev/null'
+
+execute 'echo test | rexx stream_istty.rex "$output"'
+# input is not from a terminal
+# stdin TRANSIENT does not help to detect if input is not from a terminal
+
+# Next command is non blocking, thanks to echo.
+execute 'echo test | cat /dev/stdin | rexx stream_istty.rex "$output"'
+# /dev/stdin is not recognized as a terminal because it is connected via a pipe.
+
+# Next command is blocking, waiting for input.
+# Not activated.
+# execute 'cat /dev/stdin | rexx stream_istty.rex "$output"'
+# Same results as the previous command with echo.
+
+execute 'rexx stream_istty.rex "$output" < /dev/stdin'
+# /dev/stdin is recognized as a terminal
+
+execute 'echo test > in.tmp.txt && rexx stream_istty.rex "$output" < in.tmp.txt'
+rm -f in.tmp.txt
+
+execute 'rexx stream_istty.rex "$output" > out.tmp.txt && cat out.tmp.txt'
+rm -f out.tmp.txt
+
+execute 'rexx stream_istty.rex "$output" | cat'
+# stdout TRANSIENT does not help to detect if stdout is not a terminal
+
+# rexx -e "say .stream~new('/dev/null')~~open('read')~query('isTTY')"
+execute_display $'rexx -e "say .stream~new(\'/dev/null\')~~open(\'read\')~query(\'isTTY\')"'
+# UNKNOWN because of error when opening /dev/null read-only
+# (bug, should open without error)

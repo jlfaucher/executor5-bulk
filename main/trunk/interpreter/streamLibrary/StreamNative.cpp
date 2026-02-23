@@ -3466,6 +3466,39 @@ RexxMethod1(RexxObjectPtr, query_handle, CSELF, streamPtr)
 
 
 /**
+ * Test if the stream is associated to a terminal.
+ *
+ * @return Returns either "YES", "NO",
+ *         or "UNKNOWN" if the stream is not open.
+ */
+const char *StreamInfo::istty()
+{
+    if (!isopen)                      /* not open?                             */
+    {
+        return "UNKNOWN";             /* can' test                             */
+    }
+    else if (fileInfo.istty())
+    {
+        return "YES";                 /* is associated to a terminal           */
+    }
+    else
+    {
+        return "NO";                  /* is not associated to a terminal       */
+    }
+}
+
+/********************************************************************************************/
+/* query_istty                                                                              */
+/********************************************************************************************/
+RexxMethod1(CSTRING, query_istty, CSELF, streamPtr)
+{
+    StreamInfo *stream_info = (StreamInfo *)streamPtr;
+
+    return stream_info->istty();
+}
+
+
+/**
  * Return the type of stream (persistent or transient).
  *
  * @return String value of the type.  Returns either "PERSISTENT",

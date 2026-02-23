@@ -119,6 +119,7 @@ public:
     inline bool isDevice() { return device; }
     inline bool isReadable() { return readable; }
     inline bool isWriteable() { return writeable; }
+    inline bool istty() {return isTTY; }
     inline bool isOpen() { return fileHandle != -1; }
 
     inline bool error() { return errInfo != 0; }

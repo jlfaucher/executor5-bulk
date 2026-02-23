@@ -145,6 +145,7 @@ notready:
 ::METHOD flush                   EXTERNAL 'LIBRARY REXX stream_flush'
 ::METHOD !query_handle           EXTERNAL 'LIBRARY REXX query_handle'
 ::METHOD !query_streamtype       EXTERNAL 'LIBRARY REXX query_streamtype'
+::METHOD !query_istty            EXTERNAL 'LIBRARY REXX query_istty'
 
 ::METHOD string                        /* string method                     */
   expose stream_name                   /* get the stream name               */
@@ -294,7 +295,7 @@ notready:                              /* standard notready handler         */
   signal on notready
   subcommand = ' 'subcommand           /* add a leading blank               */
                                        /* resolve abbreviations             */
-  parse value ' DATETIME EXISTS HANDLE POSITION SEEK SIZE STREAMTYPE TIMESTAMP' with (subcommand) +1 subcommand .
+  parse value ' DATETIME EXISTS HANDLE ISTTY POSITION SEEK SIZE STREAMTYPE TIMESTAMP' with (subcommand) +1 subcommand .
   select
                                        /* need the date and time?           */
     when subcommand = 'DATETIME', parms = '' then do
@@ -318,6 +319,10 @@ notready:                              /* standard notready handler         */
                                        /* get the file handle               */
     when subcommand = 'HANDLE', parms = '' then do
       return self~!query_handle        /* return the file handle            */
+    end
+                                       /* asking if it's a terminal?        */
+    when subcommand = 'ISTTY', parms = '' then do
+      return self~!query_istty         /* return YES or NO or UNKNOWN       */
     end
                                        /* position or seek?                 */
     when subcommand = 'POSITION' | subcommand = 'SEEK' then do

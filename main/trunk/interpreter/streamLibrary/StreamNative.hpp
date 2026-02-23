@@ -146,6 +146,7 @@ public:
     const char *getQualifiedName();
     const char *streamExists();
     RexxObjectPtr queryHandle();
+    const char *istty();
     const char *getStreamType();
     RexxObjectPtr getStreamSize();
     const char *getTimeStamp();
