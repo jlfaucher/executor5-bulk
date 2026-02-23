@@ -136,6 +136,7 @@ sub:
 
 main:
   signal on syntax                             /* Enable syntax trap.       */
+  if enableEOFtrap() then signal on notready   /* Enable EOF trap           */
   do forever                                   /* Loop forever.             */
     prev = inputrx                             /* User can repeat previous. */
     parse pull inputrx                         /* Input keyboard or queue.  */
@@ -178,7 +179,7 @@ help:                                          /* Request for online help.  */
       say '  Online Help started'
       'start "Rexx Online Documentation"' '"'||value("REXX_HOME",,"ENVIRONMENT")||"\doc\rexxref.pdf"||'"'
     end                                        /* ... for Unix              */
-    when sysrx = sysrx = 'LINUX' | sysrx = 'AIX' | sysrx = 'SUNOS' | sysrx = 'DARWIN' then do
+    when sysrx = 'LINUX' | sysrx = 'AIX' | sysrx = 'SUNOS' | sysrx = 'DARWIN' then do
       say '  Online help is not installed on' sysrx
       rc = 'Sorry!'
 
@@ -234,6 +235,23 @@ syntax:
   if argrx <> '' & queued() = 0 then           /* One-liner not finished    */
     signal done                                /*   until queue is empty.   */
   signal main                                  /* Resume main loop.         */
+
+notready:
+  say
+  say "Exit because no more input to interpret:" condition("D") condition("C")
+  return result                                /* Preserve result contents. */
+
+enableEOFtrap:
+  /* always, except if the OS is Windows and stdin is connected to a terminal */
+  if abbrev(sysrx, 'Windows'), isaTerminal("stdin") then return 0
+  return 1
+
+isaTerminal:                                     /* For Windows only          */
+  use arg streamName
+  if streamName <> "stdin" then return 0         /* Works only for stdin      */
+  "timeout 0 1>nul 2>nul"
+  terminal = (RC == 0)
+  return terminal
 
 show:
   trace 'Off'; call clear                      /* Display user variables    */

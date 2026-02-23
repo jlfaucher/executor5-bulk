@@ -24,6 +24,23 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 ===============================================================================
 2026 feb 23
 
+[rexxtry]
+
+RFE #868	Better support of EOF in rexxtry
+
+Implemented using a Windows workaround for stream~query("isTTY"), to avoid
+creating a dependency on a new feature.
+
+Validation:
+echo say hello | rexx rexxtry
+
+No more infinite loop.
+rexxtry is terminated with the message "Exit because no more input to interpret: STDIN NOTREADY".
+
+
+===============================================================================
+2026 feb 23
+
 [Stream]
 
 RFE #867 Determine whether a stream is associated with a terminal
