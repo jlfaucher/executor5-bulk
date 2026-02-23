@@ -50,6 +50,8 @@
 #include "FlagSet.hpp"
 #include <string.h>
 
+class VariableReference;
+
 /**
  * Return type from string isSymbol() method.
  */
@@ -486,6 +488,7 @@ class RexxString : public RexxObject
     size_t       caselessPos(RexxString *, size_t);
 
     RexxString  *translate(RexxString *, RexxString *, RexxString *, RexxInteger *, RexxInteger *);
+    MutableBuffer *translateInto(MutableBuffer *, RexxObject *, RexxObject *, RexxString *, RexxInteger *, RexxInteger *, VariableReference *);
     RexxInteger *verify(RexxString *, RexxString *, RexxInteger *, RexxInteger *);
     RexxInteger *countStrRexx(RexxString *);
     RexxInteger *caselessCountStrRexx(RexxString *);

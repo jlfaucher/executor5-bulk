@@ -627,6 +627,7 @@ StartClassDefinition(String)
         AddMethod("CaselessLastPos", RexxString::caselessLastPosRexx, 3);
         AddMethod("CaselessPos", RexxString::caselessPosRexx, 3);
         AddMethod("Translate", RexxString::translate, 5);
+        AddMethod("TranslateInto", RexxString::translateInto, 7);
         AddMethod("Verify", RexxString::verify, 4);
         AddMethod("BitAnd", RexxString::bitAnd, 2);
         AddMethod("BitOr", RexxString::bitOr, 2);

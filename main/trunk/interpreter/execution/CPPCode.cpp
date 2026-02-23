@@ -1080,6 +1080,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxString::caselessLastPosRexx),
     CPPM(RexxString::caselessPosRexx),
     CPPM(RexxString::translate),
+    CPPM(RexxString::translateInto),
     CPPM(RexxString::verify),
     CPPM(RexxString::containsRexx),
     CPPM(RexxString::caselessContains),
