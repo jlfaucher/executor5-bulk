@@ -22,6 +22,31 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 feb 24
+
+[.Class~method]
+
+Fixed bug #2038 say .buffer~method("INIT") crashes the interpreter
+
+Before the fix:
+    Crash when executing say .buffer~method("INIT").
+    Not compatible with ooRexx 4.2:
+    Returns a method only if this method has been defined on the class.
+    The inherited methods are not taken into account.
+    say .weakreference~method("INIT") -- Object method not found.
+
+After the fix:
+    No crash when executing say .buffer~method("INIT").
+    Remains compatible with ooRexx 4.2:
+    say .weakreference~method("INIT") -- a Method
+
+
+Validation:
+say .buffer~method("INIT")          -- a Method instead of a crash
+say .weakreference~method("INIT")   -- a Method instead of .NIL
+
+
+===============================================================================
 2026 feb 23
 
 [String]

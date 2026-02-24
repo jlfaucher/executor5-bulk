@@ -985,10 +985,23 @@ MethodClass *RexxClass::method(RexxString  *method_name)
 {
     // make sure we have a proper name
     method_name = stringArgument(method_name, "method name")->upper();
+#if 0
+    // Crash when executing say .buffer~method("INIT").
+    // Not compatible with ooRexx 4.2:
+    // Returns a method only if this method has been defined on the class.
+    // The inherited methods are not taken into account.
+    // say .weakreference~method("INIT") -- Object method not found.
+
     // we keep the instance methods defined at this level in a separate
     // method dictionary that is used to build the behaviour.  We can retrieve
     // the method directly from there.
     MethodClass *method_object = instanceMethodDictionary->getMethod(method_name);
+#else
+    // No crash when executing say .buffer~method("INIT").
+    // Remains compatible with ooRexx 4.2:
+    // say .weakreference~method("INIT") -- a Method
+    MethodClass *method_object = (MethodClass *)instanceBehaviour->getMethodDictionary()->getMethod(method_name);
+#endif
     // this is an error if it is not in the method dictionary.
     // Note that is could be there, but as .nil.  We will return that value
     if ( OREF_NULL == method_object)
