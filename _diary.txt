@@ -22,6 +22,25 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 feb 25
+
+[ooTest framework]
+
+Fixed this bug when asking for a log file:
+
+    $ rexx -S -U -l log.txt -X native_api
+       856 *-*         if \ self~checkFileName(lFile)
+       531 *-*         if \ self~validateAndSetOpt("logFile"~upper, value, "-l")
+       393 *-*         j = self~parseShortOpt(token, i)
+       204 *-* self~parse
+           *-* Compiled method "NEW" with scope "Object".
+        51 *-* cl = .CommandLine~new(arguments)
+        79 *-* retCode = 'worker.rex'(arguments)
+    Error 98 running /Users/Shared/local/rexx/oorexx/executor5-bulk/test/trunk/worker.rex line 856:  Execution error.
+    Error 98.986:  Reference to unassigned variable "LFILE".
+
+
+===============================================================================
 2026 feb 24
 
 [.Class~method]
