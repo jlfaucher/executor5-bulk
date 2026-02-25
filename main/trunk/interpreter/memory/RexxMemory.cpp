@@ -1198,7 +1198,12 @@ void MemoryObject::mark(RexxInternalObject *markObject)
     // The following is useful for debugging some garbage collection problems where
     // an object with a NULL VFT is getting pushed on the to stack. This is a somewhat
     // critical performance pack, so only enable these lines when debugging problems.
-#ifdef CHECKOREFS
+    //
+    // jlf:
+    // There is no performance impact, checkVirtualFunctions is just testing if a pointer is NULL
+    // So ok to activate it when _DEBUG, not just when CHECKOREFS.
+    // It is true that in ooRexx 4.2, CHECKOREFS activates certain resource-intensive checks.
+#ifdef _DEBUG // CHECKOREFS
     if (!markObject->checkVirtualFunctions())
     {
         Interpreter::logicError("Invalid object traced during garbage collection");

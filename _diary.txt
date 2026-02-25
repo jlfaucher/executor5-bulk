@@ -24,6 +24,51 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 ===============================================================================
 2026 feb 25
 
+[GC]
+
+Activated checkVirtualFunctions in _DEBUG mode.
+There is no performance impact, checkVirtualFunctions is just testing if a pointer is NULL.
+
+    #ifdef _DEBUG // CHECKOREFS
+        if (!markObject->checkVirtualFunctions())
+        ...
+
+
+It is true that in ooRexx 4.2, CHECKOREFS activates certain resource-intensive checks.
+By the way, where did those tests go in ooRexx 5?
+Don't bother looking, they've been purely and simply deleted :-(
+
+
+    ooRexx 4.2
+        RexxMemory.hpp
+        // Unlike ooRexx5 before rev 12948, the OrefSet macro doesn't have the problem of double evaluation of v.
+        // No need to replace it by an inline function.
+        #ifndef CHECKOREFS
+        #define OrefSet(o,r,v) ((o)->isOldSpace() ? memoryObject.setOref((void *)&(r),(RexxObject *)v) : (RexxObject *)(r=v))
+        #else
+        #define OrefSet(o,r,v) memoryObject.checkSetOref((RexxObject *)o, (RexxObject **)&(r), (RexxObject *)v, __FILE__, __LINE__)
+        #endif
+
+    ooRexx 5
+        // Important note: In the original version, this was a macro. However, as a macro, if v was an expression,
+        // it ended up getting evaluated twice. The first evaluation got added to the new2old table, the second
+        // was the value assigned to the object. This had two bad side effects: 1) the value stored the object is
+        // not protected from garbage collection and 2) the object added to the old2new table will never get removed,
+        // creating a memory leak. Fortunately, this is a rare situation, having shown up just once in 30 years.
+
+        inline void OrefSet(RexxInternalObject *o, RexxInternalObject *&r, RexxInternalObject *v)
+        {
+            if (o->isOldSpace())
+            {
+                memoryObject.setOref(r, v);
+            }
+            r = v;
+        }
+
+
+===============================================================================
+2026 feb 25
+
 [ooTest framework]
 
 Fixed this bug when asking for a log file:
