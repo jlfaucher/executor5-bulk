@@ -175,6 +175,7 @@ void Activity::liveGeneral(MarkReason reason)
     while (p != NULL)
     {
         p->markGeneral(reason);
+        p = p->next;
     }
 }
 
