@@ -606,8 +606,27 @@ git checkout
 ===============================================================================
 History of merges.
 
+rev 13104
 rev 13100
 
 Remember, to merge the last changes from SVN:
 cd /local/rexx/oorexx/executor5-bulk
+gti svn fetch
+git merge refs/remotes/git-svn
+
+Remember:
+Next procedure is not adapted to my workflow
+https://gemini.google.com/share/1aa69a5a3c14
+cd /local/rexx/oorexx/executor5-bulk
+git svn fetch
 git svn rebase
+
+My workflow:
+- create a git clone from the oorexx svn repository in sourceforge.
+- push the git clone to github, named executor5-bulk.
+loop
+    - make changes in my local git clone executor5-bulk that I push to github (several commits)
+    - If applicable, report a part of these changes to a local SVN copy of oorexx.
+    - Commit these changes to oorexx in sourceforge, from the local SVN copy.
+    - Synchronize my git clone executor5-bulk with git svn fetch + git merge
+end loop
