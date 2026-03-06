@@ -853,7 +853,7 @@ return .ooTestConstants~SUCCESS_RC
         return .false
       end
 
-      if \ self~checkFileName(lFile) then do
+      if \ self~checkFileName(value) then do
         self~addErrorMsgAtTop("The" displayName "option must be followed by a valid file name.")
         return .false
       end
