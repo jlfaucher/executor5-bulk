@@ -356,6 +356,37 @@ return testResult
   self~assertSame(expected2, outlines[2]~word(3),'SYSCARGS wrong:' outlines[3])
   self~assertSame(expected3, outlines[3])
 
+::method test_passingArgs6
+  expose outLines
+  /* passing args starting with "-" to a program file */
+  showArgs = self~makeTestPgm
+  theCmd = 'rexx' showArgs '-o "my output file"'
+  expected1 = '[-o "my output file"]'
+  expected2 = 2
+  expected3 = '[-o, my output file]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(3, outLines~items)
+  self~assertSame(expected1, outlines[1]~subWord(5,4))
+  self~assertSame(expected2, outlines[2]~word(3),'SYSCARGS wrong:' outlines[3])
+  self~assertSame(expected3, outlines[3])
+
+::method test_passingArgs7
+  expose outLines
+  /* passing the -o option to rexx */
+  /* and passing args starting with "-" to a program file */
+  showArgs = self~makeTestPgm
+  theCmd = 'rexx -o "trace all"' showArgs '-o "my output file"'
+  expected1 = '[-o "my output file"]'
+  expected2 = 2
+  expected3 = '[-o, my output file]'
+  theRC = issueCmd(theCmd, outLines)
+  self~assertRC(0, theRC)
+  self~assertEquals(9, outLines~items)
+  self~assertSame(expected1, outlines[2]~subWord(5,4))
+  self~assertSame(expected2, outlines[7]~word(3),'SYSCARGS wrong:' outlines[3])
+  self~assertSame(expected3, outlines[9])
+
 ::method test_optOnoString1
   expose outLines
   /* the o option without an options string   */
