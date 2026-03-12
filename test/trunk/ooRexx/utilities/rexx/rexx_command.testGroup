@@ -361,7 +361,10 @@ return testResult
   /* passing args starting with "-" to a program file */
   showArgs = self~makeTestPgm
   theCmd = 'rexx' showArgs '-o "my output file"'
-  expected1 = '[-o "my output file"]'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected1 = '[-o "my output file"]'
+  else
+      expected1 = '[-o my output file]'
   expected2 = 2
   expected3 = '[-o, my output file]'
   theRC = issueCmd(theCmd, outLines)
@@ -377,7 +380,10 @@ return testResult
   /* and passing args starting with "-" to a program file */
   showArgs = self~makeTestPgm
   theCmd = 'rexx -o "trace all"' showArgs '-o "my output file"'
-  expected1 = '[-o "my output file"]'
+  if .ooRexxUnit.OSName == 'WINDOWS' then
+      expected1 = '[-o "my output file"]'
+  else
+      expected1 = '[-o my output file]'
   expected2 = 2
   expected3 = '[-o, my output file]'
   theRC = issueCmd(theCmd, outLines)
