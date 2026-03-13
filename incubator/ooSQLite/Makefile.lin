@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2012-2023 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2012-2026 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -113,7 +113,7 @@ WARNINGFLAGS=
 VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" -DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR) -I $(APICOMMON_DIR)
 
-SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_FTS5 -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_CORE
+SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_FTS5 -DSQLITE_ENABLE_GEOPOLY -DSQLITE_ENABLE_MATH_FUNCTIONS -DSQLITE_ENABLE_RTREE -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_CORE
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
 
 OUT_DIR=build/release

@@ -79,7 +79,7 @@
 **    WITH c(name,bin) AS (VALUES
 **       ('minimum positive value',        x'0000000000000001'),
 **       ('maximum subnormal value',       x'000fffffffffffff'),
-**       ('mininum positive nornal value', x'0010000000000000'),
+**       ('minimum positive normal value', x'0010000000000000'),
 **       ('maximum value',                 x'7fefffffffffffff'))
 **    SELECT c.name, decimal_mul(ieee754_mantissa(c.bin),pow2.v)
 **      FROM pow2, c WHERE pow2.x=ieee754_exponent(c.bin);
@@ -134,6 +134,9 @@ static void ieee754func(
     if( a==0 ){
       e = 0;
       m = 0;
+    }else if( a==(sqlite3_int64)0x8000000000000000LL ){
+      e = -1996;
+      m = -1;
     }else{
       e = a>>52;
       m = a & ((((sqlite3_int64)1)<<52)-1);
@@ -176,9 +179,9 @@ static void ieee754func(
     }
 
     if( m<0 ){
+      if( m<(-9223372036854775807LL) ) return;
       isNeg = 1;
       m = -m;
-      if( m<0 ) return;
     }else if( m==0 && e>-1000 && e<1000 ){
       sqlite3_result_double(context, 0.0);
       return;
@@ -256,6 +259,69 @@ static void ieee754func_to_blob(
   }
 }
 
+/*
+** Functions to convert between 64-bit integers and floats.
+**
+** The bit patterns are copied.  The numeric values are different.
+*/
+static void ieee754func_from_int(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  UNUSED_PARAMETER(argc);
+  if( sqlite3_value_type(argv[0])==SQLITE_INTEGER ){
+    double r;
+    sqlite3_int64 v = sqlite3_value_int64(argv[0]);
+    memcpy(&r, &v, sizeof(r));
+    sqlite3_result_double(context, r);
+  }
+}
+static void ieee754func_to_int(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  UNUSED_PARAMETER(argc);
+  if( sqlite3_value_type(argv[0])==SQLITE_FLOAT ){
+    double r = sqlite3_value_double(argv[0]);
+    sqlite3_uint64 v;
+    memcpy(&v, &r, sizeof(v));
+    sqlite3_result_int64(context, v);
+  }
+}
+
+/*
+** SQL Function:   ieee754_inc(r,N)
+**
+** Move the floating point value r by N quantums and return the new
+** values.
+**
+** Behind the scenes: this routine merely casts r into a 64-bit unsigned
+** integer, adds N, then casts the value back into float.
+**
+** Example:  To find the smallest positive number:
+**
+**     SELECT ieee754_inc(0.0,+1);
+*/
+static void ieee754inc(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  double r;
+  sqlite3_int64 N;
+  sqlite3_uint64 m1, m2;
+  double r2;
+  UNUSED_PARAMETER(argc);
+  r = sqlite3_value_double(argv[0]);
+  N = sqlite3_value_int64(argv[1]);
+  memcpy(&m1, &r, 8);
+  m2 = m1 + N;
+  memcpy(&r2, &m2, 8);
+  sqlite3_result_double(context, r2);
+}
+
 
 #ifdef _WIN32
 __declspec(dllexport)
@@ -277,7 +343,9 @@ int sqlite3_ieee_init(
     { "ieee754_exponent",  1,   2, ieee754func },
     { "ieee754_to_blob",   1,   0, ieee754func_to_blob },
     { "ieee754_from_blob", 1,   0, ieee754func_from_blob },
-
+    { "ieee754_to_int",    1,   0, ieee754func_to_int },
+    { "ieee754_from_int",  1,   0, ieee754func_from_int },
+    { "ieee754_inc",       2,   0, ieee754inc  },
   };
   unsigned int i;
   int rc = SQLITE_OK;
