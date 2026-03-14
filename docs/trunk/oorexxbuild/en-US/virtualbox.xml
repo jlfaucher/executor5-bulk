@@ -47,22 +47,20 @@
 
 <section><title>Virtualbox Installation</title>
 
-<para>Virtualbox was installed on a machine running macOS as well as on a machine running Windows 10. Virtualbox is freely available from Oracle as Open Source Software under the terms of the GNU General Public License (GPL) version 3. See also https://www.virtualbox.org/ It is advisable to install the latest version of Virtualbox.</para>
-
+    <para>Virtualbox is installed on a machine running macOS as well as on a machine running Windows 11. Virtualbox is freely available from Oracle as Open Source Software under the terms of the GNU General Public License (GPL) version 3. See also https://www.virtualbox.org/ It is advisable to install the latest version of Virtualbox. We are currently running version 7.2.2 on macOS and 7.2.6 on Windows. The version upgrades are performed sparingly since the upgrades have a risk of making older VMs stop working, and for windows, to require new licenses.</para>
 </section>
 
 <section><title>Virtualbox Setup</title>
 
 <para>There are only a few options to be concerned about in this area. For many of the platforms there are ready-made images that work out-of-the-box having what should be a normal setup for a normal user. For some platforms it was necessary to build everything from scratch using an ISO image that could be loaded at boot-time.</para>
 
-<para>Once installed the virtual disks were moved to a separate 2TB physical SSD disk, thereby reducing the load on the systems disk.</para>
+<para>Once installed the virtual disks are moved to a separate 2TB physical SSD disk, thereby reducing the load on the systems disk.</para>
 
 </section>
 
 <section><title>TCP/IP Setup for Virtual Machines</title>
 
-<para>For easier maintenance the Virtual Machines were set up to use a fixed IP range, controlled by the Router. Non-standard ports where then allocated to the VMs so that they can be reached both by the Jenkins Controller and by developers using the various platforms for testing purposes using ssh.</para>
-
+<para>For easier maintenance the Virtual Machines were set up to use a fixed IP range, controlled by the router. Non-standard ports where then allocated to the VMs so that they can be reached both by the Jenkins Controller and by using ssh from remote. In this manner it is possible for developers to use the various platforms for testing purposes.</para>
 </section>
 
 </chapter>
