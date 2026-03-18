@@ -174,6 +174,7 @@ class Activity : public RexxInternalObject
     void        guardWait();
     void        guardPost();
     void        guardSet();
+    void        reservePost();
     void        checkDeadLock(Activity *);
     void        postDispatch();
     void        kill(DirectoryClass *);
@@ -286,6 +287,7 @@ class Activity : public RexxInternalObject
     inline void        waitForRunPermission() { waitingOnSemaphore = true; runSem.wait(); waitingOnSemaphore = false; }
     inline bool        hasRunPermission() { return dispatchPosted; }
     inline void        waitForGuardPermission() { waitingOnSemaphore = true; guardSem.wait(); waitingOnSemaphore = false; }
+    inline void        waitForReservePermission() { waitingOnSemaphore = true; reserveSem.wait(); waitingOnSemaphore = false; }
            void        waitForKernel();
 
     inline RexxActivation *getCurrentRexxFrame() {return currentRexxFrame;}
@@ -297,6 +299,7 @@ class Activity : public RexxInternalObject
            void        checkRequires(RexxString *n);
     inline void        clearRunWait()  { runSem.reset(); dispatchPosted = false; }
     inline void        clearGuardWait()  { guardSem.reset(); }
+    inline void        clearReserveWait() { reserveSem.reset(); }
            uint64_t    getRandomSeed();
            RexxString *getLastMessageName();
 
@@ -383,6 +386,7 @@ class Activity : public RexxInternalObject
     RexxInternalObject *waitingObject;  // object activity is waiting on
     SysSemaphore        runSem;         // activity run control semaphore
     SysSemaphore        guardSem;       // guard expression semaphore
+    SysSemaphore        reserveSem;     // scope lock reservation semaphore
     SysActivity currentThread;          // descriptor for this thread
     const NumericSettings *numericSettings; // current activation setting values
 

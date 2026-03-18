@@ -551,6 +551,10 @@ void VariableDictionary::reserve(Activity *activity)
         // add to the end of the queue
         waitingActivities->append(activity);
         // ok, now we wait
+        // When release() wakes us via reservePost(), it has already set
+        // reservingActivity = us and reserveCount = 1.
+        // reserveSem is only posted by release(), never by
+        // RexxVariable::notify() (which uses guardSem).
         activity->waitReserve(this);
     }
 }
@@ -575,8 +579,10 @@ void VariableDictionary::release(Activity *activity)
             // remove the first item and make it the new reserver
             reservingActivity = (Activity *)waitingActivities->removeFirst();
             reserveCount = 1;
-            // wake up the waiting activity.
-            reservingActivity->guardPost();
+            // wake up the waiting activity using the dedicated reserve
+            // semaphore so it cannot be confused with guard expression
+            // notifications posted via guardPost/guardSem.
+            reservingActivity->reservePost();
         }
     }
 }
