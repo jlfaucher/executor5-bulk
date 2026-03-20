@@ -48,7 +48,7 @@
 <section><title>Overview of platforms and operating systems</title>
 
 <para>ooRexx is built on both native platforms and in virtual machines. This
-is a listing of all the platforms 2025-04-05 in the order of appearance:
+is a listing of all the platforms 2026-03-12 in the order of appearance:
 </para>
 </section>
 
@@ -57,19 +57,19 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </para>
 
 <itemizedlist>
-    <listitem><para>Marks-M4-Mac Mark Hesslings M4 Mac on ARM64 hardware, running macOS 15.3.1 (Sequoia);
+    <listitem><para>Marks-M4-Mac Mark Hesslings M4 Mac on ARM64 hardware, running macOS 26 (Tahoe);
     </para></listitem>
     <listitem><para>ams-02 René's Raspberry Pi 4 Model B (aarch64) running Ubuntu 22.04.5 LTS;
     </para></listitem>
     <listitem><para>pos-MacPro-12Core: Mac Pro 5,1 (2010), Dual Processor 6-Core Intel Xeon @ 2,93 GHz, Memory: 96 GB. running macOS 10.13.6 (High Sierra);
     </para></listitem>
-    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox for all Linux, Unix and further platforms, running macOS 15.3.1 (Sequoia);
+    <listitem><para>pos-MacPro-16Core: Mac Pro 7,1 (2019), Processor 16-Core Intel Xeon W @ 3,2 GHz, Memory: 96 GB. Hosting Virtualbox for all Linux, Unix and further platforms, running macOS 15.3 Sequoia;
     </para></listitem>
-    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 armv7l Quad Core Processor, ARM 32 bit Running Debian 11 (Bullseye);
+    <listitem><para>pos-Pi-2B Raspberry PI 2B, Broadcom BCM2837 armv7l Quad Core Processor, ARM 32 bit Running Raspbian GNU/Linux 11 (bullseye);
     </para></listitem>
-    <listitem><para>pos-Pi-3BPlus Raspberry PI 3B+, SoC: Broadcom BCM2837B0 Quad-Core A53 (ARMv8+) 64-bit aarch64 Running Debian 11 (Bullseye);
+    <listitem><para>pos-Pi-3BPlus Raspberry PI 3B+, SoC: Broadcom BCM2837B0 Quad-Core A53 (ARMv8+) 64-bit aarch64 Running Debian GNU/Linux 11 (bullseye);
     </para></listitem>
-    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM)  x64-based i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, Hosting all Windows VMs running 64-bit Windows 10;
+    <listitem><para>pos-Windows XPC-FH97 with Processor Intel(R) Core(TM)  x64-based i7-4770T CPU @ 2.50GHz, 16,0 GB RAM, Hosting all Windows VMs running 64-bit Windows 11;
     </para></listitem>
     <listitem><para>ubuntu16 Erich's Ubuntu 16.04 agent;
     </para></listitem>
@@ -77,7 +77,7 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </section>
 
 <section><title>Overview of Windows VMs</title>
-<para>ooRexx is built and tested on these platforms in 32 and 64 bit versions, No installers for these platforms are uploaded, rather the installers build for Windows 10 on pos-Windows are used for all supported versions of Windows (see below):
+<para>ooRexx is built and tested on these platforms in 32 and 64 bit versions, No installers for these platforms are uploaded, rather the installers built for Windows 11 on pos-Windows are used for all supported versions of Windows (see below):
 </para>
 
 <itemizedlist>
@@ -93,7 +93,7 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </section>
 
 <section><title>Overview of macOS VMs</title>
-    <para>There are currently no macOS VMs for building ooRexx. Builds and tests are made for High Sierra on Intel hardware and for Sequoia on Intel and ARM64 (M or Apple Silicon hardware). There is a "Fat" binary uploaded that can be used on both platforms for all supported OS versions from High Sierra and forward.
+    <para>There are currently no macOS VMs for building ooRexx. Builds and tests are made for High Sierra and Sequoia on Intel hardware and for Tahoe on ARM64 hardware (M or Apple Silicon hardware). There is a "Fat" binary uploaded that can be used on both platforms for all supported OS versions from High Sierra and forward.
     </para>
 </section>
 
@@ -102,14 +102,17 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </para>
 
 <itemizedlist>
-    <listitem><para>pos-vbox-Debian11 VM with 1CPU, 2GB memory, 500GB SSD,
-        build and test 64-bit ooRexx on Debian 11, build .deb package
+    <listitem><para>pos-vbox-Debian12 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Debian 12, build .deb package
     </para></listitem>
     <listitem><para>pos-vbox-Ubuntu24 VM with 1CPU, 2GB memory, 500GB SSD,
         build and test 64-bit ooRexx on Ubuntu 24.04 LTS build .deb package
     </para></listitem>
-    <listitem><para>pos-vbox-LinuxMint21 VM with 1CPU, 2GB memory, 500GB SSD,
-        build and test 64-bit ooRexx on Linux Mint 21, build .deb package
+    <listitem><para>pos-vbox-Ubuntu22 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Ubuntu 22.04 LTS build .deb package
+    </para></listitem>
+    <listitem><para>pos-vbox-LinuxMint22 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Linux Mint 22, build .deb package
     </para></listitem>
 </itemizedlist>
 </section>
@@ -119,11 +122,11 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </para>
 
 <itemizedlist>
-    <listitem><para>pos-vbox-CentOS9 VM with 1CPU, 2GB memory, 500GB SSD,
-        build and test 64-bit ooRexx on CentOS 9, build .rpm package
+    <listitem><para>pos-vbox-CentOS10 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on CentOS 10, build .rpm package
     </para></listitem>
-    <listitem><para>pos-vbox-Fedora40 VM with 1CPU, 2GB memory, 500GB SSD,
-        build and test 64-bit ooRexx on Fedora 40, build  .rpm package
+    <listitem><para>pos-vbox-Fedora43 VM with 1CPU, 2GB memory, 500GB SSD,
+        build and test 64-bit ooRexx on Fedora 43, build  .rpm package
     </para></listitem>
     <listitem><para>pos-vbox-OpenSuse15 VM with 1CPU, 2GB memory, 500GB SSD,
         build and test 64-bit ooRexx on OpenSuse 15.6 (Leap), build .rpm package
@@ -137,13 +140,13 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 
 <itemizedlist>
     <listitem><para>pos-vbox-FreeBSD14 VM with 1CPU, 2GB memory, 500GB SSD,
-        build and test 64-bit ooRexx on FreeBSD 14.1, build .pkg package
+        build and test 64-bit ooRexx on FreeBSD 14.3, build .pkg package
     </para></listitem>
     <listitem><para>pos-vbox-OpenBSD7 VM with 1CPU, 2GB memory, 16GB SSD,
-        build and test 64-bit ooRexx on OpenBSD 7.6, no package is built currently
+        build and test 64-bit ooRexx on OpenBSD 7.8, no package is built currently
     </para></listitem>
-    <listitem><para>pos-vbox-NetBSD9 VM with 1CPU, 2GB memory, 100GB SSD,
-        build and test 64-bit ooRexx on NetBSD 9.3, only Portable package is built currently
+    <listitem><para>pos-vbox-NetBSD10 VM with 1CPU, 2GB memory, 100GB SSD,
+        build and test 64-bit ooRexx on NetBSD 10.1, only Portable package is built currently
     </para></listitem>
 </itemizedlist>
 </section>
@@ -168,10 +171,10 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 
 <itemizedlist>
     <listitem><para>pos-vbox-OpenIndiana VM with 1CPU, 2GB memory,
-        500GB SSD, build and test 64-bit ooRexx on Open Indiana 5.11, only Portable package is built currently
+        500GB SSD, build and test 64-bit ooRexx on  OpenIndiana Hipster 2025.10 (powered by illumos), only Portable package is built currently
     </para></listitem>
     <listitem><para>pos-vbox-Solaris11 VM with 1CPU, 4GB memory,
-        32GB SSD, build and test 64-bit ooRexx on Solaris 11, only Portable package is built currently
+        32GB SSD, build and test 64-bit ooRexx on Solaris 11.4, only Portable package is built currently
     </para></listitem>
 </itemizedlist>
 </section>
@@ -181,13 +184,11 @@ is a listing of all the platforms 2025-04-05 in the order of appearance:
 </para>
 
 <itemizedlist>
-    <listitem><para>Minix 3.3 VM with 1CPU, 1GB memory, 500GB SSD
-    </para></listitem>
     <listitem><para>Minix 3.4 VM with 1CPU, 1GB memory, 500GB SSD
     </para></listitem>
-    <listitem><para>Android 9 VM with 1CPU, 4GB memory, 500GB SSD
+    <listitem><para>OS/2 or ArcaOS with 1CPU, 1GB memory, 500GB SSD
     </para></listitem>
-    <listitem><para>Android LinageOS 14 VM with 1CPU, 2GB memory, 100GB SSD
+    <listitem><para>Windows XP with 1CPU, 1GB memory, 500GB SSD
     </para></listitem>
 </itemizedlist>
 </section>

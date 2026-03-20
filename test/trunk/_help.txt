@@ -1,0 +1,87 @@
+Generated with
+rexx testOORexx.rex --help > _help.txt 2>&1
+
+
+testOORexx version 1.1.0 ooTest Framework version 1.0.1_4.0.0
+
+Test the ooRexx interpreter using the automated ooTest framework.
+usage: 1.  testOORexx
+       2.  testOORexx fileName
+       3.  testOORexx [OPTIONS]
+       4.  testOORexx help [subject]
+
+  1. With no options the automated test suite is executed using the default
+     set of test types, the default verbosity, and the default formatter.
+
+  2. The single test group specified by "fileName" is executed.
+
+  3. The automated test suite is executed using the specified options.
+
+  4. Show detailed help on "subject"  Use "help topic" to list valid subjects
+
+  Options must start with "-", the only exception is the --help option.  Spaces
+  are not tolerated in either file names or directory names.
+
+  The long name options are specified using the -D (define option) format.  I.e.,
+  the "testContainerExt" option is specified as: -DtestContainerExt=ext.
+
+  All command line options, except the help and options file options, are valid
+  in the options file, but you must use the long name format.  I.e., the
+  -Dverbosity=NUM option could be: verbosity=5 in the options file.
+
+  Options below shown as: someOpt=bool are true / false, with the default as
+  false.  The value can be specified as either 1 / 0 or the words true / false.
+
+Valid options:
+ Help related:
+  -h                   Show short help
+  --help               Show long help (this help)
+  -v                   Show version and quit
+
+ Generic option:
+  -D    Define option.  Format must be: -Dname=value
+
+ Test selection:
+  -a  -DallTestTypes=bool           Include all test types
+  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...
+  -e  -DtestContainerExt=EXT        change default test container ext to EXT
+  -f  -DsingleFile=NAME             Execute the single NAME test group
+  -F  -DfileList=N1 N2 ...          Execute the N1 N2 ... test groups
+  -I, -DtestTypeIncludes=T1 T2 ...  Include test types T1 T2 ... keyword "all"
+                                    indicates all test types
+  -n  -DnoTests=bool                No tests to execute (deliberately)
+  -o  -DoptionsFile=FILE            Use FILE as options file, not default file
+  -O  -DnoOptionsFile=bool          Do not use any options file
+  -p  -DfilesWithPattern=PA         Execute test groups matching PA
+  -R, -DtestCaseRoot=DIR            DIR is root of search tree
+  -x  -DexcludeFileList=N1 N2 ...   Exclude the N1 N2 ... test groups
+  -X  -DtestTypeExcludes=X1 X1 ...  Exclude test types X1 X2 ... keyword "all"
+                                    indicates all test types
+
+ Output control:
+  -l  -DlogFile=FILE                Put test results in log file FILE
+  -L  -DlogFileAppend=bool          Append test results to log file
+  -s  -DshowProgress=bool           Show test group progress
+  -S  -DshowTestcases=bool          Show test case progress
+  -u  -DsuppressTestcaseTicks=bool  Do not show ticks during test execution
+  -U  -DsuppressAllTicks=bool       Do not show any ticks
+  -V, -Dverbosity=NUM               Set vebosity to NUM
+  -w, -DwaitAtCompletion=bool       At test end, wait for user to hit enter
+
+
+jlf: I got this list after mis-using the -X option.
+Valid types are:
+    Sample
+    Framework_example
+    Doc_example
+    Tcpip
+    Gui_sample
+    Gui
+    English_only
+    Unit_long
+    Native_api
+    Doc_example_noise
+    Ole
+    Unit
+
+In addition, the keyword 'all' can be used to indicate every test type.

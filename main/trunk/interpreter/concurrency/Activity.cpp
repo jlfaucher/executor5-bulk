@@ -260,6 +260,7 @@ void Activity::runThread()
         // reset our semaphores
         runSem.reset();
         guardSem.reset();
+        reserveSem.reset();
 
         // try to pool this.  If the ActivityManager doesn't take it,
         // we go into termination mode
@@ -285,6 +286,7 @@ void Activity::cleanupActivityResources()
     // close our semaphores and destroy the thread.
     runSem.close();
     guardSem.close();
+    reserveSem.close();
     currentThread.close();
     // make sure any mutexes we are holding get released
     cleanupMutexes();
@@ -363,6 +365,7 @@ Activity::Activity(GlobalProtectedObject &p, bool createThread)
     // an activity has a couple of semaphores it uses to synchronize execution.
     runSem.create();
     guardSem.create();
+    reserveSem.create();
     activationStackSize = ACT_STACK_SIZE;
     // stack checking is enabled by default
     stackcheck = true;
@@ -1515,10 +1518,11 @@ void Activity::displayDebug(DirectoryClass *exobj)
  */
 void Activity::run()
 {
-    // post both of the semaphores.  The activity will be waiting
+    // post all of the semaphores.  The activity will be waiting
     // on one of these on another thread, so we yield control to
     // give the other thread a chance to run.
     guardSem.post();
+    reserveSem.post();
     runSem.post();
     yield();
 }
@@ -2030,14 +2034,16 @@ void Activity::checkDeadLock(Activity *targetActivity)
  */
 void Activity::waitReserve(RexxInternalObject *resource)
 {
-    // We use the guard semaphore both for waiting to wakeup for guard expression
-    // evaluation and also for obtaining the guard lock
-    guardSem.reset();
+    // Use a dedicated semaphore for scope lock reservation to avoid
+    // spurious wake-ups from guardSem, which can be posted by
+    // RexxVariable::notify() when a guarded variable changes value.
+    // See bug: GUARD ON WHEN allows method to run concurrently.
+    reserveSem.reset();
     waitingObject = resource;
     // release the interpreter lock and wait for access.  Don't continue
     // until we get the lock back
     releaseAccess();
-    waitForGuardPermission();
+    waitForReservePermission();
     requestAccess();
 }
 
@@ -2062,6 +2068,18 @@ void Activity::guardPost()
 {
     waitingObject = OREF_NULL;
     guardSem.post();
+}
+
+
+/**
+ * Post a scope lock reservation wake up notice.
+ * Used by VariableDictionary::release() to wake the next
+ * activity waiting to acquire the scope lock.
+ */
+void Activity::reservePost()
+{
+    waitingObject = OREF_NULL;
+    reserveSem.post();
 }
 
 

@@ -654,9 +654,10 @@ void MessageClass::sendNotification()
         {
             // get each activity and give them a poke.
             Activity *waitingActivity = (Activity *)waitingActivities->get(i);
-            // we process this like it is a guard variable reserve, so
-            // we wake it up as if it was a guard wait.
-            waitingActivity->guardPost();
+            // we process this like it is a guard variable reserve,
+            // these activities are waiting in waitReserve() which uses
+            // reserveSem, so we must use reservePost() to wake them.
+            waitingActivity->reservePost();
         }
         // clear the list so that we don't anchor those activities needlessly
         waitingActivities = OREF_NULL;

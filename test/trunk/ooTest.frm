@@ -2061,7 +2061,7 @@ return
           n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
           n~reason = "Invocation of test container file did not produce the expected result."
           n~additional = "Returned object is not a test container, object is:" container
-          rn~additionalObject = container
+          n~additionalObject = container
           testResult~addNotification(n)
           iterate
         end

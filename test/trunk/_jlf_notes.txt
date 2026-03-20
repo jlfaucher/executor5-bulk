@@ -1,0 +1,349 @@
+# run_testOORexx updates PATH and [DY]LD_LIBRARY_PATH
+# to let find the executables needed by
+# - the testsuite for native_api testing,
+# - ProcessInvocation.testGroup,
+# - RexxStart.testGroup,
+# - ProcessRexxStart.testGroup,
+# - ADDRESS.testGroup.
+#
+# https://github.com/jlfaucher/builder/blob/master/scripts/run_testOORexx
+# https://github.com/jlfaucher/builder/blob/master/scripts/run_testOORexx.bat
+
+
+# All tests with log
+rexx testOORexx -S -U -l log.txt -X native_api
+run_testOORexx -S -U -l log.txt
+
+# WSL Ubuntu - All tests with log (don't use .TESTGROUP with -x)
+rexx testOORexx -S -U -l log.txt -x RXAPI
+run_testOORexx -S -U -l log.txt -x RXAPI
+
+# All tests without log
+rexx testOORexx -S -U -X native_api
+run_testOORexx -S -U
+
+# Just this tesgroup (.testGroup is optional)
+rexx testOORexx -S -U -f rxapi
+run_testOORexx -S -U -f rxapi
+
+
+--------------------------------------------------------------------------------
+assertXXX()
+--------------------------------------------------------------------------------
+
+The assertXXX() methods are located in the OOREXXUNIT.CLS file.
+
+
+assertEquals(expected, actual,[msg])
+    Checks if two collection objects are equal, or, if two objects are equal
+    fail if expected \= actual
+    fail if isCollectionEqual(expected, actual)
+
+
+assertFuzzyEquals(expected, actual, digits = (digits()), msg = "")
+    Checks if two objects are equal using fuzzy math
+    fail if \ (expected = actual) with
+        numeric digits digits
+        numeric fuzz 1
+
+
+assertNotEquals(expected, actual,[msg])
+    Checks if two collection objects are not equal, or, if two objects are not equal
+    fail if expected = actual
+    fail if isCollectionEqual(expected, actual)
+
+
+assertNull(actual,[msg])
+    deprecated, use assertNil instead
+
+
+assertNil(actual, msg = "")
+    fail if .nil \== actual
+
+
+assertNotNull(actual, [msg])
+    deprecated, use assertNotNil instead
+
+
+assertNotNil(actual, msg = "")
+    fail if .nil == actual
+
+
+assertIsA(target, class, msg = "")
+    fail if \target~isA(class)
+
+
+assertSameList(expected, actual, msg = "assertSameList")
+    compare two Collections for equality
+    fail if if \isCollectionEqual(expected, actual)
+
+
+assertEquivalentList(expected, actual, msg = "assertEquivalentList")
+    compare two Collections for equivalence
+    same items, but in a potentially different order
+    fail if \isCollectionEquivalent(expected, actual)
+
+
+assertSame(expected, actual, msg = "")
+    fail if \ (expected == actual)
+
+
+assertNotSame(expected, actual, msg = "")
+    use formatObjectInfo for better display
+    fail if (expected == actual)
+
+
+assertIdentical(expected, actual, msg = "")
+    Check if an object is EXACTLY the same object instance
+    fail if (expected~identityHash \== actual~identityHash)
+
+
+assertNotIdentical(expected, actual, msg = "")
+    Check if an object is NOT EXACTLY the same object instance
+    fail if (expected~identityHash == actual~identityHash)
+
+
+assertEitherOr(truthOne, truthTwo, msg = "")
+    Exclusive or, either arg 1 is true or arg 2 is true, but not both.
+    fail if \ self~exclusiveOr(truthOne, truthTwo)
+
+
+assertOneOrAnother(one, other, actual, msg = "")
+    Exclusive or for objects.  The actual object is expected to equal either one
+    object, or another object, but not both.
+    fail if \ self~exclusiveOrObject(one, other, actual)
+
+
+assertTrue(actual, msg = "")
+    fail if \ (actual = .true)
+
+
+assertFalse(actual, msg = "")
+    fail if \ (actual = .false)
+
+
+assertFail(msg = "")
+    Assert a failure explicitly. Useful for situations where control is not
+    expected to reach a particular point.
+    fail always
+
+
+assertSyntaxError(error, code, parentPackage = (self~class~package))
+    create a package from an array of lines with the intent of checking
+    errors raised at translate time rather than runtime.
+
+
+assertRuntimeError(error, code, parentPackage = (self~class~package))
+    create a routine and call from an array of lines with the intent of checking
+    errors raised at run time rather than during translation.
+
+
+assertRc(expected, actual, msg = "")
+    assert an external command return code
+    on Windows, return codes in the range -32768 to 32767 are valid
+    on Unix-like systems, return codes use just the 8 least significant bits
+    of the returned value giving a range of 0 to 255
+
+
+--------------------------------------------------------------------------------
+Helpers
+--------------------------------------------------------------------------------
+
+-- shallow comparison of two Collections, no recursive testing
+::routine isCollectionEqual
+  use arg expected, actual
+
+  if -
+    expected~items == actual~items, -
+    expected~allIndexes~makeString == actual~allIndexes~makeString, -
+    expected~allItems~makeString == actual~allItems~makeString
+    then return .true
+    else return .false
+
+
+::method exclusiveOr private
+  use strict arg t1, t2
+
+  if \ t1~isA(.string) | \ t2~isA(.string) then return .false
+  if \ t1~datatype('O') | \ t2~datatype('O') then return .false
+
+  -- t1 and t2 are both logicals, for exclusive or they must be different
+  -- logicals.
+  return (t1 \== t2)
+
+
+::method exclusiveOrObject private
+  use strict arg one, other, actual
+
+  if one == actual, other == actual then return .false
+  if one \== actual, other \== actual then return .false
+  return .true
+
+
+--------------------------------------------------------------------------------
+Remember! redirection of trace to an array
+--------------------------------------------------------------------------------
+
+test/trunk/ooRexx/base/keyword/TRACE.testGroup
+::method test_trace_arg
+  t = .TraceOutput~destination(.ArrayStream~new)
+  start = .line; trace i
+  arg
+  arg 1 a .
+  trace off
+  self~assertTraceOutput(.resources~arg, t, start)
+
+  ::resource arg end "  ::end"
+     1 *-* arg
+       >>>   ""
+     2 *-* arg 1 a .
+       >>>   ""
+       >L>   "1"
+       >>>   "1"
+       >=>   A <= ""
+       >.>   ""
+  ::end
+
+
+-- trace output tests
+-- to generate the required "relative" trace output ::resource for
+-- Rexx clauses to be tested, put the clauses into a file starting with
+-- line 1, add ::options trace i as the last line, and run the code.
+-- Then copy/paste the output into the ::resource here.
+
+::method assertTraceOutput
+  use strict arg expected, actual, start
+  -- our captured trace output will typically have a trailing trace line
+  -- from "trace off", so we just ignore it, if it is there
+  if actual~items > expected~items, actual~lastItem~endsWith("trace off") then
+    actual~remove(actual~last)
+  msg = .endofline -
+   "actual trace output" .endofline || actual .endofline -
+   "expected trace output" .endofline || expected
+  self~assertTrue(expected~items = actual~items, "actual and expected trace output have different line counts" msg)
+  do i = 1 to expected~items
+    line = expected[i]
+    -- Wherever our expected trace output has a relative line number
+    -- (1, 2, ...) we replace it with an absolute line number calculated
+    -- as start + relative.
+    if line~left(7)~dataType("Whole") then do
+      line = (start + line~left(7))~right(6) line~subStr(8)
+    end
+    if line~strip("l")~startsWith(">I> Method") | line~strip("l")~startsWith("<I< Method") then do
+    -- When we see a method entry or exit we ignore the last token package name
+    -- e. g. >I> Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
+    -- e. g. <I< Method "TRACE_EXPOSE" with scope "TRACE.TESTGROUP" in package "...".
+      if line~left(line~wordIndex(9) - 1) \== actual[i]~left(actual[i]~wordIndex(9) - 1) then
+      self~assertFail("trace output mismatch at line" i line msg)
+    end
+    else do
+      -- The IF test shows that actual trace output may have trailing blanks
+      -- (which may be a @@bug), so we strip trailing blanks for comparison.
+      if line \== actual[i]~strip("t") then
+        self~assertFail("trace output mismatch at line" i line msg)
+    end
+  end
+
+
+-- ArrayStream allows to capture TRACE output to an Array
+-- we inherit from Stream just for the SAY method
+::class ArrayStream subclass Array inherit Stream
+::method init
+  expose line
+  line = 0
+::method lineOut
+  parse arg line
+  self~append(line)
+  return 0
+::method lineIn
+  expose line
+  line += 1
+  if line > self~size then
+    raise notready
+  return self[line]
+
+
+--------------------------------------------------------------------------------
+Durations on macOS
+--------------------------------------------------------------------------------
+
+Interpreter:        REXX-ooRexx_5.2.0(MT)_64-bit 6.06 18 Mar 2026
+OS Name:            DARWIN
+SysVersion:         Darwin 24.6.0
+
+Slowest
+-------
+Tests ran:          24084
+Assertions:         361766
+
+File search:        00:00:00.573307
+Suite construction: 00:00:00.481077
+Test execution:     00:05:29.953098
+Total time:         00:05:31.008064
+
+Fastest
+-------
+Tests ran:          24084
+Assertions:         361766
+
+File search:        00:00:00.505913
+Suite construction: 00:00:00.626163
+Test execution:     00:04:57.897401
+Total time:         00:04:59.030207
+
+
+--------------------------------------------------------------------------------
+Durations on Windows 11 ARM in VM
+--------------------------------------------------------------------------------
+
+Interpreter:        REXX-ooRexx_5.2.0(MT)_64-bit 6.06 18 Mar 2026
+OS Name:            WindowsNT
+SysVersion:         Windows 10.0.26100
+
+Fastest
+-------
+Tests ran:          24337
+Assertions:         357013
+
+File search:        00:00:04.426000
+Suite construction: 00:00:00.914000
+Test execution:     00:06:56.793000
+Total time:         00:07:02.133000
+
+
+--------------------------------------------------------------------------------
+Durations on WSL Ubuntu ARM in VM
+--------------------------------------------------------------------------------
+
+Interpreter:        REXX-ooRexx_5.2.0(MT)_64-bit 6.06 18 Mar 2026
+OS Name:            LINUX
+SysVersion:         Linux 4.4.0-26100-Microsoft
+
+
+Blocked
+-------
+Blocked on
+Executing The RXAPI.TESTGROUP class with 1 test cases
+.. Executing rxapi.testGroup test case TEST_RXAPI_LOCKED
+I had to kill the rxapi process.
+
+Tests ran:          24092
+Assertions:         355423
+
+File search:        00:00:02.654143
+Suite construction: 00:00:00.844300
+Test execution:     00:15:24.690670
+Total time:         00:15:28.190248
+
+
+Fastest
+-------
+run_testOORexx -S -U -l log.txt -x RXAPI
+
+Tests ran:          24091
+Assertions:         355423
+
+File search:        00:00:02.664392
+Suite construction: 00:00:00.861960
+Test execution:     00:07:09.063752
+Total time:         00:07:12.591461
