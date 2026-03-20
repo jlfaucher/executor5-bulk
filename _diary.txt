@@ -22,6 +22,47 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Mar 20
+
+I had 3 files that were considered modified by git, because of their EOL.
+I executed a git command to check and fix all the files.
+3195 were fixed.
+
+From the root git directory:
+
+# Before
+/local/rexx/oorexx/executor5-bulk$ git status
+    On branch main
+    Your branch is up to date with 'origin/main'.
+
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git restore <file>..." to discard changes in working directory)
+        modified:   main/trunk/release-steps.md
+        modified:   test/trunk/ooRexx/base/class/Package_Options.testGroup
+        modified:   test/trunk/ooRexx/utilities/rexx/rexx_command.testGroup
+
+
+# This is the command to fix the EOLs.
+/local/rexx/oorexx/executor5-bulk$ git add --renormalize .
+
+# After
+/local/rexx/oorexx/executor5-bulk$ git status
+    On branch main
+    Your branch is up to date with 'origin/main'.
+
+    Changes to be committed:
+      (use "git restore --staged <file>..." to unstage)
+        modified:   build-utilities/trunk/platform/windows/Release.notes
+        modified:   build-utilities/trunk/platform/windows/ooRexxProcess/Makefile.win
+        ...
+        modified:   websites/build/trunk/docroot/css/user.css
+        modified:   websites/main/trunk/docroot/css/large.css
+        modified:   websites/main/trunk/docroot/css/normal.css
+        modified:   websites/main/trunk/docroot/css/user.css
+
+
+===============================================================================
 2026 feb 25
 
 [GC]
@@ -611,7 +652,7 @@ rev 13100
 
 Remember, to merge the last changes from SVN:
 cd /local/rexx/oorexx/executor5-bulk
-gti svn fetch
+git svn fetch
 git merge refs/remotes/git-svn
 
 Remember:
@@ -630,3 +671,9 @@ loop
     - Commit these changes to oorexx in sourceforge, from the local SVN copy.
     - Synchronize my git clone executor5-bulk with git svn fetch + git merge
 end loop
+
+Remember:
+$ git add --renormalize .
+reprocesses all tracked files in the index using the current text attribute
+settings from .gitattributes, ensuring consistent line endings (typically LF)
+in the repository.

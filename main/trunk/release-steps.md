@@ -397,13 +397,13 @@ Currently the upload of docs go to (two folders, PDF and html)
 
 oorexx-docs/5.1.0_Release_Candidate (staged)
 Warning: it seems sftp does not work for staged folders, it migh be necessare to make folder visible and then
-stage it once the upload has been completed
+stage it once the upload has been completed
 ooRexx-{sourceforge-upload}
 Currently the upload of  artifacts go to
 sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.0.0beta"
 Change to oorexx/5.1.0_Release_Candidate (staged)
 
-This change will influence jenkinsArtifactUpload.rex in /var/lib/jenkins/workspace/ooRexx-{sourceforge-upload}
+This change will influence jenkinsArtifactUpload.rex in /var/lib/jenkins/workspace/ooRexx-{sourceforge-upload}
 Before any new release go through the tools used for documentation build to make sure they are still up to date; make any changes BEFORE a specific version is frozen to avoid double copying to release and trunk
 
 Same for all platforms that we are currently building, work through all build and test "Projects" on Jenkins and note any build that fail (and the reason therefor) and any tests that are excluded (with a hint to a bug report if available)
