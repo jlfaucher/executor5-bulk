@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -566,28 +566,37 @@ else
   name = SysTempFileName(template)
   return name~translate(, "0123456789", "?", name~length - template~length + 1)
 
+-- exhaust all possible file names
 ::method test_tempfile_exhaust
-  -- we assume that the file path won't contain additional '#' characters
-  template = .TemporaryTestFile~new(self, "test#tempfile#exhaust")~absolutePath
   files = .Array~new(100)
-  file = .true
-  loop
-    name = SysTempFileName(template, "#")
-    if name = "" then
-      leave
-    files~append(.File~new(name))
-    -- create a file/directory until all possibilities are exhausted
-    if file then
-      .Stream~new(name)~~open("write replace")~close
-    else
-      .File~new(name)~makeDir
-    file = \file
+  template = .File~new("test?tempfile?exhaust", .File~temporaryPath)
+  -- clean up before trying to exhaust our template
+  call SysFileTree template, files, "o"
+  do file over files
+    call SysRmDir file
+    call SysFileDelete file
   end
+  files~empty
+  dir = .true -- create either directory or file
+  loop
+    unique = SysTempFileName(template)
+    if unique = "" then
+      leave
+    file = .File~new(unique)
+    files~append(file)
+    -- create a file/directory until all possibilities are exhausted
+    if dir then
+      .Stream~new(file)~~open("write replace")~close
+    else
+      file~makeDir
+    dir = \dir
+  end
+  -- for a template with two "?" we expect exhaustion after 10 x 10
   self~assertSame(100, files~items)
+  -- clean up again
   do file over files
     file~delete
   end
-
 
 -- (Windows-only) UNC filename tests
 ::method test_unc_windows_only
@@ -600,7 +609,6 @@ else
   self~assertTrue(SysIsFile(thisFile~absolutePath), thisFile~absolutePath "should exist")
   self~assertTrue(SysFileExists(thisDir~absolutePath), thisDir~absolutePath "should exist")
   self~assertTrue(SysIsFileDirectory(thisDir~absolutePath), thisDir~absolutePath "should exist")
-
 
 
 ::options all syntax
