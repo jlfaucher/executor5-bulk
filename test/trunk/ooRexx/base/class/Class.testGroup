@@ -565,7 +565,14 @@ any:
    self~expectSyntax(97.1)
    self~assertNull(.WaterVehicle~method("swimmolilily"))
 
+   -- Bug #2038 say .buffer~method("INIT") crashes the interpreter
+   -- Now returns the method
+   self~assertNotNil(.buffer~method("INIT"))
 
+   -- The fix for bug #2038 brings back the compatibility with ooRexx 4.2.
+   -- Before the fix, returned .NIL (inherited methods were not taken into account).
+   -- Now returns the method  (inherited methods are taken into account).
+   self~assertNotNil(.weakreference~method("INIT"))
 
 
 ::method "test_METHODS"

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2021 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -985,10 +985,7 @@ MethodClass *RexxClass::method(RexxString  *method_name)
 {
     // make sure we have a proper name
     method_name = stringArgument(method_name, "method name")->upper();
-    // we keep the instance methods defined at this level in a separate
-    // method dictionary that is used to build the behaviour.  We can retrieve
-    // the method directly from there.
-    MethodClass *method_object = instanceMethodDictionary->getMethod(method_name);
+    MethodClass *method_object = (MethodClass *)instanceBehaviour->getMethodDictionary()->getMethod(method_name);
     // this is an error if it is not in the method dictionary.
     // Note that is could be there, but as .nil.  We will return that value
     if ( OREF_NULL == method_object)
