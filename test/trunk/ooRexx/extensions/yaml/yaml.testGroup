@@ -1,0 +1,3296 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2026 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+/* Yaml.testGroup -- ooTestUnit test suite for yaml.cls                       */
+/*                                                                            */
+/* 759 assertions in 50 test methods, converted from test_yaml.rex            */
+
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Yaml.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::requires 'yaml.cls'
+
+::class "Yaml.testGroup" subclass ooTestCase public
+
+::method init
+  expose thisLocation   -- save this program's location for loading/saving files
+  parse source . . thisPath
+  thisLocation=filespec('location',thisPath)
+  forward class (super) -- let superclass initialize
+
+
+/*------------------------------------------------------------------------*/
+/* setUp — create a shared parser instance for all test methods           */
+/*------------------------------------------------------------------------*/
+::method setUp
+  expose parser
+  parser = .Yaml~new
+
+/*------------------------------------------------------------------------*/
+/* 1. Basic mapping                                                       */
+/*------------------------------------------------------------------------*/
+::method "test01_BasicMapping"
+  expose parser
+
+  yaml = "title: Hello World" || "0A"x || -
+         "author: Jane Doe"  || "0A"x || -
+         "year: 2025"
+
+  doc = parser~parseString(yaml)
+  self~assertEquals("Hello World", doc["title"], "title")
+  self~assertEquals("Jane Doe", doc["author"], "author")
+  self~assertEquals(2025, doc["year"], "year")
+
+/*------------------------------------------------------------------------*/
+/* 2. Nested mapping                                                      */
+/*------------------------------------------------------------------------*/
+::method "test02_NestedMapping"
+  expose parser
+
+  yaml = "database:"          || "0A"x || -
+         "  host: localhost"  || "0A"x || -
+         "  port: 5432"       || "0A"x || -
+         "  name: mydb"
+
+  doc = parser~parseString(yaml)
+  db = doc["database"]
+  self~assertEquals("localhost", db["host"], "nested host")
+  self~assertEquals(5432, db["port"], "nested port")
+
+/*------------------------------------------------------------------------*/
+/* 3. Block sequence                                                      */
+/*------------------------------------------------------------------------*/
+::method "test03_BlockSequence"
+  expose parser
+
+  yaml = "fruits:"     || "0A"x || -
+         "  - apple"   || "0A"x || -
+         "  - banana"  || "0A"x || -
+         "  - cherry"
+
+  doc = parser~parseString(yaml)
+  fruits = doc["fruits"]
+  self~assertEquals(3, fruits~items, "seq count")
+  self~assertEquals("apple", fruits[1], "seq item 1")
+  self~assertEquals("cherry", fruits[3], "seq item 3")
+
+/*------------------------------------------------------------------------*/
+/* 4. Flow collections                                                    */
+/*------------------------------------------------------------------------*/
+::method "test04_FlowCollections"
+  expose parser
+
+  yaml = "colors: [red, green, blue]" || "0A"x || -
+         "point: {x: 10, y: 20}"
+
+  doc = parser~parseString(yaml)
+  colors = doc["colors"]
+  point  = doc["point"]
+  self~assertEquals("green", colors[2], "flow seq")
+  self~assertEquals(10, point["x"], "flow map x")
+  self~assertEquals(20, point["y"], "flow map y")
+
+/*------------------------------------------------------------------------*/
+/* 5. Quoted strings                                                      */
+/*------------------------------------------------------------------------*/
+::method "test05_QuotedStrings"
+  expose parser
+
+  yaml = "single: 'It''s a test'"            || "0A"x || -
+         'double: "line1\nline2"'            || "0A"x || -
+         'escaped: "tab\there"'              || "0A"x || -
+         'preserve: "hello world"'
+
+  doc = parser~parseString(yaml)
+  self~assertEquals("It's a test", doc["single"], "single quote")
+  self~assertTrue(doc["double"]~pos("0A"x) > 0, "double nl")
+  self~assertTrue(doc["escaped"]~pos("09"x) > 0, "escaped tab")
+
+/*------------------------------------------------------------------------*/
+/* 6. Type resolution                                                     */
+/*------------------------------------------------------------------------*/
+::method "test06_TypeResolution"
+  expose parser
+
+  yaml = "null1: null"   || "0A"x || -
+         "null2: ~"      || "0A"x || -
+         "btrue: true"   || "0A"x || -
+         "bfalse: no"    || "0A"x || -
+         "int: 42"       || "0A"x || -
+         "neg: -17"      || "0A"x || -
+         "hex: 0xFF"     || "0A"x || -
+         "oct: 0o77"     || "0A"x || -
+         "float: 3.14"   || "0A"x || -
+         "sci: 1.5e+3"   || "0A"x || -
+         "inf: .inf"     || "0A"x || -
+         "nan: .nan"     || "0A"x || -
+         'strnull: "null"'
+
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc["null1"] == .nil, "null")
+  self~assertEquals(1, doc["null2"] == .nil, "tilde")
+  self~assertEquals(1, doc["btrue"], "true")
+  self~assertEquals(0, doc["bfalse"], "false/no")
+  self~assertEquals(42, doc["int"], "int")
+  self~assertEquals(-17, doc["neg"], "negative")
+  self~assertEquals(255, doc["hex"], "hex")
+  self~assertEquals(63, doc["oct"], "octal")
+  self~assertEquals(3.14, doc["float"], "float")
+  self~assertEquals(".inf", doc["inf"], "inf")
+  self~assertEquals(".nan", doc["nan"], "nan")
+  self~assertEquals("null", doc["strnull"], "str null")
+
+/*------------------------------------------------------------------------*/
+/* 7. Block scalars                                                       */
+/*------------------------------------------------------------------------*/
+::method "test07_BlockScalars"
+  expose parser
+
+  yaml = "literal: |"    || "0A"x || -
+         "  line one"    || "0A"x || -
+         "  line two"    || "0A"x || -
+         "folded: >"     || "0A"x || -
+         "  this is"     || "0A"x || -
+         "  one line"    || "0A"x || -
+         "stripped: |-"  || "0A"x || -
+         "  no newline"
+
+  doc = parser~parseString(yaml)
+  self~assertTrue(doc["literal"]~countStr("0A"x) >= 1, "literal has newline")
+  self~assertTrue(doc["folded"]~pos("this is one line") > 0, "folded joins")
+  self~assertTrue(doc["stripped"]~right(1) \== "0A"x, "strip chomp")
+
+/*------------------------------------------------------------------------*/
+/* 8. Anchors & aliases                                                   */
+/*------------------------------------------------------------------------*/
+::method "test08_AnchorsAndAliases"
+  expose parser
+
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+
+  doc = parser~parseString(yaml)
+  dev = doc["development"]
+  self~assertEquals("postgres", dev["adapter"], "merge adapter")
+  self~assertEquals("localhost", dev["host"], "merge host")
+  self~assertEquals("myapp_dev", dev["database"], "own key")
+
+/*------------------------------------------------------------------------*/
+/* 9. Sequence of mappings                                                */
+/*------------------------------------------------------------------------*/
+::method "test09_SequenceOfMappings"
+  expose parser
+
+  yaml = "people:"            || "0A"x || -
+         "  - name: Alice"    || "0A"x || -
+         "    age: 30"        || "0A"x || -
+         "  - name: Bob"      || "0A"x || -
+         "    age: 25"
+
+  doc = parser~parseString(yaml)
+  people = doc["people"]
+  self~assertEquals(2, people~items, "person count")
+  self~assertEquals("Alice", people[1]["name"], "person 1 name")
+  self~assertEquals(25, people[2]["age"], "person 2 age")
+
+/*------------------------------------------------------------------------*/
+/* 10. Multi-document                                                     */
+/*------------------------------------------------------------------------*/
+::method "test10_MultiDocument"
+  expose parser
+
+  yaml = "---"            || "0A"x || -
+         "first: doc1"    || "0A"x || -
+         "---"            || "0A"x || -
+         "second: doc2"   || "0A"x || -
+         "..."
+
+  docs = parser~parseAll(yaml)
+  self~assertEquals(2, docs~items, "doc count")
+  self~assertEquals("doc1", docs[1]["first"], "doc 1")
+  self~assertEquals("doc2", docs[2]["second"], "doc 2")
+
+/*------------------------------------------------------------------------*/
+/* 11. Front matter                                                       */
+/*------------------------------------------------------------------------*/
+::method "test11_FrontMatter"
+  expose parser
+
+  md = "---"                      || "0A"x || -
+       "title: My Post"           || "0A"x || -
+       "date: 2025-01-15"         || "0A"x || -
+       "tags: [yaml, rexx]"       || "0A"x || -
+       "---"                      || "0A"x || -
+       ""                         || "0A"x || -
+       "# This is the body"       || "0A"x || -
+       "Not parsed as YAML."
+
+  fm = parser~parseFrontMatter(md)
+  self~assertEquals("My Post", fm["title"], "fm title")
+  self~assertEquals("2025-01-15", fm["date"], "fm date")
+  tags = fm["tags"]
+  self~assertEquals(2, tags~items, "fm tag count")
+  self~assertEquals("yaml", tags[1], "fm tag 1")
+
+/*------------------------------------------------------------------------*/
+/* 12. Comments                                                           */
+/*------------------------------------------------------------------------*/
+::method "test12_Comments"
+  expose parser
+
+  yaml = "# Full line comment"     || "0A"x || -
+         "key: value  # inline"    || "0A"x || -
+         "other: stuff"
+
+  doc = parser~parseString(yaml)
+  self~assertEquals("value", doc["key"], "inline comment stripped")
+
+/*------------------------------------------------------------------------*/
+/* 13. Complex nesting                                                    */
+/*------------------------------------------------------------------------*/
+::method "test13_ComplexNesting"
+  expose parser
+
+  yaml = "servers:"                 || "0A"x || -
+         "  - name: web1"           || "0A"x || -
+         "    roles:"               || "0A"x || -
+         "      - frontend"         || "0A"x || -
+         "      - api"              || "0A"x || -
+         "    config:"              || "0A"x || -
+         "      port: 8080"         || "0A"x || -
+         "      ssl: true"          || "0A"x || -
+         "  - name: db1"            || "0A"x || -
+         "    roles:"               || "0A"x || -
+         "      - database"
+
+  doc = parser~parseString(yaml)
+  servers = doc["servers"]
+  self~assertEquals(2, servers~items, "server count")
+  self~assertEquals("web1", servers[1]["name"], "server1 name")
+  roles = servers[1]["roles"]
+  self~assertEquals(2, roles~items, "server1 roles")
+  self~assertEquals("frontend", roles[1], "server1 role 1")
+  cfg = servers[1]["config"]
+  self~assertEquals(8080, cfg["port"], "server1 port")
+  self~assertEquals(1, cfg["ssl"], "server1 ssl")
+  self~assertEquals(1, servers[2]["roles"]~items, "server2 role cnt")
+
+/*------------------------------------------------------------------------*/
+/* 14. Nested flow collections                                            */
+/*------------------------------------------------------------------------*/
+::method "test14_NestedFlowCollections"
+  expose parser
+
+  yaml = "matrix: [[1, 2], [3, 4]]"  || "0A"x || -
+         "mixed: [{a: 1}, {b: 2}]"
+
+  doc = parser~parseString(yaml)
+  matrix = doc["matrix"]
+  self~assertEquals(2, matrix[1][2], "nested flow [1][2]")
+  self~assertEquals(3, matrix[2][1], "nested flow [2][1]")
+  self~assertEquals(1, doc["mixed"][1]["a"], "mixed flow")
+
+/*------------------------------------------------------------------------*/
+/* 15. Serialisation round-trip                                           */
+/*------------------------------------------------------------------------*/
+::method "test15_SerialisationRoundtrip"
+  expose parser
+
+  yaml = "name: Test"             || "0A"x || -
+         "items:"                  || "0A"x || -
+         "  - alpha"               || "0A"x || -
+         "  - beta"                || "0A"x || -
+         "nested:"                 || "0A"x || -
+         "  key: value"
+
+  doc  = parser~parseString(yaml)
+  out  = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertEquals("Test", doc2["name"], "roundtrip name")
+  self~assertEquals(2, doc2["items"]~items, "roundtrip items")
+  self~assertEquals("value", doc2["nested"]["key"], "roundtrip nested")
+
+/*------------------------------------------------------------------------*/
+/* 16. Pandoc-style front matter                                          */
+/*------------------------------------------------------------------------*/
+::method "test16_PandocFrontMatter"
+  expose parser
+
+  md = "---"                                || "0A"x || -
+       "title: 'Advanced ooRexx'"            || "0A"x || -
+       "author:"                             || "0A"x || -
+       "  - name: John Smith"                || "0A"x || -
+       "    affiliation: ACME Corp"          || "0A"x || -
+       "  - name: Jane Doe"                  || "0A"x || -
+       "    affiliation: Widgets Inc"        || "0A"x || -
+       "abstract: |"                         || "0A"x || -
+       "  This paper presents a new"         || "0A"x || -
+       "  approach to YAML parsing."         || "0A"x || -
+       "keywords: [ooRexx, YAML, parser]"    || "0A"x || -
+       "lang: en-GB"                         || "0A"x || -
+       "bibliography: refs.bib"              || "0A"x || -
+       "---"                                 || "0A"x || -
+       ""                                    || "0A"x || -
+       "# Introduction"                      || "0A"x || -
+       "This is the body."
+
+  fm = parser~parseFrontMatter(md)
+  self~assertEquals("Advanced ooRexx", fm["title"], "pandoc title")
+  authors = fm["author"]
+  self~assertEquals(2, authors~items, "pandoc authors")
+  self~assertEquals("John Smith", authors[1]["name"], "pandoc author1")
+  self~assertEquals("Widgets Inc", authors[2]["affiliation"], "pandoc affil2")
+  self~assertTrue(fm["abstract"]~pos("approach") > 0, "pandoc abstract")
+  kw = fm["keywords"]
+  self~assertEquals(3, kw~items, "pandoc keywords")
+  self~assertEquals("en-GB", fm["lang"], "pandoc lang")
+  self~assertEquals("refs.bib", fm["bibliography"], "pandoc bib")
+
+/*------------------------------------------------------------------------*/
+/* 17. Comprehensive serialisation round-trip                             */
+/*------------------------------------------------------------------------*/
+::method "test17_ComprehensiveRoundtrip"
+  expose parser
+
+  big = .table~new
+  big["plain"] = "hello world"
+  big["integer"] = 42
+  big["negative"] = -17
+  big["float"] = 3.14
+  big["null_value"] = .nil
+  big["empty_string"] = ""
+  big["bool_true"] = "true"
+  big["bool_false"] = "false"
+
+  nested = .table~new
+  nested["level2"] = .table~new
+  nested["level2"]["deep"] = "value"
+  big["nested_map"] = nested
+
+  big["simple_list"] = .array~of("alpha", "beta", "gamma")
+
+  lom = .array~new
+  m1 = .table~new; m1["name"] = "Alice"; m1["age"] = 30
+  m2 = .table~new; m2["name"] = "Bob";   m2["age"] = 25
+  lom~append(m1); lom~append(m2)
+  big["list_of_maps"] = lom
+
+  big["empty_map"] = .table~new
+  big["empty_list"] = .array~new
+
+  multiline = "Line one" || "0A"x || "Line two" || "0A"x || "Line three"
+  big["multiline"] = multiline
+
+  big["special_chars"] = "tabs"||"09"x||"here and\backslash"
+  big["comment-like"] = "value"
+  big["key: colon"] = "value"
+
+  yaml1 = .Yaml~toYaml(big)
+  doc2  = parser~parseString(yaml1)
+  self~assertTrue(doc2~isA(.table), "big roundtrip type")
+  self~assertEquals("hello world", doc2["plain"], "big roundtrip plain")
+  self~assertEquals(42, doc2["integer"], "big roundtrip integer")
+  self~assertEquals(-17, doc2["negative"], "big roundtrip negative")
+  self~assertEquals(3.14, doc2["float"], "big roundtrip float")
+  self~assertEquals(.nil, doc2["null_value"], "big roundtrip null")
+  self~assertEquals("", doc2["empty_string"], "big roundtrip empty str")
+  self~assertEquals("true", doc2["bool_true"], "big roundtrip bool")
+  self~assertEquals("value", doc2["nested_map"]["level2"]["deep"], "big roundtrip nested")
+  self~assertEquals(3, doc2["simple_list"]~items, "big roundtrip list")
+  self~assertEquals("beta", doc2["simple_list"][2], "big roundtrip list[2]")
+  self~assertEquals("Alice", doc2["list_of_maps"][1]["name"], "big roundtrip lom")
+  self~assertTrue(doc2["empty_map"]~isA(.table), "big roundtrip empty map")
+  self~assertEquals(0, doc2["empty_map"]~items, "big roundtrip empty map size")
+  self~assertTrue(doc2["empty_list"]~isA(.array), "big roundtrip empty list")
+  self~assertEquals(0, doc2["empty_list"]~items, "big roundtrip empty list size")
+  self~assertTrue(doc2["multiline"]~pos("Line two") > 0, "big roundtrip multiline")
+  self~assertTrue(doc2["special_chars"]~pos("09"x) > 0, "big roundtrip special")
+  self~assertEquals("value", doc2["comment-like"], "big roundtrip comment key")
+  self~assertEquals("value", doc2["key: colon"], "big roundtrip colon key")
+
+  yaml2 = .Yaml~toYaml(doc2)
+  self~assertEquals(yaml1, yaml2, "big roundtrip stable")
+
+/*------------------------------------------------------------------------*/
+/* 18. File round-trip (toYamlFile / parseFile)                           */
+/*------------------------------------------------------------------------*/
+::method "test18_FileRoundtrip"
+  expose parser thisLocation
+
+  inFile  = thisLocation"test_all_constructs.yaml"
+  outFile = thisLocation"test18_roundtrip.yaml"
+
+  doc1 = parser~parseFile(inFile)
+  .Yaml~toYamlFile(doc1, outFile)
+  doc3 = parser~parseFile(outFile)
+
+  self~assertTrue(deepEqual(doc1, doc3), "file roundtrip equal")
+  self~assertEquals("hello world", doc3["plain"], "file roundtrip plain")
+  self~assertEquals(42, doc3["integer"], "file roundtrip integer")
+  self~assertEquals("deep", doc3["nested_map"]["level1"]["level2"]["level3"], "file roundtrip nested")
+  self~assertEquals("beta", doc3["simple_list"][2], "file roundtrip list")
+  self~assertEquals("Alice", doc3["list_of_maps"][1]["name"], "file roundtrip lom")
+  self~assertEquals(0, doc3["empty_map"]~items, "file roundtrip empty m")
+  self~assertEquals(0, doc3["empty_list"]~items, "file roundtrip empty l")
+  self~assertTrue(doc3["multiline"]~pos("multi-line") > 0, "file roundtrip multi")
+  self~assertEquals("admin", doc3["mixed_nesting"]["users"][1]["name"], "file roundtrip users")
+  self~assertEquals("write", doc3["mixed_nesting"]["users"][1]["roles"][2], "file roundtrip roles")
+
+  .Yaml~toYamlFile(doc3, outFile)
+  doc4 = parser~parseFile(outFile)
+  self~assertTrue(deepEqual(doc3, doc4), "file roundtrip stable")
+
+  -- cleanup
+  call SysFileDelete outFile
+
+/*------------------------------------------------------------------------*/
+/* 19. Array round-trip (parseArray / toYamlArray)                        */
+/*------------------------------------------------------------------------*/
+::method "test19_ArrayRoundtrip"
+  expose parser thisLocation
+
+  inFile = thisLocation"test_all_constructs.yaml"
+  arrIn = .stream~new(inFile)~~open("READ")~arrayIn
+
+  doc5  = parser~parseArray(arrIn)
+  arrOut = .Yaml~toYamlArray(doc5)
+  doc6  = parser~parseArray(arrOut)
+
+  self~assertTrue(deepEqual(doc5, doc6), "array roundtrip equal")
+  self~assertEquals("hello world", doc6["plain"], "array roundtrip plain")
+  self~assertEquals(42, doc6["integer"], "array roundtrip integer")
+  self~assertEquals(3, doc6["simple_list"]~items, "array roundtrip list")
+  self~assertEquals("deep", doc6["nested_map"]["level1"]["level2"]["level3"], "array roundtrip nested")
+  self~assertEquals("Bob", doc6["list_of_maps"][2]["name"], "array roundtrip lom name")
+
+  arrOut2 = .Yaml~toYamlArray(doc6)
+  self~assertEquals(arrOut~items, arrOut2~items, "array roundtrip stable count")
+  doc7 = parser~parseArray(arrOut2)
+  self~assertTrue(deepEqual(doc6, doc7), "array roundtrip stable")
+
+/*------------------------------------------------------------------------*/
+/* 20. Front-matter file round-trip                                       */
+/*------------------------------------------------------------------------*/
+::method "test20_FrontMatterFileRoundtrip"
+  expose parser thisLocation
+
+  fmData = .table~new
+  fmData["title"] = "Advanced ooRexx"
+  fmData["lang"] = "en-GB"
+  authors = .array~new
+  a1 = .table~new; a1["name"] = "John Smith"; a1["affiliation"] = "ACME Corp"
+  a2 = .table~new; a2["name"] = "Jane Doe";   a2["affiliation"] = "Widgets Inc"
+  authors~append(a1); authors~append(a2)
+  fmData["author"] = authors
+  fmData["keywords"] = .array~of("ooRexx", "YAML", "parser")
+
+  fmFile = thisLocation"test20_frontmatter.yaml"
+  .Yaml~toYamlFMFile(fmData, fmFile)
+
+  fmDoc = parser~parseFrontMatterFile(fmFile)
+  self~assertTrue(fmDoc~isA(.table), "fm roundtrip type")
+  self~assertTrue(deepEqual(fmData, fmDoc), "fm roundtrip equal")
+  self~assertEquals("Advanced ooRexx", fmDoc["title"], "fm roundtrip title")
+  self~assertEquals("en-GB", fmDoc["lang"], "fm roundtrip lang")
+  self~assertEquals(2, fmDoc["author"]~items, "fm roundtrip authors")
+  self~assertEquals("John Smith", fmDoc["author"][1]["name"], "fm roundtrip author1")
+  self~assertEquals(3, fmDoc["keywords"]~items, "fm roundtrip kw")
+
+  .Yaml~toYamlFMFile(fmDoc, fmFile)
+  fmDoc2 = parser~parseFrontMatterFile(fmFile)
+  self~assertTrue(deepEqual(fmDoc, fmDoc2), "fm roundtrip stable")
+
+  -- cleanup
+  call SysFileDelete fmFile
+
+/*------------------------------------------------------------------------*/
+/* 21. XML round-trip via XSD                                             */
+/*------------------------------------------------------------------------*/
+::method "test21_XmlXsdRoundtrip"
+  expose parser thisLocation
+
+  inFile  = thisLocation"test_all_constructs.yaml"
+  outFile = thisLocation"test21_xsd_out.yaml"
+
+  doc1 = parser~parseFile(inFile)
+
+  xml1 = .Yaml~yamlToXml(doc1, "xsd")
+  self~assertTrue(xml1~pos('<?xml') > 0, "xsd xml has declaration")
+  self~assertTrue(xml1~pos('xmlns=') > 0, "xsd xml has namespace")
+  self~assertTrue(xml1~pos('<yaml') > 0, "xsd xml has yaml element")
+
+  doc2 = parser~parseXml(xml1)
+  self~assertTrue(doc2~isA(.table), "xsd roundtrip type")
+  self~assertTrue(deepEqual(doc1, doc2), "xsd roundtrip equal")
+
+  self~assertEquals("hello world", doc2["plain"], "xsd roundtrip plain")
+  self~assertEquals(42, doc2["integer"], "xsd roundtrip integer")
+  self~assertEquals(3.14, doc2["float"], "xsd roundtrip float")
+  self~assertEquals(.nil, doc2["null_value"], "xsd roundtrip null")
+  self~assertEquals("", doc2["empty_string"], "xsd roundtrip empty s")
+  self~assertEquals("deep", doc2["nested_map"]["level1"]["level2"]["level3"], "xsd roundtrip nested")
+  self~assertEquals(3, doc2["simple_list"]~items, "xsd roundtrip list")
+  self~assertEquals("beta", doc2["simple_list"][2], "xsd roundtrip list[2]")
+  self~assertEquals("Alice", doc2["list_of_maps"][1]["name"], "xsd roundtrip lom")
+  self~assertEquals(0, doc2["empty_map"]~items, "xsd roundtrip empty m")
+  self~assertEquals(0, doc2["empty_list"]~items, "xsd roundtrip empty l")
+  self~assertTrue(doc2["multiline"]~pos("multi-line") > 0, "xsd roundtrip multi")
+  self~assertTrue(doc2["special_chars"]~pos("09"x) > 0, "xsd roundtrip special")
+  self~assertEquals("admin", doc2["mixed_nesting"]["users"][1]["name"], "xsd roundtrip users")
+  self~assertEquals("write", doc2["mixed_nesting"]["users"][1]["roles"][2], "xsd roundtrip roles")
+
+  xml2 = .Yaml~yamlToXml(doc2, "xsd")
+  doc3 = parser~parseXml(xml2)
+  self~assertTrue(deepEqual(doc2, doc3), "xsd roundtrip stable")
+
+  .Yaml~toYamlFile(doc2, outFile)
+  doc4 = parser~parseFile(outFile)
+  self~assertTrue(deepEqual(doc1, doc4), "xsd yaml output equal")
+
+  -- cleanup
+  call SysFileDelete outFile
+
+/*------------------------------------------------------------------------*/
+/* 22. XML round-trip via DTD                                             */
+/*------------------------------------------------------------------------*/
+::method "test22_XmlDtdRoundtrip"
+  expose parser thisLocation
+
+  inFile     = thisLocation"test_all_constructs.yaml"
+  outDtdFile = thisLocation"test22_dtd_out.yaml"
+
+  doc1 = parser~parseFile(inFile)
+
+  xml3 = .Yaml~yamlToXml(doc1, "dtd")
+  self~assertTrue(xml3~pos('<!DOCTYPE') > 0, "dtd xml has DOCTYPE")
+  self~assertTrue(xml3~pos('xmlns=') == 0, "dtd xml no namespace")
+
+  doc5 = parser~parseXml(xml3)
+  self~assertTrue(doc5~isA(.table), "dtd roundtrip type")
+  self~assertTrue(deepEqual(doc1, doc5), "dtd roundtrip equal")
+
+  self~assertEquals("hello world", doc5["plain"], "dtd roundtrip plain")
+  self~assertEquals(42, doc5["integer"], "dtd roundtrip integer")
+  self~assertEquals("deep", doc5["nested_map"]["level1"]["level2"]["level3"], "dtd roundtrip nested")
+  self~assertEquals("beta", doc5["simple_list"][2], "dtd roundtrip list")
+  self~assertEquals("Alice", doc5["list_of_maps"][1]["name"], "dtd roundtrip lom")
+  self~assertEquals(0, doc5["empty_map"]~items, "dtd roundtrip empty m")
+  self~assertEquals(0, doc5["empty_list"]~items, "dtd roundtrip empty l")
+  self~assertEquals("admin", doc5["mixed_nesting"]["users"][1]["name"], "dtd roundtrip users")
+
+  xml4 = .Yaml~yamlToXml(doc5, "dtd")
+  doc6 = parser~parseXml(xml4)
+  self~assertTrue(deepEqual(doc5, doc6), "dtd roundtrip stable")
+
+  .Yaml~toYamlFile(doc5, outDtdFile)
+  doc7 = parser~parseFile(outDtdFile)
+  self~assertTrue(deepEqual(doc1, doc7), "dtd yaml output equal")
+
+  -- cleanup
+  call SysFileDelete outDtdFile
+
+/*------------------------------------------------------------------------*/
+/* 23. XML file round-trip (yamlToXmlFile / parseXmlFile)                 */
+/*------------------------------------------------------------------------*/
+::method "test23_XmlFileRoundtrip"
+  expose parser thisLocation
+
+  inFile     = thisLocation"test_all_constructs.yaml"
+  xmlFile    = thisLocation"test23_xsd.xml"
+  xmlDtdFile = thisLocation"test23_dtd.xml"
+
+  doc1 = parser~parseFile(inFile)
+
+  .Yaml~yamlToXmlFile(doc1, xmlFile, "xsd")
+  doc8 = parser~parseXmlFile(xmlFile)
+  self~assertTrue(deepEqual(doc1, doc8), "xsd file roundtrip equal")
+
+  .Yaml~yamlToXmlFile(doc1, xmlDtdFile, "dtd")
+  doc9 = parser~parseXmlFile(xmlDtdFile)
+  self~assertTrue(deepEqual(doc1, doc9), "dtd file roundtrip equal")
+
+  .Yaml~yamlToXmlFile(doc8, xmlFile, "xsd")
+  doc10 = parser~parseXmlFile(xmlFile)
+  self~assertTrue(deepEqual(doc8, doc10), "xsd file roundtrip stable")
+
+  .Yaml~yamlToXmlFile(doc9, xmlDtdFile, "dtd")
+  doc11 = parser~parseXmlFile(xmlDtdFile)
+  self~assertTrue(deepEqual(doc9, doc11), "dtd file roundtrip stable")
+
+  -- cleanup
+  call SysFileDelete xmlFile
+  call SysFileDelete xmlDtdFile
+
+/*------------------------------------------------------------------------*/
+/* 24. YamlBoolean type preservation                                      */
+/*------------------------------------------------------------------------*/
+::method "test24_YamlBooleanPreservation"
+  expose parser
+
+  yaml = "btrue: true"     || "0A"x || -
+         "bfalse: false"   || "0A"x || -
+         "byes: yes"       || "0A"x || -
+         "bno: no"         || "0A"x || -
+         "bon: on"         || "0A"x || -
+         "boff: off"       || "0A"x || -
+         "int1: 1"         || "0A"x || -
+         "int0: 0"
+
+  doc = parser~parseString(yaml)
+
+  self~assertTrue(doc["btrue"]~isA(.YamlBoolean), "true isA YamlBoolean")
+  self~assertTrue(doc["bfalse"]~isA(.YamlBoolean), "false isA YamlBoolean")
+  self~assertTrue(doc["byes"]~isA(.YamlBoolean), "yes isA YamlBoolean")
+  self~assertTrue(doc["bno"]~isA(.YamlBoolean), "no isA YamlBoolean")
+  self~assertTrue(doc["bon"]~isA(.YamlBoolean), "on isA YamlBoolean")
+  self~assertTrue(doc["boff"]~isA(.YamlBoolean), "off isA YamlBoolean")
+
+  self~assertFalse(doc["int1"]~isA(.YamlBoolean), "1 not YamlBoolean")
+  self~assertFalse(doc["int0"]~isA(.YamlBoolean), "0 not YamlBoolean")
+
+  self~assertEquals(1, doc["btrue"], "true == 1")
+  self~assertEquals(0, doc["bfalse"], "false == 0")
+  self~assertEquals(1, doc["byes"], "yes == 1")
+  self~assertEquals(0, doc["bno"], "no == 0")
+
+  self~assertEquals("true", doc["btrue"]~makeYAML, "true makeYAML")
+  self~assertEquals("false", doc["bfalse"]~makeYAML, "false makeYAML")
+
+  self~assertTrue(.Yaml~true~isA(.YamlBoolean), ".Yaml~true")
+  self~assertTrue(.Yaml~false~isA(.YamlBoolean), ".Yaml~false")
+  self~assertEquals(1, .Yaml~true, ".Yaml~true value")
+  self~assertEquals(0, .Yaml~false, ".Yaml~false value")
+
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(doc2["btrue"]~isA(.YamlBoolean), "yaml roundtrip btrue")
+  self~assertTrue(doc2["bfalse"]~isA(.YamlBoolean), "yaml roundtrip bfalse")
+  self~assertFalse(doc2["int1"]~isA(.YamlBoolean), "yaml roundtrip int1")
+  self~assertTrue(deepEqual(doc, doc2), "yaml roundtrip equal")
+
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  self~assertTrue(xml~pos('type="bool"') > 0, "xml has bool type")
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(doc3["btrue"]~isA(.YamlBoolean), "xml roundtrip btrue isA")
+  self~assertTrue(doc3["bfalse"]~isA(.YamlBoolean), "xml roundtrip bfalse isA")
+  self~assertFalse(doc3["int1"]~isA(.YamlBoolean), "xml roundtrip int1 not")
+  self~assertTrue(deepEqual(doc, doc3), "xml roundtrip equal")
+
+/*------------------------------------------------------------------------*/
+/* 25. Anchor/alias round-trip                                            */
+/*------------------------------------------------------------------------*/
+::method "test25_AnchorAliasRoundtrip"
+  expose parser
+
+  yamlAnch = "defaults: &defs"     || "0A"x || -
+             "  adapter: postgres"  || "0A"x || -
+             "  host: localhost"    || "0A"x || -
+             "other: &other"        || "0A"x || -
+             "  port: 5432"         || "0A"x || -
+             "development:"         || "0A"x || -
+             "  <<: *defs"          || "0A"x || -
+             "  database: myapp_dev"
+
+  docA = parser~parseString(yamlAnch)
+  am   = parser~anchorMap
+
+  self~assertTrue(am~items > 0, "anchorMap has entries")
+  self~assertEquals("postgres", docA["development"]["adapter"], "merge adapter")
+  self~assertEquals("myapp_dev", docA["development"]["database"], "merge database")
+
+  yamlShared = "base: &shared"        || "0A"x || -
+               "  x: 10"              || "0A"x || -
+               "  y: 20"              || "0A"x || -
+               "ref1: *shared"        || "0A"x || -
+               "ref2: *shared"
+
+  docS = parser~parseString(yamlShared)
+  amS  = parser~anchorMap
+
+  self~assertTrue((docS["ref1"] == docS["base"]) | (docS["ref1"] == docS["ref2"]), "ref1 identity")
+  self~assertEquals(10, docS["ref1"]["x"], "ref1 x")
+  self~assertEquals(20, docS["ref2"]["y"], "ref2 y")
+
+  yamlOut = .Yaml~toYaml(docS, 2, amS)
+  self~assertTrue(yamlOut~pos("&shared") > 0, "yaml has anchor")
+  self~assertTrue(yamlOut~pos("*shared") > 0, "yaml has alias")
+
+  docS2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(docS, docS2), "yaml rt equal")
+
+  yamlExpanded = .Yaml~toYaml(docS)
+  self~assertTrue(yamlExpanded~pos("*shared") = 0, "expanded no alias")
+
+  xmlAnch = .Yaml~yamlToXml(docS, "xsd", amS)
+  self~assertTrue(xmlAnch~pos('anchor="shared"') > 0, "xml has anchor attr")
+  self~assertTrue(xmlAnch~pos('<alias') > 0, "xml has alias elem")
+
+  docS3 = parser~parseXml(xmlAnch)
+  self~assertTrue(deepEqual(docS, docS3), "xml rt equal")
+  self~assertTrue((docS3["ref1"] == docS3["ref2"]) | -
+                  (docS3["ref1"] == docS3["base"]) | -
+                  (docS3["ref2"] == docS3["base"]), "xml identity")
+
+  xmlDtd = .Yaml~yamlToXml(docS, "dtd", amS)
+  self~assertTrue(xmlDtd~pos('anchor="shared"') > 0, "dtd has anchor")
+  docS4 = parser~parseXml(xmlDtd)
+  self~assertTrue(deepEqual(docS, docS4), "dtd rt equal")
+
+  yamlSeq = "items:"             || "0A"x || -
+            "  - &item1"         || "0A"x || -
+            "    name: first"    || "0A"x || -
+            "    val: 100"       || "0A"x || -
+            "  - *item1"
+
+  docSeq = parser~parseString(yamlSeq)
+  amSeq  = parser~anchorMap
+  self~assertEquals("first", docSeq["items"][2]["name"], "seq alias name")
+  self~assertTrue(docSeq["items"][1] == docSeq["items"][2], "seq identity")
+
+  xmlSeq = .Yaml~yamlToXml(docSeq, "xsd", amSeq)
+  docSeq2 = parser~parseXml(xmlSeq)
+  self~assertTrue(deepEqual(docSeq, docSeq2), "seq xml rt equal")
+  self~assertTrue(docSeq2["items"][1] == docSeq2["items"][2], "seq xml identity")
+
+/*------------------------------------------------------------------------*/
+/* 26. Comprehensive file round-trip with all constructs                  */
+/*------------------------------------------------------------------------*/
+::method "test26_ComprehensiveFileRoundtrip"
+  expose parser thisLocation
+
+  inFile = thisLocation"test_all_constructs.yaml"
+  doc1 = parser~parseFile(inFile)
+  am1  = parser~anchorMap
+
+  self~assertTrue(am1~items > 0, "file anchor captured")
+
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc1, doc2), "file yaml rt equal")
+
+  self~assertTrue(doc2["bool_true"]~isA(.YamlBoolean), "file bool true isA")
+  self~assertTrue(doc2["bool_false"]~isA(.YamlBoolean), "file bool false isA")
+  self~assertTrue(doc2["bool_yes"]~isA(.YamlBoolean), "file bool yes isA")
+  self~assertTrue(doc2["bool_no"]~isA(.YamlBoolean), "file bool no isA")
+  self~assertTrue(doc2["bool_on"]~isA(.YamlBoolean), "file bool on isA")
+  self~assertTrue(doc2["bool_off"]~isA(.YamlBoolean), "file bool off isA")
+
+  self~assertEquals(255, doc2["hex_value"], "file hex value")
+  self~assertEquals(63, doc2["octal_value"], "file octal value")
+  self~assertEquals(".inf", doc2["infinity"], "file infinity")
+  self~assertEquals("-.inf", doc2["neg_infinity"], "file neg infinity")
+  self~assertEquals(".nan", doc2["not_a_number"], "file nan")
+  self~assertEquals(6.022E23, doc2["scientific"], "file scientific")
+
+  self~assertEquals(3, doc2["flow_sequence"]~items, "file flow seq")
+  self~assertEquals("two", doc2["flow_sequence"][2], "file flow seq 2")
+  self~assertEquals(10, doc2["flow_mapping"]["x"], "file flow map x")
+  self~assertEquals(2, doc2["nested_flow"][1][2], "file nested flow")
+  self~assertEquals(1, doc2["mixed_flow"][1]["a"], "file mixed flow")
+
+  self~assertTrue(doc2["folded"]~pos("folded block scalar") > 0, "file folded")
+  self~assertTrue(doc2["strip_chomp"]~right(1) \== "0A"x, "file strip chomp")
+  self~assertTrue(doc2["multiline"]~pos("multi-line") > 0, "file multiline")
+
+  self~assertEquals("It's a test", doc2["single_quoted"], "file single quoted")
+  self~assertTrue(doc2["double_quoted"]~pos("09"x) > 0, "file double quoted")
+
+  self~assertEquals("deep", doc2["deeply_nested_list"][1][1][1], "file deeply nested")
+  self~assertEquals("zero", doc2["numeric_keys"]["0"], "file numeric key 0")
+  self~assertEquals("pi", doc2["numeric_keys"]["3.14"], "file numeric key pi")
+  self~assertEquals("  two spaces", doc2["leading_space_value"], "file leading spaces")
+  self~assertEquals("value  ", doc2["trailing_space_value"], "file trailing spaces")
+  self~assertEquals("http://example.com", doc2["colon_in_value"], "file colon in value")
+  self~assertEquals("color #FF0000", doc2["hash_in_value"], "file hash in value")
+  self~assertEquals("only_value", doc2["single_item_map"]["only_key"], "file single item map")
+  self~assertEquals("only", doc2["single_item_list"][1], "file single item list")
+
+  self~assertTrue(doc2["null_value"] == .nil, "file null value")
+  self~assertTrue(doc2["null_tilde"] == .nil, "file null tilde")
+
+  self~assertEquals("true", doc2["true"], "file str true key")
+  self~assertEquals("false", doc2["false"], "file str false key")
+  self~assertEquals("null", doc2["null"], "file str null key")
+  self~assertEquals("NULL", doc2["NULL"], "file str NULL key")
+
+  self~assertEquals("postgres", doc2["development"]["adapter"], "file merge adapter")
+  self~assertEquals("localhost", doc2["development"]["host"], "file merge host")
+  self~assertEquals("myapp_dev", doc2["development"]["database"], "file merge database")
+
+  /* Verify keep chomp (|+) */
+  self~assertTrue(doc2["keep_chomp"]~right(1) == "0A"x, "file keep chomp")
+
+  /* Verify folded strip (>-) and folded keep (>+) */
+  self~assertTrue(doc2["folded_strip"]~right(1) \== "0A"x, "file folded strip")
+  self~assertTrue(doc2["folded_strip"]~pos("folded without trailing newline") > 0, "file folded strip content")
+  self~assertTrue(doc2["folded_keep"]~right(1) == "0A"x, "file folded keep")
+  self~assertTrue(doc2["folded_keep"]~pos("folded with trailing newlines kept") > 0, "file folded keep content")
+
+  /* Verify Unicode escapes (unescaped to UTF-8 by default) */
+  self~assertEquals("C3A9", doc2["unicode_escape_2byte"]~c2x, "file unicode 2byte")
+  self~assertEquals(3, doc2["unicode_escape_3byte"]~length, "file unicode 3byte len")
+  self~assertEquals(4, doc2["unicode_escape_8digit"]~length, "file unicode 8digit len")
+
+  /* Verify tags — values resolved, tags stripped */
+  self~assertEquals(1, doc2["tagged_map"]["x"], "file tagged map x")
+  self~assertEquals(2, doc2["tagged_map"]["y"], "file tagged map y")
+  self~assertEquals("42", doc2["tagged_flow"][1], "file tagged flow str")
+  self~assertEquals(7, doc2["tagged_flow"][2], "file tagged flow int")
+  self~assertEquals("value123", doc2["custom_tag"], "file custom tag")
+  self~assertEquals("hello", doc2["verbatim_tag"], "file verbatim tag")
+
+  /* Verify complex mapping keys */
+  self~assertEquals("scalar_complex_value", doc2["scalar_key"], "file scalar complex key")
+  complexFound = 0
+  sup = doc2~supplier
+  Do While sup~available
+    If sup~index~isA(.array) Then Do
+      If sup~index~items = 2, sup~index[1] = "a", sup~index[2] = "b" Then
+        complexFound += 1
+    End
+    If sup~index~isA(.table) Then Do
+      If sup~index["x"] = 1 Then
+        complexFound += 1
+    End
+    sup~next
+  End
+  self~assertEquals(2, complexFound, "file complex keys found")
+
+  xml1 = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml1)
+  self~assertTrue(deepEqual(doc1, doc3), "file xml xsd rt equal")
+
+  xml2 = .Yaml~yamlToXml(doc1, "dtd")
+  doc4 = parser~parseXml(xml2)
+  self~assertTrue(deepEqual(doc1, doc4), "file xml dtd rt equal")
+
+  doc5 = parser~parseString(.Yaml~toYaml(doc3))
+  self~assertTrue(deepEqual(doc1, doc5), "file chain rt equal")
+
+/*------------------------------------------------------------------------*/
+/* 27. Multi-document with anchorMap                                      */
+/*------------------------------------------------------------------------*/
+::method "test27_MultiDocumentAnchorMap"
+  expose parser
+
+  yamlMulti = "---"                     || "0A"x || -
+              "name: first"             || "0A"x || -
+              "---"                     || "0A"x || -
+              "name: second"
+
+  docs = parser~parseAll(yamlMulti)
+  self~assertEquals(2, docs~items, "multi doc count")
+  self~assertEquals("first", docs[1]["name"], "multi doc 1")
+  self~assertEquals("second", docs[2]["name"], "multi doc 2")
+
+  multiOut = .Yaml~toYamlAll(docs)
+  self~assertTrue(multiOut~countStr("---") >= 2, "multi has ---")
+  docs2 = parser~parseAll(multiOut)
+  self~assertEquals(2, docs2~items, "multi rt count")
+  self~assertEquals("first", docs2[1]["name"], "multi rt doc 1")
+  self~assertEquals("second", docs2[2]["name"], "multi rt doc 2")
+  self~assertTrue(deepEqual(docs[1], docs2[1]), "multi rt equal 1")
+  self~assertTrue(deepEqual(docs[2], docs2[2]), "multi rt equal 2")
+
+/*------------------------------------------------------------------------*/
+/* 28. Escape character round-trips                                       */
+/*------------------------------------------------------------------------*/
+::method "test28_EscapeCharacterRoundtrips"
+  expose parser
+
+  /* \0 NUL */
+  yaml = 'esc_nul: "before\0after"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "00"x || "after", doc["esc_nul"], 'esc \0 parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_nul"], doc2["esc_nul"], 'esc \0 roundtrip')
+
+  /* \a BEL */
+  yaml = 'esc_bel: "before\aafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "07"x || "after", doc["esc_bel"], 'esc \a parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_bel"], doc2["esc_bel"], 'esc \a roundtrip')
+
+  /* \b BS */
+  yaml = 'esc_bs: "before\bafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "08"x || "after", doc["esc_bs"], 'esc \b parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_bs"], doc2["esc_bs"], 'esc \b roundtrip')
+
+  /* \t TAB */
+  yaml = 'esc_tab: "before\tafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "09"x || "after", doc["esc_tab"], 'esc \t parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_tab"], doc2["esc_tab"], 'esc \t roundtrip')
+
+  /* \v VT */
+  yaml = 'esc_vt: "before\vafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "0B"x || "after", doc["esc_vt"], 'esc \v parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_vt"], doc2["esc_vt"], 'esc \v roundtrip')
+
+  /* \f FF */
+  yaml = 'esc_ff: "before\fafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "0C"x || "after", doc["esc_ff"], 'esc \f parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_ff"], doc2["esc_ff"], 'esc \f roundtrip')
+
+  /* \r CR */
+  yaml = 'esc_cr: "before\rafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "0D"x || "after", doc["esc_cr"], 'esc \r parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_cr"], doc2["esc_cr"], 'esc \r roundtrip')
+
+  /* \e ESC */
+  yaml = 'esc_esc: "before\eafter"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before" || "1B"x || "after", doc["esc_esc"], 'esc \e parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_esc"], doc2["esc_esc"], 'esc \e roundtrip')
+
+  /* \" double quote */
+  yaml = 'esc_dq: "before\"after"'
+  doc = parser~parseString(yaml)
+  self~assertEquals('before"after', doc["esc_dq"], 'esc \" parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_dq"], doc2["esc_dq"], 'esc \" roundtrip')
+
+  /* \\ backslash */
+  yaml = 'esc_bs2: "before\\\\after"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before\\after", doc["esc_bs2"], 'esc \\ parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_bs2"], doc2["esc_bs2"], 'esc \\ roundtrip')
+
+  /* \/ slash */
+  yaml = 'esc_slash: "before\/after"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before/after", doc["esc_slash"], 'esc \/ parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_slash"], doc2["esc_slash"], 'esc \/ roundtrip')
+
+  /* \<space> */
+  yaml = 'esc_space: "before\ after"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("before after", doc["esc_space"], 'esc \  parse')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["esc_space"], doc2["esc_space"], 'esc \  roundtrip')
+
+  /* Combined */
+  yaml = 'combined: "tab\there\abell\0nul"'
+  doc = parser~parseString(yaml)
+  expected = "tab" || "09"x || "here" || "07"x || "bell" || "00"x || "nul"
+  self~assertEquals(expected, doc["combined"], "esc combined parse")
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc["combined"], doc2["combined"], "esc combined roundtrip")
+
+  /* XML round-trip (XSD) */
+  yaml = 'esc_tab: "a\tb"' || "0A"x || -
+         'esc_bel: "a\ab"' || "0A"x || -
+         'esc_bs: "a\bb"'
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals(doc["esc_tab"], doc3["esc_tab"], "esc xml rt tab")
+  self~assertEquals(doc["esc_bel"], doc3["esc_bel"], "esc xml rt bel")
+  self~assertEquals(doc["esc_bs"], doc3["esc_bs"], "esc xml rt bs")
+
+  /* XML round-trip (DTD) */
+  xml2 = .Yaml~yamlToXml(doc, "dtd")
+  doc4 = parser~parseXml(xml2)
+  self~assertEquals(doc["esc_tab"], doc4["esc_tab"], "esc dtd rt tab")
+  self~assertEquals(doc["esc_bel"], doc4["esc_bel"], "esc dtd rt bel")
+  self~assertEquals(doc["esc_bs"], doc4["esc_bs"], "esc dtd rt bs")
+
+/*------------------------------------------------------------------------*/
+/* 29. Chomp preservation & embedded-newline round-trip                    */
+/*------------------------------------------------------------------------*/
+::method "test29_ChompPreservation"
+  expose parser
+
+  /* 29a. Clip chomp (|) */
+  yaml = "clip: |" || "0A"x || "  line1" || "0A"x || "  line2"
+  doc = parser~parseString(yaml)
+  clipVal = doc["clip"]
+  self~assertEquals("line1" || "0A"x || "line2" || "0A"x, clipVal, "clip parse")
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("|") > 0, "clip emits |")
+  self~assertTrue(yamlOut~pos("|+") = 0, "clip not |+")
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(clipVal, doc2["clip"], "clip roundtrip")
+
+  /* 29b. Strip chomp (|-) */
+  yaml = "strip: |-" || "0A"x || "  line1" || "0A"x || "  line2"
+  doc = parser~parseString(yaml)
+  stripVal = doc["strip"]
+  self~assertEquals("line1" || "0A"x || "line2", stripVal, "strip parse")
+  self~assertTrue(stripVal~right(1) \== "0A"x, "strip no trailing NL")
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos('"') > 0, 'strip emits dquoted')
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(stripVal, doc2["strip"], "strip roundtrip")
+
+  /* 29c. Keep chomp (|+) */
+  yaml = "keep: |+" || "0A"x || "  line1" || "0A"x || "  line2" || "0A"x || "0A"x || "0A"x
+  doc = parser~parseString(yaml)
+  keepVal = doc["keep"]
+  self~assertTrue(keepVal~right(2) == "0A0A"x, "keep trailing NLs")
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("|+") > 0, "keep emits |+")
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(keepVal, doc2["keep"], "keep roundtrip")
+
+  /* 29d. Embedded newline in double-quoted (no trailing NL) */
+  yaml = 'embedded: "line1\nline2"'
+  doc = parser~parseString(yaml)
+  embVal = doc["embedded"]
+  self~assertEquals("line1" || "0A"x || "line2", embVal, "embedded parse")
+  self~assertTrue(embVal~right(1) \== "0A"x, "embedded no trailing NL")
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos('"') > 0, "embedded emits dquoted")
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(embVal, doc2["embedded"], "embedded roundtrip")
+
+  /* 29e. Embedded newline with trailing NL — should use | */
+  yaml = 'mixed: "line1\nline2\n"'
+  doc = parser~parseString(yaml)
+  mixVal = doc["mixed"]
+  self~assertEquals("line1" || "0A"x || "line2" || "0A"x, mixVal, "mixed parse")
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("|") > 0, "mixed emits |")
+  self~assertTrue(yamlOut~pos("|+") = 0, "mixed not |+")
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(mixVal, doc2["mixed"], "mixed roundtrip")
+
+  /* 29f. Full round-trip for all chomp variants */
+  yaml = "clip: |"  || "0A"x || "  A" || "0A"x || "  B" || "0A"x || -
+         "strip: |-" || "0A"x || "  C" || "0A"x || "  D" || "0A"x || -
+         "keep: |+" || "0A"x || "  E" || "0A"x || "  F" || "0A"x || "0A"x || "0A"x || -
+         'embed: "G\nH"'
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "all chomp deepEqual")
+
+  /* 29g. XML round-trips */
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc3), "chomp xml xsd rt")
+
+  xml2 = .Yaml~yamlToXml(doc, "dtd")
+  doc4 = parser~parseXml(xml2)
+  self~assertTrue(deepEqual(doc, doc4), "chomp xml dtd rt")
+
+  /* 29h. Folded (>) round-trip */
+  yaml = "folded: >" || "0A"x || "  this is" || "0A"x || "  one line"
+  doc = parser~parseString(yaml)
+  foldVal = doc["folded"]
+  self~assertTrue(foldVal~right(1) == "0A"x, "folded trailing NL")
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(foldVal, doc2["folded"], "folded roundtrip")
+
+/*------------------------------------------------------------------------*/
+/* 30. Flow style emission                                                */
+/*------------------------------------------------------------------------*/
+::method "test30_FlowStyleEmission"
+  expose parser
+
+  /* 30a. Simple sequence emitted as flow when nested */
+  yaml = "colors:"         || "0A"x || -
+         "  - red"         || "0A"x || -
+         "  - green"       || "0A"x || -
+         "  - blue"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("[") > 0, "flow seq emitted")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "flow seq roundtrip")
+
+  /* 30b. 4 items (max for flow) */
+  yaml = "nums:"       || "0A"x || -
+         "  - 1"       || "0A"x || -
+         "  - 2"       || "0A"x || -
+         "  - 3"       || "0A"x || -
+         "  - 4"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("[") > 0, "flow seq 4 items")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "flow seq 4 roundtrip")
+
+  /* 30c. 5 items stays block */
+  yaml = "nums:"       || "0A"x || -
+         "  - 1"       || "0A"x || -
+         "  - 2"       || "0A"x || -
+         "  - 3"       || "0A"x || -
+         "  - 4"       || "0A"x || -
+         "  - 5"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("- 1") > 0, "block seq 5 items")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "block seq 5 roundtrip")
+
+  /* 30d. Nested collection stays block */
+  yaml = "data:"              || "0A"x || -
+         "  - name: Alice"    || "0A"x || -
+         "  - name: Bob"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("[") = 0, "block seq nested maps")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "block seq nested roundtrip")
+
+  /* 30e. Sequence with null */
+  yaml = "vals:"     || "0A"x || -
+         "  - hello" || "0A"x || -
+         "  - null"  || "0A"x || -
+         "  - world"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "seq with null roundtrip")
+
+  /* 30f. Empty collections */
+  yaml = "em: {}" || "0A"x || "el: []"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("{}") > 0, "empty map stays {}")
+  self~assertTrue(yamlOut~pos("[]") > 0, "empty list stays []")
+
+  /* 30g. Flow sequence XML round-trip */
+  yaml = "colors:"  || "0A"x || -
+         "  - red"  || "0A"x || -
+         "  - blue"
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc3), "flow seq xml xsd rt")
+  xml2 = .Yaml~yamlToXml(doc, "dtd")
+  doc4 = parser~parseXml(xml2)
+  self~assertTrue(deepEqual(doc, doc4), "flow seq xml dtd rt")
+
+  /* 30h. Top-level sequence stays block */
+  yaml = "- alpha" || "0A"x || "- beta"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("[") = 0, "top seq stays block")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "top seq roundtrip")
+
+/*------------------------------------------------------------------------*/
+/* 31. Anchor ordering in toYaml                                          */
+/*------------------------------------------------------------------------*/
+::method "test31_AnchorOrdering"
+  expose parser
+
+  yamlAnch = "base: &shared"        || "0A"x || -
+             "  x: 10"              || "0A"x || -
+             "  y: 20"              || "0A"x || -
+             "ref1: *shared"        || "0A"x || -
+             "ref2: *shared"
+  doc = parser~parseString(yamlAnch)
+  am  = parser~anchorMap
+
+  yamlOut = .Yaml~toYaml(doc, 2, am)
+  anchorPos = yamlOut~pos("&shared")
+  aliasPos  = yamlOut~pos("*shared")
+  self~assertTrue(anchorPos > 0, "anchor present")
+  self~assertTrue(aliasPos > 0, "alias present")
+  self~assertTrue(anchorPos < aliasPos, "anchor before alias")
+
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "anchor order rt")
+
+  /* Multiple anchors */
+  yamlMulti = "a1: &first"          || "0A"x || -
+              "  p: 1"              || "0A"x || -
+              "a2: &second"         || "0A"x || -
+              "  q: 2"              || "0A"x || -
+              "r1: *first"          || "0A"x || -
+              "r2: *second"
+  doc = parser~parseString(yamlMulti)
+  am  = parser~anchorMap
+  yamlOut = .Yaml~toYaml(doc, 2, am)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "multi anchor order rt")
+
+  xml = .Yaml~yamlToXml(doc, "xsd", am)
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc3), "anchor order xml rt")
+
+/*------------------------------------------------------------------------*/
+/* 32. Merge key reconstruction in toYaml                                 */
+/*------------------------------------------------------------------------*/
+::method "test32_MergeKeyReconstruction"
+  expose parser
+
+  /* 32.1 Simple merge */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  self~assertTrue(yamlOut~pos("<<: *defs") > 0, "merge key reconstructed")
+
+  /* 32.2 Own keys not duplicated */
+  self~assertTrue(yamlOut~countStr("adapter:") = 1, "adapter only in source")
+  self~assertTrue(yamlOut~countStr("host:") = 1, "host only in source")
+  self~assertTrue(yamlOut~pos("database:") > 0, "own key present")
+
+  /* 32.3 Override */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  adapter: mysql"     || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  self~assertTrue(yamlOut~countStr("adapter:") = 2, "overridden key emitted as own")
+  self~assertTrue(yamlOut~countStr("host:") = 1, "non-overridden stays merged")
+  self~assertTrue(yamlOut~pos("<<: *defs") > 0, "merge present with override")
+
+  /* 32.4 Multiple merges */
+  yaml = "base1: &b1"          || "0A"x || -
+         "  x: 1"              || "0A"x || -
+         "base2: &b2"          || "0A"x || -
+         "  y: 2"              || "0A"x || -
+         "combined:"            || "0A"x || -
+         "  <<: [*b1, *b2]"    || "0A"x || -
+         "  z: 3"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  self~assertTrue(yamlOut~pos("<<: [*b1, *b2]") > 0, "multi merge reconstructed")
+  self~assertTrue(yamlOut~countStr("x:") = 1, "multi merge x only in source")
+  self~assertTrue(yamlOut~countStr("y:") = 1, "multi merge y only in source")
+  self~assertTrue(yamlOut~pos("z:") > 0, "multi merge own key z present")
+
+  /* 32.5 Round-trip simple merge */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "merge simple roundtrip")
+
+  /* 32.6 Round-trip with override */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  adapter: mysql"     || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "merge override roundtrip")
+
+  /* 32.7 Round-trip multiple merges */
+  yaml = "base1: &b1"          || "0A"x || -
+         "  x: 1"              || "0A"x || -
+         "base2: &b2"          || "0A"x || -
+         "  y: 2"              || "0A"x || -
+         "combined:"            || "0A"x || -
+         "  <<: [*b1, *b2]"    || "0A"x || -
+         "  z: 3"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc, 2, am, msm)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "multi merge roundtrip")
+
+  /* 32.8 XML round-trip (XSD) */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  xml = .Yaml~yamlToXml(doc, "xsd", am)
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc3), "merge xml xsd roundtrip")
+
+  /* 32.9 XML round-trip (DTD) */
+  xml = .Yaml~yamlToXml(doc, "dtd", am)
+  doc4 = parser~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc4), "merge xml dtd roundtrip")
+
+  /* 32.10 Without mergeSourceMap (backward compat) */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  yamlOut = .Yaml~toYaml(doc, 2, am)
+  self~assertTrue(yamlOut~pos("<<:") = 0, "no merge without mergeSourceMap")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "roundtrip without mergeSourceMap")
+
+  /* 32.11 P2: XML <merge> element emitted with mergeSourceMap (XSD) */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  self~assertTrue(xml~pos('<merge anchor="defs"/>') > 0, "merge element in XSD XML")
+
+  /* 32.12 P2: XML <merge> element emitted with mergeSourceMap (DTD) */
+  xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
+  self~assertTrue(xml~pos('<merge anchor="defs"/>') > 0, "merge element in DTD XML")
+
+  /* 32.13 P2: merged keys excluded from XML entries */
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  mergePos = xml~pos('<merge anchor="defs"/>')
+  xmlAfterMerge = xml~substr(mergePos)
+  closeMappingPos = xmlAfterMerge~pos('</mapping>')
+  xmlMergeSection = xmlAfterMerge~left(closeMappingPos)
+  self~assertTrue(xmlMergeSection~countStr("<entry>") = 1, "only own entries in merge XML")
+
+  /* 32.14 P2: XML without mergeSourceMap has no <merge> (backward compat) */
+  xml = .Yaml~yamlToXml(doc, "xsd", am)
+  self~assertTrue(xml~pos("<merge") = 0, "no merge element without mergeSourceMap")
+
+  /* 32.15 P2: XML round-trip with <merge> preserves data (XSD) */
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  parser2 = .Yaml~new
+  doc3 = parser2~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc3), "merge XML xsd data roundtrip")
+
+  /* 32.16 P2: XML round-trip with <merge> preserves data (DTD) */
+  xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
+  parser2 = .Yaml~new
+  doc4 = parser2~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc4), "merge XML dtd data roundtrip")
+
+  /* 32.17 P2: XML round-trip reconstructs mergeSourceMap */
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  parser2 = .Yaml~new
+  doc3 = parser2~parseXml(xml)
+  am3  = parser2~anchorMap
+  msm3 = parser2~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc3, 2, am3, msm3)
+  self~assertTrue(yamlOut~pos("<<: *defs") > 0, "merge XML roundtrip reconstructs merge key")
+
+  /* 32.18 P2: XML round-trip with merge override */
+  yaml = "defaults: &defs"     || "0A"x || -
+         "  adapter: postgres"  || "0A"x || -
+         "  host: localhost"    || "0A"x || -
+         "development:"         || "0A"x || -
+         "  <<: *defs"          || "0A"x || -
+         "  adapter: mysql"     || "0A"x || -
+         "  database: myapp_dev"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  parser2 = .Yaml~new
+  doc5 = parser2~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc5), "merge XML override data roundtrip")
+  am5  = parser2~anchorMap
+  msm5 = parser2~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc5, 2, am5, msm5)
+  self~assertTrue(yamlOut~pos("<<: *defs") > 0, "merge XML override reconstructs merge")
+  self~assertTrue(yamlOut~countStr("adapter:") = 2, "merge XML override own key emitted")
+
+  /* 32.19 P2: XML round-trip with multiple merges */
+  yaml = "base1: &b1"          || "0A"x || -
+         "  x: 1"              || "0A"x || -
+         "base2: &b2"          || "0A"x || -
+         "  y: 2"              || "0A"x || -
+         "combined:"            || "0A"x || -
+         "  <<: [*b1, *b2]"    || "0A"x || -
+         "  z: 3"
+  doc = parser~parseString(yaml)
+  am  = parser~anchorMap
+  msm = parser~mergeSourceMap
+  xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
+  self~assertTrue(xml~countStr("<merge") = 2, "two merge elements in XML")
+  parser2 = .Yaml~new
+  doc6 = parser2~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc6), "multi merge XML data roundtrip")
+  am6  = parser2~anchorMap
+  msm6 = parser2~mergeSourceMap
+  yamlOut = .Yaml~toYaml(doc6, 2, am6, msm6)
+  self~assertTrue(yamlOut~pos("<<: [*b1, *b2]") > 0, "multi merge XML roundtrip reconstructs")
+
+  /* 32.20 P2: XML round-trip with multiple merges (DTD) */
+  xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
+  parser2 = .Yaml~new
+  doc7 = parser2~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc7), "multi merge XML dtd data roundtrip")
+
+/*------------------------------------------------------------------------*/
+/* 33. Single-quoted strings in emitter                                   */
+/*------------------------------------------------------------------------*/
+::method "test33_SingleQuotedStrings"
+  expose parser
+
+  /* Reserved words should now be single-quoted */
+  doc = .table~new
+  doc["a"] = "true"; doc["b"] = "false"; doc["c"] = "null"
+  doc["d"] = "yes"; doc["e"] = "no"
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("'true'") > 0, "single-quote true")
+  self~assertTrue(yamlOut~pos("'false'") > 0, "single-quote false")
+  self~assertTrue(yamlOut~pos("'null'") > 0, "single-quote null")
+  self~assertTrue(yamlOut~pos("'yes'") > 0, "single-quote yes")
+
+  /* Strings needing quoting but no escapes use single quotes */
+  doc2 = .table~new
+  doc2["k"] = "key: colon"; doc2["h"] = "color #FF0000"
+  yamlOut2 = .Yaml~toYaml(doc2)
+  self~assertTrue(yamlOut2~pos("'key: colon'") > 0, -
+    "single-quote colon in value")
+  self~assertTrue(yamlOut2~pos("'color #FF0000'") > 0, -
+    "single-quote hash in value")
+
+  /* Strings with backslash still use double quotes */
+  doc3 = .table~new
+  doc3["p"] = "C:\path\to"
+  yamlOut3 = .Yaml~toYaml(doc3)
+  self~assertTrue(yamlOut3~pos('"C:\\path\\to"') > 0, -
+    "double-quote backslash")
+
+  /* Strings with control chars still use double quotes */
+  doc4 = .table~new
+  doc4["t"] = "tab" || "09"x || "here"
+  yamlOut4 = .Yaml~toYaml(doc4)
+  self~assertTrue(yamlOut4~pos('"tab\there"') > 0, -
+    "double-quote control char")
+
+  /* Round-trip */
+  doc5 = .table~new
+  doc5["w1"] = "true"; doc5["w2"] = "null"
+  doc5["w3"] = "key: colon"; doc5["w4"] = "has 'apostrophe' here"
+  yamlOut5 = .Yaml~toYaml(doc5)
+  doc5b = parser~parseString(yamlOut5)
+  self~assertEquals("true", doc5b["w1"], "single-quote roundtrip true")
+  self~assertEquals("null", doc5b["w2"], "single-quote roundtrip null")
+  self~assertEquals("key: colon", doc5b["w3"], -
+    "single-quote roundtrip colon")
+  self~assertEquals("has 'apostrophe' here", doc5b["w4"], -
+    "single-quote roundtrip apostrophe")
+
+  /* Keys: reserved words as keys use single quotes */
+  doc6 = .table~new
+  doc6["true"] = 1; doc6["null"] = 2
+  yamlOut6 = .Yaml~toYaml(doc6)
+  self~assertTrue(yamlOut6~pos("'true':") > 0, "single-quote key true")
+  self~assertTrue(yamlOut6~pos("'null':") > 0, "single-quote key null")
+
+/*------------------------------------------------------------------------*/
+/* 34. Flow mappings in emitter                                           */
+/*------------------------------------------------------------------------*/
+::method "test34_FlowMappings"
+  expose parser
+
+  /* Small nested mapping emitted in flow style */
+  doc = .table~new
+  inner = .table~new
+  inner["x"] = 10; inner["y"] = 20
+  doc["point"] = inner
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("{") > 0, "flow map emitted for small nested")
+
+  /* Flow map round-trip */
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(10, doc2["point"]["x"], "flow map roundtrip x")
+  self~assertEquals(20, doc2["point"]["y"], "flow map roundtrip y")
+
+  /* Large mappings stay block */
+  doc3 = .table~new
+  big = .table~new
+  Do i = 1 To 6
+    big["key" || i] = "value" || i
+  End
+  doc3["big"] = big
+  yamlOut3 = .Yaml~toYaml(doc3)
+  self~assertTrue(yamlOut3~pos("{key") = 0, "big map stays block")
+
+  /* Top-level mapping stays block */
+  doc4 = .table~new
+  doc4["a"] = 1; doc4["b"] = 2
+  yamlOut4 = .Yaml~toYaml(doc4)
+  self~assertTrue(yamlOut4~left(1) \== "{", "top-level map stays block")
+
+  /* Mapping with nested collections stays block */
+  doc5 = .table~new
+  inner2 = .table~new
+  inner2["a"] = .array~of(1, 2)
+  doc5["nested"] = inner2
+  yamlOut5 = .Yaml~toYaml(doc5)
+  self~assertTrue(yamlOut5~pos("{a:") = 0, "nested collection stays block")
+
+  /* Sequence of small maps — flow emitted, round-trip */
+  doc6 = .table~new
+  arr = .array~new
+  m1 = .table~new; m1["name"] = "Alice"; m1["age"] = 30
+  m2 = .table~new; m2["name"] = "Bob"; m2["age"] = 25
+  arr~append(m1); arr~append(m2)
+  doc6["people"] = arr
+  yamlOut6 = .Yaml~toYaml(doc6)
+  doc6b = parser~parseString(yamlOut6)
+  self~assertEquals("Alice", doc6b["people"][1]["name"], -
+    "flow map in seq roundtrip name")
+  self~assertEquals(25, doc6b["people"][2]["age"], -
+    "flow map in seq roundtrip age")
+
+/*------------------------------------------------------------------------*/
+/* 35. Directives (%YAML, %TAG)                                           */
+/*------------------------------------------------------------------------*/
+::method "test35_Directives"
+  expose parser
+
+  /* 35.1 %YAML directive is parsed */
+  yaml = "%YAML 1.2" || "0A"x || "---" || "0A"x || "key: value"
+  doc = parser~parseString(yaml)
+  self~assertEquals("value", doc["key"], "YAML directive parsed")
+
+  /* 35.2 %TAG directive is parsed */
+  yaml = "%TAG ! tag:example.com,2000:" || "0A"x || -
+         "---" || "0A"x || "name: test"
+  doc = parser~parseString(yaml)
+  self~assertEquals("test", doc["name"], "TAG directive parsed")
+
+  /* 35.3 Multiple directives */
+  yaml = "%YAML 1.2"                      || "0A"x || -
+         "%TAG !! tag:yaml.org,2002:"     || "0A"x || -
+         "%TAG !e! tag:example.com,2000:" || "0A"x || -
+         "---"                             || "0A"x || -
+         "color: red"
+  doc = parser~parseString(yaml)
+  self~assertEquals("red", doc["color"], "multiple directives parsed")
+
+  /* 35.4 Directives with multi-document */
+  yaml = "%YAML 1.2"   || "0A"x || -
+         "---"          || "0A"x || -
+         "first: 1"     || "0A"x || -
+         "..."          || "0A"x || -
+         "%YAML 1.2"    || "0A"x || -
+         "---"          || "0A"x || -
+         "second: 2"
+  docs = parser~parseAll(yaml)
+  self~assertEquals(2, docs~items, "directives multi-doc count")
+  self~assertEquals(1, docs[1]["first"], "directives multi-doc first")
+  self~assertEquals(2, docs[2]["second"], "directives multi-doc second")
+
+  /* 35.5 Without directivesMap, directives do not appear in output */
+  yaml = "%YAML 1.2" || "0A"x || "---" || "0A"x || "a: 1"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  self~assertTrue(yamlOut~pos("%YAML") = 0, "no directives without map")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "directives roundtrip no map")
+
+  /* 35.6 directivesMap captures %YAML version */
+  p6 = .Yaml~new
+  yaml = "%YAML 1.2" || "0A"x || "---" || "0A"x || "x: 1"
+  doc = p6~parseString(yaml)
+  dir = p6~directivesMap~at(doc)
+  self~assertTrue(dir \== .nil, "directivesMap has entry")
+  self~assertEquals("1.2", dir["yamlVersion"], "yamlVersion captured")
+
+  /* 35.7 directivesMap captures %TAG handles */
+  p7 = .Yaml~new
+  yaml = "%TAG !! tag:yaml.org,2002:"    || "0A"x || -
+         "%TAG !e! tag:example.com,2000:" || "0A"x || -
+         "---"                            || "0A"x || "a: 1"
+  doc = p7~parseString(yaml)
+  dir = p7~directivesMap~at(doc)
+  self~assertTrue(dir \== .nil, "TAG directivesMap has entry")
+  th = dir["tagHandles"]
+  self~assertTrue(th \== .nil, "tagHandles captured")
+  self~assertEquals("tag:yaml.org,2002:", th["!!"], "!! handle captured")
+  self~assertEquals("tag:example.com,2000:", th["!e!"], "!e! handle captured")
+
+  /* 35.8 Round-trip with directivesMap preserves directives */
+  p8 = .Yaml~new
+  yaml = "%YAML 1.2"                  || "0A"x || -
+         "%TAG !! tag:yaml.org,2002:" || "0A"x || -
+         "---"                         || "0A"x || -
+         "color: red"
+  doc = p8~parseString(yaml)
+  dirMap = p8~directivesMap
+  yamlOut = .Yaml~toYaml(doc, 2, .nil, .nil, dirMap)
+  self~assertTrue(yamlOut~pos("%YAML 1.2") > 0, "YAML directive in output")
+  self~assertTrue(yamlOut~pos("%TAG !!") > 0, "TAG directive in output")
+  self~assertTrue(yamlOut~pos("---") > 0, "doc-start marker in output")
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "directives full roundtrip")
+
+  /* 35.9 Multi-doc round-trip with directives */
+  p9 = .Yaml~new
+  yaml = "%YAML 1.2"   || "0A"x || -
+         "---"          || "0A"x || -
+         "first: 1"     || "0A"x || -
+         "..."          || "0A"x || -
+         "%YAML 1.1"    || "0A"x || -
+         "---"          || "0A"x || -
+         "second: 2"
+  docs = p9~parseAll(yaml)
+  dirMap = p9~directivesMap
+  dir1 = dirMap~at(docs[1])
+  dir2 = dirMap~at(docs[2])
+  self~assertEquals("1.2", dir1["yamlVersion"], "multi-doc dir1 version")
+  self~assertEquals("1.1", dir2["yamlVersion"], "multi-doc dir2 version")
+
+  /* 35.10 No directives: directivesMap entry is absent */
+  p10 = .Yaml~new
+  doc = p10~parseString("a: 1")
+  dir = p10~directivesMap~at(doc)
+  self~assertTrue(dir == .nil, "no directives no entry")
+
+  /* 35.11 XML round-trip with directives (XSD) */
+  p11 = .Yaml~new
+  yaml = "%YAML 1.2"                      || "0A"x || -
+         "%TAG !e! tag:example.com,2000:" || "0A"x || -
+         "---"                             || "0A"x || -
+         "name: test"
+  doc = p11~parseString(yaml)
+  dirMap = p11~directivesMap
+  xml = .Yaml~yamlToXml(doc, "xsd", .nil, dirMap)
+  self~assertTrue(xml~pos('yaml-version="1.2"') > 0, "XML has yaml-version")
+  self~assertTrue(xml~pos('tag-directive') > 0, "XML has tag-directive")
+  self~assertTrue(xml~pos('handle="!e!"') > 0, "XML has handle attr")
+  self~assertTrue(xml~pos('prefix="tag:example.com,2000:"') > 0, "XML has prefix attr")
+  p11b = .Yaml~new
+  doc2 = p11b~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML directive roundtrip data")
+  dir2 = p11b~directivesMap~at(doc2)
+  self~assertTrue(dir2 \== .nil, "XML directive roundtrip has directives")
+  self~assertEquals("1.2", dir2["yamlVersion"], "XML directive roundtrip version")
+  th2 = dir2["tagHandles"]
+  self~assertEquals("tag:example.com,2000:", th2["!e!"], "XML directive roundtrip handle")
+
+  /* 35.12 XML round-trip with directives (DTD) */
+  p12 = .Yaml~new
+  yaml = "%YAML 1.2"                   || "0A"x || -
+         "%TAG !! tag:yaml.org,2002:" || "0A"x || -
+         "---"                          || "0A"x || -
+         "val: 42"
+  doc = p12~parseString(yaml)
+  dirMap = p12~directivesMap
+  xml = .Yaml~yamlToXml(doc, "dtd", .nil, dirMap)
+  self~assertTrue(xml~pos('yaml-version="1.2"') > 0, "DTD XML has yaml-version")
+  self~assertTrue(xml~pos('tag-directive') > 0, "DTD XML has tag-directive")
+  p12b = .Yaml~new
+  doc2 = p12b~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "DTD XML directive roundtrip data")
+
+  /* 35.13 P9: tags stored as shorthand with preserveTags */
+  p13 = .Yaml~new(.true, .true)
+  yaml = "%TAG !e! tag:example.com,2000:" || "0A"x || -
+         "---"                            || "0A"x || -
+         "name: !e!person Alice"
+  doc = p13~parseString(yaml)
+  val = doc["name"]
+  self~assertTrue(val~isA(.YamlTagged), "P9 tag is YamlTagged")
+  self~assertEquals("!e!person", val~tag, "P9 !e! stored as shorthand")
+  self~assertEquals("Alice", val~value, "P9 tag value preserved")
+
+  /* 35.14 P9: !! stored as shorthand */
+  p14 = .Yaml~new(.true, .true)
+  yaml = "%TAG !! tag:yaml.org,2002:" || "0A"x || -
+         "---"                        || "0A"x || -
+         "count: !!int 42"
+  doc = p14~parseString(yaml)
+  val = doc["count"]
+  self~assertTrue(val~isA(.YamlTagged), "P9 !!int is YamlTagged")
+  self~assertEquals("!!int", val~tag, "P9 !! stored as shorthand")
+
+  /* 35.15 P9: primary handle ! stored as shorthand */
+  p15 = .Yaml~new(.true, .true)
+  yaml = "%TAG ! tag:custom.org/" || "0A"x || -
+         "---"                    || "0A"x || -
+         "item: !widget Sprocket"
+  doc = p15~parseString(yaml)
+  val = doc["item"]
+  self~assertTrue(val~isA(.YamlTagged), "P9 !widget is YamlTagged")
+  self~assertEquals("!widget", val~tag, "P9 ! stored as shorthand")
+  self~assertEquals("Sprocket", val~value, "P9 ! handle value")
+
+  /* 35.16 P9: no %TAG means no resolution */
+  p16 = .Yaml~new(.true, .true)
+  yaml = "name: !custom Alice"
+  doc = p16~parseString(yaml)
+  val = doc["name"]
+  self~assertEquals("!custom", val~tag, "P9 no TAG no resolution")
+
+  /* 35.17 P9: lazy resolution via resolveTagHandle */
+  p17 = .Yaml~new(.true, .true)
+  yaml = "%TAG !e! tag:example.com,2000:" || "0A"x || -
+         "%TAG !! tag:yaml.org,2002:"    || "0A"x || -
+         "---"                            || "0A"x || -
+         "name: !e!person Alice"          || "0A"x || -
+         "count: !!int 42"
+  doc = p17~parseString(yaml)
+  dir = p17~directivesMap~at(doc)
+  th = dir["tagHandles"]
+  resolved = p17~resolveTagHandle("!e!person", th)
+  self~assertEquals("!<tag:example.com,2000:person>", resolved, "P9 lazy !e! resolved")
+  resolved = p17~resolveTagHandle("!!int", th)
+  self~assertEquals("!<tag:yaml.org,2002:int>", resolved, "P9 lazy !! resolved")
+  resolved = p17~resolveTagHandle("!custom", th)
+  self~assertEquals("!custom", resolved, "P9 lazy no match unchanged")
+
+/*------------------------------------------------------------------------*/
+/* 36. Tags (!!str, !!int, !custom)                                       */
+/*------------------------------------------------------------------------*/
+::method "test36_Tags"
+  expose parser
+
+  /* !!str tag on a value */
+  yaml = "name: !!str Alice"
+  doc = parser~parseString(yaml)
+  self~assertEquals("Alice", doc["name"], "tag !!str value")
+
+  /* !!int tag on a value */
+  yaml = "port: !!int 8080"
+  doc = parser~parseString(yaml)
+  self~assertEquals(8080, doc["port"], "tag !!int value")
+
+  /* !!null tag */
+  yaml = "empty: !!null ~"
+  doc = parser~parseString(yaml)
+  self~assertTrue(doc["empty"] == .nil, "tag !!null value")
+
+  /* !!bool tag */
+  yaml = "flag: !!bool true"
+  doc = parser~parseString(yaml)
+  self~assertEquals(.YamlBoolean~true, doc["flag"], "tag !!bool value")
+
+  /* Tag on sequence item */
+  yaml = "items:" || "0A"x || -
+         "  - !!str 42"  || "0A"x || "  - !!int 42"
+  doc = parser~parseString(yaml)
+  self~assertEquals("42", doc["items"][1], "tag !!str seq item")
+  self~assertEquals(42, doc["items"][2], "tag !!int seq item")
+
+  /* Tag on mapping key */
+  yaml = "!!str name: Alice"
+  doc = parser~parseString(yaml)
+  self~assertEquals("Alice", doc["name"], "tag on key")
+
+  /* Tag on block node */
+  yaml = "data: !!map" || "0A"x || "  x: 1" || "0A"x || "  y: 2"
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc["data"]["x"], "tag !!map block node x")
+  self~assertEquals(2, doc["data"]["y"], "tag !!map block node y")
+
+  /* Tag on flow value */
+  yaml = "items: [!!str 42, !!int 7]"
+  doc = parser~parseString(yaml)
+  self~assertEquals("42", doc["items"][1], "tag !!str flow value")
+  self~assertEquals(7, doc["items"][2], "tag !!int flow value")
+
+  /* Custom tag stripped */
+  yaml = "data: !custom value123"
+  doc = parser~parseString(yaml)
+  self~assertEquals("value123", doc["data"], "custom tag stripped")
+
+  /* Verbatim tag stripped */
+  yaml = 'data: !<tag:yaml.org,2002:str> hello'
+  doc = parser~parseString(yaml)
+  self~assertEquals("hello", doc["data"], "verbatim tag stripped")
+
+  /* Tag round-trip */
+  yaml = "a: !!str test" || "0A"x || -
+         "b: !!int 42"   || "0A"x || -
+         "c: !!bool false"
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals("test", doc2["a"], "tag roundtrip str")
+  self~assertEquals(42, doc2["b"], "tag roundtrip int")
+  self~assertEquals(.YamlBoolean~false, doc2["c"], "tag roundtrip bool")
+
+/*------------------------------------------------------------------------*/
+/* 37. XSLT round-trip (xsltproc / runXSLT.rxj)                          */
+/*------------------------------------------------------------------------*/
+::method "test37_XsltRoundtrip"
+  expose parser thisLocation
+
+  /* Parse the reference YAML file */
+  parser2 = .Yaml~new
+  original = parser2~parseFile(thisLocation"test_all_constructs.yaml")
+  am = parser2~anchorMap
+
+  /* Generate XSD and DTD XML files */
+  xsdFile = thisLocation"test33_xsd.xml"
+  dtdFile = thisLocation"test33_dtd.xml"
+  .Yaml~yamlToXmlFile(original, xsdFile, "xsd", am)
+  .Yaml~yamlToXmlFile(original, dtdFile, "dtd", am)
+
+  /* Try xsltproc first, then runXSLT.rxj */
+  xsltAvailable = .false
+  xslFile = thisLocation"xmlToYaml.xsl"
+
+  /* Attempt xsltproc */
+  Signal On Syntax Name TryRunXSLT
+  outXsd = .array~new
+  errXsd = .array~new
+  address system "xsltproc" xslFile xsdFile -
+    with output using (outXsd) error using (errXsd)
+  If outXsd~items > 0 Then Do
+    xsltAvailable = .true
+    xsltTool = "xsltproc"
+  End
+  Signal XsltCheckDone
+
+TryRunXSLT:
+  /* Attempt runXSLT.rxj (requires BSF4ooRexx) */
+  Signal On Syntax Name NoXsltTool
+  outXsd = .array~new
+  errXsd = .array~new
+  address system "rexx runXSLT.rxj" xslFile xsdFile -
+    with output using (outXsd) error using (errXsd)
+  If outXsd~items > 0 Then Do
+    xsltAvailable = .true
+    xsltTool = "runXSLT.rxj"
+  End
+  Signal XsltCheckDone
+
+NoXsltTool:
+  Signal Off Syntax
+
+XsltCheckDone:
+  Signal Off Syntax
+
+  If \xsltAvailable Then Do
+    /* No XSLT processor — clean up and skip */
+    Call SysFileDelete xsdFile
+    Call SysFileDelete dtdFile
+    Return
+  End
+
+  /* XSD round-trip: parse the XSLT output and compare */
+  xsdYaml = outXsd~makeString('L', "0A"x)
+  parser3 = .Yaml~new
+  xsdDoc = parser3~parseString(xsdYaml)
+  self~assertTrue(deepEqual(original, xsdDoc), -
+    "XSLT xsd round-trip ("xsltTool")")
+
+  /* DTD round-trip */
+  outDtd = .array~new
+  errDtd = .array~new
+  If xsltTool == "xsltproc" Then
+    address system "xsltproc" xslFile dtdFile -
+      with output using (outDtd) error using (errDtd)
+  Else
+    address system "rexx runXSLT.rxj" xslFile dtdFile -
+      with output using (outDtd) error using (errDtd)
+  dtdYaml = outDtd~makeString('L', "0A"x)
+  parser4 = .Yaml~new
+  dtdDoc = parser4~parseString(dtdYaml)
+  self~assertTrue(deepEqual(original, dtdDoc), -
+    "XSLT dtd round-trip ("xsltTool")")
+
+  /* Clean up temporary XML files */
+  Call SysFileDelete xsdFile
+  Call SysFileDelete dtdFile
+
+/*------------------------------------------------------------------------*/
+/* 38. Complex mapping keys (? indicator)                                 */
+/*------------------------------------------------------------------------*/
+::method "test38_ComplexMappingKeys"
+  expose parser
+
+  /* 38.1 Flow sequence as key */
+  yaml = "? [a, b]" || "0A"x || ": value1" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc~items, "flow seq key: one entry")
+  sup = doc~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), "flow seq key: key is array")
+    self~assertEquals(2, sup~index~items, "flow seq key: key has 2 items")
+    self~assertEquals("a", sup~index[1], "flow seq key: key[1]")
+    self~assertEquals("b", sup~index[2], "flow seq key: key[2]")
+    self~assertEquals("value1", sup~item, "flow seq key: value")
+    sup~next
+  End
+
+  /* 38.2 Flow mapping as key */
+  yaml = "? {x: 1}" || "0A"x || ": value2" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc~items, "flow map key: one entry")
+  sup = doc~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.table), "flow map key: key is table")
+    self~assertEquals(1, sup~index["x"], "flow map key: key[x]")
+    self~assertEquals("value2", sup~item, "flow map key: value")
+    sup~next
+  End
+
+  /* 38.3 Block sequence as key */
+  yaml = "?" || "0A"x || "  - item1" || "0A"x || -
+         "  - item2" || "0A"x || ": value3" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc~items, "block seq key: one entry")
+  sup = doc~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), "block seq key: key is array")
+    self~assertEquals("item1", sup~index[1], "block seq key: key[1]")
+    self~assertEquals("item2", sup~index[2], "block seq key: key[2]")
+    self~assertEquals("value3", sup~item, "block seq key: value")
+    sup~next
+  End
+
+  /* 38.4 Scalar complex key */
+  yaml = "? scalar_key" || "0A"x || ": value4" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals("value4", doc["scalar_key"], "scalar complex key")
+
+  /* 38.5 Complex key with null value */
+  yaml = "? [a, b]" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc~items, "complex key null value: one entry")
+  sup = doc~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), -
+      "complex key null value: key is array")
+    self~assertTrue(sup~item == .nil, -
+      "complex key null value: value is nil")
+    sup~next
+  End
+
+  /* 38.6 Mixed simple and complex keys */
+  yaml = "simple: val1" || "0A"x || -
+         "? [x, y]" || "0A"x || ": val2" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(2, doc~items, "mixed keys: two entries")
+  self~assertEquals("val1", doc["simple"], "mixed keys: simple key")
+
+  /* 38.7 Multiple complex keys */
+  yaml = "? [a, b]" || "0A"x || ": val1" || "0A"x || -
+         "? [c, d]" || "0A"x || ": val2" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(2, doc~items, "multiple complex keys: two entries")
+
+  /* 38.8 Round-trip: flow sequence key */
+  yaml = "? [a, b]" || "0A"x || ": value1" || "0A"x
+  doc = parser~parseString(yaml)
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), "round-trip flow seq key")
+
+  /* 38.9 Round-trip: flow mapping key */
+  yaml = "? {x: 1}" || "0A"x || ": value2" || "0A"x
+  doc = parser~parseString(yaml)
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), "round-trip flow map key")
+
+  /* 38.10 Round-trip: block sequence key */
+  yaml = "?" || "0A"x || "  - item1" || "0A"x || -
+         "  - item2" || "0A"x || ": value3" || "0A"x
+  doc = parser~parseString(yaml)
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), "round-trip block seq key")
+
+  /* 38.11 Round-trip: mixed simple + complex keys */
+  yaml = "simple: val1" || "0A"x || -
+         "? [x, y]" || "0A"x || ": val2" || "0A"x
+  doc = parser~parseString(yaml)
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), "round-trip mixed keys")
+
+  /* 38.12 Round-trip: programmatic creation with array key */
+  doc = .table~new
+  doc[.array~of("a", "b")] = "value1"
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), -
+    "round-trip programmatic array key")
+
+  /* 38.13 Round-trip: programmatic creation with table key */
+  doc = .table~new
+  tKey = .table~new; tKey["x"] = 1
+  doc[tKey] = "value2"
+  out = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(out)
+  self~assertTrue(deepEqual(doc, doc2), -
+    "round-trip programmatic table key")
+
+  /* 38.14 Emitter uses ? syntax for non-string keys */
+  doc = .table~new
+  doc[.array~of("a", "b")] = "value1"
+  out = .Yaml~toYaml(doc)
+  self~assertTrue(out~pos("? ") > 0, "emitter uses ? for array key")
+  self~assertTrue(out~pos(": value1") > 0, "emitter emits value after :")
+
+  /* 38.15 deepEqual with non-string keys: equal */
+  a = .table~new; a[.array~of(1, 2)] = "v1"
+  b = .table~new; b[.array~of(1, 2)] = "v1"
+  self~assertTrue(deepEqual(a, b), "deepEqual non-string keys equal")
+
+  /* 38.16 deepEqual with non-string keys: different values */
+  a = .table~new; a[.array~of(1, 2)] = "v1"
+  b = .table~new; b[.array~of(1, 2)] = "v2"
+  self~assertFalse(deepEqual(a, b), -
+    "deepEqual non-string keys diff values")
+
+  /* 38.17 deepEqual with non-string keys: different keys */
+  a = .table~new; a[.array~of(1, 2)] = "v1"
+  b = .table~new; b[.array~of(3, 4)] = "v1"
+  self~assertFalse(deepEqual(a, b), -
+    "deepEqual non-string keys diff keys")
+
+  /* 38.18 Complex key with block value */
+  yaml = "? [a, b]" || "0A"x || ":" || "0A"x || -
+         "  nested: val" || "0A"x
+  doc = parser~parseString(yaml)
+  self~assertEquals(1, doc~items, -
+    "complex key block value: one entry")
+  sup = doc~supplier
+  Do While sup~available
+    self~assertTrue(sup~item~isA(.table), -
+      "complex key block value: value is table")
+    self~assertEquals("val", sup~item["nested"], -
+      "complex key block value: nested")
+    sup~next
+  End
+
+/*------------------------------------------------------------------------*/
+/* 39. Unicode escape handling (\u / \U)                                  */
+/*------------------------------------------------------------------------*/
+::method "test39_UnicodeEscapes"
+  expose parser
+
+  /* 39.1 \u 2-byte UTF-8 (é = U+00E9 → C3 A9) */
+  yaml = 'val: "\u00E9"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("C3A9", doc["val"]~c2x, '\u 2-byte UTF-8 (é)')
+
+  /* 39.2 \u 1-byte ASCII (A = U+0041 → 41) */
+  yaml = 'val: "\u0041"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("A", doc["val"], '\u 1-byte ASCII (A)')
+
+  /* 39.3 \u 3-byte UTF-8 (世 = U+4E16 → E4 B8 96) */
+  yaml = 'val: "\u4E16"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("E4B896", doc["val"]~c2x, '\u 3-byte UTF-8 (世)')
+
+  /* 39.4 \U 4-byte UTF-8 (U+1F600 → F0 9F 98 80) */
+  yaml = 'val: "\U0001F600"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("F09F9880", doc["val"]~c2x, '\U 4-byte UTF-8 (U+1F600)')
+
+  /* 39.5 \u null char (U+0000 → 00) */
+  yaml = 'val: "\u0000"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("00", doc["val"]~c2x, '\u null char (U+0000)')
+
+  /* 39.6 \u 2-byte boundary (U+0080 → C2 80) */
+  yaml = 'val: "\u0080"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("C280", doc["val"]~c2x, '\u 2-byte boundary (U+0080)')
+
+  /* 39.7 \u 3-byte boundary (U+0800 → E0 A0 80) */
+  yaml = 'val: "\u0800"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("E0A080", doc["val"]~c2x, '\u 3-byte boundary (U+0800)')
+
+  /* 39.8 \U 4-byte boundary (U+10000 → F0 90 80 80) */
+  yaml = 'val: "\U00010000"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("F0908080", doc["val"]~c2x, '\U 4-byte boundary (U+10000)')
+
+  /* 39.9 Mixed \u with other escapes */
+  yaml = 'val: "caf\u00E9\tbr\u00FBl\u00E9e"'
+  doc = parser~parseString(yaml)
+  expected = "caf" || "C3A9"x || "09"x || "br" || "C3BB"x || "l" || "C3A9"x || "e"
+  self~assertEquals(expected~c2x, doc["val"]~c2x, '\u mixed with \t')
+
+  /* 39.10 Multiple \u in one string */
+  yaml = 'val: "\u00C0\u00C1\u00C2"'
+  doc = parser~parseString(yaml)
+  expected = "C380"x || "C381"x || "C382"x
+  self~assertEquals(expected~c2x, doc["val"]~c2x, 'multiple \u in string')
+
+  /* 39.11 Unescaped \u round-trip */
+  yaml = 'val: "\u00E9"'
+  doc = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals("C3A9", doc2["val"]~c2x, '\u round-trip (unescaped)')
+
+  /* 39.12 Legacy mode: \u stored literally */
+  parserLegacy = .Yaml~new(.false)
+  yaml = 'val: "\u00E9"'
+  doc = parserLegacy~parseString(yaml)
+  self~assertEquals("\u00E9", doc["val"], '\u legacy mode literal')
+
+  /* 39.13 Legacy mode: \U stored literally */
+  yaml = 'val: "\U0001F600"'
+  doc = parserLegacy~parseString(yaml)
+  self~assertEquals("\U0001F600", doc["val"], '\U legacy mode literal')
+
+  /* 39.14 Legacy mode round-trip */
+  yaml = 'val: "\u00E9"'
+  doc = parserLegacy~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = parserLegacy~parseString(yamlOut)
+  self~assertEquals("\u00E9", doc2["val"], '\u legacy round-trip')
+
+  /* 39.15 \u in mapping key (unescaped) */
+  yaml = '"\u00E9": value'
+  doc = parser~parseString(yaml)
+  self~assertEquals("value", doc["C3A9"x], '\u in mapping key')
+
+  /* 39.16 \u in sequence items (unescaped) */
+  yaml = '- "\u00E9"' || "0A"x || '- "\u4E16"'
+  doc = parser~parseString(yaml)
+  self~assertEquals("C3A9", doc[1]~c2x, '\u in seq item 1')
+  self~assertEquals("E4B896", doc[2]~c2x, '\u in seq item 2')
+
+  /* 39.17 \u XML round-trip (unescaped) */
+  yaml = 'val: "\u00E9"'
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = parser~parseXml(xml)
+  self~assertEquals("C3A9", doc2["val"]~c2x, '\u XML round-trip')
+
+  /* 39.18 \U in flow collection */
+  yaml = 'items: ["\U0001F600", "\u00E9"]'
+  doc = parser~parseString(yaml)
+  self~assertEquals("F09F9880", doc["items"][1]~c2x, '\U in flow seq')
+  self~assertEquals("C3A9", doc["items"][2]~c2x, '\u in flow seq')
+
+/*------------------------------------------------------------------------*/
+/* 40. Complex keys in XML round-trip                                     */
+/*------------------------------------------------------------------------*/
+::method "test40_ComplexKeysXml"
+  expose parser
+
+  /* 40.1 XSD round-trip: sequence as key */
+  yaml = "? [a, b]" || "0A"x || ": value1" || "0A"x
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  self~assertTrue(xml~pos("<sequence>") > 0, -
+    "xml seq key: has sequence element")
+  doc2 = parser~parseXml(xml)
+  self~assertEquals(1, doc2~items, "xml seq key: one entry")
+  sup = doc2~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), "xml seq key: key is array")
+    self~assertEquals("a", sup~index[1], "xml seq key: key[1]")
+    self~assertEquals("b", sup~index[2], "xml seq key: key[2]")
+    self~assertEquals("value1", sup~item, "xml seq key: value")
+    sup~next
+  End
+
+  /* 40.2 DTD round-trip: sequence as key */
+  xml = .Yaml~yamlToXml(doc, "dtd")
+  doc3 = parser~parseXml(xml)
+  sup = doc3~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), "dtd seq key: key is array")
+    self~assertEquals("a", sup~index[1], "dtd seq key: key[1]")
+    self~assertEquals("value1", sup~item, "dtd seq key: value")
+    sup~next
+  End
+
+  /* 40.3 XSD round-trip: mapping as key */
+  yaml = "? {x: 1}" || "0A"x || ": value2" || "0A"x
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = parser~parseXml(xml)
+  self~assertEquals(1, doc2~items, "xml map key: one entry")
+  sup = doc2~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.table), "xml map key: key is table")
+    self~assertEquals(1, sup~index["x"], "xml map key: key[x]")
+    self~assertEquals("value2", sup~item, "xml map key: value")
+    sup~next
+  End
+
+  /* 40.4 XSD round-trip: complex key with null value */
+  yaml = "? [x, y]" || "0A"x
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = parser~parseXml(xml)
+  sup = doc2~supplier
+  Do While sup~available
+    self~assertTrue(sup~index~isA(.array), -
+      "xml null val: key is array")
+    self~assertTrue(sup~item == .nil, -
+      "xml null val: value is nil")
+    sup~next
+  End
+
+  /* 40.5 XSD round-trip: mixed simple and complex keys */
+  yaml = "simple: val1" || "0A"x || -
+         "? [a, b]"      || "0A"x || -
+         ": val2"         || "0A"x
+  doc = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = parser~parseXml(xml)
+  self~assertEquals("val1", doc2["simple"], "xml mixed keys: simple")
+  found = .false
+  sup = doc2~supplier
+  Do While sup~available
+    If sup~index~isA(.array) Then Do
+      self~assertEquals("a", sup~index[1], "xml mixed keys: complex[1]")
+      self~assertEquals("val2", sup~item, "xml mixed keys: complex val")
+      found = .true
+    End
+    sup~next
+  End
+  self~assertTrue(found, "xml mixed keys: found complex")
+
+  /* 40.6 XML stability: complex key XML → parse → XML → parse */
+  yaml = "? [1, 2]" || "0A"x || ": result" || "0A"x
+  doc = parser~parseString(yaml)
+  xml1 = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = parser~parseXml(xml1)
+  xml2 = .Yaml~yamlToXml(doc2, "xsd")
+  doc3 = parser~parseXml(xml2)
+  self~assertTrue(deepEqual(doc2, doc3), "xml complex key stable")
+
+::method "test41_EdgeCaseRoundtrips"
+  expose parser
+
+  /* 41.1 Special floats: YAML round-trip */
+  yaml = "inf: .inf"   || "0A"x || -
+         "ninf: -.inf"  || "0A"x || -
+         "nan: .nan"    || "0A"x
+  doc1 = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(".inf", doc2["inf"], "special float inf yaml rt")
+  self~assertEquals("-.inf", doc2["ninf"], "special float -inf yaml rt")
+  self~assertEquals(".nan", doc2["nan"], "special float nan yaml rt")
+
+  /* 41.2 Special floats: XML round-trip (XSD) */
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals(".inf", doc3["inf"], "special float inf xml rt")
+  self~assertEquals("-.inf", doc3["ninf"], "special float -inf xml rt")
+  self~assertEquals(".nan", doc3["nan"], "special float nan xml rt")
+
+  /* 41.3 Empty string values: YAML round-trip */
+  yaml = "empty_sq: ''"   || "0A"x || -
+         "empty_dq: " || '"' || '"' || "0A"x || -
+         "empty_plain: "   || "0A"x
+  doc1 = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals("", doc2["empty_sq"], "empty sq yaml rt")
+  self~assertEquals("", doc2["empty_dq"], "empty dq yaml rt")
+  self~assertTrue(doc2["empty_plain"] == .nil, "empty plain is nil")
+
+  /* 41.4 Empty string values: XML round-trip */
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals("", doc3["empty_sq"], "empty sq xml rt")
+  self~assertEquals("", doc3["empty_dq"], "empty dq xml rt")
+
+  /* 41.5 Empty collections: YAML round-trip */
+  yaml = "empty_seq: []"   || "0A"x || -
+         "empty_map: {}"   || "0A"x
+  doc1 = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertTrue(doc2["empty_seq"]~isA(.array), "empty seq yaml rt type")
+  self~assertEquals(0, doc2["empty_seq"]~items, "empty seq yaml rt items")
+  self~assertTrue(doc2["empty_map"]~isA(.table), "empty map yaml rt type")
+  self~assertEquals(0, doc2["empty_map"]~items, "empty map yaml rt items")
+
+  /* 41.6 Empty collections: XML round-trip */
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertTrue(doc3["empty_seq"]~isA(.array), "empty seq xml rt type")
+  self~assertEquals(0, doc3["empty_seq"]~items, "empty seq xml rt items")
+  self~assertTrue(doc3["empty_map"]~isA(.table), "empty map xml rt type")
+  self~assertEquals(0, doc3["empty_map"]~items, "empty map xml rt items")
+
+  /* 41.7 Multiline double-quoted string: YAML round-trip */
+  yaml = 'multi: "line one\nline two\nline three"' || "0A"x
+  doc1 = parser~parseString(yaml)
+  self~assertTrue(doc1["multi"]~pos("0A"x) > 0, "multiline dq has newlines")
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals(doc1["multi"], doc2["multi"], "multiline dq yaml rt")
+
+  /* 41.8 Multiline double-quoted: XML round-trip */
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals(doc1["multi"], doc3["multi"], "multiline dq xml rt")
+
+  /* 41.9 Directives: round-trip preserves content (directives stripped) */
+  yaml = "%YAML 1.2"     || "0A"x || -
+         "---"            || "0A"x || -
+         "key: value"     || "0A"x
+  doc1 = parser~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc1)
+  doc2 = parser~parseString(yamlOut)
+  self~assertEquals("value", doc2["key"], "directives yaml rt")
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals("value", doc3["key"], "directives xml rt")
+
+  /* 41.10 Single-quoted strings: XML round-trip */
+  yaml = "sq: 'It''s a test'"  || "0A"x || -
+         "plain_sq: 'hello'"   || "0A"x
+  doc1 = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals("It's a test", doc3["sq"], "single-quoted xml rt")
+  self~assertEquals("hello", doc3["plain_sq"], "single-quoted plain xml rt")
+
+  /* 41.11 Flow mappings: XML round-trip */
+  yaml = "flow: {a: 1, b: 2, c: 3}"  || "0A"x
+  doc1 = parser~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc1, "xsd")
+  doc3 = parser~parseXml(xml)
+  self~assertEquals(1, doc3["flow"]["a"], "flow map xml rt a")
+  self~assertEquals(2, doc3["flow"]["b"], "flow map xml rt b")
+  self~assertEquals(3, doc3["flow"]["c"], "flow map xml rt c")
+
+  /* 41.12 Nested anchors/aliases: XML round-trip via DTD */
+  yaml = "defaults: &defs"    || "0A"x || -
+         "  color: red"       || "0A"x || -
+         "  size: 10"         || "0A"x || -
+         "item1:"             || "0A"x || -
+         "  <<: *defs"        || "0A"x || -
+         "  size: 20"         || "0A"x
+  doc1 = parser~parseString(yaml)
+  am = parser~anchorMap
+  msm = parser~mergeSourceMap
+  xml = .Yaml~yamlToXml(doc1, "dtd", am)
+  doc3 = parser~parseXml(xml)
+  self~assertEquals("red", doc3["item1"]["color"], "anchor merge dtd xml rt color")
+  self~assertEquals(20, doc3["item1"]["size"], "anchor merge dtd xml rt size")
+
+  /* 41.13 Multi-document: XML round-trip */
+  yaml = "---"            || "0A"x || -
+         "first: doc1"    || "0A"x || -
+         "---"            || "0A"x || -
+         "second: doc2"   || "0A"x
+  docs = parser~parseAll(yaml)
+  self~assertEquals(2, docs~items, "multi-doc count")
+  xml1 = .Yaml~yamlToXml(docs[1], "xsd")
+  doc3 = parser~parseXml(xml1)
+  self~assertEquals("doc1", doc3["first"], "multi-doc xml rt doc1")
+  xml2 = .Yaml~yamlToXml(docs[2], "xsd")
+  doc4 = parser~parseXml(xml2)
+  self~assertEquals("doc2", doc4["second"], "multi-doc xml rt doc2")
+
+/*------------------------------------------------------------------------*/
+/* 42. Tag preservation round-trips                                       */
+/*------------------------------------------------------------------------*/
+::method "test42_TagPreservationRoundtrips"
+  expose parser
+
+  /* Tag-preserving parser */
+  tp = .Yaml~new(, .true)
+
+  /* 42.1 !!str scalar: parse produces YamlTagged */
+  doc = tp~parseString('!!str 42')
+  self~assertTrue(doc~isA(.YamlTagged), "!!str produces YamlTagged")
+  self~assertEquals("!!str", doc~tag, "!!str tag preserved")
+  self~assertEquals("42", doc~value, "!!str value is string 42")
+
+  /* 42.2 !!int scalar */
+  doc = tp~parseString('!!int 42')
+  self~assertEquals("!!int", doc~tag, "!!int tag preserved")
+  self~assertEquals(42, doc~value, "!!int value is integer")
+
+  /* 42.3 !custom scalar */
+  doc = tp~parseString('!custom hello')
+  self~assertEquals("!custom", doc~tag, "!custom tag preserved")
+  self~assertEquals("hello", doc~value, "!custom value")
+
+  /* 42.4 Verbatim tag */
+  doc = tp~parseString('!<tag:yaml.org,2002:str> hello')
+  self~assertEquals("!<tag:yaml.org,2002:str>", doc~tag, "verbatim tag preserved")
+  self~assertEquals("hello", doc~value, "verbatim tag value")
+
+  /* 42.5 !!map on block mapping */
+  yaml = "!!map" || "0A"x || "a: 1" || "0A"x
+  doc = tp~parseString(yaml)
+  self~assertTrue(doc~isA(.YamlTagged), "!!map produces YamlTagged")
+  self~assertEquals("!!map", doc~tag, "!!map tag")
+  self~assertTrue(doc~value~isA(.table), "!!map value is table")
+  self~assertEquals(1, doc~value["a"], "!!map inner value")
+
+  /* 42.6 !!seq on block sequence */
+  yaml = "!!seq" || "0A"x || "- one" || "0A"x || "- two" || "0A"x
+  doc = tp~parseString(yaml)
+  self~assertEquals("!!seq", doc~tag, "!!seq tag")
+  self~assertTrue(doc~value~isA(.array), "!!seq value is array")
+  self~assertEquals("one", doc~value[1], "!!seq item 1")
+
+  /* 42.7 Tags in flow collections */
+  yaml = "[!!str 42, !!int 7]"
+  doc = tp~parseString(yaml)
+  self~assertEquals("!!str", doc[1]~tag, "flow seq !!str tag")
+  self~assertEquals("!!int", doc[2]~tag, "flow seq !!int tag")
+
+  /* 42.8 Tag on mapping key */
+  yaml = "plain: x" || "0A"x || "!!str tagged: y" || "0A"x
+  doc = tp~parseString(yaml)
+  found = .false
+  sup = doc~supplier
+  do while sup~available
+    k = sup~index
+    if k~isA(.YamlTagged) then do
+      self~assertEquals("!!str", k~tag, "tag on key")
+      self~assertEquals("tagged", k~value, "tagged key value")
+      found = .true
+    end
+    sup~next
+  end
+  self~assertTrue(found, "tagged key found")
+
+  /* 42.9 YAML round-trip with tags */
+  doc = tp~parseString('!!str 42')
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = tp~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "YAML rt !!str")
+
+  /* 42.10 YAML round-trip: !!map */
+  yaml = "!!map" || "0A"x || "x: 1" || "0A"x
+  doc = tp~parseString(yaml)
+  yamlOut = .Yaml~toYaml(doc)
+  doc2 = tp~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc2), "YAML rt !!map")
+
+  /* 42.11 XML round-trip XSD: !!str scalar */
+  doc = tp~parseString('!!str 42')
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!str")
+
+  /* 42.12 XML round-trip DTD: !!str scalar */
+  doc = tp~parseString('!!str 42')
+  xml = .Yaml~yamlToXml(doc, "dtd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML DTD rt !!str")
+
+  /* 42.13 XML round-trip XSD: !custom tag */
+  doc = tp~parseString('!custom hello')
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !custom")
+
+  /* 42.14 XML round-trip: verbatim tag */
+  doc = tp~parseString('!<tag:yaml.org,2002:str> hello')
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt verbatim tag")
+
+  /* 42.15 XML round-trip: !!map on mapping */
+  yaml = "!!map" || "0A"x || "a: 1" || "0A"x
+  doc = tp~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!map")
+
+  /* 42.16 XML round-trip DTD: !!map */
+  yaml = "!!map" || "0A"x || "a: 1" || "0A"x
+  doc = tp~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "dtd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML DTD rt !!map")
+
+  /* 42.17 XML round-trip: !!seq on sequence */
+  yaml = "!!seq" || "0A"x || "- one" || "0A"x || "- two" || "0A"x
+  doc = tp~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!seq")
+
+  /* 42.18 Full chain round-trip: YAML -> parse -> XML -> parse -> YAML */
+  doc = tp~parseString('!!str 42')
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  yamlOut = .Yaml~toYaml(doc2)
+  doc3 = tp~parseString(yamlOut)
+  self~assertTrue(deepEqual(doc, doc3), "full chain rt !!str")
+
+  /* 42.19 preserveTags = .false (default) — tags stripped as before */
+  pDef = .Yaml~new
+  doc = pDef~parseString('!!str 42')
+  self~assertFalse(doc~isA(.YamlTagged), "default no YamlTagged")
+  self~assertEquals("42", doc, "default strips tag")
+
+  /* 42.20 Tags on sequence items in XML round-trip */
+  yaml = "- !!str foo" || "0A"x || "- !!int 7" || "0A"x
+  doc = tp~parseString(yaml)
+  xml = .Yaml~yamlToXml(doc, "xsd")
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt tagged seq items")
+
+  /* 42.21 Tag + anchor combination */
+  yaml = "&myA !!str hello" || "0A"x
+  doc = tp~parseString(yaml)
+  am = tp~anchorMap
+  self~assertTrue(doc~isA(.YamlTagged), "tag+anchor YamlTagged")
+  self~assertEquals("!!str", doc~tag, "tag+anchor tag")
+  self~assertEquals("hello", doc~value, "tag+anchor value")
+  xml = .Yaml~yamlToXml(doc, "xsd", am)
+  doc2 = tp~parseXml(xml)
+  self~assertTrue(deepEqual(doc, doc2), "XML rt tag+anchor")
+
+  /* 42.22 deepEqual: both tagged same */
+  a = .YamlTagged~new("!!str", "42")
+  b = .YamlTagged~new("!!str", "42")
+  self~assertTrue(deepEqual(a, b), "deepEqual same tagged")
+
+  /* 42.23 deepEqual: different tags */
+  a = .YamlTagged~new("!!str", "42")
+  b = .YamlTagged~new("!!int", 42)
+  self~assertFalse(deepEqual(a, b), "deepEqual diff tags")
+
+  /* 42.24 deepEqual: tagged vs untagged */
+  a = .YamlTagged~new("!!str", "42")
+  self~assertFalse(deepEqual(a, "42"), "deepEqual tagged vs plain")
+
+  /* 42.25 deepEqual: untagged vs tagged */
+  self~assertFalse(deepEqual("42", a), "deepEqual plain vs tagged")
+
+/*========================================================================*/
+/* Group 43 — Unicode escape shortcuts \N, \_, \L, \P (P8)               */
+/*========================================================================*/
+::method "test43_UnicodeEscapeShortcuts"
+
+  yaml = '---'                                || "0A"x || -
+         'next_line: "hello\Nworld"'          || "0A"x || -
+         'nbsp: "non\_breaking"'              || "0A"x || -
+         'line_sep: "line\Lsep"'              || "0A"x || -
+         'para_sep: "para\Psep"'              || "0A"x
+
+  p = .Yaml~new
+  doc = p~parseString(yaml)
+
+  /* 43.1 \N -> U+0085 (UTF-8: C2 85) */
+  self~assertEquals("hello" || "C285"x || "world", doc["next_line"], "\N escape")
+
+  /* 43.2 \_ -> U+00A0 (UTF-8: C2 A0) */
+  self~assertEquals("non" || "C2A0"x || "breaking", doc["nbsp"], "\_ escape")
+
+  /* 43.3 \L -> U+2028 (UTF-8: E2 80 A8) */
+  self~assertEquals("line" || "E280A8"x || "sep", doc["line_sep"], "\L escape")
+
+  /* 43.4 \P -> U+2029 (UTF-8: E2 80 A9) */
+  self~assertEquals("para" || "E280A9"x || "sep", doc["para_sep"], "\P escape")
+
+  /* 43.5-8 YAML round-trip */
+  yaml_rt = .Yaml~toYaml(doc)
+  doc_rt = .Yaml~new~parseString(yaml_rt)
+  self~assertEquals(doc["next_line"], doc_rt["next_line"], "\N YAML rt")
+  self~assertEquals(doc["nbsp"], doc_rt["nbsp"], "\_ YAML rt")
+  self~assertEquals(doc["line_sep"], doc_rt["line_sep"], "\L YAML rt")
+  self~assertEquals(doc["para_sep"], doc_rt["para_sep"], "\P YAML rt")
+
+  /* 43.9-12 XML round-trip (XSD) */
+  xml = .Yaml~yamlToXml(doc)
+  doc_x = p~parseXml(xml)
+  self~assertEquals(doc["next_line"], doc_x["next_line"], "\N XML rt")
+  self~assertEquals(doc["nbsp"], doc_x["nbsp"], "\_ XML rt")
+  self~assertEquals(doc["line_sep"], doc_x["line_sep"], "\L XML rt")
+  self~assertEquals(doc["para_sep"], doc_x["para_sep"], "\P XML rt")
+
+/*========================================================================*/
+/* Group 44 — Tab rejection in indentation (P7)                          */
+/*========================================================================*/
+::method "test44_TabRejection"
+
+  /* 44.1 Tab at start of indentation should raise an error */
+  yaml1 = "key:" || "0A"x || "09"x || "value: bad"
+  raised1 = .false
+  signal on syntax name tab44_1
+  .Yaml~new~parseString(yaml1)
+  signal tab44_1done
+  tab44_1:
+  raised1 = .true
+  tab44_1done:
+  self~assertTrue(raised1, "tab indent raises error")
+
+  /* 44.2 Tab after spaces should also raise */
+  yaml2 = "key:" || "0A"x || "  " || "09"x || "value: bad"
+  raised2 = .false
+  signal on syntax name tab44_2
+  .Yaml~new~parseString(yaml2)
+  signal tab44_2done
+  tab44_2:
+  raised2 = .true
+  tab44_2done:
+  self~assertTrue(raised2, "tab after spaces raises error")
+
+  /* 44.3 Tab in content (not indentation) should be fine */
+  yaml3 = 'key: "value' || "09"x || 'with tab"'
+  doc3 = .Yaml~new~parseString(yaml3)
+  self~assertEquals("value" || "09"x || "with tab", doc3["key"], "tab in content OK")
+
+/*========================================================================*/
+/* Group 45 — Explicit key ? with key on next line (P10)                 */
+/*========================================================================*/
+::method "test45_ExplicitKeyNextLine"
+
+  /* 45.1 ? with scalar key on next line */
+  yaml1 = "?" || "0A"x || "  my_key" || "0A"x || ": value1"
+  doc1 = .Yaml~new~parseString(yaml1)
+  self~assertEquals("value1", doc1["my_key"], "? scalar key next line")
+
+  /* 45.2 ? with flow sequence key on next line */
+  yaml2 = "?" || "0A"x || "  [a, b]" || "0A"x || ": value2"
+  doc2 = .Yaml~new~parseString(yaml2)
+  found = .false
+  sup = doc2~supplier
+  do while sup~available
+    if sup~index~isA(.array) then do
+      self~assertEquals(2, sup~index~items, "? seq key items")
+      self~assertEquals("a", sup~index[1], "? seq key [1]")
+      self~assertEquals("b", sup~index[2], "? seq key [2]")
+      self~assertEquals("value2", sup~item, "? seq key value")
+      found = .true
+    end
+    sup~next
+  end
+  self~assertTrue(found, "? seq key next line found")
+
+  /* 45.3 ? with block mapping key on next lines */
+  yaml3 = "?" || "0A"x || "  x: 1" || "0A"x || "  y: 2" || "0A"x || ": complex_value"
+  doc3 = .Yaml~new~parseString(yaml3)
+  found3 = .false
+  sup3 = doc3~supplier
+  do while sup3~available
+    if sup3~index~isA(.table) then do
+      self~assertEquals(1, sup3~index["x"], "? map key x")
+      self~assertEquals(2, sup3~index["y"], "? map key y")
+      self~assertEquals("complex_value", sup3~item, "? map key value")
+      found3 = .true
+    end
+    sup3~next
+  end
+  self~assertTrue(found3, "? map key next line found")
+
+  /* 45.4 ? alone = null key */
+  yaml4 = "?" || "0A"x || ": null_key_value"
+  doc4 = .Yaml~new~parseString(yaml4)
+  self~assertEquals("null_key_value", doc4~at(.nil), "? null key")
+
+  /* 45.5 YAML round-trip */
+  yaml_rt = .Yaml~toYaml(doc1)
+  doc1_rt = .Yaml~new~parseString(yaml_rt)
+  self~assertEquals("value1", doc1_rt["my_key"], "? scalar key YAML rt")
+
+  /* 45.6 XML round-trip */
+  xml = .Yaml~yamlToXml(doc1)
+  doc1_x = .Yaml~new~parseXml(xml)
+  self~assertEquals("value1", doc1_x["my_key"], "? scalar key XML rt")
+
+/*========================================================================*/
+/* Group 46 — Multi-line quoted strings (P4)                             */
+/*========================================================================*/
+::method "test46_MultiLineQuotedStrings"
+
+  p = .Yaml~new
+
+  /* 46.1  Double-quoted: fold across two lines */
+  yaml1 = '---'                                || "0A"x || -
+          'key: "hello'                        || "0A"x || -
+          '  world"'                           || "0A"x
+  doc1 = p~parseString(yaml1)
+  self~assertEquals("hello world", doc1["key"], "dq fold two lines")
+
+  /* 46.2  Single-quoted: fold across two lines */
+  yaml2 = '---'                                || "0A"x || -
+          "key: 'hello"                        || "0A"x || -
+          "  world'"                           || "0A"x
+  doc2 = p~parseString(yaml2)
+  self~assertEquals("hello world", doc2["key"], "sq fold two lines")
+
+  /* 46.3  Double-quoted: three continuation lines */
+  yaml3 = '---'                                || "0A"x || -
+          'key: "line one'                     || "0A"x || -
+          '  line two'                         || "0A"x || -
+          '  line three"'                      || "0A"x
+  doc3 = p~parseString(yaml3)
+  self~assertEquals("line one line two line three", doc3["key"], "dq three lines")
+
+  /* 46.4  Double-quoted: blank line → literal newline */
+  yaml4 = '---'                                || "0A"x || -
+          'key: "first'                        || "0A"x || -
+          ''                                   || "0A"x || -
+          '  second"'                          || "0A"x
+  doc4 = p~parseString(yaml4)
+  self~assertEquals("first" || "0A"x || "second", doc4["key"], "dq blank → newline")
+
+  /* 46.5  Single-quoted: blank line → literal newline */
+  yaml5 = '---'                                || "0A"x || -
+          "key: 'first"                        || "0A"x || -
+          ''                                   || "0A"x || -
+          "  second'"                          || "0A"x
+  doc5 = p~parseString(yaml5)
+  self~assertEquals("first" || "0A"x || "second", doc5["key"], "sq blank → newline")
+
+  /* 46.6  Double-quoted: escape-newline joins without space */
+  yaml6 = '---'                                || "0A"x || -
+          'key: "no\'                          || "0A"x || -
+          '  space"'                           || "0A"x
+  doc6 = p~parseString(yaml6)
+  self~assertEquals("nospace", doc6["key"], "dq escape-newline")
+
+  /* 46.7  Double-quoted: escape in multi-line content */
+  yaml7 = '---'                                || "0A"x || -
+          'key: "has \t tab'                   || "0A"x || -
+          '  and more"'                        || "0A"x
+  doc7 = p~parseString(yaml7)
+  self~assertEquals("has " || "09"x || " tab and more", doc7["key"], "dq escape multiline")
+
+  /* 46.8  Multi-line dq in sequence item */
+  yaml8 = '---'                                || "0A"x || -
+          'items:'                             || "0A"x || -
+          '  - "multi'                         || "0A"x || -
+          '    line"'                          || "0A"x || -
+          '  - plain'                          || "0A"x
+  doc8 = p~parseString(yaml8)
+  self~assertEquals("multi line", doc8["items"][1], "dq in seq item")
+  self~assertEquals("plain", doc8["items"][2], "plain after dq in seq")
+
+  /* 46.9  Multi-line sq in sequence item */
+  yaml9 = '---'                                || "0A"x || -
+          'items:'                             || "0A"x || -
+          "  - 'single"                        || "0A"x || -
+          "    line'"                          || "0A"x || -
+          '  - other'                          || "0A"x
+  doc9 = p~parseString(yaml9)
+  self~assertEquals("single line", doc9["items"][1], "sq in seq item")
+  self~assertEquals("other", doc9["items"][2], "plain after sq in seq")
+
+  /* 46.10  Multi-line dq as mapping value with next key */
+  yaml10 = '---'                               || "0A"x || -
+           'k1: "multi'                        || "0A"x || -
+           '  line"'                           || "0A"x || -
+           'k2: normal'                        || "0A"x
+  doc10 = p~parseString(yaml10)
+  self~assertEquals("multi line", doc10["k1"], "dq with next key")
+  self~assertEquals("normal", doc10["k2"], "next key after dq")
+
+  /* 46.11  Single-quoted with doubled quote in multi-line */
+  yaml11 = '---'                               || "0A"x || -
+           "key: 'it''s"                       || "0A"x || -
+           "  multi'"                          || "0A"x
+  doc11 = p~parseString(yaml11)
+  self~assertEquals("it's multi", doc11["key"], "sq doubled in multiline")
+
+  /* 46.12  Two consecutive blank lines → two newlines */
+  yaml12 = '---'                               || "0A"x || -
+           'key: "first'                       || "0A"x || -
+           ''                                  || "0A"x || -
+           ''                                  || "0A"x || -
+           '  second"'                         || "0A"x
+  doc12 = p~parseString(yaml12)
+  self~assertEquals("first" || "0A0A"x || "second", doc12["key"], "dq two blanks")
+
+  /* 46.13  Multi-line dq as block scalar (blockScalarOrPlain path) */
+  yaml13 = '---'                               || "0A"x || -
+           'parent:'                           || "0A"x || -
+           '  "multi'                          || "0A"x || -
+           '  line block"'                     || "0A"x
+  doc13 = p~parseString(yaml13)
+  self~assertEquals("multi line block", doc13["parent"], "dq as block scalar")
+
+  /* 46.14  YAML round-trip */
+  yaml_rt = .Yaml~toYaml(doc4)
+  doc_rt = p~parseString(yaml_rt)
+  self~assertEquals(doc4["key"], doc_rt["key"], "dq blank YAML rt")
+
+  /* 46.15  XML round-trip */
+  xml = .Yaml~yamlToXml(doc4)
+  doc_x = p~parseXml(xml)
+  self~assertEquals(doc4["key"], doc_x["key"], "dq blank XML rt")
+
+  /* 46.16  YAML round-trip for escape-newline */
+  yaml_frt = .Yaml~toYaml(doc6)
+  doc_frt = p~parseString(yaml_frt)
+  self~assertEquals("nospace", doc_frt["key"], "escape-newline YAML rt")
+
+  /* 46.17  YAML round-trip for multi-line sequence */
+  yaml_hrt = .Yaml~toYaml(doc8)
+  doc_hrt = p~parseString(yaml_hrt)
+  self~assertEquals("multi line", doc_hrt["items"][1], "dq seq YAML rt")
+
+  /* 46.18  Single-quoted: two consecutive blank lines → two newlines */
+  yaml18 = '---'                               || "0A"x || -
+           "key: 'first"                       || "0A"x || -
+           ''                                  || "0A"x || -
+           ''                                  || "0A"x || -
+           "  second'"                         || "0A"x
+  doc18 = p~parseString(yaml18)
+  self~assertEquals("first" || "0A0A"x || "second", doc18["key"], "sq two blank lines")
+
+  /* 46.19  Multi-line sq as standalone block scalar */
+  yaml19 = '---'                               || "0A"x || -
+           'parent:'                           || "0A"x || -
+           "  'multi"                          || "0A"x || -
+           "  line block'"                     || "0A"x
+  doc19 = p~parseString(yaml19)
+  self~assertEquals("multi line block", doc19["parent"], "sq as block scalar")
+
+/*========================================================================*/
+/* Group 47 — Multi-line flow collections (P5)                           */
+/*========================================================================*/
+::method "test47_MultiLineFlowCollections"
+
+  p = .Yaml~new
+
+  /* 47.1  Flow sequence spanning lines as mapping value */
+  yaml1 = '---'                                || "0A"x || -
+          'key: [a,'                           || "0A"x || -
+          '  b, c]'                            || "0A"x
+  doc1 = p~parseString(yaml1)
+  self~assertEquals(3, doc1["key"]~items, "flow seq ml: items")
+  self~assertEquals("a", doc1["key"][1], "flow seq ml: [1]")
+  self~assertEquals("c", doc1["key"][3], "flow seq ml: [3]")
+
+  /* 47.2  Flow mapping spanning lines as mapping value */
+  yaml2 = '---'                                || "0A"x || -
+          'key: {a: 1,'                        || "0A"x || -
+          '  b: 2}'                            || "0A"x
+  doc2 = p~parseString(yaml2)
+  self~assertEquals(1, doc2["key"]["a"], "flow map ml: a")
+  self~assertEquals(2, doc2["key"]["b"], "flow map ml: b")
+
+  /* 47.3  Flow seq in sequence item */
+  yaml3 = '---'                                || "0A"x || -
+          'items:'                             || "0A"x || -
+          '  - [x,'                            || "0A"x || -
+          '    y]'                             || "0A"x || -
+          '  - plain'                          || "0A"x
+  doc3 = p~parseString(yaml3)
+  self~assertEquals(2, doc3["items"][1]~items, "flow seq in seq: items")
+  self~assertEquals("x", doc3["items"][1][1], "flow seq in seq: [1]")
+  self~assertEquals("plain", doc3["items"][2], "flow seq in seq: next")
+
+  /* 47.4  Flow map in sequence item */
+  yaml4 = '---'                                || "0A"x || -
+          'items:'                             || "0A"x || -
+          '  - {p: 1,'                         || "0A"x || -
+          '    q: 2}'                          || "0A"x
+  doc4 = p~parseString(yaml4)
+  self~assertEquals(1, doc4["items"][1]["p"], "flow map in seq: p")
+  self~assertEquals(2, doc4["items"][1]["q"], "flow map in seq: q")
+
+  /* 47.5  Nested multi-line flow */
+  yaml5 = '---'                                || "0A"x || -
+          'key: {outer: [1,'                   || "0A"x || -
+          '  2, 3],'                           || "0A"x || -
+          '  other: ok}'                       || "0A"x
+  doc5 = p~parseString(yaml5)
+  self~assertEquals(3, doc5["key"]["outer"]~items, "nested ml: items")
+  self~assertEquals("ok", doc5["key"]["other"], "nested ml: other")
+
+  /* 47.6  Flow collection in nested mapping value */
+  yaml6 = '---'                                || "0A"x || -
+          'items:'                             || "0A"x || -
+          '  - name: test'                     || "0A"x || -
+          '    tags: [a,'                      || "0A"x || -
+          '      b]'                           || "0A"x
+  doc6 = p~parseString(yaml6)
+  self~assertEquals(2, doc6["items"][1]["tags"]~items, "flow in nested: items")
+  self~assertEquals("a", doc6["items"][1]["tags"][1], "flow in nested: [1]")
+  self~assertEquals("b", doc6["items"][1]["tags"][2], "flow in nested: [2]")
+
+  /* 47.7  YAML round-trip */
+  yaml_rt = .Yaml~toYaml(doc1)
+  doc_rt = p~parseString(yaml_rt)
+  self~assertEquals(3, doc_rt["key"]~items, "flow seq ml YAML rt")
+
+  /* 47.8  XML round-trip */
+  xml = .Yaml~yamlToXml(doc2)
+  doc_x = p~parseXml(xml)
+  self~assertEquals(1, doc_x["key"]["a"], "flow map ml XML rt: a")
+  self~assertEquals(2, doc_x["key"]["b"], "flow map ml XML rt: b")
+
+::method "test48_FoldedScalarEmission"
+
+  p = .Yaml~new
+
+  /* 48.1  Single-line content emits as > (clip) */
+  val1 = "this is one line" || "0A"x
+  doc1 = .table~new; doc1["text"] = val1
+  yaml1 = .Yaml~toYaml(doc1)
+  self~assertTrue(yaml1~pos(">") > 0, "folded > emitted for single-line")
+  self~assertTrue(yaml1~pos("|") = 0, "folded no literal for single-line")
+  doc1r = p~parseString(yaml1)
+  self~assertEquals(val1, doc1r["text"], "folded > clip roundtrip")
+
+  /* 48.2  Single-line content with >+ (keep, 2 trailing NLs) */
+  val2 = "trailing newlines kept" || "0A"x || "0A"x
+  doc2 = .table~new; doc2["keep"] = val2
+  yaml2 = .Yaml~toYaml(doc2)
+  self~assertTrue(yaml2~pos(">+") > 0, "folded >+ emitted")
+  doc2r = p~parseString(yaml2)
+  self~assertEquals(val2, doc2r["keep"], "folded >+ roundtrip")
+
+  /* 48.3  Multi-line content stays as | (literal) */
+  val3 = "line one" || "0A"x || "line two" || "0A"x
+  doc3 = .table~new; doc3["code"] = val3
+  yaml3 = .Yaml~toYaml(doc3)
+  self~assertTrue(yaml3~pos("|") > 0, "literal | for multi-line")
+  doc3r = p~parseString(yaml3)
+  self~assertEquals(val3, doc3r["code"], "literal | multi-line roundtrip")
+
+  /* 48.4  Content starting with space stays as | */
+  val4 = " indented start" || "0A"x
+  doc4 = .table~new; doc4["indent"] = val4
+  yaml4 = .Yaml~toYaml(doc4)
+  self~assertTrue(yaml4~pos("|") > 0, "literal | for space-start content")
+  doc4r = p~parseString(yaml4)
+  self~assertEquals(val4, doc4r["indent"], "literal | space-start roundtrip")
+
+  /* 48.5  Long single-line wraps to multiple folded lines */
+  val5 = copies("word ", 20)~strip || "0A"x
+  doc5 = .table~new; doc5["long"] = val5
+  yaml5 = .Yaml~toYaml(doc5)
+  self~assertTrue(yaml5~pos(">") > 0, "folded > for long line")
+  /* The folded body should have more than one indented line */
+  bodyLines = 0
+  Do line Over yaml5~makeArray("0A"x)
+    If line~left(2) == "  " Then bodyLines = bodyLines + 1
+  End
+  self~assertTrue(bodyLines > 1, "folded long line wrapped")
+  doc5r = p~parseString(yaml5)
+  self~assertEquals(val5, doc5r["long"], "folded long line roundtrip")
+
+  /* 48.6  Folded in sequence context */
+  val6 = "sequence item text" || "0A"x
+  doc6 = .array~of(val6, "plain")
+  yaml6 = .Yaml~toYaml(doc6)
+  self~assertTrue(yaml6~pos(">") > 0, "folded > in sequence")
+  doc6r = p~parseString(yaml6)
+  self~assertEquals(val6, doc6r[1], "folded > in seq roundtrip")
+
+  /* 48.7  Folded in nested mapping */
+  inner7 = .table~new; inner7["desc"] = "a description" || "0A"x
+  doc7 = .table~new; doc7["outer"] = inner7
+  yaml7 = .Yaml~toYaml(doc7)
+  self~assertTrue(yaml7~pos(">") > 0, "folded > nested mapping")
+  doc7r = p~parseString(yaml7)
+  self~assertEquals(inner7["desc"], doc7r["outer"]["desc"], -
+    "folded > nested roundtrip")
+
+  /* 48.8  String not ending with NL uses double-quoted (unchanged) */
+  val8 = "no trailing" || "0A"x || "newline"
+  doc8 = .table~new; doc8["dq"] = val8
+  yaml8 = .Yaml~toYaml(doc8)
+  self~assertTrue(yaml8~pos('"') > 0, "double-quoted no trailing NL")
+  doc8r = p~parseString(yaml8)
+  self~assertEquals(val8, doc8r["dq"], "double-quoted no trailing NL roundtrip")
+
+  /* 48.9  Folded >+ with 3 trailing NLs */
+  val9 = "three trailing" || "0A"x || "0A"x || "0A"x
+  doc9 = .table~new; doc9["many"] = val9
+  yaml9 = .Yaml~toYaml(doc9)
+  self~assertTrue(yaml9~pos(">+") > 0, "folded >+ three trailing")
+  doc9r = p~parseString(yaml9)
+  self~assertEquals(val9, doc9r["many"], "folded >+ three trailing roundtrip")
+
+  /* 48.10 XML round-trip for folded content (XSD and DTD) */
+  xml10a = .Yaml~yamlToXml(doc1)
+  doc10a = p~parseXml(xml10a)
+  self~assertEquals(val1, doc10a["text"], "folded > XML xsd roundtrip")
+
+  xml10b = .Yaml~yamlToXml(doc2, "dtd")
+  doc10b = p~parseXml(xml10b)
+  self~assertEquals(val2, doc10b["keep"], "folded >+ XML dtd roundtrip")
+
+  /* 48.11 Mixed block scalar types round-trip */
+  doc11 = .table~new
+  doc11["folded_single"]  = "one line of text" || "0A"x
+  doc11["folded_keep"]    = "kept" || "0A"x || "0A"x
+  doc11["literal_multi"]  = "a" || "0A"x || "b" || "0A"x
+  doc11["literal_space"]  = " starts with space" || "0A"x
+  doc11["double_quoted"]  = "no" || "0A"x || "trailing"
+  yaml11 = .Yaml~toYaml(doc11)
+  doc11r = p~parseString(yaml11)
+  self~assertTrue(deepEqual(doc11, doc11r), "mixed block scalars roundtrip")
+
+  /* 48.12 Tagged folded scalar round-trip */
+  pt = .Yaml~new("preserveTags", .true)
+  doc12 = .table~new
+  doc12["desc"] = .YamlTagged~new("!custom", "a single line" || "0A"x)
+  yaml12 = .Yaml~toYaml(doc12)
+  self~assertTrue(yaml12~pos("!custom >") > 0, "tagged folded > on same line")
+  doc12r = pt~parseString(yaml12)
+  self~assertEquals("!custom", doc12r["desc"]~tag, -
+    "tagged folded > tag preserved")
+  self~assertEquals(doc12["desc"]~value, doc12r["desc"]~value, -
+    "tagged folded > roundtrip")
+
+  /* 48.13 Tagged literal scalar round-trip */
+  doc13 = .table~new
+  doc13["code"] = .YamlTagged~new("!code", "a" || "0A"x || "b" || "0A"x)
+  yaml13 = .Yaml~toYaml(doc13)
+  self~assertTrue(yaml13~pos("!code |") > 0, "tagged literal | on same line")
+  doc13r = pt~parseString(yaml13)
+  self~assertEquals(doc13["code"]~value, doc13r["code"]~value, -
+    "tagged literal | roundtrip")
+
+  /* 48.14 Tagged folded >+ (keep) round-trip */
+  doc14 = .table~new
+  doc14["k"] = .YamlTagged~new("!keep", "kept" || "0A"x || "0A"x)
+  yaml14 = .Yaml~toYaml(doc14)
+  self~assertTrue(yaml14~pos("!keep >+") > 0, "tagged folded >+ on same line")
+  doc14r = pt~parseString(yaml14)
+  self~assertEquals(doc14["k"]~value, doc14r["k"]~value, -
+    "tagged folded >+ roundtrip")
+
+  /* 48.15 Content exactly at wrap boundary (76 chars) */
+  val15 = copies("x", 76) || "0A"x
+  doc15 = .table~new; doc15["exact"] = val15
+  yaml15 = .Yaml~toYaml(doc15)
+  doc15r = p~parseString(yaml15)
+  self~assertEquals(val15, doc15r["exact"], -
+    "folded > exact boundary roundtrip")
+
+  /* 48.16 Single very long word (no spaces, 200 chars) */
+  val16 = copies("abcdefghij", 20) || "0A"x
+  doc16 = .table~new; doc16["long"] = val16
+  yaml16 = .Yaml~toYaml(doc16)
+  doc16r = p~parseString(yaml16)
+  self~assertEquals(val16, doc16r["long"], -
+    "folded > long word no spaces roundtrip")
+
+::method "test49_CompactBlockSequences"
+
+  p = .yaml~new
+
+  /* 49.1 Compact block sequence as mapping value (same indent) */
+  yaml1 = "key:" || "0A"x || "- val1" || "0A"x || "- val2"
+  doc1 = p~parseString(yaml1)
+  self~assertTrue(doc1~isA(.table), "compact seq > is table")
+  v1 = doc1["key"]
+  self~assertTrue(v1~isA(.array), "compact seq > value is array")
+  self~assertEquals(2, v1~items, "compact seq > 2 items")
+  self~assertEquals("val1", v1[1], "compact seq > [1]")
+  self~assertEquals("val2", v1[2], "compact seq > [2]")
+
+  /* 49.2 Compact block sequence with multiple mapping keys */
+  yaml2 = "a:" || "0A"x || "- 1" || "0A"x || "- 2" || "0A"x || "b: 3"
+  doc2 = p~parseString(yaml2)
+  self~assertTrue(doc2~isA(.table), "compact seq multi-key > is table")
+  self~assertEquals(2, doc2~items, "compact seq multi-key > 2 entries")
+  v2 = doc2["a"]
+  self~assertTrue(v2~isA(.array), "compact seq multi-key > a is array")
+  self~assertEquals(2, v2~items, "compact seq multi-key > a has 2 items")
+  self~assertEquals(1, v2[1], "compact seq multi-key > a[1]")
+  self~assertEquals(2, v2[2], "compact seq multi-key > a[2]")
+  self~assertEquals(3, doc2["b"], "compact seq multi-key > b")
+
+  /* 49.3 Comment after colon with value on next lines */
+  yaml3 = "hr: # comment" || "0A"x || "  - Mark" || "0A"x || "  - Sammy"
+  doc3 = p~parseString(yaml3)
+  self~assertTrue(doc3~isA(.table), "comment after colon > is table")
+  v3 = doc3["hr"]
+  self~assertTrue(v3~isA(.array), "comment after colon > value is array")
+  self~assertEquals(2, v3~items, "comment after colon > 2 items")
+  self~assertEquals("Mark", v3[1], "comment after colon > [1]")
+  self~assertEquals("Sammy", v3[2], "comment after colon > [2]")
+
+  /* 49.4 Comment after colon with mapping value on next lines */
+  yaml4 = "outer: # this is a comment" || "0A"x || "  inner: value"
+  doc4 = p~parseString(yaml4)
+  self~assertTrue(doc4~isA(.table), "comment after colon map > is table")
+  v4 = doc4["outer"]
+  self~assertTrue(v4~isA(.table), "comment after colon map > value is table")
+  self~assertEquals("value", v4["inner"], "comment after colon map > inner")
+
+  /* 49.5 Multiple keys with comments, compact sequences */
+  yaml5 = "hr: # ranking" || "0A"x || "  - Mark" || "0A"x || "  - Sammy" || "0A"x || -
+           "rbi: # ranking" || "0A"x || "  - Sammy" || "0A"x || "  - Ken"
+  doc5 = p~parseString(yaml5)
+  self~assertTrue(doc5~isA(.table), "multi-key comment > is table")
+  self~assertEquals(2, doc5~items, "multi-key comment > 2 entries")
+  self~assertTrue(doc5["hr"]~isA(.array), "multi-key comment > hr is array")
+  self~assertEquals(2, doc5["hr"]~items, "multi-key comment > hr 2 items")
+  self~assertTrue(doc5["rbi"]~isA(.array), "multi-key comment > rbi is array")
+  self~assertEquals(2, doc5["rbi"]~items, "multi-key comment > rbi 2 items")
+
+  /* 49.6 parseAll document count — single doc without markers */
+  yaml6 = "a:" || "0A"x || "- 1" || "0A"x || "- 2" || "0A"x || "b: 3"
+  docs6 = p~parseAll(yaml6)
+  self~assertEquals(1, docs6~items, "parseAll > single doc no markers")
+
+  /* 49.7 parseAll document count — explicit markers */
+  yaml7 = "---" || "0A"x || "doc1" || "0A"x || "---" || "0A"x || "doc2"
+  docs7 = p~parseAll(yaml7)
+  self~assertEquals(2, docs7~items, "parseAll > two docs with ---")
+
+  /* 49.8 parseAll document count — doc-end then doc-start */
+  yaml8 = "doc1" || "0A"x || "..." || "0A"x || "---" || "0A"x || "doc2"
+  docs8 = p~parseAll(yaml8)
+  self~assertEquals(2, docs8~items, "parseAll > two docs with ... and ---")
+
+  /* 49.9 Compact sequence at indent 0 — mapping then sequence value */
+  yaml9 = "foo:" || "0A"x || "  bar" || "0A"x || "list:" || "0A"x || "- a" || "0A"x || "- b"
+  doc9 = p~parseString(yaml9)
+  self~assertEquals("bar", doc9["foo"], "compact seq indent 0 > foo")
+  v9 = doc9["list"]
+  self~assertTrue(v9~isA(.array), "compact seq indent 0 > list is array")
+  self~assertEquals(2, v9~items, "compact seq indent 0 > list 2 items")
+
+::method "test50_MapCollectionOrderedCollection"
+
+  p = .Yaml~new
+
+  /* StringTable as map input */
+  st = .StringTable~new
+  st["name"] = "Alice"
+  st["age"]  = "30"
+  yamlSt = .Yaml~toYaml(st)
+  docSt  = p~parseString(yamlSt)
+  self~assertEquals("Alice", docSt["name"], "StringTable toYaml > name")
+  self~assertEquals("30", docSt["age"], "StringTable toYaml > age")
+
+  /* Directory as map input */
+  dir = .Directory~new
+  dir["host"] = "localhost"
+  dir["port"] = "8080"
+  yamlDir = .Yaml~toYaml(dir)
+  docDir  = p~parseString(yamlDir)
+  self~assertEquals("localhost", docDir["host"], "Directory toYaml > host")
+  self~assertEquals("8080", docDir["port"], "Directory toYaml > port")
+
+  /* Queue as sequence input (via wrapper map) */
+  q = .Queue~new
+  q~queue("first")
+  q~queue("second")
+  q~queue("third")
+  wrapper = .Table~new
+  wrapper["items"] = q
+  yamlQ = .Yaml~toYaml(wrapper)
+  docQ  = p~parseString(yamlQ)
+  self~assertEquals(3, docQ["items"]~items, "Queue toYaml > count")
+  self~assertEquals("first", docQ["items"][1], "Queue toYaml > item 1")
+  self~assertEquals("third", docQ["items"][3], "Queue toYaml > item 3")
+
+  /* List as sequence input (via wrapper map) */
+  li = .List~new
+  li~insert("alpha")
+  li~insert("beta", li~last)
+  li~insert("gamma", li~last)
+  wrapper2 = .Table~new
+  wrapper2["data"] = li
+  yamlLi = .Yaml~toYaml(wrapper2)
+  docLi  = p~parseString(yamlLi)
+  self~assertEquals(3, docLi["data"]~items, "List toYaml > count")
+  self~assertEquals("alpha", docLi["data"][1], "List toYaml > item 1")
+  self~assertEquals("gamma", docLi["data"][3], "List toYaml > item 3")
+
+  /* yamlToXml with StringTable */
+  xmlSt = .Yaml~yamlToXml(st, "xsd")
+  self~assertTrue(xmlSt~pos("<mapping>") > 0, "StringTable yamlToXml > has mapping")
+  self~assertTrue(xmlSt~pos("Alice") > 0, "StringTable yamlToXml > has Alice")
+
+  /* yamlToXml with Queue (via wrapper) */
+  xmlQ = .Yaml~yamlToXml(wrapper, "xsd")
+  self~assertTrue(xmlQ~pos("<sequence>") > 0, "Queue yamlToXml > has sequence")
+  self~assertTrue(xmlQ~pos("first") > 0, "Queue yamlToXml > has first")
