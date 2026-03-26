@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2014-2025 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2014-2026 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -492,6 +492,7 @@ set (build_extensions_platform_dir ${build_extensions_dir}/${ORX_PLATFORM_DIR})
 set (build_extensions_rxftp_dir ${build_extensions_dir}/rxftp)
 set (build_extensions_csvstream_dir ${build_extensions_dir}/csvStream)
 set (build_extensions_json_dir ${build_extensions_dir}/json)
+set (build_extensions_yaml_dir ${build_extensions_dir}/yaml)
 set (build_extensions_dateparser_dir ${build_extensions_dir}/dateparser)
 set (build_extensions_rxmath_dir ${build_extensions_dir}/rxmath)
 set (build_extensions_rxregexp_dir ${build_extensions_dir}/rxregexp)
@@ -1644,6 +1645,10 @@ copy_build_file(rxregexp.cls     ${build_extensions_rxregexp_dir})
 copy_build_file(rxftp.cls        ${build_extensions_rxftp_dir})
 copy_build_file(csvStream.cls    ${build_extensions_csvstream_dir})
 copy_build_file(json.cls         ${build_extensions_json_dir})
+copy_build_file(yaml.cls         ${build_extensions_yaml_dir})
+copy_build_file(yaml.dtd         ${build_extensions_yaml_dir})
+copy_build_file(yaml.xsd         ${build_extensions_yaml_dir})
+copy_build_file(xmlToYaml.xsl    ${build_extensions_yaml_dir})
 copy_build_file(dateparser.cls   ${build_extensions_dateparser_dir})
 copy_build_file(socket.cls       ${build_extensions_rxsock_dir})
 copy_build_file(streamsocket.cls ${build_extensions_rxsock_dir})
@@ -1698,12 +1703,15 @@ add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/csvStream.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.cls
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.cls
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.dtd
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.xsd
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xmlToYaml.xsl
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/socket.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/streamsocket.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dateparser.cls
-
     ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/complex.cls
     ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/pipe.cls
     ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/semcls.cls
@@ -1718,6 +1726,10 @@ install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls COMPONENT Core DESTINA
 
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/csvStream.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.dtd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.xsd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xmlToYaml.xsl COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dateparser.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/socket.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})

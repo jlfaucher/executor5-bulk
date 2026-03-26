@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  yaml.xsd - XML Schema for representing YAML 1.2 documents in XML.
+
+  Design goals:
+    - Lossless round-trip: YAML -> XML -> YAML preserves structure and types.
+    - Every YAML node (mapping, sequence, scalar) has a corresponding element.
+    - Scalar type and presentation style are preserved as attributes.
+    - Anchors and aliases are represented explicitly.
+    - Multi-document streams are supported via a root <yaml> wrapper.
+    - The schema is self-contained with no external dependencies.
+
+  Element hierarchy:
+    <yaml>                           Root element (document stream)
+      <document>                     One YAML document
+        <tag-directive/>             Optional %TAG directives
+        <mapping> | <sequence> | <scalar>   Top-level node
+          ...                        Recursive nesting
+
+  Directive preservation:
+    <document yaml-version="1.2">    Preserves %YAML directive
+    <tag-directive handle="!!" prefix="tag:yaml.org,2002:"/>
+                                     Preserves %TAG directives
+
+  Merge key preservation:
+    <mapping>
+      <merge anchor="name"/>          One or more merge references
+      <entry> ... </entry>            Own (non-merged) entries
+    </mapping>
+
+  Mapping representation:
+    <mapping>
+      <entry>
+        <key> ... </key>
+        <value> ... </value>
+      </entry>
+    </mapping>
+
+  Sequence representation:
+    <sequence>
+      <item> ... </item>
+    </sequence>
+
+  Scalar representation:
+    <scalar type="str|int|float|bool|null" style="plain|single|double|literal|folded">
+      text content
+    </scalar>
+
+  Anchor/alias:
+    Any node element can carry an anchor="name" attribute.
+    <alias anchor="name"/>  references a previously anchored node.
+
+  Tag preservation:
+    Any node element (mapping, sequence, scalar) can carry an optional
+    tag="..." attribute preserving the original YAML tag (e.g. "!!str",
+    "!custom", "!<verbatim>").  Only emitted when the parser's
+    preserveTags option was enabled.
+
+  Copyright (c) 2024-2026 Rexx Language Association. All rights reserved.
+
+  This program and the accompanying materials are made available under
+  the terms of the Common Public License v1.0 which accompanies this
+  distribution. A copy is also available at the following address:
+  https://www.oorexx.org/license.html
+
+  Redistribution and use in source and binary forms, with or
+  without modification, are permitted provided that the following
+  conditions are met:
+
+  Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+  Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in
+  the documentation and/or other materials provided with the distribution.
+
+  Neither the name of Rexx Language Association nor the names
+  of its contributors may be used to endorse or promote products
+  derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:yaml:xml:1.0"
+           xmlns:y="urn:yaml:xml:1.0"
+           elementFormDefault="qualified">
+
+  <!-- ================================================================== -->
+  <!-- Root element: a stream of YAML documents                           -->
+  <!-- ================================================================== -->
+  <xs:element name="yaml" type="y:yamlStreamType"/>
+
+  <xs:complexType name="yamlStreamType">
+    <xs:sequence>
+      <xs:element name="document" type="y:documentType"
+                  minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:string" default="1.2"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Document: optional directives followed by exactly one root node   -->
+  <!-- ================================================================== -->
+  <xs:complexType name="documentType">
+    <xs:sequence>
+      <xs:element name="tag-directive" type="y:tagDirectiveType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="y:nodeGroup"/>
+    </xs:sequence>
+    <xs:attribute name="yaml-version" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="tagDirectiveType">
+    <xs:attribute name="handle" type="xs:string" use="required"/>
+    <xs:attribute name="prefix" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Node group: any YAML node (mapping, sequence, scalar, or alias)    -->
+  <!-- ================================================================== -->
+  <xs:group name="nodeGroup">
+    <xs:choice>
+      <xs:element name="mapping"  type="y:mappingType"/>
+      <xs:element name="sequence" type="y:sequenceType"/>
+      <xs:element name="scalar"   type="y:scalarType"/>
+      <xs:element name="alias"    type="y:aliasType"/>
+    </xs:choice>
+  </xs:group>
+
+  <!-- ================================================================== -->
+  <!-- Mapping                                                            -->
+  <!-- ================================================================== -->
+  <xs:complexType name="mappingType">
+    <xs:sequence>
+      <xs:element name="merge" type="y:mergeType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="entry" type="y:entryType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="anchor" type="xs:string" use="optional"/>
+    <xs:attribute name="tag" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="mergeType">
+    <xs:attribute name="anchor" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="entryType">
+    <xs:sequence>
+      <xs:element name="key"   type="y:keyOrValueType"/>
+      <xs:element name="value" type="y:keyOrValueType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- key and value can each contain any node -->
+  <xs:complexType name="keyOrValueType">
+    <xs:group ref="y:nodeGroup"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Sequence                                                           -->
+  <!-- ================================================================== -->
+  <xs:complexType name="sequenceType">
+    <xs:sequence>
+      <xs:element name="item" type="y:keyOrValueType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="anchor" type="xs:string" use="optional"/>
+    <xs:attribute name="tag" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Scalar                                                             -->
+  <!-- ================================================================== -->
+  <xs:complexType name="scalarType" mixed="true">
+    <xs:attribute name="type" type="y:scalarTypeEnum" default="str"/>
+    <xs:attribute name="style" type="y:scalarStyleEnum" default="plain"/>
+    <xs:attribute name="anchor" type="xs:string" use="optional"/>
+    <xs:attribute name="tag" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:simpleType name="scalarTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="str"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="bool"/>
+      <xs:enumeration value="null"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="scalarStyleEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="plain"/>
+      <xs:enumeration value="single"/>
+      <xs:enumeration value="double"/>
+      <xs:enumeration value="literal"/>
+      <xs:enumeration value="folded"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================================================================== -->
+  <!-- Alias (reference to an anchored node)                              -->
+  <!-- ================================================================== -->
+  <xs:complexType name="aliasType">
+    <xs:attribute name="anchor" type="xs:string" use="required"/>
+  </xs:complexType>
+
+</xs:schema>

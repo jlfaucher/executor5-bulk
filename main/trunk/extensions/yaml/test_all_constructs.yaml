@@ -1,0 +1,219 @@
+%YAML 1.2
+%TAG !! tag:yaml.org,2002:
+---
+# ============================================================
+# Scalars: plain, quoted, typed
+# ============================================================
+plain: hello world
+integer: 42
+negative: -17
+float: 3.14
+scientific: 6.022e23
+hex_value: 0xFF
+octal_value: 0o77
+infinity: .inf
+neg_infinity: -.inf
+not_a_number: .nan
+empty_string: ""
+null_value: null
+null_tilde: ~
+
+# ============================================================
+# Booleans (quoted keys to preserve as strings)
+# ============================================================
+"true": "true"
+"false": "false"
+"yes": "yes"
+"no": "no"
+"on": "on"
+"off": "off"
+"null": "null"
+"~": "~"
+"TRUE": "TRUE"
+"FALSE": "FALSE"
+"NULL": "NULL"
+bool_true: true
+bool_false: false
+bool_yes: yes
+bool_no: no
+bool_on: on
+bool_off: off
+
+# ============================================================
+# Nested mappings
+# ============================================================
+nested_map:
+  level1:
+    level2:
+      level3: deep
+
+# ============================================================
+# Block sequences
+# ============================================================
+simple_list:
+  - alpha
+  - beta
+  - gamma
+list_of_maps:
+  - name: Alice
+    age: 30
+  - name: Bob
+    age: 25
+map_with_lists:
+  fruits:
+    - apple
+    - banana
+  colors:
+    - red
+    - blue
+
+# ============================================================
+# Flow collections
+# ============================================================
+empty_map: {}
+empty_list: []
+flow_sequence: [one, two, three]
+flow_mapping: {x: 10, y: 20}
+nested_flow: [[1, 2], [3, 4]]
+mixed_flow: [{a: 1}, {b: 2}]
+
+# ============================================================
+# Mixed nesting
+# ============================================================
+mixed_nesting:
+  users:
+    - name: admin
+      roles:
+        - read
+        - write
+      settings:
+        theme: dark
+        "verbose": "false"
+    - name: guest
+      roles:
+        - read
+      settings:
+        theme: light
+        "verbose": "true"
+
+# ============================================================
+# Special characters in keys and values
+# ============================================================
+"#comment-like": value
+"key: colon": value
+"key with spaces": value
+colon_in_value: "http://example.com"
+hash_in_value: "color #FF0000"
+
+# ============================================================
+# Block scalars — literal and folded, all chomp variants
+# ============================================================
+multiline: |
+  This is a multi-line
+  block scalar value.
+folded: >
+  This is a folded
+  block scalar.
+strip_chomp: |-
+  no trailing newline
+keep_chomp: |+
+  trailing newlines kept
+
+folded_strip: >-
+  folded without
+  trailing newline
+folded_keep: >+
+  folded with
+  trailing newlines kept
+
+# ============================================================
+# Quoted strings and escape sequences
+# ============================================================
+special_chars: "tabs\there and\\backslash"
+single_quoted: 'It''s a test'
+double_quoted: "tabs\there"
+leading_space_value: "  two spaces"
+trailing_space_value: "value  "
+unicode_escape_2byte: "\u00E9"
+unicode_escape_3byte: "\u4E16"
+unicode_escape_8digit: "\U0001F600"
+
+# ============================================================
+# Sequences — nested, single-item, deeply nested
+# ============================================================
+list_of_lists:
+  -
+    - nested1
+    - nested2
+  -
+    - nested3
+    - nested4
+single_item_list:
+  - only
+single_item_map:
+  only_key: only_value
+deeply_nested_list:
+  - - - deep
+
+# ============================================================
+# Anchors, aliases, and merge keys
+# ============================================================
+defaults: &defs
+  adapter: postgres
+  host: localhost
+development:
+  <<: *defs
+  database: myapp_dev
+shared_data: &shared
+  x: 10
+  y: 20
+ref1: *shared
+ref2: *shared
+anchored_scalar: &my_scalar important_value
+scalar_ref: *my_scalar
+seq_with_anchors:
+  - &first_item
+    name: first
+    val: 100
+  - *first_item
+
+# ============================================================
+# Numeric keys
+# ============================================================
+numeric_keys:
+  "0": zero
+  "1": one
+  "42": forty-two
+  "3.14": pi
+
+# ============================================================
+# Tags — core schema and custom
+# ============================================================
+tagged_str: !!str tagged_value
+tagged_int: !!int 99
+tagged_bool: !!bool true
+tagged_null: !!null ~
+tagged_seq_items:
+  - !!str 100
+  - !!int 100
+tagged_map: !!map
+  x: 1
+  y: 2
+tagged_flow: [!!str 42, !!int 7]
+custom_tag: !custom value123
+verbatim_tag: !<tag:yaml.org,2002:str> hello
+
+# ============================================================
+# Complex mapping keys (? indicator)
+# ============================================================
+? [a, b]
+: seq_as_key
+? {x: 1}
+: map_as_key
+? scalar_key
+: scalar_complex_value
+
+# ============================================================
+# Unicode plain text
+# ============================================================
+unicode: Hello World
