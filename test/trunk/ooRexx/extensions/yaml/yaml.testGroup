@@ -499,7 +499,9 @@ return testResult
   expose parser thisLocation
 
   inFile = thisLocation"test_all_constructs.yaml"
-  arrIn = .stream~new(inFile)~~open("READ")~arrayIn
+  -- arrIn = .stream~new(inFile)~~open("READ")~arrayIn   -- not expicitly closed, may have effect on 64-bit Windows
+  -- in order to use readFileLines its private modifier needs to be removed in yaml.cls
+  arrIn = parser~readFileLines(inFile)
 
   doc5  = parser~parseArray(arrIn)
   arrOut = .Yaml~toYamlArray(doc5)
