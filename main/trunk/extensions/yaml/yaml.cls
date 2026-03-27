@@ -845,7 +845,8 @@
  *  @param path the file path to read
  *  @return an .Array of lines
  */
-::method readFileLines private
+ -- TODO: if leaving this method public, need to document it in yamlcls.xml
+::method readFileLines -- private -- make it public to test yaml.testGroup ("test19_ArrayRoundtrip") on 64-bit Windows
   use strict arg path
   s = .stream~new(path)~~open("READ")
   if s~state \== "READY" then
