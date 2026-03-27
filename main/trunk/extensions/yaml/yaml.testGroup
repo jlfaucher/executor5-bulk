@@ -499,7 +499,7 @@ return testResult
   expose parser thisLocation
 
   inFile = thisLocation"test_all_constructs.yaml"
-  arrIn = .stream~new(inFile)~~open("READ")~arrayIn
+  arrIn = parser~readFileLines(inFile)
 
   doc5  = parser~parseArray(arrIn)
   arrOut = .Yaml~toYamlArray(doc5)

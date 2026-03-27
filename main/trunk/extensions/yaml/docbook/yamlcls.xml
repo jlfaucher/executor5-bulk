@@ -275,6 +275,7 @@ serialisation methods for lossless round-tripping.</para>
    <member><xref linkend="mthYamlParseXml" xrefstyle="select:title"/></member>
    <member><xref linkend="mthYamlParseXmlFile" xrefstyle="select:title"/></member>
    <member><xref linkend="mthYamlResolveTagHandle" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthYamlReadFileLines" xrefstyle="select:title"/></member>
    <member><xref linkend="mthYamlToYamlClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthYamlToYamlAllClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthYamlToYamlArrayClsMth" xrefstyle="select:title"/></member>
@@ -718,6 +719,33 @@ matching handle is found, the tag is returned unchanged.</para>
 <para><emphasis role="bold">Returns:</emphasis> the resolved tag as a
 verbatim tag string, or the original tag if no matching handle is
 found.</para>
+</section>
+
+<!-- readFileLines -->
+<section id="mthYamlReadFileLines"><title>readFileLines</title>
+<indexterm><primary>readFileLines method</primary>
+<secondary>of Yaml class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/yaml/yaml_readFileLines.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Reads the contents of a file into an <classname>.Array</classname>
+of lines. This is a utility method that handles stream opening, reading,
+and closing, and raises a Syntax error if the file cannot be opened.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">path</emphasis></term>
+ <listitem><para>The file system path to read.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> an
+<classname>.Array</classname> containing one element per line of the
+file.</para>
 </section>
 
 <!-- toYaml (class method) -->
