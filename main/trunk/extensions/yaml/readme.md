@@ -27,26 +27,6 @@ This is the file that should go to the ooRexx test suite:
 - test_all_constructs.yaml ... `test\trunk\ooRexx\extensions\yaml` directory
 
 
-## ooRexx Documentation
-
-All the files in the following directory and its subdirectories go to the doc
-branch:
-
-- docbook        ... `docs\trunk\rexxextensions` directory
-
-## Utility Program for RailRoad Creation from EBNF defintions
-
-The EBNF definitions for YAML can be found at:
-
-- dookbook/yaml.ebnf
-
-It (like any other EBNF file) can be processed with the help of the following
-program:
-
-- ebnf2svg.rex  ... uses `extract_svg_from_rr_xhtml.rex` from
-  `docs\trunk\tools\RailRoadDiagrams\extract_svg_from_rr_xhtml.rex`
-                ... should probably go into `docs\trunk\tools\RailRoadDiagrams\`
-
 ## Internal Quick Testing & Official YAML Test Suite Testing
 
 The following files are for testing:
@@ -59,4 +39,4 @@ The following files are for testing:
 - test_yaml-single.rex
 
 
----rgf, 2026-03-26
+---rgf, 2026-03-26, 2026-03-28
