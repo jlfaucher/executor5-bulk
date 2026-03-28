@@ -58,9 +58,10 @@ return testResult
 ::class "Yaml.testGroup" subclass ooTestCase public
 
 ::method init
-  expose thisLocation   -- save this program's location for loading/saving files
+  expose thisLocation executableLocation  -- save this program's location for loading/saving files
   parse source . . thisPath
   thisLocation=filespec('location',thisPath)
+  executableLocation=filespec('location',.rexxInfo~executable)
   forward class (super) -- let superclass initialize
 
 
@@ -1908,7 +1909,7 @@ return testResult
 /* 37. XSLT round-trip (xsltproc / runXSLT.rxj)                          */
 /*------------------------------------------------------------------------*/
 ::method "test37_XsltRoundtrip"
-  expose parser thisLocation
+  expose parser thisLocation executableLocation
 
   /* Parse the reference YAML file */
   parser2 = .Yaml~new
@@ -1923,7 +1924,7 @@ return testResult
 
   /* Try xsltproc first, then runXSLT.rxj */
   xsltAvailable = .false
-  xslFile = thisLocation"xmlToYaml.xsl"
+  xslFile = executableLocation"xmlToYaml.xsl"
 
   /* Attempt xsltproc */
   Signal On Syntax Name TryRunXSLT
