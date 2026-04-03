@@ -938,3 +938,72 @@ return position
   use strict arg
   forward message "QUALIFIEDPATH"
 
+::method readLines class
+  use strict arg filename
+  forward message 'READIMPL' array (filename, 'LINES')
+
+::method readChars class
+  use strict arg filename
+  forward message 'READIMPL' array (filename, 'CHARS')
+
+::method readImpl class private
+  use strict arg filename, mode
+
+  s = .stream~new(filename)
+  s~open("read")
+  numeric digits 18           -- files can be huge (2026-04-02)
+  signal on syntax
+  data=s~charin(1,s~chars)    -- read content of entire file
+  s~close
+  signal off syntax
+  if mode="LINES" then return data~makeArray
+  return data
+syntax:
+  s~close
+  raise propagate
+
+::method writeLines class
+  use strict arg filename, collection, mode="APPEND"
+
+  if \collection~isA(.orderedCollection) then
+     raise syntax 88.914 array ("collection", "OrderedCollection")
+
+  modeChar=mode~strip~left(1)~upper
+  pos = pos(modeChar, "AR")
+  if pos = 0 then
+     raise syntax 88.916 array ("mode", "'A[ppend]' or 'R[eplace]'", mode)
+
+  s=.stream~new(fileName)
+  s~open("WRITE" ("APPEND", "REPLACE")~at(pos))
+  signal on syntax
+  do o over collection
+     val = o~request("STRING")
+     if val~isNil then s~lineOut(o~string)
+                  else s~lineOut(val)
+  end
+  s~close
+  return
+syntax:
+  s~close
+  raise propagate
+
+::method writeChars class
+  use strict arg filename, data, mode="APPEND"
+
+  modeChar=mode~strip~left(1)~upper
+  pos = pos(modeChar, "AR")
+  if pos = 0 then
+     raise syntax 88.916 array ("mode", "'A[ppend]' or 'R[eplace]'", mode)
+
+  s=.stream~new(fileName)
+  s~open("WRITE" ("APPEND", "REPLACE")~at(pos))
+  signal on syntax
+  val = data~request("STRING")
+  if val~isNil then s~charOut(data~string)
+               else s~charOut(val)
+  s~close
+  return
+syntax:
+  s~close
+  raise propagate
+
