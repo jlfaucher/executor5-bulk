@@ -3429,9 +3429,13 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileListRoots" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFilePathSeparatorClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileReadCharsClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileReadLinesClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileSearchPath" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileSeparatorClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileTemporaryPath" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileWriteCharsClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileWriteLinesClsMth" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
    <member><xref linkend="mthFileAbsoluteFile" xrefstyle="select:title"/></member>
@@ -3549,6 +3553,56 @@ say .File~listRoots~toString(, " ")   -- / (Unix-like system)
 </para>
 </section>
 
+<section id="mthFileReadCharsClsMth"><title>&added52;readChars (Class Method)</title>
+<indexterm><primary>readChars method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>readChars method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_readchars.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Reads the entire content of the file <emphasis role="italic">filename</emphasis> and returns it.
+</para>
+<example>
+<title>Read content of a file</title>
+<programlisting>
+<![CDATA[
+data=.File~readChars(filename)
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="mthFileReadLinesClsMth"><title>&added52;readLines (Class Method)</title>
+<indexterm><primary>readLines method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>readLines method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_readlines.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Reads the text lines of the file <emphasis role="italic">filename</emphasis> into an array and returns it.
+</para>
+<example>
+<title>Read a text file into an array</title>
+<programlisting>
+<![CDATA[
+arr=.File~readLines(filename)
+]]>
+</programlisting>
+</example>
+</section>
+
 
 <!-- Class File - method searchPath ================================ -->
 <section id="mthFileSearchPath" revisionflag="added"><title>&added50;searchPath (Class Method)</title>
@@ -3649,6 +3703,61 @@ say .File~temporaryPath    -- (Windows e.g.) C:\Users\USER~1\AppData\Local\Temp
 say .File~temporaryPath    -- (Unix-like system e.g.) /tmp
 ]]></programlisting></example></para>
 </section>
+
+<section id="mthFileWriteCharsClsMth"><title>&added52;writeChars (Class Method)</title>
+<indexterm><primary>writeChars method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>writeChars method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_writechars.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Writes the <emphasis role="italic">string</emphasis> to the file named
+<emphasis role="italic">filename</emphasis>, by default in <emphasis role="italic">append</emphasis> mode.
+</para>
+<example>
+<title>Write a text file into an array</title>
+<programlisting>
+<![CDATA[
+.File~writeChars(filename, string)  -- by default appends the string to the file
+]]>
+</programlisting>
+</example>
+</section>
+
+<section id="mthFileWriteLinesClsMth"><title>&added52;writeLines (Class Method)</title>
+<indexterm><primary>writeLines method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>writeLines method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_writelines.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Writes the ordered <emphasis role="italic">collection</emphasis> to the file named
+<emphasis role="italic">filename</emphasis>, by default in <emphasis role="italic">append</emphasis> mode.
+</para>
+<example>
+<title>Write a text file into an array</title>
+<programlisting>
+<![CDATA[
+-- write the ordered collection to a text file, replacing its content, if it exists
+arr=.File~writeLines(filename, collection, 'Replace')
+]]>
+</programlisting>
+</example>
+</section>
+
+
 
 
 <section id="mthFileAbsoluteFile"><title>absoluteFile</title>
