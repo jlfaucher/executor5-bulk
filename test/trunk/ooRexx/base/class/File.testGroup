@@ -962,5 +962,34 @@ else
     self~assertFalse(SysIsFileDirectory(name), "SysIsFileDirectory" name)
   end
 
+   -- tests for RFE #872 (https://sourceforge.net/p/oorexx/feature-requests/872/)
+::method test_read_write_files
+  readWrite = .TemporaryTestFile~new(, "test_readWrite")~create("readWrite")
+  readWriteAP=readWrite~absolutePath
+
+      -- define and write content
+  arr1=("abc", "d", "efghi", , "jklmn")
+  .file~writeLines(readWriteAP, arr1, "replace")
+
+      -- read content
+  arr2 =.file~readLines(readWriteAP)
+  data1=.file~readChars(readWriteAP)
+
+  self~assertEquivalentList(arr1, arr2, "test that .file~writeLines and .file~readLines returns the same array content in replace mode")
+      -- now append array
+  .file~writeLines(readWriteAP, arr1)  -- append the original array once more
+  arr3 =.file~readLines(readWriteAP)
+  self~assertEquivalentList(arr1~appendAll(arr1), arr3, "test that .file~writeLines and .file~readLines returns the same array content in append mode")
+
+  .file~writeChars(readWriteAP, data1, 'replace')
+  data2=.file~readChars(readWriteAP)
+  self~assertSame(data2, data1, "writeChars in REPLACE mode, read back")
+
+  .file~writeChars(readWriteAP, data1) -- append
+  data3=.file~readChars(readWriteAP)
+  self~assertSame(data3, data1 || data1, "writeChars in APPEND mode, read back")
+
+   ---
+  readWrite~delete
 
 ::options all syntax
