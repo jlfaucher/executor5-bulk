@@ -53,8 +53,7 @@
         say 'You must specify the name of the ooRexx document to be built.'
         exit
     end
-    parse arg whichdoc
-    whichdoc = whichdoc~strip
+    parse arg whichdoc .
     -- verify that whichdoc is a valid document name
     _ = props~getProperty('dir_sep')    -- either \ or /
     srcdir = docpath||_||whichdoc||_'en-US' -- directory containing the source
