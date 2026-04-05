@@ -54,6 +54,7 @@
         exit
     end
     parse arg whichdoc
+    whichdoc = whichdoc~strip
     -- verify that whichdoc is a valid document name
     _ = props~getProperty('dir_sep')    -- either \ or /
     srcdir = docpath||_||whichdoc||_'en-US' -- directory containing the source
