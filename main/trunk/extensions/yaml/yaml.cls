@@ -3508,7 +3508,7 @@
   raise syntax 93.900 additional(.YamlError~new(msg, pos, 0, ctx)~makeString)
 
 /*============================================================================*/
-/*  deepEqual                                                                 */
+/*  yaml.deepEqual                                                                 */
 /*============================================================================*/
 
 /** Recursively compares two ooRexx objects for semantic equality.
@@ -3525,7 +3525,7 @@
  *  @return <code>.true</code> if the two objects are semantically equal,
  *          <code>.false</code> otherwise
  */
-::routine deepEqual public
+::routine yaml.deepEqual public
   use arg expected, actual
   /* Both .nil */
   if expected == .nil, actual == .nil then return .true
@@ -3534,7 +3534,7 @@
   if expected~isA(.YamlTagged) then do
     if \actual~isA(.YamlTagged) then return .false
     if expected~tag \== actual~tag then return .false
-    return deepEqual(expected~value, actual~value)
+    return yaml.deepEqual(expected~value, actual~value)
   end
   if actual~isA(.YamlTagged) then return .false
   /* Table: same keys, same values */
@@ -3547,15 +3547,15 @@
       /* String keys: direct lookup */
       if k~isA(.string) then do
         if \actual~hasIndex(k) then return .false
-        if \deepEqual(sup~item, actual[k]) then return .false
+        if \yaml.deepEqual(sup~item, actual[k]) then return .false
       end
       /* Non-string keys: find matching key in actual by deep comparison */
       else do
         found = .false
         bSup = actual~supplier
         do while bSup~available
-          if deepEqual(k, bSup~index) then do
-            if \deepEqual(sup~item, bSup~item) then return .false
+          if yaml.deepEqual(k, bSup~index) then do
+            if \yaml.deepEqual(sup~item, bSup~item) then return .false
             found = .true
             leave
           end
@@ -3572,7 +3572,7 @@
     if \actual~isA(.array) then return .false
     if expected~items \= actual~items then return .false
     do i = 1 to expected~items
-      if \deepEqual(expected[i], actual[i]) then return .false
+      if \yaml.deepEqual(expected[i], actual[i]) then return .false
     end
     return .true
   end

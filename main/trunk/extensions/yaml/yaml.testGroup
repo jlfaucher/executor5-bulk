@@ -58,9 +58,10 @@ return testResult
 ::class "Yaml.testGroup" subclass ooTestCase public
 
 ::method init
-  expose thisLocation   -- save this program's location for loading/saving files
+  expose thisLocation executableLocation  -- save this program's location for loading/saving files
   parse source . . thisPath
   thisLocation=filespec('location',thisPath)
+  executableLocation=filespec('location',.rexxInfo~executable)
   forward class (super) -- let superclass initialize
 
 
@@ -473,7 +474,7 @@ return testResult
   .Yaml~toYamlFile(doc1, outFile)
   doc3 = parser~parseFile(outFile)
 
-  self~assertTrue(deepEqual(doc1, doc3), "file roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc3), "file roundtrip equal")
   self~assertEquals("hello world", doc3["plain"], "file roundtrip plain")
   self~assertEquals(42, doc3["integer"], "file roundtrip integer")
   self~assertEquals("deep", doc3["nested_map"]["level1"]["level2"]["level3"], "file roundtrip nested")
@@ -487,7 +488,7 @@ return testResult
 
   .Yaml~toYamlFile(doc3, outFile)
   doc4 = parser~parseFile(outFile)
-  self~assertTrue(deepEqual(doc3, doc4), "file roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc3, doc4), "file roundtrip stable")
 
   -- cleanup
   call SysFileDelete outFile
@@ -505,7 +506,7 @@ return testResult
   arrOut = .Yaml~toYamlArray(doc5)
   doc6  = parser~parseArray(arrOut)
 
-  self~assertTrue(deepEqual(doc5, doc6), "array roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc5, doc6), "array roundtrip equal")
   self~assertEquals("hello world", doc6["plain"], "array roundtrip plain")
   self~assertEquals(42, doc6["integer"], "array roundtrip integer")
   self~assertEquals(3, doc6["simple_list"]~items, "array roundtrip list")
@@ -515,7 +516,7 @@ return testResult
   arrOut2 = .Yaml~toYamlArray(doc6)
   self~assertEquals(arrOut~items, arrOut2~items, "array roundtrip stable count")
   doc7 = parser~parseArray(arrOut2)
-  self~assertTrue(deepEqual(doc6, doc7), "array roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc6, doc7), "array roundtrip stable")
 
 /*------------------------------------------------------------------------*/
 /* 20. Front-matter file round-trip                                       */
@@ -538,7 +539,7 @@ return testResult
 
   fmDoc = parser~parseFrontMatterFile(fmFile)
   self~assertTrue(fmDoc~isA(.table), "fm roundtrip type")
-  self~assertTrue(deepEqual(fmData, fmDoc), "fm roundtrip equal")
+  self~assertTrue(YAML.deepEqual(fmData, fmDoc), "fm roundtrip equal")
   self~assertEquals("Advanced ooRexx", fmDoc["title"], "fm roundtrip title")
   self~assertEquals("en-GB", fmDoc["lang"], "fm roundtrip lang")
   self~assertEquals(2, fmDoc["author"]~items, "fm roundtrip authors")
@@ -547,7 +548,7 @@ return testResult
 
   .Yaml~toYamlFMFile(fmDoc, fmFile)
   fmDoc2 = parser~parseFrontMatterFile(fmFile)
-  self~assertTrue(deepEqual(fmDoc, fmDoc2), "fm roundtrip stable")
+  self~assertTrue(YAML.deepEqual(fmDoc, fmDoc2), "fm roundtrip stable")
 
   -- cleanup
   call SysFileDelete fmFile
@@ -570,7 +571,7 @@ return testResult
 
   doc2 = parser~parseXml(xml1)
   self~assertTrue(doc2~isA(.table), "xsd roundtrip type")
-  self~assertTrue(deepEqual(doc1, doc2), "xsd roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc2), "xsd roundtrip equal")
 
   self~assertEquals("hello world", doc2["plain"], "xsd roundtrip plain")
   self~assertEquals(42, doc2["integer"], "xsd roundtrip integer")
@@ -590,11 +591,11 @@ return testResult
 
   xml2 = .Yaml~yamlToXml(doc2, "xsd")
   doc3 = parser~parseXml(xml2)
-  self~assertTrue(deepEqual(doc2, doc3), "xsd roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc2, doc3), "xsd roundtrip stable")
 
   .Yaml~toYamlFile(doc2, outFile)
   doc4 = parser~parseFile(outFile)
-  self~assertTrue(deepEqual(doc1, doc4), "xsd yaml output equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc4), "xsd yaml output equal")
 
   -- cleanup
   call SysFileDelete outFile
@@ -616,7 +617,7 @@ return testResult
 
   doc5 = parser~parseXml(xml3)
   self~assertTrue(doc5~isA(.table), "dtd roundtrip type")
-  self~assertTrue(deepEqual(doc1, doc5), "dtd roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc5), "dtd roundtrip equal")
 
   self~assertEquals("hello world", doc5["plain"], "dtd roundtrip plain")
   self~assertEquals(42, doc5["integer"], "dtd roundtrip integer")
@@ -629,11 +630,11 @@ return testResult
 
   xml4 = .Yaml~yamlToXml(doc5, "dtd")
   doc6 = parser~parseXml(xml4)
-  self~assertTrue(deepEqual(doc5, doc6), "dtd roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc5, doc6), "dtd roundtrip stable")
 
   .Yaml~toYamlFile(doc5, outDtdFile)
   doc7 = parser~parseFile(outDtdFile)
-  self~assertTrue(deepEqual(doc1, doc7), "dtd yaml output equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc7), "dtd yaml output equal")
 
   -- cleanup
   call SysFileDelete outDtdFile
@@ -652,19 +653,19 @@ return testResult
 
   .Yaml~yamlToXmlFile(doc1, xmlFile, "xsd")
   doc8 = parser~parseXmlFile(xmlFile)
-  self~assertTrue(deepEqual(doc1, doc8), "xsd file roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc8), "xsd file roundtrip equal")
 
   .Yaml~yamlToXmlFile(doc1, xmlDtdFile, "dtd")
   doc9 = parser~parseXmlFile(xmlDtdFile)
-  self~assertTrue(deepEqual(doc1, doc9), "dtd file roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc9), "dtd file roundtrip equal")
 
   .Yaml~yamlToXmlFile(doc8, xmlFile, "xsd")
   doc10 = parser~parseXmlFile(xmlFile)
-  self~assertTrue(deepEqual(doc8, doc10), "xsd file roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc8, doc10), "xsd file roundtrip stable")
 
   .Yaml~yamlToXmlFile(doc9, xmlDtdFile, "dtd")
   doc11 = parser~parseXmlFile(xmlDtdFile)
-  self~assertTrue(deepEqual(doc9, doc11), "dtd file roundtrip stable")
+  self~assertTrue(YAML.deepEqual(doc9, doc11), "dtd file roundtrip stable")
 
   -- cleanup
   call SysFileDelete xmlFile
@@ -715,7 +716,7 @@ return testResult
   self~assertTrue(doc2["btrue"]~isA(.YamlBoolean), "yaml roundtrip btrue")
   self~assertTrue(doc2["bfalse"]~isA(.YamlBoolean), "yaml roundtrip bfalse")
   self~assertFalse(doc2["int1"]~isA(.YamlBoolean), "yaml roundtrip int1")
-  self~assertTrue(deepEqual(doc, doc2), "yaml roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "yaml roundtrip equal")
 
   xml = .Yaml~yamlToXml(doc, "xsd")
   self~assertTrue(xml~pos('type="bool"') > 0, "xml has bool type")
@@ -723,7 +724,7 @@ return testResult
   self~assertTrue(doc3["btrue"]~isA(.YamlBoolean), "xml roundtrip btrue isA")
   self~assertTrue(doc3["bfalse"]~isA(.YamlBoolean), "xml roundtrip bfalse isA")
   self~assertFalse(doc3["int1"]~isA(.YamlBoolean), "xml roundtrip int1 not")
-  self~assertTrue(deepEqual(doc, doc3), "xml roundtrip equal")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "xml roundtrip equal")
 
 /*------------------------------------------------------------------------*/
 /* 25. Anchor/alias round-trip                                            */
@@ -765,7 +766,7 @@ return testResult
   self~assertTrue(yamlOut~pos("*shared") > 0, "yaml has alias")
 
   docS2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(docS, docS2), "yaml rt equal")
+  self~assertTrue(YAML.deepEqual(docS, docS2), "yaml rt equal")
 
   yamlExpanded = .Yaml~toYaml(docS)
   self~assertTrue(yamlExpanded~pos("*shared") = 0, "expanded no alias")
@@ -775,7 +776,7 @@ return testResult
   self~assertTrue(xmlAnch~pos('<alias') > 0, "xml has alias elem")
 
   docS3 = parser~parseXml(xmlAnch)
-  self~assertTrue(deepEqual(docS, docS3), "xml rt equal")
+  self~assertTrue(YAML.deepEqual(docS, docS3), "xml rt equal")
   self~assertTrue((docS3["ref1"] == docS3["ref2"]) | -
                   (docS3["ref1"] == docS3["base"]) | -
                   (docS3["ref2"] == docS3["base"]), "xml identity")
@@ -783,7 +784,7 @@ return testResult
   xmlDtd = .Yaml~yamlToXml(docS, "dtd", amS)
   self~assertTrue(xmlDtd~pos('anchor="shared"') > 0, "dtd has anchor")
   docS4 = parser~parseXml(xmlDtd)
-  self~assertTrue(deepEqual(docS, docS4), "dtd rt equal")
+  self~assertTrue(YAML.deepEqual(docS, docS4), "dtd rt equal")
 
   yamlSeq = "items:"             || "0A"x || -
             "  - &item1"         || "0A"x || -
@@ -798,7 +799,7 @@ return testResult
 
   xmlSeq = .Yaml~yamlToXml(docSeq, "xsd", amSeq)
   docSeq2 = parser~parseXml(xmlSeq)
-  self~assertTrue(deepEqual(docSeq, docSeq2), "seq xml rt equal")
+  self~assertTrue(YAML.deepEqual(docSeq, docSeq2), "seq xml rt equal")
   self~assertTrue(docSeq2["items"][1] == docSeq2["items"][2], "seq xml identity")
 
 /*------------------------------------------------------------------------*/
@@ -815,7 +816,7 @@ return testResult
 
   yamlOut = .Yaml~toYaml(doc1)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc1, doc2), "file yaml rt equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc2), "file yaml rt equal")
 
   self~assertTrue(doc2["bool_true"]~isA(.YamlBoolean), "file bool true isA")
   self~assertTrue(doc2["bool_false"]~isA(.YamlBoolean), "file bool false isA")
@@ -907,14 +908,14 @@ return testResult
 
   xml1 = .Yaml~yamlToXml(doc1, "xsd")
   doc3 = parser~parseXml(xml1)
-  self~assertTrue(deepEqual(doc1, doc3), "file xml xsd rt equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc3), "file xml xsd rt equal")
 
   xml2 = .Yaml~yamlToXml(doc1, "dtd")
   doc4 = parser~parseXml(xml2)
-  self~assertTrue(deepEqual(doc1, doc4), "file xml dtd rt equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc4), "file xml dtd rt equal")
 
   doc5 = parser~parseString(.Yaml~toYaml(doc3))
-  self~assertTrue(deepEqual(doc1, doc5), "file chain rt equal")
+  self~assertTrue(YAML.deepEqual(doc1, doc5), "file chain rt equal")
 
 /*------------------------------------------------------------------------*/
 /* 27. Multi-document with anchorMap                                      */
@@ -938,8 +939,8 @@ return testResult
   self~assertEquals(2, docs2~items, "multi rt count")
   self~assertEquals("first", docs2[1]["name"], "multi rt doc 1")
   self~assertEquals("second", docs2[2]["name"], "multi rt doc 2")
-  self~assertTrue(deepEqual(docs[1], docs2[1]), "multi rt equal 1")
-  self~assertTrue(deepEqual(docs[2], docs2[2]), "multi rt equal 2")
+  self~assertTrue(YAML.deepEqual(docs[1], docs2[1]), "multi rt equal 1")
+  self~assertTrue(YAML.deepEqual(docs[2], docs2[2]), "multi rt equal 2")
 
 /*------------------------------------------------------------------------*/
 /* 28. Escape character round-trips                                       */
@@ -1138,16 +1139,16 @@ return testResult
   doc = parser~parseString(yaml)
   yamlOut = .Yaml~toYaml(doc)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "all chomp deepEqual")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "all chomp deepEqual")
 
   /* 29g. XML round-trips */
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc3 = parser~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc3), "chomp xml xsd rt")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "chomp xml xsd rt")
 
   xml2 = .Yaml~yamlToXml(doc, "dtd")
   doc4 = parser~parseXml(xml2)
-  self~assertTrue(deepEqual(doc, doc4), "chomp xml dtd rt")
+  self~assertTrue(YAML.deepEqual(doc, doc4), "chomp xml dtd rt")
 
   /* 29h. Folded (>) round-trip */
   yaml = "folded: >" || "0A"x || "  this is" || "0A"x || "  one line"
@@ -1173,7 +1174,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("[") > 0, "flow seq emitted")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "flow seq roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "flow seq roundtrip")
 
   /* 30b. 4 items (max for flow) */
   yaml = "nums:"       || "0A"x || -
@@ -1185,7 +1186,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("[") > 0, "flow seq 4 items")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "flow seq 4 roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "flow seq 4 roundtrip")
 
   /* 30c. 5 items stays block */
   yaml = "nums:"       || "0A"x || -
@@ -1198,7 +1199,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("- 1") > 0, "block seq 5 items")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "block seq 5 roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "block seq 5 roundtrip")
 
   /* 30d. Nested collection stays block */
   yaml = "data:"              || "0A"x || -
@@ -1208,7 +1209,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("[") = 0, "block seq nested maps")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "block seq nested roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "block seq nested roundtrip")
 
   /* 30e. Sequence with null */
   yaml = "vals:"     || "0A"x || -
@@ -1218,7 +1219,7 @@ return testResult
   doc = parser~parseString(yaml)
   yamlOut = .Yaml~toYaml(doc)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "seq with null roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "seq with null roundtrip")
 
   /* 30f. Empty collections */
   yaml = "em: {}" || "0A"x || "el: []"
@@ -1234,10 +1235,10 @@ return testResult
   doc = parser~parseString(yaml)
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc3 = parser~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc3), "flow seq xml xsd rt")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "flow seq xml xsd rt")
   xml2 = .Yaml~yamlToXml(doc, "dtd")
   doc4 = parser~parseXml(xml2)
-  self~assertTrue(deepEqual(doc, doc4), "flow seq xml dtd rt")
+  self~assertTrue(YAML.deepEqual(doc, doc4), "flow seq xml dtd rt")
 
   /* 30h. Top-level sequence stays block */
   yaml = "- alpha" || "0A"x || "- beta"
@@ -1245,7 +1246,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("[") = 0, "top seq stays block")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "top seq roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "top seq roundtrip")
 
 /*------------------------------------------------------------------------*/
 /* 31. Anchor ordering in toYaml                                          */
@@ -1269,7 +1270,7 @@ return testResult
   self~assertTrue(anchorPos < aliasPos, "anchor before alias")
 
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "anchor order rt")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "anchor order rt")
 
   /* Multiple anchors */
   yamlMulti = "a1: &first"          || "0A"x || -
@@ -1282,11 +1283,11 @@ return testResult
   am  = parser~anchorMap
   yamlOut = .Yaml~toYaml(doc, 2, am)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "multi anchor order rt")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "multi anchor order rt")
 
   xml = .Yaml~yamlToXml(doc, "xsd", am)
   doc3 = parser~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc3), "anchor order xml rt")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "anchor order xml rt")
 
 /*------------------------------------------------------------------------*/
 /* 32. Merge key reconstruction in toYaml                                 */
@@ -1357,7 +1358,7 @@ return testResult
   msm = parser~mergeSourceMap
   yamlOut = .Yaml~toYaml(doc, 2, am, msm)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "merge simple roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "merge simple roundtrip")
 
   /* 32.6 Round-trip with override */
   yaml = "defaults: &defs"     || "0A"x || -
@@ -1372,7 +1373,7 @@ return testResult
   msm = parser~mergeSourceMap
   yamlOut = .Yaml~toYaml(doc, 2, am, msm)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "merge override roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "merge override roundtrip")
 
   /* 32.7 Round-trip multiple merges */
   yaml = "base1: &b1"          || "0A"x || -
@@ -1387,7 +1388,7 @@ return testResult
   msm = parser~mergeSourceMap
   yamlOut = .Yaml~toYaml(doc, 2, am, msm)
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "multi merge roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "multi merge roundtrip")
 
   /* 32.8 XML round-trip (XSD) */
   yaml = "defaults: &defs"     || "0A"x || -
@@ -1400,12 +1401,12 @@ return testResult
   am  = parser~anchorMap
   xml = .Yaml~yamlToXml(doc, "xsd", am)
   doc3 = parser~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc3), "merge xml xsd roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "merge xml xsd roundtrip")
 
   /* 32.9 XML round-trip (DTD) */
   xml = .Yaml~yamlToXml(doc, "dtd", am)
   doc4 = parser~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc4), "merge xml dtd roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc4), "merge xml dtd roundtrip")
 
   /* 32.10 Without mergeSourceMap (backward compat) */
   yaml = "defaults: &defs"     || "0A"x || -
@@ -1419,7 +1420,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc, 2, am)
   self~assertTrue(yamlOut~pos("<<:") = 0, "no merge without mergeSourceMap")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "roundtrip without mergeSourceMap")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "roundtrip without mergeSourceMap")
 
   /* 32.11 P2: XML <merge> element emitted with mergeSourceMap (XSD) */
   yaml = "defaults: &defs"     || "0A"x || -
@@ -1454,13 +1455,13 @@ return testResult
   xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
   parser2 = .Yaml~new
   doc3 = parser2~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc3), "merge XML xsd data roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "merge XML xsd data roundtrip")
 
   /* 32.16 P2: XML round-trip with <merge> preserves data (DTD) */
   xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
   parser2 = .Yaml~new
   doc4 = parser2~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc4), "merge XML dtd data roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc4), "merge XML dtd data roundtrip")
 
   /* 32.17 P2: XML round-trip reconstructs mergeSourceMap */
   xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
@@ -1485,7 +1486,7 @@ return testResult
   xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
   parser2 = .Yaml~new
   doc5 = parser2~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc5), "merge XML override data roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc5), "merge XML override data roundtrip")
   am5  = parser2~anchorMap
   msm5 = parser2~mergeSourceMap
   yamlOut = .Yaml~toYaml(doc5, 2, am5, msm5)
@@ -1507,7 +1508,7 @@ return testResult
   self~assertTrue(xml~countStr("<merge") = 2, "two merge elements in XML")
   parser2 = .Yaml~new
   doc6 = parser2~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc6), "multi merge XML data roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc6), "multi merge XML data roundtrip")
   am6  = parser2~anchorMap
   msm6 = parser2~mergeSourceMap
   yamlOut = .Yaml~toYaml(doc6, 2, am6, msm6)
@@ -1517,7 +1518,7 @@ return testResult
   xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
   parser2 = .Yaml~new
   doc7 = parser2~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc7), "multi merge XML dtd data roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc7), "multi merge XML dtd data roundtrip")
 
 /*------------------------------------------------------------------------*/
 /* 33. Single-quoted strings in emitter                                   */
@@ -1680,7 +1681,7 @@ return testResult
   yamlOut = .Yaml~toYaml(doc)
   self~assertTrue(yamlOut~pos("%YAML") = 0, "no directives without map")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "directives roundtrip no map")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "directives roundtrip no map")
 
   /* 35.6 directivesMap captures %YAML version */
   p6 = .Yaml~new
@@ -1716,7 +1717,7 @@ return testResult
   self~assertTrue(yamlOut~pos("%TAG !!") > 0, "TAG directive in output")
   self~assertTrue(yamlOut~pos("---") > 0, "doc-start marker in output")
   doc2 = parser~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "directives full roundtrip")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "directives full roundtrip")
 
   /* 35.9 Multi-doc round-trip with directives */
   p9 = .Yaml~new
@@ -1755,7 +1756,7 @@ return testResult
   self~assertTrue(xml~pos('prefix="tag:example.com,2000:"') > 0, "XML has prefix attr")
   p11b = .Yaml~new
   doc2 = p11b~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML directive roundtrip data")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML directive roundtrip data")
   dir2 = p11b~directivesMap~at(doc2)
   self~assertTrue(dir2 \== .nil, "XML directive roundtrip has directives")
   self~assertEquals("1.2", dir2["yamlVersion"], "XML directive roundtrip version")
@@ -1775,7 +1776,7 @@ return testResult
   self~assertTrue(xml~pos('tag-directive') > 0, "DTD XML has tag-directive")
   p12b = .Yaml~new
   doc2 = p12b~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "DTD XML directive roundtrip data")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "DTD XML directive roundtrip data")
 
   /* 35.13 P9: tags stored as shorthand with preserveTags */
   p13 = .Yaml~new(.true, .true)
@@ -1908,7 +1909,7 @@ return testResult
 /* 37. XSLT round-trip (xsltproc / runXSLT.rxj)                          */
 /*------------------------------------------------------------------------*/
 ::method "test37_XsltRoundtrip"
-  expose parser thisLocation
+  expose parser thisLocation executableLocation
 
   /* Parse the reference YAML file */
   parser2 = .Yaml~new
@@ -1923,7 +1924,7 @@ return testResult
 
   /* Try xsltproc first, then runXSLT.rxj */
   xsltAvailable = .false
-  xslFile = thisLocation"xmlToYaml.xsl"
+  xslFile = executableLocation"xmlToYaml.xsl"
 
   /* Attempt xsltproc */
   Signal On Syntax Name TryRunXSLT
@@ -1967,7 +1968,7 @@ XsltCheckDone:
   xsdYaml = outXsd~makeString('L', "0A"x)
   parser3 = .Yaml~new
   xsdDoc = parser3~parseString(xsdYaml)
-  self~assertTrue(deepEqual(original, xsdDoc), -
+  self~assertTrue(YAML.deepEqual(original, xsdDoc), -
     "XSLT xsd round-trip ("xsltTool")")
 
   /* DTD round-trip */
@@ -1982,7 +1983,7 @@ XsltCheckDone:
   dtdYaml = outDtd~makeString('L', "0A"x)
   parser4 = .Yaml~new
   dtdDoc = parser4~parseString(dtdYaml)
-  self~assertTrue(deepEqual(original, dtdDoc), -
+  self~assertTrue(YAML.deepEqual(original, dtdDoc), -
     "XSLT dtd round-trip ("xsltTool")")
 
   /* Clean up temporary XML files */
@@ -2071,14 +2072,14 @@ XsltCheckDone:
   doc = parser~parseString(yaml)
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), "round-trip flow seq key")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "round-trip flow seq key")
 
   /* 38.9 Round-trip: flow mapping key */
   yaml = "? {x: 1}" || "0A"x || ": value2" || "0A"x
   doc = parser~parseString(yaml)
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), "round-trip flow map key")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "round-trip flow map key")
 
   /* 38.10 Round-trip: block sequence key */
   yaml = "?" || "0A"x || "  - item1" || "0A"x || -
@@ -2086,7 +2087,7 @@ XsltCheckDone:
   doc = parser~parseString(yaml)
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), "round-trip block seq key")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "round-trip block seq key")
 
   /* 38.11 Round-trip: mixed simple + complex keys */
   yaml = "simple: val1" || "0A"x || -
@@ -2094,14 +2095,14 @@ XsltCheckDone:
   doc = parser~parseString(yaml)
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), "round-trip mixed keys")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "round-trip mixed keys")
 
   /* 38.12 Round-trip: programmatic creation with array key */
   doc = .table~new
   doc[.array~of("a", "b")] = "value1"
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), -
+  self~assertTrue(YAML.deepEqual(doc, doc2), -
     "round-trip programmatic array key")
 
   /* 38.13 Round-trip: programmatic creation with table key */
@@ -2110,7 +2111,7 @@ XsltCheckDone:
   doc[tKey] = "value2"
   out = .Yaml~toYaml(doc)
   doc2 = parser~parseString(out)
-  self~assertTrue(deepEqual(doc, doc2), -
+  self~assertTrue(YAML.deepEqual(doc, doc2), -
     "round-trip programmatic table key")
 
   /* 38.14 Emitter uses ? syntax for non-string keys */
@@ -2120,21 +2121,21 @@ XsltCheckDone:
   self~assertTrue(out~pos("? ") > 0, "emitter uses ? for array key")
   self~assertTrue(out~pos(": value1") > 0, "emitter emits value after :")
 
-  /* 38.15 deepEqual with non-string keys: equal */
+  /* 38.15 YAML.deepEqual with non-string keys: equal */
   a = .table~new; a[.array~of(1, 2)] = "v1"
   b = .table~new; b[.array~of(1, 2)] = "v1"
-  self~assertTrue(deepEqual(a, b), "deepEqual non-string keys equal")
+  self~assertTrue(YAML.deepEqual(a, b), "deepEqual non-string keys equal")
 
-  /* 38.16 deepEqual with non-string keys: different values */
+  /* 38.16 YAML.deepEqual with non-string keys: different values */
   a = .table~new; a[.array~of(1, 2)] = "v1"
   b = .table~new; b[.array~of(1, 2)] = "v2"
-  self~assertFalse(deepEqual(a, b), -
+  self~assertFalse(YAML.deepEqual(a, b), -
     "deepEqual non-string keys diff values")
 
-  /* 38.17 deepEqual with non-string keys: different keys */
+  /* 38.17 YAML.deepEqual with non-string keys: different keys */
   a = .table~new; a[.array~of(1, 2)] = "v1"
   b = .table~new; b[.array~of(3, 4)] = "v1"
-  self~assertFalse(deepEqual(a, b), -
+  self~assertFalse(YAML.deepEqual(a, b), -
     "deepEqual non-string keys diff keys")
 
   /* 38.18 Complex key with block value */
@@ -2348,7 +2349,7 @@ XsltCheckDone:
   doc2 = parser~parseXml(xml1)
   xml2 = .Yaml~yamlToXml(doc2, "xsd")
   doc3 = parser~parseXml(xml2)
-  self~assertTrue(deepEqual(doc2, doc3), "xml complex key stable")
+  self~assertTrue(YAML.deepEqual(doc2, doc3), "xml complex key stable")
 
 ::method "test41_EdgeCaseRoundtrips"
   expose parser
@@ -2550,59 +2551,59 @@ XsltCheckDone:
   doc = tp~parseString('!!str 42')
   yamlOut = .Yaml~toYaml(doc)
   doc2 = tp~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "YAML rt !!str")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "YAML rt !!str")
 
   /* 42.10 YAML round-trip: !!map */
   yaml = "!!map" || "0A"x || "x: 1" || "0A"x
   doc = tp~parseString(yaml)
   yamlOut = .Yaml~toYaml(doc)
   doc2 = tp~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc2), "YAML rt !!map")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "YAML rt !!map")
 
   /* 42.11 XML round-trip XSD: !!str scalar */
   doc = tp~parseString('!!str 42')
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!str")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt !!str")
 
   /* 42.12 XML round-trip DTD: !!str scalar */
   doc = tp~parseString('!!str 42')
   xml = .Yaml~yamlToXml(doc, "dtd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML DTD rt !!str")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML DTD rt !!str")
 
   /* 42.13 XML round-trip XSD: !custom tag */
   doc = tp~parseString('!custom hello')
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !custom")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt !custom")
 
   /* 42.14 XML round-trip: verbatim tag */
   doc = tp~parseString('!<tag:yaml.org,2002:str> hello')
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt verbatim tag")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt verbatim tag")
 
   /* 42.15 XML round-trip: !!map on mapping */
   yaml = "!!map" || "0A"x || "a: 1" || "0A"x
   doc = tp~parseString(yaml)
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!map")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt !!map")
 
   /* 42.16 XML round-trip DTD: !!map */
   yaml = "!!map" || "0A"x || "a: 1" || "0A"x
   doc = tp~parseString(yaml)
   xml = .Yaml~yamlToXml(doc, "dtd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML DTD rt !!map")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML DTD rt !!map")
 
   /* 42.17 XML round-trip: !!seq on sequence */
   yaml = "!!seq" || "0A"x || "- one" || "0A"x || "- two" || "0A"x
   doc = tp~parseString(yaml)
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt !!seq")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt !!seq")
 
   /* 42.18 Full chain round-trip: YAML -> parse -> XML -> parse -> YAML */
   doc = tp~parseString('!!str 42')
@@ -2610,7 +2611,7 @@ XsltCheckDone:
   doc2 = tp~parseXml(xml)
   yamlOut = .Yaml~toYaml(doc2)
   doc3 = tp~parseString(yamlOut)
-  self~assertTrue(deepEqual(doc, doc3), "full chain rt !!str")
+  self~assertTrue(YAML.deepEqual(doc, doc3), "full chain rt !!str")
 
   /* 42.19 preserveTags = .false (default) — tags stripped as before */
   pDef = .Yaml~new
@@ -2623,7 +2624,7 @@ XsltCheckDone:
   doc = tp~parseString(yaml)
   xml = .Yaml~yamlToXml(doc, "xsd")
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML XSD rt tagged seq items")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML XSD rt tagged seq items")
 
   /* 42.21 Tag + anchor combination */
   yaml = "&myA !!str hello" || "0A"x
@@ -2634,24 +2635,24 @@ XsltCheckDone:
   self~assertEquals("hello", doc~value, "tag+anchor value")
   xml = .Yaml~yamlToXml(doc, "xsd", am)
   doc2 = tp~parseXml(xml)
-  self~assertTrue(deepEqual(doc, doc2), "XML rt tag+anchor")
+  self~assertTrue(YAML.deepEqual(doc, doc2), "XML rt tag+anchor")
 
-  /* 42.22 deepEqual: both tagged same */
+  /* 42.22 YAML.deepEqual: both tagged same */
   a = .YamlTagged~new("!!str", "42")
   b = .YamlTagged~new("!!str", "42")
-  self~assertTrue(deepEqual(a, b), "deepEqual same tagged")
+  self~assertTrue(YAML.deepEqual(a, b), "deepEqual same tagged")
 
-  /* 42.23 deepEqual: different tags */
+  /* 42.23 YAML.deepEqual: different tags */
   a = .YamlTagged~new("!!str", "42")
   b = .YamlTagged~new("!!int", 42)
-  self~assertFalse(deepEqual(a, b), "deepEqual diff tags")
+  self~assertFalse(YAML.deepEqual(a, b), "deepEqual diff tags")
 
-  /* 42.24 deepEqual: tagged vs untagged */
+  /* 42.24 YAML.deepEqual: tagged vs untagged */
   a = .YamlTagged~new("!!str", "42")
-  self~assertFalse(deepEqual(a, "42"), "deepEqual tagged vs plain")
+  self~assertFalse(YAML.deepEqual(a, "42"), "deepEqual tagged vs plain")
 
-  /* 42.25 deepEqual: untagged vs tagged */
-  self~assertFalse(deepEqual("42", a), "deepEqual plain vs tagged")
+  /* 42.25 YAML.deepEqual: untagged vs tagged */
+  self~assertFalse(YAML.deepEqual("42", a), "deepEqual plain vs tagged")
 
 /*========================================================================*/
 /* Group 43 — Unicode escape shortcuts \N, \_, \L, \P (P8)               */
@@ -3111,7 +3112,7 @@ XsltCheckDone:
   doc11["double_quoted"]  = "no" || "0A"x || "trailing"
   yaml11 = .Yaml~toYaml(doc11)
   doc11r = p~parseString(yaml11)
-  self~assertTrue(deepEqual(doc11, doc11r), "mixed block scalars roundtrip")
+  self~assertTrue(YAML.deepEqual(doc11, doc11r), "mixed block scalars roundtrip")
 
   /* 48.12 Tagged folded scalar round-trip */
   pt = .Yaml~new("preserveTags", .true)

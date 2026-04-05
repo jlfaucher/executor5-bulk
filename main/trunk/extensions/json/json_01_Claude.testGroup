@@ -722,7 +722,7 @@ return tg
   obj1 = .json~fromJsonFile(constructsFile)
   encoded = json~toJSON(obj1)
   obj2 = json~fromJSON(encoded)
-  self~assertTrue(deepEqual(obj1, obj2), "test_all_constructs round-trip")
+  self~assertTrue(json.deepEqual(obj1, obj2), "test_all_constructs round-trip")
 
 /* --- 33. Legible round-trip --- */
 
@@ -739,7 +739,7 @@ return tg
   decoded = json~fromJSON(legibleJson)
   minimized = json~toJSON(decoded)
   decoded2 = json~fromJSON(minimized)
-  self~assertTrue(deepEqual(decoded, decoded2), "legible vs minimized round-trip")
+  self~assertTrue(json.deepEqual(decoded, decoded2), "legible vs minimized round-trip")
 
 
 /*============================================================================*/
@@ -1473,7 +1473,7 @@ caught:
 
   doc2 = json~parseXml(xml1)
   self~assertTrue(doc2~isA(.directory), "xsd roundtrip type")
-  self~assertTrue(deepEqual(obj1, doc2), "xsd roundtrip equal")
+  self~assertTrue(json.deepEqual(obj1, doc2), "xsd roundtrip equal")
 
   self~assertEquals("Alice", doc2["name"], "xsd roundtrip name")
   self~assertEquals(30, doc2["age"], "xsd roundtrip age")
@@ -1486,7 +1486,7 @@ caught:
   -- Re-encode stability
   xml2 = .json~jsonToXml(doc2, "xsd")
   doc3 = json~parseXml(xml2)
-  self~assertTrue(deepEqual(doc2, doc3), "xsd roundtrip stable")
+  self~assertTrue(json.deepEqual(doc2, doc3), "xsd roundtrip stable")
 
 /*------------------------------------------------------------------------*/
 /* XML round-trip via DTD                                                 */
@@ -1501,7 +1501,7 @@ caught:
 
   doc2 = json~parseXml(xml1)
   self~assertTrue(doc2~isA(.directory), "dtd roundtrip type")
-  self~assertTrue(deepEqual(obj1, doc2), "dtd roundtrip equal")
+  self~assertTrue(json.deepEqual(obj1, doc2), "dtd roundtrip equal")
 
   self~assertEquals("Alice", doc2["name"], "dtd roundtrip name")
   self~assertEquals(30, doc2["age"], "dtd roundtrip age")
@@ -1510,7 +1510,7 @@ caught:
   -- Re-encode stability
   xml2 = .json~jsonToXml(doc2, "dtd")
   doc3 = json~parseXml(xml2)
-  self~assertTrue(deepEqual(doc2, doc3), "dtd roundtrip stable")
+  self~assertTrue(json.deepEqual(doc2, doc3), "dtd roundtrip stable")
 
 /*------------------------------------------------------------------------*/
 /* XML file round-trip                                                    */
@@ -1526,20 +1526,20 @@ caught:
 
   .json~jsonToXmlFile(obj1, xmlFile, "xsd")
   doc2 = json~parseXmlFile(xmlFile)
-  self~assertTrue(deepEqual(obj1, doc2), "xsd file roundtrip equal")
+  self~assertTrue(json.deepEqual(obj1, doc2), "xsd file roundtrip equal")
 
   .json~jsonToXmlFile(obj1, xmlDtdFile, "dtd")
   doc3 = json~parseXmlFile(xmlDtdFile)
-  self~assertTrue(deepEqual(obj1, doc3), "dtd file roundtrip equal")
+  self~assertTrue(json.deepEqual(obj1, doc3), "dtd file roundtrip equal")
 
   -- Stability: re-write and re-read
   .json~jsonToXmlFile(doc2, xmlFile, "xsd")
   doc4 = json~parseXmlFile(xmlFile)
-  self~assertTrue(deepEqual(doc2, doc4), "xsd file roundtrip stable")
+  self~assertTrue(json.deepEqual(doc2, doc4), "xsd file roundtrip stable")
 
   .json~jsonToXmlFile(doc3, xmlDtdFile, "dtd")
   doc5 = json~parseXmlFile(xmlDtdFile)
-  self~assertTrue(deepEqual(doc3, doc5), "dtd file roundtrip stable")
+  self~assertTrue(json.deepEqual(doc3, doc5), "dtd file roundtrip stable")
 
   -- cleanup
   call SysFileDelete xmlFile
@@ -1615,7 +1615,7 @@ caught:
   arr = json~fromJSON('[1,"hello",true,null,{"k":"v"},[2,3]]')
   xml = .json~jsonToXml(arr)
   doc = json~parseXml(xml)
-  self~assertTrue(deepEqual(arr, doc), "xml roundtrip array root")
+  self~assertTrue(json.deepEqual(arr, doc), "xml roundtrip array root")
 
 /*------------------------------------------------------------------------*/
 /* XML special characters (entity escaping)                               */
@@ -1657,12 +1657,12 @@ caught:
   docXsd = json~parseXml(xmlXsd)
   xmlDtd = .json~jsonToXml(docXsd, "dtd")
   docDtd = json~parseXml(xmlDtd)
-  self~assertTrue(deepEqual(docXsd, docDtd), "xsd->dtd cross roundtrip")
+  self~assertTrue(json.deepEqual(docXsd, docDtd), "xsd->dtd cross roundtrip")
 
   -- And back to XSD
   xmlXsd2 = .json~jsonToXml(docDtd, "xsd")
   docXsd2 = json~parseXml(xmlXsd2)
-  self~assertTrue(deepEqual(docDtd, docXsd2), "dtd->xsd cross roundtrip")
+  self~assertTrue(json.deepEqual(docDtd, docXsd2), "dtd->xsd cross roundtrip")
 
 
 ::method test_xml_xslt_roundtrip
@@ -1768,7 +1768,7 @@ XsltCheckDone_json2:
 /** Recursive deep-equality comparison for JSON-decoded structures.
  *  Handles .Directory, .Array, .JsonBoolean, .JsonString, .String, .nil.
  */
-::routine deepEqual public
+::routine json.deepEqual public
   use arg a, b
 
   -- both nil?
@@ -1781,7 +1781,7 @@ XsltCheckDone_json2:
     if a~items \== b~items then return .false
     do key over a~allIndexes
       if \b~hasIndex(key) then return .false
-      if \deepEqual(a[key], b[key]) then return .false
+      if \json.deepEqual(a[key], b[key]) then return .false
     end
     return .true
   end
@@ -1790,7 +1790,7 @@ XsltCheckDone_json2:
   if a~isA(.array), b~isA(.array) then do
     if a~items \== b~items then return .false
     do i = 1 to a~items
-      if \deepEqual(a[i], b[i]) then return .false
+      if \json.deepEqual(a[i], b[i]) then return .false
     end
     return .true
   end
@@ -1801,9 +1801,12 @@ XsltCheckDone_json2:
 
   -- string/number comparison (covers .JsonString and plain .String)
   -- Use numeric comparison for numbers to handle equivalent representations
-  if a~dataType('n'), b~dataType('n') then
-    return a = b
-  return a == b
+  if a~isA(.string), b~isA(.string) then do
+    if a~dataType('n'), b~dataType('n') then
+      return a = b
+    return a == b
+  end
+  return a = b
 
 
 ::requires "json.cls"

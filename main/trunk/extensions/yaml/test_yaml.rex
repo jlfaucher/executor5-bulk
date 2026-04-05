@@ -419,7 +419,7 @@ doc1 = parser~parseFile(inFile)
 doc3 = parser~parseFile(outFile)
 
 /* Deep structural comparison */
-call check deepEqual(doc1, doc3), .true, "file roundtrip equal"
+call check YAML.deepEqual(doc1, doc3), .true, "file roundtrip equal"
 
 /* Spot-check specific values */
 call check doc3["plain"], "hello world", "file roundtrip plain"
@@ -436,7 +436,7 @@ call check doc3["mixed_nesting"]["users"][1]["roles"][2], "write", "file roundtr
 /* The re-dumped file should also be semantically equal */
 .Yaml~toYamlFile(doc3, outFile)
 doc4 = parser~parseFile(outFile)
-call check deepEqual(doc3, doc4), .true, "file roundtrip stable"
+call check YAML.deepEqual(doc3, doc4), .true, "file roundtrip stable"
 say
 
 /*========================================================================*/
@@ -448,7 +448,7 @@ doc5  = parser~parseArray(arrIn)
 arrOut = .Yaml~toYamlArray(doc5)
 doc6  = parser~parseArray(arrOut)
 
-call check deepEqual(doc5, doc6), .true, "array roundtrip equal"
+call check YAML.deepEqual(doc5, doc6), .true, "array roundtrip equal"
 
 /* Spot-checks */
 call check doc6["plain"], "hello world", "array roundtrip plain"
@@ -461,7 +461,7 @@ call check doc6["list_of_maps"][2]["name"], "Bob", "array roundtrip lom name"
 arrOut2 = .Yaml~toYamlArray(doc6)
 call check arrOut~items, arrOut2~items, "array roundtrip stable count"
 doc7 = parser~parseArray(arrOut2)
-call check deepEqual(doc6, doc7), .true, "array roundtrip stable"
+call check YAML.deepEqual(doc6, doc7), .true, "array roundtrip stable"
 say
 
 /*========================================================================*/
@@ -482,7 +482,7 @@ fmFile = "test_frontmatter.yaml"
 
 fmDoc = parser~parseFrontMatterFile(fmFile)
 call check fmDoc~isA(.table), .true, "fm roundtrip type"
-call check deepEqual(fmData, fmDoc), .true, "fm roundtrip equal"
+call check YAML.deepEqual(fmData, fmDoc), .true, "fm roundtrip equal"
 call check fmDoc["title"], "Advanced ooRexx", "fm roundtrip title"
 call check fmDoc["lang"], "en-GB", "fm roundtrip lang"
 call check fmDoc["author"]~items, 2, "fm roundtrip authors"
@@ -492,7 +492,7 @@ call check fmDoc["keywords"]~items, 3, "fm roundtrip kw"
 /* Stability: dump again and re-parse */
 .Yaml~toYamlFMFile(fmDoc, fmFile)
 fmDoc2 = parser~parseFrontMatterFile(fmFile)
-call check deepEqual(fmDoc, fmDoc2), .true, "fm roundtrip stable"
+call check YAML.deepEqual(fmDoc, fmDoc2), .true, "fm roundtrip stable"
 say
 
 /*========================================================================*/
@@ -513,7 +513,7 @@ call check (xml1~pos('<yaml') > 0), 1, "xsd xml has yaml element"
 /* Parse XML back to objects */
 doc2 = parser~parseXml(xml1)
 call check doc2~isA(.table), .true, "xsd roundtrip type"
-call check deepEqual(doc1, doc2), .true, "xsd roundtrip equal"
+call check YAML.deepEqual(doc1, doc2), .true, "xsd roundtrip equal"
 
 /* Spot-checks on specific values */
 call check doc2["plain"], "hello world", "xsd roundtrip plain"
@@ -535,12 +535,12 @@ call check doc2["mixed_nesting"]["users"][1]["roles"][2], "write", "xsd roundtri
 /* Stability: XML → parse → XML should produce identical XML */
 xml2 = .Yaml~yamlToXml(doc2, "xsd")
 doc3 = parser~parseXml(xml2)
-call check deepEqual(doc2, doc3), .true, "xsd roundtrip stable"
+call check YAML.deepEqual(doc2, doc3), .true, "xsd roundtrip stable"
 
 /* Also dump back to YAML and verify */
 .Yaml~toYamlFile(doc2, outFile)
 doc4 = parser~parseFile(outFile)
-call check deepEqual(doc1, doc4), .true, "xsd yaml output equal"
+call check YAML.deepEqual(doc1, doc4), .true, "xsd yaml output equal"
 say
 
 /*========================================================================*/
@@ -557,7 +557,7 @@ call check (xml3~pos('xmlns=') == 0), 1, "dtd xml no namespace"
 /* Parse DTD XML back to objects */
 doc5 = parser~parseXml(xml3)
 call check doc5~isA(.table), .true, "dtd roundtrip type"
-call check deepEqual(doc1, doc5), .true, "dtd roundtrip equal"
+call check YAML.deepEqual(doc1, doc5), .true, "dtd roundtrip equal"
 
 /* Spot-checks */
 call check doc5["plain"], "hello world", "dtd roundtrip plain"
@@ -572,12 +572,12 @@ call check doc5["mixed_nesting"]["users"][1]["name"], "admin", "dtd roundtrip us
 /* Stability */
 xml4 = .Yaml~yamlToXml(doc5, "dtd")
 doc6 = parser~parseXml(xml4)
-call check deepEqual(doc5, doc6), .true, "dtd roundtrip stable"
+call check YAML.deepEqual(doc5, doc6), .true, "dtd roundtrip stable"
 
 /* Dump back to YAML */
 .Yaml~toYamlFile(doc5, outDtdFile)
 doc7 = parser~parseFile(outDtdFile)
-call check deepEqual(doc1, doc7), .true, "dtd yaml output equal"
+call check YAML.deepEqual(doc1, doc7), .true, "dtd yaml output equal"
 say
 
 /*========================================================================*/
@@ -586,21 +586,21 @@ say "--- 23. XML file round-trip (yamlToXmlFile / parseXmlFile) ---"
 /* XSD file round-trip */
 .Yaml~yamlToXmlFile(doc1, xmlFile, "xsd")
 doc8 = parser~parseXmlFile(xmlFile)
-call check deepEqual(doc1, doc8), .true, "xsd file roundtrip equal"
+call check YAML.deepEqual(doc1, doc8), .true, "xsd file roundtrip equal"
 
 /* DTD file round-trip */
 .Yaml~yamlToXmlFile(doc1, xmlDtdFile, "dtd")
 doc9 = parser~parseXmlFile(xmlDtdFile)
-call check deepEqual(doc1, doc9), .true, "dtd file roundtrip equal"
+call check YAML.deepEqual(doc1, doc9), .true, "dtd file roundtrip equal"
 
 /* Stability: re-export and re-parse */
 .Yaml~yamlToXmlFile(doc8, xmlFile, "xsd")
 doc10 = parser~parseXmlFile(xmlFile)
-call check deepEqual(doc8, doc10), .true, "xsd file roundtrip stable"
+call check YAML.deepEqual(doc8, doc10), .true, "xsd file roundtrip stable"
 
 .Yaml~yamlToXmlFile(doc9, xmlDtdFile, "dtd")
 doc11 = parser~parseXmlFile(xmlDtdFile)
-call check deepEqual(doc9, doc11), .true, "dtd file roundtrip stable"
+call check YAML.deepEqual(doc9, doc11), .true, "dtd file roundtrip stable"
 say
 
 /*========================================================================*/
@@ -651,7 +651,7 @@ doc2 = parser~parseString(yamlOut)
 call check doc2["btrue"]~isA(.YamlBoolean), .true, "yaml roundtrip btrue"
 call check doc2["bfalse"]~isA(.YamlBoolean), .true, "yaml roundtrip bfalse"
 call check doc2["int1"]~isA(.YamlBoolean), .false, "yaml roundtrip int1"
-call check deepEqual(doc, doc2), .true, "yaml roundtrip equal"
+call check YAML.deepEqual(doc, doc2), .true, "yaml roundtrip equal"
 
 /* XML round-trip preserves boolean type */
 xml = .Yaml~yamlToXml(doc, "xsd")
@@ -660,7 +660,7 @@ doc3 = parser~parseXml(xml)
 call check doc3["btrue"]~isA(.YamlBoolean), .true, "xml roundtrip btrue isA"
 call check doc3["bfalse"]~isA(.YamlBoolean), .true, "xml roundtrip bfalse isA"
 call check doc3["int1"]~isA(.YamlBoolean), .false, "xml roundtrip int1 not"
-call check deepEqual(doc, doc3), .true, "xml roundtrip equal"
+call check YAML.deepEqual(doc, doc3), .true, "xml roundtrip equal"
 say
 
 /*========================================================================*/
@@ -706,7 +706,7 @@ call check (yamlOut~pos("*shared") > 0), .true, "yaml has alias"
 
 /* Parse the anchor-aware YAML back */
 docS2 = parser~parseString(yamlOut)
-call check deepEqual(docS, docS2), .true, "yaml rt equal"
+call check YAML.deepEqual(docS, docS2), .true, "yaml rt equal"
 
 /* YAML dump without anchorMap expands everything (no aliases) */
 yamlExpanded = .Yaml~toYaml(docS)
@@ -718,7 +718,7 @@ call check (xmlAnch~pos('anchor="shared"') > 0), .true, "xml has anchor attr"
 call check (xmlAnch~pos('<alias') > 0), .true, "xml has alias elem"
 
 docS3 = parser~parseXml(xmlAnch)
-call check deepEqual(docS, docS3), .true, "xml rt equal"
+call check YAML.deepEqual(docS, docS3), .true, "xml rt equal"
 /* XML parser restores shared identity */
 call check (docS3["ref1"] == docS3["ref2"]) | -
            (docS3["ref1"] == docS3["base"]) | -
@@ -728,7 +728,7 @@ call check (docS3["ref1"] == docS3["ref2"]) | -
 xmlDtd = .Yaml~yamlToXml(docS, "dtd", amS)
 call check (xmlDtd~pos('anchor="shared"') > 0), .true, "dtd has anchor"
 docS4 = parser~parseXml(xmlDtd)
-call check deepEqual(docS, docS4), .true, "dtd rt equal"
+call check YAML.deepEqual(docS, docS4), .true, "dtd rt equal"
 
 /* Sequence with anchored items */
 yamlSeq = "items:"             || "0A"x || -
@@ -745,7 +745,7 @@ call check (docSeq["items"][1] == docSeq["items"][2]), .true, "seq identity"
 /* XML round-trip for sequence aliases */
 xmlSeq = .Yaml~yamlToXml(docSeq, "xsd", amSeq)
 docSeq2 = parser~parseXml(xmlSeq)
-call check deepEqual(docSeq, docSeq2), .true, "seq xml rt equal"
+call check YAML.deepEqual(docSeq, docSeq2), .true, "seq xml rt equal"
 call check (docSeq2["items"][1] == docSeq2["items"][2]), .true, "seq xml identity"
 say
 
@@ -767,7 +767,7 @@ call check (am1~items > 0), .true, "file anchor captured"
 /* YAML round-trip (expanded — no anchorMap, which already works) */
 yamlOut = .Yaml~toYaml(doc1)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc1, doc2), .true, "file yaml rt equal"
+call check YAML.deepEqual(doc1, doc2), .true, "file yaml rt equal"
 
 /* Verify booleans survived */
 call check doc2["bool_true"]~isA(.YamlBoolean), .true, "file bool true isA"
@@ -869,16 +869,16 @@ call check complexFound, 2, "file complex keys found"
 /* XML round-trip via XSD (expanded, no anchorMap) */
 xml1 = .Yaml~yamlToXml(doc1, "xsd")
 doc3 = parser~parseXml(xml1)
-call check deepEqual(doc1, doc3), .true, "file xml xsd rt equal"
+call check YAML.deepEqual(doc1, doc3), .true, "file xml xsd rt equal"
 
 /* XML round-trip via DTD (expanded, no anchorMap) */
 xml2 = .Yaml~yamlToXml(doc1, "dtd")
 doc4 = parser~parseXml(xml2)
-call check deepEqual(doc1, doc4), .true, "file xml dtd rt equal"
+call check YAML.deepEqual(doc1, doc4), .true, "file xml dtd rt equal"
 
 /* Full chain: YAML file → parse → XML (XSD) → parse → YAML dump → parse */
 doc5 = parser~parseString(.Yaml~toYaml(doc3))
-call check deepEqual(doc1, doc5), .true, "file chain rt equal"
+call check YAML.deepEqual(doc1, doc5), .true, "file chain rt equal"
 say
 
 /*========================================================================*/
@@ -902,8 +902,8 @@ docs2 = parser~parseAll(multiOut)
 call check docs2~items, 2, "multi rt count"
 call check docs2[1]["name"], "first", "multi rt doc 1"
 call check docs2[2]["name"], "second", "multi rt doc 2"
-call check deepEqual(docs[1], docs2[1]), .true, "multi rt equal 1"
-call check deepEqual(docs[2], docs2[2]), .true, "multi rt equal 2"
+call check YAML.deepEqual(docs[1], docs2[1]), .true, "multi rt equal 1"
+call check YAML.deepEqual(docs[2], docs2[2]), .true, "multi rt equal 2"
 say
 
 /*========================================================================*/
@@ -1114,16 +1114,16 @@ yaml = "clip: |"  || "0A"x || "  A" || "0A"x || "  B" || "0A"x || -
 doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "all chomp deepEqual"
+call check YAML.deepEqual(doc, doc2), .true, "all chomp deepEqual"
 
 /* 29g. XML round-trips for chomp variants */
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc3 = parser~parseXml(xml)
-call check deepEqual(doc, doc3), .true, "chomp xml xsd rt"
+call check YAML.deepEqual(doc, doc3), .true, "chomp xml xsd rt"
 
 xml2 = .Yaml~yamlToXml(doc, "dtd")
 doc4 = parser~parseXml(xml2)
-call check deepEqual(doc, doc4), .true, "chomp xml dtd rt"
+call check YAML.deepEqual(doc, doc4), .true, "chomp xml dtd rt"
 
 /* 29h. Folded (>) round-trip — folded content ends with one NL */
 yaml = "folded: >" || "0A"x || "  this is" || "0A"x || "  one line"
@@ -1147,7 +1147,7 @@ doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 call check (yamlOut~pos("[") > 0), 1, "flow seq emitted"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "flow seq roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "flow seq roundtrip"
 
 /* 30b. Sequence with 4 items (max for flow) */
 yaml = "nums:"       || "0A"x || -
@@ -1159,7 +1159,7 @@ doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 call check (yamlOut~pos("[") > 0), 1, "flow seq 4 items"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "flow seq 4 roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "flow seq 4 roundtrip"
 
 /* 30c. Sequence with 5 items stays block */
 yaml = "nums:"       || "0A"x || -
@@ -1173,7 +1173,7 @@ yamlOut = .Yaml~toYaml(doc)
 /* The list itself should be block (has "- ") */
 call check (yamlOut~pos("- 1") > 0), 1, "block seq 5 items"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "block seq 5 roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "block seq 5 roundtrip"
 
 /* 30d. Sequence with nested collection stays block */
 yaml = "data:"              || "0A"x || -
@@ -1184,7 +1184,7 @@ yamlOut = .Yaml~toYaml(doc)
 /* Items are mappings, so sequence stays block (no [...]) */
 call check (yamlOut~pos("[") = 0), 1, "block seq nested maps"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "block seq nested roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "block seq nested roundtrip"
 
 /* 30e. Flow sequence with null item stays block */
 yaml = "vals:"     || "0A"x || -
@@ -1194,7 +1194,7 @@ yaml = "vals:"     || "0A"x || -
 doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "seq with null roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "seq with null roundtrip"
 
 /* 30f. Empty collections stay as {} and [] */
 yaml = "em: {}" || "0A"x || "el: []"
@@ -1210,10 +1210,10 @@ yaml = "colors:"  || "0A"x || -
 doc = parser~parseString(yaml)
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc3 = parser~parseXml(xml)
-call check deepEqual(doc, doc3), .true, "flow seq xml xsd rt"
+call check YAML.deepEqual(doc, doc3), .true, "flow seq xml xsd rt"
 xml2 = .Yaml~yamlToXml(doc, "dtd")
 doc4 = parser~parseXml(xml2)
-call check deepEqual(doc, doc4), .true, "flow seq xml dtd rt"
+call check YAML.deepEqual(doc, doc4), .true, "flow seq xml dtd rt"
 
 /* 30h. Top-level sequence stays block (not flow) */
 yaml = "- alpha" || "0A"x || "- beta"
@@ -1221,7 +1221,7 @@ doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 call check (yamlOut~pos("[") = 0), 1, "top seq stays block"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "top seq roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "top seq roundtrip"
 say
 
 /*========================================================================*/
@@ -1247,7 +1247,7 @@ call check (anchorPos < aliasPos), 1, "anchor before alias"
 
 /* Re-parse succeeds (no unknown alias error) */
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "anchor order rt"
+call check YAML.deepEqual(doc, doc2), .true, "anchor order rt"
 
 /* Multiple anchors: both must appear before their aliases */
 yamlMulti = "a1: &first"          || "0A"x || -
@@ -1260,12 +1260,12 @@ doc = parser~parseString(yamlMulti)
 am  = parser~anchorMap
 yamlOut = .Yaml~toYaml(doc, 2, am)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "multi anchor order rt"
+call check YAML.deepEqual(doc, doc2), .true, "multi anchor order rt"
 
 /* Anchor ordering in XML round-trip (should still work) */
 xml = .Yaml~yamlToXml(doc, "xsd", am)
 doc3 = parser~parseXml(xml)
-call check deepEqual(doc, doc3), .true, "anchor order xml rt"
+call check YAML.deepEqual(doc, doc3), .true, "anchor order xml rt"
 say
 
 /*========================================================================*/
@@ -1336,7 +1336,7 @@ am  = parser~anchorMap
 msm = parser~mergeSourceMap
 yamlOut = .Yaml~toYaml(doc, 2, am, msm)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "merge simple roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "merge simple roundtrip"
 
 /* 32.6 Round-trip with override */
 yaml = "defaults: &defs"     || "0A"x || -
@@ -1351,7 +1351,7 @@ am  = parser~anchorMap
 msm = parser~mergeSourceMap
 yamlOut = .Yaml~toYaml(doc, 2, am, msm)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "merge override roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "merge override roundtrip"
 
 /* 32.7 Round-trip with multiple merges */
 yaml = "base1: &b1"          || "0A"x || -
@@ -1366,7 +1366,7 @@ am  = parser~anchorMap
 msm = parser~mergeSourceMap
 yamlOut = .Yaml~toYaml(doc, 2, am, msm)
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "multi merge roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "multi merge roundtrip"
 
 /* 32.8 XML round-trip with merge reconstruction (XSD) */
 yaml = "defaults: &defs"     || "0A"x || -
@@ -1379,12 +1379,12 @@ doc = parser~parseString(yaml)
 am  = parser~anchorMap
 xml = .Yaml~yamlToXml(doc, "xsd", am)
 doc3 = parser~parseXml(xml)
-call check deepEqual(doc, doc3), .true, "merge xml xsd roundtrip"
+call check YAML.deepEqual(doc, doc3), .true, "merge xml xsd roundtrip"
 
 /* 32.9 XML round-trip with merge reconstruction (DTD) */
 xml = .Yaml~yamlToXml(doc, "dtd", am)
 doc4 = parser~parseXml(xml)
-call check deepEqual(doc, doc4), .true, "merge xml dtd roundtrip"
+call check YAML.deepEqual(doc, doc4), .true, "merge xml dtd roundtrip"
 
 /* 32.10 Dump without mergeSourceMap still works (backward compat) */
 yaml = "defaults: &defs"     || "0A"x || -
@@ -1399,7 +1399,7 @@ yamlOut = .Yaml~toYaml(doc, 2, am)
 /* Without mergeSourceMap, merged keys are emitted individually (old behavior) */
 call check (yamlOut~pos("<<:") = 0), 1, "no merge without mergeSourceMap"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "roundtrip without mergeSourceMap"
+call check YAML.deepEqual(doc, doc2), .true, "roundtrip without mergeSourceMap"
 
 /* 32.11 P2: XML <merge> element emitted with mergeSourceMap (XSD) */
 yaml = "defaults: &defs"     || "0A"x || -
@@ -1436,13 +1436,13 @@ call check (xml~pos("<merge") = 0), 1, "no merge element without mergeSourceMap"
 xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
 parser2 = .Yaml~new
 doc3 = parser2~parseXml(xml)
-call check deepEqual(doc, doc3), .true, "merge XML xsd data roundtrip"
+call check YAML.deepEqual(doc, doc3), .true, "merge XML xsd data roundtrip"
 
 /* 32.16 P2: XML round-trip with <merge> preserves data (DTD) */
 xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
 parser2 = .Yaml~new
 doc4 = parser2~parseXml(xml)
-call check deepEqual(doc, doc4), .true, "merge XML dtd data roundtrip"
+call check YAML.deepEqual(doc, doc4), .true, "merge XML dtd data roundtrip"
 
 /* 32.17 P2: XML round-trip reconstructs mergeSourceMap */
 xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
@@ -1467,7 +1467,7 @@ msm = parser~mergeSourceMap
 xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
 parser2 = .Yaml~new
 doc5 = parser2~parseXml(xml)
-call check deepEqual(doc, doc5), .true, "merge XML override data roundtrip"
+call check YAML.deepEqual(doc, doc5), .true, "merge XML override data roundtrip"
 am5  = parser2~anchorMap
 msm5 = parser2~mergeSourceMap
 yamlOut = .Yaml~toYaml(doc5, 2, am5, msm5)
@@ -1489,7 +1489,7 @@ xml = .Yaml~yamlToXml(doc, "xsd", am, , msm)
 call check (xml~countStr("<merge") = 2), 1, "two merge elements in XML"
 parser2 = .Yaml~new
 doc6 = parser2~parseXml(xml)
-call check deepEqual(doc, doc6), .true, "multi merge XML data roundtrip"
+call check YAML.deepEqual(doc, doc6), .true, "multi merge XML data roundtrip"
 am6  = parser2~anchorMap
 msm6 = parser2~mergeSourceMap
 yamlOut = .Yaml~toYaml(doc6, 2, am6, msm6)
@@ -1499,7 +1499,7 @@ call check (yamlOut~pos("<<: [*b1, *b2]") > 0), 1, "multi merge XML roundtrip re
 xml = .Yaml~yamlToXml(doc, "dtd", am, , msm)
 parser2 = .Yaml~new
 doc7 = parser2~parseXml(xml)
-call check deepEqual(doc, doc7), .true, "multi merge XML dtd data roundtrip"
+call check YAML.deepEqual(doc, doc7), .true, "multi merge XML dtd data roundtrip"
 say
 /*========================================================================*/
 say "--- 33. Single-quoted strings in emitter ---"
@@ -1670,7 +1670,7 @@ doc = parser~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 call check (yamlOut~pos("%YAML") = 0), 1, "no directives without map"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "directives roundtrip no map"
+call check YAML.deepEqual(doc, doc2), .true, "directives roundtrip no map"
 
 /* 35.6 directivesMap captures %YAML version */
 parser6 = .Yaml~new
@@ -1708,7 +1708,7 @@ call check (yamlOut~pos("%YAML 1.2") > 0), 1, "YAML directive in output"
 call check (yamlOut~pos("%TAG !!") > 0), 1, "TAG directive in output"
 call check (yamlOut~pos("---") > 0), 1, "doc-start marker in output"
 doc2 = parser~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "directives full roundtrip"
+call check YAML.deepEqual(doc, doc2), .true, "directives full roundtrip"
 
 /* 35.9 Multi-doc round-trip with directives */
 parser9 = .Yaml~new
@@ -1748,7 +1748,7 @@ call check (xml~pos('prefix="tag:example.com,2000:"') > 0), 1, "XML has prefix a
 /* Parse XML back */
 parser11b = .Yaml~new
 doc2 = parser11b~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML directive roundtrip data"
+call check YAML.deepEqual(doc, doc2), .true, "XML directive roundtrip data"
 dir2 = parser11b~directivesMap~at(doc2)
 call check (dir2 \== .nil), 1, "XML directive roundtrip has directives"
 call check dir2["yamlVersion"], "1.2", "XML directive roundtrip version"
@@ -1768,7 +1768,7 @@ call check (xml~pos('yaml-version="1.2"') > 0), 1, "DTD XML has yaml-version"
 call check (xml~pos('tag-directive') > 0), 1, "DTD XML has tag-directive"
 parser12b = .Yaml~new
 doc2 = parser12b~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "DTD XML directive roundtrip data"
+call check YAML.deepEqual(doc, doc2), .true, "DTD XML directive roundtrip data"
 
 /* 35.13 P9: tags stored as shorthand with preserveTags */
 parser13 = .Yaml~new(.true, .true)
@@ -1961,7 +1961,7 @@ Else Do
   xsdYaml = outXsd~makeString('L', "0A"x)
   parser2 = .Yaml~new
   xsdDoc = parser2~parseString(xsdYaml)
-  call check deepEqual(original, xsdDoc), .true, "XSLT xsd round-trip (" || xsltTool || ")"
+  call check YAML.deepEqual(original, xsdDoc), .true, "XSLT xsd round-trip (" || xsltTool || ")"
 
   /* DTD round-trip */
   outDtd = .array~new
@@ -1973,7 +1973,7 @@ Else Do
   dtdYaml = outDtd~makeString('L', "0A"x)
   parser3 = .Yaml~new
   dtdDoc = parser3~parseString(dtdYaml)
-  call check deepEqual(original, dtdDoc), .true, "XSLT dtd round-trip (" || xsltTool || ")"
+  call check YAML.deepEqual(original, dtdDoc), .true, "XSLT dtd round-trip (" || xsltTool || ")"
 End
 
 /* Clean up temporary XML files */
@@ -2059,35 +2059,35 @@ yaml = "? [a, b]" || "0A"x || ": value1" || "0A"x
 doc = parser~parseString(yaml)
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip flow seq key"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip flow seq key"
 
 /* 38.9 Round-trip: flow mapping key */
 yaml = "? {x: 1}" || "0A"x || ": value2" || "0A"x
 doc = parser~parseString(yaml)
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip flow map key"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip flow map key"
 
 /* 38.10 Round-trip: block sequence key */
 yaml = "?" || "0A"x || "  - item1" || "0A"x || "  - item2" || "0A"x || ": value3" || "0A"x
 doc = parser~parseString(yaml)
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip block seq key"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip block seq key"
 
 /* 38.11 Round-trip: mixed simple + complex keys */
 yaml = "simple: val1" || "0A"x || "? [x, y]" || "0A"x || ": val2" || "0A"x
 doc = parser~parseString(yaml)
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip mixed keys"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip mixed keys"
 
 /* 38.12 Round-trip: programmatic creation with array key */
 doc = .table~new
 doc[.array~of("a", "b")] = "value1"
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip programmatic array key"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip programmatic array key"
 
 /* 38.13 Round-trip: programmatic creation with table key */
 doc = .table~new
@@ -2095,7 +2095,7 @@ tKey = .table~new; tKey["x"] = 1
 doc[tKey] = "value2"
 out = .Yaml~toYaml(doc)
 doc2 = parser~parseString(out)
-call check deepEqual(doc, doc2), .true, "round-trip programmatic table key"
+call check YAML.deepEqual(doc, doc2), .true, "round-trip programmatic table key"
 
 /* 38.14 Emitter uses ? syntax for non-string keys */
 doc = .table~new
@@ -2104,20 +2104,20 @@ out = .Yaml~toYaml(doc)
 call check out~pos("? ") > 0, .true, "emitter uses ? for array key"
 call check out~pos(": value1") > 0, .true, "emitter emits value after :"
 
-/* 38.15 deepEqual with non-string keys */
+/* 38.15 YAML.deepEqual with non-string keys */
 a = .table~new; a[.array~of(1, 2)] = "v1"
 b = .table~new; b[.array~of(1, 2)] = "v1"
-call check deepEqual(a, b), .true, "deepEqual non-string keys equal"
+call check YAML.deepEqual(a, b), .true, "deepEqual non-string keys equal"
 
-/* 38.16 deepEqual with non-string keys, different values */
+/* 38.16 YAML.deepEqual with non-string keys, different values */
 a = .table~new; a[.array~of(1, 2)] = "v1"
 b = .table~new; b[.array~of(1, 2)] = "v2"
-call check deepEqual(a, b), .false, "deepEqual non-string keys diff values"
+call check YAML.deepEqual(a, b), .false, "deepEqual non-string keys diff values"
 
-/* 38.17 deepEqual with non-string keys, different keys */
+/* 38.17 YAML.deepEqual with non-string keys, different keys */
 a = .table~new; a[.array~of(1, 2)] = "v1"
 b = .table~new; b[.array~of(3, 4)] = "v1"
-call check deepEqual(a, b), .false, "deepEqual non-string keys diff keys"
+call check YAML.deepEqual(a, b), .false, "deepEqual non-string keys diff keys"
 
 /* 38.18 Complex key with block value */
 yaml = "? [a, b]" || "0A"x || ":" || "0A"x || "  nested: val" || "0A"x
@@ -2325,7 +2325,7 @@ xml1 = .Yaml~yamlToXml(doc, "xsd")
 doc2 = parser~parseXml(xml1)
 xml2 = .Yaml~yamlToXml(doc2, "xsd")
 doc3 = parser~parseXml(xml2)
-call check deepEqual(doc2, doc3), .true, "xml complex key stable"
+call check YAML.deepEqual(doc2, doc3), .true, "xml complex key stable"
 say
 
 /*========================================================================*/
@@ -2528,59 +2528,59 @@ call check found, .true, "tagged key found"
 doc = tp~parseString('!!str 42')
 yamlOut = .Yaml~toYaml(doc)
 doc2 = tp~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "YAML rt !!str"
+call check YAML.deepEqual(doc, doc2), .true, "YAML rt !!str"
 
 /* 42.10 YAML round-trip: !!map */
 yaml = "!!map" || "0A"x || "x: 1" || "0A"x
 doc = tp~parseString(yaml)
 yamlOut = .Yaml~toYaml(doc)
 doc2 = tp~parseString(yamlOut)
-call check deepEqual(doc, doc2), .true, "YAML rt !!map"
+call check YAML.deepEqual(doc, doc2), .true, "YAML rt !!map"
 
 /* 42.11 XML round-trip XSD: !!str scalar */
 doc = tp~parseString('!!str 42')
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt !!str"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt !!str"
 
 /* 42.12 XML round-trip DTD: !!str scalar */
 doc = tp~parseString('!!str 42')
 xml = .Yaml~yamlToXml(doc, "dtd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML DTD rt !!str"
+call check YAML.deepEqual(doc, doc2), .true, "XML DTD rt !!str"
 
 /* 42.13 XML round-trip XSD: !custom tag */
 doc = tp~parseString('!custom hello')
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt !custom"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt !custom"
 
 /* 42.14 XML round-trip: verbatim tag */
 doc = tp~parseString('!<tag:yaml.org,2002:str> hello')
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt verbatim tag"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt verbatim tag"
 
 /* 42.15 XML round-trip: !!map on mapping */
 yaml = "!!map" || "0A"x || "a: 1" || "0A"x
 doc = tp~parseString(yaml)
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt !!map"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt !!map"
 
 /* 42.16 XML round-trip DTD: !!map */
 yaml = "!!map" || "0A"x || "a: 1" || "0A"x
 doc = tp~parseString(yaml)
 xml = .Yaml~yamlToXml(doc, "dtd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML DTD rt !!map"
+call check YAML.deepEqual(doc, doc2), .true, "XML DTD rt !!map"
 
 /* 42.17 XML round-trip: !!seq on sequence */
 yaml = "!!seq" || "0A"x || "- one" || "0A"x || "- two" || "0A"x
 doc = tp~parseString(yaml)
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt !!seq"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt !!seq"
 
 /* 42.18 Full chain round-trip: YAML -> parse -> XML -> parse -> YAML */
 doc = tp~parseString('!!str 42')
@@ -2588,7 +2588,7 @@ xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
 yamlOut = .Yaml~toYaml(doc2)
 doc3 = tp~parseString(yamlOut)
-call check deepEqual(doc, doc3), .true, "full chain rt !!str"
+call check YAML.deepEqual(doc, doc3), .true, "full chain rt !!str"
 
 /* 42.19 preserveTags = .false (default) — tags stripped as before */
 pDef = .Yaml~new
@@ -2601,7 +2601,7 @@ yaml = "- !!str foo" || "0A"x || "- !!int 7" || "0A"x
 doc = tp~parseString(yaml)
 xml = .Yaml~yamlToXml(doc, "xsd")
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML XSD rt tagged seq items"
+call check YAML.deepEqual(doc, doc2), .true, "XML XSD rt tagged seq items"
 
 /* 42.21 Tag + anchor combination */
 yaml = "&myA !!str hello" || "0A"x
@@ -2612,24 +2612,24 @@ call check doc~tag, "!!str", "tag+anchor tag"
 call check doc~value, "hello", "tag+anchor value"
 xml = .Yaml~yamlToXml(doc, "xsd", am)
 doc2 = tp~parseXml(xml)
-call check deepEqual(doc, doc2), .true, "XML rt tag+anchor"
+call check YAML.deepEqual(doc, doc2), .true, "XML rt tag+anchor"
 
-/* 42.22 deepEqual: both tagged same */
+/* 42.22 YAML.deepEqual: both tagged same */
 a = .YamlTagged~new("!!str", "42")
 b = .YamlTagged~new("!!str", "42")
-call check deepEqual(a, b), .true, "deepEqual same tagged"
+call check YAML.deepEqual(a, b), .true, "deepEqual same tagged"
 
-/* 42.23 deepEqual: different tags */
+/* 42.23 YAML.deepEqual: different tags */
 a = .YamlTagged~new("!!str", "42")
 b = .YamlTagged~new("!!int", 42)
-call check deepEqual(a, b), .false, "deepEqual diff tags"
+call check YAML.deepEqual(a, b), .false, "deepEqual diff tags"
 
-/* 42.24 deepEqual: tagged vs untagged */
+/* 42.24 YAML.deepEqual: tagged vs untagged */
 a = .YamlTagged~new("!!str", "42")
-call check deepEqual(a, "42"), .false, "deepEqual tagged vs plain"
+call check YAML.deepEqual(a, "42"), .false, "deepEqual tagged vs plain"
 
-/* 42.25 deepEqual: untagged vs tagged */
-call check deepEqual("42", a), .false, "deepEqual plain vs tagged"
+/* 42.25 YAML.deepEqual: untagged vs tagged */
+call check YAML.deepEqual("42", a), .false, "deepEqual plain vs tagged"
 say
 
 /*========================================================================*/
@@ -3097,7 +3097,7 @@ doc48k["literal_space"]  = " starts with space" || "0A"x
 doc48k["double_quoted"]  = "no" || "0A"x || "trailing"
 yaml48k = .Yaml~toYaml(doc48k)
 doc48k2 = parser48~parseString(yaml48k)
-call check deepEqual(doc48k, doc48k2), .true, "mixed block scalars roundtrip"
+call check YAML.deepEqual(doc48k, doc48k2), .true, "mixed block scalars roundtrip"
 
 /* 48.12 Tagged folded scalar round-trip */
 parser48t = .Yaml~new("preserveTags", .true)
@@ -3305,6 +3305,6 @@ check: procedure expose tests pass fail
   end
   return
 
-/* deepEqual is now a public routine provided by yaml.cls */
+/* YAML.deepEqual is now a public routine provided by yaml.cls */
 
 ::requires "yaml.cls"

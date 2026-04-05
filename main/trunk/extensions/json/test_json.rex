@@ -1114,9 +1114,12 @@ deepEqual: procedure
   -- string/number comparison (covers .JsonString and plain .String)
   -- Use numeric comparison for numbers to handle equivalent representations
   -- (e.g. "0.0" and "0", "1e+5" and "100000")
-  if a~dataType('n'), b~dataType('n') then
-    return a = b
-  return a == b
+  if a~isA(.string), b~isA(.string) then do
+    if a~dataType('n'), b~dataType('n') then
+      return a = b
+    return a == b
+  end
+  return a = b
 
 
 ::requires "json.cls"
