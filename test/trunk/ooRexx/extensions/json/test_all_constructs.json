@@ -1,0 +1,153 @@
+{
+   "strings": {
+      "plain": "hello world",
+      "empty": "",
+      "with spaces": "  leading and trailing  ",
+      "with_escapes": "tab\there\nnewline\rcarriage return",
+      "with_backslash": "back\\slash",
+      "with_quotes": "she said \"hello\"",
+      "with_slash": "path/to/file",
+      "with_backspace": "back\bspace",
+      "with_formfeed": "form\ffeed",
+      "all_escapes": "\"\\\b\f\n\r\t\/",
+      "unicode_u00xx": "\u0041\u005A\u0061\u007A",
+      "unicode_non00": "\u4E16\u754C",
+      "unicode_mixed": "Hello \u4E16\u754C!",
+      "control_chars": "\u0000\u0001\u001F",
+      "long_string": "The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.",
+      "numeric_as_string": "42",
+      "negative_as_string": "-17",
+      "float_as_string": "3.14",
+      "scientific_as_string": "6.022e23",
+      "boolean_like": "true",
+      "null_like": "null",
+      "only_whitespace": "   ",
+      "single_char": "x"
+   },
+
+   "numbers": {
+      "zero": 0,
+      "positive_integer": 42,
+      "negative_integer": -17,
+      "large_integer": 9999999999,
+      "float": 3.14,
+      "negative_float": -2.718,
+      "scientific_pos": 6.022e23,
+      "scientific_neg": -1.602e-19,
+      "scientific_upper": 1E10,
+      "scientific_pos_exp": 1e+5,
+      "zero_point": 0.0,
+      "leading_zero_frac": 0.001
+   },
+
+   "booleans": {
+      "bool_true": true,
+      "bool_false": false
+   },
+
+   "null_value": null,
+
+   "arrays": {
+      "empty": [],
+      "single_item": [1],
+      "integers": [1, 2, 3, 4, 5],
+      "strings": ["alpha", "beta", "gamma"],
+      "mixed_types": [1, "two", true, false, null, 3.14],
+      "nested": [[1, 2], [3, 4], [5, 6]],
+      "deeply_nested": [[[["deep"]]]],
+      "of_objects": [
+         {"name": "Alice", "age": 30},
+         {"name": "Bob", "age": 25}
+      ],
+      "of_empty_things": [{}, [], "", null],
+      "long_array": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+   },
+
+   "objects": {
+      "empty": {},
+      "single_key": {"only": "value"},
+      "nested": {
+         "level1": {
+            "level2": {
+               "level3": "deep"
+            }
+         }
+      },
+      "with_array_values": {
+         "fruits": ["apple", "banana", "cherry"],
+         "colors": ["red", "green", "blue"]
+      },
+      "with_mixed_values": {
+         "string": "hello",
+         "number": 42,
+         "float": 3.14,
+         "bool_true": true,
+         "bool_false": false,
+         "null_val": null,
+         "array": [1, 2, 3],
+         "object": {"nested": true}
+      },
+      "numeric_keys": {
+         "0": "zero",
+         "1": "one",
+         "42": "forty-two",
+         "3.14": "pi"
+      },
+      "special_char_keys": {
+         "key with spaces": "value1",
+         "key:colon": "value2",
+         "key/slash": "value3",
+         "key\"quote": "value4",
+         "key\\backslash": "value5",
+         "key\ttab": "value6",
+         "key\nnewline": "value7",
+         "": "empty key"
+      }
+   },
+
+   "complex_nesting": {
+      "users": [
+         {
+            "name": "admin",
+            "roles": ["read", "write", "delete"],
+            "settings": {
+               "theme": "dark",
+               "verbose": true,
+               "limits": {
+                  "max_files": 1000,
+                  "max_size": 10485760
+               }
+            }
+         },
+         {
+            "name": "guest",
+            "roles": ["read"],
+            "settings": {
+               "theme": "light",
+               "verbose": false,
+               "limits": {
+                  "max_files": 10,
+                  "max_size": 1048576
+               }
+            }
+         }
+      ],
+      "metadata": {
+         "version": "2.0",
+         "generated": "2026-03-30",
+         "tags": ["test", "comprehensive", "json"]
+      }
+   },
+
+   "whitespace_variations": {
+      "compact": {"a":1,"b":2},
+      "normal": {"a": 1, "b": 2}
+   },
+
+   "duplicate_keys_last_wins": {
+      "key": "first",
+      "key": "second"
+   },
+
+   "top_level_note": "This file exercises all JSON value types, nesting patterns, escape sequences, and edge cases as defined by RFC 8259."
+}

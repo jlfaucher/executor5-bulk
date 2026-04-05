@@ -93,6 +93,12 @@ else
   self~expectSyntax(93.900) -- Invalid JSON value
   .Json~new~fromJson("1e")
 
+::method test_number_invalid_fraction_no_leading_0
+  self~expectSyntax(93.900) -- Invalid JSON value
+  number=.2
+  j = .Json~new
+  self~assertSame(number, j~toJson(j~fromJson(number)))
+
 ::method test_number
   -- strictly speaking, the JSON number grammar doesn't allow numbers like
   -- 0123, 1., +3, or .2
@@ -102,12 +108,12 @@ else
 
   j = .Json~new
   -- integer
-  do number over 0, 1, -4, 0123, 12345678901234567890
+  do number over 0, 1, -4, 123, 12345678901234567890
     self~assertSame(number, j~toJson(j~fromJson(number)))
   end
 
   -- fractions
-  do number over 1.2, .2, -0.003, 0.00000000000000
+  do number over 1.2, -0.003, 0.00000000000000
     self~assertSame(number, j~toJson(j~fromJson(number)))
   end
 
@@ -380,7 +386,10 @@ else
   j=.json~new
   o=.class_without_json_support_quotes~new
 --  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
-  self~assertEquals('"n_\"/\"_a"', j~toJson(o))
+  -- escaping a slash (/) is optional in JSON, hence both, '"n_\"/\"_a"' and '"n_\"\/\"_a"' are valid results
+  str= '"n_\"/\"_a"' '"n_\"\/\"_a"'
+  pos=wordPos(j~toJson(o), str)
+  self~assertTrue(pos>0, "'"j~toJson(o)"' is neither" '"n_\"/\"_a"' "nor" '"n_\"\/\"_a"')
 
   o=.class_without_json_support_quotes~new('o"o')
 --  say "o:" pp(o); say "j~toJson(o):" pp(j~toJson(o))
@@ -603,12 +612,12 @@ else
 
 
 /* ******************************************************* */
-::class class_with_makearray -- a class that cannot be handled by toJSON
+::class class_with_makearray -- a class that returns an array
 ::method init
   expose value
-  use arg value=(1,31336,4881)
+  use arg value=(1,31336,4881)   -- define an array of numbers
 
-::method makearray   -- escape any double quotes to create a properly delimited JSON string
+::method makearray   -- return the defined array
   expose value
   return value       -- return array
 
