@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+    <!ENTITY % BOOK_ENTITIES SYSTEM "rexxextensions.ent">
+    %BOOK_ENTITIES;
 ]>
 <!--#########################################################################
     #
@@ -114,8 +116,8 @@ carries an explicit tag in the source YAML is wrapped in a
 attribute holds the original tag string and whose <literal>value</literal>
 attribute holds the resolved object.</para>
 
-<para><emphasis role="bold">Quick start:</emphasis></para>
-<programlisting>
+<para><emphasis role="bold">Quick start &#x2013; Parse a YAML file and emit it back:</emphasis></para>
+<programlisting language="rexx">
 parser = .Yaml~new
 doc    = parser~parseFile("config.yml")
 say doc["title"]
@@ -125,7 +127,7 @@ yaml   = .Yaml~toYaml(doc)
 </programlisting>
 
 <para><emphasis role="bold">Example 1 &#x2013; Build an ooRexx tree and emit YAML:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 doc = .table~new
 doc["title"]  = "My Application"
 doc["version"] = 2
@@ -143,7 +145,7 @@ say .Yaml~toYaml(doc)
 </programlisting>
 
 <para><emphasis role="bold">Example 2 &#x2013; Convert YAML to XML:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 parser = .Yaml~new
 doc = parser~parseString("name: Alice" || "0a"x || "age: 30")
 xml = .Yaml~yamlToXml(doc)
@@ -164,7 +166,7 @@ say xml
 </programlisting>
 
 <para><emphasis role="bold">Example 3 &#x2013; Convert XML-encoded YAML back to YAML:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 parser = .Yaml~new
 doc = parser~parseXml(xmlString)   -- xmlString is the XML from Example 2
 yaml = .Yaml~toYaml(doc)
@@ -179,7 +181,7 @@ say yaml
 <!-- ================================================================== -->
 <!--  Yaml Class                                                        -->
 <!-- ================================================================== -->
-<section id="clsYaml"><title>Yaml Class</title>
+<section id="clsYaml"><title>&added52; Yaml Class</title>
 <indexterm><primary>Yaml class</primary></indexterm>
 <indexterm><primary>Yaml class</primary>
 <secondary>anchorMap attribute</secondary></indexterm>
@@ -291,7 +293,7 @@ serialisation methods for lossless round-tripping.</para>
 </table>
 
 <!-- anchorMap -->
-<section id="mthYamlAnchorMap"><title>anchorMap (Attribute)</title>
+<section id="mthYamlAnchorMap"><title>&added52; anchorMap (Attribute)</title>
 <indexterm><primary>anchorMap attribute</primary>
 <secondary>of Yaml class</secondary></indexterm>
 <indexterm><primary>attribute</primary>
@@ -315,7 +317,7 @@ methods to preserve anchors and aliases during round-tripping.</para>
 </section>
 
 <!-- false (class attribute) -->
-<section id="mthYamlFalseClsMth"><title>false (Class Attribute)</title>
+<section id="mthYamlFalseClsMth"><title>&added52; false (Class Attribute)</title>
 <indexterm><primary>false attribute</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -331,7 +333,7 @@ methods to preserve anchors and aliases during round-tripping.</para>
 </section>
 
 <!-- init (class method) -->
-<section id="mthYamlInitClsMth"><title>init (Class Method)</title>
+<section id="mthYamlInitClsMth"><title>&added52; init (Class Method)</title>
 <indexterm><primary>init method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -348,7 +350,7 @@ to be invoked directly.</para>
 </section>
 
 <!-- mergeSourceMap -->
-<section id="mthYamlMergeSourceMap"><title>mergeSourceMap (Attribute)</title>
+<section id="mthYamlMergeSourceMap"><title>&added52; mergeSourceMap (Attribute)</title>
 <indexterm><primary>mergeSourceMap attribute</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -373,7 +375,7 @@ of source <classname>Table</classname>s.</para>
 </section>
 
 <!-- directivesMap -->
-<section id="mthYamlDirectivesMap"><title>directivesMap (Attribute)</title>
+<section id="mthYamlDirectivesMap"><title>&added52; directivesMap (Attribute)</title>
 <indexterm><primary>directivesMap attribute</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -415,7 +417,7 @@ table.</para>
 </section>
 
 <!-- init -->
-<section id="mthYamlInit"><title>init</title>
+<section id="mthYamlInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -454,7 +456,7 @@ and directive metadata from the most recent parse operation.</para>
 </section>
 
 <!-- parseAll -->
-<section id="mthYamlParseAll"><title>parseAll</title>
+<section id="mthYamlParseAll"><title>&added52; parseAll</title>
 <indexterm><primary>parseAll method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -479,7 +481,7 @@ of ooRexx object trees, one per document.</para>
 </section>
 
 <!-- parseAllFile -->
-<section id="mthYamlParseAllFile"><title>parseAllFile</title>
+<section id="mthYamlParseAllFile"><title>&added52; parseAllFile</title>
 <indexterm><primary>parseAllFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -503,7 +505,7 @@ of ooRexx object trees, one per document.</para>
 </section>
 
 <!-- parseArray -->
-<section id="mthYamlParseArray"><title>parseArray</title>
+<section id="mthYamlParseArray"><title>&added52; parseArray</title>
 <indexterm><primary>parseArray method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -529,7 +531,7 @@ representing the parsed document.</para>
 </section>
 
 <!-- parseFile -->
-<section id="mthYamlParseFile"><title>parseFile</title>
+<section id="mthYamlParseFile"><title>&added52; parseFile</title>
 <indexterm><primary>parseFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -553,7 +555,7 @@ representing the parsed document.</para>
 </section>
 
 <!-- parseFrontMatter -->
-<section id="mthYamlParseFrontMatter"><title>parseFrontMatter</title>
+<section id="mthYamlParseFrontMatter"><title>&added52; parseFrontMatter</title>
 <indexterm><primary>parseFrontMatter method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -580,7 +582,7 @@ found.</para>
 </section>
 
 <!-- parseFrontMatterFile -->
-<section id="mthYamlParseFrontMatterFile"><title>parseFrontMatterFile</title>
+<section id="mthYamlParseFrontMatterFile"><title>&added52; parseFrontMatterFile</title>
 <indexterm><primary>parseFrontMatterFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -605,7 +607,7 @@ found.</para>
 </section>
 
 <!-- parseString -->
-<section id="mthYamlParseString"><title>parseString</title>
+<section id="mthYamlParseString"><title>&added52; parseString</title>
 <indexterm><primary>parseString method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -631,7 +633,7 @@ representing the parsed document.</para>
 </section>
 
 <!-- parseXml -->
-<section id="mthYamlParseXml"><title>parseXml</title>
+<section id="mthYamlParseXml"><title>&added52; parseXml</title>
 <indexterm><primary>parseXml method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -656,7 +658,7 @@ representing the parsed document.</para>
 </section>
 
 <!-- parseXmlFile -->
-<section id="mthYamlParseXmlFile"><title>parseXmlFile</title>
+<section id="mthYamlParseXmlFile"><title>&added52; parseXmlFile</title>
 <indexterm><primary>parseXmlFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -680,7 +682,7 @@ representing the parsed document.</para>
 </section>
 
 <!-- resolveTagHandle -->
-<section id="mthYamlResolveTagHandle"><title>resolveTagHandle</title>
+<section id="mthYamlResolveTagHandle"><title>&added52; resolveTagHandle</title>
 <indexterm><primary>resolveTagHandle method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 <indexterm><primary>tag handle resolution</primary>
@@ -722,7 +724,7 @@ found.</para>
 </section>
 
 <!-- readFileLines -->
-<section id="mthYamlReadFileLines"><title>readFileLines</title>
+<section id="mthYamlReadFileLines"><title>&added52; readFileLines</title>
 <indexterm><primary>readFileLines method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -749,7 +751,7 @@ file.</para>
 </section>
 
 <!-- toYaml (class method) -->
-<section id="mthYamlToYamlClsMth"><title>toYaml (Class Method)</title>
+<section id="mthYamlToYamlClsMth"><title>&added52; toYaml (Class Method)</title>
 <indexterm><primary>toYaml method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -786,7 +788,7 @@ file.</para>
 </section>
 
 <!-- toYamlAll (class method) -->
-<section id="mthYamlToYamlAllClsMth"><title>toYamlAll (Class Method)</title>
+<section id="mthYamlToYamlAllClsMth"><title>&added52; toYamlAll (Class Method)</title>
 <indexterm><primary>toYamlAll method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -817,7 +819,7 @@ string, with each document preceded by a <literal>---</literal> marker.</para>
 </section>
 
 <!-- toYamlArray (class method) -->
-<section id="mthYamlToYamlArrayClsMth"><title>toYamlArray (Class Method)</title>
+<section id="mthYamlToYamlArrayClsMth"><title>&added52; toYamlArray (Class Method)</title>
 <indexterm><primary>toYamlArray method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -849,7 +851,7 @@ of strings, one per YAML output line.</para>
 </section>
 
 <!-- toYamlFile (class method) -->
-<section id="mthYamlToYamlFileClsMth"><title>toYamlFile (Class Method)</title>
+<section id="mthYamlToYamlFileClsMth"><title>&added52; toYamlFile (Class Method)</title>
 <indexterm><primary>toYamlFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -880,7 +882,7 @@ platform-independent LF line endings.</para>
 </section>
 
 <!-- toYamlFMFile (class method) -->
-<section id="mthYamlToYamlFMFileClsMth"><title>toYamlFMFile (Class Method)</title>
+<section id="mthYamlToYamlFMFileClsMth"><title>&added52; toYamlFMFile (Class Method)</title>
 <indexterm><primary>toYamlFMFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -912,7 +914,7 @@ for Markdown, Jekyll, or Hugo documents.</para>
 </section>
 
 <!-- true (class attribute) -->
-<section id="mthYamlTrueClsMth"><title>true (Class Attribute)</title>
+<section id="mthYamlTrueClsMth"><title>&added52; true (Class Attribute)</title>
 <indexterm><primary>true attribute</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -928,7 +930,7 @@ for Markdown, Jekyll, or Hugo documents.</para>
 </section>
 
 <!-- yamlToXml (class method) -->
-<section id="mthYamlYamlToXmlClsMth"><title>yamlToXml (Class Method)</title>
+<section id="mthYamlYamlToXmlClsMth"><title>&added52; yamlToXml (Class Method)</title>
 <indexterm><primary>yamlToXml method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -968,7 +970,7 @@ for Markdown, Jekyll, or Hugo documents.</para>
 </section>
 
 <!-- yamlToXmlFile (class method) -->
-<section id="mthYamlYamlToXmlFileClsMth"><title>yamlToXmlFile (Class Method)</title>
+<section id="mthYamlYamlToXmlFileClsMth"><title>&added52; yamlToXmlFile (Class Method)</title>
 <indexterm><primary>yamlToXmlFile method</primary>
 <secondary>of Yaml class</secondary></indexterm>
 
@@ -1004,7 +1006,7 @@ for Markdown, Jekyll, or Hugo documents.</para>
 <!-- ================================================================== -->
 <!--  YamlBoolean Class                                                 -->
 <!-- ================================================================== -->
-<section id="clsYamlBoolean"><title>YamlBoolean Class</title>
+<section id="clsYamlBoolean"><title>&added52; YamlBoolean Class</title>
 <indexterm><primary>YamlBoolean class</primary></indexterm>
 <indexterm><primary>YamlBoolean class</primary>
 <secondary>= method</secondary></indexterm>
@@ -1072,7 +1074,7 @@ via <methodname>makeString</methodname> and the
 </table>
 
 <!-- compareTo -->
-<section id="mthYamlBooleanCompareTo"><title>compareTo</title>
+<section id="mthYamlBooleanCompareTo"><title>&added52; compareTo</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1099,7 +1101,7 @@ via <methodname>makeString</methodname> and the
 </section>
 
 <!-- = -->
-<section id="mthYamlBooleanEqual"><title>= (Equal)</title>
+<section id="mthYamlBooleanEqual"><title>&added52; = (Equal)</title>
 <indexterm><primary>= method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1124,7 +1126,7 @@ are equal, <literal>.false</literal> otherwise.</para>
 </section>
 
 <!-- false (class attribute) -->
-<section id="mthYamlBooleanFalseClsMth"><title>false (Class Attribute)</title>
+<section id="mthYamlBooleanFalseClsMth"><title>&added52; false (Class Attribute)</title>
 <indexterm><primary>false attribute</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1142,7 +1144,7 @@ are equal, <literal>.false</literal> otherwise.</para>
 </section>
 
 <!-- init -->
-<section id="mthYamlBooleanInit"><title>init</title>
+<section id="mthYamlBooleanInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1166,7 +1168,7 @@ can create instances via the <methodname>activate</methodname> method.</para>
 </section>
 
 <!-- makeString -->
-<section id="mthYamlBooleanMakeString"><title>makeString</title>
+<section id="mthYamlBooleanMakeString"><title>&added52; makeString</title>
 <indexterm><primary>makeString method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1183,7 +1185,7 @@ can create instances via the <methodname>activate</methodname> method.</para>
 </section>
 
 <!-- makeYAML -->
-<section id="mthYamlBooleanMakeYAML"><title>makeYAML</title>
+<section id="mthYamlBooleanMakeYAML"><title>&added52; makeYAML</title>
 <indexterm><primary>makeYAML method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1200,7 +1202,7 @@ can create instances via the <methodname>activate</methodname> method.</para>
 </section>
 
 <!-- \= / <> / >< -->
-<section id="mthYamlBooleanNotEqual"><title>\= (Not Equal)</title>
+<section id="mthYamlBooleanNotEqual"><title>&added52; \= (Not Equal)</title>
 <indexterm><primary>\= method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1226,7 +1228,7 @@ are not equal, <literal>.false</literal> otherwise.</para>
 </section>
 
 <!-- true (class attribute) -->
-<section id="mthYamlBooleanTrueClsMth"><title>true (Class Attribute)</title>
+<section id="mthYamlBooleanTrueClsMth"><title>&added52; true (Class Attribute)</title>
 <indexterm><primary>true attribute</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1244,7 +1246,7 @@ are not equal, <literal>.false</literal> otherwise.</para>
 </section>
 
 <!-- unknown -->
-<section id="mthYamlBooleanUnknown"><title>unknown</title>
+<section id="mthYamlBooleanUnknown"><title>&added52; unknown</title>
 <indexterm><primary>unknown method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1268,7 +1270,7 @@ wherever a Rexx logical value is expected.</para>
 </section>
 
 <!-- value -->
-<section id="mthYamlBooleanValue"><title>value</title>
+<section id="mthYamlBooleanValue"><title>&added52; value</title>
 <indexterm><primary>value method</primary>
 <secondary>of YamlBoolean class</secondary></indexterm>
 
@@ -1290,7 +1292,7 @@ wherever a Rexx logical value is expected.</para>
 <!-- ================================================================== -->
 <!--  YamlTagged Class                                                  -->
 <!-- ================================================================== -->
-<section id="clsYamlTagged"><title>YamlTagged Class</title>
+<section id="clsYamlTagged"><title>&added52; YamlTagged Class</title>
 <indexterm><primary>YamlTagged class</primary></indexterm>
 <indexterm><primary>YamlTagged class</primary>
 <secondary>init method</secondary></indexterm>
@@ -1357,7 +1359,7 @@ tagged YAML documents.</para>
 </table>
 
 <!-- init -->
-<section id="mthYamlTaggedInit"><title>init</title>
+<section id="mthYamlTaggedInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of YamlTagged class</secondary></indexterm>
 
@@ -1386,7 +1388,7 @@ tagged YAML documents.</para>
 </section>
 
 <!-- makeString -->
-<section id="mthYamlTaggedMakeString"><title>makeString</title>
+<section id="mthYamlTaggedMakeString"><title>&added52; makeString</title>
 <indexterm><primary>makeString method</primary>
 <secondary>of YamlTagged class</secondary></indexterm>
 
@@ -1406,7 +1408,7 @@ the wrapped value.</para>
 </section>
 
 <!-- tag (attribute) -->
-<section id="mthYamlTaggedTag"><title>tag (Attribute)</title>
+<section id="mthYamlTaggedTag"><title>&added52; tag (Attribute)</title>
 <indexterm><primary>tag attribute</primary>
 <secondary>of YamlTagged class</secondary></indexterm>
 <indexterm><primary>attribute</primary>
@@ -1427,7 +1429,7 @@ the wrapped value.</para>
 </section>
 
 <!-- value (attribute) -->
-<section id="mthYamlTaggedValue"><title>value (Attribute)</title>
+<section id="mthYamlTaggedValue"><title>&added52; value (Attribute)</title>
 <indexterm><primary>value attribute</primary>
 <secondary>of YamlTagged class</secondary></indexterm>
 <indexterm><primary>attribute</primary>
@@ -1454,7 +1456,7 @@ object.</para>
 <!-- ================================================================== -->
 <!--  YamlError Class                                                   -->
 <!-- ================================================================== -->
-<section id="clsYamlError"><title>YamlError Class</title>
+<section id="clsYamlError"><title>&added52; YamlError Class</title>
 <indexterm><primary>YamlError class</primary></indexterm>
 <indexterm><primary>YamlError class</primary>
 <secondary>column attribute</secondary></indexterm>
@@ -1498,7 +1500,7 @@ source location, and the offending input line for diagnostic purposes.</para>
 </table>
 
 <!-- column -->
-<section id="mthYamlErrorColumn"><title>column (Attribute)</title>
+<section id="mthYamlErrorColumn"><title>&added52; column (Attribute)</title>
 <indexterm><primary>column attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1507,7 +1509,7 @@ This is a read-write attribute.</para>
 </section>
 
 <!-- contextLine -->
-<section id="mthYamlErrorContextLine"><title>contextLine (Attribute)</title>
+<section id="mthYamlErrorContextLine"><title>&added52; contextLine (Attribute)</title>
 <indexterm><primary>contextLine attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1516,7 +1518,7 @@ This is a read-write attribute.</para>
 </section>
 
 <!-- init -->
-<section id="mthYamlErrorInit"><title>init</title>
+<section id="mthYamlErrorInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1542,7 +1544,7 @@ This is a read-write attribute.</para>
 </section>
 
 <!-- lineNumber -->
-<section id="mthYamlErrorLineNumber"><title>lineNumber (Attribute)</title>
+<section id="mthYamlErrorLineNumber"><title>&added52; lineNumber (Attribute)</title>
 <indexterm><primary>lineNumber attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1551,7 +1553,7 @@ This is a read-write attribute.</para>
 </section>
 
 <!-- makeString -->
-<section id="mthYamlErrorMakeString"><title>makeString</title>
+<section id="mthYamlErrorMakeString"><title>&added52; makeString</title>
 <indexterm><primary>makeString method</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1568,7 +1570,7 @@ line number and context line when available.</para>
 </section>
 
 <!-- message -->
-<section id="mthYamlErrorMessage"><title>message (Attribute)</title>
+<section id="mthYamlErrorMessage"><title>&added52; message (Attribute)</title>
 <indexterm><primary>message attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
@@ -1582,7 +1584,7 @@ attribute.</para>
 <!-- ================================================================== -->
 <!--  YamlEmitter Class                                                 -->
 <!-- ================================================================== -->
-<section id="clsYamlEmitter"><title>YamlEmitter Class</title>
+<section id="clsYamlEmitter"><title>&added52; YamlEmitter Class</title>
 <indexterm><primary>YamlEmitter class</primary></indexterm>
 <indexterm><primary>YamlEmitter class</primary>
 <secondary>emit method</secondary></indexterm>
@@ -1618,7 +1620,7 @@ corresponding metadata tables from a previous parse are supplied.</para>
 </table>
 
 <!-- emit -->
-<section id="mthYamlEmitterEmit"><title>emit</title>
+<section id="mthYamlEmitterEmit"><title>&added52; emit</title>
 <indexterm><primary>emit method</primary>
 <secondary>of YamlEmitter class</secondary></indexterm>
 <indexterm><primary>folded block scalar</primary>
@@ -1686,7 +1688,7 @@ terminated by a single newline.</para>
 </section>
 
 <!-- init -->
-<section id="mthYamlEmitterInit"><title>init</title>
+<section id="mthYamlEmitterInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of YamlEmitter class</secondary></indexterm>
 
@@ -1727,7 +1729,7 @@ terminated by a single newline.</para>
 <!-- ================================================================== -->
 <!--  YamlXmlEmitter Class                                              -->
 <!-- ================================================================== -->
-<section id="clsYamlXmlEmitter"><title>YamlXmlEmitter Class</title>
+<section id="clsYamlXmlEmitter"><title>&added52; YamlXmlEmitter Class</title>
 <indexterm><primary>YamlXmlEmitter class</primary></indexterm>
 <indexterm><primary>YamlXmlEmitter class</primary>
 <secondary>emit method</secondary></indexterm>
@@ -1779,7 +1781,7 @@ entries (the pre-v8y backward-compatible behaviour).</para>
 </table>
 
 <!-- emit -->
-<section id="mthYamlXmlEmitterEmit"><title>emit</title>
+<section id="mthYamlXmlEmitterEmit"><title>&added52; emit</title>
 <indexterm><primary>emit method</primary>
 <secondary>of YamlXmlEmitter class</secondary></indexterm>
 
@@ -1802,7 +1804,7 @@ entries (the pre-v8y backward-compatible behaviour).</para>
 </section>
 
 <!-- init -->
-<section id="mthYamlXmlEmitterInit"><title>init</title>
+<section id="mthYamlXmlEmitterInit"><title>&added52; init</title>
 <indexterm><primary>init method</primary>
 <secondary>of YamlXmlEmitter class</secondary></indexterm>
 
@@ -1844,7 +1846,7 @@ entries (the pre-v8y backward-compatible behaviour).</para>
 <!-- ================================================================== -->
 <!--  YamlXmlParser Class                                               -->
 <!-- ================================================================== -->
-<section id="clsYamlXmlParser"><title>YamlXmlParser Class</title>
+<section id="clsYamlXmlParser"><title>&added52; YamlXmlParser Class</title>
 <indexterm><primary>YamlXmlParser class</primary></indexterm>
 <indexterm><primary>YamlXmlParser class</primary>
 <secondary>directivesMap attribute</secondary></indexterm>
@@ -1903,7 +1905,7 @@ full document has been parsed.</para>
 </table>
 
 <!-- directivesMap -->
-<section id="mthYamlXmlParserDirectivesMap"><title>directivesMap (Attribute)</title>
+<section id="mthYamlXmlParserDirectivesMap"><title>&added52; directivesMap (Attribute)</title>
 <indexterm><primary>directivesMap attribute</primary>
 <secondary>of YamlXmlParser class</secondary></indexterm>
 
@@ -1919,7 +1921,7 @@ automatically.</para>
 </section>
 
 <!-- mergeSourceMap -->
-<section id="mthYamlXmlParserMergeSourceMap"><title>mergeSourceMap (Attribute)</title>
+<section id="mthYamlXmlParserMergeSourceMap"><title>&added52; mergeSourceMap (Attribute)</title>
 <indexterm><primary>mergeSourceMap attribute</primary>
 <secondary>of YamlXmlParser class</secondary></indexterm>
 
@@ -1935,7 +1937,7 @@ own <methodname>mergeSourceMap</methodname> automatically.</para>
 </section>
 
 <!-- xmlAnchors -->
-<section id="mthYamlXmlParserXmlAnchors"><title>xmlAnchors (Attribute)</title>
+<section id="mthYamlXmlParserXmlAnchors"><title>&added52; xmlAnchors (Attribute)</title>
 <indexterm><primary>xmlAnchors attribute</primary>
 <secondary>of YamlXmlParser class</secondary></indexterm>
 
@@ -1950,7 +1952,7 @@ i.e. the reverse direction).</para>
 </section>
 
 <!-- parse -->
-<section id="mthYamlXmlParserParse"><title>parse</title>
+<section id="mthYamlXmlParserParse"><title>&added52; parse</title>
 <indexterm><primary>parse method</primary>
 <secondary>of YamlXmlParser class</secondary></indexterm>
 
@@ -1979,7 +1981,7 @@ i.e. the reverse direction).</para>
 <!-- ================================================================== -->
 <!--  deepEqual Routine                                                 -->
 <!-- ================================================================== -->
-<section id="rtDeepEqual"><title>deepEqual Public Routine</title>
+<section id="rtDeepEqual"><title>&added52; deepEqual Public Routine</title>
 <indexterm><primary>deepEqual routine</primary></indexterm>
 <indexterm><primary>routine</primary>
 <secondary>deepEqual</secondary></indexterm>
