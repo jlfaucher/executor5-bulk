@@ -1645,6 +1645,9 @@ copy_build_file(rxregexp.cls     ${build_extensions_rxregexp_dir})
 copy_build_file(rxftp.cls        ${build_extensions_rxftp_dir})
 copy_build_file(csvStream.cls    ${build_extensions_csvstream_dir})
 copy_build_file(json.cls         ${build_extensions_json_dir})
+copy_build_file(json.dtd         ${build_extensions_json_dir})
+copy_build_file(json.xsd         ${build_extensions_json_dir})
+copy_build_file(xmlToJson.xsl    ${build_extensions_json_dir})
 copy_build_file(yaml.cls         ${build_extensions_yaml_dir})
 copy_build_file(yaml.dtd         ${build_extensions_yaml_dir})
 copy_build_file(yaml.xsd         ${build_extensions_yaml_dir})
@@ -1703,6 +1706,9 @@ add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/csvStream.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.cls
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.dtd
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.xsd
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xmlToJson.xsl
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.dtd
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.xsd
@@ -1726,6 +1732,9 @@ install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls COMPONENT Core DESTINA
 
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/csvStream.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.dtd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/json.xsd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xmlToJson.xsl COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.dtd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/yaml.xsd COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})

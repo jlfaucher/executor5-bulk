@@ -1,0 +1,1810 @@
+/* json.testGroup - ooRexxUnit test container for json.cls */
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2024-2026 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+use arg testTypes
+
+parse source . . thisFile
+tg = .TestGroup~new(thisFile)
+tg~add(.json_decode_test)
+tg~add(.json_encode_test)
+tg~add(.json_roundtrip_test)
+tg~add(.json_class_methods_test)
+tg~add(.json_file_io_test)
+tg~add(.json_boolean_test)
+tg~add(.json_string_test)
+tg~add(.json_edge_cases_test)
+tg~add(.json_error_test)
+tg~add(.json_number_test)
+tg~add(.json_error_reporting_test)
+tg~add(.json_bom_test)
+tg~add(.json_xml_test)
+return tg
+
+
+/*============================================================================*/
+/*  json_decode_test  — groups 1–9: decoding                                  */
+/*============================================================================*/
+
+::class json_decode_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method setUp
+  expose json
+  json = .json~new
+
+/* --- 1. Decoding: basic types --- */
+
+::method test_decode_string
+  expose json
+  self~assertSame("hello", json~fromJSON('"hello"'), "decode string")
+
+::method test_decode_empty_string
+  expose json
+  self~assertSame("", json~fromJSON('""'), "decode empty string")
+
+::method test_decode_integer
+  expose json
+  self~assertSame(42, json~fromJSON('42'), "decode integer")
+
+::method test_decode_negative_integer
+  expose json
+  self~assertSame(-17, json~fromJSON('-17'), "decode negative integer")
+
+::method test_decode_float
+  expose json
+  self~assertSame(3.14, json~fromJSON('3.14'), "decode float")
+
+::method test_decode_negative_float
+  expose json
+  self~assertSame(-2.718, json~fromJSON('-2.718'), "decode negative float")
+
+::method test_decode_scientific
+  expose json
+  self~assertSame("6.022e23", json~fromJSON('6.022e23'), "decode scientific")
+
+::method test_decode_scientific_upper_E
+  expose json
+  self~assertSame("1E10", json~fromJSON('1E10'), "decode scientific upper E")
+
+::method test_decode_scientific_positive_exp
+  expose json
+  self~assertSame("1e+5", json~fromJSON('1e+5'), "decode scientific positive exp")
+
+::method test_decode_scientific_negative
+  expose json
+  self~assertSame("-1.602e-19", json~fromJSON('-1.602e-19'), "decode scientific negative")
+
+::method test_decode_zero
+  expose json
+  self~assertSame(0, json~fromJSON('0'), "decode zero")
+
+::method test_decode_zero_point
+  expose json
+  self~assertSame(0.0, json~fromJSON('0.0'), "decode zero point")
+
+::method test_decode_true
+  expose json
+  self~assertSame(.JsonBoolean~true, json~fromJSON('true'), "decode true")
+
+::method test_decode_false
+  expose json
+  self~assertSame(.JsonBoolean~false, json~fromJSON('false'), "decode false")
+
+::method test_decode_null
+  expose json
+  self~assertNil(json~fromJSON('null'), "decode null")
+
+/* --- 2. Decoding: strings with escape sequences --- */
+
+::method test_decode_plain_string
+  expose json
+  self~assertSame("hello world", json~fromJSON('"hello world"'), "decode plain string")
+
+::method test_decode_tab
+  expose json
+  self~assertSame("tab" || '09'x || "here", json~fromJSON('"tab\there"'), "decode \t")
+
+::method test_decode_newline
+  expose json
+  self~assertSame("line" || '0a'x || "break", json~fromJSON('"line\nbreak"'), "decode \n")
+
+::method test_decode_cr
+  expose json
+  self~assertSame("cr" || '0d'x || "here", json~fromJSON('"cr\rhere"'), "decode \r")
+
+::method test_decode_backspace
+  expose json
+  self~assertSame("back" || '08'x || "space", json~fromJSON('"back\bspace"'), "decode \b")
+
+::method test_decode_formfeed
+  expose json
+  self~assertSame("form" || '0c'x || "feed", json~fromJSON('"form\ffeed"'), "decode \f")
+
+::method test_decode_escaped_quote
+  expose json
+  self~assertSame('a"b', json~fromJSON('"a\"b"'), 'decode escaped quote')
+
+::method test_decode_escaped_backslash
+  expose json
+  self~assertSame('a\b', json~fromJSON('"a\\b"'), 'decode escaped backslash')
+
+::method test_decode_escaped_slash
+  expose json
+  self~assertSame('a/b', json~fromJSON('"a\/b"'), 'decode escaped slash')
+
+/* --- 3. Decoding: \uXXXX escape sequences --- */
+
+::method test_decode_u0041
+  expose json
+  self~assertSame("A", json~fromJSON('"\u0041"'), "decode \u0041 -> A")
+
+::method test_decode_u005A
+  expose json
+  self~assertSame("Z", json~fromJSON('"\u005A"'), "decode \u005A -> Z")
+
+::method test_decode_u0061
+  expose json
+  self~assertSame("a", json~fromJSON('"\u0061"'), "decode \u0061 -> a")
+
+::method test_decode_u007A
+  expose json
+  self~assertSame("z", json~fromJSON('"\u007A"'), "decode \u007A -> z")
+
+::method test_decode_u0020
+  expose json
+  self~assertSame(" ", json~fromJSON('"\u0020"'), "decode \u0020 -> space")
+
+::method test_decode_u0009
+  expose json
+  self~assertSame('09'x, json~fromJSON('"\u0009"'), "decode \u0009 -> tab")
+
+::method test_decode_u000A
+  expose json
+  self~assertSame('0a'x, json~fromJSON('"\u000A"'), "decode \u000A -> LF")
+
+::method test_decode_u4E16_passthrough
+  expose json
+  self~assertSame("\u4E16", json~fromJSON('"\u4E16"'), "decode \u4E16 kept as-is")
+
+::method test_decode_u754C_passthrough
+  expose json
+  self~assertSame("\u754C", json~fromJSON('"\u754C"'), "decode \u754C kept as-is")
+
+::method test_decode_mixed_unicode
+  expose json
+  self~assertSame("Hello \u4E16\u754C!", json~fromJSON('"Hello \u4E16\u754C!"'), "decode mixed unicode")
+
+/* --- 4. Decoding: arrays --- */
+
+::method test_decode_empty_array
+  expose json
+  arr = json~fromJSON('[]')
+  self~assertSame(0, arr~items, "decode empty array > items")
+  self~assertIsA(arr, .array, "decode empty array > isA")
+
+::method test_decode_single_item_array
+  expose json
+  arr = json~fromJSON('[1]')
+  self~assertSame(1, arr~items, "decode single-item array > items")
+  self~assertSame(1, arr[1], "decode single-item array > value")
+
+::method test_decode_int_array
+  expose json
+  arr = json~fromJSON('[1,2,3]')
+  self~assertSame(3, arr~items, "decode int array > items")
+  self~assertSame(1, arr[1], "decode int array > [1]")
+  self~assertSame(2, arr[2], "decode int array > [2]")
+  self~assertSame(3, arr[3], "decode int array > [3]")
+
+::method test_decode_string_array
+  expose json
+  arr = json~fromJSON('["alpha","beta","gamma"]')
+  self~assertSame(3, arr~items, "decode string array > items")
+  self~assertSame("alpha", arr[1], "decode string array > [1]")
+
+::method test_decode_mixed_array
+  expose json
+  arr = json~fromJSON('[1,"two",true,false,null,3.14]')
+  self~assertSame(6, arr~items, "decode mixed array > items")
+  self~assertSame(1, arr[1], "decode mixed array > number")
+  self~assertSame("two", arr[2], "decode mixed array > string")
+  self~assertSame(.JsonBoolean~true, arr[3], "decode mixed array > true")
+  self~assertSame(.JsonBoolean~false, arr[4], "decode mixed array > false")
+  self~assertNil(arr[5], "decode mixed array > null")
+  self~assertSame(3.14, arr[6], "decode mixed array > float")
+
+::method test_decode_nested_array
+  expose json
+  arr = json~fromJSON('[[1,2],[3,4]]')
+  self~assertSame(2, arr~items, "decode nested array > items")
+  self~assertSame(1, arr[1][1], "decode nested array > [1][1]")
+  self~assertSame(4, arr[2][2], "decode nested array > [2][2]")
+
+::method test_decode_deeply_nested_array
+  expose json
+  arr = json~fromJSON('[[[["deep"]]]]')
+  self~assertSame("deep", arr[1][1][1][1], "decode deeply nested array")
+
+/* --- 5. Decoding: objects --- */
+
+::method test_decode_empty_object
+  expose json
+  obj = json~fromJSON('{}')
+  self~assertSame(0, obj~items, "decode empty object > items")
+  self~assertIsA(obj, .directory, "decode empty object > isA")
+
+::method test_decode_object
+  expose json
+  obj = json~fromJSON('{"name":"Alice","age":30}')
+  self~assertSame("Alice", obj["name"], "decode object > name")
+  self~assertSame(30, obj["age"], "decode object > age")
+
+::method test_decode_nested_object
+  expose json
+  obj = json~fromJSON('{"level1":{"level2":{"level3":"deep"}}}')
+  self~assertSame("deep", obj["level1"]["level2"]["level3"], "decode nested object")
+
+::method test_decode_mixed_object
+  expose json
+  obj = json~fromJSON('{"arr":[1,2],"obj":{"x":true}}')
+  self~assertSame(1, obj["arr"][1], "decode mixed > array value")
+  self~assertSame(.JsonBoolean~true, obj["obj"]["x"], "decode mixed > nested object value")
+
+/* --- 6. Decoding: duplicate keys (last wins) --- */
+
+::method test_decode_duplicate_keys
+  expose json
+  obj = json~fromJSON('{"key":"first","key":"second"}')
+  self~assertSame("second", obj["key"], "decode duplicate keys > last wins")
+  self~assertSame(1, obj~items, "decode duplicate keys > single entry")
+
+/* --- 7. Decoding: whitespace handling --- */
+
+::method test_decode_whitespace
+  expose json
+  obj = json~fromJSON(' { "a" : 1 , "b" : 2 } ')
+  self~assertSame(1, obj["a"], "decode whitespace > a")
+  self~assertSame(2, obj["b"], "decode whitespace > b")
+
+::method test_decode_newlines
+  expose json
+  jsonText = '{' || "0a"x || '  "x": 1' || "0a"x || '}'
+  obj = json~fromJSON(jsonText)
+  self~assertSame(1, obj["x"], "decode newlines > x")
+
+::method test_decode_tabs
+  expose json
+  jsonText = '{' || "09"x || '"y": 2}'
+  obj = json~fromJSON(jsonText)
+  self~assertSame(2, obj["y"], "decode tabs > y")
+
+::method test_decode_crlf
+  expose json
+  jsonText = '{' || "0d0a"x || '  "z": 3' || "0d0a"x || '}'
+  obj = json~fromJSON(jsonText)
+  self~assertSame(3, obj["z"], "decode CR+LF > z")
+
+/* --- 8. Decoding: top-level values (RFC 8259) --- */
+
+::method test_decode_top_level_string
+  expose json
+  self~assertSame("just a string", json~fromJSON('"just a string"'), "decode top-level string")
+
+::method test_decode_top_level_number
+  expose json
+  self~assertSame(42, json~fromJSON('42'), "decode top-level number")
+
+::method test_decode_top_level_true
+  expose json
+  self~assertSame(.JsonBoolean~true, json~fromJSON('true'), "decode top-level true")
+
+::method test_decode_top_level_false
+  expose json
+  self~assertSame(.JsonBoolean~false, json~fromJSON('false'), "decode top-level false")
+
+::method test_decode_top_level_null
+  expose json
+  self~assertNil(json~fromJSON('null'), "decode top-level null")
+
+/* --- 9. Decoding: decoded types --- */
+
+::method test_decoded_string_is_json_string
+  expose json
+  val = json~fromJSON('"hello"')
+  self~assertIsA(val, .JsonString, "decoded string > isA JsonString")
+  self~assertIsA(val, .String,     "decoded string > isA String (parent)")
+
+::method test_decoded_true_is_json_boolean
+  expose json
+  val = json~fromJSON('true')
+  self~assertIsA(val, .JsonBoolean, "decoded true > isA JsonBoolean")
+
+::method test_decoded_false_is_json_boolean
+  expose json
+  val = json~fromJSON('false')
+  self~assertIsA(val, .JsonBoolean, "decoded false > isA JsonBoolean")
+
+::method test_decoded_number_is_string
+  expose json
+  val = json~fromJSON('42')
+  self~assertIsA(val, .String, "decoded number > isA String")
+
+::method test_decoded_object_is_directory
+  expose json
+  val = json~fromJSON('{"a": 1}')
+  self~assertIsA(val, .Directory, "decoded object > isA Directory")
+
+::method test_decoded_array_is_array
+  expose json
+  val = json~fromJSON('[1]')
+  self~assertIsA(val, .Array, "decoded array > isA Array")
+
+
+/*============================================================================*/
+/*  json_encode_test  — groups 10–18: encoding                                */
+/*============================================================================*/
+
+::class json_encode_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method setUp
+  expose json
+  json = .json~new
+
+/* --- 10. Encoding: basic types --- */
+
+::method test_encode_string
+  expose json
+  self~assertSame('"hello"', json~toJSON("hello"), "encode string")
+
+::method test_encode_empty_string
+  expose json
+  self~assertSame('""', json~toJSON(""), "encode empty string")
+
+::method test_encode_integer
+  expose json
+  self~assertSame('42', json~toJSON(42), "encode integer")
+
+::method test_encode_negative_integer
+  expose json
+  self~assertSame('-17', json~toJSON(-17), "encode negative integer")
+
+::method test_encode_float
+  expose json
+  self~assertSame('3.14', json~toJSON(3.14), "encode float")
+
+::method test_encode_zero
+  expose json
+  self~assertSame('0', json~toJSON(0), "encode zero")
+
+::method test_encode_nil
+  expose json
+  self~assertSame('null', json~toJSON(.nil), "encode nil")
+
+::method test_encode_json_boolean_true
+  expose json
+  self~assertSame('true', json~toJSON(.JsonBoolean~true), "encode JsonBoolean true")
+
+::method test_encode_json_boolean_false
+  expose json
+  self~assertSame('false', json~toJSON(.JsonBoolean~false), "encode JsonBoolean false")
+
+/* --- 11. Encoding: strings with special characters --- */
+
+::method test_encode_tab
+  expose json
+  self~assertSame('"tab\there"', json~toJSON('tab' || '09'x || 'here'), "encode tab")
+
+::method test_encode_newline
+  expose json
+  self~assertSame('"line\nbreak"', json~toJSON('line' || '0a'x || 'break'), "encode newline")
+
+::method test_encode_carriage_return
+  expose json
+  self~assertSame('"cr\rhere"', json~toJSON('cr' || '0d'x || 'here'), "encode carriage return")
+
+::method test_encode_backspace
+  expose json
+  self~assertSame('"back\bspace"', json~toJSON('back' || '08'x || 'space'), "encode backspace")
+
+::method test_encode_formfeed
+  expose json
+  self~assertSame('"form\ffeed"', json~toJSON('form' || '0c'x || 'feed'), "encode formfeed")
+
+::method test_encode_double_quote
+  expose json
+  self~assertSame('"a\"b"', json~toJSON('a"b'), "encode double quote")
+
+::method test_encode_backslash
+  expose json
+  self~assertSame('"a\\b"', json~toJSON('a\b'), "encode backslash")
+
+::method test_encode_slash
+  expose json
+  self~assertSame('"a\/b"', json~toJSON('a/b'), "encode slash")
+
+::method test_encode_control_char_01
+  expose json
+  self~assertSame('"\u0001"', json~toJSON('01'x), "encode control char 01")
+
+::method test_encode_control_char_1F
+  expose json
+  self~assertSame('"\u001F"', json~toJSON('1f'x), "encode control char 1F")
+
+/* --- 12. Encoding: \uXXXX pass-through --- */
+
+::method test_encode_uXXXX_passthrough
+  expose json
+  self~assertSame('"\u4E16"', json~toJSON('\u4E16'), "encode \uXXXX pass-through")
+
+::method test_encode_mixed_uXXXX_passthrough
+  expose json
+  self~assertSame('"Hello \u4E16\u754C!"', json~toJSON('Hello \u4E16\u754C!'), "encode mixed \uXXXX pass-through")
+
+/* --- 13. Encoding: JsonString (force quoting) --- */
+
+::method test_encode_json_string_numeric
+  expose json
+  js = .JsonString~new("42")
+  self~assertSame('"42"', json~toJSON(js), "encode JsonString numeric as quoted")
+
+::method test_encode_json_string_non_numeric
+  expose json
+  js = .JsonString~new("hello")
+  self~assertSame('"hello"', json~toJSON(js), "encode JsonString non-numeric")
+
+::method test_encode_json_string_empty
+  expose json
+  js = .JsonString~new("")
+  self~assertSame('""', json~toJSON(js), "encode JsonString empty")
+
+::method test_encode_json_string_float
+  expose json
+  js = .JsonString~new("3.14")
+  self~assertSame('"3.14"', json~toJSON(js), "encode JsonString float as quoted")
+
+/* --- 14. Encoding: arrays --- */
+
+::method test_encode_empty_array
+  expose json
+  self~assertSame('[]', json~toJSON(.array~new), "encode empty array")
+
+::method test_encode_single_item_array
+  expose json
+  self~assertSame('[1]', json~toJSON(.array~of(1)), "encode single-item array")
+
+::method test_encode_int_array
+  expose json
+  self~assertSame('[1,2,3]', json~toJSON(.array~of(1, 2, 3)), "encode int array")
+
+::method test_encode_string_array
+  expose json
+  self~assertSame('["a","b"]', json~toJSON(.array~of("a", "b")), "encode string array")
+
+::method test_encode_mixed_array
+  expose json
+  arr = .array~new
+  arr~append(1)
+  arr~append("two")
+  arr~append(.JsonBoolean~true)
+  arr~append(.nil)
+  self~assertSame('[1,"two",true,null]', json~toJSON(arr), "encode mixed array")
+
+::method test_encode_nested_arrays
+  expose json
+  self~assertSame('[[1,2],[3,4]]', json~toJSON(.array~of(.array~of(1, 2), .array~of(3, 4))), "encode nested arrays")
+
+/* --- 15. Encoding: objects --- */
+
+::method test_encode_empty_object
+  expose json
+  self~assertSame('{}', json~toJSON(.directory~new), "encode empty object")
+
+::method test_encode_single_key_object
+  expose json
+  dir = .directory~new
+  dir["name"] = "Alice"
+  self~assertSame('{"name":"Alice"}', json~toJSON(dir), "encode single-key object")
+
+::method test_encode_object_sorted_keys
+  expose json
+  dir = .directory~new
+  dir["b"] = 2
+  dir["a"] = 1
+  dir["c"] = 3
+  self~assertSame('{"a":1,"b":2,"c":3}', json~toJSON(dir), "encode object sorted keys")
+
+::method test_encode_numeric_key_quoted
+  expose json
+  dir = .directory~new
+  dir["42"] = "value"
+  self~assertSame('{"42":"value"}', json~toJSON(dir), "encode numeric key quoted")
+
+/* --- 16. Encoding: legible output --- */
+
+::method test_encode_legible_object
+  expose json
+  crlf = .rexxInfo~endOfLine
+  dir = .directory~new
+  dir["a"] = 1
+  dir["b"] = 2
+  expected = '{' || crlf || '   "a": 1,' || crlf || '   "b": 2' || crlf || '}'
+  self~assertSame(expected, json~toJSON(dir, .true), "encode legible object")
+
+::method test_encode_legible_array
+  expose json
+  crlf = .rexxInfo~endOfLine
+  arr = .array~of(1, 2, 3)
+  expected = '[' || crlf || '   1,' || crlf || '   2,' || crlf || '   3' || crlf || ']'
+  self~assertSame(expected, json~toJSON(arr, .true), "encode legible array")
+
+::method test_encode_legible_empty_object
+  expose json
+  self~assertSame('{}', json~toJSON(.directory~new, .true), "encode legible empty object")
+
+::method test_encode_legible_empty_array
+  expose json
+  self~assertSame('[]', json~toJSON(.array~new, .true), "encode legible empty array")
+
+/* --- 17. Encoding: nested legible output --- */
+
+::method test_encode_legible_nested_object
+  expose json
+  crlf = .rexxInfo~endOfLine
+  dir = .directory~new
+  inner = .directory~new
+  inner["x"] = 1
+  dir["obj"] = inner
+  expected = '{' || crlf || -
+             '   "obj": {' || crlf || -
+             '      "x": 1' || crlf || -
+             '   }' || crlf || -
+             '}'
+  self~assertSame(expected, json~toJSON(dir, .true), "encode legible nested object")
+
+/* --- 18. Encoding: special objects (makeJSON) --- */
+
+::method test_encode_via_makeJSON_true
+  expose json
+  self~assertSame('true', json~toJSON(.JsonBoolean~true), "encode via makeJSON true")
+
+::method test_encode_via_makeJSON_false
+  expose json
+  self~assertSame('false', json~toJSON(.JsonBoolean~false), "encode via makeJSON false")
+
+
+/*============================================================================*/
+/*  json_roundtrip_test  — groups 23–25, 33: round-trip                       */
+/*============================================================================*/
+
+::class json_roundtrip_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method init
+  expose thisLocation executableLocation
+  parse source . . thisPath
+  thisLocation=filespec('location',thisPath)
+  executableLocation=filespec('location',.rexxInfo~executable)
+  forward class (super) -- let superclass initialize
+
+::method setUp
+  expose json thisLocation executableLocation
+  json = .json~new
+
+/* --- 23. Round-trip: encode then decode --- */
+
+::method test_roundtrip_string
+  expose json
+  original = "hello world"
+  self~assertSame(original, json~fromJSON(json~toJSON(original)), "round-trip string")
+
+::method test_roundtrip_number
+  expose json
+  original = 42
+  self~assertSame(original, json~fromJSON(json~toJSON(original)), "round-trip number")
+
+::method test_roundtrip_true
+  expose json
+  self~assertSame(.JsonBoolean~true, json~fromJSON(json~toJSON(.JsonBoolean~true)), "round-trip true")
+
+::method test_roundtrip_false
+  expose json
+  self~assertSame(.JsonBoolean~false, json~fromJSON(json~toJSON(.JsonBoolean~false)), "round-trip false")
+
+::method test_roundtrip_null
+  expose json
+  self~assertNil(json~fromJSON(json~toJSON(.nil)), "round-trip null")
+
+::method test_roundtrip_object
+  expose json
+  dir = .directory~new
+  dir["name"] = "Alice"
+  dir["age"] = 30
+  dir["active"] = .JsonBoolean~true
+  encoded = json~toJSON(dir)
+  decoded = json~fromJSON(encoded)
+  self~assertSame("Alice",            decoded["name"],   "round-trip object > name")
+  self~assertSame(30,                 decoded["age"],    "round-trip object > age")
+  self~assertSame(.JsonBoolean~true,  decoded["active"], "round-trip object > active")
+
+::method test_roundtrip_array
+  expose json
+  arr = .array~of(1, "two", .JsonBoolean~true, .nil)
+  encoded = json~toJSON(arr)
+  decoded = json~fromJSON(encoded)
+  self~assertSame(1,                 decoded[1], "round-trip array > [1]")
+  self~assertSame("two",             decoded[2], "round-trip array > [2]")
+  self~assertSame(.JsonBoolean~true, decoded[3], "round-trip array > [3]")
+  self~assertNil(decoded[4], "round-trip array > [4] null")
+
+::method test_roundtrip_nested
+  expose json
+  dir = .directory~new
+  dir["list"] = .array~of(1, 2, 3)
+  inner = .directory~new
+  inner["deep"] = .JsonBoolean~false
+  dir["nested"] = inner
+  encoded = json~toJSON(dir)
+  decoded = json~fromJSON(encoded)
+  self~assertSame(2,                  decoded["list"][2],       "round-trip nested > list[2]")
+  self~assertSame(.JsonBoolean~false, decoded["nested"]["deep"],"round-trip nested > deep")
+
+::method test_roundtrip_escape_chars
+  expose json
+  original = 'tab:' || '09'x || ' newline:' || '0a'x || ' quote:" backslash:\'
+  encoded = json~toJSON(original)
+  decoded = json~fromJSON(encoded)
+  self~assertSame(original, decoded, "round-trip escape chars")
+
+/* --- 24. Round-trip: decode then encode --- */
+
+::method test_decode_encode_roundtrip
+  expose json
+  jsonText = '{"a":1,"b":"hello","c":true,"d":false,"e":null,"f":[1,2,3]}'
+  decoded = json~fromJSON(jsonText)
+  reencoded = json~toJSON(decoded)
+  self~assertSame(jsonText, reencoded, "decode-encode round-trip")
+
+::method test_decode_encode_nested_roundtrip
+  expose json
+  jsonText = '{"arr":[1,[2,3]],"obj":{"nested":true}}'
+  decoded = json~fromJSON(jsonText)
+  reencoded = json~toJSON(decoded)
+  self~assertSame(jsonText, reencoded, "decode-encode nested round-trip")
+
+/* --- 25. Round-trip: test_all_constructs.json --- */
+
+::method test_all_constructs_roundtrip
+  expose json thisLocation
+  constructsFile = thisLocation || "test_all_constructs.json"
+
+  obj1 = .json~fromJsonFile(constructsFile)
+  encoded = json~toJSON(obj1)
+  obj2 = json~fromJSON(encoded)
+  self~assertTrue(deepEqual(obj1, obj2), "test_all_constructs round-trip")
+
+/* --- 33. Legible round-trip --- */
+
+::method test_legible_vs_minimized_roundtrip
+  expose json
+  dir = .directory~new
+  dir["name"] = "test"
+  dir["items"] = .array~of(1, 2, 3)
+  inner = .directory~new
+  inner["flag"] = .JsonBoolean~true
+  dir["config"] = inner
+
+  legibleJson = json~toJSON(dir, .true)
+  decoded = json~fromJSON(legibleJson)
+  minimized = json~toJSON(decoded)
+  decoded2 = json~fromJSON(minimized)
+  self~assertTrue(deepEqual(decoded, decoded2), "legible vs minimized round-trip")
+
+
+/*============================================================================*/
+/*  json_class_methods_test  — group 19: class methods                        */
+/*============================================================================*/
+
+::class json_class_methods_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method test_class_toJSON_number
+  self~assertSame('42', .json~toJSON(42), "class toJSON number")
+
+::method test_class_toJSON_string
+  self~assertSame('"hello"', .json~toJSON("hello"), "class toJSON string")
+
+::method test_class_fromJSON_number
+  self~assertSame(42, .json~fromJSON('42'), "class fromJSON number")
+
+::method test_class_fromJSON_string
+  self~assertSame("hello", .json~fromJSON('"hello"'), "class fromJSON string")
+
+
+/*============================================================================*/
+/*  json_file_io_test  — group 20: file I/O                                   */
+/*============================================================================*/
+
+::class json_file_io_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method test_file_io_write_and_read
+  dir = .directory~new
+  dir["test"] = "file io"
+  dir["number"] = 42
+
+  .json~toJsonFile("/tmp/test_json_io.json", dir)
+  readBack = .json~fromJsonFile("/tmp/test_json_io.json")
+  self~assertSame("file io", readBack["test"],   "file I/O > string value")
+  self~assertSame(42,        readBack["number"], "file I/O > number value")
+
+::method test_file_io_legible
+  dir = .directory~new
+  dir["test"] = "file io"
+  dir["number"] = 42
+
+  .json~toJsonFile("/tmp/test_json_io_legible.json", dir, .true)
+  readBack = .json~fromJsonFile("/tmp/test_json_io_legible.json")
+  self~assertSame("file io", readBack["test"],   "file I/O legible > string value")
+  self~assertSame(42,        readBack["number"], "file I/O legible > number value")
+
+
+/*============================================================================*/
+/*  json_boolean_test  — group 21: JsonBoolean behavior                       */
+/*============================================================================*/
+
+::class json_boolean_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method test_true_makeString
+  self~assertSame(1, .JsonBoolean~true~makeString, "JsonBoolean true makeString")
+
+::method test_false_makeString
+  self~assertSame(0, .JsonBoolean~false~makeString, "JsonBoolean false makeString")
+
+::method test_true_makeJSON
+  self~assertSame("true", .JsonBoolean~true~makeJSON, "JsonBoolean true makeJSON")
+
+::method test_false_makeJSON
+  self~assertSame("false", .JsonBoolean~false~makeJSON, "JsonBoolean false makeJSON")
+
+::method test_true_equals_dotTrue
+  jt = .JsonBoolean~true
+  self~assertTrue(jt = .true, "JsonBoolean true = .true")
+
+::method test_false_equals_dotFalse
+  jf = .JsonBoolean~false
+  self~assertTrue(jf = .false, "JsonBoolean false = .false")
+
+::method test_true_equals_true
+  jt = .JsonBoolean~true
+  self~assertTrue(jt = jt, "JsonBoolean true = true")
+
+::method test_false_equals_false
+  jf = .JsonBoolean~false
+  self~assertTrue(jf = jf, "JsonBoolean false = false")
+
+::method test_true_not_equals_false
+  jt = .JsonBoolean~true
+  jf = .JsonBoolean~false
+  self~assertFalse(jt = jf, "JsonBoolean true \= false")
+
+::method test_compareTo_true
+  self~assertSame(0, .JsonBoolean~true~compareTo(.true), "JsonBoolean true compareTo .true")
+
+::method test_compareTo_false
+  self~assertSame(0, .JsonBoolean~false~compareTo(.false), "JsonBoolean false compareTo .false")
+
+::method test_compareTo_true_vs_false
+  self~assertSame(1, .JsonBoolean~true~compareTo(.JsonBoolean~false), "JsonBoolean true compareTo false")
+
+::method test_compareTo_false_vs_true
+  self~assertSame(-1, .JsonBoolean~false~compareTo(.JsonBoolean~true), "JsonBoolean false compareTo true")
+
+::method test_inequality_backslash_equals
+  jt = .JsonBoolean~true
+  jf = .JsonBoolean~false
+  self~assertTrue(jt \= jf, "JsonBoolean \= operator")
+
+::method test_inequality_diamond
+  jt = .JsonBoolean~true
+  jf = .JsonBoolean~false
+  self~assertTrue(jt <> jf, "JsonBoolean <> operator")
+
+::method test_inequality_gt_lt
+  jt = .JsonBoolean~true
+  jf = .JsonBoolean~false
+  self~assertTrue(jt >< jf, "JsonBoolean >< operator")
+
+::method test_singleton_true
+  self~assertTrue(.JsonBoolean~true = .JSON~true, "JsonBoolean singleton true")
+
+::method test_singleton_false
+  self~assertTrue(.JsonBoolean~false = .JSON~false, "JsonBoolean singleton false")
+
+
+/*============================================================================*/
+/*  json_string_test  — group 22: JsonString behavior                         */
+/*============================================================================*/
+
+::class json_string_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method test_json_string_isA
+  js = .JsonString~new("42")
+  self~assertIsA(js, .JsonString, "JsonString isA JsonString")
+  self~assertIsA(js, .String,     "JsonString isA String")
+
+::method test_json_string_makeJSON
+  js = .JsonString~new("42")
+  self~assertSame('"42"', js~makeJSON, "JsonString makeJSON")
+
+::method test_json_string_value
+  js = .JsonString~new("42")
+  self~assertTrue(js == 42, "JsonString value equals number")
+
+::method test_json_string_non_numeric_makeJSON
+  js = .JsonString~new("hello")
+  self~assertSame('"hello"', js~makeJSON, "JsonString non-numeric makeJSON")
+
+::method test_json_string_empty_makeJSON
+  js = .JsonString~new("")
+  self~assertSame('""', js~makeJSON, "JsonString empty makeJSON")
+
+
+/*============================================================================*/
+/*  json_edge_cases_test  — groups 26–28: edge cases                          */
+/*============================================================================*/
+
+::class json_edge_cases_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method setUp
+  expose json
+  json = .json~new
+
+/* --- 26. Edge cases: empty and minimal inputs --- */
+
+::method test_edge_empty_object_roundtrip
+  expose json
+  self~assertSame('{}', json~toJSON(json~fromJSON('{}')), "edge: empty object round-trip")
+
+::method test_edge_empty_array_roundtrip
+  expose json
+  self~assertSame('[]', json~toJSON(json~fromJSON('[]')), "edge: empty array round-trip")
+
+::method test_edge_empty_string_roundtrip
+  expose json
+  self~assertSame('""', json~toJSON(json~fromJSON('""')), "edge: empty string round-trip")
+
+::method test_edge_zero_roundtrip
+  expose json
+  self~assertSame('0', json~toJSON(json~fromJSON('0')), "edge: zero round-trip")
+
+::method test_edge_empty_string_value_roundtrip
+  expose json
+  self~assertSame('""', json~toJSON(json~fromJSON('""')), "edge: empty string value round-trip")
+
+/* --- 27. Edge cases: deeply nested structures --- */
+
+::method test_edge_5_level_nested_array
+  expose json
+  jsonText = '[[[[["deep"]]]]]'
+  self~assertSame("deep", json~fromJSON(jsonText)[1][1][1][1][1], "edge: 5-level nested array")
+
+::method test_edge_5_level_nested_object
+  expose json
+  jsonText = '{"a":{"b":{"c":{"d":{"e":"deep"}}}}}'
+  self~assertSame("deep", json~fromJSON(jsonText)["a"]["b"]["c"]["d"]["e"], "edge: 5-level nested object")
+
+/* --- 28. Edge cases: strings --- */
+
+::method test_edge_string_looks_like_number
+  expose json
+  self~assertSame("42", json~fromJSON('"42"'), "edge: string that looks like number")
+
+::method test_edge_string_42_is_json_string
+  expose json
+  val = json~fromJSON('"42"')
+  self~assertIsA(val, .JsonString, "edge: string '42' is JsonString")
+
+::method test_edge_string_true
+  expose json
+  self~assertSame("true", json~fromJSON('"true"'), "edge: string 'true'")
+
+::method test_edge_string_false
+  expose json
+  self~assertSame("false", json~fromJSON('"false"'), "edge: string 'false'")
+
+::method test_edge_string_null
+  expose json
+  self~assertSame("null", json~fromJSON('"null"'), "edge: string 'null'")
+
+::method test_edge_whitespace_only_string
+  expose json
+  self~assertSame("   ", json~fromJSON('"   "'), "edge: whitespace-only string")
+
+::method test_edge_single_char_string
+  expose json
+  self~assertSame("x", json~fromJSON('"x"'), "edge: single char string")
+
+::method test_edge_all_escape_sequences
+  expose json
+  all = json~fromJSON('"\"\\\b\f\n\r\t\/"')
+  expected = '"' || '\' || '08'x || '0c'x || '0a'x || '0d'x || '09'x || '/'
+  self~assertSame(expected, all, "edge: all escape sequences combined")
+
+
+/*============================================================================*/
+/*  json_error_test  — group 29: error handling                               */
+/*============================================================================*/
+
+::class json_error_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+/* Each test method verifies that an invalid JSON input raises a syntax error.
+   We use signal on syntax to catch the expected error and assertTrue/assertFail
+   to report the result, since expectSyntax cannot be combined with message
+   verification in a per-test pattern here. */
+
+::method test_error_invalid_object
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{ invalid }')
+  self~assertFail("error: invalid object — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: invalid object")
+
+::method test_error_missing_value
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"key": }')
+  self~assertFail("error: missing value — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: missing value")
+
+::method test_error_missing_colon
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"key" "value"}')
+  self~assertFail("error: missing colon — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: missing colon")
+
+::method test_error_trailing_comma_array
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('[1, 2,]')
+  self~assertFail("error: trailing comma in array — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: trailing comma in array")
+
+::method test_error_trailing_comma_object
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"a": 1,}')
+  self~assertFail("error: trailing comma in object — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: trailing comma in object")
+
+::method test_error_invalid_keyword
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('undefined')
+  self~assertFail("error: invalid keyword — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: invalid keyword")
+
+::method test_error_empty_input
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('')
+  self~assertFail("error: empty input — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: empty input")
+
+::method test_error_invalid_u00XX_hex
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('"\u00GG"')
+  self~assertFail("error: invalid \u00XX hex — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: invalid \u00XX hex")
+
+::method test_error_invalid_uXXXX_hex
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('"\uGGGG"')
+  self~assertFail("error: invalid \uXXXX hex — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: invalid \uXXXX hex")
+
+::method test_error_invalid_escape_char
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('"\z"')
+  self~assertFail("error: invalid escape char — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: invalid escape char")
+
+::method test_error_unterminated_string
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('"unterminated')
+  self~assertFail("error: unterminated string — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: unterminated string")
+
+::method test_error_unterminated_object
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{')
+  self~assertFail("error: unterminated object — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: unterminated object")
+
+::method test_error_unterminated_array
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('[')
+  self~assertFail("error: unterminated array — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: unterminated array")
+
+::method test_error_extra_chars_after_value
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"a": 1} extra')
+  self~assertFail("error: extra chars after value — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "error: extra chars after value")
+
+
+/*============================================================================*/
+/*  json_number_test  — groups 30–31: number validation and normalization      */
+/*============================================================================*/
+
+::class json_number_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method setUp
+  expose json
+  json = .json~new
+
+/* --- 30. Decoding: JSON number validation (RFC 8259) --- */
+
+::method test_num_valid_0
+  expose json
+  self~assertSame(0, json~fromJSON('0'), "num valid: 0")
+
+::method test_num_valid_neg0
+  expose json
+  self~assertSame("-0", json~fromJSON('-0'), "num valid: -0")
+
+::method test_num_valid_42
+  expose json
+  self~assertSame(42, json~fromJSON('42'), "num valid: 42")
+
+::method test_num_valid_neg42
+  expose json
+  self~assertSame(-42, json~fromJSON('-42'), "num valid: -42")
+
+::method test_num_valid_3_14
+  expose json
+  self~assertSame(3.14, json~fromJSON('3.14'), "num valid: 3.14")
+
+::method test_num_valid_neg3_14
+  expose json
+  self~assertSame(-3.14, json~fromJSON('-3.14'), "num valid: -3.14")
+
+::method test_num_valid_0_5
+  expose json
+  self~assertSame(0.5, json~fromJSON('0.5'), "num valid: 0.5")
+
+::method test_num_valid_1e2
+  expose json
+  self~assertSame("1e2", json~fromJSON('1e2'), "num valid: 1e2")
+
+::method test_num_valid_1E2_upper
+  expose json
+  self~assertSame("1E2", json~fromJSON('1E2'), "num valid: 1E2")
+
+::method test_num_valid_1e_plus_2
+  expose json
+  self~assertSame("1e+2", json~fromJSON('1e+2'), "num valid: 1e+2")
+
+::method test_num_valid_1e_minus_2
+  expose json
+  self~assertSame("1e-2", json~fromJSON('1e-2'), "num valid: 1e-2")
+
+::method test_num_valid_1_5e3
+  expose json
+  self~assertSame("1.5e3", json~fromJSON('1.5e3'), "num valid: 1.5e3")
+
+::method test_num_valid_neg1_5e_neg3
+  expose json
+  self~assertSame("-1.5e-3", json~fromJSON('-1.5e-3'), "num valid: -1.5e-3")
+
+::method test_num_valid_100
+  expose json
+  self~assertSame(100, json~fromJSON('100'), "num valid: 100")
+
+-- Invalid JSON numbers
+
+::method test_num_reject_leading_plus
+  expose json
+  signal on syntax name caught
+  json~fromJSON('+42')
+  self~assertFail("num reject: leading plus — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: leading plus")
+
+::method test_num_reject_leading_zero
+  expose json
+  signal on syntax name caught
+  json~fromJSON('042')
+  self~assertFail("num reject: leading zero — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: leading zero")
+
+::method test_num_reject_double_zero
+  expose json
+  signal on syntax name caught
+  json~fromJSON('00')
+  self~assertFail("num reject: double zero — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: double zero")
+
+::method test_num_reject_leading_dot
+  expose json
+  signal on syntax name caught
+  json~fromJSON('.5')
+  self~assertFail("num reject: leading dot — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: leading dot")
+
+::method test_num_reject_trailing_dot
+  expose json
+  signal on syntax name caught
+  json~fromJSON('5.')
+  self~assertFail("num reject: trailing dot — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: trailing dot")
+
+::method test_num_reject_minus_leading_dot
+  expose json
+  signal on syntax name caught
+  json~fromJSON('-.5')
+  self~assertFail("num reject: minus leading dot — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: minus leading dot")
+
+::method test_num_reject_minus_leading_zero
+  expose json
+  signal on syntax name caught
+  json~fromJSON('-042')
+  self~assertFail("num reject: minus leading zero — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: minus leading zero")
+
+::method test_num_reject_leading_zero_with_frac
+  expose json
+  signal on syntax name caught
+  json~fromJSON('01.5')
+  self~assertFail("num reject: leading zero with frac — no error raised")
+  return
+caught:
+  self~assertTrue(.true, "num reject: leading zero with frac")
+
+/* --- 31. Encoding: number normalization --- */
+
+::method test_enc_norm_integer
+  expose json
+  self~assertSame('42', json~toJSON(42), "enc norm: integer unchanged")
+
+::method test_enc_norm_negative
+  expose json
+  self~assertSame('-42', json~toJSON(-42), "enc norm: negative unchanged")
+
+::method test_enc_norm_float
+  expose json
+  self~assertSame('3.14', json~toJSON(3.14), "enc norm: float unchanged")
+
+::method test_enc_norm_zero
+  expose json
+  self~assertSame('0', json~toJSON(0), "enc norm: zero")
+
+::method test_enc_norm_dot5
+  expose json
+  self~assertSame('0.5', json~toJSON(.5), "enc norm: .5 -> 0.5")
+
+::method test_enc_norm_042
+  expose json
+  self~assertSame('42', json~toJSON(042), "enc norm: 042 -> 42")
+
+::method test_enc_norm_00
+  expose json
+  self~assertSame('0', json~toJSON(00), "enc norm: 00 -> 0")
+
+::method test_enc_norm_large_integer
+  expose json
+  number = 12345678901234567890
+  self~assertSame(number, json~toJSON(json~fromJSON(number)), "enc norm: large integer round-trip")
+
+::method test_enc_norm_very_large_integer
+  expose json
+  number = 99999999999999999999999999999999
+  self~assertSame(number, json~toJSON(json~fromJSON(number)), "enc norm: very large integer round-trip")
+
+::method test_enc_norm_large_negative
+  expose json
+  number = -12345678901234567890
+  self~assertSame(number, json~toJSON(json~fromJSON(number)), "enc norm: large negative round-trip")
+
+::method test_enc_norm_large_decimal
+  expose json
+  number = 12345678901234567890.123456789
+  self~assertSame(number, json~toJSON(json~fromJSON(number)), "enc norm: large decimal round-trip")
+
+
+/*============================================================================*/
+/*  json_bom_test  — group 32: UTF-8 BOM handling                             */
+/*============================================================================*/
+
+::class json_bom_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method setUp
+  expose json
+  json = .json~new
+
+::method test_bom_empty_object
+  expose json
+  bom = 'EFBBBF'x
+  doc = json~fromJSON(bom || '{}')
+  self~assertEquals(0, doc~items, "BOM: empty object")
+
+::method test_bom_number
+  expose json
+  bom = 'EFBBBF'x
+  self~assertEquals(42, json~fromJSON(bom || '42'), "BOM: number")
+
+::method test_bom_string
+  expose json
+  bom = 'EFBBBF'x
+  self~assertEquals("hello", json~fromJSON(bom || '"hello"'), "BOM: string")
+
+
+/*============================================================================*/
+/*  json_error_reporting_test  — group 33: error reporting details             */
+/*============================================================================*/
+
+::class json_error_reporting_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method test_errfmt_single_line_has_line_1
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"a": bad}')
+  self~assertFail("errfmt: single-line has line 1 — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("line 1") > 0, "errfmt: single-line has line 1")
+
+::method test_errfmt_single_line_has_column
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"a": bad}')
+  self~assertFail("errfmt: single-line has column — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("column 7") > 0, "errfmt: single-line has column")
+
+::method test_errfmt_multi_line_correct_line
+  json = .json~new
+  multiLine = '{"a": 1,' || '0A'x || ' "b": 2,' || '0A'x || ' "c": bad}'
+  signal on syntax name caught
+  json~fromJSON(multiLine)
+  self~assertFail("errfmt: multi-line correct line — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("line 3") > 0, "errfmt: multi-line correct line")
+
+::method test_errfmt_multi_line_correct_column
+  json = .json~new
+  multiLine = '{"a": 1,' || '0A'x || ' "b": 2,' || '0A'x || ' "c": bad}'
+  signal on syntax name caught
+  json~fromJSON(multiLine)
+  self~assertFail("errfmt: multi-line correct column — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("column 7") > 0, "errfmt: multi-line correct column")
+
+::method test_errfmt_crlf_line_counting
+  json = .json~new
+  crlfInput = '{"a": 1,' || '0D0A'x || ' "b": bad}'
+  signal on syntax name caught
+  json~fromJSON(crlfInput)
+  self~assertFail("errfmt: CRLF line counting — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("line 2") > 0, "errfmt: CRLF line counting")
+
+::method test_errfmt_prefix_is_json_error
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('042')
+  self~assertFail("errfmt: prefix is JsonError: — no error raised")
+  return
+caught:
+  co = condition("O")
+  self~assertTrue(co~message~caselessPos("JsonError:") > 0, "errfmt: prefix is JsonError:")
+
+::method test_errfmt_context_line_present
+  json = .json~new
+  signal on syntax name caught
+  json~fromJSON('{"x": bad}')
+  self~assertFail("errfmt: context line present — no error raised")
+  return
+caught:
+  co = condition("O")
+  additional = co~additional
+  -- additional may be a string or array; coerce to string for searching
+  if additional~isA(.array) then additional = additional~makeString("L", " ")
+  self~assertTrue(additional~caselessPos('"x": bad}') > 0, "errfmt: context line present")
+
+
+/*============================================================================*/
+/*  json_xml_test  — XML round-trip tests                                    */
+/*============================================================================*/
+
+::class json_xml_test public subclass ooTestCase
+
+::method init class
+  forward class (super) continue
+
+::method init
+  expose thisLocation executableLocation
+  parse source . . thisPath
+  thisLocation=filespec('location',thisPath)
+  executableLocation=filespec('location',.rexxInfo~executable)
+  forward class (super) -- let superclass initialize
+
+::method setUp
+  expose json thisLocation executableLocation
+  json = .json~new
+
+/*------------------------------------------------------------------------*/
+/* XML round-trip via XSD                                                 */
+/*------------------------------------------------------------------------*/
+::method test_xml_xsd_roundtrip
+  expose json
+  obj1 = json~fromJSON('{"name":"Alice","age":30,"active":true,"nil_val":null,"arr":[1,2],"nested":{"k":"v"}}')
+
+  xml1 = .json~jsonToXml(obj1, "xsd")
+  self~assertTrue(xml1~pos('<?xml') > 0, "xsd xml has declaration")
+  self~assertTrue(xml1~pos('xmlns=') > 0, "xsd xml has namespace")
+  self~assertTrue(xml1~pos('<json') > 0, "xsd xml has json element")
+
+  doc2 = json~parseXml(xml1)
+  self~assertTrue(doc2~isA(.directory), "xsd roundtrip type")
+  self~assertTrue(deepEqual(obj1, doc2), "xsd roundtrip equal")
+
+  self~assertEquals("Alice", doc2["name"], "xsd roundtrip name")
+  self~assertEquals(30, doc2["age"], "xsd roundtrip age")
+  self~assertTrue(doc2["active"]~isA(.JsonBoolean), "xsd roundtrip bool isA")
+  self~assertTrue(doc2["active"] = .true, "xsd roundtrip bool value")
+  self~assertTrue(doc2["nil_val"] == .nil, "xsd roundtrip null")
+  self~assertEquals(2, doc2["arr"]~items, "xsd roundtrip arr items")
+  self~assertEquals("v", doc2["nested"]["k"], "xsd roundtrip nested")
+
+  -- Re-encode stability
+  xml2 = .json~jsonToXml(doc2, "xsd")
+  doc3 = json~parseXml(xml2)
+  self~assertTrue(deepEqual(doc2, doc3), "xsd roundtrip stable")
+
+/*------------------------------------------------------------------------*/
+/* XML round-trip via DTD                                                 */
+/*------------------------------------------------------------------------*/
+::method test_xml_dtd_roundtrip
+  expose json
+  obj1 = json~fromJSON('{"name":"Alice","age":30,"active":true,"nil_val":null,"arr":[1,2],"nested":{"k":"v"}}')
+
+  xml1 = .json~jsonToXml(obj1, "dtd")
+  self~assertTrue(xml1~pos('<!DOCTYPE') > 0, "dtd xml has DOCTYPE")
+  self~assertTrue(xml1~pos('xmlns=') == 0, "dtd xml no namespace")
+
+  doc2 = json~parseXml(xml1)
+  self~assertTrue(doc2~isA(.directory), "dtd roundtrip type")
+  self~assertTrue(deepEqual(obj1, doc2), "dtd roundtrip equal")
+
+  self~assertEquals("Alice", doc2["name"], "dtd roundtrip name")
+  self~assertEquals(30, doc2["age"], "dtd roundtrip age")
+  self~assertTrue(doc2["nil_val"] == .nil, "dtd roundtrip null")
+
+  -- Re-encode stability
+  xml2 = .json~jsonToXml(doc2, "dtd")
+  doc3 = json~parseXml(xml2)
+  self~assertTrue(deepEqual(doc2, doc3), "dtd roundtrip stable")
+
+/*------------------------------------------------------------------------*/
+/* XML file round-trip                                                    */
+/*------------------------------------------------------------------------*/
+::method test_xml_file_roundtrip
+  expose thisLocation
+  json = .json~new
+
+  obj1 = json~fromJSON('{"name":"Alice","age":30,"active":true}')
+
+  xmlFile    = thisLocation"test_xml_xsd_tmp.xml"
+  xmlDtdFile = thisLocation"test_xml_dtd_tmp.xml"
+
+  .json~jsonToXmlFile(obj1, xmlFile, "xsd")
+  doc2 = json~parseXmlFile(xmlFile)
+  self~assertTrue(deepEqual(obj1, doc2), "xsd file roundtrip equal")
+
+  .json~jsonToXmlFile(obj1, xmlDtdFile, "dtd")
+  doc3 = json~parseXmlFile(xmlDtdFile)
+  self~assertTrue(deepEqual(obj1, doc3), "dtd file roundtrip equal")
+
+  -- Stability: re-write and re-read
+  .json~jsonToXmlFile(doc2, xmlFile, "xsd")
+  doc4 = json~parseXmlFile(xmlFile)
+  self~assertTrue(deepEqual(doc2, doc4), "xsd file roundtrip stable")
+
+  .json~jsonToXmlFile(doc3, xmlDtdFile, "dtd")
+  doc5 = json~parseXmlFile(xmlDtdFile)
+  self~assertTrue(deepEqual(doc3, doc5), "dtd file roundtrip stable")
+
+  -- cleanup
+  call SysFileDelete xmlFile
+  call SysFileDelete xmlDtdFile
+
+/*------------------------------------------------------------------------*/
+/* XML type preservation: JsonBoolean                                     */
+/*------------------------------------------------------------------------*/
+::method test_xml_boolean_preservation
+  json = .json~new
+  dir = .directory~new
+  dir["bt"] = .JsonBoolean~true
+  dir["bf"] = .JsonBoolean~false
+  dir["one"] = 1
+  dir["zero"] = 0
+
+  xml = .json~jsonToXml(dir, "xsd")
+  self~assertTrue(xml~pos('<boolean>true</boolean>') > 0, "xml has bool true")
+  self~assertTrue(xml~pos('<boolean>false</boolean>') > 0, "xml has bool false")
+
+  doc = json~parseXml(xml)
+  self~assertTrue(doc["bt"]~isA(.JsonBoolean), "xml roundtrip bt isA")
+  self~assertTrue(doc["bf"]~isA(.JsonBoolean), "xml roundtrip bf isA")
+  self~assertTrue(doc["bt"] = .true, "xml roundtrip bt value")
+  self~assertTrue(doc["bf"] = .false, "xml roundtrip bf value")
+  self~assertFalse(doc["one"]~isA(.JsonBoolean), "xml roundtrip one not bool")
+  self~assertFalse(doc["zero"]~isA(.JsonBoolean), "xml roundtrip zero not bool")
+
+/*------------------------------------------------------------------------*/
+/* XML type preservation: JsonString                                      */
+/*------------------------------------------------------------------------*/
+::method test_xml_string_preservation
+  json = .json~new
+  dir = .directory~new
+  dir["jstr"] = .JsonString~new("42")
+  dir["num"] = 42
+  dir["plain"] = "hello"
+
+  xml = .json~jsonToXml(dir)
+  doc = json~parseXml(xml)
+
+  self~assertTrue(doc["jstr"]~isA(.JsonString), "xml roundtrip jstr isA")
+  self~assertEquals("42", doc["jstr"], "xml roundtrip jstr value")
+  self~assertFalse(doc["num"]~isA(.JsonString), "xml roundtrip num not string")
+  self~assertEquals(42, doc["num"], "xml roundtrip num value")
+  self~assertTrue(doc["plain"]~isA(.JsonString), "xml roundtrip plain isA")
+
+/*------------------------------------------------------------------------*/
+/* XML empty collections and null                                         */
+/*------------------------------------------------------------------------*/
+::method test_xml_empty_and_null
+  json = .json~new
+  dir = .directory~new
+  dir["eo"] = .directory~new
+  dir["ea"] = .array~new
+  dir["nv"] = .nil
+
+  xml = .json~jsonToXml(dir)
+  self~assertTrue(xml~pos('<object/>') > 0, "xml has empty object")
+  self~assertTrue(xml~pos('<array/>') > 0, "xml has empty array")
+  self~assertTrue(xml~pos('<null/>') > 0, "xml has null element")
+
+  doc = json~parseXml(xml)
+  self~assertEquals(0, doc["eo"]~items, "xml roundtrip empty object")
+  self~assertEquals(0, doc["ea"]~items, "xml roundtrip empty array")
+  self~assertTrue(doc["nv"] == .nil, "xml roundtrip null")
+
+/*------------------------------------------------------------------------*/
+/* XML array at root                                                      */
+/*------------------------------------------------------------------------*/
+::method test_xml_array_root
+  expose json
+  arr = json~fromJSON('[1,"hello",true,null,{"k":"v"},[2,3]]')
+  xml = .json~jsonToXml(arr)
+  doc = json~parseXml(xml)
+  self~assertTrue(deepEqual(arr, doc), "xml roundtrip array root")
+
+/*------------------------------------------------------------------------*/
+/* XML special characters (entity escaping)                               */
+/*------------------------------------------------------------------------*/
+::method test_xml_special_characters
+  json = .json~new
+  dir = .directory~new
+  dir["amp"] = "a&b"
+  dir["lt"] = "a<b"
+  dir["gt"] = "a>b"
+  dir["quot"] = 'a"b'
+  dir["apos"] = "a'b"
+
+  xml = .json~jsonToXml(dir)
+  doc = json~parseXml(xml)
+  self~assertEquals("a&b", doc["amp"], "xml roundtrip ampersand")
+  self~assertEquals("a<b", doc["lt"], "xml roundtrip less-than")
+  self~assertEquals("a>b", doc["gt"], "xml roundtrip greater-than")
+  self~assertEquals('a"b', doc["quot"], "xml roundtrip double-quote")
+  self~assertEquals("a'b", doc["apos"], "xml roundtrip apostrophe")
+
+  -- Special chars in key names
+  dir2 = .directory~new
+  dir2["a&b"] = 1
+  dir2["c<d"] = 2
+  xml2 = .json~jsonToXml(dir2)
+  doc2 = json~parseXml(xml2)
+  self~assertEquals(1, doc2["a&b"], "xml roundtrip key with ampersand")
+  self~assertEquals(2, doc2["c<d"], "xml roundtrip key with less-than")
+
+/*------------------------------------------------------------------------*/
+/* XML cross-schema round-trip (XSD -> DTD -> XSD)                        */
+/*------------------------------------------------------------------------*/
+::method test_xml_cross_schema_roundtrip
+  expose json
+  obj = json~fromJSON('{"a":1,"b":"hello","c":true,"d":null,"e":[1,2,3]}')
+
+  xmlXsd = .json~jsonToXml(obj, "xsd")
+  docXsd = json~parseXml(xmlXsd)
+  xmlDtd = .json~jsonToXml(docXsd, "dtd")
+  docDtd = json~parseXml(xmlDtd)
+  self~assertTrue(deepEqual(docXsd, docDtd), "xsd->dtd cross roundtrip")
+
+  -- And back to XSD
+  xmlXsd2 = .json~jsonToXml(docDtd, "xsd")
+  docXsd2 = json~parseXml(xmlXsd2)
+  self~assertTrue(deepEqual(docDtd, docXsd2), "dtd->xsd cross roundtrip")
+
+
+::method test_xml_xslt_roundtrip
+  expose thisLocation executableLocation
+
+  /* Parse the reference JSON file */
+  json = .json~new
+  constructsFile = thisLocation || "test_all_constructs.json"
+  obj1 = .json~fromJsonFile(constructsFile)
+
+  /* Generate XSD and DTD XML files */
+  xsdFile = thisLocation"test_xslt_xsd_tmp.xml"
+  dtdFile = thisLocation"test_xslt_dtd_tmp.xml"
+  .json~jsonToXmlFile(obj1, xsdFile, "xsd")
+  .json~jsonToXmlFile(obj1, dtdFile, "dtd")
+
+  /* json.dtd must be findable relative to the DTD XML file */
+  dtdSchemaFile = thisLocation"json.dtd"
+  needDtdCleanup = .false
+  If SysFileExists(thisLocation"docbook/json.dtd"), \SysFileExists(dtdSchemaFile) Then Do
+    address system "cp" thisLocation"docbook/json.dtd" dtdSchemaFile
+    needDtdCleanup = .true
+  End
+
+  /* Try xsltproc first, then runXSLT.rxj */
+  xsltAvailable = .false
+  xslFile = executableLocation"xmlToJson.xsl"
+  If \SysFileExists(xslFile) Then
+    xslFile = thisLocation"docbook/xmlToJson.xsl"
+
+  /* Attempt xsltproc */
+  Signal On Syntax Name TryRunXSLT_json2
+  outXsd = .array~new
+  errXsd = .array~new
+  address system "xsltproc" xslFile xsdFile -
+    with output using (outXsd) error using (errXsd)
+  If outXsd~items > 0 Then Do
+    xsltAvailable = .true
+    xsltTool = "xsltproc"
+  End
+  Signal XsltCheckDone_json2
+
+TryRunXSLT_json2:
+  /* Attempt runXSLT.rxj (requires BSF4ooRexx) */
+  Signal On Syntax Name NoXsltTool_json2
+  outXsd = .array~new
+  errXsd = .array~new
+  address system "rexx runXSLT.rxj" xslFile xsdFile -
+    with output using (outXsd) error using (errXsd)
+  If outXsd~items > 0 Then Do
+    xsltAvailable = .true
+    xsltTool = "runXSLT.rxj"
+  End
+  Signal XsltCheckDone_json2
+
+NoXsltTool_json2:
+  Signal Off Syntax
+
+XsltCheckDone_json2:
+  Signal Off Syntax
+
+  If \xsltAvailable Then Do
+    /* No XSLT processor — clean up and skip */
+    Call SysFileDelete xsdFile
+    Call SysFileDelete dtdFile
+    If needDtdCleanup Then Call SysFileDelete dtdSchemaFile
+    Return
+  End
+
+  /* XSD round-trip: parse the XSLT output and compare */
+  xsdJson = outXsd~makeString('L', "0A"x)
+  xsdDoc = json~fromJSON(xsdJson)
+  xsdOrigJson = json~toJSON(obj1)
+  xsdRtJson   = json~toJSON(xsdDoc)
+  self~assertEquals(xsdOrigJson, xsdRtJson, -
+    "XSLT xsd round-trip ("xsltTool")")
+
+  /* DTD round-trip */
+  outDtd = .array~new
+  errDtd = .array~new
+  If xsltTool == "xsltproc" Then
+    address system "xsltproc" xslFile dtdFile -
+      with output using (outDtd) error using (errDtd)
+  Else
+    address system "rexx runXSLT.rxj" xslFile dtdFile -
+      with output using (outDtd) error using (errDtd)
+  dtdJson = outDtd~makeString('L', "0A"x)
+  dtdDoc = json~fromJSON(dtdJson)
+  dtdRtJson = json~toJSON(dtdDoc)
+  self~assertEquals(xsdOrigJson, dtdRtJson, -
+    "XSLT dtd round-trip ("xsltTool")")
+
+  /* Clean up temporary files */
+  Call SysFileDelete xsdFile
+  Call SysFileDelete dtdFile
+  If needDtdCleanup Then Call SysFileDelete dtdSchemaFile
+
+
+/*============================================================================*/
+/*  Shared routines                                                           */
+/*============================================================================*/
+
+/** Recursive deep-equality comparison for JSON-decoded structures.
+ *  Handles .Directory, .Array, .JsonBoolean, .JsonString, .String, .nil.
+ */
+::routine deepEqual public
+  use arg a, b
+
+  -- both nil?
+  if a~isNil, b~isNil then return .true
+  -- one nil, other not?
+  if a~isNil | b~isNil then return .false
+
+  -- both directories?
+  if a~isA(.directory), b~isA(.directory) then do
+    if a~items \== b~items then return .false
+    do key over a~allIndexes
+      if \b~hasIndex(key) then return .false
+      if \deepEqual(a[key], b[key]) then return .false
+    end
+    return .true
+  end
+
+  -- both arrays?
+  if a~isA(.array), b~isA(.array) then do
+    if a~items \== b~items then return .false
+    do i = 1 to a~items
+      if \deepEqual(a[i], b[i]) then return .false
+    end
+    return .true
+  end
+
+  -- both JsonBoolean?
+  if a~isA(.JsonBoolean), b~isA(.JsonBoolean) then
+    return a~makeJSON == b~makeJSON
+
+  -- string/number comparison (covers .JsonString and plain .String)
+  -- Use numeric comparison for numbers to handle equivalent representations
+  if a~dataType('n'), b~dataType('n') then
+    return a = b
+  return a == b
+
+
+::requires "json.cls"
+::requires "ooTest.frm"

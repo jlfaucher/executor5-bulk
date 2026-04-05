@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  json.xsd - XML Schema for representing JSON documents in XML.
+
+  Design goals:
+    - Lossless round-trip: JSON -> ooRexx -> XML -> ooRexx -> JSON preserves
+      structure and types.
+    - Every JSON type (object, array, string, number, boolean, null) has a
+      corresponding element.
+    - Object entries preserve key names in a <name> child element.
+    - The schema is self-contained with no external dependencies.
+
+  Element hierarchy:
+    <json>                           Root element (single JSON value)
+      <object>                       JSON object
+        <entry>                      Key-value pair
+          <name> ... </name>         String key
+          <value> ... </value>       Any JSON value
+      <array>                        JSON array
+        <item> ... </item>           Array element
+      <string> ... </string>         JSON string
+      <number> ... </number>         JSON number
+      <boolean> ... </boolean>       JSON boolean (true/false)
+      <null/>                        JSON null
+
+  Copyright (c) 2024-2026 Rexx Language Association. All rights reserved.
+
+  This program and the accompanying materials are made available under
+  the terms of the Common Public License v1.0 which accompanies this
+  distribution. A copy is also available at the following address:
+  https://www.oorexx.org/license.html
+
+  Redistribution and use in source and binary forms, with or
+  without modification, are permitted provided that the following
+  conditions are met:
+
+  Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+  Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in
+  the documentation and/or other materials provided with the distribution.
+
+  Neither the name of Rexx Language Association nor the names
+  of its contributors may be used to endorse or promote products
+  derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:json:xml:1.0"
+           xmlns:j="urn:json:xml:1.0"
+           elementFormDefault="qualified">
+
+  <!-- ================================================================== -->
+  <!-- Root element: a single JSON value                                  -->
+  <!-- ================================================================== -->
+  <xs:element name="json" type="j:jsonRootType"/>
+
+  <xs:complexType name="jsonRootType">
+    <xs:group ref="j:valueGroup"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Value group: any JSON value                                        -->
+  <!-- ================================================================== -->
+  <xs:group name="valueGroup">
+    <xs:choice>
+      <xs:element name="object"  type="j:objectType"/>
+      <xs:element name="array"   type="j:arrayType"/>
+      <xs:element name="string"  type="xs:string"/>
+      <xs:element name="number"  type="xs:string"/>
+      <xs:element name="boolean" type="j:booleanContentType"/>
+      <xs:element name="null"    type="j:nullType"/>
+    </xs:choice>
+  </xs:group>
+
+  <!-- ================================================================== -->
+  <!-- Object                                                             -->
+  <!-- ================================================================== -->
+  <xs:complexType name="objectType">
+    <xs:sequence>
+      <xs:element name="entry" type="j:entryType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="entryType">
+    <xs:sequence>
+      <xs:element name="n"  type="xs:string"/>
+      <xs:element name="value" type="j:valueContainerType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- value can contain any JSON value -->
+  <xs:complexType name="valueContainerType">
+    <xs:group ref="j:valueGroup"/>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Array                                                              -->
+  <!-- ================================================================== -->
+  <xs:complexType name="arrayType">
+    <xs:sequence>
+      <xs:element name="item" type="j:valueContainerType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- Boolean content restricted to "true" or "false"                    -->
+  <!-- ================================================================== -->
+  <xs:simpleType name="booleanContentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="true"/>
+      <xs:enumeration value="false"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================================================================== -->
+  <!-- Null (empty element)                                               -->
+  <!-- ================================================================== -->
+  <xs:complexType name="nullType"/>
+
+</xs:schema>
