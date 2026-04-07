@@ -113,7 +113,7 @@ Returns &nil; if no object is attached.
 </para>
 <para><example id="ex.alarm-attachment">
 <title>Alarm class &mdash; attachment method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 oneSecond = .Alarm~new(1, .Target~new, "a second has passed")
 call SysSleep 1.5                      -- give Alarm time to trigger
 oneSecond~cancel
@@ -122,7 +122,7 @@ oneSecond~cancel
 ::method triggered                     -- called when Alarm triggers
   use arg alarm
   say alarm~attachment                 -- displays "a second has passed"
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthAlarmCancel"><title>cancel</title>
@@ -159,11 +159,12 @@ Returns &false; otherwise.
 </para>
 <para><example>
 <title>Alarm class &mdash; canceled/cancelled method</title>
-<programlisting><![CDATA[alarm = .Alarm~new(1 ,.message~new(.stdout, "SAY", "I", "Alarm went off"))
+<programlisting language="rexx">
+alarm = .Alarm~new(1 ,.message~new(.stdout, "SAY", "I", "Alarm went off"))
 call SysSleep 0.5
 alarm~cancel
 say "Alarm" alarm~cancelled~?("cancelled", "not cancelled")    -- Alarm cancelled
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthAlarmInit" revisionflag="changed"><title>&changed50;init</title>
@@ -247,7 +248,7 @@ the specified notification <emphasis role="italic">target</emphasis>.
 <secondary>of Alarm class</secondary></indexterm>
 <example>
 <title>Alarm class</title>
-<programlisting>
+<programlisting language="rexx">
 /* Alarm Examples */
 
 PersonalMessage = .MyMessageClass~new("Call the Bank")
@@ -277,7 +278,7 @@ an alarm to run the <emphasis role="italic">msg</emphasis> message
 object in 30 seconds from the current time: </para>
 <example>
 <title>Alarm class</title>
-<programlisting>
+<programlisting language="rexx">
 a = .Alarm~new(30, msg)
 </programlisting>
 </example>
@@ -628,9 +629,10 @@ Subclasses may override this to implement more specific comparisons.
 <title>Comparator class
 <indexterm><primary>examples</primary><secondary>Comparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("Strawberries", "cherries", "angel's kiss")
 wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -695,9 +697,10 @@ caseless orderings of string objects.
 <title>CaselessComparator class
 <indexterm><primary>examples</primary><secondary>CaselessComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("Strawberries", "cherries", "angel's kiss")
 wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -783,10 +786,11 @@ starting at position <emphasis role="italic">start</emphasis> for
 <title>ColumnComparator class
 <indexterm><primary>examples</primary><secondary>ColumnComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
 wine~sortWith(.ColumnComparator~new(3, 100))
                                        -- 1. Strawberries, 3. angel's kiss, 2. cherries
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -872,11 +876,11 @@ starting at position <emphasis role="italic">start</emphasis> for
 <title>CaselessColumnComparator class
 <indexterm><primary>examples</primary><secondary>CaselessColumnComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
 wine~sortWith(.CaselessColumnComparator~new(3, 100))
                                        -- 3. angel's kiss, 2. cherries, 1. Strawberries
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -950,9 +954,10 @@ method.
 <title>DescendingComparator class
 <indexterm><primary>examples</primary><secondary>DescendingComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("Strawberries", "cherries", "angel's kiss")
 wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberries
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -1023,9 +1028,10 @@ resulting in a descending sort sequence.
 <title>CaselessDescendingComparator class
 <indexterm><primary>examples</primary><secondary>CaselessDescendingComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("Strawberries", "cherries", "angel's kiss")
 wine~sortWith(.CaselessDescendingComparator~new) -- Strawberries, cherries, angel's kiss
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -1111,7 +1117,8 @@ strings using an inversion of the result from the
 <title>InvertingComparator class
 <indexterm><primary>examples</primary><secondary>InvertingComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
+<programlisting language="rexx">
+wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
 wine~sortWith(.InvertingComparator~new(.LengthComparator~new))
                                        -- 3. angel's kiss, 1. Strawberries, 2. cherries
 
@@ -1125,7 +1132,7 @@ wine~sortWith(.InvertingComparator~new(.LengthComparator~new))
     return left~compareTo(right)
   else
     return lengthDelta~sign
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -1215,9 +1222,10 @@ The default precision is <literal>9</literal>.
 <title>NumericComparator class
 <indexterm><primary>examples</primary><secondary>NumericComparator class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[primes = .Array~of(23, 19, 17, 13, 11, 7, 5, 3, 2)
+<programlisting language="rexx">
+primes = .Array~of(23, 19, 17, 13, 11, 7, 5, 3, 2)
 primes~sortWith(.NumericComparator~new)  -- 2, 3, 5, 7, 11, 13, 17, 19, 23
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 </section>
 
@@ -1538,9 +1546,9 @@ Leading zeros are required for both <literal>yyyy</literal> and
 <title>DateTime class &mdash; fromOrdinalDate method
 <indexterm><primary>examples</primary><secondary>fromOrdinalDate method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .DateTime~fromOrdinalDate("2020-041")    -- 2020-02-10T00:00:00.000000
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -1630,9 +1638,9 @@ where Monday is 1, Tuesday is 2, running through 7 for Sunday.
 <title>DateTime class &mdash; fromWeekNumberDate method
 <indexterm><primary>examples</primary><secondary>fromWeekNumberDate method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .DateTime~fromWeekNumberDate("2020-W07-1")    -- 2020-02-10T00:00:00.000000
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -1814,13 +1822,11 @@ component.  For example, <emphasis role="italic">year</emphasis> must be in the 
 &utc_offset_default_system;
 <example>
 <title>DateTime class</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 today = .DateTime~new                            -- current date and time
 day = .DateTime~new(date('F', "20170630", "S"))  -- 2017-06-30T00:00:00.000000
 day = .DateTime~new(2017, 6, 30)                 -- 2017-06-30T00:00:00.000000
 day = .DateTime~new(2017, 6, 30, 11, 8, 50)      -- 2017-06-30T11:08:50.000000
-]]>
 </programlisting>
 </example>
 </section>
@@ -1898,7 +1904,7 @@ happened on December 31, 2016 at 23:59:60 UTC) are not taken into account.
 <title>DateTime class &mdash; arithmetic
 <indexterm><primary>examples</primary><secondary>arithmetic methods of DateTime class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
 say t                             -- displays "17:30:41.482000", perhaps
 d = .dateTime~new(2016, 12, 31)   -- creates new date
@@ -1913,7 +1919,7 @@ say d + .TimeSpan~new(24, 0, 1)   -- 2017-01-01T00:00:01.000000
 nextCentury = .dateTime~new(2101, 1, 1)
 -- "The next century starts in 29547.07:15:42.721000 days", perhaps
 say "The next century starts in" (nextCentury - .dateTime~new) "days"
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -1960,7 +1966,7 @@ or between 1 and 53.
 <title>DateTime class &mdash; weekNumber method
 <indexterm><primary>examples</primary><secondary>weekNumber method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say weekNumber(2018, 12, 31)    -- 1 2019-W01-1
 say weekNumber(2019,  1,  1)    -- 1 2019-W01-2
 
@@ -1971,7 +1977,7 @@ return
 weekNumber: procedure
   date = .DateTime~new(arg(1), arg(2), arg(3))
   return date~weekNumber date~weekNumberDate
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -1997,13 +2003,13 @@ required.
 <title>DateTime class &mdash; weekNumberDate method
 <indexterm><primary>examples</primary><secondary>weekNumberDate method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .DateTime~new(2018, 12, 31)~weekNumberDate    -- 2019-W01-1
 say .DateTime~new(2019,  1,  1)~weekNumberDate    -- 2019-W01-2
 
 say .DateTime~new(2020, 12, 31)~weekNumberDate    -- 2020-W53-4
 say .DateTime~new(2021,  1,  1)~weekNumberDate    -- 2020-W53-5
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2029,7 +2035,7 @@ beginning or end of the year.
 <title>DateTime class &mdash; weekNumberYear method
 <indexterm><primary>examples</primary><secondary>weekNumberYear method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say weekNumber(2018, 12, 31)    -- 2019 2019-W01-1
 say weekNumber(2019,  1,  1)    -- 2019 2019-W01-2
 
@@ -2040,7 +2046,7 @@ return
 weekNumber: procedure
   date = .DateTime~new(arg(1), arg(2), arg(3))
   return date~weekNumberYear date~weekNumberDate
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2067,13 +2073,13 @@ ISO week number rules.
 <title>DateTime class &mdash; weeksInYear method
 <indexterm><primary>examples</primary><secondary>weeksInYear method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 do year = 2010 to 2030
   d = .DateTime~new(year, 6, 30)
   if d~weeksInYear \= 52 then
     say year":" d~weeksinYear -- 2015: 53, 2020: 53, 2026: 53
 end
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2189,9 +2195,9 @@ as required.
 <title>DateTime class &mdash; ordinalDate method
 <indexterm><primary>examples</primary><secondary>ordinalDate method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .DateTime~new(2020, 2, 10)~ordinalDate    -- 2020-041
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2346,12 +2352,10 @@ the day will be rolled back to the 28th.
 </para>
 <example>
 <title>DateTime class &mdash; addYears method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 date = .DateTime~new(2016, 6, 30)
 say date              -- displays "2016-06-30T00:00:00.000000"
 say date~addYears(1)  -- displays "2017-06-30T00:00:00.000000"
-]]>
 </programlisting>
 </example>
 </section>
@@ -2401,12 +2405,10 @@ Negative values result in days being subtracted.
 </para>
 <example>
 <title>DateTime class &mdash; addDays method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 date = .DateTime~new(2016, 6, 30)
 say date              -- displays "2016-06-30T00:00:00.000000"
 say date~addDays(1.5) -- displays "2016-07-01T12:00:00.000000"
-]]>
 </programlisting>
 </example>
 </section>
@@ -2592,9 +2594,9 @@ in the year the timestamp represents in the format <literal>ddd</literal>
 <title>DateTime class &mdash; yearDay method
 <indexterm><primary>examples</primary><secondary>yearDay method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .DateTime~new(2020, 2, 10)~yearDay    -- 41
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthDateTimeWeekDay"><title>weekDay</title>
@@ -3222,12 +3224,12 @@ Initially the semaphore is in the cleared state.
 <title>EventSemaphore class &mdash; isPosted method
 <indexterm><primary>examples</primary><secondary>isPosted method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 sem = .EventSemaphore~new
 say sem~isPosted    -- 0
 sem~post
 say sem~isPosted    -- 1
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -3332,7 +3334,7 @@ unspecified and should not be relied upon.
 <title>EventSemaphore class &mdash; wait method
 <indexterm><primary>examples</primary><secondary>wait method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 event = .EventSemaphore~new
 
 say "main starts tasks"
@@ -3353,7 +3355,7 @@ say "main ends"
   say name "waits"
   event~wait
   say name "runs"
-]]></programlisting></example>
+</programlisting></example>
 may output
 <programlisting>
 main starts tasks
@@ -3524,11 +3526,9 @@ On Unix-like systems, there is just one root ( <literal>/</literal> ).
 </para>
 <example>
 <title>File class</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 say .File~listRoots~toString(, " ")   -- C:\ D:\ E:\ R:\ (e. g. on Windows)
 say .File~listRoots~toString(, " ")   -- / (Unix-like system)
-]]>
 </programlisting>
 </example>
 </section>
@@ -3570,10 +3570,8 @@ say .File~listRoots~toString(, " ")   -- / (Unix-like system)
 </para>
 <example>
 <title>Read content of a file</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 data=.File~readChars(filename)
-]]>
 </programlisting>
 </example>
 </section>
@@ -3595,10 +3593,8 @@ data=.File~readChars(filename)
 </para>
 <example>
 <title>Read a text file into an array</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 arr=.File~readLines(filename)
-]]>
 </programlisting>
 </example>
 </section>
@@ -3634,10 +3630,10 @@ of the <literal>PATH</literal> environment variable.
 <title>File class &mdash; searchPath method
 <indexterm><primary>examples</primary><secondary>searchPath method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .File~searchPath("rexx.exe")     -- e. g. C:\Program Files\ooRexx\rexx.exe
 say .File~searchPath("rexx")         -- e. g. /usr/local/bin/rexx
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -3661,11 +3657,9 @@ say .File~searchPath("rexx")         -- e. g. /usr/local/bin/rexx
 </para>
 <example>
 <title>File class &mdash; separator method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
 -- "dir1/dir2/file" on Unix-like systems, "dir1\dir2\file" on Windows
-]]>
 </programlisting>
 </example>
 </section>
@@ -3698,10 +3692,10 @@ On Unix-like systems it returns the value of the environment variable
 <title>File class &mdash; temporaryPath method
 <indexterm><primary>examples</primary><secondary>temporaryPath method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .File~temporaryPath    -- (Windows e.g.) C:\Users\USER~1\AppData\Local\Temp
 say .File~temporaryPath    -- (Unix-like system e.g.) /tmp
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthFileWriteCharsClsMth"><title>&added52;writeChars (Class Method)</title>
@@ -3722,10 +3716,8 @@ say .File~temporaryPath    -- (Unix-like system e.g.) /tmp
 </para>
 <example>
 <title>Write a text file into an array</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 .File~writeChars(filename, string)  -- by default appends the string to the file
-]]>
 </programlisting>
 </example>
 </section>
@@ -3748,11 +3740,9 @@ say .File~temporaryPath    -- (Unix-like system e.g.) /tmp
 </para>
 <example>
 <title>Write a text file into an array</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 -- write the ordered collection to a text file, replacing its content, if it exists
 arr=.File~writeLines(filename, collection, 'Replace')
-]]>
 </programlisting>
 </example>
 </section>
@@ -3777,8 +3767,7 @@ arr=.File~writeLines(filename, collection, 'Replace')
 </para>
 <example>
 <title>File class &mdash; absoluteFile method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* On Windows */
 'cd c:\program files\oorexx'
 say .File~new("my file")~absoluteFile~class        -- The File class
@@ -3791,7 +3780,6 @@ say .File~new("..\..\my dir\my file")~absoluteFile -- c:\my dir\my file
 'cd /opt/ooRexx'
 say .File~new("my file")~absoluteFile              -- /opt/ooRexx/my file
 say .File~new("../my file")~absoluteFile           -- /opt/my file
-]]>
 </programlisting>
 </example>
 </section>
@@ -3813,8 +3801,7 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 </para>
 <example>
 <title>File class &mdash; absolutePath method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* On Windows */
 'cd c:\program files\oorexx'
 say .File~new("my file")~absolutePath~class        -- The String class
@@ -3827,7 +3814,6 @@ say .File~new("..\..\my dir\my file")~absolutePath -- c:\my dir\my file
 'cd /opt/ooRexx'
 say .File~new("my file")~absolutePath              -- /opt/ooRexx/my file
 say .File~new("../my file")~absolutePath           -- /opt/my file
-]]>
 </programlisting>
 </example>
 </section>
@@ -3897,13 +3883,12 @@ If the two paths are equal, 0 is returned. If the target path is larger, 1 is re
 </para>
 <example>
 <title>File class &mdash; compareTo method</title>
-<programlisting>
-<![CDATA[call directory .File~listRoots[1]
+<programlisting language="rexx">
+call directory .File~listRoots[1]
 file1 = .File~new("file", "dir")
 file2 = .File~new("FILE", "DIR")
 file1~compareTo(file2)  -- 0 on Windows (both Files denote the same path)
 file1~compareTo(file2)  -- 1 on Unix-like system ("/dir/file" is greater than "/DIR/FILE")
-]]>
 </programlisting>
 </example>
 </section>
@@ -3967,11 +3952,11 @@ its first character.
 <title>File class &mdash; extension method
 <indexterm><primary>examples</primary><secondary>extension method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .File~new("/usr/local/lib/rexx.img")~extension    -- img
 say .File~new("c:\windows")~extension                 -- ""
 say .File~new(".config")~extension                    -- ""
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4018,8 +4003,7 @@ the final separator (if any).
 </para>
 <example>
 <title>File class &mdash; init method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Windows */
 file = .File~new("file")                     -- file
 file = .File~new("c:\program files\")        -- c:\program files
@@ -4035,7 +4019,6 @@ file = .File~new("/opt/ooRexx/")             -- /opt/ooRexx
 samples = .File~new("samples")               -- samples
 file = .File~new("file", "samples")          -- samples/file
 file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
-]]>
 </programlisting>
 </example>
 </section>
@@ -4122,13 +4105,11 @@ directories has a name starting with a period character.
 </para>
 <example>
 <title>File class &mdash; isHidden method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Unix-like system, when file exists */
 say .File~new("/tmp/file")~isHidden             -- 0
 say .File~new("/tmp/.file")~isHidden            -- 1
 say .File~new("/tmp/.dir/file")~isHidden        -- 1
-]]>
 </programlisting>
 </example>
 </section>
@@ -4176,9 +4157,8 @@ Also, on Windows last access time is not updated for NTFS volumes by default.
 <title>File class &mdash; lastAccessed attribute
 <indexterm><primary>examples</primary><secondary>lastAccessed attribute</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .File~new(".")~lastAccessed  -- e. g. 2020-02-06T13:03:42.143095
-]]>
 </programlisting></example></para>
 </section>
 
@@ -4222,7 +4202,7 @@ say .File~new(".")~lastAccessed  -- e. g. 2020-02-06T13:03:42.143095
 
 <example>
 <title>File class &mdash; lastModified attribute</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 /* On Windows */
 say .File~new("C:\Program Files")~lastModified~class  -- The DateTime class
 say .File~new("C:\Program Files")~lastModified        -- e.g. 2018-06-18T11:20:17.000000
@@ -4244,7 +4224,7 @@ if referenceDate == .nil then
   return 1         -- KO
 file~lastModified = referenceDate
 return 0           -- OK
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -4289,8 +4269,7 @@ If the receiver object is not a directory then the result is &nil;.
 </para>
 <example>
 <title>File class &mdash; list method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 names = .File~new("c:\program files\oorexx\samples")~list
 say names~toString
 /* Possible output */
@@ -4300,7 +4279,6 @@ complex.rex
 drives.rex
 factor.rex
 (etc...)
-]]>
 </programlisting>
 </example>
 </section>
@@ -4328,8 +4306,7 @@ If the receiver object is not a directory then the result is &nil;.
 </para>
 <example>
 <title>File class &mdash; listFiles method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 do file over deepListFiles("c:\program files\oorexx\samples")
     say file
 end
@@ -4345,7 +4322,7 @@ do file over files
 end
 return accumulator
 
-/* Possible output */
+/* Possible output -----------
 c:\program files\oorexx\samples\api
 c:\program files\oorexx\samples\api\callrxnt
 c:\program files\oorexx\samples\api\callrxnt\backward.fnc
@@ -4356,7 +4333,7 @@ c:\program files\oorexx\samples\api\callrxnt\callrxnt.mak
 c:\program files\oorexx\samples\api\callrxwn
 c:\program files\oorexx\samples\api\callrxwn\backward.fnc
 (etc...)
-]]>
+----------------------------*/
 </programlisting>
 </example>
 </section>
@@ -4442,8 +4419,7 @@ The file's extension is part of the name.
 </para>
 <example>
 <title>File class &mdash; name method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* On Windows */
 say .File~new("c:\program files\oorexx\rexx.exe")~name   -- rexx.exe
 say .File~new("c:\")~name                                -- empty string
@@ -4451,7 +4427,6 @@ say .File~new("c:\")~name                                -- empty string
 /* On Unix-like system */
 say .File~new("/usr/local/lib/rexx.img")~name            -- rexx.img
 say .File~new("/")~name                                  -- empty string
-]]>
 </programlisting>
 </example>
 </section>
@@ -4475,8 +4450,7 @@ If no separator is found or the absolute path ends with a separator
 </para>
 <example>
 <title>File class &mdash; parent method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* On Windows */
 say .File~new("c:\program files\oorexx\rexx.exe")~parent   -- c:\program files\oorexx
 say .File~new("c:\")~parent                                -- The NIL object
@@ -4485,7 +4459,6 @@ say .File~new("c:")~parent                                 -- The NIL object
 /* On Unix-like system */
 say .File~new("/opt/ooRexx/bin/rexx.img")~parent           -- /opt/ooRexx/bin
 say .File~new("/")~parent                                  -- The NIL object
-]]>
 </programlisting>
 </example>
 </section>
@@ -4838,7 +4811,7 @@ messages sent to a monitor object. For additional information, see
 <secondary>of Monitor class</secondary></indexterm>
 <example>
 <title>Class MONITOR</title>
-<programlisting>
+<programlisting language="rexx">
 .local~setentry("output",.monitor~new(.stream~new("my.new")~~command("open nobuffer")))
 
 /* The following sets the destination */
@@ -4990,12 +4963,13 @@ receiving string, a null string is returned.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; [] method</title>
-<programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
+<programlisting language="rexx">
+s = .MutableBuffer~new(xrange("a", "z"))
 say s[5]        -- "e"
 say s[18, 3]    -- "rst"
 say s[25,10]    -- "yz"
 say s[30]       -- ""
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class MutableBuffer - method []= ============================== -->
@@ -5026,7 +5000,8 @@ receiving string, blanks are added before the
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; []= method</title>
-<programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
+<programlisting language="rexx">
+s = .MutableBuffer~new(xrange("a", "z"))
 s[5] = "E"              -- "abcdEfghijklmnopqrstuvwxyz"
 s[5] = "XXXX"           -- "abcdXXXXijklmnopqrstuvwxyz"
 s[5] = ""               -- "abcdXXXXijklmnopqrstuvwxyz"
@@ -5034,7 +5009,7 @@ s[5, 1] = "="           -- "abcd=XXXijklmnopqrstuvwxyz"
 s[5, 4] = "="           -- "abcd=ijklmnopqrstuvwxyz"
 s[10, 2] = "REPLACE"    -- "abcd=ijklREPLACEopqrstuvwxyz"
 s[4, 99] = ""           -- "abc"
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthMutableBufferAppend" revisionflag="changed"><title>&changed50;append</title>
@@ -5113,9 +5088,10 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContains method</title>
-<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~caselessContains('EF')         -- 1
+<programlisting language="rexx">
+say .mutablebuffer~new('-abcdef-')~caselessContains('EF')         -- 1
 say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)    -- 0
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class MutableBuffer - method caselessContainsWord ============= -->
@@ -5150,7 +5126,8 @@ the word at which the search is to be started.</para>
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContainsWord method</title>
-<programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
+<programlisting language="rexx">
+good = .MutableBuffer~new("Now is the time for all good men")
 good~caselessContainsWord("the")          -- .true
 good~caselessContainsWord("The")          -- .true
 good~caselessContainsWord("is the")       -- .true
@@ -5158,7 +5135,7 @@ good~caselessContainsWord("is   the ")    -- .true
 good~caselessContainsWord("is time")      -- .false
 good~caselessContainsWord("time")         -- .true
 good~caselessContainsWord("time", 5)      -- .false
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthMutableBufferCaselessCountStr"><title>caselessCountStr</title>
@@ -5467,9 +5444,10 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContains method</title>
-<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~contains('ef')         -- 1
+<programlisting language="rexx">
+say .mutablebuffer~new('-abcdef-')~contains('ef')         -- 1
 say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)    -- 0
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -5505,7 +5483,8 @@ the word at which the search is to be started.</para>
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; containsWord method</title>
-<programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
+<programlisting language="rexx">
+good = .MutableBuffer~new("Now is the time for all good men")
 good~containsWord("the")          -- .true
 good~containsWord("The")          -- .false
 good~containsWord("is the")       -- .true
@@ -5513,7 +5492,7 @@ good~containsWord("is   the ")    -- .true
 good~containsWord("is time")      -- .false
 good~containsWord("time")         -- .true
 good~containsWord("time", 5)      -- .false
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -5723,15 +5702,15 @@ role="italic">start</emphasis>.
 <secondary>lastPos method</secondary></indexterm>
 <example>
 <title>MutableBuffer class &mdash; lastPos method</title>
-<programlisting>
+<programlisting language="rexx">
 x1 = .mutablebuffer~new("abc def ghi")
-x1~lastPos(" ")      ->    8
+x1~lastPos(" ")      -->    8
 x1 = .mutablebuffer~new("abcdefghi")
-x1~lastPos(" ") -> 0
+x1~lastPos(" ") --> 0
 x1 = .mutablebuffer~new("efgxyz")
-x1~lastPos("xy")     ->    4
+x1~lastPos("xy")     -->    4
 x1 = .mutablebuffer~new("abc def ghi")
-x1~lastPos(" ",7) -> 4
+x1~lastPos(" ",7) --> 4
 </programlisting>
 </example>
 </section>
@@ -5937,13 +5916,13 @@ a non-negative whole number.
 <secondary>pos method</secondary></indexterm>
 <example>
 <title>MutableBuffer class &mdash; pos method</title>
-<programlisting>
+<programlisting language="rexx">
 x1 = .mutablebuffer~new("Saturday")
-x1~pos("day")       ->    6
+x1~pos("day")       -->    6
 x1 = .mutablebuffer~new("abc def ghi")
-x1~pos("x")         ->    0
-x1~pos(" ")         ->    4
-x1~pos(" ",5)       ->    8
+x1~pos("x")         -->    0
+x1~pos(" ")         -->    4
+x1~pos(" ",5)       -->    8
 </programlisting>
 </example>
 </section>
@@ -6324,18 +6303,18 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 <secondary>verify method</secondary></indexterm>
 <example>
 <title>MutableBuffer class &mdash; verify method</title>
-<programlisting>
-.mutablebuffer~new('123')~verify('1234567890')             ->    0
-.mutablebuffer~new('1Z3')~verify('1234567890')             ->    2
-.mutablebuffer~new('AB4T')~verify('1234567890')            ->    1
-.mutablebuffer~new('AB4T')~verify('1234567890','M')        ->    3
-.mutablebuffer~new('AB4T')~verify('1234567890','N')        ->    1
-.mutablebuffer~new('1P3Q4')~verify('1234567890', ,3)       ->    4
-.mutablebuffer~new('123')~verify("",N,2)                   ->    2
-.mutablebuffer~new('ABCDE')~verify("", ,3)                 ->    3
-.mutablebuffer~new('AB3CD5')~verify('1234567890','M',4)    ->    6
-.mutablebuffer~new('ABCDEF')~verify('ABC',"N",2,3)         ->    4
-.mutablebuffer~new('ABCDEF')~verify('ADEF',"M",2,3)        ->    4
+<programlisting language="rexx">
+.mutablebuffer~new('123')~verify('1234567890')             -->    0
+.mutablebuffer~new('1Z3')~verify('1234567890')             -->    2
+.mutablebuffer~new('AB4T')~verify('1234567890')            -->    1
+.mutablebuffer~new('AB4T')~verify('1234567890','M')        -->    3
+.mutablebuffer~new('AB4T')~verify('1234567890','N')        -->    1
+.mutablebuffer~new('1P3Q4')~verify('1234567890', ,3)       -->    4
+.mutablebuffer~new('123')~verify("",N,2)                   -->    2
+.mutablebuffer~new('ABCDE')~verify("", ,3)                 -->    3
+.mutablebuffer~new('AB3CD5')~verify('1234567890','M',4)    -->    6
+.mutablebuffer~new('ABCDEF')~verify('ABC',"N",2,3)         -->    4
+.mutablebuffer~new('ABCDEF')~verify('ADEF',"M",2,3)        -->    4
 </programlisting>
 </example>
 </section>
@@ -6581,7 +6560,7 @@ semaphores will be automatically released by the interpreter.
 <title>MutexSemaphore class &mdash; acquire method
 <indexterm><primary>examples</primary><secondary>acquire method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 mutex = .MutexSemaphore~new
 .Task~new~startWork(mutex, "work 1")
 .Task~new~startWork(mutex, "work 2")
@@ -6604,9 +6583,9 @@ say "work tasks started"
   mutex~acquire
   say name level
   self~doWork(level + 1)
-]]></programlisting></example>
+</programlisting></example>
 may output
-<programlisting>
+<programlisting language="rexx">
 work tasks started
 work 2 1
 work 2 2
@@ -7204,9 +7183,10 @@ be used to abbreviate common sets:</para>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 ::requires "rxregexp.cls"
 
+/*
      "(Hi|Hello) World"      Matches "Hi World" and
                              "Hello World".
      "file.???"              Matches any file with three
@@ -7229,7 +7209,8 @@ be used to abbreviate common sets:</para>
      "This is (very )+nice." Matches all strings with one or more
                              occurrences of "very " between
                              "This is " and "nice.".
-]]></programlisting>
+*/
+</programlisting>
 </example>
 
 
@@ -7265,10 +7246,10 @@ For details see <xref linkend="creo" />.
 
 <example>
 <title>RegularExpression class &mdash; new method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 re1 = .RegularExpression~new
 re2 = .RegularExpression~new("Hello?*")
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -7305,26 +7286,26 @@ unsuccessful match and <literal>1</literal> for a successful match.
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class &mdash; match method</title>
-<programlisting><![CDATA[
-str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
-re1 = .RegularExpression~new("<p>?*</p>", "MINIMAL")
+<programlisting language="rexx">
+str = "&lt;p&gt;Paragraph 1&lt;/p&gt;&lt;p&gt;Paragraph 2&lt;/p&gt;"
+re1 = .RegularExpression~new("&lt;p&gt;?*&lt;/p&gt;", "MINIMAL")
 re1~match(str)
-re2 = .RegularExpression~new("<p>?*</p>", "MAXIMAL")
+re2 = .RegularExpression~new("&lt;p&gt;?*&lt;/p&gt;", "MAXIMAL")
 re2~match(str)
 
 say "re1 (minimal) matched" str~substr(1, re1~position)
 say "re2 (maximal) matched" str~substr(1, re2~position)
 
 ::requires "rxregexp.cls"
-]]></programlisting>
+</programlisting>
 </example>
 
 <para>Output:</para>
 
-<programlisting><![CDATA[
-re1 (minimal) matched <p>Paragraph 1</p>
-re2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
-]]></programlisting>
+<programlisting>
+re1 (minimal) matched &lt;p&gt;Paragraph 1&lt;/p&gt;
+re2 (maximal) matched &lt;p&gt;Paragraph 1&lt;/p&gt;&lt;p&gt;Paragraph 2&lt;/p&gt;
+</programlisting>
 </section>
 
 <section id="mthRegularExpressionParse"><title>parse</title>
@@ -7384,7 +7365,7 @@ The default is to use the current matching type.
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class &mdash; parse method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 patterns = "A [:alpha:]{4} fl?*.", -
            "?*[l|e]?*e?*[r|g]?*", -
            "[invalid"
@@ -7406,11 +7387,11 @@ do pattern over patterns
 end
 
 ::requires rxregexp.cls
-]]></programlisting>
+</programlisting>
 </example>
 
 <para>Output:</para>
-<programlisting><![CDATA[
+<programlisting>
 A nice flower.   matches regex A [:alpha:]{4} fl?*.
 A yellow flower. doesn't match regex A [:alpha:]{4} fl?*.
 A blue flag.     matches regex A [:alpha:]{4} fl?*.
@@ -7420,13 +7401,13 @@ A yellow flower. matches regex ?*[l|e]?*e?*[r|g]?*
 A blue flag.     matches regex ?*[l|e]?*e?*[r|g]?*
 
 error 3 parsing pattern [invalid
-]]></programlisting>
+</programlisting>
 
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class &mdash; parse method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 nrs = 1, 42, 0, 5436412, "1A", "f43g"
 re = .RegularExpression~new("[1-9][0-9]*")
 do nr over nrs
@@ -7441,11 +7422,11 @@ do nr over nrs
 end
 
 ::requires rxregexp.cls
-]]></programlisting>
+</programlisting>
 </example>
 
 <para>Output:</para>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 1 is a valid number
 42 is a valid number
 0 is an invalid number
@@ -7459,7 +7440,7 @@ f43g is an invalid number
 5436412 is a valid number
 1A is a valid number
 f43g is an invalid number
-]]></programlisting>
+</programlisting>
 
 </section>
 
@@ -7489,7 +7470,7 @@ The end position of the match can be retrieved with the
 
 <example>
 <title>RegularExpression class &mdash; haystack method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 text = "It's the year 2016!"
 re = .RegularExpression~new("[1-9][0-9]*")
 begin = re~pos(text)
@@ -7500,10 +7481,10 @@ if begin > 0 then
   end
 
 ::requires rxregexp.cls
-]]></programlisting>
+</programlisting>
 </example>
 <para>Output:
-<programlisting>
+<programlisting language="rexx">
 Found the number 2016 in this sentence.
 </programlisting>
 </para>
@@ -7531,7 +7512,7 @@ method ended.</para>
 
 <example>
 <title>RegularExpression class &mdash; position method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 re = .RegularExpression~new
 re~parse("[abc")                    -- illegal set definition
 say re~position                     -- will be 4
@@ -7544,7 +7525,7 @@ re~match("a13")                     -- unsuccessful match
 say re~position                     -- will be 2 (failure to match)
 
 ::requires "rxregexp.cls"
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 </section>
@@ -7905,7 +7886,7 @@ variable names.
 </para>
 <para><example>
 <title>RexxContext class &mdash; variables method</title>
-<programlisting><![CDATA[a = 2
+<programlisting language="rexx">
 b.1 = a
 c. = .stem~new
 c.[] = 1
@@ -7927,7 +7908,7 @@ do name over variables
       say "Name="name||tail"," "Value='"variables[name][tail]"'"
     end
 end
-]]></programlisting></example></para>
+</programlisting></example></para>
 <para>will output
 <programlisting>SysDumpVariables:
 Name=C.one, Value='11'
@@ -8096,9 +8077,10 @@ other instances cannot be created or copied.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; architecture method</title>
-<programlisting><![CDATA[say .RexxInfo~architecture    -- 32 /* ooRexx 32-bit */
+<programlisting language="rexx">
+say .RexxInfo~architecture    -- 32 /* ooRexx 32-bit */
 say .RexxInfo~architecture    -- 64 /* ooRexx 64-bit */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method caseSensitiveFiles ==================== -->
@@ -8122,9 +8104,10 @@ which returns the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; caseSensitiveFiles method</title>
-<programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    -- 0 /* e. g. Windows */
+<programlisting language="rexx">
+say .RexxInfo~caseSensitiveFiles    -- 0 /* e. g. Windows */
 say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix-like system */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method date ================================== -->
@@ -8153,8 +8136,9 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; date method</title>
-<programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2016 /* e. g. */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~date    -- 9 Dec 2016 /* e. g. */
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method debug ================================ -->
@@ -8170,8 +8154,9 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; debug method</title>
-<programlisting><![CDATA[say .RexxInfo~debug    -- 0 /* release version */, 1 /* debug version */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~debug    -- 0 /* release version */, 1 /* debug version */
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method digits ================================ -->
@@ -8200,8 +8185,9 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; digits method</title>
-<programlisting><![CDATA[say .RexxInfo~digits    -- 9
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~digits    -- 9
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method directorySeparator ==================== -->
@@ -8221,10 +8207,10 @@ which provides the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; directorySeparator method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~directorySeparator    -- "\" /* Windows */
 say .RexxInfo~directorySeparator    -- "/" /* Unix-like system */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method endofline ============================= -->
@@ -8246,10 +8232,10 @@ which provides the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; endofline method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~endofline    -- '0d 0a'x /* Windows */
 say .RexxInfo~endofline    -- '0a'x /* Unix-like system */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method executable ============================ -->
@@ -8270,10 +8256,10 @@ interpreter.
 <title>RexxInfo class &mdash; executable method
 <indexterm><primary>examples</primary><secondary>executable method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~executable    -- (Windows e.g.) C:\Program Files\ooRexx\rexx.exe
 say .RexxInfo~executable    -- (Unix-like system e.g.) /usr/local/bin/rexx
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method form ================================== -->
@@ -8302,8 +8288,9 @@ say .RexxInfo~executable    -- (Unix-like system e.g.) /usr/local/bin/rexx
 </para>
 <para><example>
 <title>RexxInfo class &mdash; form method</title>
-<programlisting><![CDATA[say .RexxInfo~form    -- SCIENTIFIC
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~form    -- SCIENTIFIC
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method fuzz ================================== -->
@@ -8332,8 +8319,9 @@ say .RexxInfo~executable    -- (Unix-like system e.g.) /usr/local/bin/rexx
 </para>
 <para><example>
 <title>RexxInfo class &mdash; fuzz method</title>
-<programlisting><![CDATA[say .RexxInfo~fuzz    -- 0
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~fuzz    -- 0
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method internalDigits ======================== -->
@@ -8353,9 +8341,10 @@ and 18 digits, when running in a 64-bit addressing mode.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; internalDigits method</title>
-<programlisting><![CDATA[say .RexxInfo~internalDigits    -- 9  /* 32-bit addressing mode */
+<programlisting language="rexx">
+say .RexxInfo~internalDigits    -- 9  /* 32-bit addressing mode */
 say .RexxInfo~internalDigits    -- 18 /* 64-bit addressing mode */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -8382,7 +8371,7 @@ power (<literal>**</literal>) operator, or as the values of
 <title>RexxInfo class &mdash; internalMaxNumber method
 <indexterm><primary>examples</primary><secondary>internalMaxNumber method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~internalMaxNumber  -- 999999999          /* 32-bit addressing mode */
 say .RexxInfo~internalMaxNumber  -- 999999999999999999 /* 64-bit addressing mode */
 </programlisting></example></para>
@@ -8412,7 +8401,7 @@ power (<literal>**</literal>) operator, or as the values of
 <title>RexxInfo class &mdash; internalMinNumber method
 <indexterm><primary>examples</primary><secondary>internalMinNumber method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~internalMinNumber  -- -999999999          /* 32-bit addressing mode */
 say .RexxInfo~internalMinNumber  -- -999999999999999999 /* 64-bit addressing mode */
 </programlisting></example></para>
@@ -8443,8 +8432,9 @@ which both also return the language level as the second token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; languageLevel method</title>
-<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05 /* e. g. ooRexx 5.0.0 */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~languageLevel    -- 6.05 /* e. g. ooRexx 5.0.0 */
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method libraryPath =========================== -->
@@ -8465,10 +8455,10 @@ for the currently running Rexx interpreter.
 <title>RexxInfo class &mdash; libraryPath method
 <indexterm><primary>examples</primary><secondary>libraryPath method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~libraryPath    -- (Windows e.g.) C:\Program Files\ooRexx
 say .RexxInfo~libraryPath    -- (Unix-like systems e.g.) /usr/local/lib/
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method majorVersion ========================== -->
@@ -8498,8 +8488,9 @@ The major version number is the first part of the language processor
 </para>
 <para><example>
 <title>RexxInfo class &mdash; majorVersion method</title>
-<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5 /* e. g. ooRexx 5.0.0 */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~majorVersion    -- 5 /* e. g. ooRexx 5.0.0 */
+</programlisting></example></para>
 </section>
 
 
@@ -8519,7 +8510,7 @@ The major version number is the first part of the language processor
 <title>RexxInfo class &mdash; maxArraySize method
 <indexterm><primary>examples</primary><secondary>maxArraySize method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~maxArraySize  -- 100000000          /* 32-bit addressing mode */
 say .RexxInfo~maxArraySize  -- 100000000000000000 /* 64-bit addressing mode */
 </programlisting></example></para>
@@ -8544,7 +8535,7 @@ notation.
 <title>RexxInfo class &mdash; maxExponent method
 <indexterm><primary>examples</primary><secondary>maxExponent method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~maxExponent    -- 999999999
 </programlisting></example></para>
 </section>
@@ -8566,7 +8557,7 @@ including any filename portion.
 <title>RexxInfo class &mdash; maxPathLength method
 <indexterm><primary>examples</primary><secondary>maxPathLength method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~maxPathLength    -- 259  /* e. g. on Windows */
 say .RexxInfo~maxPathLength    -- 4096 /* e. g. on Linux */
 </programlisting></example></para>
@@ -8591,7 +8582,7 @@ notation.
 <title>RexxInfo class &mdash; minExponent method
 <indexterm><primary>examples</primary><secondary>minExponent method</secondary></indexterm>
 </title>
-<programlisting>
+<programlisting language="rexx">
 say .RexxInfo~minExponent    -- -999999999
 </programlisting></example></para>
 </section>
@@ -8624,8 +8615,9 @@ The modification number is the third part of the language processor
 </para>
 <para><example>
 <title>RexxInfo class &mdash; modification method</title>
-<programlisting><![CDATA[say .RexxInfo~modification    -- 0 /* e. g. ooRexx 5.0.0 */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~modification    -- 0 /* e. g. ooRexx 5.0.0 */
+</programlisting></example></para>
 </section>
 
 
@@ -8662,8 +8654,9 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; name method</title>
-<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 22 Dec 2018 /* e. g. */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 22 Dec 2018 /* e. g. */
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method package =============================== -->
@@ -8681,9 +8674,10 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; package method</title>
-<programlisting><![CDATA[say .RexxInfo~package~publicClasses~items -
+<programlisting language="rexx">
+say .RexxInfo~package~publicClasses~items -
  "Rexx-defined public classes"   -- 56 Rexx-defined public classes /* e. g. */
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method pathSeparator ========================= -->
@@ -8702,10 +8696,10 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; pathSeparator method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~pathSeparator    -- ";" (Windows)
 say .RexxInfo~pathSeparator    -- ":" (Unix-like system)
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method platform ============================== -->
@@ -8726,10 +8720,10 @@ which returns the same information as its first token.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; platform method</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxInfo~platform    -- WindowsNT
 say .RexxInfo~platform    -- LINUX
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method release =============================== -->
@@ -8759,8 +8753,9 @@ The release number is the second part of the language processor
 </para>
 <para><example>
 <title>RexxInfo class &mdash; release method</title>
-<programlisting><![CDATA[say .RexxInfo~release    -- 0 /* e. g. ooRexx 5.0.0 */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~release    -- 0 /* e. g. ooRexx 5.0.0 */
+</programlisting></example></para>
 </section>
 
 
@@ -8781,8 +8776,9 @@ Rexx code should not rely on the format returned.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; revision method</title>
-<programlisting><![CDATA[say .RexxInfo~revision    -- 11636 /* e. g. */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~revision    -- 11636 /* e. g. */
+</programlisting></example></para>
 </section>
 
 <!-- Class RexxInfo - method version =============================== -->
@@ -8804,8 +8800,9 @@ the <xref linkend="mthRexxInfoModification" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; version method</title>
-<programlisting><![CDATA[say .RexxInfo~version    -- 5.0.0 /* e. g. */
-]]></programlisting></example></para>
+<programlisting language="rexx">
+say .RexxInfo~version    -- 5.0.0 /* e. g. */
+</programlisting></example></para>
 </section>
 
 </section>
@@ -8895,13 +8892,13 @@ If such a data queue does not exist, it is created.
 <title>RexxQueue class &mdash; new method
 <indexterm><primary>examples</primary><secondary>new method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 q = .RexxQueue~new
 q~queue("line")
 q~push("header")
 say q~queued q~pull    -- 2 header
 q~delete
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -8931,12 +8928,12 @@ already exists.
 <title>RexxQueue class &mdash; create method
 <indexterm><primary>examples</primary><secondary>create method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 -- no MYQUEUE queue exists
 say .RexxQueue~create("myqueue")    -- MYQUEUE
 -- MYQUEUE queue already exists
 say .RexxQueue~create("myqueue")    -- S0000000000004B48Q000001E1BEE66F20 (e. g.)
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthRexxQueueDeleteClsMth"><title>delete (Class Method)</title>
@@ -8980,9 +8977,9 @@ returns &false;.
 <title>RexxQueue class &mdash; exists method
 <indexterm><primary>examples</primary><secondary>exists method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 say .RexxQueue~exists("SESSION")    -- 1
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -9332,8 +9329,7 @@ creates three instances of each and displays the value of the instance attribute
 the <methodname>MAKESTRING</methodname> definition).
 </para>
 
-<programlisting><![CDATA[
-#!/usr/bin/env rexx
+<programlisting language="rexx">#!/usr/bin/env rexx
 do clz over .test, .testSingleton   -- iterate over the two classes
    rounds=3
    say "creating" rounds "objects of type:" clz
@@ -9372,12 +9368,12 @@ end
 *   using Singleton as its metaclass.
 */
 ::class TestSingleton subclass Test metaclass Singleton
-]]></programlisting>
+</programlisting>
 </example>
 
 <para>Output of running the above program (the hash values may differ on each run):</para>
 
-<programlisting><![CDATA[
+<programlisting>
 creating 3 objects of type: The TEST class
    round # 1: a TEST[nr=1,identityHash=-49085937]
    round # 2: a TEST[nr=2,identityHash=-49089489]
@@ -9387,7 +9383,7 @@ creating 3 objects of type: The TESTSINGLETON class
    round # 1: a TESTSINGLETON[nr=1,identityHash=-49114993]
    round # 2: a TESTSINGLETON[nr=1,identityHash=-49114993]
    round # 3: a TESTSINGLETON[nr=1,identityHash=-49114993]
-]]></programlisting>
+</programlisting>
 
 <para>As can be seen from the output there are three distinct instances of the class <classname>TEST</classname>, however
 the three instances of the class <classname>TESTSINGLETON</classname> are identical (cf. the values of
@@ -9723,7 +9719,8 @@ are:
 <title>StackFrame class &mdash; type method
 <indexterm><primary>examples</primary><secondary>type method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[interpret "call level2" 21
+<programlisting language="rexx">
+interpret "call level2" 21
 
 ::routine level2
   call level3 31, 32
@@ -9739,7 +9736,7 @@ are:
       say (f~type f~name"("f~arguments~makeString(, ",")")")~left(27) f~line":" -
        f~traceLine~strip
     end
-]]></programlisting></example>
+</programlisting></example>
 may output
 <programlisting>
 COMPILE ()                  1: 1 *-* ~~
@@ -10126,7 +10123,7 @@ would return &false;, the supplier raises an error.
 <secondary>of Supplier class</secondary></indexterm>
 <example>
 <title>Supplier class</title>
-<programlisting>
+<programlisting language="rexx">
 desserts=.array~of(apples, peaches, pumpkins, 3.14159) /* Creates array */
 say "The desserts we have are:"
 baker=desserts~supplier             /* Creates supplier object named BAKER */
@@ -10237,7 +10234,8 @@ Returns &nil; if no object is attached.
 <title>Ticker class &mdash; attachment method
 <indexterm><primary>examples</primary><secondary>attachment method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[eachSecond = .Ticker~new(1, .Target~new, "once each second")
+<programlisting language="rexx">
+eachSecond = .Ticker~new(1, .Target~new, "once each second")
 call SysSleep 1.5                      -- will trigger once
 eachSecond~cancel
 
@@ -10245,7 +10243,7 @@ eachSecond~cancel
 ::method triggered                     -- called each interval
   use arg ticker
   say ticker~attachment                -- displays "once each second"
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -10267,7 +10265,8 @@ eachSecond~cancel
 <title>Ticker class &mdash; cancel method
 <indexterm><primary>examples</primary><secondary>cancel method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[twiceASecond = .Ticker~new(0.5, .Target~new)
+<programlisting language="rexx">
+twiceASecond = .Ticker~new(0.5, .Target~new)
 call SysSleep 0.25                     -- too short for Ticker
 twiceASecond~cancel                    -- "ticker cancelled"
 
@@ -10276,7 +10275,7 @@ twiceASecond~cancel                    -- "ticker cancelled"
   say "ticker triggered"
 ::method cancel                        -- called when cancelled
   say "ticker cancelled"
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -10299,13 +10298,14 @@ Returns &false; otherwise.
 <title>Ticker class &mdash; canceled/cancelled method
 <indexterm><primary>examples</primary><secondary>canceled/cancelled method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[tick = .Ticker~new(0.5 ,.message~new(.stdout, "SAY", "I", "knock, knock"))
+<programlisting language="rexx">
+tick = .Ticker~new(0.5 ,.message~new(.stdout, "SAY", "I", "knock, knock"))
 call SysSleep 0.75                                           -- knock, knock
 say "Ticker" tick~cancelled~?("cancelled", "not cancelled")  -- Ticker not cancelled
 call SysSleep 0.5                                            -- knock, knock
 tick~cancel
 say "Ticker" tick~cancelled~?("cancelled", "not cancelled")  -- Ticker cancelled
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -10364,7 +10364,8 @@ during a long-running task.
 <title>Ticker class &mdash; init method
 <indexterm><primary>examples</primary><secondary>init method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[.Progress~new(0.5)~monitor(.Task~new, "tenSeconds")
+<programlisting language="rexx">
+.Progress~new(0.5)~monitor(.Task~new, "tenSeconds")
 
 -- defines tasks together with their "progress" methods
 ::class Task
@@ -10405,7 +10406,7 @@ during a long-running task.
 ::method triggered unguarded
   expose object progress
   .stdout~charOut(object~send(progress) '0d'x)
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -10428,10 +10429,11 @@ object representing the interval to which the Ticker has been set.
 <title>Ticker class &mdash; interval method
 <indexterm><primary>examples</primary><secondary>interval method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[say .Ticker~new(.TimeSpan~fromSeconds(60), -
+<programlisting language="rexx">
+say .Ticker~new(.TimeSpan~fromSeconds(60), -
  .Message~new(.stdout, "say", "i", -
  "another minute has passed"))~interval      -- 00:01:00.000000
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 </section>
@@ -10724,10 +10726,11 @@ component.  For example, <emphasis role="italic">hours</emphasis> must be in the
 </para>
 <example>
 <title>TimeSpan class</title>
-<programlisting><![CDATA[span = .TimeSpan~new(time('F', "15:37:30", "N"))  -- 15:37:30.000000
+<programlisting language="rexx">
+span = .TimeSpan~new(time('F', "15:37:30", "N"))  -- 15:37:30.000000
 span = .TimeSpan~new(15, 37, 30)                  -- 15:37:30.000000
 span = .TimeSpan~new(6, 4, 33, 15, 100)           -- 6.04:33:15.000100
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -10859,13 +10862,11 @@ is not altered by this operation.
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
 <example>
 <title>TimeSpan class</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 t1 = .timespan~fromHours(1)
 t2 = t1 * 2
 -- displays "01:00:00.000000 02:00:00.000000 03:00:00.000000"
 say t1 t2 (t1 + t2)
-]]>
 </programlisting>
 </example>
 </section>
@@ -12611,10 +12612,10 @@ instance is not allowed.
 <title>VariableReference class &mdash; name method
 <indexterm><primary>examples</primary><secondary>name method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 variable = 123
 say >variable~name    -- VARIABLE
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -12678,7 +12679,7 @@ referenced variable.
 <title>VariableReference class &mdash; value method
 <indexterm><primary>examples</primary><secondary>value method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 array = 1, 2, 3
 
 say >array~class~id                  -- VariableReference
@@ -12687,7 +12688,7 @@ say >array~value~class~id            -- Array
 say >array~value~toString(, ", ")    -- 1, 2, 3
 -- this also works because we have an UNKNOWN method
 say >array~toString(, ", ")          -- 1, 2, 3
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 </section>

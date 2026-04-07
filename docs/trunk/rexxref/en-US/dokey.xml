@@ -65,8 +65,7 @@ DO construct only groups a number of instructions together.  They are processed
 once. For example:</para>
 <example id="ex.do-1">
 <title>Simple DO block</title>
-<programlisting>
-/* The two instructions between DO and END are both  */
+<programlisting language="rexx">/* The two instructions between DO and END are both  */
 /* processed if A has the value "3".                 */
 If a=3 then Do
    a=a+2
@@ -107,8 +106,7 @@ example, LEAVE).</para>
 processed that many times.</para>
 <example id="ex.loop-1">
 <title>Simple LOOP block</title>
-<programlisting>
-/* This displays "Hello" five times */
+<programlisting language="rexx">/* This displays "Hello" five times */
 Loop 5
 say "Hello"
 end
@@ -165,8 +163,7 @@ If <emphasis role="italic">exprt</emphasis> is omitted, the loop runs
 infinitely unless some other condition stops it.</para>
 <example id="ex.loop-2">
 <title>Simple LOOP block with conditions</title>
-<programlisting>
-Loop I=3 to -2 by -1      /* Displays:   */
+<programlisting language="rexx">Loop I=3 to -2 by -1      /* Displays:   */
   say i                   /*      3      */
 end                       /*      2      */
                           /*      1      */
@@ -178,8 +175,7 @@ end                       /*      2      */
 <para>The numbers do not have to be whole numbers:</para>
 <example id="ex.loop-3">
 <title>Simple LOOP block with conditions</title>
-<programlisting>
-I=0.3                     /* Displays:   */
+<programlisting language="rexx">I=0.3                     /* Displays:   */
 Do Y=I to I+4 by 0.7      /*     0.3     */
   say Y                   /*     1.0     */
 end                       /*     1.7     */
@@ -211,8 +207,7 @@ its initial value. Like the TO condition, the FOR condition is checked at
 the start of each iteration.</para>
 <example id="ex.loop-4">
 <title>Simple LOOP block with limits</title>
-<programlisting>
-Loop Y=0.3 to 4.3 by 0.7 for 3  /* Displays:    */
+<programlisting language="rexx">Loop Y=0.3 to 4.3 by 0.7 for 3  /* Displays:    */
   say Y                         /*     0.3      */
 end                             /*     1.0      */
                                 /*     1.7      */
@@ -229,8 +224,7 @@ error results. This enables the nesting of loops to be checked automatically,
 with minimal overhead.</para>
 <example id="ex.loop-5">
 <title>Simple LOOP block with limits</title>
-<programlisting>
-Loop K=1 to 10
+<programlisting language="rexx">Loop K=1 to 10
 ...
 ...
 End k  /* Checks that this is the END for K loop */
@@ -281,8 +275,7 @@ be useful). You can also specify the control variable name on an ITERATE or
 LEAVE instruction.</para>
 <example id="ex.loop-6">
 <title>Simple LOOP block over a collection</title>
-<programlisting>
-Astem.=0
+<programlisting language="rexx">Astem.=0
 Astem.3="CCC"
 Astem.24="XXX"
 loop k over Astem.
@@ -291,13 +284,11 @@ end k
 </programlisting>
 </example>
 <para>This example can produce: </para>
-<programlisting>
-3 CCC
+<programlisting language="rexx">3 CCC
 24 XXX
 </programlisting>
 <para>or: </para>
-<programlisting>
-24 XXX
+<programlisting language="rexx">24 XXX
 3 CCC
 </programlisting>
 <para>See <xref linkend="do2" /> for a diagram.</para>
@@ -334,13 +325,13 @@ on the END clause or on an ITERATE or LEAVE instruction, you have to
 specify the LABEL keyword.</para>
 <example id="ex.loop-supplier">
 <title>LOOP WITH over a supplier</title>
-<programlisting>loop with index name item method over .numericComparator~methods(.nil)
+<programlisting language="rexx">loop with index name item method over .numericComparator~methods(.nil)
   say name method~isPrivate method~isProtected method~isGuarded
 end
 </programlisting>
 </example>
 <para>This example can produce:</para>
-<programlisting>COMPARE 0 0 1
+<programlisting language="rexx">COMPARE 0 0 1
 INIT 0 0 1
 </programlisting>
 </section>
@@ -378,8 +369,7 @@ instructions.  For an UNTIL loop, the condition is evaluated at the bottom&mdash
 the control variable has been stepped.</para>
 <example id="ex.loop-7">
 <title>Simple LOOP block with conditions</title>
-<programlisting>
-Loop I=1 to 10 by 2 until i>6
+<programlisting language="rexx">Loop I=1 to 10 by 2 until i>6
    say i
 end
 /* Displays: "1" "3" "5" "7" */
@@ -404,8 +394,7 @@ the DO or LOOP.  The label can optionally be used for</para>
 </itemizedlist>
 <example id="ex.loop-8">
 <title>Simple LOOP block with label</title>
-<programlisting>
-Loop label outer I=1 to 10 by 2
+<programlisting language="rexx">Loop label outer I=1 to 10 by 2
    ...
    if i > 5 then do label inner
       ...
@@ -442,8 +431,7 @@ will be <literal>0</literal>.
 </para>
 <example id="ex.loop-counter">
 <title>Controlled DO loop with COUNTER</title>
-<programlisting>
-do counter ct x = -0.3 to 0.4 by 0.2
+<programlisting language="rexx">do counter ct x = -0.3 to 0.4 by 0.2
   say ct x
 end
 /* Displays: 1 -0.3, 2 -0.1, 3 0.1, 4 0.3 */

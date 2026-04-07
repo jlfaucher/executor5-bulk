@@ -313,8 +313,7 @@ raised instead.
 <para>
 <example id="ex.signal-novalue">
 <title>NOVALUE not raised for stems</title>
-<programlisting>
-/* The following does not raise NOVALUE. */
+<programlisting language="rexx">/* The following does not raise NOVALUE. */
 signal on novalue
 a.=0
 say a.z
@@ -689,8 +688,7 @@ occasional failure of a function call) as in the following example:   </para>
 <secondary>SIGL, special variable</secondary></indexterm>
 <example id="ex.sigl">
 <title>SIGL</title>
-<programlisting>
-signal on syntax
+<programlisting language="rexx">signal on syntax
 a = a + 1      /* This is to create a syntax error */
 say "SYNTAX error not raised"
 exit

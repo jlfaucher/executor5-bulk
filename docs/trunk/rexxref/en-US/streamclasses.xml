@@ -793,8 +793,7 @@ that of the file). The <emphasis role="italic">length</emphasis> must be
 <tertiary>OPEN option</tertiary></indexterm>
 <example>
 <title>Stream command &mdash; OPEN option</title>
-<programlisting>
-stream~command("open")
+<programlisting language="rexx">stream~command("open")
 stream~command("open write")
 stream~command("open read")
 stream~command("open read shared")
@@ -885,14 +884,11 @@ for writing, you receive an error message.</para></note>
 <tertiary>SEEK option</tertiary></indexterm>
 <example>
 <title>Stream command &mdash; SEEK option</title>
-<programlisting>
-<![CDATA[
-stream~command("seek =2 read")
+<programlisting language="rexx">stream~command("seek =2 read")
 stream~command("seek +15 read")
 stream~command("seek -7 write line")
 fromend  = 125
-stream~command("seek <"fromend "read")
-]]>
+stream~command("seek &lt;"fromend "read")
 </programlisting>
 </example>
 </listitem></varlistentry>
@@ -918,8 +914,7 @@ example:
 <tertiary>QUERY DATETIME option</tertiary></indexterm>
 <example>
 <title>Stream command &mdash; QUERY DATETIME option</title>
-<programlisting>
-stream~command("query datetime")
+<programlisting language="rexx">stream~command("query datetime")
 </programlisting>
 </example>
 </para><para>A sample output might be: </para>
@@ -935,8 +930,7 @@ if it exists, or a null string. For example: </para>
 <tertiary>QUERY EXISTS option</tertiary></indexterm>
 <example>
 <title>Stream command &mdash; QUERY EXISTS option</title>
-<programlisting>
-stream~command("query exists")
+<programlisting language="rexx">stream~command("query exists")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -952,8 +946,7 @@ c:\data\file.txt
 <tertiary>QUERY HANDLE option</tertiary></indexterm>
 <example>
 <title>Stream command &mdash; QUERY HANDLE option</title>
-<programlisting>
-stream~command("query handle")
+<programlisting language="rexx">stream~command("query handle")
 </programlisting>
 </example>
 <para>A sample output might be:
@@ -989,14 +982,12 @@ the top to count the line-end characters. See
 for a detailed discussion of this issue.</para>
 <example>
 <title>Stream command &mdash; QUERY POSITION WRITE option</title>
-<programlisting>
-stream~command("query position write")
+<programlisting language="rexx">stream~command("query position write")
 </programlisting>
 </example>
 <para>A sample
 output might be: </para>
-<programlisting>
-247
+<programlisting language="rexx">247
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>SYS</term>
@@ -1013,8 +1004,7 @@ characters.
 </para>
 <example>
 <title>Stream command &mdash; QUERY SIZE option</title>
-<programlisting>
-stream~command("query size")
+<programlisting language="rexx">stream~command("query size")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1034,8 +1024,7 @@ in an international format. This is the preferred method of getting date and
 time because it provides the full 4-digit year</para>
 <example>
 <title>Stream command &mdash; QUERY TIMESTAMP option</title>
-<programlisting>
-stream~command("query timestamp")
+<programlisting language="rexx">stream~command("query timestamp")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1334,8 +1323,7 @@ of the file). The <emphasis role="italic">length</emphasis> must be
 <secondary>open method</secondary></indexterm>
 <example>
 <title>Stream object &mdash; OPEN method</title>
-<programlisting>
-stream~open
+<programlisting language="rexx">stream~open
 stream~open("write")
 stream~open("read")
 </programlisting>
@@ -1402,8 +1390,7 @@ A null string is returned for nonexistent streams.
 in US format.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("datetime")
+<programlisting language="rexx">stream~query("datetime")
 </programlisting>
 </example>
 <para>A sample output might
@@ -1419,8 +1406,7 @@ if it exists, or a null string. For example: </para>
 <secondary>query method</secondary></indexterm>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("exists")
+<programlisting language="rexx">stream~query("exists")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1433,8 +1419,7 @@ c:\data\file.txt
 </para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("handle")
+<programlisting language="rexx">stream~query("handle")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1471,8 +1456,7 @@ characters. See
 for a detailed discussion of this issue.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("position write")
+<programlisting language="rexx">stream~query("position write")
 </programlisting>
 </example>
 <para>A sample output
@@ -1491,8 +1475,7 @@ characters. </para></listitem></varlistentry>
 </para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("size")
+<programlisting language="rexx">stream~query("size")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1512,8 +1495,7 @@ in an international format. This is the preferred method of getting the date and
 time because it provides the full 4-digit year.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
-<programlisting>
-stream~query("timestamp")
+<programlisting language="rexx">stream~query("timestamp")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1626,8 +1608,7 @@ for writing, you receive an error message.</para></note>
 <secondary>seek method</secondary></indexterm>
 <example>
 <title>Stream object &mdash; SEEK method</title>
-<programlisting>
-stream~seek("=2 read")
+<programlisting language="rexx">stream~seek("=2 read")
 stream~seek("+15 read")
 stream~seek("-7 write line")
 fromend  = 125
@@ -1745,17 +1726,14 @@ method then that method must invoke the superclass
 </para>
 <example>
 <title>Stream object &mdash; UNINIT method</title>
-<programlisting>
-<![CDATA[
-::class CustomStream subclass Stream
+<programlisting language="rexx">::class CustomStream subclass Stream
 
-...
+/* ... */
 
 ::method uninit
 /* the subclass instance cleanup code should be placed here */
 super~uninit  -- this should be the last action in the method
 return
-]]>
 </programlisting>
 </example>
 </section>

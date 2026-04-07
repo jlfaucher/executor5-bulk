@@ -105,8 +105,7 @@ of the activating message). You can use SELF to:
 <listitem><para>Run a method in an object in which a method is already running.
 For example, a Find_Clues method is running in an object called Mystery_Novel.
 When Find_Clues finds a clue, it sends a Read_Last_Page message to Mystery_Novel:
-<programlisting>
-self~Read_Last_Page
+<programlisting language="rexx">self~Read_Last_Page
 </programlisting>
 </para></listitem>
 <listitem><para>Pass references about an object to the methods of other
@@ -156,8 +155,7 @@ call a method in the superclass of an object. For example, the following Savings
 class has INIT methods that the Savings class, Account class, and Object class
 define. </para>
 <example><title>Using the SUPER variable</title>
-<programlisting>
-::class Account
+<programlisting language="rexx">::class Account
 
 ::method INIT
 expose balance
@@ -183,16 +181,14 @@ return "a savings account"
 <para>When the INIT method of the Savings
 class is called, the variable SUPER is set to the Account class object. The
 instruction: </para>
-<programlisting>
-self~init:super(balance) /* Forwards to the Account INIT method */
+<programlisting language="rexx">self~init:super(balance) /* Forwards to the Account INIT method */
 </programlisting>
 <para>calls the INIT method of the Account class rather than recursively
 calling the INIT method of the Savings class. When the INIT method of the
 Account class is called, the variable SUPER is assigned to the Object class.
 </para>
 <example><title>Forwarding an event</title>
-<programlisting>
-self~init:super          /* Forwards to the Object INIT method  */
+<programlisting language="rexx">self~init:super          /* Forwards to the Object INIT method  */
 </programlisting>
 </example>
 <para>calls the INIT method that the Object class defines.</para>

@@ -299,8 +299,7 @@ If the class is not a mixin class, the base class is the class receiving the
 
 <para>Returns a short human-readable string representation of the class. The
 string returned is of the form </para>
-<programlisting>
-The id class
+<programlisting language="rexx">The id class
 </programlisting>
 <para> where <emphasis role="italic">id</emphasis> is the identifier assigned
 to the class when it was created.</para>
@@ -308,8 +307,7 @@ to the class when it was created.</para>
 <secondary>defaultName method</secondary></indexterm>
 <example id="ex.class-defaultName">
 <title>Class class &mdash; defaultName method</title>
-<programlisting>
-say .array~defaultName     /* Displays "The Array class"   */
+<programlisting language="rexx">say .array~defaultName     /* Displays "The Array class"   */
 say .account~defaultName   /* Displays "The ACCOUNT class" */
 say .savings~defaultName   /* Displays "The Savings class" */
 
@@ -360,8 +358,7 @@ method is a protected method.</para></listitem>
 <secondary>define method</secondary></indexterm>
 <example id="ex.class-define">
 <title>Class class &mdash; define method</title>
-<programlisting>
-bank_account=.object~subclass("Account")
+<programlisting language="rexx">bank_account=.object~subclass("Account")
 bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </programlisting>
 </example>
@@ -395,7 +392,7 @@ is made unavailable.
 </para>
 <para><example>
 <title>Class class &mdash; defineMethods method</title>
-<programlisting><![CDATA[before = .c~new
+<programlisting language="rexx">before = .c~new
 say before~a                           -- a-original
 
 .c~defineMethods(.methods)
@@ -410,7 +407,7 @@ return "b-define"
 ::class c
 ::method a
 return "a-original"
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -450,8 +447,7 @@ method is a protected method.</para></listitem>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.class-delete">
 <title>Class class &mdash; delete method</title>
-<programlisting>
-myclass=.object~subclass("Myclass")        /* After creating a class  */
+<programlisting language="rexx">myclass=.object~subclass("Myclass")        /* After creating a class  */
 myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
 myclass~delete("TYPE")                     /* this deletes the method */
 </programlisting>
@@ -490,8 +486,7 @@ You can use any collection that supports a
 <secondary>enhanced method</secondary></indexterm>
 <example id="ex.class-enhanced">
 <title>Class class &mdash; enhanced method</title>
-<programlisting>
-/* Set up rclass with class method or methods you want in your */
+<programlisting language="rexx">/* Set up rclass with class method or methods you want in your */
 /* remote class */
 rclassmeths = .directory~new
 
@@ -524,8 +519,7 @@ representations of the class and its instances contain the class identity.</para
 <secondary>id method</secondary></indexterm>
 <example id="ex.class-id">
 <title>Class class &mdash; id method</title>
-<programlisting>
-myobject=.object~subclass("my object")  /* Creates a subclass    */
+<programlisting language="rexx">myobject=.object~subclass("my object")  /* Creates a subclass    */
 say myobject~id                         /* Produces: "my object" */
 </programlisting>
 </example>
@@ -586,8 +580,7 @@ method is a protected method.</para></listitem>
 <secondary>inherit method</secondary></indexterm>
 <example id="ex.class-inherit">
 <title>Class class &mdash; inherit method</title>
-<programlisting>
-room~inherit(.location)
+<programlisting language="rexx">room~inherit(.location)
 </programlisting>
 </example>
 </section>
@@ -610,10 +603,10 @@ otherwise returns &false;.
 </para>
 <para><example>
 <title>Class class &mdash; isAbstract method</title>
-<programlisting><![CDATA[say .abs~isAbstract                    -- 1
+<programlisting language="rexx">say .abs~isAbstract                    -- 1
 
 ::class abs abstract
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -633,7 +626,7 @@ provides; any subclasses of the Class class are also metaclasses.
 </para>
 <para><example>
 <title>Class class &mdash; isMetaclass method</title>
-<programlisting><![CDATA[do class over .RexxInfo~package~classes~allItems~appendAll(.context~package~classes~allItems)
+<programlisting language="rexx">do class over .RexxInfo~package~classes~allItems~appendAll(.context~package~classes~allItems)
   if class~isMetaclass then
     say class~string": metaclass"      -- The Class class: metaclass
                                        -- The META class: metaclass
@@ -641,7 +634,7 @@ end
 
 ::class meta subclass class
 ::class other
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -668,11 +661,8 @@ A class is a subclass of a class if the target class is the same as
 class inheritance chain. For example:
 <example id="ex.class-issubclassof">
 <title>Class class &mdash; isSubclassOf method</title>
-<programlisting>
-<![CDATA[
-.String~isSubclassOf(.object)             ->  1
-.String~isSubclassOf(.mutablebuffer)      ->  0
-]]>
+<programlisting language="rexx">.String~isSubclassOf(.object)             -->  1
+.String~isSubclassOf(.mutablebuffer)      -->  0
 </programlisting>
 </example>
 </para>
@@ -727,8 +717,7 @@ error is raised.</para>
 <secondary>method method</secondary></indexterm>
 <example id="ex.class-method">
 <title>Class class &mdash; method method</title>
-<programlisting>
-/* Create and retrieve the method definition of a class */
+<programlisting language="rexx">/* Create and retrieve the method definition of a class */
 myclass=.object~subclass("My class")   /* Create a class         */
 mymethod=.method~new(" ","Say arg(1)") /* Create a method object */
 myclass~define("ECHO",mymethod)        /* Define it in the class */
@@ -784,8 +773,7 @@ have &nil; for their associated method.</para></note>
 <secondary>methods method</secondary></indexterm>
 <example id="ex.class-methods">
 <title>Class class &mdash; methods method</title>
-<programlisting>
-objsupp = .object~methods
+<programlisting language="rexx">objsupp = .object~methods
 do while objsupp~available
   say objsupp~index           -- displays all instance method
   objsupp~next                -- names of the Object class
@@ -838,8 +826,7 @@ order.</para>
 <secondary>mixinClass method</secondary></indexterm>
 <example id="ex.class-mixinclass">
 <title>Class class &mdash; mixinClass method</title>
-<programlisting>
-buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
+<programlisting language="rexx">buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
                                        /* Superclass is Object class */
 </programlisting>
 </example>
@@ -869,11 +856,9 @@ arguments on the <methodname>init</methodname> message.</para>
 <secondary>new method</secondary></indexterm>
 <example id="ex.class-new">
 <title>Class class &mdash; new method</title>
-<programlisting>
-<![CDATA[
-/* new method example */
-a = .account~new             /* -> Object variable balance=0           */
-y = .account~new(340.78)     /* -> Object variable balance=340.78      */
+<programlisting language="rexx">/* new method example */
+a = .account~new             /* --> Object variable balance=0           */
+y = .account~new(340.78)     /* --> Object variable balance=340.78      */
                              /*    plus free toaster oven              */
 ::class account subclass object
 ::method init                /* Report time each account created       */
@@ -884,7 +869,6 @@ Say "Creating" self~objectName "at time" time()
 If datatype(opening_balance, "N") then balance = opening_balance
 else balance = 0
 If balance > 100 then Say "  You win a free toaster oven"
-]]>
 </programlisting>
 </example>
 </section>
@@ -907,11 +891,11 @@ routines referenced by the receiving class.
 </para>
 <para><example>
 <title>Class class &mdash; package method</title>
-<programlisting><![CDATA[say .Class~package~name                -- REXX
+<programlisting language="rexx">say .Class~package~name                -- REXX
 say .other~package~name                -- C:\ExampleClassPackage.rex
 
 ::class other
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthClassQueryMixinClass"><title>queryMixinClass</title>
@@ -975,8 +959,7 @@ order.</para>
 <secondary>subclass method</secondary></indexterm>
 <example id="ex.class-subclass">
 <title>Class class &mdash; subclass method</title>
-<programlisting>
-room=.object~subclass("Room")   /* Superclass is .object     */
+<programlisting language="rexx">room=.object~subclass("Room")   /* Superclass is .object     */
                                 /* Subclass is room          */
                                 /* Subclass identity is Room */
 </programlisting>
@@ -1025,8 +1008,7 @@ the original class used on a <methodname>subclass</methodname> or a
 <secondary>superClass method</secondary></indexterm>
 <example id="ex.class-superclass">
 <title>Class class &mdash; superClass method</title>
-<programlisting>
-say .object~superclass    -- displays "The NIL object"
+<programlisting language="rexx">say .object~superclass    -- displays "The NIL object"
 say .class~superclass     -- displays "The Object class"
 say .set~superclass       -- displays "The Table class"
 </programlisting>
@@ -1061,8 +1043,7 @@ array.
 <secondary>superClasses method</secondary></indexterm>
 <example id="ex.class-superclasses">
 <title>Class class &mdash; superClasses method</title>
-<programlisting>
-z=.class~superClasses
+<programlisting language="rexx">z=.class~superClasses
 /* To obtain the information this returns, you could use:     */
 do i over z
   say i
@@ -1097,8 +1078,7 @@ sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 <secondary>uninherit method</secondary></indexterm>
 <example id="ex.class-uninherit">
 <title>Class class &mdash; uninherit method</title>
-<programlisting>
-location=.object~mixinClass("Location")
+<programlisting language="rexx">location=.object~mixinClass("Location")
 room=.object~subclass("Room")~~inherit(location) /* Creates subclass */
 /* and specifies inheritance */
 room~uninherit(location)
@@ -1321,8 +1301,7 @@ or the <xref linkend="conobj" xrefstyle="select:title"/>.
 <title>Message class &mdash; halt method
 <indexterm><primary>examples</primary><secondary>halt method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
-dog = .WatchDog~new(1)                 -- watchdog with 1 sec time-out
+<programlisting language="rexx">dog = .WatchDog~new(1)                 -- watchdog with 1 sec time-out
 say dog~watchTask(.task~new~start("runsLong", 0.5))
 say dog~watchTask(.task~new~start("runsLong", 1.5))
 
@@ -1371,10 +1350,9 @@ say dog~watchTask(.task~new~start("runsLong", 1.5))
   use arg alarm
   message = alarm~attachment           -- message is our attachment
   message~halt("task took longer than" timeOut "sec")
-]]></programlisting></example>
+</programlisting></example>
 will output
-<programlisting>
-task finished
+<programlisting language="rexx">task finished
 task took longer than 1 sec
 </programlisting>
 </para>
@@ -1448,7 +1426,7 @@ Any <emphasis role="italic">source</emphasis> argument will be ignored.
 <title>Message class &mdash; messageComplete method
 <indexterm><primary>examples</primary><secondary>messageComplete method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
+<programlisting language="rexx">msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
 msg~notify(.Message~new(.stdout, "say", "I", "sorting complete"))
 msg~notify(.Message~new(.r~new, "items", "I", msg))
 msg~start
@@ -1458,9 +1436,9 @@ say "processing continues"
 ::method items
 use strict arg m
 say m~target~items "items sorted"
-]]></programlisting></example>
+</programlisting></example>
 will output
-<programlisting>processing continues
+<programlisting language="rexx">processing continues
 sorting complete
 1000 items sorted</programlisting></para>
 </section>
@@ -1515,7 +1493,7 @@ the completed Message object as argument <emphasis role="italic">source</emphasi
 <title>Message class &mdash; notify method
 <indexterm><primary>examples</primary><secondary>notify method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
+<programlisting language="rexx">msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
 msg~notify(.Sorter~new)
 msg~start
 say "processing continues"
@@ -1525,10 +1503,10 @@ say "processing continues"
   use strict arg message
 
   say message~target~items "items sorted"
-]]></programlisting></example></para>
+</programlisting></example></para>
 
 <para>will output
-<programlisting>processing continues
+<programlisting language="rexx">processing continues
 1000 items sorted
 </programlisting></para>
 
@@ -1822,8 +1800,7 @@ result and holds it until requested via the
 <indexterm><primary>examples</primary><secondary>start method</secondary></indexterm>
 <indexterm><primary>examples</primary><secondary>of Message class</secondary></indexterm>
 </title>
-<programlisting>
-ez=.testclass~new                  /* Creates a new instance of Testclass     */
+<programlisting language="rexx">ez=.testclass~new                  /* Creates a new instance of Testclass     */
 
 /* Creates and starts message mymsg to send SHOWMSG to ez                     */
 mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)
@@ -1851,8 +1828,7 @@ return
 </example>
 
 <para>The following output is possible: </para>
-<programlisting>
-Hello, Ollie!
+<programlisting language="rexx">Hello, Ollie!
 Hello, Stan!
 Hello, Ollie!
 Hello, Stan!
@@ -1965,7 +1941,7 @@ Any <emphasis role="italic">source</emphasis> argument will be ignored.
 <title>Message class &mdash; triggered method
 <indexterm><primary>examples</primary><secondary>triggered method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[arg = .Array~new(1)
+<programlisting language="rexx">arg = .Array~new(1)
 msg = .Message~new(.a~new, "ring", "A", arg)
 oneSecond = .Alarm~new(1, msg, arg)
 arg~append(oneSecond)
@@ -1977,7 +1953,7 @@ say "processing continues"
 use strict arg alarm
 say "alarm went off at" .DateTime~new
 say "was scheduled for" alarm~scheduledTime
-]]></programlisting></example>
+</programlisting></example>
 may output
 <programlisting>
 processing continues
@@ -2148,8 +2124,7 @@ If the target method cannot be resolved, &nil; is returned.
 </para>
 <example id="ex.method-loadexternalmethod">
 <title>Method class &mdash; loadExternalMethod method</title>
-<programlisting>
-method = .Method~loadExternalMethod("homeAddress=", "LIBRARY mylib setHomeAddress")
+<programlisting language="rexx">method = .Method~loadExternalMethod("homeAddress=", "LIBRARY mylib setHomeAddress")
 </programlisting>
 </example>
 </section>
@@ -2226,10 +2201,9 @@ otherwise returns &false;.
 </para>
 <para><example>
 <title>Method class &mdash; isAbstract method</title>
-<programlisting><![CDATA[
-say .InputStream~method("lines")~isAbstract    -- 1
+<programlisting language="rexx">say .InputStream~method("lines")~isAbstract    -- 1
 say .Stream~method("lines")~isAbstract         -- 0
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2249,9 +2223,9 @@ otherwise returns &false;.
 </para>
 <para><example>
 <title>Method class &mdash; isAttribute method</title>
-<programlisting><![CDATA[say .File~method("lastModified")~isAttribute     -- 1
+<programlisting language="rexx">say .File~method("lastModified")~isAttribute     -- 1
 say .File~method("lastModified=")~isAttribute    -- 1
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2271,11 +2245,11 @@ otherwise returns &false;.
 </para>
 <para><example>
 <title>Method class &mdash; isConstant method</title>
-<programlisting><![CDATA[say .physics~method("c")~isConstant              -- 1
+<programlisting language="rexx">say .physics~method("c")~isConstant              -- 1
 
 ::class physics
 ::constant c 299792458
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2393,7 +2367,7 @@ Returns &nil; for any method not defined by a class scope.
 </para>
 <para><example>
 <title>Method class &mdash; scope method</title>
-<programlisting><![CDATA[scopes = .Stem~new
+<programlisting language="rexx">scopes = .Stem~new
 scopes[] = 0
 loop with item method over .List~methods
   scopes[method~scope] += 1                 -- possible output:
@@ -2406,7 +2380,7 @@ end                                         -- 31 methods from The Object class
 
 .methods["FLOAT"]~scope                     -- .nil
 ::method float
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -2765,8 +2739,7 @@ variables, with the same values.</para>
 <secondary><methodname>copy</methodname> method</secondary></indexterm>
 <example id="ex.object-copy">
 <title>Object class &mdash; copy method</title>
-<programlisting>
-myarray=.array~of("N","S","E","W")
+<programlisting language="rexx">myarray=.array~of("N","S","E","W")
 /* Copies array myarray to array directions */
 directions=myarray~copy
 </programlisting>
@@ -2981,8 +2954,7 @@ have &nil; for their associated method.</para></note>
 <secondary>instanceMethods method</secondary></indexterm>
 <example id="ex.object-instancemethods">
 <title>Object class &mdash; instanceMethods method</title>
-<programlisting>
--- if running under ooRexx 5.1.0
+<programlisting language="rexx">-- if running under ooRexx 5.1.0
 -- list all class methods of .String only
 say .String~instanceMethods(.String)~allIndexes~sort~toString(,', ')
     -- outputs:  ALNUM, ALPHA, BLANK, CNTRL, CR, DIGIT, GRAPH, LOWER, NEW, NL, NULL,
@@ -3047,12 +3019,9 @@ specified <emphasis role="italic">class</emphasis> or if
 class inheritance chain. For example:
 <example id="ex.object-isinstanceof">
 <title>Object class &mdash; isInstanceOf method</title>
-<programlisting>
-<![CDATA[
-"abc"~isInstanceOf(.string)             ->  1
-"abc"~isInstanceOf(.object)             ->  1
-"abc"~isInstanceOf(.mutablebuffer)      ->  0
-]]>
+<programlisting language="rexx">"abc"~isInstanceOf(.string)             -->  1
+"abc"~isInstanceOf(.object)             -->  1
+"abc"~isInstanceOf(.mutablebuffer)      -->  0
 </programlisting>
 </example>
 </para>
@@ -3076,10 +3045,9 @@ Returns &false; otherwise.
 <title>Object class &mdash; isNil method
 <indexterm><primary>examples</primary><secondary>isNil method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
-say .Object~isNil    -- 0
+<programlisting language="rexx">say .Object~isNil    -- 0
 say .nil~isNil       -- 1
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -3124,8 +3092,7 @@ method for an example using <methodname>objectName</methodname>.</para>
 <secondary><emphasis role="bold">objectName=</emphasis> method</secondary></indexterm>
 <example id="ex.object-objectnameequals">
 <title>Object class &mdash; objectName= method</title>
-<programlisting>
-points=.array~of("N","S","E","W")
+<programlisting language="rexx">points=.array~of("N","S","E","W")
 say points~objectName         /* (no change yet) Says: "an Array"    */
 points~objectName=("compass") /* Changes obj name POINTS to "compass"*/
 say points~objectName         /* Shows new obj name. Says: "compass" */
@@ -3277,8 +3244,7 @@ arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <example id="ex.object-send">
 <title>Object class &mdash; send method</title>
-<programlisting>
-world = .WorldObject~new
+<programlisting language="rexx">world = .WorldObject~new
 -- these calls are equivalent and produce "Hello World, I'm Fred!"
 say world~hello("World", "Fred")
 say world~send("HELLO", "World", "Fred")
@@ -3323,8 +3289,7 @@ arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <example id="ex.object-sendwith">
 <title>Object class &mdash; sendWith method</title>
-<programlisting>
-world = .WorldObject~new
+<programlisting language="rexx">world = .WorldObject~new
 -- these calls are equivalent and produce "Hello World, I'm Fred!"
 say world~hello("World", "Fred")
 say world~sendWith("HELLO", .Array~of("World", "Fred"))
@@ -3433,8 +3398,7 @@ see <classname>Message</classname> class method
 </para>
 <example id="ex.object-start">
 <title>Object class &mdash; start method</title>
-<programlisting>
-world = .WorldObject~new
+<programlisting language="rexx">world = .WorldObject~new
 -- these calls are equivalent and produce "Hello World, I'm Fred!"
 msg1 = world~start("HELLO", "World", "Fred")
 msg2 = .message~new(world, "HELLO", "i", "World", "Fred")~~start
@@ -3487,8 +3451,7 @@ see <classname>Message</classname> class method
 </para>
 <example id="ex.object-startWith">
 <title>Object class &mdash; startWith method</title>
-<programlisting>
-world = .WorldObject~new
+<programlisting language="rexx">world = .WorldObject~new
 -- these calls are equivalent and produce "Hello World, I'm Fred!"
 msg1 = world~startWith("HELLO", .Array~of("World", "Fred"))
 msg2 = .message~new(world,"HELLO", "a", .Array~of("World", "Fred"))~~start
@@ -3791,9 +3754,9 @@ within <emphasis role="italic">package</emphasis>.
 directive in the original package source.</para>
 <para><example>
 <title>Package class &mdash; addPackage method</title>
-<programlisting><![CDATA[.context~package~addPackage(.Package~new('winsystm.cls'), 'windows')
+<programlisting language="rexx">.context~package~addPackage(.Package~new('winsystm.cls'), 'windows')
 say windows:virtualkeycodes~new~keyName(36)   -- HOME
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthPackageAddPublicClass"><title>addPublicClass</title>
@@ -3991,11 +3954,11 @@ object instance (and not a class) when searching e. g. for "nil", "true",
 </para>
 <para><example>
 <title>Package class &mdash; findClass method</title>
-<programlisting><![CDATA[say .RexxInfo~package~findClass("Dummy")  -- The NIL object
+<programlisting language="rexx">say .RexxInfo~package~findClass("Dummy")  -- The NIL object
 say .context~package~findClass("Dummy")   -- The DUMMY class
 
 ::class Dummy
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class Package - method findNamespace ========================== -->
@@ -4014,11 +3977,11 @@ Returns &nil; if namespace <emphasis role="italic">name</emphasis> does not exis
 </para>
 <para><example>
 <title>Package class &mdash; findNamespace method</title>
-<programlisting><![CDATA[say .context~package~findNamespace("rexx")      -- The REXX Package
+<programlisting language="rexx">say .context~package~findNamespace("rexx")      -- The REXX Package
 say .context~package~findNamespace("windows")   -- a Package
 
 ::requires "winsystm.cls" namespace windows
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4042,8 +4005,8 @@ The program is searched for using the
 </para>
 <para><example>
 <title>Package class &mdash; findProgram method</title>
-<programlisting><![CDATA[say .context~package~findProgram("mime.cls")  -- e. g. C:\Program Files\ooRexx\mime.cls
-]]></programlisting></example></para>
+<programlisting language="rexx">say .context~package~findProgram("mime.cls")  -- e. g. C:\Program Files\ooRexx\mime.cls
+</programlisting></example></para>
 </section>
 
 
@@ -4064,12 +4027,12 @@ scope of the receiving package.
 </para>
 <para><example>
 <title>Package class &mdash; findPublicClass method</title>
-<programlisting><![CDATA[say .context~package~findPublicClass("String")   -- The String class
+<programlisting language="rexx">say .context~package~findPublicClass("String")   -- The String class
 say .context~package~findPublicClass("Dummy")    -- The NIL object
 say .context~package~findPublicClass("RexxInfo") -- The NIL object
 
 ::class Dummy   -- private class
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4092,11 +4055,11 @@ scope of the receiving package.
 </para>
 <para><example>
 <title>Package class &mdash; findPublicRoutine method</title>
-<programlisting><![CDATA[say .context~package~findPublicRoutine("Dummy")~source    -- "nop"
+<programlisting language="rexx">say .context~package~findPublicRoutine("Dummy")~source    -- "nop"
 
 ::routine Dummy public
 nop
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4315,11 +4278,11 @@ Directory of objects local to the interpreter instance.
 </para>
 <para><example>
 <title>Package class &mdash; name method</title>
-<programlisting><![CDATA[say .context~package~name              -- e. g. C:\ExamplePackageName.rex
+<programlisting language="rexx">say .context~package~name              -- e. g. C:\ExamplePackageName.rex
 say .Class~package~name                -- REXX
 say .Routine~new("rtn", "return .context~package~name")[]  -- rtn
 say .Package~new("pkg", "")~name       -- pkg
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class Package - method namespaces ============================= -->
@@ -4337,10 +4300,10 @@ say .Package~new("pkg", "")~name       -- pkg
 </para>
 <para><example>
 <title>Package class &mdash; namespaces method</title>
-<programlisting><![CDATA[say .context~package~namespaces~allIndexes      -- WINDOWS
+<programlisting language="rexx">say .context~package~namespaces~allIndexes      -- WINDOWS
 
 ::requires "winsystm.cls" namespace windows
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4445,8 +4408,8 @@ Only the leading capitalized letters are needed; all characters following them a
 
 <para><example>
 <title>Package class &mdash; options method</title>
-<programlisting><![CDATA[say .context~package~options
-]]></programlisting>
+<programlisting language="rexx">say .context~package~options
+</programlisting>
 The output may be a string like:
 <programlisting><![CDATA[::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL
 ]]>
@@ -4473,10 +4436,10 @@ that precedes any directives.
 </para>
 <para><example>
 <title>Package class &mdash; prolog method</title>
-<programlisting><![CDATA[say .context~package~prolog~source  -- "say .context~package~prolog~source"
+<programlisting language="rexx">say .context~package~prolog~source  -- "say .context~package~prolog~source"
 
 ::options noprolog
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthPackagePublicClasses"><title>publicClasses</title>
@@ -4499,12 +4462,12 @@ that precedes any directives.
 </para>
 <para><example>
 <title>Package class &mdash; publicClasses method</title>
-<programlisting><![CDATA[say .package~new("csvstream.cls")~publicClasses~allIndexes -- CSVSTREAM
+<programlisting language="rexx">say .package~new("csvstream.cls")~publicClasses~allIndexes -- CSVSTREAM
 say .context~package~publicClasses~allIndexes              -- DUMMY
 say .rexxinfo~package~publicClasses~items                  -- 56
 
 ::class dummy public
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthPackagePublicRoutines"><title>publicRoutines</title>
@@ -4529,12 +4492,12 @@ routine objects.
 </para>
 <para><example>
 <title>Package class &mdash; publicRoutines method</title>
-<programlisting><![CDATA[say .package~new("csvstream.cls")~publicRoutines~items  -- 0
+<programlisting language="rexx">say .package~new("csvstream.cls")~publicRoutines~items  -- 0
 say .context~package~publicRoutines~allIndexes          -- DUMMY
 say .rexxinfo~package~publicRoutines~items              -- 0
 
 ::routine dummy public
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <!-- Class Package - method resource =============================== -->
@@ -4558,12 +4521,12 @@ Returns &nil;, if no resource <emphasis role="italic">name</emphasis> exists.
 </para>
 <para><example>
 <title>Package class &mdash; resource method</title>
-<programlisting><![CDATA[say .context~package~resource("GREYCAT")~makeString  -- La nuit, tous les chats sont gris
+<programlisting language="rexx">say .context~package~resource("GREYCAT")~makeString  -- La nuit, tous les chats sont gris
 
 ::resource greyCat
 La nuit, tous les chats sont gris
 ::END
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -4589,7 +4552,7 @@ the StringTable values are arrays of individual resource data lines.
 </para>
 <para><example>
 <title>Package class &mdash; resources method</title>
-<programlisting><![CDATA[say .context~package~resources~allIndexes  -- "BROWN FOX"
+<programlisting language="rexx">say .context~package~resources~allIndexes  -- "BROWN FOX"
                                            -- "GREYCAT"
 ::resource greyCat
 La nuit, tous les chats sont gris
@@ -4598,7 +4561,7 @@ La nuit, tous les chats sont gris
 ::resource "brown fox"
 The quick brown fox jumps over the lazy dog
 ::END
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 <section id="mthPackageRoutines"><title>routines</title>
@@ -4724,7 +4687,7 @@ value.
 It is a subclass of the
 <xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
 
-<!-- modified: mthRoutineAtGet -> mthRoutineCallBrackets -->
+<!-- modified: mthRoutineAtGet --> mthRoutineCallBrackets -->
 <!-- $GENERATED-20190429-START rexxrefClassTable(Routine) -->
 <table id="ooRexxRoutineClass" frame="all" pgwide="1">
 <title>Routine Class</title>
@@ -4848,8 +4811,7 @@ resolved, &nil; is returned.
 </para>
 <example id="ex.routine-loadexternalroutine">
 <title>Routine class &mdash; loadExternalRoutine method</title>
-<programlisting>
-pi = .Routine~loadExternalRoutine("pi", "library rxmath rxcalcpi")
+<programlisting language="rexx">pi = .Routine~loadExternalRoutine("pi", "library rxmath rxcalcpi")
 say pi~call(16) -- 3.141592653589793
 </programlisting>
 </example>
@@ -5613,18 +5575,15 @@ result is shown in exponential notation, it might have been rounded.</para>
 <secondary>arithmetic methods of String class</secondary></indexterm>
 <example id="ex.string-arithmetic">
 <title>String class &mdash; arithmetic methods</title>
-<programlisting>
-<![CDATA[
-5+5     ->    10
-8-5     ->     3
-5*2     ->    10
-6/2     ->     3
-9//4    ->     1
-9%4     ->     2
-2**3    ->     8
-+5      ->     5             /* Prefix +  */
--5      ->    -5             /* Prefix -  */
-]]>
+<programlisting language="rexx">Say 5+5     -->    10
+Say 8-5     -->     3
+Say 5*2     -->    10
+Say 6/2     -->     3
+Say 9//4    -->     1
+Say 9%4     -->     2
+Say 2**3    -->     8
+Say +5      -->     5             /* Prefix +  */
+Say -5      -->    -5             /* Prefix -  */
 </programlisting>
 </example>
 </section>
@@ -5743,21 +5702,18 @@ padded). &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 <secondary>comparison methods of String class</secondary></indexterm>
 <example id="ex.string-comparison">
 <title>String class &mdash; comparison methods</title>
-<programlisting>
-<![CDATA[
-5=5        ->     1          /* equal            */
+<programlisting language="rexx">Say 5=5        -->     1          /* equal            */
 
-42\=41     ->     1          /* All of these are */
-42><41     ->     1          /* "not equal"      */
-42<>41     ->     1
+Say 42\=41     -->     1          /* All of these are */
+Say 42&gt;&lt;41     -->     1          /* "not equal"      */
+Say 42&lt;&gt;41     -->     1
 
-13>12      ->     1          /* Variations of    */
-12<13      ->     1          /* less than and    */
-13>=12     ->     1          /* greater than     */
-12\<13     ->     0
-12<=13     ->     1
-12\>13     ->     1
-]]>
+Say 13&gt;12      -->     1          /* Variations of    */
+Say 12&lt;13      -->     1          /* less than and    */
+Say 13&gt;=12     -->     1          /* greater than     */
+Say 12\&lt;13     -->     0
+Say 12&lt;=13     -->     1
+Say 12\&gt;13     -->     1
 </programlisting>
 </example>
 <para>All strict comparison operations have one of the characters doubled that
@@ -5857,19 +5813,16 @@ characters.</para>
 </informaltable>
 <example id="ex.string-comparison-1">
 <title>String class &mdash; comparison methods</title>
-<programlisting>
-<![CDATA[
-"space"=="space"     ->     1         /* Strictly equal     */
+<programlisting language="rexx">Say "space"=="space"     -->     1         /* Strictly equal     */
 
-"space"\==" space"   ->     1         /* Strictly not equal */
+Say "space"\==" space"   -->     1         /* Strictly not equal */
 
-"space">>" space"    ->     1         /* Variations of      */
-" space"<<"space"    ->     1         /* strictly greater   */
-"space">>=" space"   ->     1         /* than and less than */
-"space"\<<" space"   ->     1
-" space"<<="space"   ->     1
-" space"\>>"space"   ->     1
-]]>
+Say "space"&gt;&gt;" space"    -->     1         /* Variations of      */
+Say " space"&lt;&lt;"space"    -->     1         /* strictly greater   */
+Say "space"&gt;&gt;=" space"   -->     1         /* than and less than */
+Say "space"\&lt;&lt;" space"   -->     1
+Say " space"&lt;&lt;="space"   -->     1
+Say " space"\&gt;&gt;"space"   -->     1
 </programlisting>
 </example>
 </section>
@@ -5945,13 +5898,10 @@ becomes <computeroutput>0</computeroutput>, and
 <secondary>logical methods of String class</secondary></indexterm>
 <example id="ex.string-logical">
 <title>String class &mdash; logical methods</title>
-<programlisting>
-<![CDATA[
-1&0     ->     0
-1|0     ->     1
-1&&0    ->     1
-\1      ->     0
-]]>
+<programlisting language="rexx">Say 1&amp;0     -->     0
+Say 1|0     -->     1
+Say 1&amp;&amp;0    -->     1
+Say \1      -->     0
 </programlisting>
 </example>
 </section>
@@ -6004,13 +5954,10 @@ object and the <emphasis role="italic">argument</emphasis>.
 <indexterm><primary>prefix + method</primary></indexterm>
 <example id="ex.string-concatenation">
 <title>String class &mdash; concatenation methods</title>
-<programlisting>
-<![CDATA[
-f = "abc"
-f"def"      ->   "abcdef"
-f || "def"  ->   "abcdef"
-f "def"     ->   "abc def"
-]]>
+<programlisting language="rexx">f = "abc"
+Say f"def"      -->   "abcdef"
+Say f || "def"  -->   "abcdef"
+Say f "def"     -->   "abc def"
 </programlisting>
 </example>
 </section>
@@ -6045,9 +5992,9 @@ and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>String class &mdash; [] method</title>
-<programlisting><![CDATA["abc"[2]       -- "b"
-"abc"[2,4]     -- "bc"
-]]></programlisting></example></para>
+<programlisting language="rexx">Say "abc"[2]       -- "b"
+Say "abc"[2,4]     -- "bc"
+</programlisting></example></para>
 </section>
 
 
@@ -6066,10 +6013,10 @@ returns <emphasis role="italic">second</emphasis> if it is &false;.
 </para>
 <para><example>
 <title>String class &mdash; ? method</title>
-<programlisting><![CDATA[do apples = 0 to 2                               -- 0 apples
+<programlisting language="rexx">do apples = 0 to 2                               -- 0 apples
   say apples (apples = 1)~?("apple", "apples")   -- 1 apple
 end                                              -- 2 apples
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -6106,15 +6053,12 @@ positive whole number or zero. The default for
 <secondary>abbrev method</secondary></indexterm>
 <example id="ex.string-abbrev">
 <title>String class &mdash; abbrev method</title>
-<programlisting>
-<![CDATA[
-"Print"~abbrev("Pri")      ->    1
-"PRINT"~abbrev("Pri")      ->    0
-"PRINT"~abbrev("PRI",4)    ->    0
-"PRINT"~abbrev("PRY")      ->    0
-"PRINT"~abbrev("")         ->    1
-"PRINT"~abbrev("",1)       ->    0
-]]>
+<programlisting language="rexx">Say "Print"~abbrev("Pri")      -->    1
+Say "PRINT"~abbrev("Pri")      -->    0
+Say "PRINT"~abbrev("PRI",4)    -->    0
+Say "PRINT"~abbrev("PRY")      -->    0
+Say "PRINT"~abbrev("")         -->    1
+Say "PRINT"~abbrev("",1)       -->    0
 </programlisting>
 </example>
 <note><title>Note</title>
@@ -6124,12 +6068,11 @@ default, is used. This allows a default keyword to be selected automatically
 if desired.</para></note>
 <example id="ex.string-abbrev-1">
 <title>String class &mdash; abbrev method</title>
-<programlisting>
-say "Enter option:";   pull option .
+<programlisting language="rexx">say "Enter option:";   pull option .
 select  /* keyword1 is to be the default */
   when "keyword1"~abbrev(option) then ...
   when "keyword2"~abbrev(option) then ...
-  ...
+  /* ... */
   otherwise nop;
 end;
 </programlisting>
@@ -6157,9 +6100,8 @@ sign and is formatted according to the current NUMERIC settings.</para>
 <secondary>abs method</secondary></indexterm>
 <example id="ex.string-abs">
 <title>String class &mdash; abs method</title>
-<programlisting>
-12.3~abs      ->     12.3
-"-0.307"~abs  ->     0.307
+<programlisting language="rexx">12.3~abs      -->     12.3
+"-0.307"~abs  -->     0.307
 </programlisting>
 </example>
 </section>
@@ -6220,13 +6162,10 @@ before the conversion to make a total that is a multiple of four.</para>
 <secondary>b2x method</secondary></indexterm>
 <example id="ex.string-b2x">
 <title>String class &mdash; b2x method</title>
-<programlisting>
-<![CDATA[
-"11000011"~b2x     ->   "C3"
-"10111"~b2x        ->   "17"
-"101"~b2x          ->   "5"
-"1 1111 0000"~b2x  ->   "1F0"
-]]>
+<programlisting language="rexx">Say "11000011"~b2x     -->   "C3"
+Say "10111"~b2x        -->   "17"
+Say "101"~b2x          -->   "5"
+Say "1 1111 0000"~b2x  -->   "1F0"
 </programlisting>
 </example>
 <para>You can combine <methodname>b2x</methodname>
@@ -6235,7 +6174,7 @@ with the methods <methodname>x2d</methodname> and
 number into other forms.</para>
 <example id="ex.string-b2x-1">
 <title>String class &mdash; b2x method with x2d</title>
-<programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
+<programlisting language="rexx">"10111"~b2x~x2d  -->   "23"   /* decimal 23 */</programlisting>
 </example>
 </section>
 
@@ -6272,14 +6211,11 @@ the zero-length (null) string.</para>
 <secondary>bitAnd method</secondary></indexterm>
 <example id="ex.string-bitand">
 <title>String class &mdash; bitand method</title>
-<programlisting>
-<![CDATA[
-"12"x~bitAnd                   ->    "12"x
-"73"x~bitAnd("27"x)            ->    "23"x
-"13"x~bitAnd("5555"x)          ->    "1155"x
-"13"x~bitAnd("5555"x,"74"x)    ->    "1154"x
-"pQrS"~bitAnd(,"DF"x)          ->    "PQRS"      /* ASCII   */
-]]>
+<programlisting language="rexx">Say "12"x~bitAnd                   -->    "12"x
+Say "73"x~bitAnd("27"x)            -->    "23"x
+Say "13"x~bitAnd("5555"x)          -->    "1155"x
+Say "13"x~bitAnd("5555"x,"74"x)    -->    "1154"x
+Say "pQrS"~bitAnd(,"DF"x)          -->    "PQRS"      /* ASCII   */
 </programlisting>
 </example>
 </section>
@@ -6316,15 +6252,12 @@ the zero-length (null) string.</para>
 <secondary>bitOr method</secondary></indexterm>
 <example id="ex.string-bitor">
 <title>String class &mdash; bitor method</title>
-<programlisting>
-<![CDATA[
-"12"x~bitOr                   ->    "12"x
-"15"x~bitOr("24"x)            ->    "35"x
-"15"x~bitOr("2456"x)          ->    "3556"x
-"15"x~bitOr("2456"x,"F0"x)    ->    "35F6"x
-"1111"x~bitOr(,"4D"x)         ->    "5D5D"x
-"pQrS"~bitOr(,"20"x)          ->    "pqrs" /* ASCII   */
-]]>
+<programlisting language="rexx">Say "12"x~bitOr                   -->    "12"x
+Say "15"x~bitOr("24"x)            -->    "35"x
+Say "15"x~bitOr("2456"x)          -->    "3556"x
+Say "15"x~bitOr("2456"x,"F0"x)    -->    "35F6"x
+Say "1111"x~bitOr(,"4D"x)         -->    "5D5D"x
+Say "pQrS"~bitOr(,"20"x)          -->    "pqrs" /* ASCII   */
 </programlisting>
 </example>
 </section>
@@ -6364,16 +6297,13 @@ on the right before carrying out the logical operation. The default for
 <secondary>bitXor method</secondary></indexterm>
 <example id="ex.string-bitxor">
 <title>String class &mdash; bitxor method</title>
-<programlisting>
-<![CDATA[
-"12"x~bitXor                      ->  "12"x
-"12"x~bitXor("22"x)               ->  "30"x
-"1211"x~bitXor("22"x)             ->  "3011"x
-"1111"x~bitXor("444444"x)         ->  "555544"x
-"1111"x~bitXor("444444"x,"40"x)   ->  "555504"x
-"1111"x~bitXor(,"4D"x)            ->  "5C5C"x
-"C711"x~bitXor("222222"x," ")     ->  "E53302"x  /* ASCII  */
-]]>
+<programlisting language="rexx">Say "12"x~bitXor                      -->  "12"x
+Say "12"x~bitXor("22"x)               -->  "30"x
+Say "1211"x~bitXor("22"x)             -->  "3011"x
+Say "1111"x~bitXor("444444"x)         -->  "555544"x
+Say "1111"x~bitXor("444444"x,"40"x)   -->  "555504"x
+Say "1111"x~bitXor(,"4D"x)            -->  "5C5C"x
+Say "C711"x~bitXor("222222"x," ")     -->  "E53302"x  /* ASCII  */
 </programlisting>
 </example>
 </section>
@@ -6407,14 +6337,11 @@ as an unsigned binary number. If the receiving string is null, C2D returns
 <secondary>c2d method</secondary></indexterm>
 <example id="ex.string-c2d">
 <title>String class &mdash; c2d method</title>
-<programlisting>
-<![CDATA[
-"09"X~c2d       ->        9
-"81"X~c2d       ->      129
-"FF81"X~c2d     ->    65409
-""~c2d          ->        0
-"a"~c2d         ->       97     /*  ASCII   */
-]]>
+<programlisting language="rexx">Say "09"X~c2d       -->        9
+Say "81"X~c2d       -->      129
+Say "FF81"X~c2d     -->    65409
+Say ""~c2d          -->        0
+Say "a"~c2d         -->       97     /*  ASCII   */
 </programlisting>
 </example>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
@@ -6432,17 +6359,14 @@ been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>.</para>
 <example id="ex.string-c2d-1">
 <title>String class &mdash; c2d method</title>
-<programlisting>
-<![CDATA[
-"81"X~c2d(1)      ->     -127
-"81"X~c2d(2)      ->      129
-"FF81"X~c2d(2)    ->     -127
-"FF81"X~c2d(1)    ->     -127
-"FF7F"X~c2d(1)    ->      127
-"F081"X~c2d(2)    ->    -3967
-"F081"X~c2d(1)    ->     -127
-"0031"X~c2d(0)    ->        0
-]]>
+<programlisting language="rexx">Say "81"X~c2d(1)      -->     -127
+Say "81"X~c2d(2)      -->      129
+Say "FF81"X~c2d(2)    -->     -127
+Say "FF81"X~c2d(1)    -->     -127
+Say "FF7F"X~c2d(1)    -->      127
+Say "F081"X~c2d(2)    -->    -3967
+Say "F081"X~c2d(1)    -->     -127
+Say "0031"X~c2d(0)    -->        0
 </programlisting>
 </example>
 </section>
@@ -6482,11 +6406,8 @@ receiving string is null,
 <secondary>c2x method</secondary></indexterm>
 <example id="ex.string-c2x">
 <title>String class &mdash; c2x method</title>
-<programlisting>
-<![CDATA[
-"0123"X~c2x    ->    "0123"   /* "30313233"X     in ASCII */
-"ZD8"~c2x      ->    "5A4438" /* "354134343338"X in ASCII */
-]]>
+<programlisting language="rexx">Say "0123"X~c2x    -->    "0123"   /* "30313233"X     in ASCII */
+Say "ZD8"~c2x      -->    "5A4438" /* "354134343338"X in ASCII */
 </programlisting>
 </example>
 </section>
@@ -6530,15 +6451,12 @@ positive whole number or zero. The default for
 <secondary>abbrev method</secondary></indexterm>
 <example id="ex.string-caselessabbrev">
 <title>String class &mdash; caselessAbbrev method</title>
-<programlisting>
-<![CDATA[
-"Print"~caselessAbbrev("Pri")      ->    1
-"PRINT"~caselessAbbrev("Pri")      ->    1
-"PRINT"~caselessAbbrev("PRI",4)    ->    0
-"PRINT"~caselessAbbrev("PRY")      ->    0
-"PRINT"~caselessAbbrev("")         ->    1
-"PRINT"~caselessAbbrev("",1)       ->    0
-]]>
+<programlisting language="rexx">Say "Print"~caselessAbbrev("Pri")      -->    1
+Say "PRINT"~caselessAbbrev("Pri")      -->    1
+Say "PRINT"~caselessAbbrev("PRI",4)    -->    0
+Say "PRINT"~caselessAbbrev("PRY")      -->    0
+Say "PRINT"~caselessAbbrev("")         -->    1
+Say "PRINT"~caselessAbbrev("",1)       -->    0
 </programlisting>
 </example>
 <note><title>Note</title>
@@ -6549,12 +6467,11 @@ automatically
 if desired.</para></note>
 <example id="ex.string-caselessabbrev-1">
 <title>String class &mdash; caselessAbbrev method</title>
-<programlisting>
-say "Enter option:";   parse pull option .
+<programlisting language="rexx">say "Enter option:";   parse pull option .
 select  /* keyword1 is to be the default */
   when "keyword1"~caselessAbbrev(option) then ...
   when "keyword2"~caselessAbbrev(option) then ...
-  ...
+  /* ... */
   otherwise nop;
 end;
 </programlisting>
@@ -6589,12 +6506,9 @@ using caseless comparisons.
 <secondary>caselessChangeStr method</secondary></indexterm>
 <example id="ex.string-caselesschangestr">
 <title>String class &mdash; caselessChangeStr method</title>
-<programlisting>
-<![CDATA[
-"AbaAbb"~caselessChangeStr("A","")     ->    "bbb"
-AbaBabAB~changeStr("ab","xy")          ->    "xyxyxyxy"
-AbaBabAB~changeStr("ab","xy",1)        ->    "xyaBabAB"
-]]>
+<programlisting language="rexx">Say "AbaAbb"~caselessChangeStr("A","")     -->    "bbb"
+Say AbaBabAB~changeStr("ab","xy")          -->    "xyxyxyxy"
+Say AbaBabAB~changeStr("ab","xy",1)        -->    "xyaBabAB"
 </programlisting>
 </example>
 </section>
@@ -6629,15 +6543,12 @@ blank.</para>
 <secondary>compare method</secondary></indexterm>
 <example id="ex.string-caselesscompare">
 <title>String class &mdash; caselessCompare method</title>
-<programlisting>
-<![CDATA[
-"abc"~caselessCompare("ABC")         ->    0
-"abc"~caselessCompare("Ak")          ->    2
-"ab "~caselessCompare("AB")          ->    0
-"AB "~caselessCompare("ab"," ")      ->    0
-"ab "~caselessCompare("ab","x")      ->    3
-"abXX "~caselessCompare("ab","x")    ->    5
-]]>
+<programlisting language="rexx">Say "abc"~caselessCompare("ABC")         -->    0
+Say "abc"~caselessCompare("Ak")          -->    2
+Say "ab "~caselessCompare("AB")          -->    0
+Say "AB "~caselessCompare("ab"," ")      -->    0
+Say "ab "~caselessCompare("ab","x")      -->    3
+Say "abXX "~caselessCompare("ab","x")    -->    5
 </programlisting>
 </example>
 </section>
@@ -6679,16 +6590,12 @@ place to the end of the target string.
 <secondary>caselessCompareTo method</secondary></indexterm>
 <example id="ex.string-caselesscompareto">
 <title>String class &mdash; caselessCompareTo method</title>
-<programlisting>
-<![CDATA[
-
-"abc"~caselessCompareTo("abc")         ->    0
-"b"~caselessCompareTo("a")             ->    1
-"a"~caselessCompareTo("b")             ->   -1
-"abc"~caselessCompareTo("aBc")         ->    0
-"aBc"~caselessCompareTo("abc")         ->    0
-"000abc000"~caselessCompareTo(111abc111", 4, 3)  -> 0
-]]>
+<programlisting language="rexx">Say "abc"~caselessCompareTo("abc")         -->    0
+Say "b"~caselessCompareTo("a")             -->    1
+Say "a"~caselessCompareTo("b")             -->   -1
+Say "abc"~caselessCompareTo("aBc")         -->    0
+Say "aBc"~caselessCompareTo("abc")         -->    0
+Say "000abc000"~caselessCompareTo("111abc111", 4, 3)  --> 0
 </programlisting>
 </example>
 </section>
@@ -6727,9 +6634,9 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>String class &mdash; caselessContains method</title>
-<programlisting><![CDATA[say "-abcdef-"~caselessContains("EF")         -- 1
-say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
-]]></programlisting></example></para>
+<programlisting language="rexx">Say "-abcdef-"~caselessContains("EF")         -- 1
+Say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
+</programlisting></example></para>
 </section>
 
 
@@ -6766,7 +6673,7 @@ the word at which the search is to be started.</para>
 </para>
 <para><example>
 <title>String class &mdash; caselessContainsWord method</title>
-<programlisting><![CDATA[good = "Now is the time for all good men"
+<programlisting language="rexx">good = "Now is the time for all good men"
 good~caselessContainsWord("the")          -- .true
 good~caselessContainsWord("The")          -- .true
 good~caselessContainsWord("is the")       -- .true
@@ -6774,7 +6681,7 @@ good~caselessContainsWord("is   the ")    -- .true
 good~caselessContainsWord("is time")      -- .false
 good~caselessContainsWord("time")         -- .true
 good~caselessContainsWord("time", 5)      -- .false
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -6804,11 +6711,8 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <secondary>countStr method</secondary></indexterm>
 <example id="ex.string-caselesscountstr">
 <title>String class &mdash; caselessCountStr method</title>
-<programlisting>
-<![CDATA[
-"a0Aa0A"~caselessCountStr("a")        ->    4
-"J0kKk0"~caselessCountStr("KK")       ->    1
-]]>
+<programlisting language="rexx">Say "a0Aa0A"~caselessCountStr("a")        -->    4
+Say "J0kKk0"~caselessCountStr("KK")       -->    1
 </programlisting>
 </example>
 </section>
@@ -6865,10 +6769,9 @@ Returns &false; if the two strings are not strictly equal.</para>
 <secondary>caselessEquals method</secondary></indexterm>
 <example id="ex.string-caselessequals">
 <title>String class &mdash; caselessEquals method</title>
-<programlisting>
-"a"~caselessEquals("A")          ->    1
-"aa"~caselessEquals("A")         ->    0
-"4"~caselessEquals("3")          ->    0
+<programlisting language="rexx">"a"~caselessEquals("A")          -->    1
+"aa"~caselessEquals("A")         -->    0
+"4"~caselessEquals("3")          -->    0
 </programlisting>
 </example>
 </section>
@@ -6918,12 +6821,11 @@ performed using caseless comparisons.
 <secondary>caselessLastPos method</secondary></indexterm>
 <example id="ex.string-caselesslastpos">
 <title>String class &mdash; caselessLastPos method</title>
-<programlisting>
-"abc def ghi"~caselessLastPos(" ")      ->    8
-"abcdefghi"~caselessLastPos(" ")        ->    0
-"efgxyz"~caselessLastPos("XY")          ->    4
-"abc def ghi"~caselessLastPos(" ",7)    ->    4
-"abc def ghi"~caselessLastPos(" ",7,3)  ->    0
+<programlisting language="rexx">"abc def ghi"~caselessLastPos(" ")      -->    8
+"abcdefghi"~caselessLastPos(" ")        -->    0
+"efgxyz"~caselessLastPos("XY")          -->    4
+"abc def ghi"~caselessLastPos(" ",7)    -->    4
+"abc def ghi"~caselessLastPos(" ",7,3)  -->    0
 </programlisting>
 </example>
 </section>
@@ -6968,11 +6870,10 @@ not require new string objects be extracted from the target string.
 <secondary>caselessMatch method</secondary></indexterm>
 <example id="ex.string-caselessmatch">
 <title>String class &mdash; caselessMatch method</title>
-<programlisting>
-"Saturday"~caselessMatch(6, "day")           ->    1
-"Saturday"~caselessMatch(6, "DAY")           ->    1
-"Saturday"~caselessMatch(6, "SUNDAY", 4, 3)  ->    1
-"Saturday"~caselessMatch(6, "daytime", 1, 3) ->    1
+<programlisting language="rexx">"Saturday"~caselessMatch(6, "day")           -->    1
+"Saturday"~caselessMatch(6, "DAY")           -->    1
+"Saturday"~caselessMatch(6, "SUNDAY", 4, 3)  -->    1
+"Saturday"~caselessMatch(6, "daytime", 1, 3) -->    1
 </programlisting>
 </example>
 </section>
@@ -7004,11 +6905,10 @@ a positive whole number.</para>
 <secondary>caselessMatchChar method</secondary></indexterm>
 <example id="ex.string-caselessmatchchar">
 <title>String class &mdash; caselessMatchChar method</title>
-<programlisting>
-"a+b"~caselessMatchChar(2, "+-*/")           ->    1
-"a+b"~caselessMatchChar(1, "+-*/")           ->    0
-"Friday"~caselessMatchChar(3, "aeiou")       ->    1
-"FRIDAY"~caselessMatchChar(3, "aeiou")       ->    1
+<programlisting language="rexx">"a+b"~caselessMatchChar(2, "+-*/")           -->    1
+"a+b"~caselessMatchChar(1, "+-*/")           -->    0
+"Friday"~caselessMatchChar(3, "aeiou")       -->    1
+"FRIDAY"~caselessMatchChar(3, "aeiou")       -->    1
 </programlisting>
 </example>
 </section>
@@ -7056,12 +6956,11 @@ a non-negative whole number.
 <secondary>caselessPos method</secondary></indexterm>
 <example id="ex.string-caselesspos">
 <title>String class &mdash; caselessPos method</title>
-<programlisting>
-"Saturday"~caselessPos("DAY")       ->    6
-"abc def ghi"~caselessPos("x")      ->    0
-"abc def ghi"~caselessPos(" ")      ->    4
-"abc def ghi"~caselessPos(" ",5)    ->    8
-"abc def ghi"~caselessPos(" ",5,3)  ->    0
+<programlisting language="rexx">"Saturday"~caselessPos("DAY")       -->    6
+"abc def ghi"~caselessPos("x")      -->    0
+"abc def ghi"~caselessPos(" ")      -->    4
+"abc def ghi"~caselessPos(" ",5)    -->    8
+"abc def ghi"~caselessPos(" ",5,3)  -->    0
 </programlisting>
 </example>
 </section>
@@ -7128,14 +7027,13 @@ the word at which the search is to be started.</para>
 <secondary>wordPos method</secondary></indexterm>
 <example id="ex.string-caselesswordpos">
 <title>String class &mdash; caselessWordPos method</title>
-<programlisting>
-"now is the time"~caselessWordPos("the")              ->  3
-"now is the time"~caselessWordPos("The")              ->  3
-"now is the time"~caselessWordPos("IS THE")           ->  2
-"now is the time"~caselessWordPos("is   the")         ->  2
-"now is   the time"~caselessWordPos("is   time ")     ->  0
-"To be or not to be"~caselessWordPos("BE")            ->  2
-"To be or not to be"~caselessWordPos("BE",3)          ->  6
+<programlisting language="rexx">"now is the time"~caselessWordPos("the")              -->  3
+"now is the time"~caselessWordPos("The")              -->  3
+"now is the time"~caselessWordPos("IS THE")           -->  2
+"now is the time"~caselessWordPos("is   the")         -->  2
+"now is   the time"~caselessWordPos("is   time ")     -->  0
+"To be or not to be"~caselessWordPos("BE")            -->  2
+"To be or not to be"~caselessWordPos("BE",3)          -->  6
 </programlisting>
 </example>
 </section>
@@ -7166,12 +7064,11 @@ the result, any minus sign is removed.  </para>
 <secondary>ceiling method</secondary></indexterm>
 <example id="ex.string-ceiling">
 <title>String class &mdash; ceiling method</title>
-<programlisting>
-2~ceiling             ->    2
-'-2'~ceiling          ->    -2
-12.3~ceiling          ->    13
-'-12.3'~ceiling       ->    -12
-'-0.1'~ceiling        ->    0
+<programlisting language="rexx">2~ceiling             -->    2
+'-2'~ceiling          -->    -2
+12.3~ceiling          -->    13
+'-12.3'~ceiling       -->    -12
+'-0.1'~ceiling        -->    0
 </programlisting>
 </example>
 
@@ -7227,13 +7124,10 @@ be called either <methodname>center</methodname> or
 <secondary>centre method</secondary></indexterm>
 <example id="ex.string-center">
 <title>String class &mdash; center method</title>
-<programlisting>
-<![CDATA[
-abc~center(7)               ->    "  ABC  "
-abc~CENTER(8,"-")           ->    "--ABC---"
-"The blue sky"~centre(8)    ->    "e blue s"
-"The blue sky"~centre(7)    ->    "e blue "
-]]>
+<programlisting language="rexx">Say abc~center(7)               -->    "  ABC  "
+Say abc~CENTER(8,"-")           -->    "--ABC---"
+Say "The blue sky"~centre(8)    -->    "e blue s"
+Say "The blue sky"~centre(7)    -->    "e blue "
 </programlisting>
 </example>
 </section>
@@ -7263,15 +7157,14 @@ occurrences to be replaced.</para>
 <secondary>changeStr method</secondary></indexterm>
 <example id="ex.string-changeStr">
 <title>String class &mdash; changeStr method</title>
-<programlisting><![CDATA[
-101100~changeStr("1","")     --    "000"
-101100~changeStr("1","X")    --    "X0XX00"
-101100~changeStr("1","X",1)  --    "X01100"
+<programlisting language="rexx">Say 101100~changeStr("1","")     --    "000"
+Say 101100~changeStr("1","X")    --    "X0XX00"
+Say 101100~changeStr("1","X",1)  --    "X01100"
 
 -- a Quine: will print an exact copy of itself
 -- (see https://en.wikipedia.org/wiki/Quine_%28computing%29)
 r=";say'r=.'r'.'r~changeStr(.,'22'x,2)";say'r="'r'"'r~changeStr(.,'22'x,2)
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -7303,15 +7196,12 @@ blank.</para>
 <secondary>compare method</secondary></indexterm>
 <example id="ex.string-compare">
 <title>String class &mdash; compare method</title>
-<programlisting>
-<![CDATA[
-"abc"~compare("abc")         ->    0
-"abc"~compare("ak")          ->    2
-"ab "~compare("ab")          ->    0
-"ab "~compare("ab"," ")      ->    0
-"ab "~compare("ab","x")      ->    3
-"ab-- "~compare("ab","-")    ->    5
-]]>
+<programlisting language="rexx">Say "abc"~compare("abc")         -->    0
+Say "abc"~compare("ak")          -->    2
+Say "ab "~compare("ab")          -->    0
+Say "ab "~compare("ab"," ")      -->    0
+Say "ab "~compare("ab","x")      -->    3
+Say "ab-- "~compare("ab","-")    -->    5
 </programlisting>
 </example>
 </section>
@@ -7352,16 +7242,12 @@ place to the end of the target string.
 <secondary>compareTo method</secondary></indexterm>
 <example id="ex.string-compareto">
 <title>String class &mdash; compareTo method</title>
-<programlisting>
-<![CDATA[
-
-"abc"~compareTo("abc")         ->    0
-"b"~compareTo("a")             ->    1
-"a"~compareTo("b")             ->   -1
-"abc"~compareTo("aBc")         ->    1
-"aBc"~compareTo("abc")         ->   -1
-"000abc000"~compareTo(111abc111", 4, 3)  -> 0
-]]>
+<programlisting language="rexx">Say "abc"~compareTo("abc")         -->    0
+Say "b"~compareTo("a")             -->    1
+Say "a"~compareTo("b")             -->   -1
+Say "abc"~compareTo("aBc")         -->    1
+Say "aBc"~compareTo("abc")         -->   -1
+Say "000abc000"~compareTo("111abc111", 4, 3)  --> 0
 </programlisting>
 </example>
 </section>
@@ -7408,9 +7294,9 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>String class &mdash; caselessContains method</title>
-<programlisting><![CDATA[say "-abcdef-"~contains("ef")         -- 1
+<programlisting language="rexx">say "-abcdef-"~contains("ef")         -- 1
 say "-abcdef-"~contains("-", 2, 6)    -- 0
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -7451,7 +7337,7 @@ the word at which the search is to be started.</para>
 </para>
 <para><example>
 <title>String class &mdash; containsWord method</title>
-<programlisting><![CDATA[good = "Now is the time for all good men"
+<programlisting language="rexx">good = "Now is the time for all good men"
 say good~containsWord("the")          -- .true
 say good~containsWord("The")          -- .false
 say good~containsWord("is the")       -- .true
@@ -7459,7 +7345,7 @@ say good~containsWord("is   the ")    -- .true
 say good~containsWord("is time")      -- .false
 say good~containsWord("time")         -- .true
 say good~containsWord("time", 5)      -- .false
-]]></programlisting></example></para>
+</programlisting></example></para>
 </section>
 
 
@@ -7489,11 +7375,8 @@ whole number or zero.</para>
 <secondary>copies method</secondary></indexterm>
 <example id="ex.string-copies">
 <title>String class &mdash; copies method</title>
-<programlisting>
-<![CDATA[
-"abc"~copies(3)    ->    "abcabcabc"
-"abc"~copies(0)    ->    ""
-]]>
+<programlisting language="rexx">Say "abc"~copies(3)    -->    "abcabcabc"
+Say "abc"~copies(0)    -->    ""
 </programlisting>
 </example>
 </section>
@@ -7519,11 +7402,8 @@ string that do not overlap.</para>
 <secondary>countStr method</secondary></indexterm>
 <example id="ex.string-countstr">
 <title>String class &mdash; countStr method</title>
-<programlisting>
-<![CDATA[
-"101101"~countStr("1")        ->    4
-"J0KKK0"~CountStr("KK")       ->    1
-]]>
+<programlisting language="rexx">Say "101101"~countStr("1")        -->    4
+Say "J0KKK0"~CountStr("KK")       -->    1
 </programlisting>
 </example>
 </section>
@@ -7561,15 +7441,14 @@ has no leading "00"x characters.</para>
 <secondary>d2c method</secondary></indexterm>
 <example id="ex.string-d2c">
 <title>String class &mdash; d2c method</title>
-<programlisting>
-"65"~d2c       ->   "A"      /* "41"x is an ASCII "A"    */
-"65"~d2c(1)    ->   "A"
-"65"~d2c(2)    ->   " A"
-"65"~d2c(5)    ->   "    A"
-"109"~d2c      ->   "m"      /* "6D"x  is an ASCII "m"   */
-"-109"~d2c(1)  ->   "&ocirc;"      /* "93"x  is an ASCII "&ocirc;"   */
-"76"~d2c(2)    ->   " L"     /* "4C"x  is an ASCII " L"  */
-"-180"~d2c(2)  ->   " L"
+<programlisting language="rexx">"65"~d2c       -->   "A"      /* "41"x is an ASCII "A"    */
+"65"~d2c(1)    -->   "A"
+"65"~d2c(2)    -->   " A"
+"65"~d2c(5)    -->   "    A"
+"109"~d2c      -->   "m"      /* "6D"x  is an ASCII "m"   */
+"-109"~d2c(1)  -->   "&ocirc;"      /* "93"x  is an ASCII "&ocirc;"   */
+"76"~d2c(2)    -->   " L"     /* "4C"x  is an ASCII " L"  */
+"-180"~d2c(2)  -->   " L"
 </programlisting>
 </example>
 </section>
@@ -7612,16 +7491,15 @@ or zero, and the returned result has no leading zeros.</para>
 <secondary>d2x method</secondary></indexterm>
 <example id="ex.string-d2x">
 <title>String class &mdash; d2x method</title>
-<programlisting>
-"9"~d2x        ->    "9"
-"129"~d2x      ->    "81"
-"129"~d2x(1)   ->    "1"
-"129"~d2x(2)   ->    "81"
-"129"~d2x(4)   ->    "0081"
-"257"~d2x(2)   ->    "01"
-"-127"~d2x(2)  ->    "81"
-"-127"~d2x(4)  ->    "FF81"
-"12"~d2x(0)    ->    ""
+<programlisting language="rexx">"9"~d2x        -->    "9"
+"129"~d2x      -->    "81"
+"129"~d2x(1)   -->    "1"
+"129"~d2x(2)   -->    "81"
+"129"~d2x(4)   -->    "0081"
+"257"~d2x(2)   -->    "01"
+"-127"~d2x(2)  -->    "81"
+"-127"~d2x(4)  -->    "FF81"
+"12"~d2x(0)    -->    ""
 </programlisting>
 </example>
 </section>
@@ -7753,22 +7631,19 @@ the receiving string is a null string.
 <secondary>dataType method</secondary></indexterm>
 <example id="ex.string-datatype">
 <title>String class &mdash; datatype method</title>
-<programlisting>
-<![CDATA[
-" 12 "~dataType          ->   "NUM"
-""~dataType              ->   "CHAR"
-"123*"~dataType          ->   "CHAR"
-"12.3"~dataType("N")     ->    1
-"12.3"~dataType("W")     ->    0
-"Fred"~dataType("M")     ->    1
-""~dataType("M")         ->    0
-"Fred"~dataType("L")     ->    0
-"?20K"~dataType("s")     ->    1
-"BCd3"~dataType("X")     ->    1
-"BC d3"~dataType("X")    ->    1
-"1"~dataType("O")        ->    1
-"11"~dataType("O")        ->   0
-]]>
+<programlisting language="rexx">Say " 12 "~dataType          -->   "NUM"
+Say ""~dataType              -->   "CHAR"
+Say "123*"~dataType          -->   "CHAR"
+Say "12.3"~dataType("N")     -->    1
+Say "12.3"~dataType("W")     -->    0
+Say "Fred"~dataType("M")     -->    1
+Say ""~dataType("M")         -->    0
+Say "Fred"~dataType("L")     -->    0
+Say "?20K"~dataType("s")     -->    1
+Say "BCd3"~dataType("X")     -->    1
+Say "BC d3"~dataType("X")    -->    1
+Say "1"~dataType("O")        -->    1
+Say "11"~dataType("O")        -->   0
 </programlisting>
 </example>
 
@@ -7804,10 +7679,7 @@ an error results.
 <secondary>decodeBase64 method</secondary></indexterm>
 <example id="ex.string-decodeBase64">
 <title>String class &mdash; decodeBase64 method</title>
-<programlisting>
-<![CDATA[
-"YWJjZGVm"~decodeBase64       ->    "abcdef"
-]]>
+<programlisting language="rexx">Say "YWJjZGVm"~decodeBase64       -->    "abcdef"
 </programlisting>
 </example>
 </section>
@@ -7848,12 +7720,9 @@ string, the method returns the receiving string unchanged.</para>
 <secondary>delStr method</secondary></indexterm>
 <example id="ex.string-delStr">
 <title>String class &mdash; delStr method</title>
-<programlisting>
-<![CDATA[
-"abcd"~delStr(3)       ->    "ab"
-"abcde"~delStr(3,2)    ->    "abe"
-"abcde"~delStr(6)      ->    "abcde"
-]]>
+<programlisting language="rexx">Say "abcd"~delStr(3)       -->    "ab"
+Say "abcde"~delStr(3,2)    -->    "abe"
+Say "abcde"~delStr(6)      -->    "abcde"
 </programlisting>
 </example>
 </section>
@@ -7898,13 +7767,10 @@ preceding the first word involved.
 <secondary>delWord method</secondary></indexterm>
 <example id="ex.string-delWord">
 <title>String class &mdash; delWord method</title>
-<programlisting>
-<![CDATA[
-"Now is the  time"~delWord(2,2)  ->  "Now time"
-"Now is the time "~delWord(3)    ->  "Now is "
-"Now is the  time"~delWord(5)    ->  "Now is the  time"
-"Now is   the time"~delWord(3,1) ->  "Now is   time"
-]]>
+<programlisting language="rexx">Say "Now is the  time"~delWord(2,2)  -->  "Now time"
+Say "Now is the time "~delWord(3)    -->  "Now is "
+Say "Now is the  time"~delWord(5)    -->  "Now is the  time"
+Say "Now is   the time"~delWord(3,1) -->  "Now is   time"
 </programlisting>
 </example>
 </section>
@@ -7932,10 +7798,7 @@ string.</para>
 <secondary>encodeBase64 method</secondary></indexterm>
 <example id="ex.string-encodeBase64">
 <title>String class &mdash; encodeBase64 method</title>
-<programlisting>
-<![CDATA[
-"abcdef"~encodeBase64       ->    "YWJjZGVm"
-]]>
+<programlisting language="rexx">Say "abcdef"~encodeBase64       -->    "YWJjZGVm"
 </programlisting>
 </example>
 </section>
@@ -7987,10 +7850,9 @@ the same comparison performed by the "==" comparison method.</para>
 <secondary>equals method</secondary></indexterm>
 <example id="ex.string-equals">
 <title>String class &mdash; equals method</title>
-<programlisting>
-"3"~equals("3")          ->    1
-"33"~equals("3")         ->    0
-"4"~equals("3")          ->    0
+<programlisting language="rexx">"3"~equals("3")          -->    1
+"33"~equals("3")         -->    0
+"4"~equals("3")          -->    0
 </programlisting>
 </example>
 </section>
@@ -8021,11 +7883,10 @@ the result, any minus sign is removed.  </para>
 <secondary>floor method</secondary></indexterm>
 <example id="ex.string-floor">
 <title>String class &mdash; floor method</title>
-<programlisting>
-2~floor               ->    2
-'-2'~floor            ->    -2
-12.3~floor            ->    12
-'-12.3'~floor         ->    -13
+<programlisting language="rexx">2~floor               -->    2
+'-2'~floor            -->    -2
+12.3~floor            -->    12
+'-12.3'~floor         -->    -13
 </programlisting>
 </example>
 
@@ -8080,15 +7941,14 @@ to an integer.</para>
 <secondary>format method</secondary></indexterm>
 <example id="ex.string-format">
 <title>String class &mdash; format method</title>
-<programlisting>
-"3"~format(4)            ->    "   3"
-"1.73"~format(4,0)       ->    "   2"
-"1.73"~format(4,3)       ->    "   1.730"
-"-.76"~format(4,1)       ->    "  -0.8"
-"3.03"~format(4)         ->    "   3.03"
-" - 12.73"~format(,4)    ->    "-12.7300"
-" - 12.73"~format        ->    "-12.73"
-"0.000"~format           ->    "0"
+<programlisting language="rexx">"3"~format(4)            -->    "   3"
+"1.73"~format(4,0)       -->    "   2"
+"1.73"~format(4,3)       -->    "   1.730"
+"-.76"~format(4,1)       -->    "  -0.8"
+"3.03"~format(4)         -->    "   3.03"
+" - 12.73"~format(,4)    -->    "-12.7300"
+" - 12.73"~format        -->    "-12.73"
+"0.000"~format           -->    "0"
 </programlisting>
 </example>
 <para><emphasis role="italic">expp</emphasis> and
@@ -8122,12 +7982,11 @@ is not specified, the number is not an exponential
 expression.</para>
 <example id="ex.string-format-1">
 <title>String class &mdash; format method</title>
-<programlisting>
-"12345.73"~format(, ,2,2)   ->    "1.234573E+04"
-"12345.73"~format(,3, ,0)   ->    "1.235E+4"
-"1.234573"~format(,3, ,0)   ->    "1.235"
-"12345.73"~format(, ,3,6)   ->    "12345.73"
-"1234567e5"~format(,3,0)    ->    "123456700000.000"
+<programlisting language="rexx">"12345.73"~format(, ,2,2)   -->    "1.234573E+04"
+"12345.73"~format(,3, ,0)   -->    "1.235E+4"
+"1.234573"~format(,3, ,0)   -->    "1.235"
+"12345.73"~format(, ,3,6)   -->    "12345.73"
+"1234567e5"~format(,3,0)    -->    "123456700000.000"
 </programlisting>
 </example>
 </section>
@@ -8196,12 +8055,11 @@ truncates <emphasis role="italic">new</emphasis> to length
 <tertiary>of String class</tertiary></indexterm>
 <example id="ex.string-insert">
 <title>String class &mdash; insert method</title>
-<programlisting>
-"abc"~insert("123")            ->    "123abc"
-"abcdef"~insert(" ",3)         ->    "abc def"
-"abc"~insert("123",5,6)        ->    "abc  123   "
-"abc"~insert("123",5,6,"+")    ->    "abc++123+++"
-"abc"~insert("123", ,5,"-")    ->    "123--abc"
+<programlisting language="rexx">"abc"~insert("123")            -->    "123abc"
+"abcdef"~insert(" ",3)         -->    "abc def"
+"abc"~insert("123",5,6)        -->    "abc  123   "
+"abc"~insert("123",5,6,"+")    -->    "abc++123+++"
+"abc"~insert("123", ,5,"-")    -->    "123--abc"
 </programlisting>
 </example>
 </section>
@@ -8246,12 +8104,11 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 <secondary>lastPos method</secondary></indexterm>
 <example id="ex.string-lastpos">
 <title>String class &mdash; lastPos method</title>
-<programlisting>
-"abc def ghi"~lastPos(" ")      ->    8
-"abcdefghi"~lastPos(" ")        ->    0
-"efgxyz"~lastPos("xy")          ->    4
-"abc def ghi"~lastPos(" ",7)    ->    4
-"abc def ghi"~lastPos(" ",7,3)  ->    0
+<programlisting language="rexx">"abc def ghi"~lastPos(" ")      -->    8
+"abcdefghi"~lastPos(" ")        -->    0
+"efgxyz"~lastPos("xy")          -->    4
+"abc def ghi"~lastPos(" ",7)    -->    4
+"abc def ghi"~lastPos(" ",7,3)  -->    0
 </programlisting>
 </example>
 </section>
@@ -8286,10 +8143,9 @@ method is exactly equivalent to
 <secondary>left method</secondary></indexterm>
 <example id="ex.string-left">
 <title>String class &mdash; left method</title>
-<programlisting>
-"abc d"~left(8)        ->    "abc d   "
-"abc d"~left(8,".")    ->    "abc d..."
-"abc  def"~left(7)     ->    "abc  de"
+<programlisting language="rexx">"abc d"~left(8)        -->    "abc d   "
+"abc d"~left(8,".")    -->    "abc d..."
+"abc  def"~left(7)     -->    "abc  de"
 </programlisting>
 </example>
 </section>
@@ -8316,10 +8172,9 @@ method is exactly equivalent to
 <secondary>length method</secondary></indexterm>
 <example id="ex.string-length">
 <title>String class &mdash; length method</title>
-<programlisting>
-"abcdefgh"~length     ->    8
-"abc defg"~length     ->    8
-""~length             ->    0
+<programlisting language="rexx">"abcdefgh"~length     -->    8
+"abc defg"~length     -->    8
+""~length             -->    0
 </programlisting>
 </example>
 </section>
@@ -8348,10 +8203,9 @@ is not specified, the default is to convert the remainder of the string.</para>
 <secondary>lower method</secondary></indexterm>
 <example id="ex.string-lower">
 <title>String class &mdash; lower method</title>
-<programlisting>
-"Albert Einstein"~lower      ->    "albert einstein"
-"ABCDEF"~lower(4)            ->    "ABCdef"
-"ABCDEF"~lower(3,2)          ->    "ABcdEF"
+<programlisting language="rexx">"Albert Einstein"~lower      -->    "albert einstein"
+"ABCDEF"~lower(4)            -->    "ABCdef"
+"ABCDEF"~lower(3,2)          -->    "ABcdEF"
 </programlisting>
 </example>
 </section>
@@ -8381,19 +8235,16 @@ If <emphasis role="italic">separator</emphasis> isn't specified, any
 
 <example id="ex.string-makeArray">
 <title>String class &mdash; makeArray method</title>
-<programlisting>
-<![CDATA[
-string = "hello".endofline"world".endofline"this is an array."
+<programlisting language="rexx">string = "hello".endofline"world".endofline"this is an array."
 array = string~makeArray
-say "the second line is:" array[2]  /*  world  */
+Say "the second line is:" array[2]  /*  world              */
 
 string = "hello*world*this is an array."
 array = string~makeArray("*")
-say "the third line is:" array[3]  /*  this is an array.  */
+Say "the third line is:" array[3]   /*  this is an array.  */
 
 string = "hello*world*this is an array.*"
-array = string~makeArray("*")     /* contains 3 items */
-]]>
+array = string~makeArray("*")       /*  contains 3 items   */
 </programlisting>
 </example>
 </section>
@@ -8453,11 +8304,10 @@ require new string objects be extracted from the target string.
 <secondary>match method</secondary></indexterm>
 <example id="ex.string-match">
 <title>String class &mdash; match method</title>
-<programlisting>
-"Saturday"~match(6, "day")           ->    1
-"Saturday"~match(6, "DAY")           ->    0
-"Saturday"~match(6, "Sunday", 4, 3)  ->    1
-"Saturday"~match(6, "daytime", 1, 3) ->    1
+<programlisting language="rexx">"Saturday"~match(6, "day")           -->    1
+"Saturday"~match(6, "DAY")           -->    0
+"Saturday"~match(6, "Sunday", 4, 3)  -->    1
+"Saturday"~match(6, "daytime", 1, 3) -->    1
 </programlisting>
 </example>
 </section>
@@ -8483,11 +8333,10 @@ a positive whole number.</para>
 <secondary>matchChar method</secondary></indexterm>
 <example id="ex.string-matchchar">
 <title>String class &mdash; matchChar method</title>
-<programlisting>
-"a+b"~matchChar(2, "+-*/")           ->    1
-"a+b"~matchChar(1, "+-*/")           ->    0
-"Friday"~matchChar(3, "aeiou")       ->    1
-"FRIDAY"~matchChar(3, "aeiou")       ->    0
+<programlisting language="rexx">"a+b"~matchChar(2, "+-*/")           -->    1
+"a+b"~matchChar(1, "+-*/")           -->    0
+"Friday"~matchChar(3, "aeiou")       -->    1
+"FRIDAY"~matchChar(3, "aeiou")       -->    0
 </programlisting>
 </example>
 </section>
@@ -8513,11 +8362,10 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 <secondary>max method</secondary></indexterm>
 <example id="ex.string-max">
 <title>String class &mdash; max method</title>
-<programlisting>
-12~max(6,7,9)                                                ->    12
-17.3~max(19,17.03)                                           ->    19
-"-7"~max("-3","-4.3")                                        ->    -3
-1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
+<programlisting language="rexx">12~max(6,7,9)                                                -->    12
+17.3~max(19,17.03)                                           -->    19
+"-7"~max("-3","-4.3")                                        -->    -3
+1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   -->    21
 </programlisting>
 </example>
 </section>
@@ -8544,11 +8392,10 @@ settings. You can specify any number of
 <secondary>min method</secondary></indexterm>
 <example id="ex.string-min">
 <title>String class &mdash; min method</title>
-<programlisting>
-12~min(6,7,9)                                                ->     6
-17.3~min(19,17.03)                                           ->    17.03
-"-7"~MIN("-3","-4.3")                                        ->    -7
-21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
+<programlisting language="rexx">12~min(6,7,9)                                                -->     6
+17.3~min(19,17.03)                                           -->    17.03
+"-7"~MIN("-3","-4.3")                                        -->    -7
+21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   -->     1
 </programlisting>
 </example>
 </section>
@@ -8579,10 +8426,9 @@ are non-negative whole numbers, the result is the same as the result of the
 <title>String class &mdash; modulo method
 <indexterm><primary>examples</primary><secondary>modulo method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[
-say 10~modulo(3)    -- 1
-say (-10)~modulo(3) -- 2
-]]></programlisting></example></para>
+<programlisting language="rexx">Say 10~modulo(3)    -- 1
+Say (-10)~modulo(3) -- 2
+</programlisting></example></para>
 </section>
 
 
@@ -8620,12 +8466,11 @@ and the default value for <emphasis role="italic">n</emphasis> is
 <secondary>overlay method</secondary></indexterm>
 <example id="ex.string-overlay">
 <title>String class &mdash; overlay method</title>
-<programlisting>
-"abcdef"~overlay(" ",3)         ->    "ab def"
-"abcdef"~overlay(".",3,2)       ->    "ab. ef"
-"abcd"~overlay("qq")            ->    "qqcd"
-"abcd"~overlay("qq",4)          ->    "abcqq"
-"abc"~overlay("123",5,6,"+")    ->    "abc+123+++"
+<programlisting language="rexx">"abcdef"~overlay(" ",3)         -->    "ab def"
+"abcdef"~overlay(".",3,2)       -->    "ab. ef"
+"abcd"~overlay("qq")            -->    "qqcd"
+"abcd"~overlay("qq",4)          -->    "abcqq"
+"abc"~overlay("123",5,6,"+")    -->    "abc+123+++"
 </programlisting>
 </example>
 </section>
@@ -8672,12 +8517,11 @@ a non-negative whole number.
 <secondary>pos method</secondary></indexterm>
 <example id="ex.string-pos">
 <title>String class &mdash; pos method</title>
-<programlisting>
-"Saturday"~pos("day")       ->    6
-"abc def ghi"~pos("x")      ->    0
-"abc def ghi"~pos(" ")      ->    4
-"abc def ghi"~pos(" ",5)    ->    8
-"abc def ghi"~pos(" ",5,3)  ->    0
+<programlisting language="rexx">"Saturday"~pos("day")       -->    6
+"abc def ghi"~pos("x")      -->    0
+"abc def ghi"~pos(" ")      -->    4
+"abc def ghi"~pos(" ",5)    -->    8
+"abc def ghi"~pos(" ",5,3)  -->    0
 </programlisting>
 </example>
 </section>
@@ -8717,10 +8561,9 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 <secondary>replaceAt method</secondary></indexterm>
 <example id="ex.string-replaceAt">
 <title>String class &mdash; replaceAt method</title>
-<programlisting>
-"abcdef"~replaceAt(" ",3, 1)      ->    "ab def"
-"abcdef"~replaceAt(" ",3, 3)      ->    "ab f"
-"abc"~replaceAt("123",5,6,"+")    ->    "abc+123"
+<programlisting language="rexx">"abcdef"~replaceAt(" ",3, 1)      -->    "ab def"
+"abcdef"~replaceAt(" ",3, 3)      -->    "ab f"
+"abc"~replaceAt("123",5,6,"+")    -->    "abc+123"
 </programlisting>
 </example>
 </section>
@@ -8744,9 +8587,8 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 <secondary>reverse method</secondary></indexterm>
 <example id="ex.string-reverse">
 <title>String class &mdash; reverse method</title>
-<programlisting>
-"ABc."~reverse    ->    ".cBA"
-"XYZ "~reverse    ->    " ZYX"
+<programlisting language="rexx">"ABc."~reverse    -->    ".cBA"
+"XYZ "~reverse    -->    " ZYX"
 </programlisting>
 </example>
 </section>
@@ -8784,10 +8626,9 @@ whole number or zero.</para>
 <secondary>right method</secondary></indexterm>
 <example id="ex.string-right">
 <title>String class &mdash; right method</title>
-<programlisting>
-"abc  d"~right(8)     ->    "  abc  d"
-"abc def"~right(5)    ->    "c def"
-"12"~right(5,"0")     ->    "00012"
+<programlisting language="rexx">"abc  d"~right(8)     -->    "  abc  d"
+"abc def"~right(5)    -->    "c def"
+"12"~right(5,"0")     -->    "00012"
 </programlisting>
 </example>
 </section>
@@ -8819,14 +8660,13 @@ the result, any minus sign is removed.</para>
 <secondary>round method</secondary></indexterm>
 <example id="ex.string-round">
 <title>String class &mdash; round method</title>
-<programlisting>
-2~round               ->    2
-'-2'~round            ->    -2
-2.4~round             ->    2
-'-2.4'~round          ->    -2
-2.5~round             ->    3
-'-2.5'~round          ->    -3
-'-0.1'~round          ->    0
+<programlisting language="rexx">2~round               -->    2
+'-2'~round            -->    -2
+2.4~round             -->    2
+'-2.4'~round          -->    -2
+2.5~round             -->    3
+'-2.5'~round          -->    -3
+'-0.1'~round          -->    0
 </programlisting>
 </example>
 </section>
@@ -8857,10 +8697,9 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 <secondary>sign method</secondary></indexterm>
 <example id="ex.string-sign">
 <title>String class &mdash; sign method</title>
-<programlisting>
-"12.3"~sign       ->     1
-" -0.307"~sign    ->    -1
-0.0~sign          ->     0
+<programlisting language="rexx">"12.3"~sign       -->     1
+" -0.307"~sign    -->    -1
+0.0~sign          -->     0
 </programlisting>
 </example>
 </section>
@@ -8895,12 +8734,11 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <secondary>space method</secondary></indexterm>
 <example id="ex.string-space">
 <title>String class &mdash; space method</title>
-<programlisting>
-"abc  def  "~space           ->    "abc def"
-"  abc def"~space(3)         ->    "abc   def"
-"abc  def  "~space(1)        ->    "abc def"
-"abc  def  "~space(0)        ->    "abcdef"
-"abc  def  "~space(2,"+")    ->    "abc++def"
+<programlisting language="rexx">"abc  def  "~space           -->    "abc def"
+"  abc def"~space(3)         -->    "abc   def"
+"abc  def  "~space(1)        -->    "abc def"
+"abc  def  "~space(0)        -->    "abcdef"
+"abc  def  "~space(2,"+")    -->    "abc++def"
 </programlisting>
 </example>
 </section>
@@ -8987,13 +8825,12 @@ will be removed.</para>
 <secondary>strip method</secondary></indexterm>
 <example id="ex.string-strip">
 <title>String class &mdash; strip method</title>
-<programlisting>
-"  ab c  "~strip         ->    "ab c"
-"  ab c  "~strip("L")    ->    "ab c  "
-"  ab c  "~strip("t")    ->    "  ab c"
-"12.7000"~strip(,0)      ->    "12.7"
-"0012.700"~strip(,0)     ->    "12.7"
-"0012.000"~strip(,".0")  ->    "12"
+<programlisting language="rexx">"  ab c  "~strip         -->    "ab c"
+"  ab c  "~strip("L")    -->    "ab c  "
+"  ab c  "~strip("t")    -->    "  ab c"
+"12.7000"~strip(,0)      -->    "12.7"
+"0012.700"~strip(,0)     -->    "12.7"
+"0012.000"~strip(,".0")  -->    "12"
 </programlisting>
 </example>
 </section>
@@ -9063,10 +8900,9 @@ extract more than one substring from a string.
 <secondary>subStr method</secondary></indexterm>
 <example id="ex.string-substr">
 <title>String class &mdash; substr method</title>
-<programlisting>
-"abc"~substr(2)          ->    "bc"
-"abc"~substr(2,4)        ->    "bc  "
-"abc"~substr(2,6,".")    ->    "bc...."
+<programlisting language="rexx">"abc"~substr(2)          -->    "bc"
+"abc"~substr(2,4)        -->    "bc  "
+"abc"~substr(2,6,".")    -->    "bc...."
 </programlisting>
 </example>
 </section>
@@ -9100,10 +8936,9 @@ between the selected words.
 <secondary>subWord method</secondary></indexterm>
 <example id="ex.string-subword">
 <title>String class &mdash; subWord method</title>
-<programlisting>
-"Now is the  time"~subWord(2,2)    ->    "is the"
-"Now is the  time"~subWord(3)      ->    "the  time"
-"Now is the  time"~subWord(5)      ->    ""
+<programlisting language="rexx">"Now is the  time"~subWord(2,2)    -->    "is the"
+"Now is the  time"~subWord(3)      -->    "the  time"
+"Now is the  time"~subWord(5)      -->    ""
 </programlisting>
 </example>
 </section>
@@ -9138,18 +8973,16 @@ in the returned array never have leading or trailing whitespace.
 <secondary>subWords method</secondary></indexterm>
 <example id="ex.string-subwords">
 <title>String class &mdash; subWords method</title>
-<programlisting>
-"Now is the  time"~subWords         ->    .array~of("Now", "is", "the", "time")
-"Now is the  time"~subWords(2,2)    ->    .array~of("is", "the")
-"Now is the  time"~subWords(3)      ->    .array~of("the", "time")
-"Now is the  time"~subWords(5)      ->    .array~new(0)
+<programlisting language="rexx">"Now is the  time"~subWords         -->    .array~of("Now", "is", "the", "time")
+"Now is the  time"~subWords(2,2)    -->    .array~of("is", "the")
+"Now is the  time"~subWords(3)      -->    .array~of("the", "time")
+"Now is the  time"~subWords(5)      -->    .array~new(0)
 </programlisting>
 </example>
 <para>The subWords method is useful for iterating over the individual words in a string.</para>
 <example id="ex.string-subwords-1">
 <title>String class &mdash; subWords method</title>
-<programlisting>
-    do word over source~subWords    -- extract all of the words to loop over
+<programlisting language="rexx">    do word over source~subWords    -- extract all of the words to loop over
        say word
     end
 </programlisting>
@@ -9210,15 +9043,14 @@ the string from the starting position to the end is used. </para>
 <secondary>translate method</secondary></indexterm>
 <example id="ex.string-translate">
 <title>String class &mdash; translate method</title>
-<programlisting>
-"abcdef"~translate                         ->    "ABCDEF"
-"abcdef"~translate(, , , 3, 2)             ->    "abCDef"
-"abcdef"~translate("12", "ec")             ->    "ab2d1f"
-"abcdef"~translate("12", "abcd", ".")      ->    "12..ef"
-"APQRV"~translate(, "PR")                  ->    "A Q V"
-"APQRV"~translate(XRANGE("00"X, "Q"))      ->    "APQ  "
-"4123"~translate("abcd", "1234", , 2, 2)   ->    "4ab3"
-"4123"~translate("abcd", "1234")           ->    "dabc"
+<programlisting language="rexx">"abcdef"~translate                         -->    "ABCDEF"
+"abcdef"~translate(, , , 3, 2)             -->    "abCDef"
+"abcdef"~translate("12", "ec")             -->    "ab2d1f"
+"abcdef"~translate("12", "abcd", ".")      -->    "12..ef"
+"APQRV"~translate(, "PR")                  -->    "A Q V"
+"APQRV"~translate(XRANGE("00"X, "Q"))      -->    "APQ  "
+"4123"~translate("abcd", "1234", , 2, 2)   -->    "4ab3"
+"4123"~translate("abcd", "1234")           -->    "dabc"
 </programlisting>
 </example>
 
@@ -9265,11 +9097,10 @@ the result, any minus sign is removed.</para>
 <secondary>trunc method</secondary></indexterm>
 <example id="ex.string-trunc">
 <title>String class &mdash; trunc method</title>
-<programlisting>
-12.3~trunc            ->    12
-127.09782~trunc(3)    ->    127.097
-127.1~trunc(3)        ->    127.100
-127~trunc(2)          ->    127.00
+<programlisting language="rexx">12.3~trunc            -->    12
+127.09782~trunc(3)    -->    127.097
+127.1~trunc(3)        -->    127.100
+127~trunc(2)          -->    127.00
 </programlisting>
 </example>
 
@@ -9303,10 +9134,9 @@ is not specified, the default is to convert the remainder of the string.</para>
 <secondary>upper method</secondary></indexterm>
 <example id="ex.string-upper">
 <title>String class &mdash; upper method</title>
-<programlisting>
-"Albert Einstein"~upper      ->    "ALBERT EINSTEIN"
-"abcdef"~upper(4)            ->    "abcDEF"
-"abcdef"~upper(3,2)          ->    "abCDef"
+<programlisting language="rexx">"Albert Einstein"~upper      -->    "ALBERT EINSTEIN"
+"abcdef"~upper(4)            -->    "abcDEF"
+"abcdef"~upper(3,2)          -->    "abCDef"
 </programlisting>
 </example>
 </section>
@@ -9370,18 +9200,17 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 <secondary>verify method</secondary></indexterm>
 <example id="ex.string-verify">
 <title>String class &mdash; verify method</title>
-<programlisting>
-"123"~verify("1234567890")             ->    0
-"1Z3"~verify("1234567890")             ->    2
-"AB4T"~verify("1234567890")            ->    1
-"AB4T"~verify("1234567890","M")        ->    3
-"AB4T"~verify("1234567890","N")        ->    1
-"1P3Q4"~verify("1234567890", ,3)       ->    4
-"123"~verify("",N,2)                   ->    2
-"ABCDE"~verify("", ,3)                 ->    3
-"AB3CD5"~verify("1234567890","M",4)    ->    6
-"ABCDEF"~verify("ABC","N",2,3)         ->    4
-"ABCDEF"~verify("ADEF","M",2,3)        ->    4
+<programlisting language="rexx">"123"~verify("1234567890")             -->    0
+"1Z3"~verify("1234567890")             -->    2
+"AB4T"~verify("1234567890")            -->    1
+"AB4T"~verify("1234567890","M")        -->    3
+"AB4T"~verify("1234567890","N")        -->    1
+"1P3Q4"~verify("1234567890", ,3)       -->    4
+"123"~verify("",N,2)                   -->    2
+"ABCDE"~verify("", ,3)                 -->    3
+"AB3CD5"~verify("1234567890","M",4)    -->    6
+"ABCDEF"~verify("ABC","N",2,3)         -->    4
+"ABCDEF"~verify("ADEF","M",2,3)        -->    4
 </programlisting>
 </example>
 </section>
@@ -9414,9 +9243,8 @@ to <code>subWord(</code><emphasis role="italic">n</emphasis><code>, 1)</code>.</
 <secondary>word method</secondary></indexterm>
 <example id="ex.string-word">
 <title>String class &mdash; word method</title>
-<programlisting>
-"Now is the time"~word(3)    ->    "the"
-"Now is the time"~word(5)    ->    ""
+<programlisting language="rexx">"Now is the time"~word(3)    -->    "the"
+"Now is the time"~word(5)    -->    ""
 </programlisting>
 </example>
 </section>
@@ -9445,9 +9273,8 @@ role="italic">n</emphasis> must be a positive whole number.
 <secondary>wordIndex method</secondary></indexterm>
 <example id="ex.string-wordindex">
 <title>String class &mdash; wordIndex method</title>
-<programlisting>
-"Now is the time"~wordIndex(3)    ->    8
-"Now is the time"~wordIndex(6)    ->    0
+<programlisting language="rexx">"Now is the time"~wordIndex(3)    -->    8
+"Now is the time"~wordIndex(6)    -->    0
 </programlisting>
 </example>
 </section>
@@ -9476,10 +9303,9 @@ The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 <secondary>wordLength method</secondary></indexterm>
 <example id="ex.string-wordlength">
 <title>String class &mdash; wordLength method</title>
-<programlisting>
-"Now is the time"~wordLength(2)       ->    2
-"Now comes the time"~wordLength(2)    ->    5
-"Now is the time"~wordLength(6)       ->    0
+<programlisting language="rexx">"Now is the time"~wordLength(2)       -->    2
+"Now comes the time"~wordLength(2)    -->    5
+"Now is the time"~wordLength(6)       -->    0
 </programlisting>
 </example>
 </section>
@@ -9516,14 +9342,13 @@ the word at which the search is to be started.</para>
 <secondary>wordPos method</secondary></indexterm>
 <example id="ex.string-wordPos">
 <title>String class &mdash; wordPos method</title>
-<programlisting>
-"now is the time"~wordPos("the")              ->  3
-"now is the time"~wordPos("The")              ->  0
-"now is the time"~wordPos("is the")           ->  2
-"now is the time"~wordPos("is   the")         ->  2
-"now is   the time"~wordPos("is   time ")     ->  0
-"To be or not to be"~wordPos("be")            ->  2
-"To be or not to be"~wordPos("be",3)          ->  6
+<programlisting language="rexx">"now is the time"~wordPos("the")              -->  3
+"now is the time"~wordPos("The")              -->  0
+"now is the time"~wordPos("is the")           -->  2
+"now is the time"~wordPos("is   the")         -->  2
+"now is   the time"~wordPos("is   time ")     -->  0
+"To be or not to be"~wordPos("be")            -->  2
+"To be or not to be"~wordPos("be",3)          -->  6
 </programlisting>
 </example>
 </section>
@@ -9555,9 +9380,8 @@ the word at which the search is to be started.</para>
 <secondary>words method</secondary></indexterm>
 <example id="ex.string-words">
 <title>String class &mdash; words method</title>
-<programlisting>
-"Now is the time"~words      ->    4
-" "~words                    ->    0
+<programlisting language="rexx">"Now is the time"~words      -->    4
+" "~words                    -->    0
 </programlisting>
 </example>
 </section>
@@ -9593,10 +9417,9 @@ include any whitespace.</para>
 <secondary>x2b method</secondary></indexterm>
 <example id="ex.string-x2b">
 <title>String class &mdash; x2b method</title>
-<programlisting>
-"C3"~x2b        ->  "11000011"
-"7"~x2b         ->  "0111"
-"1 C1"~x2b      ->  "000111000001"
+<programlisting language="rexx">"C3"~x2b        -->  "11000011"
+"7"~x2b         -->  "0111"
+"1 C1"~x2b      -->  "000111000001"
 </programlisting>
 </example>
 <para>You can combine <methodname>x2b</methodname>
@@ -9605,10 +9428,9 @@ with the methods <methodname>d2x</methodname> and
 character strings into binary form.</para>
 <example id="ex.string-x2b-1">
 <title>String class &mdash; x2b method with c2x</title>
-<programlisting>
-"C3"x~c2x~x2b  ->  "11000011"
-"129"~d2x~x2b  ->  "10000001"
-"12"~d2x~x2b   ->  "1100"
+<programlisting language="rexx">"C3"x~c2x~x2b  -->  "11000011"
+"129"~d2x~x2b  -->  "10000001"
+"12"~d2x~x2b   -->  "1100"
 </programlisting>
 </example>
 </section>
@@ -9645,9 +9467,8 @@ ignored.
 <secondary>x2c method</secondary></indexterm>
 <example id="ex.string-x2c">
 <title>String class &mdash; x2c method</title>
-<programlisting>
-"4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
-"3732 73"~x2c      ->  "72s"       /*  ASCII             */
+<programlisting language="rexx">"4865 6c6c 6f"~x2c -->  "Hello"     /*  ASCII             */
+"3732 73"~x2c      -->  "72s"       /*  ASCII             */
 </programlisting>
 </example>
 </section>
@@ -9686,13 +9507,12 @@ an unsigned binary number.</para>
 <secondary>x2d method</secondary></indexterm>
 <example id="ex.string-x2d">
 <title>String class &mdash; x2d method</title>
-<programlisting>
-"0E"~x2d        ->    14
-"81"~x2d        ->    129
-"F81"~x2d       ->    3969
-"FF81"~x2d      ->    65409
-"46 30"X~x2d    ->    240          /*  ASCII   */
-"66 30"X~x2d    ->    240          /*  ASCII   */
+<programlisting language="rexx">"0E"~x2d        -->    14
+"81"~x2d        -->    129
+"F81"~x2d       -->    3969
+"FF81"~x2d      -->    65409
+"46 30"X~x2d    -->    240          /*  ASCII   */
+"66 30"X~x2d    -->    240          /*  ASCII   */
 </programlisting>
 </example>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
@@ -9708,14 +9528,13 @@ the method returns <computeroutput>0</computeroutput>.</para>
 <emphasis role="italic">n</emphasis> characters.</para>
 <example id="ex.string-x2d-1">
 <title>String class &mdash; x2d method</title>
-<programlisting>
-"81"~x2d(2)      ->    -127
-"81"~x2d(4)      ->    129
-"F081"~x2d(4)    ->    -3967
-"F081"~x2d(3)    ->    129
-"F081"~x2d(2)    ->    -127
-"F081"~x2d(1)    ->    1
-"0031"~x2d(0)    ->    0
+<programlisting language="rexx">"81"~x2d(2)      -->    -127
+"81"~x2d(4)      -->    129
+"F081"~x2d(4)    -->    -3967
+"F081"~x2d(3)    -->    129
+"F081"~x2d(2)    -->    -127
+"F081"~x2d(1)    -->    1
+"0031"~x2d(0)    -->    0
 </programlisting>
 </example>
 </section>

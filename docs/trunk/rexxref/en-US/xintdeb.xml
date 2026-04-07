@@ -136,8 +136,7 @@ considerable control over the execution.</para>
 <indexterm><primary>character input and output</primary></indexterm>
 <example>
 <title>Character inout and output</title>
-<programlisting>
-Say expr     /* displays the result of evaluating the         */
+<programlisting language="rexx">Say expr     /* displays the result of evaluating the         */
              /* expression                                    */
 
 name=expr    /* alters the value of a variable                */
@@ -461,9 +460,7 @@ statements get executed on which thread.
 <indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
 <indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>Normal (default) TRACE</tertiary></indexterm>
 </title>
-<programlisting><![CDATA[do 3
-  .test~new~show  -- create instance & send it the "show" message
-end
+<programlisting language="rexx">.test~new~show  -- create instance &amp; send it the "show" message
 
 ::class test
 
@@ -477,12 +474,12 @@ end
 
 ::method init           -- instance constructor
   expose nr             -- access instance attribute "nr"
-  nr=self~class~nextNr  -- get & assign next serial number
+  nr=self~class~nextNr  -- get &amp; assign next serial number
 ::method show           -- instance method
   expose nr             -- access instance attribute "nr"
   say "in" .context~name", before reply, nr="nr
   trace results         -- trace results
-  reply                 -- return & execute rest on new thread
+  reply                 -- return &amp; execute rest on new thread
   sleepTime=random(1,750)/1000   -- get random sleep time
   call sysSleep sleepTime  -- sleep
   say self": I got created as:" pp("#" nr)
@@ -490,7 +487,7 @@ end
 ::routine pp      -- "pretty print": enquote argument in brackets
   trace results         -- will turn on invocation entry/exit
   return "[" || arg(1) || "]"
-]]></programlisting></example>
+</programlisting></example>
 Running the above program may yield an output like:
 <programlisting><![CDATA[in SHOW, before reply, nr=1
     22 *-* reply                 -- return & execute rest on new thread
@@ -591,12 +588,11 @@ more and more multithreaded related information gets revealed in the trace line.
 <indexterm><primary>examples</primary><secondary>multithreading</secondary><tertiary>profiling/probing option</tertiary></indexterm>
 <indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>profiling/probing option</tertiary></indexterm>
 </title>
-<programlisting><![CDATA[
-.TraceObject~option="P" -- set to "Profiling" ("Probing") mode
+<programlisting language="rexx">.TraceObject~option="P" -- set to "Profiling" ("Probing") mode
 arr=.array~new          -- use an array to collect the traceObjects
 .TraceObject~collector=arr -- assign array
 do 3
-  .test~new~show  -- create instance & send it the "show" message
+  .test~new~show  -- create instance &amp; send it the "show" message
 end
 call sysSleep 1         -- wait for the threads to end
 say "arr~items:" arr~items "traceObjects collected"
@@ -624,12 +620,12 @@ end
 
 ::method init           -- instance constructor
   expose nr             -- access instance attribute "nr"
-  nr=self~class~nextNr  -- get & assign next serial number
+  nr=self~class~nextNr  -- get &amp; assign next serial number
 ::method show           -- instance method
   expose nr             -- access instance attribute "nr"
   say "in" .context~name", before reply, nr="nr
   trace results         -- trace results
-  reply                 -- return & execute rest on new thread
+  reply                 -- return &amp; execute rest on new thread
   sleepTime=random(1,750)/1000   -- get random sleep time
   call sysSleep sleepTime  -- sleep
   say self": I got created as:" pp("#" nr)
@@ -637,7 +633,7 @@ end
 ::routine pp      -- "pretty print": enquote argument in brackets
   trace results         -- will turn on invocation entry/exit
   return "[" || arg(1) || "]"
-]]></programlisting></example>
+</programlisting></example>
 Running the above program may yield an output like:
 <programlisting><![CDATA[in SHOW, before reply, nr=1
 in SHOW, before reply, nr=2
@@ -840,10 +836,10 @@ the "myMakeString" method retrieved from the floating <literal>.methods</literal
 <indexterm><primary>examples</primary><secondary>Multithreaded Program</secondary><tertiary>setMakeString</tertiary></indexterm>
 <indexterm><primary>examples</primary><secondary>concurrency</secondary><tertiary>setMakeString</tertiary></indexterm>
 </title>
-<programlisting><![CDATA[  -- fetch & assign floating method
+<programlisting language="rexx">-- fetch &amp; assign floating method
 .TraceObject~setMakeString(.methods~myMakeString)
 do 3
-  .test~new~show  -- create instance & send it the "show" message
+  .test~new~show  -- create instance &amp; send it the "show" message
 end
 
    -- method defined before class, hence a floating method put into
@@ -866,11 +862,11 @@ end
 
 ::method init           -- instance constructor
   expose nr             -- access instance attribute "nr"
-  nr=self~class~nextNr  -- get & assign next serial number
+  nr=self~class~nextNr  -- get &amp; assign next serial number
 ::method show           -- instance method
   expose nr             -- access instance attribute "nr"
   trace results         -- trace all statements
-  reply                 -- return & execute remainder on new thread
+  reply                 -- return &amp; execute remainder on new thread
   sleepTime=random(1,750)/1000   -- get random sleep time
   trace off             -- turn off tracing
   call sysSleep sleepTime  -- sleep
@@ -879,7 +875,7 @@ end
 ::routine pp      -- "pretty print": enquotes argument in square brackets
   trace results   -- trace statement and its result
   return "[" || arg(1) || "]"
-]]></programlisting></example>
+</programlisting></example>
 Running the above program may yield an output like:
 <programlisting><![CDATA[  |   1 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread
   |   2 - 16:43:12.378|     31 *-1* reply                 -- return & execute remainder on new thread

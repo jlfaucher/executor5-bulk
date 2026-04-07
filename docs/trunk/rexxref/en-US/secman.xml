@@ -260,8 +260,7 @@ security manager defines checkpoints (for example, by calling an external
 function).</para>
 
 <example><title>Agent Program</title>
-<programlisting>
-/* Agent */
+<programlisting language="rexx">/* Agent */
 "echo Hello There"
 call rxfuncadd "rxcalcsqrt", "rxmath", "rxcalcsqrt"
 say result
@@ -286,8 +285,7 @@ action.</para></listitem>
 </orderedlist>
 
 <example id="ex.servex"><title>Example of Server Implementing Security Manager</title>
-<programlisting>
-/* Server implements security manager */
+<programlisting language="rexx">/* Server implements security manager */
 parse arg program
 routine = .Routine~newFile(program)
 say "Calling program" program "with an audit manager:"

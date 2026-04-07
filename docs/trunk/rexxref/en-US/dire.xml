@@ -122,8 +122,7 @@ by a plus or minus sign, that is taken as a constant.</para>
 <title>ANNOTATE directive</title>
 <indexterm><primary>examples</primary>
 <secondary>::ANNOTATE directive</secondary></indexterm>
-<programlisting>
-::annotate package author "B. Fox"                 -- annotate current package
+<programlisting language="rexx">::annotate package author "B. Fox"                 -- annotate current package
 
 ::class command
 
@@ -236,8 +235,7 @@ These are the methods for getting and setting an attribute.  These generated met
 equivalent to the following code sequences: </para>
 <example id="ex.directives-attribute">
 <title>ATTRIBUTE directive equivalent code</title>
-<programlisting>
-::method name         -- attribute get method
+<programlisting language="rexx">::method name         -- attribute get method
   expose name         -- establish direct access to object variable (attribute)
   use strict arg      -- enforce zero parameters
   return name         -- return object variable&apos;s current value
@@ -258,8 +256,7 @@ Specifying separate
 <option>GET</option> or <option>SET</option> ::ATTRIBUTE directives allows the methods to be created with different properties.
 For example, the
 sequence:</para>
-<programlisting>
-::attribute name get
+<programlisting language="rexx">::attribute name get
 ::attribute name set private
 </programlisting>
 <para>will create a <methodname>NAME</methodname> method with PUBLIC access and a <methodname>NAME=</methodname> method with PRIVATE access.</para>
@@ -267,8 +264,7 @@ sequence:</para>
 is frequently used so the SET attribute method can perform new value validation.</para>
 <example id="ex.directives-attribute-getset">
 <title>ATTRIBUTE directive &mdash; get and set methods</title>
-<programlisting>
-::attribute size get
+<programlisting language="rexx">::attribute size get
 ::attribute size set
   expose size     /* establish direct access to object variable (attribute) */
   use arg value   /* retrieve argument                                      */
@@ -298,14 +294,12 @@ is delegated to object
 It is a common design pattern to delegate method execution to an
 embedded object.
 The directive for such a delegation
-<programlisting>
-::attribute name delegate delegateName
+<programlisting language="rexx">::attribute name delegate delegateName
 </programlisting>
 is equivalent to the following code sequence:
 <example id="ex.directives-attribute-delegate-equivalent">
 <title>DELEGATE subkeyword equivalent code</title>
-<programlisting>
-::method name
+<programlisting language="rexx">::method name
 expose delegateName
 forward to(delegateName)
 
@@ -345,8 +339,7 @@ name will be used unchanged.
 
 <example id="ex.directives-attribute-getsetrename">
 <title>ATTRIBUTE directive &mdash; naming the get and set methods</title>
-<programlisting>
--- maps "NAME" method to "GETNAME and
+<programlisting language="rexx">-- maps "NAME" method to "GETNAME and
 -- "NAME=" to "SETNAME"
 ::ATTRIBUTE name EXTERNAL "LIBRARY mylib"
 -- maps "ADDRESS" method to "GETADDRESS"
@@ -485,8 +478,7 @@ If you omit the <option>INHERIT</option> option, the class inherits only from
 <secondary>::CLASS directive</secondary></indexterm>
 <example id="ex.directives-class">
 <title>CLASS directive</title>
-<programlisting>
-::class rectangle
+<programlisting language="rexx">::class rectangle
 ::method area    /* defined for the RECTANGLE class */
   expose width height
   return width*height
@@ -504,8 +496,7 @@ that appear later in the program, processing of the directive is deferred
 until all of the class's dependencies have been processed.</para>
 <example id="ex.directives-class-deferredproc">
 <title>CLASS directive deferred processing</title>
-<programlisting>
-::class savings subclass account  /* requires the ACCOUNT class */
+<programlisting language="rexx">::class savings subclass account  /* requires the ACCOUNT class */
 ::method type
   return "a Savings Account"
 
@@ -566,8 +557,7 @@ If <emphasis role="italic">value</emphasis> is omitted, the constant
 <para>Here are some examples of valid constants:
 <example id="ex.constant">
 <title>CONSTANT examples</title>
-<programlisting><![CDATA[
-::class MathConstants public
+<programlisting language="rexx">::class MathConstants public
 ::constant pi 3.14159265
 ::constant author "Isaac Asimov"
 ::constant absolute_zero -273.15
@@ -579,7 +569,7 @@ If <emphasis role="italic">value</emphasis> is omitted, the constant
 ::constant caseless
 
 ::requires rxmath library
-]]></programlisting>
+</programlisting>
 </example>
 </para>
 <para>A ::CONSTANT directive is a shorthand syntax for creating constants
@@ -587,8 +577,7 @@ associated with a class.  The created name constant can be accessed using either
 the class object or an instance of the class itself.</para>
 <example id="ex.constant-access">
 <title>CONSTANT access examples</title>
-<programlisting><![CDATA[
-say "Pi is" .MathConstants~pi    -- displays "Pi is 3.14159265"
+<programlisting language="rexx">say "Pi is" .MathConstants~pi    -- displays "Pi is 3.14159265"
 instance = .MathConstants~new
 say "Pi is" instance~pi          -- also displays "Pi is 3.14159265"
 
@@ -599,7 +588,7 @@ say .Search~caseless             -- "CASELESS"
 
 ::class Search
 ::constant caseless
-]]></programlisting>
+</programlisting>
 </example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -686,8 +675,7 @@ created METHOD object.
 </para>
 <example id="ex.method-1">
 <title>METHOD examples</title>
-<programlisting>
-r = .rectangle~new(20,10)
+<programlisting language="rexx">r = .rectangle~new(20,10)
 say "Area is" r~area       /* Produces "Area is 200" */
 
 ::class rectangle
@@ -712,12 +700,11 @@ created.  In addition to generating a method named
 returns the value of object instance variable that matches the method name.
 The second method assigns a new value to the object instance variable.</para>
 <para>For example, the directive
-<programlisting>::method name attribute
+<programlisting language="rexx">::method name attribute
 </programlisting>
 creates two methods, <methodname>NAME</methodname> and <methodname>NAME=</methodname>,
 equivalent to the following code sequences:
-<programlisting>
-::method name         -- attribute get method
+<programlisting language="rexx">::method name         -- attribute get method
   expose name         -- establish direct access to object variable (attribute)
   use strict arg      -- enforce zero parameters
   return name         -- return object variable&apos;s current value
@@ -742,14 +729,12 @@ implementation for.  Any attempt to invoke an ABSTRACT method directly will rais
 It is a common design pattern to delegate method execution to an
 embedded object.
 The directive for such a delegation
-<programlisting>
-::method name delegate delegateName
+<programlisting language="rexx">::method name delegate delegateName
 </programlisting>
 is equivalent to the following code sequence:
 <example id="ex.directives-method-delegate-equivalent">
 <title>DELEGATE subkeyword equivalent code</title>
-<programlisting>
-::method name
+<programlisting language="rexx">::method name
 expose delegateName
 forward to(delegateName)
 </programlisting>
@@ -773,8 +758,7 @@ name is used.  The target package method name is case insensitive.</para>
 <tertiary>EXTERNAL option</tertiary></indexterm>
 <example id="ex.method-external-1">
 <title>METHOD EXTERNAL examples</title>
-<programlisting>
--- creates method INIT from method RegExp_Init in library rxregexp
+<programlisting language="rexx">-- creates method INIT from method RegExp_Init in library rxregexp
 ::METHOD INIT EXTERNAL "LIBRARY rxregexp RegExp_Init"
 
 -- creates method RegExp_Parse from library rxregexp
@@ -788,8 +772,7 @@ string "GET" to derive the name of the getter attribute method.  To generate the
 setter attribute method, the name is appended to the string "SET".</para>
 <example id="ex.method-external-2">
 <title>METHOD EXTERNAL examples</title>
-<programlisting>
--- maps "NAME" method to "GETNAME and
+<programlisting language="rexx">-- maps "NAME" method to "GETNAME and
 -- "NAME=" to "SETNAME"
 ::METHOD name ATTRIBUTE EXTERNAL "LIBRARY mylib"
 
@@ -860,7 +843,7 @@ last specified will be the value used.
 </para>
 <para>The specified options will override the normal default settings for all Rexx
 code contained in the source file.  For example,
-<programlisting>::OPTIONS DIGITS 20</programlisting>
+<programlisting language="rexx">::OPTIONS DIGITS 20</programlisting>
 would direct that all method and routine code defined in this source package
 execute with an initial <xref linkend="keyNumeric" xrefstyle="select:title"/> DIGITS setting of
 20 digits.  The ::OPTIONS directive controls only the initial setting.  A method
@@ -1191,8 +1174,7 @@ defaults to the string "::END".</para>
 <secondary>::RESOURCE directive</secondary></indexterm>
 <example id="ex.directives-resource">
 <title>RESOURCE directive</title>
-<programlisting>
-::resource greyCat end "-"
+<programlisting language="rexx">::resource greyCat end "-"
 La nuit, tous les chats sont gris
 ---------------------------------
 
@@ -1278,8 +1260,7 @@ functions but precede all other external routines.</para>
 <secondary>::ROUTINE directive</secondary></indexterm>
 <example id="ex.directive-routine">
 <title>ROUTINE examples</title>
-<programlisting>
-
+<programlisting language="rexx">
 ::class c
 ::method a
 call r "A"  /* displays "In method A" */
@@ -1325,8 +1306,7 @@ equivalent of loading an external function using the
 <tertiary>EXTERNAL option</tertiary></indexterm>
 <example id="ex.directive-routine-registered">
 <title>ROUTINE EXTERNAL examples</title>
-<programlisting>
-
+<programlisting language="rexx">
 -- load a function from rxmath library
 ::routine RxCalcPi external "LIBRARY rxmath"
 -- same function, but a different internal name

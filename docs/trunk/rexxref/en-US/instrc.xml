@@ -86,7 +86,7 @@ and the whole instruction does not have the form of a message instruction.
 The keywords ELSE, END, OTHERWISE, THEN, and WHEN are treated in
 the same way. Note that any clause that starts with a keyword defined by Rexx
 cannot be a command. Therefore, </para>
-<programlisting>
+<programlisting language="rexx">
 arg(fred) rest
 </programlisting>
 <para>is an ARG keyword
@@ -105,12 +105,12 @@ in the ADDRESS and PARSE instructions, respectively. For details, see
 separate the keyword from the subsequent token. One or more whitespace
 characters following VALUE are required to separate the
 <emphasis role="italic">expression</emphasis> from the subkeyword in the example following:</para>
-<programlisting> ADDRESS VALUE expression
+<programlisting language="rexx"> ADDRESS VALUE expression
 </programlisting>
 <para>However, no whitespace character is required after the VALUE subkeyword in
 the following example, although it would improve readability:
 </para>
-<programlisting>
+<programlisting language="rexx">
 ADDRESS VALUE"ENVIR"||number
 </programlisting>
 
@@ -393,7 +393,7 @@ items are ignored.
 <indexterm><primary>sh command environment</primary></indexterm>
 <example>
 <title>Instructions &mdash; ADDRESS</title>
-<programlisting>
+<programlisting language="rexx">
 ADDRESS "CMD" 'dir "\Program Files"'            -- Windows
 ADDRESS "sh" "ls /usr/bin"                      -- Unix-like system
 
@@ -417,7 +417,7 @@ processed. The previously selected environment is saved.</para>
 registered by the name <computeroutput>EDIT</computeroutput>:
 <example>
 <title>Instructions &mdash; ADDRESS environments</title>
-<programlisting>
+<programlisting language="rexx">
 address CMD
 "DIR C:\AUTOEXEC.BAT"
 if rc=0 then "COPY C:\AUTOEXEC.BAT C:\*.TMP"
@@ -437,7 +437,7 @@ a literal string or symbol, that is, if it starts with a special character
 such as an operator character or parenthesis.
 <example>
 <title>Instructions &mdash; ADDRESS environments</title>
-<programlisting>
+<programlisting language="rexx">
 ADDRESS ("ENVIR"||number)  /* Same as ADDRESS VALUE "ENVIR"||number */
 </programlisting>
 </example>
@@ -531,7 +531,7 @@ objects (typically with different templates). The source objects do not change.
 <secondary>ARG instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; ARG</title>
-<programlisting>
+<programlisting language="rexx">
 /* String passed is "Easy Rider"  */
 Arg adjective noun .
 
@@ -550,7 +550,7 @@ in the parsing <emphasis role="italic">template_list</emphasis> so each template
 is selected in turn.
 <example>
 <title>Instructions &mdash; ARG</title>
-<programlisting>
+<programlisting language="rexx">
 /* Function is called by  FRED("data X",1,5)    */
 Fred:  Arg string, num1, num2
 
@@ -749,7 +749,7 @@ as a subroutine. Any result is stored in RESULT. Simply specify
 <computeroutput>CALL</computeroutput>, the function name (with
 <emphasis>no parenthesis</emphasis>)
 and any arguments, for example:
-<programlisting>
+<programlisting language="rexx">
 call length "string"   /* Same as length("string") */
 say result             /* Produces: 6              */
 </programlisting>
@@ -814,7 +814,7 @@ as well as recursive calls to itself.
 <secondary>CALL instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; CALL</title>
-<programlisting>
+<programlisting language="rexx">
 /* Recursive subroutine execution... */
 arg z
 call factorial z
@@ -1083,7 +1083,7 @@ the original variable is dropped.
 <secondary>DROP instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; DROP</title>
-<programlisting>
+<programlisting language="rexx">
 j=4
 Drop  a z.3 z.j
 /* Drops the variables: A, Z.3, and Z.4              */
@@ -1094,7 +1094,7 @@ Drop  a z.3 z.j
 <para>Here, a variable name in parentheses is used as a subsidiary list.
 <example>
 <title>Instructions &mdash; DROP</title>
-<programlisting>
+<programlisting language="rexx">
 mylist="c d e"
 drop (mylist) f
 /* Drops the variables C, D, E, and F          */
@@ -1108,7 +1108,7 @@ drop (mylist) f
 (that is, a symbol that contains only one period as the last character) assigns
 the stem variable to a new, empty stem object.</para>
 <para><emphasis role="bold">Example:</emphasis>
-<programlisting>
+<programlisting language="rexx">
 Drop  z.
 /* Assigns stem variable z. to a new empty stem object */
 </programlisting>
@@ -1150,7 +1150,7 @@ to the caller when the program stops.
 <secondary>EXIT instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; EXIT</title>
-<programlisting>
+<programlisting language="rexx">
 j=3
 Exit j*4
 /* Would exit with the string "12" */
@@ -1234,14 +1234,14 @@ as a variable.
 <secondary>EXPOSE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; EXPOSE</title>
-<programlisting>
+<programlisting language="rexx">
 /* Example of exposing object variables */
 myobj = .myclass~new
 myobj~c
 myobj~d         /* Would display "Z is: 120"                 */
 
-::class myclass /* The <xref linkend="clasdi" xrefstyle="select:title"/> directive                     */
-::method c      /* The <xref linkend="methd" xrefstyle="select:title"/> directive                    */
+::class myclass /* The ::CLASS directive                     */
+::method c      /* The ::METHOD directive                    */
   expose z
   z = 100       /* Would assign 100 to the object variable z */
   return
@@ -1260,7 +1260,8 @@ by specifying their stem in the variable list or a subsidiary list.
 The variables are exposed for all operations.
 <example>
 <title>Instructions &mdash; EXPOSE</title>
-<programlisting>
+<programlisting language="rexx">
+::method mymethod
 expose j k  c. d.
 /*  This exposes "J", "K", and all variables whose            */
 /*  name starts with "C." or "D."                             */
@@ -1361,7 +1362,7 @@ to a different target object, using the same message name and arguments.
 <secondary>FORWARD instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; FORWARD</title>
-<programlisting>
+<programlisting language="rexx">
 ::method substr
   forward to (self~string)       /* Forward to the string value */
 </programlisting>
@@ -1371,7 +1372,7 @@ to a different target object, using the same message name and arguments.
 message that the UNKNOWN method traps.
 <example>
 <title>Instructions &mdash; FORWARD</title>
-<programlisting>
+<programlisting language="rexx">
 ::method unknown
   use arg msg, args
   /* Forward to the string value */
@@ -1385,7 +1386,7 @@ methods, passing the same arguments. This is very common usage in object INIT
 methods.
 <example>
 <title>Instructions &mdash; FORWARD</title>
-<programlisting>
+<programlisting language="rexx">
 ::class  savings subclass account
 ::method init
   expose type penalty
@@ -1469,7 +1470,7 @@ subsidiary list of variables).
 <secondary>GUARD instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; GUARD</title>
-<programlisting>
+<programlisting language="rexx">
 c = .Concurrent~new
 c~work
 
@@ -1547,7 +1548,7 @@ instruction after ELSE is processed only if the result of the evaluation is
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>IF instruction</secondary></indexterm>
-<programlisting>
+<programlisting language="rexx">
 if answer="YES" then say "OK!"
 else say "Why not?"
 </programlisting>
@@ -1555,7 +1556,7 @@ else say "Why not?"
 <para>Remember that if the ELSE clause is on the same line as the last clause
 of the THEN part, you need a semicolon before ELSE.</para>
 <para><emphasis role="bold">Example:</emphasis>
-<programlisting>
+<programlisting language="rexx">
 if answer="YES" then say "OK!";  else say "Why not?"
 </programlisting>
 </para>
@@ -1564,7 +1565,7 @@ instruction to eliminate errors and possible confusion when IF constructs
 are nested, as in the following example.
 <example>
 <title>Instructions &mdash; IF</title>
-<programlisting>
+<programlisting language="rexx">
 If answer = "YES" Then
   If name = "FRED" Then
     say "OK, Fred."
@@ -1588,7 +1589,7 @@ to <computeroutput>1</computeroutput>, then the condition result is also
 <computeroutput>1</computeroutput>.
 <example>
 <title>Instructions &mdash; IF</title>
-<programlisting>
+<programlisting language="rexx">
 If answer~datatype('w'), answer//2 = 0 Then
   say answer "is even"
 Else
@@ -1601,7 +1602,7 @@ Else
 
 <example>
 <title>Instructions &mdash; IF</title>
-<programlisting>
+<programlisting language="rexx">
 If answer~datatype('w') &amp; answer//2 = 0 Then
   say answer "is even"
 Else
@@ -1671,7 +1672,7 @@ one was not supplied.
 <secondary>INTERPRET instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; INTERPRET</title>
-<programlisting>
+<programlisting language="rexx">
 /* INTERPRET example */
 data="FRED"
 interpret data "= 4"
@@ -1679,7 +1680,7 @@ interpret data "= 4"
 /* Processes:  FRED = 4;                    */
 /* Thus the variable FRED is set to "4"     */
 </programlisting>
-<programlisting>
+<programlisting language="rexx">
 /* Another INTERPRET example */
 data="do 3; say "Hello there!"; end"
 interpret data        /* Displays:          */
@@ -1706,7 +1707,7 @@ can be helpful in interpreting the results you get.
 <secondary>INTERPRET instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; INTERPRET</title>
-<programlisting>
+<programlisting language="rexx">
 /* Here is a small Rexx program. */
 Trace Int
 name="Kitty"
@@ -1758,7 +1759,7 @@ instead of the INTERPRET instruction. The following line could, therefore,
 have replaced line 5 in the previous example:
 <example>
 <title>Instructions &mdash; INTERPRET</title>
-<programlisting>
+<programlisting language="rexx">
 say "Hello" value(indirect)"!"
 </programlisting>
 </example>
@@ -1809,7 +1810,7 @@ by a LEAVE instruction).
 <secondary>ITERATE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; ITERATE</title>
-<programlisting>
+<programlisting language="rexx">
 loop label MyLabelName i=1 to 4 /* label set to 'MYLABELNAME' */
   if i=2 then iterate
   say i
@@ -1885,7 +1886,7 @@ instruction of the selected block.
 <secondary>LEAVE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; LEAVE</title>
-<programlisting>
+<programlisting language="rexx">
 max=5
 do label myDoBlock /* define a label 'MYDOBLOCK' */
   loop i=1 to max /* label defaults to control variable 'I' */
@@ -2001,11 +2002,11 @@ target of a THEN or ELSE clause.
 <secondary>NOP instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; NOP</title>
-<programlisting>
+<programlisting language="rexx">
 Select
-  when a=c then nop           /* Do nothing */
-  when a>c then say "A > C"
-  otherwise     say "A &lt; C"
+  when a=c   then nop           /* Do nothing */
+  when a &gt; c then say "A &gt; C"
+  otherwise       say "A &lt; C"
 end
 </programlisting>
 </example>
@@ -2350,7 +2351,7 @@ except when within a bracketed subexpression.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>PARSE instruction</secondary></indexterm>
-<programlisting>
+<programlisting language="rexx">
 PARSE VALUE time() WITH  hours ":" mins ":" secs
 </programlisting>
 gets the current time and splits it into its constituent parts.</para>
@@ -2367,14 +2368,14 @@ that is valid as a variable name, which means it
 cannot start with a period or a digit.  Note that the variable
 <emphasis role="italic">name</emphasis> is
 not changed unless it appears in the template, so that, for example:</para>
-<programlisting>
+<programlisting language="rexx">
 PARSE VAR string word1 string
 </programlisting>
 <para>removes the first word from <emphasis role="italic">string</emphasis>,
 puts it in the variable <emphasis role="italic">word1</emphasis>,
 and assigns the remainder back to
 <emphasis role="italic">string</emphasis>. </para>
-<programlisting>
+<programlisting language="rexx">
 PARSE UPPER VAR string word1 string
 </programlisting>
 <para>also translates the data from <emphasis role="italic">string</emphasis>
@@ -2492,7 +2493,7 @@ to the caller upon RETURN from the routine.
 <secondary>PROCEDURE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
-<programlisting>
+<programlisting language="rexx">
 /* This is the main Rexx program */
 j=1; z.1="a"
 call toft
@@ -2514,7 +2515,7 @@ so <computeroutput>Z.1</computeroutput> is not exposed.</para>
 <para>The variables in a subsidiary list are also exposed from left to right.
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
-<programlisting>
+<programlisting language="rexx">
 /* This is the main Rexx program */
 j=1;k=6;m=9
 a ="j k m"
@@ -2533,7 +2534,7 @@ at a time or, with the VALUE built-in function, to manipulate dynamically
 named variables.
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
-<programlisting>
+<programlisting language="rexx">
 /* This is the main Rexx program */
 c=11; d=12; e=13
 Showlist="c d"     /* but not E              */
@@ -2559,7 +2560,7 @@ variables whose names begin with that stem.
 <secondary>used in PROCEDURE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
-<programlisting>
+<programlisting language="rexx">
 /* This is the main Rexx program */
 a.=11; i=13; j=15
 i = i + 1
@@ -2662,7 +2663,7 @@ keyboard input with no prompt.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>PULL instruction</secondary></indexterm>
-<programlisting>
+<programlisting language="rexx">
 Say "Do you want to erase the file?  Answer Yes or No:"
 Pull answer .
 if answer="NO" then say "The file will not be erased."
@@ -2710,7 +2711,7 @@ a null string is stacked.
 <secondary>PUSH instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; PUSH</title>
-<programlisting>
+<programlisting language="rexx">
 a="Fred"
 push       /* Puts a null line onto the queue */
 push a 2   /* Puts "Fred 2"    onto the queue */
@@ -2753,7 +2754,7 @@ a null string is queued.
 <secondary>QUEUE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; QUEUE</title>
-<programlisting>
+<programlisting language="rexx">
 a="Toft"
 queue a 2  /* Enqueues "Toft 2" */
 queue      /* Enqueues a null line behind the last */
@@ -2899,7 +2900,7 @@ condition object.
 <secondary>RAISE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; RAISE</title>
-<programlisting>
+<programlisting language="rexx">
 raise syntax 40                      /* Raises syntax error 40                */
 raise syntax 40.12 array (1, number) /* Raises syntax error 40, subcode 12    */
                                      /* Passing two substitution values       */
@@ -2916,7 +2917,7 @@ on the RAISE instruction replaces the corresponding values for the currently
 trapped condition. A SYNTAX error occurs if no condition is currently trapped.
 <example>
 <title>Instructions &mdash; RAISE</title>
-<programlisting>
+<programlisting language="rexx">
 signal on syntax
 a = "xyz"
 c = a+2                /* Raises the SYNTAX condition             */
@@ -2961,7 +2962,7 @@ must not specify a result expression.
 <secondary>REPLY instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; REPLY</title>
-<programlisting>
+<programlisting language="rexx">
 reply 42           /* Returns control and a result    */
 call tidyup        /* Can run in parallel with sender */
 return
@@ -3117,12 +3118,10 @@ can raise NOTREADY; SAY will not.</para>
 <secondary>SAY instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; SAY</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 data=100
-Say data "divided by 4 =>" data/4
-/* Displays: "100 divided by 4 => 25"  */
-]]>
+Say data "divided by 4 =&gt;" data/4
+/* Displays: "100 divided by 4 =&gt; 25"  */
 </programlisting>
 </example>
 
@@ -3239,11 +3238,12 @@ you can omit the instruction list that follows OTHERWISE.
 <title>Instructions &mdash; SELECT</title>
 <indexterm><primary>SELECT instruction</primary><secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary><secondary>SELECT instruction</secondary></indexterm>
-<programlisting><![CDATA[balance=100
+<programlisting language="rexx">
+balance=100
 check=50
 balance = balance - check
 Select
-  when balance > 0 then
+  when balance &gt; 0 then
     say "Congratulations! You still have" balance "dollars left."
   when balance = 0 then do
     say "Warning, Balance is now zero!  STOP all spending."
@@ -3256,12 +3256,14 @@ Select
     say "Oops!  Hope the bank does not close your account."
     end
 end  /* Select */
-]]></programlisting></example>
+</programlisting>
+</example>
 </para>
 
 <example>
 <title>Instructions &mdash; SELECT</title>
-<programlisting><![CDATA[select
+<programlisting language="rexx">
+select
   when answer~datatype('w'), answer//2 = 0 Then
      say answer "is even"
   when answer~datatype('w'), answer//2 = 1 Then
@@ -3269,33 +3271,36 @@ end  /* Select */
   otherwise
      say answer "is not a number"
 end
-]]></programlisting>
+</programlisting>
 
 <para>The example above is not the same as using the following</para>
-<programlisting><![CDATA[select
-  when answer~datatype('w') & answer//2 = 0 Then
+<programlisting language="rexx">
+select
+  when answer~datatype('w') &amp; answer//2 = 0 Then
      say answer "is even"
-  when answer~datatype('w') & answer//2 = 1 Then
+  when answer~datatype('w') &amp; answer//2 = 1 Then
      say answer "is odd"
   otherwise
      say answer "is not a number"
 end
-]]></programlisting></example>
+</programlisting></example>
 <para>The logical "&amp;" operator will evaluate both terms of the operation, so the
 term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
 list conditional form, evaluation will stop with the first &false; result, so the
 "answer//2" term will not be evaluated if the datatype test returns
 &false;.
+</para>
 
 <example>
 <title>Instructions &mdash; SELECT CASE</title>
-<programlisting><![CDATA[select case random(6)
+<programlisting language="rexx">
+select case random(6)
   when 1 then say "bad luck!"
   when 5, 6 then say "great!"
   otherwise say "try again"
 end
-]]></programlisting></example>
-</para>
+</programlisting>
+</example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -3412,7 +3417,7 @@ string or symbol taken as a constant.
 <secondary>SIGNAL instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; SIGNAL</title>
-<programlisting>
+<programlisting language="rexx">
 Signal fred;  /* Transfer control to label FRED below */
 ....
 ....
@@ -3667,7 +3672,7 @@ see <xref linkend="xdebugmt" xrefstyle="select:title"/>.
 <para>One of the most common traces you will use is:
 <example>
 <title>Instructions &mdash; TRACE</title>
-<programlisting>
+<programlisting language="rexx">
 TRACE ?R
 /* Interactive debugging is switched on if it was off, */
 /* and tracing results of expressions begins.          */
@@ -3999,7 +4004,7 @@ arguments.
 <secondary>USE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; USE</title>
-<programlisting>
+<programlisting language="rexx">
 /* USE Example                       */
 /* FRED("Ogof X",1,5) calls function */
 Fred: use arg string, num1, num2
@@ -4008,7 +4013,7 @@ Fred: use arg string, num1, num2
 /*      NUM1 contains "1"            */
 /*      NUM2 contains "5"            */
 </programlisting>
-<programlisting>
+<programlisting language="rexx">
 /* Another example, shows how to pass non-string arguments with USE ARG */
 /* Pass a stem and an array to a routine to modify one element of each  */
 stem.1 = "Value"
@@ -4024,7 +4029,7 @@ Change_First: Procedure
   subarray[1] = "NewItem"
   Return
 </programlisting>
-<programlisting>
+<programlisting language="rexx">
 /* USE STRICT Example                */
 /* FRED("Ogof X",1) calls function  */
 Fred: use strict arg string, num1, num2=4
@@ -4040,7 +4045,7 @@ STRICT keyword on the USE instruction will raise a syntax error for any other co
 arguments.
 <example>
 <title>Instructions &mdash; USE</title>
-<programlisting>
+<programlisting language="rexx">
 call test "one"
 call test "one", "two"
 call test "one", "two", "three"
@@ -4078,14 +4083,15 @@ There are [5] argument(s); v1,v2=[one,zwei]
 an assignment statement.
 <example>
 <title>Instructions &mdash; USE</title>
-<programlisting>
+<programlisting language="rexx">
+::method myMethod
 expose myArray myDirectory
 use arg myArray[1], myDirectory~name
 </programlisting>
 </example>
 </para>
 <para>would be equivalent to
-<programlisting>
+<programlisting language="rexx">
 myArray[1] = arg(1)
 myDirectory~name = arg(2)
 </programlisting>
@@ -4132,11 +4138,12 @@ RC, RESULT, SIGL, SELF, and SUPER as local variables.
 <indexterm><primary>examples</primary><secondary>USE LOCAL instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; USE LOCAL</title>
-<programlisting>::method init
-USE LOCAL x y z   -- only x, y, and z are local
+<programlisting language="rexx">
+::method init
+use local x y z   -- only x, y, and z are local
                   -- all other become object variables
 
-::method init
+::method init2
 use local         -- any variable is an object variable
 </programlisting>
 </example>

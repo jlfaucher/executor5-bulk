@@ -685,11 +685,11 @@ empty MapCollection is returned.
 </para>
 <para><example>
 <title>MapCollection class &mdash; of method</title>
-<programlisting>
-iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
+<programlisting language="rexx">iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
 say iso639~allIndexes~toString(, ", ")  -- de, en, fr
 say iso639~allItems~toString(, ", ")    -- Deutsch, English, fran&ccedil;ais
-</programlisting></example></para>
+</programlisting>
+</example></para>
 </section>
 
 
@@ -1367,8 +1367,7 @@ whole-number indexes to reference items in an array.</para>
   as an array of indexes.  For example, the following are equivalent:
 <example id="ex.Array-indexes">
 <title>Array class &mdash; [] method</title>
-<programlisting>
-    x = myarray[1,2,3]   -- retrieves an item from a &multidimarray;
+<programlisting language="rexx">    x = myarray[1,2,3]   -- retrieves an item from a &multidimarray;
     index = .array~of(1,2,3)  -- create an index list
     x = myarray[index]   -- also retrieves from "1,2,3"
 </programlisting>
@@ -1407,8 +1406,7 @@ of sizes.
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of">
 <title>Array class &mdash; of method</title>
-<programlisting>
-   a = .array~new()        -- create a new, empty array
+<programlisting language="rexx">   a = .array~new()        -- create a new, empty array
    a = .array~new(3,3)     -- create a new 3x3 array
    sizes = .array~of(4,4,4)
    a = .array~new(sizes)   -- create new 4x4x4 array
@@ -1441,8 +1439,7 @@ does not include the indexes corresponding to the omitted arguments.
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of2">
 <title>Array class &mdash; of method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "David")
 
 do name over a
    say name  -- displays "Fred", "Mike", and "David"
@@ -1514,8 +1511,7 @@ values.
 <secondary>allIndexes method</secondary></indexterm>
 <example id="ex.Array-allIndexes">
 <title>Array class &mdash; allIndexes method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "David")
 
 do name over a~allIndexes
    say name  -- displays "1", "2", and "3"
@@ -1549,8 +1545,7 @@ end
 <secondary>allItems method</secondary></indexterm>
 <example id="ex.Array-allItems">
 <title>Array class &mdash; allItems method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "David")
 
 do name over a~allItems
    say name  -- displays "Fred", "Mike", and "David"
@@ -1586,8 +1581,7 @@ The <methodname>append</methodname> method is only valid with &singledimarray;s.
 <secondary>append method</secondary></indexterm>
 <example id="ex.Array-append">
 <title>Array class &mdash; append method</title>
-<programlisting>
-   a = .array~of("Mike", "Rick")
+<programlisting language="rexx">   a = .array~of("Mike", "Rick")
    a~append("Fred")  -- a = .array~of("Mike", "Rick", "Fred")
 </programlisting>
 </example>
@@ -1620,8 +1614,7 @@ with the specified <emphasis role="italic">index</emphasis> or
 <secondary>at method</secondary></indexterm>
 <example id="ex.Array-at">
 <title>Array class &mdash; at method</title>
-<programlisting>
-   a = .array~of("Mike", "Rick")
+<programlisting language="rexx">   a = .array~of("Mike", "Rick")
    say a~at(2)  -- says: "Rick"
 </programlisting>
 </example>
@@ -1657,8 +1650,7 @@ The <emphasis role="italic">index</emphasis> argument may also be specified as a
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Array-delete">
 <title>Array class &mdash; delete method</title>
-<programlisting>
-   a = .array~of("Fred", "Mike", "Rick", "David")
+<programlisting language="rexx">   a = .array~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the array
                 -- ("Fred", "Rick", "David")
 </programlisting>
@@ -1689,8 +1681,7 @@ determined, <computeroutput>0</computeroutput> is returned.
 <secondary>dimension method</secondary></indexterm>
 <example id="ex.Array-dimension">
 <title>Array class &mdash; dimension method</title>
-<programlisting>
-a = .array~of(,"Mike", "Rick")
+<programlisting language="rexx">a = .array~of(,"Mike", "Rick")
 say a~dimension     -- says: 1 (number of dimensions in the array)
 say a~dimension(1)  -- says: 3 (upper bound of dimension one)
 
@@ -1739,8 +1730,7 @@ say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 <secondary>empty method</secondary></indexterm>
 <example id="ex.Array-empty">
 <title>Array class &mdash; empty method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
+<programlisting language="rexx">a = .array~of("Mike", "Rick", "Fred", "Rick")
 a~empty    -- a~items now returns "0"
 </programlisting>
 </example>
@@ -1766,8 +1756,7 @@ a~empty    -- a~items now returns "0"
 <secondary>fill method</secondary></indexterm>
 <example id="ex.Array-fill">
 <title>Array class &mdash; fill method</title>
-<programlisting>
-a = .array~new(3,3)
+<programlisting language="rexx">a = .array~new(3,3)
 a~fill(0)    -- initialize the matrix to all zeroes.
 </programlisting>
 </example>
@@ -1793,8 +1782,7 @@ array is empty.  For &multidimarray;s, the index is returned as an array of inde
 <secondary>first method</secondary></indexterm>
 <example id="ex.Array-first">
 <title>Array class &mdash; first method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
+<programlisting language="rexx">a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~first  -- says: 1
 a = .array~of(,"Mike", "Rick")
 say a~first  -- says: 2
@@ -1820,8 +1808,7 @@ say a~first  -- says: 2
 empty.
 <example id="ex.Array-firstItem-1">
 <title>Array class &mdash; firstItem method</title>
-<programlisting>
-musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
+<programlisting language="rexx">musketeers=.array~of("Porthos","Athos","Aramis")  /* Creates array MUSKETEERS      */
 item=musketeers~firstItem                         /* Gives first item in array     */
                                                   /* (Assigns "Porthos" to item)   */
 </programlisting>
@@ -1853,8 +1840,7 @@ an item associated with the specified index or indexes. Returns
 <secondary>hasIndex method</secondary></indexterm>
 <example id="ex.Array-hasIndex">
 <title>Array class &mdash; hasIndex method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
+<programlisting language="rexx">a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~hasIndex(2)  -- says: 1
 say a~hasIndex(5)  -- says: 0
 </programlisting>
@@ -1883,8 +1869,7 @@ Item equality is determined by using the <methodname>==</methodname> method of <
 <secondary>hasItem method</secondary></indexterm>
 <example id="ex.Array-hasItem">
 <title>Array class &mdash; hasItem method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
+<programlisting language="rexx">a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~hasItem("Rick")  -- says: 1
 say a~hasItem("Mark")  -- says: 0
 </programlisting>
@@ -1914,8 +1899,7 @@ returned. Item equality is determined by using the <methodname>==</methodname> m
 <secondary>index method</secondary></indexterm>
 <example id="ex.Array-index">
 <title>Array class &mdash; index method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
+<programlisting language="rexx">a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~index("Rick")  -- says: 2
 </programlisting>
 </example>
@@ -1953,8 +1937,7 @@ The index values for any items in the Array are incremented by the insertion.
 <tertiary>of Array class</tertiary></indexterm>
 <example id="ex.Array-insert">
 <title>Array class &mdash; insert method</title>
-<programlisting>
-musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
+<programlisting language="rexx">musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
                                                  /* consisting of: Porthos         */
                                                  /*                Athos           */
                                                  /*                Aramis          */
@@ -2000,8 +1983,7 @@ empty.  Returns
 <secondary>isEmpty method</secondary></indexterm>
 <example id="ex.Array-isEmpty">
 <title>Array class &mdash; isEmpty method</title>
-<programlisting>
-a = .array~new
+<programlisting language="rexx">a = .array~new
 say a~isEmpty  -- says: 1
 a[1] = "1"
 say a~isEmpty  -- says: 0
@@ -2028,8 +2010,7 @@ say a~isEmpty  -- says: 0
 <secondary>items method</secondary></indexterm>
 <example id="ex.Array-items">
 <title>Array class &mdash; items method</title>
-<programlisting>
-a = .array~of("Fred", , "Mike", , "David")
+<programlisting language="rexx">a = .array~of("Fred", , "Mike", , "David")
 say a~items  -- says: 3
 </programlisting>
 </example>
@@ -2056,8 +2037,7 @@ index items.
 <secondary>last method</secondary></indexterm>
 <example id="ex.Array-last">
 <title>Array class &mdash; last method</title>
-<programlisting>
-a = .array~of("Fred", , "Mike", , "David")
+<programlisting language="rexx">a = .array~of("Fred", , "Mike", , "David")
 say a~last  -- says: 5
 </programlisting>
 </example>
@@ -2081,8 +2061,7 @@ say a~last  -- says: 5
 empty.
 <example id="ex.Array-lastItem">
 <title>Array class &mdash; lastItem method</title>
-<programlisting>
-musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
+<programlisting language="rexx">musketeers=.array~of("Porthos","Athos","Aramis")  /* Creates array MUSKETEERS      */
 item=musketeers~lastItem                          /* Gives last item in array      */
                                                   /* (Assigns "Aramis" to item)    */
 </programlisting>
@@ -2111,8 +2090,7 @@ A &multidimarray; will be converted into a non-sparse &singledimarray;.
 <secondary>makeArray method</secondary></indexterm>
 <example id="ex.Array-makeArray">
 <title>Array class &mdash; makeArray method</title>
-<programlisting>
-a = .array~of("Fred", , "Mike", , "David")
+<programlisting language="rexx">a = .array~of("Fred", , "Mike", , "David")
 b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
 </programlisting>
 </example>
@@ -2170,8 +2148,7 @@ determine the next position and the index is returned as an array of index value
 <secondary>next method</secondary></indexterm>
 <example id="ex.Array-next">
 <title>Array class &mdash; next method</title>
-<programlisting>
-a = .array~of("Fred", , "Mike", , "David")
+<programlisting language="rexx">a = .array~of("Fred", , "Mike", , "David")
 say a~next(3)  -- says: 5
 </programlisting>
 </example>
@@ -2204,8 +2181,7 @@ determine the previous position and the index is returned as an array of index v
 <secondary>previous method</secondary></indexterm>
 <example id="ex.Array-previous">
 <title>Array class &mdash; previous method</title>
-<programlisting>
-a = .array~of("Fred", , "Mike", , "David")
+<programlisting language="rexx">a = .array~of("Fred", , "Mike", , "David")
 say a~previous(3)  -- says: 1
 </programlisting>
 </example>
@@ -2242,8 +2218,7 @@ that dimension, the array is expanded to the new dimension size.</para>
 <secondary>put method</secondary></indexterm>
 <example id="ex.Array-put">
 <title>Array class &mdash; put method</title>
-<programlisting>
-a = .array~new
+<programlisting language="rexx">a = .array~new
 a~put("Fred", 1) -- a = .array~of("Fred")
 a~put("Mike", 2) -- a = .array~of("Fred", "Mike")
 a~put("Mike", 1) -- a = .array~of("Mike", "Mike")
@@ -2291,8 +2266,7 @@ removal.
 <secondary>remove method</secondary></indexterm>
 <example id="ex.Array-remove">
 <title>Array class &mdash; remove method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "Mike", "David")
 a~remove(2)  -- removes "Mike"
 </programlisting>
 </example>
@@ -2321,8 +2295,7 @@ removed item.
 <secondary>removeItem method</secondary></indexterm>
 <example id="ex.Array-removeItem">
 <title>Array class &mdash; removeItem method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "Mike", "David")
 a~removeItem("Mike")  -- removes the item at index "2"
 </programlisting>
 </example>
@@ -2361,8 +2334,7 @@ array remains unchanged. The <methodname>section</methodname> method is valid on
 <secondary>section method</secondary></indexterm>
 <example id="ex.Array-section">
 <title>Array class &mdash; section method</title>
-<programlisting>
-a = .array~of(1,2,3,4)  -- Loads the array
+<programlisting language="rexx">a = .array~of(1,2,3,4)  -- Loads the array
 
 b = a~section(2)   -- b = .array~of(2,3,4)
 c = a~section(2,2) -- c = .array~of(2,3)
@@ -2490,8 +2462,7 @@ index values as an array of index numbers.
 <secondary>supplier method</secondary></indexterm>
 <example id="ex.Array-supplier">
 <title>Array class &mdash; supplier method</title>
-<programlisting>
-a = .array~of("Fred", "Mike", "David")
+<programlisting language="rexx">a = .array~of("Fred", "Mike", "David")
 sup = a~supplier
 a~append("Joe")
 do while sup~available
@@ -2529,8 +2500,7 @@ for which this method is a synonym.
 <secondary>toString method</secondary></indexterm>
 <example id="ex.Array-toString">
 <title>Array class &mdash; toString method</title>
-<programlisting>
-a = .array~of(1,2,3,4)  -- Loads the array
+<programlisting language="rexx">a = .array~of(1,2,3,4)  -- Loads the array
 
 say a~toString  -- Produces: 1
                 --           2
@@ -2550,8 +2520,7 @@ say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
 <secondary>of Array class</secondary></indexterm>
 <example id="ex.Array-examples1">
 <title>Array class &mdash; examples</title>
-<programlisting>
-array1=.array~of(1,2,3,4)  /* Loads the array */
+<programlisting language="rexx">array1=.array~of(1,2,3,4)  /* Loads the array */
 
 /* Alternative way to create and load an array */
 array2=.array~new(4)  /* Creates array2, containing 4 items */
@@ -2563,8 +2532,7 @@ end
 <para>You can produce the elements loaded into an array, for example:
 <example id="ex.Array-examples2">
 <title>Array class &mdash; examples</title>
-<programlisting>
-do i=1 to 4
+<programlisting language="rexx">do i=1 to 4
   say array1[i]
 end
 </programlisting>
@@ -2574,8 +2542,7 @@ end
 indexes are skipped in the returned array:
 <example id="ex.Array-examples3">
 <title>Array class &mdash; examples</title>
-<programlisting>
-directions=.array~of("North","South", ,"West")
+<programlisting language="rexx">directions=.array~of("North","South", ,"West")
 do i=1 to 4                                  /* Produces: North          */
   say directions[i]                          /*           South          */
                                              /*           The NIL object */
@@ -2586,8 +2553,7 @@ end                                          /*           West           */
 <para>Here is an example using the ~~:
 <example id="ex.Array-examples4">
 <title>Array class &mdash; examples</title>
-<programlisting>
-z=.array~of(1,2,3)~~put(4,4)
+<programlisting language="rexx">z=.array~of(1,2,3)~~put(4,4)
 do i = 1 to z~size
   say z[i]              /* Produces:  1 2 3 4 */
 end
@@ -3271,8 +3237,7 @@ The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;
 <secondary>of Bag class</secondary></indexterm>
 <example id="ex.Bag-examples">
 <title>Bag class &mdash; examples</title>
-<programlisting>
-/* Create a bag of fruit */
+<programlisting language="rexx">/* Create a bag of fruit */
 fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
 say fruit~items          /* How many pieces? (4)      */
 say fruit~items("Apple") /* How many apples? (2)      */
@@ -3564,8 +3529,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 <title>CircularQueue class &mdash; makeArray method
 <indexterm><primary>examples</primary><secondary>makeArray method</secondary></indexterm>
 </title>
-<programlisting>
--- reverse an array
+<programlisting language="rexx">-- reverse an array
 a = .Array~of("one", "two", "three", "four", "five")
 say .CircularQueue~new(a~size)~appendAll(a)~makeArray("lifo")~makeString(, ", ")
 -- five, four, three, two, one
@@ -3732,8 +3696,7 @@ remains unchanged.  The new queue item will be sized to the larger of
 the receiver queue size or <emphasis role="italic">items</emphasis>.  The selection
 of the items will wrap from the end around to the beginning of the queue. For example,
 </para>
-<programlisting>
-q1 = .circularqueue~of("Fred", "Mike", "David")
+<programlisting language="rexx">q1 = .circularqueue~of("Fred", "Mike", "David")
 q2 = q1~section(2)        -- effectively rotates the queue
 
 do name over a
@@ -3917,8 +3880,7 @@ The
 
 <example id="ex.CircularQueue-examples">
 <title>CircularQueue class &mdash; examples</title>
-<programlisting>
-  -- create a circular buffer with five items
+<programlisting language="rexx">  -- create a circular buffer with five items
 u=.circularQueue~of("a", "b", "c", "d", "e")
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
 say
@@ -4066,8 +4028,7 @@ but without methods <methodname>setMethod</methodname> and
 <methodname>[]</methodname> methods defined for
 Collections, Directory provides access to items using methods.  For
 example:
-<programlisting>
-mydir = .directory~new
+<programlisting language="rexx">mydir = .directory~new
 mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
 say mydir~name        -- same as say mydir['NAME']
 </programlisting>
@@ -4191,8 +4152,7 @@ returned. If the Directory has no item or method associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
 <example id="ex.Directory-at">
 <title>Directory class &mdash; at method</title>
-<programlisting>
-say .environment~at("OBJECT")   /* Produces: "The Object class" */
+<programlisting language="rexx">say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 </example>
 </para>
@@ -4597,8 +4557,7 @@ case, <methodname>unknown</methodname> returns no result.</para>
 <secondary>of Directory class</secondary></indexterm>
 <example id="ex.Directory-examples">
 <title>Directory class &mdash; examples</title>
-<programlisting>
-/******************************************************************************/
+<programlisting language="rexx">/******************************************************************************/
 /*  A Phone Book Directory program                                            */
 /*  This program demonstrates use of the directory class.                     */
 /******************************************************************************/
@@ -5344,8 +5303,7 @@ list is empty.
 empty.
 <example id="ex.List-firstItem">
 <title>List class &mdash; firstItem method</title>
-<programlisting>
-musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
+<programlisting language="rexx">musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
 item=musketeers~firstItem                       /* Gives first item in list     */
                                                 /* (Assigns "Porthos" to item)  */
 </programlisting>
@@ -5443,8 +5401,7 @@ The index values for any items in the list are not modified by the insertion.
 <tertiary>of List class</tertiary></indexterm>
 <example id="ex.List-insert">
 <title>List class &mdash; insert method</title>
-<programlisting>
-musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
+<programlisting language="rexx">musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
                                                 /* consisting of: Porthos         */
                                                 /*                Athos           */
                                                 /*                Aramis          */
@@ -6290,8 +6247,7 @@ The <methodname>delete</methodname> method and the <methodname>remove</methodnam
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Queue-delete">
 <title>Queue class &mdash; delete method</title>
-<programlisting>
-   a = .queue~of("Fred", "Mike", "Rick", "David")
+<programlisting language="rexx">   a = .queue~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the queue
                 -- ("Fred", "Rick", "David")
 </programlisting>
@@ -6439,29 +6395,28 @@ by the queue object.
 <tertiary>of Queue class</tertiary></indexterm>
 <example id="ex.Queue-insert">
 <title>Queue class &mdash; insert method</title>
-<programlisting>
-musketeers=.queue~of("Porthos","Athos","Aramis) /* Creates queue MUSKETEERS       */
-                                                /* consisting of: Porthos         */
-                                                /*                Athos           */
-                                                /*                Aramis          */
+<programlisting language="rexx">musketeers=.queue~of("Porthos","Athos","Aramis") /* Creates queue MUSKETEERS       */
+                                                 /* consisting of: Porthos         */
+                                                 /*                Athos           */
+                                                 /*                Aramis          */
 index=musketeers~first                     /* Gives index of first item      */
-musketeers~insert("D&apos;Artagnan",index) /* Adds D&apos;Artagnan after Porthos  */
+musketeers~insert("D'Artagnan",index)      /* Adds D'Artagnan after Porthos  */
                                            /* List is now: Porthos           */
-                                           /*              D&apos;Artagnan   */
+                                           /*              D'Artagnan        */
                                            /*              Athos             */
                                            /*              Aramis            */
 /* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan",.nil)  /* Adds D&apos;Artagnan before Porthos */
-                                           /* List is now:  D&apos;Artagnan  */
+musketeers~insert("D'Artagnan",.nil)       /* Adds D'Artagnan before Porthos */
+                                           /* List is now:  D'Artagnan       */
                                            /*               Porthos          */
                                            /*               Athos            */
                                            /*               Aramis           */
 /* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis   */
+musketeers~insert("D'Artagnan")            /* Adds D'Artagnan after Aramis   */
                                            /* List is now:  Porthos          */
                                            /*               Athos            */
                                            /*               Aramis           */
-                                           /*               D&apos;Artagnan  */
+                                           /*               D'Artagnan       */
 </programlisting>
 </example>
 </para>
@@ -7423,8 +7378,7 @@ All index-item pairs that appear in both collections are removed. The
 <secondary>of Relation class</secondary></indexterm>
 <example id="ex.Relation-examples">
 <title>Relation class &mdash; examples</title>
-<programlisting>
-/* Use a relation to express parent-child relationships */
+<programlisting language="rexx">/* Use a relation to express parent-child relationships */
 family = .relation~new
 family["Henry"] = "Peter"    /* Peter is Henry&apos;s child   */
 family["Peter"] = "Bridget"  /* Bridget is Peter&apos;s child */
@@ -8080,9 +8034,7 @@ with unique indexes that are character strings.</para>
 compound variable is used. For example:
 <example id="ex.Stem-examples1">
 <title>Stem class &mdash; examples</title>
-<programlisting>
-a.1 = 2
-</programlisting>
+<programlisting language="rexx">a.1 = 2</programlisting>
 </example>
 </para>
 <para>creates a new stem collection with the name <computeroutput>A.</computeroutput>
@@ -8092,8 +8044,7 @@ the value 2 to entry 1 in the collection.</para>
 concatenated with the derived stem index.</para>
 <example id="ex.Stem-examples2">
 <title>Stem class &mdash; examples</title>
-<programlisting>
-say a.[1,2]  -- implicitly creates stem object with name "A."
+<programlisting language="rexx">say a.[1,2]  -- implicitly creates stem object with name "A."
 -- displays "A.1.2"
 
 a = .stem~new("B.")
@@ -8636,8 +8587,7 @@ but with additional methods <methodname>setMethod</methodname> and
 <methodname>[]</methodname> methods defined for
 Collections, StringTable provides access to items using methods.  For
 example:
-<programlisting>
-sTable = .StringTable~new
+<programlisting language="rexx">sTable = .StringTable~new
 sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
 say sTable~name        -- same as say sTable["NAME"]
 </programlisting>
@@ -8761,8 +8711,7 @@ If the StringTable has no item associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
 <example id="ex.stringtable-at">
 <title>StringTable class &mdash; at method</title>
-<programlisting>
-say .environment~at("OBJECT")   /* Produces: "The Object class" */
+<programlisting language="rexx">say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 </example>
 </para>
@@ -9495,8 +9444,7 @@ The supplier iterates over the items in an unspecified order.
 sorting an array of strings.
 <example id="ex.Array-sorting">
 <title>Array class &mdash; sorting</title>
-<programlisting>
-myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
+<programlisting language="rexx">myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
 myArray~sort
 
 do name over myArray
@@ -9523,8 +9471,7 @@ method to enable sorting.
 For example, consider the following simple class:
 <example id="ex.Sorting">
 <title>Non-string sorting</title>
-<programlisting><![CDATA[
-::class Employee inherit Comparable
+<programlisting language="rexx">::class Employee inherit Comparable
 
 ::attribute id
 ::attribute name
@@ -9541,7 +9488,7 @@ For example, consider the following simple class:
 ::method string
   expose name
   return "Employee" name
-]]></programlisting>
+</programlisting>
 </example>
 </para>
 <para>The Employee class implements its sort order using the employee identification number.  When the
@@ -9551,9 +9498,7 @@ The <methodname>compareTo</methodname> method tells the <methodname>sort</method
 which of the two instances should be first.
 <example id="ex.Sorting-compare">
 <title>Comparison during sorting</title>
-<programlisting>
-<![CDATA[
-    a = .array~new
+<programlisting language="rexx">    a = .array~new
     a[1] = .Employee~new(654321, "Fred")
     a[2] = .Employee~new(123456, "George")
     a[3] = .Employee~new(333333, "William")
@@ -9563,7 +9508,6 @@ which of the two instances should be first.
     do employee over a
        say employee    -- sorted order is "George", "William", "Fred"
     end
-]]>
 </programlisting>
 </example>
 </para>
@@ -9580,8 +9524,7 @@ comparators can be customized for different comparison purposes.  For example, t
 DescendingComparator class that will sort items into descending order:
 <example id="ex.Sorting-multi-order">
 <title>Multi-order sorting</title>
-<programlisting>
-::CLASS 'DescendingComparator' MIXINCLASS Comparator
+<programlisting language="rexx">::CLASS 'DescendingComparator' MIXINCLASS Comparator
 ::METHOD compare
 use strict arg left, right
 return -left~compareTo(right)
@@ -9592,8 +9535,7 @@ return -left~compareTo(right)
 <methodname>compareTo</methodname> method.  Our previous example
 <example id="ex.Sorting-descendingcompare">
 <title>Descending compare sorting</title>
-<programlisting>
-myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
+<programlisting language="rexx">myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
 myArray~sortWith(.DescendingComparator~new)
 
 do name over myArray
@@ -9609,8 +9551,7 @@ manner.  For example, to sort our Employee class by name instead of the default 
 simple comparator class:
 <example id="ex.Sorting-customcompare">
 <title>Custom compare sorting</title>
-<programlisting>
-::CLASS EmployeeNameSorter MIXINCLASS Comparator
+<programlisting language="rexx">::CLASS EmployeeNameSorter MIXINCLASS Comparator
 ::METHOD compare
   use strict arg left, right
   return left~name~compareTo(right~name)  -- do the comparison using the names
@@ -9698,8 +9639,7 @@ In an unstable sort, items are not guaranteed to maintain their original positio
 compare equal during the sort.  Consider the following simple example:
 <example id="ex.Sorting-unstablesort">
 <title>Unstable sort</title>
-<programlisting>
-a = .array~of("Fred", "George", "FRED", "Mike", "fred")
+<programlisting language="rexx">a = .array~of("Fred", "George", "FRED", "Mike", "fred")
 a~sortwith(.caselesscomparator~new)
 do name over a
   say name
@@ -9740,8 +9680,7 @@ classes:</para>
 <listitem><para>The MapCollections Directory, Stem, Table, IdentityTable, and Relation</para></listitem>
 <listitem><para>The SetCollections Set and Bag.</para></listitem>
 </itemizedlist>
-<programlisting>
-result = receiver~setoperator(argument)
+<programlisting language="rexx">result = receiver~setoperator(argument)
 </programlisting>
 <para>where:</para>
 <variablelist>

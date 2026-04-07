@@ -120,8 +120,7 @@ processing. The following figures illustrate this concept.</para>
 <para>Here is an example of using early reply to run methods concurrently.</para>
 <example>
 <title>REPLY instruction</title>
-<programlisting>
-/* Example of early reply */
+<programlisting language="rexx">/* Example of early reply */
 
 object1 = .example~new
 object2 = .example~new
@@ -153,8 +152,7 @@ from the <classname>Object</classname> class.
 To obtain a message object, an object sends a <methodname>start</methodname>
 message to the object to which the message object will convey a message. The
 message is an argument to the <methodname>start</methodname> message as in the following example:
-<programlisting>
-a=p~start("REVERSE")
+<programlisting language="rexx">a=p~start("REVERSE")
 </programlisting>
 </para>
 <para>This line of code creates a message object,
@@ -171,8 +169,7 @@ the information. Here is an example of using a message object to run methods
 concurrently. </para>
 <example>
 <title>Message object usage</title>
-<programlisting>
-/* Example of using a message object */
+<programlisting language="rexx">/* Example of using a message object */
 
 object1 = .example~new
 object2 = .example~new
@@ -222,8 +219,7 @@ to an object the methods run sequentially.</para>
 <para>The next example shows how the default concurrency works. </para>
 <example>
 <title>Default concurrency for methods</title>
-<programlisting>
-/* Example of default concurrency for methods of different scopes */
+<programlisting language="rexx">/* Example of default concurrency for methods of different scopes */
 
 object1 = .subexample~new
 
@@ -250,8 +246,7 @@ end
 </programlisting>
 </example>
 <para>The preceding example produces output such as the following: </para>
-<programlisting>
-Repeating Object 1 running call 1, 8 times.
+<programlisting language="rexx">Repeating Object 1 running call 1, 8 times.
 Object 1 running call 1
 Repeating Object 1 running call 2, 8 times.
 Object 1 running call 1
@@ -276,8 +271,7 @@ Object 1 running call 2
 concurrently by default.</para>
 <example>
 <title>Default concurrency for methods</title>
-<programlisting>
-/* Example of methods with the same scope not running concurrently*/
+<programlisting language="rexx">/* Example of methods with the same scope not running concurrently*/
 
 object1 = .example~new
 
@@ -314,8 +308,7 @@ access (a lock) for the object's scope. Other activities that send messages
 to the same object that required the locked scope waits until the first activity
 releases the lock.</para>
 <para>Suppose object A is running method Y, which includes: </para>
-<programlisting>
-self~z
+<programlisting language="rexx">self~z
 </programlisting>
 <para>Sequential processing does not allow method Z to begin until method Y has
 completed. However, method Y cannot complete until method Z runs. A similar
@@ -334,8 +327,7 @@ the REPEAT method. The language processor treats this as a subroutine call
 rather than as concurrently running two methods. </para>
 <example>
 <title>Sending a message to SELF</title>
-<programlisting>
-/* Example of sending message to SELF */
+<programlisting language="rexx">/* Example of sending message to SELF */
 
 object1 = .example~new
 object2 = .example~new
@@ -403,16 +395,14 @@ the object's integrity. Otherwise, concurrent methods can produce unexpected
 results.</para>
 <para>To use the SETUNGUARDED method for a method you have created with the NEW
 method of the Method class, you specify: </para>
-<programlisting>
-<emphasis role="italic">methodname</emphasis>~SETUNGUARDED
+<programlisting language="rexx">methodname~SETUNGUARDED
 </programlisting>
 <para>(See <xref linkend="mthMethodSetUnguarded" /> for details about
 SETUNGUARDED.)</para>
 <para>Alternately,
 you can define a method with the ::METHOD directive, specifying the UNGUARDED
 option: </para>
-<programlisting>
-::METHOD <emphasis role="italic">methodname</emphasis> UNGUARDED
+<programlisting language="rexx">::METHOD methodname UNGUARDED
 </programlisting>
 </section>
 
@@ -458,8 +448,7 @@ of the Method class with the GUARD instruction.</para>
 <para>The UNGUARDED option and the SETUNGUARDED method both provide
 unconditional concurrency. Including a GUARD instruction in a method makes
 concurrency conditional:</para>
-<programlisting>
-GUARD ON WHEN <emphasis role="italic">expression</emphasis>
+<programlisting language="rexx">GUARD ON WHEN expression
 </programlisting>
 <para>If the <emphasis role="italic">expression</emphasis> on the GUARD
 instruction evaluates to &true;, the
@@ -490,8 +479,7 @@ that is independent of the activity sequence.</para>
 </para>
 <example>
 <title>Method Write_Back</title>
-<programlisting>
-/* Method Write_Back                                 */
+<programlisting language="rexx">/* Method Write_Back                                 */
 use arg data           /* Save data to be written    */
 reply 0                /* Tell the sender all was OK */
 self~disk_write(data)  /* Now write the data         */
@@ -506,8 +494,7 @@ continues processing.</para>
 into the variable <computeroutput>nextline</computeroutput>:</para>
 <example>
 <title>Message to INFILE</title>
-<programlisting>
-mymsg = infile~start("READLINE") /* Gets message object to carry    */
+<programlisting language="rexx">mymsg = infile~start("READLINE") /* Gets message object to carry    */
 /* message to INFILE                                                */
 /* do other work */
 nextline=mymsg~result            /* Gets result from message object */
@@ -532,8 +519,7 @@ Synchronization often uses semaphores. Here is an example of a semaphore class:
 
 <example>
 <title>Example of a Rexx Semaphore Class</title>
-<programlisting>
-/*******************************************************************************/
+<programlisting language="rexx">/*******************************************************************************/
 /*  A Rexx Semaphore Class.                                                    */
 /*                                                                             */
 /* This file implements a semaphore class in Rexx.  The class is defined to    */
@@ -766,8 +752,7 @@ with the Monitor class (see <xref linkend="clsMonitor" />).
 </para>
 <example>
 <title>Example of a Rexx Monitor Class</title>
-<programlisting>
-::method init
+<programlisting language="rexx">::method init
 /* Initialize the bounded buffer */
 expose size in out n
 use arg size
@@ -801,8 +786,7 @@ readers, whereas readers exclude only writers. The UNGUARDED option is required
 to allow several concurrent readers. </para>
 <example>
 <title>Example of a Rexx Readers and Writers</title>
-<programlisting>
-::method init
+<programlisting language="rexx">::method init
 expose readers writers
 readers = 0
 writers = 0

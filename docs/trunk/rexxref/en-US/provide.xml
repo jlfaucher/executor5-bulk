@@ -170,8 +170,7 @@ The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
 <example>
 <title>Creating an array subclass</title>
-<programlisting>
-/* Creating an array subclass for statistics */
+<programlisting language="rexx">/* Creating an array subclass for statistics */
 
 ::class statArray subclass array public
 
@@ -229,8 +228,7 @@ CLASS option. The second version uses a metaclass.</para>
 <secondary>metaclass</secondary></indexterm>
 <example>
 <title>Adding a CLASS method</title>
-<programlisting>
-/* Adding a class method using ::METHOD */
+<programlisting language="rexx">/* Adding a class method using ::METHOD */
 
 a = .point~new(1,1)               /* Create some point instances  */
 say "Created point instance" a
@@ -271,8 +269,7 @@ say "The point class has created" .point~instances "instances."
 </programlisting>
 
 <para><emphasis role="bold">Version 2</emphasis></para>
-<programlisting>
-/* Adding a class method using a metaclass  */
+<programlisting language="rexx">/* Adding a class method using a metaclass  */
 
 a = .point~new(1,1)                    /* Create some point instances  */
 say "Created point instance" a
@@ -319,8 +316,7 @@ return instanceCount
 <para>You can define a class using either directives or messages.</para>
 <para>To define a class using directives, you place a ::CLASS directive after the
 main part of your source program:</para>
-<programlisting>
-::class "Account"
+<programlisting language="rexx">::class "Account"
 </programlisting>
 <para>This creates an Account class that is a subclass of the Object class.  Object
 is the default superclass if one is not specified.
@@ -335,8 +331,7 @@ used to locate your new class instance.
 the class. </para>
 <example>
 <title>Adding a method</title>
-<programlisting>
-::method type
+<programlisting language="rexx">::method type
   return "an account"
 
 ::method "name="
@@ -353,8 +348,7 @@ the class. </para>
 it: </para>
 <example>
 <title>Adding a method</title>
-<programlisting>
-::class "Savings" subclass account
+<programlisting language="rexx">::class "Savings" subclass account
 ::method type
 return "a savings account"
 </programlisting>
@@ -364,8 +358,7 @@ return "a savings account"
 to that instance:</para>
 <example>
 <title>Invoking a method</title>
-<programlisting>
-asav = .savings~new
+<programlisting language="rexx">asav = .savings~new
 say asav~type
 asav~name = "John Smith"
 </programlisting>
@@ -375,8 +368,7 @@ to the account object variable NAME. The following directive sequence creates
 the NAME and NAME= methods: </para>
 <example>
 <title>Defining SET and GET methods</title>
-<programlisting>
-::method "name="
+<programlisting language="rexx">::method "name="
   expose name
   use arg name
 
@@ -388,8 +380,7 @@ the NAME and NAME= methods: </para>
 
 <para>You can replace this with a single <xref linkend="attrd" xrefstyle="select:title"/> directive.
 For example, the directive </para>
-<programlisting>
-::attribute name
+<programlisting language="rexx">::attribute name
 </programlisting>
 <para>adds two methods, NAME and NAME= to a class. These methods perform the
 same function as the NAME and NAME= methods in the original example. The NAME
@@ -402,14 +393,12 @@ The ::CONSTANT directive will create both a class method and an instance method 
 definition.  The constant method will always return the same constant value, and can be
 invoked by sending a message to either the class or an instance method.  For example, you
 might add the following constant to your Account class:</para>
-<programlisting>
-::constant checkingMinimum 200
+<programlisting language="rexx">::constant checkingMinimum 200
 </programlisting>
 <para>This value can be retrieved using either of the following methods</para>
 <example>
 <title>Retrieving method values</title>
-<programlisting>
-  say .Account~checkingMinimum    -- displays "200"
+<programlisting language="rexx">  say .Account~checkingMinimum    -- displays "200"
   asave = .savings~new
   say asave~checkingMinimum       -- also displays "200"
 </programlisting>
@@ -422,13 +411,11 @@ or MIXINCLASS message to an existing class. If you specify neither the SUBCLASS
 nor the MIXINCLASS option on the ::CLASS directive, the superclass for the
 new class is the Object class, and it is not a mixin class.</para>
 <para>Example of creating a new class using a message: </para>
-<programlisting>
-persistence = .object~mixinclass("Persistence")
+<programlisting language="rexx">persistence = .object~mixinclass("Persistence")
 myarray=.array~subclass("myarray")~~inherit(persistence)
 </programlisting>
 <para>Example of creating a new class using the directive:</para>
-<programlisting>
-::class persistence mixinclass object
+<programlisting language="rexx">::class persistence mixinclass object
 ::class myarray subclass array inherit persistence
 </programlisting>
 </section>
@@ -483,8 +470,7 @@ to <computeroutput>mycost</computeroutput>: </para>
 
 <example>
 <title>Accessing a method</title>
-<programlisting>
-cost=.object~subclass("A cost")
+<programlisting language="rexx">cost=.object~subclass("A cost")
 cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
 mycost=cost~new
 mycost~"%"        /* Produces:  Enter a price.             */
@@ -549,15 +535,12 @@ the invoked method and then invoke the same method on another object.  This
 can be used track the messages that are sent to an object:</para>
 <example>
 <title>Defining an UNKNOWN method</title>
-<programlisting>
-<![CDATA[
-::method unknown
+<programlisting language="rexx">::method unknown
 expose target      -- will receive all of the messages
 use arg name, arguments
 say name "invoked with" arguments~toString
 -- send along the message with the original args
 forward to(target) message(name) arguments(arguments)
-]]>
 </programlisting>
 </example>
 </section>
@@ -583,20 +566,17 @@ or variable name whose value is a valid class.</para>
 class, define a TYPE method for the Account class, and create the Savings class
 that is a subclass of Account. You could define a TYPE method for the Savings
 class as follows: </para>
-<programlisting>
-savings~define("TYPE", &apos;return "a savings account"&apos;)
+<programlisting language="rexx">savings~define("TYPE", &apos;return "a savings account"&apos;)
 </programlisting>
 <para>You could change the search order by using the following line: </para>
-<programlisting>
-savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
+<programlisting language="rexx">savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
 </programlisting>
 <para>This changes the search order so that the language processor searches for
 the TYPE method first in the Account superclass (rather than in the Savings
 subclass). When you create an instance of the Savings class
 (<computeroutput>asav</computeroutput>)
 and send a TYPE message to <computeroutput>asav</computeroutput>:</para>
-<programlisting>
-say asav~type
+<programlisting language="rexx">say asav~type
 </programlisting>
 <para><computeroutput>an account (savings)</computeroutput> is displayed.
 The TYPE method of the Savings class calls the TYPE method of the Account
@@ -631,9 +611,7 @@ be accessed from other instances of the same class (or subclass instances).
 <listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
 <example>
 <title>Referencing methods</title>
-<programlisting>
-<![CDATA[
-::class Savings
+<programlisting language="rexx">::class Savings
 ::method newCheckingAccount CLASS
   instance = self~new
   instance~makeChecking
@@ -642,7 +620,6 @@ be accessed from other instances of the same class (or subclass instances).
 ::method makeChecking private
   expose checking
   checking = .true
-]]>
 </programlisting>
 </example>
 <para>The newCheckingAccount CLASS method is able to invoke the makeChecking method because
@@ -652,9 +629,7 @@ the scope of the makeChecking method is .Savings.
 method of its class.  For example:</para>
 <example>
 <title>Referencing methods</title>
-<programlisting>
-<![CDATA[
-::class Savings
+<programlisting language="rexx">::class Savings
 ::method init class
   expose counter
   counter = 0
@@ -667,7 +642,6 @@ method of its class.  For example:</para>
 ::method init
   expose accountNumber
   accountNumber = self~class~allocateAccountNumber
-]]>
 </programlisting>
 </example>
 <para>The instance init method of the Savings class is able to invoke the allocateAccountNumber private
@@ -692,8 +666,7 @@ message up the hierarchy to complete the object's initialization.</para>
 
 <example>
 <title>Instance initialization</title>
-<programlisting>
-asav = .savings~new(1000.00, 6.25)
+<programlisting language="rexx">asav = .savings~new(1000.00, 6.25)
 say asav~type
 asav~name = "John Smith"
 
@@ -725,8 +698,7 @@ the arguments specified on the NEW method. In the Savings INIT method, the
 line: </para>
 <example>
 <title>Instance initialization</title>
-<programlisting>
-self~init:super(balance)
+<programlisting language="rexx">self~init:super(balance)
 </programlisting>
 </example>
 <para> calls the INIT method of
@@ -814,8 +786,7 @@ a string as an argument.</para>
 -->
 <example>
 <title>Comparing to the .nil object</title>
-<programlisting>
-d = .directory~new
+<programlisting language="rexx">d = .directory~new
 say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
 signal on nostring
 say substr(d,5,7)         /* Raises the NOSTRING condition */
@@ -1049,11 +1020,11 @@ the index or indexes within the brackets. These diagrams are intended to show
 how you can use these methods. For example, to set the element <code>(2, 3)</code>
 of a &multidimarray; named <emphasis role="italic">matrix</emphasis> to
 <literal>0</literal>, you would typically use the syntax:
-<programlisting>matrix[2, 3] = 0
+<programlisting language="rexx">matrix[2, 3] = 0
 </programlisting>
 </para>
 <para>rather than:
-<programlisting>matrix~&quot;[]=&quot;(0, 2, 3)
+<programlisting language="rexx">matrix~&quot;[]=&quot;(0, 2, 3)
 </programlisting>
 </para>
 <para>

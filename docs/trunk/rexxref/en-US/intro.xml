@@ -252,14 +252,12 @@ which is called the <emphasis>twiddle</emphasis>
 required by the action</para></listitem>
 </itemizedlist></para>
 <para>So the message format looks like this: </para>
-<programlisting>
-object~action(parameters)
+<programlisting language="rexx">object~action(parameters)
 </programlisting>
 <para>Assume that the object is the string
 <computeroutput>!iH.</computeroutput> Sending it a message
 to use its REVERSE action: </para>
-<programlisting>
-"!iH"~reverse
+<programlisting language="rexx">"!iH"~reverse
 </programlisting>
 <para>returns the string object <computeroutput>Hi!.</computeroutput></para>
 </section>
@@ -289,8 +287,7 @@ the methods you create.
 <para>Rexx lets you send the same message to objects that are different:
 <example>
 <title>Methods</title>
-<programlisting>
-"!iH"~reverse   -- Reverses the characters "!iH" to form "Hi!"
+<programlisting language="rexx">"!iH"~reverse   -- Reverses the characters "!iH" to form "Hi!"
 pen~reverse     -- Reverses the direction of a plotter pen
 ball~reverse    -- Reverses the direction of a moving ball
 </programlisting>
@@ -402,8 +399,7 @@ class, all sharing a common method named <methodname>put</methodname>,
 but with a different implementation each.
 <example>
 <title>Polymorphism</title>
-<programlisting>
-stem~put("value", "tail")         -- sets a Stem tail to "value"
+<programlisting language="rexx">stem~put("value", "tail")         -- sets a Stem tail to "value"
 stringTable~put("value", "index") -- sets a StringTable "index" to "value"
 array~put("value", 1)             -- sets Array index 1 to "value"
 set~put("value")                  -- makes "value" a member of the Set
@@ -579,8 +575,7 @@ started by two subsequent minus signs (--) and ends at the end
 of a line. Example:</para>
 <indexterm><primary>examples</primary>
 <secondary>line comments</secondary></indexterm>
-<programlisting>
-"Fred"
+<programlisting language="rexx">"Fred"
 "Don&apos;t Panic!"
 &apos;You shouldn&apos;&apos;t&apos;        -- Same as "You shouldn&apos;t"
 &quot;&quot;
@@ -599,8 +594,7 @@ and ends with the necessary delimiters. They are called
 of any length.</para>
 <indexterm><primary>examples</primary>
 <secondary>standard comments</secondary></indexterm>
-<programlisting>
-/* This is an example of a valid Rexx comment */
+<programlisting language="rexx">/* This is an example of a valid Rexx comment */
 </programlisting>
 <para>Take special care when commenting out lines of code containing
 <computeroutput>/*</computeroutput> or <computeroutput>*/</computeroutput>
@@ -608,19 +602,19 @@ as part of a literal string. Consider the following
 program segment:
 <example>
 <title>Comments</title>
-<programlisting>
-01    parse pull input
-02    if substr(input,1,5) = "/*123"
-03      then call process
-04    dept = substr(input,32,5)
+<programlisting language="rexx">
+   parse pull input
+   if substr(input,1,5) = "/*123" then
+     call process
+   dept = substr(input,32,5)
 </programlisting>
 <para>To comment out lines 2 and 3, the following change would be incorrect:
 </para>
 <programlisting>
-01    parse pull input
-02 /* if substr(input,1,5) = "/*123"
-03      then call process
-04 */ dept = substr(input,32,5)
+   parse pull input
+/* if substr(input,1,5) = "/*123" then
+     call process
+*/ dept = substr(input,32,5)
 </programlisting>
 </example>
 </para>
@@ -633,18 +627,18 @@ because it would be looking for a matching standard comment end
 <para>You can avoid this type of problem by using concatenation for literal
 strings containing <computeroutput>/*</computeroutput> or
 <computeroutput>*/</computeroutput>; line 2 would be:
-<programlisting>
-if substr(input,1,5) = "/" || "*123"
+<programlisting language="rexx">
+   if substr(input,1,5) = "/" || "*123" then ...
 </programlisting>
 </para>
 <para>You could comment out lines 2 and 3 correctly as follows:
 <example>
 <title>Comments</title>
-<programlisting>
-01    parse pull input
-02 /* if substr(input,1,5) = "/" || "*123"
-03      then call process
-04 */ dept = substr(input,32,5)
+<programlisting language="rexx">
+   parse pull input
+/* if substr(input,1,5) = "/" || "*123" then
+     call process
+*/ dept = substr(input,32,5)
 </programlisting>
 </example>
 </para>
@@ -653,10 +647,9 @@ you nest the two types, the type of comment that comes first takes precedence
 over the one nested. Here is an example:
 <example>
 <title>Comments</title>
-<programlisting>
-"Fred"
-"Don&apos;t Panic!"
-&apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t"
+<programlisting language="rexx">"Fred"
+"Don't Panic!"
+'You shouldn''t'        /* Same as "You shouldn't"
 ""                      -- The null string         */
 </programlisting>
 </example>
@@ -672,8 +665,8 @@ in the line commented out with the line comment signs.
 <title>Comments</title>
 <programlisting>
 "Fred"
-"Don&apos;t Panic!"
-&apos;You shouldn&apos;&apos;t&apos;        -- Same as /* "You shouldn&apos;t"
+"Don't Panic!"
+'You shouldn''t'        -- Same as /* "You shouldn't"
 ""                      The null string         */
 </programlisting>
 </example>
@@ -741,8 +734,7 @@ marks can be detected on the line where they occur.</para>
 <para>These are valid strings:
 <example>
 <title>Valid strings</title>
-<programlisting>
-"Fred"
+<programlisting language="rexx">"Fred"
 "Don&apos;t Panic!"
 &apos;You shouldn&apos;&apos;t&apos;        /* Same as "You shouldn&apos;t" */
 ""                      /* The null string         */
@@ -802,8 +794,7 @@ cannot directly enter the characters themselves. These are valid hexadecimal
 strings:
 <example>
 <title>Valid hexadecimal strings</title>
-<programlisting>
-"ABCD"x
+<programlisting language="rexx">"ABCD"x
 "1d ec f8"X
 '1 d8'x
 </programlisting>
@@ -869,8 +860,7 @@ allow you to specify characters explicitly, bit by bit. These are valid binary
 strings:
 <example>
 <title>Valid binary strings</title>
-<programlisting>
-"11110000"b        /* == "f0"x                  */
+<programlisting language="rexx">"11110000"b        /* == "f0"x                  */
 "101 1101"b        /* == "5d"x                  */
 '1'b               /* == '00000001'b or '01'x  */
 "10000 10101010"b  /* == "0001 0000 1010 1010"b */
@@ -927,8 +917,7 @@ use.</para>
 <para>These are valid symbols:
 <example>
 <title>Valid symbols</title>
-<programlisting>
-Fred
+<programlisting language="rexx">Fred
 Albert.Hall
 WHERE?
 </programlisting>
@@ -963,8 +952,7 @@ and is not an operator.</para>
 <secondary>example</secondary></indexterm>
 <example>
 <title>Valid exponential numbers</title>
-<programlisting>
-17.3E-12
+<programlisting language="rexx">17.3E-12
 .03e+9
 </programlisting>
 </example>
@@ -973,8 +961,7 @@ and is not an operator.</para>
 but rather multiple tokens with an operator between:
 <example>
 <title>Invalid exponential numbers</title>
-<programlisting>
-.E-12     -- no digits
+<programlisting language="rexx">.E-12     -- no digits
 3ae+6     -- non-digit character
 3..0e+9   -- more than one '.'
 </programlisting>
@@ -1013,8 +1000,7 @@ number cannot be the name of a variable.
 <para>These are valid numbers:
 <example>
 <title>Valid numbers</title>
-<programlisting>
-12
+<programlisting language="rexx">12
 "-17.9"
 127.0650
 73e+128
@@ -1075,8 +1061,7 @@ characters and within operator character sequences are ignored.
 Therefore, the following are identical in meaning:
 <example>
 <title>White space and numbers</title>
-<programlisting>
-345>=123
+<programlisting language="rexx">345>=123
 345 >=123
 345 >= 123
 345 > = 123
@@ -1160,8 +1145,7 @@ example shows how a clause is composed of tokens:
 <secondary>special characters</secondary></indexterm>
 <example>
 <title>Special characters</title>
-<programlisting>
-"REPEAT"   A + 3;
+<programlisting language="rexx">"REPEAT"   A + 3;
 </programlisting>
 </example>
 </para>
@@ -1180,8 +1164,7 @@ However, one of the blanks between the
 <computeroutput>"REPEAT"</computeroutput> and the
 <computeroutput>A</computeroutput> remains as an operator. Thus, this clause
 is treated as though written: </para>
-<programlisting>
-"REPEAT" A+3;
+<programlisting language="rexx">"REPEAT" A+3;
 </programlisting>
 </section>
 </section>
@@ -1237,12 +1220,10 @@ continue a clause:
 <secondary>continuation</secondary></indexterm>
 <example>
 <title>Continuations</title>
-<programlisting>
-say "You can use a comma",       -- this line is continued
+<programlisting language="rexx">say "You can use a comma",       -- this line is continued
 "to continue this clause."
 </programlisting><para>or </para>
-<programlisting>
-say "You can use a minus"-       -- this line is continued
+<programlisting language="rexx">say "You can use a minus"-       -- this line is continued
 "to continue this clause."
 </programlisting>
 </example>
@@ -1358,12 +1339,10 @@ functionally translates operators into message terms. For dyadic operators,
 which operate on two terms, the
 language processor sends the operator as a message to the term on the left,
 passing the term on the right as an argument. For example, the sequence </para>
-<programlisting>
-say 1+2
+<programlisting language="rexx">say 1+2
 </programlisting>
 <para>is functionally equivalent to:</para>
-<programlisting>
-say 1~"+"(2)
+<programlisting language="rexx">say 1~"+"(2)
 </programlisting>
 <para>The blank concatenation operator sends the message &quot;&nbsp;&quot;
 (a single blank), and the abuttal concatenation operator sends the &quot;&quot;
@@ -1457,12 +1436,11 @@ evaluates to <computeroutput>37.41</computeroutput>.</para>
 <computeroutput>JKLMN</computeroutput>.</para>
 <para>In the case of </para>
 <programlisting>
-Fred/* The NOT operator precedes Peter. */&not;Peter
+Fred/* The NOT operator precedes Peter. */\\Peter
 </programlisting>
 <para> there is no abuttal operator implied, and the expression is not valid.
  However, </para>
-<programlisting>
-(Fred)/* The NOT operator precedes Peter. */(&not;Peter)
+<programlisting language="rexx">(Fred)/* The NOT operator precedes Peter. */(\\Peter)
 </programlisting><para> results
 in an abuttal, and evaluates to <computeroutput>37.40</computeroutput>.</para>
 </section>
@@ -1866,8 +1844,7 @@ identify the arguments on messages (see
 entire subexpression between the parentheses is evaluated immediately when
 the term is required.</para></listitem>
 <listitem><para>When the sequence </para>
-<programlisting>
-term1 operator1 term2 operator2 term3
+<programlisting language="rexx">term1 operator1 term2 operator2 term3
 </programlisting>
 <para>is encountered, and <computeroutput>operator2</computeroutput>
 has precedence over <computeroutput>operator1</computeroutput>,
@@ -1931,28 +1908,24 @@ uninitialized. Then:
 <secondary>examples</secondary></indexterm>
 <example>
 <title>Arithmetic</title>
-<programlisting>
-<![CDATA[
-A+5                  ->    "8"
-A-4*2                ->    "-5"
-A/2                  ->    "1.5"
-0.5**2               ->    "0.25"
-(A+1)>7              ->    "0"         /* that is, .false */
-" "=""               ->    "1"         /* that is, .true  */
-" "==""              ->    "0"         /* that is, .false */
-" "\==""             ->    "1"
-/* that is, .true  */
-(A+1)*3=12           ->    "1"         /* that is, .true  */
-"077">"11"           ->    "1"         /* that is, .true  */
-"077" >> "11"        ->    "0"         /* that is, .false */
-"abc" >> "ab"        ->    "1"         /* that is, .true  */
-"abc" << "abd"       ->    "1"         /* that is, .true  */
-"ab " << "abd"       ->    "1"         /* that is, .true  */
-Today is Day         ->    "TODAY IS Monday"
-"If it is" day       ->    "If it is Monday"
-Substr(Day,2,3)      ->    "ond"    /* Substr is a function */
-"!"xxx"!"            ->    "!XXX!"
-]]>
+<programlisting language="rexx">Say A+5                  -->    "8"
+Say A-4*2                -->    "-5"
+Say A/2                  -->    "1.5"
+Say 0.5**2               -->    "0.25"
+Say (A+1)>7              -->    "0"         /* that is, .false */
+Say " "=""               -->    "1"         /* that is, .true  */
+Say " "==""              -->    "0"         /* that is, .false */
+Say " "\==""             -->    "1"         /* that is, .true  */
+Say (A+1)*3=12           -->    "1"         /* that is, .true  */
+Say "077">"11"           -->    "1"         /* that is, .true  */
+Say "077" >> "11"        -->    "0"         /* that is, .false */
+Say "abc" >> "ab"        -->    "1"         /* that is, .true  */
+Say "abc" &lt;&lt; "abd"       -->    "1"         /* that is, .true  */
+Say "ab " &lt;&lt; "abd"       -->    "1"         /* that is, .true  */
+Say Today is Day         -->    "TODAY IS Monday"
+Say "If it is" day       -->    "If it is Monday"
+Say Substr(Day,2,3)      -->    "ond"    /* Substr is a function */
+Say "!"xxx"!"            -->    "!XXX!"
 </programlisting>
 </example>
 </para>
@@ -1967,8 +1940,7 @@ power operator.</para></listitem>
 <listitem><para>Power operators (like other operators) are evaluated from
 left to right.</para></listitem></itemizedlist></para>
 <para>For example:
-<programlisting>
--3**2     ==  9  /* not -9  */
+<programlisting language="rexx">-3**2     ==  9  /* not -9  */
 -(2+1)**2 ==  9  /* not -9  */
 2**2**3   == 64  /* not 256 */
 </programlisting>
@@ -2034,8 +2006,7 @@ term had been replaced by the name of a variable whose value is the returned
 object.</para>
 <para>For example, the message POS is valid for strings, and you could code:
 </para>
-<programlisting>
-c="escape"
+<programlisting language="rexx">c="escape"
 a="Position of &apos;e&apos; is:" c~pos("e",3)
 /* would set A to "Position of &apos;e&apos; is: 6" */
 </programlisting>
@@ -2045,8 +2016,7 @@ included in the original expression in place of the message term.</para>
 <para>For example, the messages INHERIT and SUBCLASS are valid for classes
 (see <xref linkend="clsClass" />) and, assuming the
 existence of the Persistent class, you could code:</para>
-<programlisting>
-account = .object~subclass("Account")~~inherit(.persistent)
+<programlisting language="rexx">account = .object~subclass("Account")~~inherit(.persistent)
 /* would set ACCOUNT to the object returned by SUBCLASS, */
 /* after sending that object the message INHERIT */
 </programlisting>
@@ -2063,8 +2033,7 @@ is the same as <code>a~"[]"(b)</code>.</para>
 <secondary>passing in messages</secondary></indexterm>
 <example>
 <title>Arrays</title>
-<programlisting>
-a = .array~of(10,20)
+<programlisting language="rexx">a = .array~of(10,20)
 say "Second item is" a[2]   /* Same as: a~at(2)              */
 /* or a~"[]"(2)                  */
 /* Produces: "Second item is 20" */
@@ -2099,8 +2068,7 @@ Using <computeroutput>~~</computeroutput> returns
 the object that received the message. Here is an example:
 <example>
 <title>Messages</title>
-<programlisting>
-/* Two ways to use the INSERT method to add items to a list */
+<programlisting language="rexx">/* Two ways to use the INSERT method to add items to a list */
 /* Using only ~ */
 team = .list~of("Bob","Mary")
 team~insert("Jane")
@@ -2144,7 +2112,7 @@ as if it had been created with the message term
 <literal>Array</literal> exists.)
 </para><para>
 Here are some examples:
-<programlisting>week = "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+<programlisting language="rexx">week = "mon", "tue", "wed", "thu", "fri", "sat", "sun"
 say week~items "days"                           -- 7 days
 
 say ("here", "we", "go")~makeString(, " ")      -- here we go
@@ -2164,20 +2132,20 @@ say "size" sparse~size"," sparse~items "items"  -- size 4, 1 items
 If the array term has trailing commas, the returned array has a
 bigger size than what <computeroutput>.Array~of(&hellip;)</computeroutput>
 would have returned:
-<programlisting>say (1, , 3, ,)~size .Array~of(1, , 3, ,)~size  -- 5 3
+<programlisting language="rexx">say (1, , 3, ,)~size .Array~of(1, , 3, ,)~size  -- 5 3
 say (,)~size .Array~of(,)~size                  -- 2 0
 </programlisting>
 </para>
 <para>In a context, where commas already have a different meaning,
 it may be necessary to put an Array term between brackets.
 For example:
-<programlisting>call func "uno", 2, "tre"      -- no Array term: three parms
+<programlisting language="rexx">call func "uno", 2, "tre"      -- no Array term: three parms
 call func ("uno", 2, "tre")    -- Array term: one Array as parm
 </programlisting>
 </para>
 <para>An Array term cannot return an array of size zero or one, although
 it can return an array with zero or one items (but still of at least size two).
-<programlisting>say (,)~items      -- 0
+<programlisting language="rexx">say (,)~items      -- 0
 say (,)~size       -- 2
 </programlisting>
 </para>
@@ -2203,8 +2171,7 @@ followed by a simple variable name or a stem variable name.
 Variable references to compound variables are not allowed.
 </para>
 <para>Here is an example:
-<programlisting>
-call dir >files, ".txt"
+<programlisting language="rexx">call dir >files, ".txt"
 say files~items "files with extension .txt"
 
 ::routine dir
@@ -2363,8 +2330,7 @@ for example, the external interfaces and the flow of control. Some keyword
 instructions can include nested instructions. In the following example, the
 DO construct (DO, the group of instructions that follow it, and its associated
 END keyword) is considered a single keyword instruction.</para>
-<programlisting>
-DO
+<programlisting language="rexx">DO
   instruction
   instruction
   instruction
@@ -2432,8 +2398,7 @@ to be an assignment. The result of
 <emphasis role="italic">expression</emphasis> becomes the new value
 of the variable named by the symbol to the left of the equal sign.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-/* Next line gives FRED the value "Frederic" */
+<programlisting language="rexx">/* Next line gives FRED the value "Frederic" */
 Fred="Frederic"
 </programlisting>
 <para>The symbol naming the variable cannot begin with a digit
@@ -2457,8 +2422,7 @@ derived name of the symbol.
 <secondary>constant</secondary></indexterm>
 <example>
 <title>Derived symbol names</title>
-<programlisting>
-/* If Freda has not yet been assigned a value,   */
+<programlisting language="rexx">/* If Freda has not yet been assigned a value,   */
 /* then next line gives FRED the value "FREDA"   */
 Fred=Freda
 </programlisting>
@@ -2490,8 +2454,7 @@ parentheses. </para>
 <para>If you unintentionally use a Rexx keyword as the variable
 name in an assignment, this should not cause confusion.  For example, the
 following clause is an assignment, not an ADDRESS instruction:</para>
-<programlisting>
-Address="10 Downing Street";
+<programlisting language="rexx">Address="10 Downing Street";
 </programlisting>
 </listitem>
 <listitem><para>You can use the <xref linkend="bifVar" xrefstyle="select:title"/>
@@ -2526,12 +2489,10 @@ An extended assignment combines a non-prefix operator with
 an assignment where the term on the left side of the assignment
 is also used as the left term of the operator.  For
 example,</para>
-<programlisting>
-    a += 1
+<programlisting language="rexx">    a += 1
 </programlisting>
 <para>is exactly equivalent to the instruction</para>
-<programlisting>
-    a = a + 1
+<programlisting language="rexx">    a = a + 1
 </programlisting>
 <para>Extended assignments are processed identically to the longer form of the instruction.</para>
 </section>
@@ -2547,8 +2508,7 @@ alphabetic characters translated to uppercase).</para>
 <para>These are constant symbols:
 <example>
 <title>Constants</title>
-<programlisting>
-77
+<programlisting language="rexx">77
 827.53
 .12345
 12e5       /* Same as 12E5 */
@@ -2573,8 +2533,7 @@ and its value is the value of that variable.</para>
 <para>These are simple symbols:
 <example>
 <title>Simple symbols</title>
-<programlisting>
-FRED
+<programlisting language="rexx">FRED
 Whatagoodidea?    /* Same as WHATAGOODIDEA? */
 ?12
 </programlisting>
@@ -2593,8 +2552,7 @@ a digit.</para>
 <para>These are stems:
 <example>
 <title>Stems</title>
-<programlisting>
-FRED.
+<programlisting language="rexx">FRED.
 A.
 </programlisting>
 </example>
@@ -2623,8 +2581,7 @@ with the stem variable.  This can result in multiple stem variables referring to
 the same Stem object, effectively creating a variable alias.
 <example>
 <title>Stems</title>
-<programlisting>
-hole.   = "empty"
+<programlisting language="rexx">hole.   = "empty"
 hole.19 = "full"
 say  hole.1  hole.mouse  hole.19
 /* Says "empty empty full" */
@@ -2652,8 +2609,7 @@ object, or the individual compound variable.
 <secondary>of compound variables</secondary></indexterm>
 <example>
 <title>Stems</title>
-<programlisting>
-hole.  = "empty"
+<programlisting language="rexx">hole.  = "empty"
 hole.19 = "full"
 say  hole.1  hole.mouse  hole.19
 /* says "empty empty full" */
@@ -2665,8 +2621,7 @@ say  hole.1  hole.mouse  hole.19
 arguments.
 <example>
 <title>Stems</title>
-<programlisting>
-/* CALL RANDOMIZE count, stem. calls routine */
+<programlisting language="rexx">/* CALL RANDOMIZE count, stem. calls routine */
 Randomize: Use Arg count, stem.
 do i = 1 to count
   stem.i = random(1,100)
@@ -2677,8 +2632,7 @@ return
 </para>
 <para>The USE ARG instruction functions as an assignment instruction.  The variable
 STEM. in the example above is functionally equivalent to:</para>
-<programlisting>
-stem. = arg(2)
+<programlisting language="rexx">stem. = arg(2)
 </programlisting>
 <note><title>Note</title>
 <para>USE ARG must be used to access the stem variable as a collection.
@@ -2687,8 +2641,7 @@ PARSE and PARSE ARG will force the stem to be a string value.</para></note>
 The resulting return value is the Stem object associated with the stem variable.
 <example>
 <title>Stems</title>
-<programlisting>
-/* RANDOMIZE(count) calls routine */
+<programlisting language="rexx">/* RANDOMIZE(count) calls routine */
 Randomize: Use Arg count
 do i = 1 to count
   stem.i = random(1,100)
@@ -2703,8 +2656,7 @@ many object messages to its default value.  For example, the STRING method
 will return the Stem object's default value's string representation:
 <example>
 <title>Stems</title>
-<programlisting>
-total. = 0
+<programlisting language="rexx">total. = 0
 say total.                         /* says "0" */
 </programlisting>
 </example>
@@ -2714,8 +2666,7 @@ default value. However, this is not the same as using a compound variable whose 
 is the null string.
 <example>
 <title>Stems</title>
-<programlisting>
-total. = 0
+<programlisting language="rexx">total. = 0
 null = ""
 total.null = total.null + 5
 say total.[] total.null              /* says "0 5" */
@@ -2780,8 +2731,7 @@ whole symbol would not be valid.</para>
 <para>These are compound symbols:
 <example>
 <title>Compound symbols</title>
-<programlisting>
-FRED.3
+<programlisting language="rexx">FRED.3
 Array.I.J
 AMESSY..One.2.
 </programlisting>
@@ -2805,12 +2755,10 @@ substituted can contain <emphasis>any</emphasis> characters (including
 periods and blanks). Substitution is done only once.</para>
 <para>More formally, the derived name of a compound variable that is referenced
 by the symbol </para>
-<programlisting>
-s0.s1.s2. --- .sn
+<programlisting language="rexx">s0.s1.s2. --- .sn
 </programlisting>
 <para>is given by </para>
-<programlisting>
-d0.v1.v2. --- .vn
+<programlisting language="rexx">d0.v1.v2. --- .vn
 </programlisting>
 <para>where <computeroutput>d0</computeroutput> is the name of the Stem
 object associated with the stem variable <computeroutput>s0</computeroutput> and
@@ -2828,8 +2776,7 @@ no limit on the length of the evaluated name.</para>
 extract from a Rexx program:
 <example>
 <title>Compound symbols</title>
-<programlisting>
-a=3       /* assigns "3" to the variable A    */
+<programlisting language="rexx">a=3       /* assigns "3" to the variable A    */
 z=4                 /*   "4"      to Z        */
 c="Fred"            /*   "Fred"   to C        */
 a.z="Fred"          /*   "Fred"   to A.4      */
@@ -2865,8 +2812,7 @@ This notation can be used in assignments to compound variables as well as when r
 Examples:
 <example>
 <title>Evaluated compound variables</title>
-<programlisting>
-a.[1+2,3+4]=17      -- assigns A.3.7
+<programlisting language="rexx">a.[1+2,3+4]=17      -- assigns A.3.7
 Say a.3.7           -- => 17
 v1='1+2'
 v2='3+4'
@@ -2891,8 +2837,7 @@ its value is the mapped object.</para>
 <para>These are examples of environment symbols:
 <example>
 <title>Environment symbols</title>
-<programlisting>
-.method    -- A reference to the Rexx Method class
+<programlisting language="rexx">.method    -- A reference to the Rexx Method class
 .true      -- The Rexx "true" object.  Has the value "1"
 .xyz       -- Normally the value .XYZ
 .3DGlasses -- Normally the value .3DGLASSES
@@ -2966,8 +2911,7 @@ with package local preferred over <literal>.LOCAL</literal>, and
 To avoid conflicts with future Rexx defined entries, it is recommended
 that the entries that you place in any of these directories include at least one
 period in the entry name, for example:
-<programlisting>
--- establish settings directory
+<programlisting language="rexx">-- establish settings directory
 .local~setEntry("MyProgram.settings", .directory~new)
 </programlisting>
 </para>
@@ -2993,7 +2937,7 @@ allow to always access the Rexx-provided classes.
 </para>
 <para>Examples:
 <example><title>Namespaces</title>
-<programlisting>-- disambiguate between two classes with same name
+<programlisting language="rexx">-- disambiguate between two classes with same name
 say .number~id                          -- The Real Number class
 say natural:number~id                   -- The Natural Number class
 
@@ -3024,7 +2968,7 @@ return "The Real Number class"
 </example>
 
 <example><title>number.cls</title>
-<programlisting>::class number public
+<programlisting language="rexx">::class number public
 ::method id class
 return "The Natural Number class"
 
@@ -3068,8 +3012,7 @@ A message term using ~~ is sometimes referred to as a
 <secondary>message instructions</secondary></indexterm>
 <example>
 <title>Message instructions</title>
-<programlisting>
-mytable~add("John",123)
+<programlisting language="rexx">mytable~add("John",123)
 </programlisting>
 </example>
 </para>
@@ -3085,8 +3028,7 @@ the expression is passed as the first argument of the message.
 
 <example>
 <title>Message instructions</title>
-<programlisting>
-person~age = 39                   /* Same as person~"AGE="(39) */
+<programlisting language="rexx">person~age = 39                   /* Same as person~"AGE="(39) */
 table[i] = 5                      /* Same as table~"[]="(5,i)  */
 </programlisting>
 </example>
@@ -3099,8 +3041,7 @@ the argument expressions within any [] pairs from left to right.</para>
 
 <example>
 <title>Message instructions</title>
-<programlisting>
-   table[i] += 1        -- Same as table[i] = table[i] + 1
+<programlisting language="rexx">   table[i] += 1        -- Same as table[i] = table[i] + 1
 </programlisting>
 </example>
 </para>
@@ -3174,8 +3115,7 @@ for a discussion of this mechanism.</para>
 <tertiary>RC</tertiary></indexterm>
 <para>To send a command to the currently addressed environment, use a clause
 of the form:</para>
-<programlisting>
-expression;
+<programlisting language="rexx">expression;
 </programlisting>
 <para>The expression (which must not be an expression that forms a valid
 <xref linkend="msgi" xrefstyle="template:message instruction"/>)
@@ -3237,8 +3177,7 @@ did not have a FAILURE or ERROR condition, .RS is
 environment is Windows, the sequence:
 <example>
 <title>Commands</title>
-<programlisting>
-fname = "CHESHIRE"
+<programlisting language="rexx">fname = "CHESHIRE"
 exten = "CAT"
 "TYPE" fname"."exten
 </programlisting>
@@ -3250,8 +3189,7 @@ the command processor, CMD.EXE.
 The simpler expression:
 <example>
 <title>Commands</title>
-<programlisting>
-"TYPE CHESHIRE.CAT"
+<programlisting language="rexx">"TYPE CHESHIRE.CAT"
 </programlisting>
 </example>
 </para>
@@ -3266,8 +3204,7 @@ it is passed to the environment. Constant portions of the command should be
 specified as literal strings.</para></note>
 <example>
 <title>Commands &mdash; Windows</title>
-<programlisting>
-delete "*".lst           /* not "multiplied by" */
+<programlisting language="rexx">delete "*".lst           /* not "multiplied by" */
 var.003 = anyvalue
 type "var.003"           /* not a compound symbol */
 
@@ -3277,8 +3214,7 @@ dir"/w"                  /* not "divided by ANY" */
 </example>
 <example>
 <title>Commands &mdash; Linux</title>
-<programlisting>
-rm "*".lst               /* not "multiplied by" */
+<programlisting language="rexx">rm "*".lst               /* not "multiplied by" */
 var.003 = anyvalue
 cat "var.003"            /* not a compound symbol */
 
@@ -3291,13 +3227,11 @@ ls "/w"                  /* not "divided by ANY" */
 Enclosing an entire message instruction in parentheses causes
 the message result to be used as a command. Any clause that is a message
 instruction is not treated as a command. Thus, for example, the clause </para>
-<programlisting>
-myfile~linein
+<programlisting language="rexx">myfile~linein
 </programlisting>
 <para>causes the returned line to be assigned to the variable RESULT, not to
 be used as a command to an external environment, while</para>
-<programlisting>
-(myfile~linein)
+<programlisting language="rexx">(myfile~linein)
 </programlisting>
 <para>would submit the return value from the linein method as a command to the external
 environment.</para>
@@ -3319,8 +3253,7 @@ a new process and therefore does not share .environment, .local,
 or the Windows or Unix-like systems shell environment.
 <example>
 <title>Calling other Rexx scripts</title>
-<programlisting>
-call "other.REX"         /* runs in the same process */
+<programlisting language="rexx">call "other.REX"         /* runs in the same process */
 "rexx other.REX"         /* runs in a new child process */
 "start rexx other.REX"   /* runs in a new detached process */
 </programlisting>

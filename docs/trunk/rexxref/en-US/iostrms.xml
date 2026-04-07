@@ -77,16 +77,14 @@ of both stream objects, or overlays occur.</para>
 <computeroutput>MYFIL</computeroutput>), you could use: </para>
 <example>
 <title>Obtaining a stream object</title>
-<programlisting>
-MyStream = .stream~new("MYFIL")
+<programlisting language="rexx">MyStream = .stream~new("MYFIL")
 </programlisting>
 </example>
 <para>You can manipulate stream objects with character or line methods: </para>
 <indexterm><primary>character input and output</primary></indexterm>
 <example>
 <title>Performing input on a stream object</title>
-<programlisting>
-nextchar = MyStream~charin()
+<programlisting language="rexx">nextchar = MyStream~charin()
 nextline = MyStream~linein()
 </programlisting>
 </example>
@@ -290,8 +288,7 @@ deletes) named queues. You can name the queue yourself
 or leave the naming to the language processor. Your program must know the
 name of the queue to use a named queue. To obtain the name of the queue, use
 the RXQUEUE function: </para>
-<programlisting>
-previous_queue=rxqueue("set",newqueuename)
+<programlisting language="rexx">previous_queue=rxqueue("set",newqueuename)
 </programlisting>
 <para>This sets the new queue name and returns the name of the previous queue.
 </para>
@@ -321,8 +318,7 @@ the number of items remaining in the queue.</para></listitem>
 
 <example>
 <title>Sample Rexx Procedure Using a Queue</title>
-<programlisting>
-/*                                                                            */
+<programlisting language="rexx">/*                                                                            */
 /* push/pull WITHOUT multiprogramming support                                 */
 /*                                                                            */
 push date() time()                                /* push date and time       */
@@ -362,8 +358,7 @@ memory, or IPC queues).</para></listitem>
 the names of queues must be unique within the system. If a queue named
 <computeroutput>anyque</computeroutput> exists,
 using the following function: </para>
-<programlisting>
-newqueue = RXQUEUE("Create", "ANYQUE")
+<programlisting language="rexx">newqueue = RXQUEUE("Create", "ANYQUE")
 </programlisting>
 <para>results in an error.</para></listitem></itemizedlist>
 </section>
@@ -409,8 +404,7 @@ input and output streams of the operating system. The appropriate default
 stream object is used when the call to a Rexx I/O function includes no stream
 name. The following Rexx statements write a line to the default output stream
 of the operating system: </para>
-<programlisting>
-Lineout(,"Hello World")
+<programlisting language="rexx">Lineout(,"Hello World")
 .Output~lineout("Hello World")
 </programlisting>
 <para>Rexx reserves the names <computeroutput>STDIN</computeroutput>,
@@ -459,8 +453,7 @@ of characters or lines.</para>
 simple collection of bytes of data. No special meaning is given to any single
 character. Character positioning alone can move the stream pointer. For example:
 </para>
-<programlisting>
-MyStream~charin(10,0)
+<programlisting language="rexx">MyStream~charin(10,0)
 </programlisting>
 <para>moves the stream pointer so that the tenth character in MyStream is the
 next character read. But this does not return any data. If MyStream is opened
@@ -475,8 +468,7 @@ break occurs every <emphasis role="italic">x</emphasis> characters.
 Line positioning in this case is an extension of character positioning. For
 example, if you open a stream in binary mode with record length 80, then the
 following two lines are exactly equivalent. </para>
-<programlisting>
-MyStream~command(position 5 read line)
+<programlisting language="rexx">MyStream~command(position 5 read line)
 MyStream~command(position 321 read char)
 </programlisting>
 <para>Remember that streams and other Rexx objects are indexed starting with
@@ -565,8 +557,7 @@ one stream to another.</para>
 <secondary>of program</secondary></indexterm>
 <example>
 <title>FILECOPY program</title>
-<programlisting>
-/* FILECOPY.CMD */
+<programlisting language="rexx">/* FILECOPY.CMD */
 /* This routine copies, as lines, the stream or     */
 /* file that the first argument names to the stream */
 /* or file the second argument names. It is assumed */
@@ -602,8 +593,7 @@ lines.</para>
 <secondary>examples</secondary></indexterm>
 <example>
 <title>COLLECT program</title>
-<programlisting>
-/* COLLECT.CMD */
+<programlisting language="rexx">/* COLLECT.CMD */
 /* This routine collects characters from the stream */
 /* the first argument names until a line is         */
 /* complete, and then places the line on the        */

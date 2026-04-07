@@ -116,8 +116,7 @@ then included in the original expression as though the entire function reference
 had been replaced by the name of a variable whose value is the returned object.</para>
 <para>For example, the function SUBSTR is built into the language processor and
 could be used as: </para>
-<programlisting>
-N1="abcdefghijk"
+<programlisting language="rexx">N1="abcdefghijk"
 Z1="Part of N1 is: "substr(N1,2,7)
 /* Sets Z1 to "Part of N1 is: bcdefgh" */
 </programlisting>
@@ -153,8 +152,7 @@ instruction so that the routine can return.  This is not necessary if it is
 called as a subroutine.</para>
 <example>
 <title>Recursive internal function execution</title>
-<programlisting>
-arg x
+<programlisting language="rexx">arg x
 say x"! =" factorial(x)
 exit
 factorial: procedure   /* Calculate factorial by    */
@@ -218,16 +216,14 @@ external functions.</para>
 <secondary>forcing built-in or external reference</secondary></indexterm>
 <para>Function calls or subroutines may use a name that is specified as a symbol or a literal
 string.  For example, these calls are equivalent:</para>
-<programlisting>
-    call MyProcedure
+<programlisting language="rexx">    call MyProcedure
     call 'MYPROCEDURE'
 </programlisting>
 <para>Note that the name value when specified as a symbol is the symbol name translated
 to upper case.  Both of the calls above will search for a routine named "MYPROCEDURE".  When
 the name is specified as a literal string, then the literal string value is used as-is.  Thus
 the following two calls are not equivalent:</para>
-<programlisting>
-    call MyProcedure    -- calls "MYPROCEDURE"
+<programlisting language="rexx">    call MyProcedure    -- calls "MYPROCEDURE"
     call 'MyProcedure'  -- calls "MyProcedure"
 </programlisting>
 <para>Some steps of the function and subroutine search order are case sensitive, so
@@ -243,8 +239,7 @@ normal call mechanisms</para>
 <listitem>
 <para>Built-in functions.  The built-in function names are all uppercase, so using a mixed-case
 literal string built-in function name will fail to locate the function.</para>
-<programlisting>
-    x = wordPos(needle, haystack)     -- calls "WORDPOS", which works
+<programlisting language="rexx">    x = wordPos(needle, haystack)     -- calls "WORDPOS", which works
     x = "wordPos"(needle, haystack)   -- calls "wordPos", which will fail
 </programlisting>
 </listitem>
@@ -265,8 +260,7 @@ from inside your internal routine, you must use a literal string for the functio
 </para>
 <example>
 <title>DATE function &mdash; overriding</title>
-<programlisting>
-/* This internal DATE function modifies the          */
+<programlisting language="rexx">/* This internal DATE function modifies the          */
 /* default for the DATE function to standard date.   */
 date: procedure
   arg in
@@ -435,21 +429,18 @@ was called. Otherwise, the language processor stops with an error message.
 <para>Here are some examples of how to call a Rexx procedure: </para>
 <example>
 <title>How to call Rexx procedures</title>
-<programlisting>
-call Beep 500, 100         /* Example 1: a subroutine call */
+<programlisting language="rexx">call Beep 500, 100         /* Example 1: a subroutine call */
 </programlisting>
 <para>The built-in function BEEP is called as a Rexx subroutine.  The return
 value from BEEP is placed in the Rexx special variable
 <computeroutput>RESULT</computeroutput>.</para>
-<programlisting>
-bc = Beep(500, 100)        /* Example 2: a function call   */
+<programlisting language="rexx">bc = Beep(500, 100)        /* Example 2: a function call   */
 </programlisting>
 <para>BEEP is called as a Rexx function.  The return value from the function
 is substituted for the function call.  The clause itself is an assignment
 instruction; the return value from the BEEP function is placed in the variable
 <computeroutput>bc</computeroutput>.</para>
-<programlisting>
-Beep(500, 100)             /* Example 3: result passed as  */
+<programlisting language="rexx">Beep(500, 100)             /* Example 3: result passed as  */
                            /*            a command         */
 </programlisting>
 <para>The BEEP function is processed and its return value is substituted in
@@ -573,13 +564,12 @@ it must be a positive whole number or zero. The default for
 <secondary>ABBREV function</secondary></indexterm>
 <example id="ex.bif-abbrev">
 <title>Builtin function ABBREV examples</title>
-<programlisting>
-ABBREV("Print","Pri")      ->    1
-ABBREV("PRINT","Pri")      ->    0
-ABBREV("PRINT","PRI",4)    ->    0
-ABBREV("PRINT","PRY")      ->    0
-ABBREV("PRINT","")         ->    1
-ABBREV("PRINT","",1)       ->    0
+<programlisting language="rexx">ABBREV("Print","Pri")      -->    1
+ABBREV("PRINT","Pri")      -->    0
+ABBREV("PRINT","PRI",4)    -->    0
+ABBREV("PRINT","PRY")      -->    0
+ABBREV("PRINT","")         -->    1
+ABBREV("PRINT","",1)       -->    0
 </programlisting>
 </example>
 </para>
@@ -593,12 +583,11 @@ is used. This allows a default keyword to be selected automatically if desired;
 for example: </para>
 <example id="ex.bif-abbrev-ex">
 <title>Builtin function ABBREV example</title>
-<programlisting>
-say "Enter option:";   pull option .
+<programlisting language="rexx">say "Enter option:";   pull option .
 select  /* keyword1 is to be the default */
   when abbrev("keyword1",option) then ...
   when abbrev("keyword2",option) then ...
-  ...
+  /* ... */
   otherwise nop;
 end;
 </programlisting>
@@ -633,9 +622,8 @@ is formatted according to the current NUMERIC settings.</para>
 <secondary>ABS function</secondary></indexterm>
 <example id="ex.bif-abs">
 <title>Builtin function ABS</title>
-<programlisting>
-ABS("12.3")       ->    12.3
-ABS(" -0.307")    ->    0.307
+<programlisting language="rexx">ABS("12.3")       -->    12.3
+ABS(" -0.307")    -->    0.307
 </programlisting>
 </example>
 </para>
@@ -671,10 +659,9 @@ removed from the result.
 <secondary>ADDRESS function</secondary></indexterm>
 <example id="ex.bif-address">
 <title>Builtin function ADDRESS</title>
-<programlisting>
-ADDRESS()    ->    "CMD"   // default for Windows
+<programlisting language="rexx">Say ADDRESS()    -->    "CMD"   // default for Windows
 
-ADDRESS()    ->    "sh"    // default for Unix-like systems
+Say ADDRESS()    -->    "sh"    // default for Unix-like systems
 </programlisting>
 </example>
 </para>
@@ -747,28 +734,27 @@ was called. Otherwise, it returns <computeroutput>0</computeroutput>.
 <secondary>ARG function</secondary></indexterm>
 <example id="ex.bif-arg">
 <title>Builtin function ARG</title>
-<programlisting>
-/*  following "Call name;" (no arguments) */
-ARG()         ->    0
-ARG(1)        ->    ""
-ARG(2)        ->    ""
-ARG(1,"e")    ->    0
-ARG(1,"O")    ->    1
-ARG(1,"a")    ->    .array~of()
+<programlisting language="rexx">/*  following "Call name;" (no arguments) */
+Say ARG()         -->    0
+Say ARG(1)        -->    ""
+Say ARG(2)        -->    ""
+Say ARG(1,"e")    -->    0
+Say ARG(1,"O")    -->    1
+Say ARG(1,"a")    -->    .array~of()
 
 /*  following "Call name &apos;a&apos;, ,&apos;b&apos;;" */
-ARG()         ->    3
-ARG(1)        ->    "a"
-ARG(2)        ->    ""
-ARG(3)        ->    "b"
-ARG(n)        ->    ""    /* for n>=4 */
-ARG(1,"e")    ->    1
-ARG(2,"E")    ->    0
-ARG(2,"O")    ->    1
-ARG(3,"o")    ->    0
-ARG(4,"o")    ->    1
-ARG(1,"A")    ->    .array~of(a, ,b)
-ARG(3,"a")    ->    .array~of(b)
+Say ARG()         -->    3
+Say ARG(1)        -->    "a"
+Say ARG(2)        -->    ""
+Say ARG(3)        -->    "b"
+Say ARG(n)        -->    ""    /* for n>=4 */
+Say ARG(1,"e")    -->    1
+Say ARG(2,"E")    -->    0
+Say ARG(2,"O")    -->    1
+Say ARG(3,"o")    -->    0
+Say ARG(4,"o")    -->    1
+Say ARG(1,"A")    -->    .array~of(a, ,b)
+Say ARG(3,"a")    -->    .array~of(b)
 </programlisting>
 </example>
 </para>
@@ -842,11 +828,10 @@ conversion to make a total that is a multiple of 4.</para>
 <secondary>B2X function</secondary></indexterm>
 <example id="ex.bif-b2x">
 <title>Builtin function B2X</title>
-<programlisting>
-B2X("11000011")    ->   "C3"
-B2X("10111")       ->   "17"
-B2X("101")         ->   "5"
-B2X("1 1111 0000") ->   "1F0"
+<programlisting language="rexx">B2X("11000011")    -->   "C3"
+B2X("10111")       -->   "17"
+B2X("101")         -->   "5"
+B2X("1 1111 0000") -->   "1F0"
 </programlisting>
 </example>
 </para>
@@ -854,8 +839,7 @@ B2X("1 1111 0000") ->   "1F0"
 number into other forms. For example:
 <example id="ex.bif-b2x-1">
 <title>Builtin function B2X combined with X2D function</title>
-<programlisting>
-X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
+<programlisting language="rexx">X2D(B2X("10111"))  -->   "23"   /* decimal 23 */
 </programlisting>
 </example>
 </para>
@@ -908,8 +892,7 @@ Administrator rights, and then reboot your system.
 <secondary>BEEP function</secondary></indexterm>
 <example id="ex.bif-beep">
 <title>Builtin function BEEP</title>
-<programlisting>
--- C scale
+<programlisting language="rexx">-- C scale
 note.1 = 262    -- Do,  middle C
 note.2 = 294    -- Re,  D
 note.3 = 330    -- Mi,  E
@@ -966,12 +949,11 @@ is the zero-length (null) string.</para>
 <secondary>BITAND function</secondary></indexterm>
 <example id="ex.bif-bitand">
 <title>Builtin function BITAND</title>
-<programlisting>
-BITAND("12"x)                  ->    "12"x
-BITAND("73"x,"27"x)            ->    "23"x
-BITAND("13"x,"5555"x)          ->    "1155"x
-BITAND("13"x,"5555"x,"74"x)    ->    "1154"x
-BITAND("pQrS", ,"DF"x)         ->    "PQRS"      /* ASCII   */
+<programlisting language="rexx">BITAND("12"x)                  -->    "12"x
+BITAND("73"x,"27"x)            -->    "23"x
+BITAND("13"x,"5555"x)          -->    "1155"x
+BITAND("13"x,"5555"x,"74"x)    -->    "1154"x
+BITAND("pQrS", ,"DF"x)         -->    "PQRS"      /* ASCII   */
 </programlisting>
 </example>
 </para>
@@ -1016,13 +998,12 @@ is the zero-length (null) string.</para>
 <secondary>BITOR function</secondary></indexterm>
 <example id="ex.bif-bitor">
 <title>Builtin function BITOR</title>
-<programlisting>
-BITOR("12"x)                  ->    "12"x
-BITOR("15"x,"24"x)            ->    "35"x
-BITOR("15"x,"2456"x)          ->    "3556"x
-BITOR("15"x,"2456"x,"F0"x)    ->    "35F6"x
-BITOR("1111"x, ,"4D"x)        ->    "5D5D"x
-BITOR("pQrS", ,"20"x)         ->    "pqrs" /* ASCII   */
+<programlisting language="rexx">BITOR("12"x)                  -->    "12"x
+BITOR("15"x,"24"x)            -->    "35"x
+BITOR("15"x,"2456"x)          -->    "3556"x
+BITOR("15"x,"2456"x,"F0"x)    -->    "35F6"x
+BITOR("1111"x, ,"4D"x)        -->    "5D5D"x
+BITOR("pQrS", ,"20"x)         -->    "pqrs" /* ASCII   */
 </programlisting>
 </example>
 </para>
@@ -1068,14 +1049,13 @@ is the zero-length (null) string.</para>
 <secondary>BITXOR function</secondary></indexterm>
 <example id="ex.bif-bitxor">
 <title>Builtin function BITXOR</title>
-<programlisting>
-BITXOR("12"x)                     ->  "12"x
-BITXOR("12"x,"22"x)               ->  "30"x
-BITXOR("1211"x,"22"x)             ->  "3011"x
-BITXOR("1111"x,"444444"x)         ->  "555544"x
-BITXOR("1111"x,"444444"x,"40"x)   ->  "555504"x
-BITXOR("1111"x, ,"4D"x)           ->  "5C5C"x
-BITXOR("C711"x,"222222"x," ")     ->  "E53302"x  /* ASCII  */
+<programlisting language="rexx">BITXOR("12"x)                     -->  "12"x
+BITXOR("12"x,"22"x)               -->  "30"x
+BITXOR("1211"x,"22"x)             -->  "3011"x
+BITXOR("1111"x,"444444"x)         -->  "555544"x
+BITXOR("1111"x,"444444"x,"40"x)   -->  "555504"x
+BITXOR("1111"x, ,"4D"x)           -->  "5C5C"x
+BITXOR("C711"x,"222222"x," ")     -->  "E53302"x  /* ASCII  */
 </programlisting>
 </example>
 </para>
@@ -1117,12 +1097,11 @@ an unsigned binary number.</para>
 <secondary>C2D function</secondary></indexterm>
 <example id="ex.bif-c2d">
 <title>Builtin function C2D</title>
-<programlisting>
-C2D("09"X)      ->        9
-C2D("81"X)      ->      129
-C2D("FF81"X)    ->    65409
-C2D("")         ->        0
-C2D("a")        ->       97     /*  ASCII   */
+<programlisting language="rexx">C2D("09"X)      -->        9
+C2D("81"X)      -->      129
+C2D("FF81"X)    -->    65409
+C2D("")         -->        0
+C2D("a")        -->       97     /*  ASCII   */
 </programlisting>
 </example>
 </para>
@@ -1143,15 +1122,14 @@ had been processed. If <emphasis role="italic">n</emphasis> is
 <para>Here are some examples:
 <example id="ex.bif-c2d-1">
 <title>Builtin function C2D</title>
-<programlisting>
-C2D("81"X,1)      ->     -127
-C2D("81"X,2)      ->      129
-C2D("FF81"X,2)    ->     -127
-C2D("FF81"X,1)    ->     -127
-C2D("FF7F"X,1)    ->      127
-C2D("F081"X,2)    ->    -3967
-C2D("F081"X,1)    ->     -127
-C2D("0031"X,0)    ->        0
+<programlisting language="rexx">C2D("81"X,1)      -->     -127
+C2D("81"X,2)      -->      129
+C2D("FF81"X,2)    -->     -127
+C2D("FF81"X,1)    -->     -127
+C2D("FF7F"X,1)    -->      127
+C2D("F081"X,2)    -->    -3967
+C2D("F081"X,1)    -->     -127
+C2D("0031"X,0)    -->        0
 </programlisting>
 </example>
 </para>
@@ -1195,9 +1173,8 @@ returned.</para>
 <secondary>C2X function</secondary></indexterm>
 <example id="ex.bif-c2x">
 <title>Builtin function C2X</title>
-<programlisting>
-C2X("0123"X)    ->    "0123"   /* "30313233"X     in ASCII */
-C2X("ZD8")      ->    "5A4438" /* "354134343338"X in ASCII */
+<programlisting language="rexx">C2X("0123"X)    -->    "0123"   /* "30313233"X     in ASCII */
+C2X("ZD8")      -->    "5A4438" /* "354134343338"X in ASCII */
 </programlisting>
 </example>
 </para>
@@ -1254,11 +1231,10 @@ end.</para>
 <secondary>CENTRE function</secondary></indexterm>
 <example id="ex.bif-center">
 <title>Builtin function CENTER</title>
-<programlisting>
-CENTER(abc,7)               ->    "  ABC  "
-CENTER(abc,8,"-")           ->    "--ABC---"
-CENTRE("The blue sky",8)    ->    "e blue s"
-CENTRE("The blue sky",7)    ->    "e blue "
+<programlisting language="rexx">CENTER(abc,7)               -->    "  ABC  "
+CENTER(abc,8,"-")           -->    "--ABC---"
+CENTRE("The blue sky",8)    -->    "e blue s"
+CENTRE("The blue sky",7)    -->    "e blue "
 </programlisting>
 </example>
 </para>
@@ -1298,10 +1274,9 @@ occurrences to be replaced.
 <secondary>CHANGESTR function</secondary></indexterm>
 <example id="ex.bif-changestr">
 <title>Builtin function CHANGESTR</title>
-<programlisting>
-CHANGESTR("1","101100","")     ->    "000"
-CHANGESTR("1","101100","X")    ->    "X0XX00"
-CHANGESTR("1","101100","X", 1) ->    "X01100"
+<programlisting language="rexx">CHANGESTR("1","101100","")     -->    "000"
+CHANGESTR("1","101100","X")    -->    "X0XX00"
+CHANGESTR("1","101100","X", 1) -->    "X01100"
 </programlisting>
 </example>
 </para>
@@ -1365,18 +1340,17 @@ and CHARIN returns with fewer than the requested number of characters.</para>
 <secondary>CHARIN function</secondary></indexterm>
 <example id="ex.bif-charin">
 <title>Builtin function CHARIN</title>
-<programlisting>
-CHARIN(myfile,1,3)   ->   "MFC"    /* the first 3        */
+<programlisting language="rexx">CHARIN(myfile,1,3)   -->   "MFC"    /* the first 3        */
                                    /* characters         */
-CHARIN(myfile,1,0)   ->   ""       /* now at start       */
-CHARIN(myfile)       ->   "M"      /* after last call    */
-CHARIN(myfile, ,2)   ->   "FC"     /* after last call    */
+CHARIN(myfile,1,0)   -->   ""       /* now at start       */
+CHARIN(myfile)       -->   "M"      /* after last call    */
+CHARIN(myfile, ,2)   -->   "FC"     /* after last call    */
 
 /* Reading from the default input (here, the keyboard)   */
 /* User types "abcd efg"                                 */
-CHARIN()             ->   "a"      /* default is         */
+CHARIN()             -->   "a"      /* default is         */
                                    /* 1 character        */
-CHARIN(, ,5)         ->   "bcd e"
+CHARIN(, ,5)         -->   "bcd e"
 </programlisting>
 </example>
 </para>
@@ -1457,13 +1431,12 @@ with the number of characters that could not be written (the residual count).</p
 <secondary>CHAROUT function</secondary></indexterm>
 <example id="ex.bif-charout">
 <title>Builtin function CHAROUT</title>
-<programlisting>
-CHAROUT(myfile,"Hi")     ->   0   /* typically        */
-CHAROUT(myfile,"Hi",5)   ->   0   /* typically        */
-CHAROUT(myfile, ,6)      ->   0   /* now at char 6    */
-CHAROUT(myfile)          ->   0   /* at end of stream */
-CHAROUT(,"Hi")           ->   0   /* typically        */
-CHAROUT(,"Hello")        ->   2   /* maybe            */
+<programlisting language="rexx">CHAROUT(myfile,"Hi")     -->   0   /* typically        */
+CHAROUT(myfile,"Hi",5)   -->   0   /* typically        */
+CHAROUT(myfile, ,6)      -->   0   /* now at char 6    */
+CHAROUT(myfile)          -->   0   /* at end of stream */
+CHAROUT(,"Hi")           -->   0   /* typically        */
+CHAROUT(,"Hello")        -->   2   /* maybe            */
 </programlisting>
 </example>
 </para>
@@ -1474,8 +1447,7 @@ count is then available in the variable RESULT.</para></note>
 <para>For example: </para>
 <example id="ex.bif-charout-sub">
 <title>Builtin function CHAROUT</title>
-<programlisting>
-Call CHAROUT myfile,"Hello"
+<programlisting language="rexx">Call CHAROUT myfile,"Hello"
 Call CHAROUT myfile,"Hi",6
 Call CHAROUT myfile
 </programlisting>
@@ -1521,9 +1493,9 @@ streams (for example, STDIN or Windows/Unix-like system devices). For these stre
 <para>
 <example id="ex.bif-chars">
 <title>Builtin function CHARS</title>
-<programlisting>CHARS(myfile)     ->   42   /* perhaps */
-CHARS(nonfile)    ->   0
-CHARS()           ->   1    /* perhaps */
+<programlisting language="rexx">CHARS(myfile)     -->   42   /* perhaps */
+CHARS(nonfile)    -->   0
+CHARS()           -->   1    /* perhaps */
 </programlisting>
 </example>
 </para>
@@ -1563,12 +1535,12 @@ does not match. The shorter string is padded on the right with
 <para>
 <example id="ex.bif-compare">
 <title>Builtin function COMPARE</title>
-<programlisting>COMPARE("abc","abc")         ->    0
-COMPARE("abc","ak")          ->    2
-COMPARE("ab ","ab")          ->    0
-COMPARE("ab ","ab"," ")      ->    0
-COMPARE("ab ","ab","x")      ->    3
-COMPARE("ab-- ","ab","-")    ->    5
+<programlisting language="rexx">COMPARE("abc","abc")         -->    0
+COMPARE("abc","ak")          -->    2
+COMPARE("ab ","ab")          -->    0
+COMPARE("ab ","ab"," ")      -->    0
+COMPARE("ab ","ab","x")      -->    3
+COMPARE("ab-- ","ab","-")    -->    5
 </programlisting>
 </example>
 </para>
@@ -1685,11 +1657,11 @@ the condition is delayed or ignored</para></listitem></itemizedlist>
 <para>
 <example id="ex.bif-condition">
 <title>Builtin function CONDITION</title>
-<programlisting>CONDITION()            ->    "CALL"        /* perhaps */
-CONDITION("C")         ->    "FAILURE"
-CONDITION("I")         ->    "CALL"
-CONDITION("D")         ->    "FailureTest"
-CONDITION("S")         ->    "OFF"        /* perhaps */
+<programlisting language="rexx">CONDITION()            -->    "CALL"        /* perhaps */
+CONDITION("C")         -->    "FAILURE"
+CONDITION("I")         -->    "CALL"
+CONDITION("D")         -->    "FailureTest"
+CONDITION("S")         -->    "OFF"        /* perhaps */
 </programlisting>
 </example>
 </para>
@@ -1737,8 +1709,8 @@ be a positive whole number or zero.
 <para>
 <example id="ex.bif-copies">
 <title>Builtin function COPIES</title>
-<programlisting>COPIES("abc",3)    ->    "abcabcabc"
-COPIES("abc",0)    ->    ""
+<programlisting language="rexx">COPIES("abc",3)    -->    "abcabcabc"
+COPIES("abc",0)    -->    ""
 </programlisting>
 </example>
 </para>
@@ -1771,8 +1743,8 @@ do not overlap.
 <para>
 <example id="ex.bif-countstr">
 <title>Builtin function COUNTSTR</title>
-<programlisting>COUNTSTR("1","101101")        ->    4
-COUNTSTR("KK","J0KKK0")       ->    1
+<programlisting language="rexx">COUNTSTR("1","101101")        -->    4
+COUNTSTR("KK","J0KKK0")       -->    1
 </programlisting>
 </example>
 </para>
@@ -1818,14 +1790,14 @@ has no leading "00"x characters.
 <para>
 <example id="ex.bif-d2c">
 <title>Builtin function D2C</title>
-<programlisting>D2C(65)      ->   "A"      /* "41"x is an ASCII "A"               */
-D2C(65,1)    ->   "A"
-D2C(65,2)    ->   " A"     /* the leading character is a "00"x    */
-D2C(65,5)    ->   "    A"  /* the leading characters are "00"x    */
-D2C(109)     ->   "m"      /* "6D"x  is an ASCII "m"              */
-D2C(-109,1)  ->   "&ocirc;"      /* "93"x is an ASCII "&ocirc;"   */
-D2C(76,2)    ->   " L"     /* "4C"x  is an ASCII "L"              */
-D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
+<programlisting language="rexx">D2C(65)      -->   "A"      /* "41"x is an ASCII "A"               */
+D2C(65,1)    -->   "A"
+D2C(65,2)    -->   " A"     /* the leading character is a "00"x    */
+D2C(65,5)    -->   "    A"  /* the leading characters are "00"x    */
+D2C(109)     -->   "m"      /* "6D"x  is an ASCII "m"              */
+D2C(-109,1)  -->   "&ocirc;"      /* "93"x is an ASCII "&ocirc;"   */
+D2C(76,2)    -->   " L"     /* "4C"x  is an ASCII "L"              */
+D2C(-180,2)  -->   " L"     /* the leading character is a "FF"x    */
 </programlisting>
 </example>
 </para>
@@ -1874,15 +1846,15 @@ or zero, and the returned result has no leading zeros.
 <para>
 <example id="ex.bif-d2x">
 <title>Builtin function D2X</title>
-<programlisting>D2X(9)         ->    "9"
-D2X(129)       ->    "81"
-D2X(129,1)     ->    "1"
-D2X(129,2)     ->    "81"
-D2X(129,4)     ->    "0081"
-D2X(257,2)     ->    "01"
-D2X(-127,2)    ->    "81"
-D2X(-127,4)    ->    "FF81"
-D2X(12,0)      ->    ""
+<programlisting language="rexx">D2X(9)         -->    "9"
+D2X(129)       -->    "81"
+D2X(129,1)     -->    "1"
+D2X(129,2)     -->    "81"
+D2X(129,4)     -->    "0081"
+D2X(257,2)     -->    "01"
+D2X(-127,2)    -->    "81"
+D2X(-127,4)    -->    "FF81"
+D2X(12,0)      -->    ""
 </programlisting>
 </example>
 </para>
@@ -2032,19 +2004,19 @@ is a null string, which is a valid hexadecimal string.
 <secondary>DATATYPE function</secondary></indexterm>
 <example id="ex.bif-datatype">
 <title>Builtin function DATATYPE</title>
-<programlisting>DATATYPE(" 12 ")         ->   "NUM"
-DATATYPE("")             ->   "CHAR"
-DATATYPE("123*")         ->   "CHAR"
-DATATYPE("12.3","N")     ->    1
-DATATYPE("12.3","W")     ->    0
-DATATYPE("Fred","M")     ->    1
-DATATYPE("Fred","U")     ->    0
-DATATYPE("Fred","L")     ->    0
-DATATYPE("?20K","s")     ->    1
-DATATYPE("BCd3","X")     ->    1
-DATATYPE("BC d3","X")    ->    1
-DATATYPE("1","O")        ->    1
-DATATYPE("11,"O")        ->    0
+<programlisting language="rexx">DATATYPE(" 12 ")         -->   "NUM"
+DATATYPE("")             -->   "CHAR"
+DATATYPE("123*")         -->   "CHAR"
+DATATYPE("12.3","N")     -->    1
+DATATYPE("12.3","W")     -->    0
+DATATYPE("Fred","M")     -->    1
+DATATYPE("Fred","U")     -->    0
+DATATYPE("Fred","L")     -->    0
+DATATYPE("?20K","s")     -->    1
+DATATYPE("BCd3","X")     -->    1
+DATATYPE("BC d3","X")    -->    1
+DATATYPE("1","O")        -->    1
+DATATYPE("11","O")       -->    0
 </programlisting>
 </example>
 </para>
@@ -2215,8 +2187,7 @@ example, <computeroutput>Tuesday</computeroutput>.
 <secondary>DATE function</secondary></indexterm>
 <example id="ex.bif-date">
 <title>Builtin function DATE</title>
-<programlisting>
-DATE()       -- 24 Nov 2016
+<programlisting language="rexx">DATE()       -- 24 Nov 2016
 DATE("B")    -- 736291
 DATE("D")    -- 329
 DATE("E")    -- 24/11/16
@@ -2253,8 +2224,7 @@ to specify <emphasis role="italic">option2</emphasis> if
 format. Here are some examples: </para>
 <example id="ex.bif-date-1">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("O", "13 Feb 1923")            -->    "23/02/13"
+<programlisting language="rexx">DATE("O", "13 Feb 1923")            -->    "23/02/13"
 DATE("O", "06/01/50", "U")          -->    "50/06/01"
 DATE("N", "63630372300000000", "f") -->    "14 May 2017"
 </programlisting>
@@ -2267,8 +2237,7 @@ for the formats "E", "I", "N", "O", "S", and "U".
 Here are some examples:</para>
 <example id="ex.bif-date-2">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("S", "13 Feb 2017", "N", "-")  -->    "2017-02-13"
+<programlisting language="rexx">DATE("S", "13 Feb 2017", "N", "-")  -->    "2017-02-13"
 DATE("N", "13 Feb 2017", "N", "")   -->    "13Feb2017"
 DATE("N", "13 Feb 2017", "N", "-")  -->    "13-Feb-2017"
 DATE("O", "06/01/50", "U","")       -->    "500601"
@@ -2315,8 +2284,7 @@ its separator character matches the character specified by
 <para>Here are some examples:</para>
 <example id="ex.bif-date-3">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("S", "2017-11-13", "S", "", "-")  -->    "20171113"
+<programlisting language="rexx">DATE("S", "2017-11-13", "S", "", "-")  -->    "20171113"
 DATE("S", "13-Nov-2017", "N", "", "-") -->    "20171113"
 DATE("O", "06*01*50","U", "", "*")     -->    "500601"
 DATE("U", "13.Feb.2017", "N", , ".")   -->    "02/13/17"
@@ -2325,8 +2293,7 @@ DATE("U", "13.Feb.2017", "N", , ".")   -->    "02/13/17"
 <para>You can determine the number of days between two dates; for example:</para>
 <example id="ex.bif-date-4">
 <title>Builtin function DATE days</title>
-<programlisting>
-say date("B", "12/25/17", "USA") - date("B") "shopping days till Christmas!"
+<programlisting language="rexx">say date("B", "12/25/17", "USA") - date("B") "shopping days till Christmas!"
 </programlisting>
 </example>
 <para>If <emphasis role="italic">string</emphasis> does not include the
@@ -2348,8 +2315,7 @@ A time stamp for a time and date combination can be created by
 combining a value from Time() for the time of day.</para>
 <example id="ex.bif-date-5">
 <title>Builtin function DATE timestamp</title>
-<programlisting>
-numeric digits 18  -- needed to add the timestamps
+<programlisting language="rexx">numeric digits 18  -- needed to add the timestamps
 timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </programlisting>
 </example>
@@ -2397,9 +2363,9 @@ the function returns <emphasis role="italic">string</emphasis> unchanged.
 <para>
 <example id="ex.bif-delstr">
 <title>Builtin function DELSTR</title>
-<programlisting>DELSTR("abcd",3)       ->    "ab"
-DELSTR("abcde",3,2)    ->    "abe"
-DELSTR("abcde",6)      ->    "abcde"
+<programlisting language="rexx">DELSTR("abcd",3)       -->    "ab"
+DELSTR("abcde",3,2)    -->    "abe"
+DELSTR("abcde",6)      -->    "abcde"
 </programlisting>
 </example>
 </para>
@@ -2450,11 +2416,11 @@ whitespace preceding the first word involved.
 <para>
 <example id="ex.bif-delword">
 <title>Builtin function DELWORD</title>
-<programlisting>DELWORD("Now is the  time",2,2)  ->  "Now time"
-DELWORD("Now is the time ",3)    ->  "Now is "
-DELWORD("Now is the  time",5)    ->  "Now is the  time"
-DELWORD("Now is   the time",3,1) ->  "Now is   time"
-DELWORD("Now is the  time",2,2)  ->  "Now time"
+<programlisting language="rexx">DELWORD("Now is the  time",2,2)  -->  "Now time"
+DELWORD("Now is the time ",3)    -->  "Now is "
+DELWORD("Now is the  time",5)    -->  "Now is the  time"
+DELWORD("Now is   the time",3,1) -->  "Now is   time"
+DELWORD("Now is the  time",2,2)  -->  "Now time"
 </programlisting>
 </example>
 </para>
@@ -2485,7 +2451,7 @@ Returns the current setting of <xref linkend="keyNumericDigits"/>.<!-- xreflabel
 <para>
 <example id="ex.bif-digits">
 <title>Builtin function DIGITS</title>
-<programlisting>DIGITS()    ->    9      /* by default */
+<programlisting language="rexx">DIGITS()    -->    9      /* by default */
 </programlisting>
 </example>
 </para>
@@ -2531,7 +2497,7 @@ returns to the former directory.
 <para>
 <example id="ex.bif-directory">
 <title>Builtin function DIRECTORY</title>
-<programlisting>/* get current directory      */
+<programlisting language="rexx">/* get current directory      */
 curdir = directory()
 /* go play a game             */
 newdir = directory("/usr/games")    /* Linux type subdirectory */
@@ -2579,7 +2545,7 @@ unsuccessful.
 <para>
 <example id="ex.bif-endlocal">
 <title>Builtin function ENDLOCAL</title>
-<programlisting>n = SETLOCAL()                   /* saves the current environment */
+<programlisting language="rexx">n = SETLOCAL()                   /* saves the current environment */
           /*
           The program can now change environment variables
           (with the VALUE function) and then work in the
@@ -2631,8 +2597,8 @@ complete description of error numbers and messages.
 <para>
 <example id="ex.bif-errortext">
 <title>Builtin function ERRORTEXT</title>
-<programlisting>ERRORTEXT(16)    ->    "Label not found."
-ERRORTEXT(60)    ->    ""
+<programlisting language="rexx">ERRORTEXT(16)    -->    "Label not found."
+ERRORTEXT(60)    -->    ""
 </programlisting>
 </example>
 </para>
@@ -2693,7 +2659,7 @@ information, FILESPEC returns a null string (&quot;&quot;).
 <para>
 <example id="ex.bif-filespec">
 <title>Builtin function FILESPEC</title>
-<programlisting>thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
+<programlisting language="rexx">thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
 say FILESPEC("drive",thisfile)     /* says "C:"              */
 say FILESPEC("path",thisfile)      /* says "\WINDOWS\UTIL\"  */
 say FILESPEC("location",thisfile)  /* says "C:\WINDOWS\UTIL\"  */
@@ -2730,7 +2696,7 @@ say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 <para>
 <example id="ex.bif-form">
 <title>Builtin function FORM</title>
-<programlisting>FORM()    ->    "SCIENTIFIC"  /* by default */
+<programlisting language="rexx">FORM()    -->    "SCIENTIFIC"  /* by default */
 </programlisting>
 </example>
 </para>
@@ -2788,14 +2754,14 @@ to an integer.
 <para>
 <example id="ex.bif-format">
 <title>Builtin function FORMAT</title>
-<programlisting>FORMAT("3",4)            ->    "   3"
-FORMAT("1.73",4,0)       ->    "   2"
-FORMAT("1.73",4,3)       ->    "   1.730"
-FORMAT("-.76",4,1)       ->    "  -0.8"
-FORMAT("3.03",4)         ->    "   3.03"
-FORMAT(" - 12.73", ,4)   ->    "-12.7300"
-FORMAT(" - 12.73")       ->    "-12.73"
-FORMAT("0.000")          ->    "0"
+<programlisting language="rexx">FORMAT("3",4)            -->    "   3"
+FORMAT("1.73",4,0)       -->    "   2"
+FORMAT("1.73",4,3)       -->    "   1.730"
+FORMAT("-.76",4,1)       -->    "  -0.8"
+FORMAT("3.03",4)         -->    "   3.03"
+FORMAT(" - 12.73", ,4)   -->    "-12.7300"
+FORMAT(" - 12.73")       -->    "-12.73"
+FORMAT("0.000")          -->    "0"
 </programlisting>
 </example>
 </para>
@@ -2830,11 +2796,11 @@ is not specified, the number is not an exponential expression.</para>
 <para>
 <example id="ex.bif-format-1">
 <title>Builtin function FORMAT</title>
-<programlisting>FORMAT("12345.73", , ,2,2)  ->    "1.234573E+04"
-FORMAT("12345.73", ,3, ,0)  ->    "1.235E+4"
-FORMAT("1.234573", ,3, ,0)  ->    "1.235"
-FORMAT("12345.73", , ,3,6)  ->    "12345.73"
-FORMAT("1234567e5", ,3,0)   ->    "123456700000.000"
+<programlisting language="rexx">FORMAT("12345.73", , ,2,2)  -->    "1.234573E+04"
+FORMAT("12345.73", ,3, ,0)  -->    "1.235E+4"
+FORMAT("1.234573", ,3, ,0)  -->    "1.235"
+FORMAT("12345.73", , ,3,6)  -->    "12345.73"
+FORMAT("1234567e5", ,3,0)   -->    "123456700000.000"
 </programlisting>
 </example>
 </para>
@@ -2865,7 +2831,7 @@ Returns the current setting of <xref linkend="keyNumericFuzz"/>.<!-- xreflabel -
 <para>
 <example id="ex.bif-fuzz">
 <title>Builtin function FUZZ</title>
-<programlisting>FUZZ()    ->    0     /* by default */
+<programlisting language="rexx">FUZZ()    -->    0     /* by default */
 </programlisting>
 </example>
 </para>
@@ -2939,12 +2905,11 @@ string <emphasis role="italic">new</emphasis>, then INSERT truncates
 <secondary>INSERT function</secondary></indexterm>
 <example id="ex.bif-insert">
 <title>Builtin function INSERT</title>
-<programlisting>
-INSERT(" ","abcdef",3)         ->    "abc def"
-INSERT("123","abc",5,6)        ->    "abc  123   "
-INSERT("123","abc",5,6,"+")    ->    "abc++123+++"
-INSERT("123","abc")            ->    "123abc"
-INSERT("123","abc", ,5,"-")    ->    "123--abc"
+<programlisting language="rexx">INSERT(" ","abcdef",3)         -->    "abc def"
+INSERT("123","abc",5,6)        -->    "abc  123   "
+INSERT("123","abc",5,6,"+")    -->    "abc++123+++"
+INSERT("123","abc")            -->    "123abc"
+INSERT("123","abc", ,5,"-")    -->    "123--abc"
 </programlisting>
 </example>
 </para>
@@ -2995,12 +2960,11 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 <secondary>LASTPOS function</secondary></indexterm>
 <example id="ex.bif-lastpos">
 <title>Builtin function LASTPOS</title>
-<programlisting>
-LASTPOS(" ","abc def ghi")      ->    8
-LASTPOS(" ","abcdefghi")        ->    0
-LASTPOS("xy","efgxyz")          ->    4
-LASTPOS(" ","abc def ghi",7)    ->    4
-LASTPOS(" ","abc def ghi",7,3)  ->    0
+<programlisting language="rexx">LASTPOS(" ","abc def ghi")      -->    8
+LASTPOS(" ","abcdefghi")        -->    0
+LASTPOS("xy","efgxyz")          -->    4
+LASTPOS(" ","abc def ghi",7)    -->    4
+LASTPOS(" ","abc def ghi",7,3)  -->    0
 </programlisting>
 </example>
 </para>
@@ -3042,10 +3006,9 @@ whole number or zero. The LEFT function is equivalent to
 <secondary>LEFT function</secondary></indexterm>
 <example id="ex.bif-left">
 <title>Builtin function LEFT</title>
-<programlisting>
-LEFT("abc d",8)        ->    "abc d   "
-LEFT("abc d",8,".")    ->    "abc d..."
-LEFT("abc  def",7)     ->    "abc  de"
+<programlisting language="rexx">LEFT("abc d",8)        -->    "abc d   "
+LEFT("abc d",8,".")    -->    "abc d..."
+LEFT("abc  def",7)     -->    "abc  de"
 </programlisting>
 </example>
 </para>
@@ -3078,10 +3041,9 @@ Returns the length of <emphasis role="italic">string</emphasis>.</para>
 <secondary>LENGTH function</secondary></indexterm>
 <example id="ex.bif-length">
 <title>Builtin function LENGTH</title>
-<programlisting>
-LENGTH("abcdefgh")    ->    8
-LENGTH("abc defg")    ->    8
-LENGTH("")            ->    0
+<programlisting language="rexx">LENGTH("abcdefgh")    -->    8
+LENGTH("abc defg")    -->    8
+LENGTH("")            -->    0
 </programlisting>
 </example>
 </para>
@@ -3146,36 +3108,35 @@ and LINEIN returns whatever characters are available.</para>
 <secondary>LINEIN function</secondary></indexterm>
 <example id="ex.bif-linein">
 <title>Builtin function LINEIN</title>
-<programlisting>
-LINEIN()                             /* Reads one line from the    */
+<programlisting language="rexx">LINEIN()                             /* Reads one line from the    */
                                      /* default input stream;      */
                                      /* usually this is an entry   */
                                      /* typed at the keyboard      */
 myfile = "ANYFILE.TXT"
-LINEIN(myfile)     -> "Current line" /* Reads one line from        */
+LINEIN(myfile)     --> "Current line" /* Reads one line from        */
                                      /* ANYFILE.TXT, beginning     */
                                      /* at the current read        */
                                      /* position. (If first call,  */
                                      /* file is opened and the     */
                                      /* first line is read.)       */
 
-LINEIN(myfile,1,1) ->  "first line"  /* Opens and reads the first  */
+LINEIN(myfile,1,1) -->  "first line"  /* Opens and reads the first  */
                                      /* line of ANYFILE.TXT (if    */
                                      /* the file is already open,  */
                                      /* reads first line); sets    */
                                      /* read position on the       */
                                      /* second line.               */
 
-LINEIN(myfile,1,0) ->  ""            /* No read; opens ANYFILE.TXT */
+LINEIN(myfile,1,0) -->  ""            /* No read; opens ANYFILE.TXT */
                                      /* (if file is already open,  */
                                      /* sets the read position to  */
                                      /* the first line).           */
 
-LINEIN(myfile, ,0)  ->  ""           /* No read; opens ANYFILE.TXT */
+LINEIN(myfile, ,0)  -->  ""           /* No read; opens ANYFILE.TXT */
                                      /* (no action if the file is  */
                                      /* already open).             */
 
-LINEIN("QUEUE:")   ->  "Queue line" /* Read a line from the queue. */
+LINEIN("QUEUE:")   -->  "Queue line" /* Read a line from the queue. */
                                     /* If the queue is empty, the  */
                                     /* program waits until a line  */
                                     /* is put on the queue.        */
@@ -3270,8 +3231,7 @@ count of lines written.</para>
 <secondary>LINEOUT function</secondary></indexterm>
 <example id="ex.bif-lineout">
 <title>Builtin function LINEOUT</title>
-<programlisting>
-LINEOUT(,"Display this")          /* Writes string to the default   */
+<programlisting language="rexx">LINEOUT(,"Display this")          /* Writes string to the default   */
                                   /* output stream (usually, the    */
                                   /* display); returns 0 if         */
                                   /* successful                     */
@@ -3301,8 +3261,7 @@ LINEOUT(myfile)                   /* Closes ANYFILE.TXT             */
 value is then available in the variable RESULT. For example: </para>
 <example id="ex.bif-lineout-1">
 <title>Builtin function LINEOUT call</title>
-<programlisting>
-Call LINEOUT "A:rexx.bat","Shell",1
+<programlisting language="rexx">Call LINEOUT "A:rexx.bat","Shell",1
 Call LINEOUT ,"Hello"
 </programlisting>
 </example>
@@ -3357,9 +3316,8 @@ of lines remaining in the stream, irrespective of how long this operation takes.
 <secondary>LINES function</secondary></indexterm>
 <example id="ex.bif-lines">
 <title>Builtin function LINES</title>
-<programlisting>
-LINES(myfile)    ->    0    /* at end of the file   */
-LINES()          ->    1    /* data remains in the  */
+<programlisting language="rexx">LINES(myfile)    -->    0    /* at end of the file   */
+LINES()          -->    1    /* data remains in the  */
                             /* default input stream */
                             /* STDIN:               */
 </programlisting>
@@ -3402,10 +3360,9 @@ is not specified, the default is to convert the remainder of the string.</para>
 <secondary>lower function</secondary></indexterm>
 <example id="ex.bif-lower">
 <title>Builtin function LOWER</title>
-<programlisting>
-lower("Albert Einstein")      ->    "albert einstein"
-lower("ABCDEF", 4)            ->    "ABCdef"
-lower("ABCDEF", 3, 2)         ->    "ABcdEF"
+<programlisting language="rexx">lower("Albert Einstein")      -->    "albert einstein"
+lower("ABCDEF", 4)            -->    "ABCdef"
+lower("ABCDEF", 3, 2)         -->    "ABcdEF"
 </programlisting>
 </example>
 </para>
@@ -3436,11 +3393,10 @@ the current NUMERIC settings. You can specify any number of
 <secondary>MAX function</secondary></indexterm>
 <example id="ex.bif-max">
 <title>Builtin function MAX</title>
-<programlisting>
-MAX(12,6,7,9)                                                ->    12
-MAX(17.3,19,17.03)                                           ->    19
-MAX(-7,-3,-4.3)                                              ->    -3
-MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
+<programlisting language="rexx">MAX(12,6,7,9)                                                -->    12
+MAX(17.3,19,17.03)                                           -->    19
+MAX(-7,-3,-4.3)                                              -->    -3
+MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   -->    21
 </programlisting>
 </example>
 </para>
@@ -3471,11 +3427,10 @@ to the current NUMERIC settings. You can specify any number of
 <secondary>MIN function</secondary></indexterm>
 <example id="ex.bif-min">
 <title>Builtin function MIN</title>
-<programlisting>
-MIN(12,6,7,9)                                                ->   6
-MIN(17.3,19,17.03)                                           ->  17.03
-MIN(-7,-3,-4.3)                                              ->  -7
-MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->   1
+<programlisting language="rexx">MIN(12,6,7,9)                                                -->   6
+MIN(17.3,19,17.03)                                           -->  17.03
+MIN(-7,-3,-4.3)                                              -->  -7
+MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   -->   1
 </programlisting>
 </example>
 </para>
@@ -3521,12 +3476,11 @@ number.</para>
 <secondary>OVERLAY function</secondary></indexterm>
 <example id="ex.bif-overlay">
 <title>Builtin function OVERLAY</title>
-<programlisting>
-OVERLAY(" ","abcdef",3)         ->    "ab def"
-OVERLAY(".","abcdef",3,2)       ->    "ab. ef"
-OVERLAY("qq","abcd")            ->    "qqcd"
-OVERLAY("qq","abcd",4)          ->    "abcqq"
-OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
+<programlisting language="rexx">OVERLAY(" ","abcdef",3)         -->    "ab def"
+OVERLAY(".","abcdef",3,2)       -->    "ab. ef"
+OVERLAY("qq","abcd")            -->    "qqcd"
+OVERLAY("qq","abcd",4)          -->    "abcqq"
+OVERLAY("123","abc",5,6,"+")    -->    "abc+123+++"
 </programlisting>
 </example>
 </para>
@@ -3577,12 +3531,11 @@ a non-negative whole number.
 <secondary>POS function</secondary></indexterm>
 <example id="ex.bif-pos">
 <title>Builtin function POS</title>
-<programlisting>
-POS("day","Saturday")       ->    6
-POS("x","abc def ghi")      ->    0
-POS(" ","abc def ghi")      ->    4
-POS(" ","abc def ghi",5)    ->    8
-POS(" ","abc def ghi",5,3)  ->    0
+<programlisting language="rexx">POS("day","Saturday")       -->    6
+POS("x","abc def ghi")      -->    0
+POS(" ","abc def ghi")      -->    4
+POS(" ","abc def ghi",5)    -->    8
+POS(" ","abc def ghi",5,3)  -->    0
 </programlisting>
 </example>
 </para>
@@ -3635,8 +3588,7 @@ for a discussion of Rexx input and output.)</para>
 <secondary>QUEUED function</secondary></indexterm>
 <example id="ex.bif-queued">
 <title>Builtin function QUEUED</title>
-<programlisting>
-QUEUED()    ->    5    /* Perhaps */
+<programlisting language="rexx">QUEUED()    -->    5    /* Perhaps */
 </programlisting>
 </example>
 </para>
@@ -3681,8 +3633,7 @@ argument. This
 <secondary>RANDOM function</secondary></indexterm>
 <example id="ex.bif-random">
 <title>Builtin function RANDOM</title>
-<programlisting>
-RANDOM()            -- 305  /* 0 to 999     */
+<programlisting language="rexx">RANDOM()            -- 305  /* 0 to 999     */
 RANDOM(5, 8)        --   7  /* 5 to 8       */
 RANDOM(2)           --   0  /* 0 to 2       */
 RANDOM(, , 3257)    -- 123  /* reproducible */
@@ -3700,8 +3651,7 @@ use RANDOM a number of times, but specify a
 For example, to simulate 40 throws of a 6-sided, unbiased die:
 <example id="ex.bif-random-1">
 <title>Builtin function RANDOM with seed</title>
-<programlisting>
-sequence = RANDOM(1,6,12345)  /* any number would */
+<programlisting language="rexx">sequence = RANDOM(1,6,12345)  /* any number would */
                               /* do for a seed    */
 do 39
   sequence = sequence RANDOM(1,6)
@@ -3745,9 +3695,8 @@ seed is not saved across internal routine calls.</para></listitem>
 <secondary>REVERSE function</secondary></indexterm>
 <example id="ex.bif-reverse">
 <title>Builtin function REVERSE</title>
-<programlisting>
-REVERSE("ABc.")    ->    ".cBA"
-REVERSE("XYZ ")    ->    " ZYX"
+<programlisting language="rexx">REVERSE("ABc.")    -->    ".cBA"
+REVERSE("XYZ ")    -->    " ZYX"
 </programlisting>
 </example>
 </para>
@@ -3791,10 +3740,9 @@ number or zero.</para>
 <secondary>RIGHT function</secondary></indexterm>
 <example id="ex.bif-right">
 <title>Builtin function RIGHT</title>
-<programlisting>
-RIGHT("abc  d",8)     ->    "  abc  d"
-RIGHT("abc def",5)    ->    "c def"
-RIGHT("12",5,"0")     ->    "00012"
+<programlisting language="rexx">RIGHT("abc  d",8)     -->    "  abc  d"
+RIGHT("abc def",5)    -->    "c def"
+RIGHT("12",5,"0")     -->    "00012"
 </programlisting>
 </example>
 </para>
@@ -3840,8 +3788,7 @@ A return value 1 signifies that the function could not be resolved.</para>
 <secondary>RXFUNCADD function</secondary></indexterm>
 <example id="ex.bif-rxfuncadd">
 <title>Builtin function RXFUNCADD</title>
-<programlisting>
-// 0 if rxcalcsqrt can be located, else 1
+<programlisting language="rexx">-- 0 if rxcalcsqrt can be located, else 1
 rxfuncadd("rxcalcsqrt", "rxmath", "rxcalcsqrt")
 </programlisting>
 </example>
@@ -3872,8 +3819,7 @@ functions. A zero return value signifies successful removal.
 <secondary>RXFUNCDROP function</secondary></indexterm>
 <example id="ex.bif-rxfuncdrop">
 <title>Builtin function RXFUNCDROP</title>
-<programlisting>
-rxfuncdrop("SysLoadFuncs")         -> 0 /* if successfully removed   */
+<programlisting language="rexx">rxfuncdrop("SysLoadFuncs")         --> 0 /* if successfully removed   */
 </programlisting>
 </example>
 </para>
@@ -3905,8 +3851,7 @@ of <computeroutput>1</computeroutput> if it is not.
 <secondary>RXFUNCQUERY function</secondary></indexterm>
 <example id="ex.bif-rxfuncquery">
 <title>Builtin function RXFUNCQUERY</title>
-<programlisting>
-rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
+<programlisting language="rexx">rxfuncquery("SysLoadFuncs")        --> 0 /* if registered             */
 </programlisting>
 </example>
 </para>
@@ -4026,15 +3971,14 @@ program places a line on the queue.
 <secondary>RXFUNCQUEUE function</secondary></indexterm>
 <example id="ex.bif-rxqueue">
 <title>Builtin function RXQUEUE</title>
-<programlisting>
-/* default queue                                    */
-rxqueue("Get")             -> "SESSION"
+<programlisting language="rexx">/* default queue                                    */
+rxqueue("Get")             --> "SESSION"
 /* assuming FRED does not already exist             */
-rxqueue("Create", "Fred")  -> "FRED"
+rxqueue("Create", "Fred")  --> "FRED"
 /* assuming SESSION had been active                 */
-rxqueue("Set", "Fred")     -> "SESSION"
+rxqueue("Set", "Fred")     --> "SESSION"
 /* assuming FRED exists                             */
-rxqueue("delete", "Fred")  -> "0"
+rxqueue("delete", "Fred")  --> "0"
 </programlisting>
 </example>
 </para>
@@ -4074,8 +4018,7 @@ SETLOCAL is restored upon exiting the procedure.</para>
 <secondary>SETLOCAL function</secondary></indexterm>
 <example id="ex.bif-setlocal">
 <title>Builtin function SETLOCAL</title>
-<programlisting>
-/* Current path is "user/bin" */
+<programlisting language="rexx">/* Current path is "user/bin" */
 n = SETLOCAL()           /* saves all environment settings */
 /* Now use the VALUE function to change the PATH variable */
 p = VALUE("Path","home/user/bin","ENVIRONMENT")
@@ -4127,10 +4070,9 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 <secondary>SIGN function</secondary></indexterm>
 <example id="ex.bif-sign">
 <title>Builtin function SIGN</title>
-<programlisting>
-SIGN("12.3")       ->     1
-SIGN(" -0.307")    ->    -1
-SIGN(0.0)          ->     0
+<programlisting language="rexx">SIGN("12.3")       -->     1
+SIGN(" -0.307")    -->    -1
+SIGN(0.0)          -->     0
 </programlisting>
 </example>
 </para>
@@ -4179,9 +4121,8 @@ and raises an error for all attempts to retrieve a line of the program.
 <secondary>SOURCELINE function</secondary></indexterm>
 <example id="ex.bif-sourceline">
 <title>Builtin function SOURCELINE</title>
-<programlisting>
-SOURCELINE()    ->   10
-SOURCELINE(1)   ->   "/* This is a 10-line Rexx program */"
+<programlisting language="rexx">SOURCELINE()    -->   10
+SOURCELINE(1)   -->   "/* This is a 10-line Rexx program */"
 </programlisting>
 </example>
 </para>
@@ -4222,12 +4163,11 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <secondary>SPACE function</secondary></indexterm>
 <example id="ex.bif-space">
 <title>Builtin function SPACE</title>
-<programlisting>
-SPACE("abc  def  ")          ->    "abc def"
-SPACE("  abc def",3)         ->    "abc   def"
-SPACE("abc  def  ",1)        ->    "abc def"
-SPACE("abc  def  ",0)        ->    "abcdef"
-SPACE("abc  def  ",2,"+")    ->    "abc++def"
+<programlisting language="rexx">SPACE("abc  def  ")          -->    "abc def"
+SPACE("  abc def",3)         -->    "abc   def"
+SPACE("abc  def  ",1)        -->    "abc def"
+SPACE("abc  def  ",0)        -->    "abcdef"
+SPACE("abc  def  ",2,"+")    -->    "abc++def"
 </programlisting>
 </example>
 </para>
@@ -4425,8 +4365,7 @@ were specified with a length equal to that of the file).
 <secondary>STREAM function</secondary></indexterm>
 <example id="ex.bif-stream">
 <title>Builtin function STREAM</title>
-<programlisting>
-stream(strout,"c","open")
+<programlisting language="rexx">stream(strout,"c","open")
 stream(strout,"c","open write")
 stream(strinp,"c","open read")
 stream(strinp,"c","open read shared")
@@ -4442,8 +4381,7 @@ message. If an attempt is made to close an unopened file, STREAM returns a
 null string (&quot;&quot;).
 <example id="ex.bif-stream-1">
 <title>Builtin function STREAM on unopened file</title>
-<programlisting>
-stream("STRM.TXT","c","close")
+<programlisting language="rexx">stream("STRM.TXT","c","close")
 </programlisting>
 </example>
 </para>
@@ -4523,8 +4461,7 @@ in a file open only for writing, you receive an error message.</para></note>
 <secondary>STREAM function</secondary></indexterm>
 <example id="ex.bif-stream-2">
 <title>Builtin function STREAM examples</title>
-<programlisting>
-stream(name,"c","seek =2 read")
+<programlisting language="rexx">stream(name,"c","seek =2 read")
 stream(name,"c","seek +15 read")
 stream(name,"c","seek -7 write line")
 fromend  = 125
@@ -4557,8 +4494,7 @@ streams.
 <listitem><para>returns the date and time stamps of a stream in US format.
 <example id="ex.bif-stream-3">
 <title>Builtin function STREAM QUERY examples</title>
-<programlisting>
-stream("..\file.txt","c","query datetime")
+<programlisting language="rexx">stream("..\file.txt","c","query datetime")
 </programlisting>
 </example>
 </para>
@@ -4572,8 +4508,7 @@ stream("..\file.txt","c","query datetime")
 exists, or a null string.</para>
 <example id="ex.bif-stream-4">
 <title>Builtin function STREAM QUERY EXISTS examples</title>
-<programlisting>
-stream("..\file.txt","c","query exists")
+<programlisting language="rexx">stream("..\file.txt","c","query exists")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -4585,8 +4520,7 @@ c:\data\file.txt
 <listitem><para>returns the handle associated with the open stream. </para>
 <example id="ex.bif-stream-5">
 <title>Builtin function STREAM QUERY HANDLE examples</title>
-<programlisting>
-stream("..\file.txt","c","query handle")
+<programlisting language="rexx">stream("..\file.txt","c","query handle")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -4621,8 +4555,7 @@ See <xref linkend="positio" /> for a
 detailed discussion of this issue.</para>
 <example id="ex.bif-stream-6">
 <title>Builtin function STREAM QUERY POSITION examples</title>
-<programlisting>
-stream("myfile","c","query position write")
+<programlisting language="rexx">stream("myfile","c","query position write")
 </programlisting>
 </example>
 <para>A sample output might
@@ -4640,8 +4573,7 @@ characters.</para></listitem></varlistentry>
 <listitem><para>returns the size, in bytes, of a persistent stream. </para>
 <example id="ex.bif-stream-7">
 <title>Builtin function STREAM QUERY SIZE examples</title>
-<programlisting>
-stream("..\file.txt","c","query size")
+<programlisting language="rexx">stream("..\file.txt","c","query size")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -4661,8 +4593,7 @@ This is the preferred method of getting the date and time because it provides
 the full 4-digit year.</para>
 <example id="ex.bif-stream-8">
 <title>Builtin function STREAM QUERY TIMESTAMP examples</title>
-<programlisting>
-stream("..\file.txt","c","query timestamp")
+<programlisting language="rexx">stream("..\file.txt","c","query timestamp")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -4735,13 +4666,12 @@ will be removed.</para>
 <secondary>STRIP function</secondary></indexterm>
 <example id="ex.bif-strip">
 <title>Builtin function STRIP</title>
-<programlisting>
-STRIP("  ab c  ")        ->    "ab c"
-STRIP("  ab c  ","L")    ->    "ab c  "
-STRIP("  ab c  ","t")    ->    "  ab c"
-STRIP("12.7000", ,0)     ->    "12.7"
-STRIP("0012.700", ,0)    ->    "12.7"
-STRIP("12.0000", "T", '.0') -> "12"
+<programlisting language="rexx">STRIP("  ab c  ")        -->    "ab c"
+STRIP("  ab c  ","L")    -->    "ab c  "
+STRIP("  ab c  ","t")    -->    "  ab c"
+STRIP("12.7000", ,0)     -->    "12.7"
+STRIP("0012.700", ,0)    -->    "12.7"
+STRIP("12.0000", "T", '.0') --> "12"
 </programlisting>
 </example>
 </para>
@@ -4793,10 +4723,9 @@ character is a blank.</para>
 <secondary>SUBSTR function</secondary></indexterm>
 <example id="ex.bif-substr">
 <title>Builtin function SUBSTR</title>
-<programlisting>
-SUBSTR("abc",2)          ->    "bc"
-SUBSTR("abc",2,4)        ->    "bc  "
-SUBSTR("abc",2,6,".")    ->    "bc...."
+<programlisting language="rexx">SUBSTR("abc",2)          -->    "bc"
+SUBSTR("abc",2,4)        -->    "bc  "
+SUBSTR("abc",2,6,".")    -->    "bc...."
 </programlisting>
 </example>
 </para>
@@ -4846,10 +4775,9 @@ the selected words.
 <secondary>SUBWORD function</secondary></indexterm>
 <example id="ex.bif-subword">
 <title>Builtin function SUBWORD</title>
-<programlisting>
-SUBWORD("Now is the  time",2,2)    ->    "is the"
-SUBWORD("Now is the  time",3)      ->    "the  time"
-SUBWORD("Now is the  time",5)      ->    ""
+<programlisting language="rexx">SUBWORD("Now is the  time",2,2)    -->    "is the"
+SUBWORD("Now is the  time",3)      -->    "the  time"
+SUBWORD("Now is the  time",5)      -->    ""
 </programlisting>
 </example>
 </para>
@@ -4898,14 +4826,13 @@ before it is passed to the function.</para></note>
 <secondary>SYMBOL function</secondary></indexterm>
 <example id="ex.bif-symbol">
 <title>Builtin function SYMBOL</title>
-<programlisting>
-/* following: Drop A.3;  J=3 */
-SYMBOL("J")      ->   "VAR"
-SYMBOL(J)        ->   "LIT" /* has tested "3"        */
-SYMBOL("a.j")    ->   "LIT" /* has tested A.3        */
-SYMBOL(2)        ->   "LIT" /* a constant symbol     */
-SYMBOL(".TRUE")  ->   "LIT" /* an environment symbol */
-SYMBOL("*")      ->   "BAD" /* not a valid symbol    */
+<programlisting language="rexx">/* following: Drop A.3;  J=3 */
+SYMBOL("J")      -->   "VAR"
+SYMBOL(J)        -->   "LIT" /* has tested "3"        */
+SYMBOL("a.j")    -->   "LIT" /* has tested A.3        */
+SYMBOL(2)        -->   "LIT" /* a constant symbol     */
+SYMBOL(".TRUE")  -->   "LIT" /* an environment symbol */
+SYMBOL("*")      -->   "BAD" /* not a valid symbol    */
 </programlisting>
 </example>
 </para>
@@ -5071,14 +4998,13 @@ to a minimum value of 12 when performing timestamp arithmetic.</para>
 <secondary>TIME function</secondary></indexterm>
 <example id="ex.bif-time">
 <title>Builtin function TIME</title>
-<programlisting>
-TIME()       ->   "16:54:22"
-TIME("C")    ->   "4:54pm"
-TIME("H")    ->   "16"
-TIME("L")    ->   "16:54:22.120000"   /* Perhaps */
-TIME("M")    ->   "1014"           /* 54 + 60*16 */
-TIME("N")    ->   "16:54:22"
-TIME("S")    ->   "60862"  /* 22 + 60*(54+60*16) */
+<programlisting language="rexx">TIME()       -->   "16:54:22"
+TIME("C")    -->   "4:54pm"
+TIME("H")    -->   "16"
+TIME("L")    -->   "16:54:22.120000"   /* Perhaps */
+TIME("M")    -->   "1014"           /* 54 + 60*16 */
+TIME("N")    -->   "16:54:22"
+TIME("S")    -->   "60862"  /* 22 + 60*(54+60*16) */
 </programlisting>
 </example>
 </para>
@@ -5101,14 +5027,13 @@ example of the elapsed-time clock:
 <secondary>TIME function</secondary></indexterm>
 <example id="ex.bif-time-1">
 <title>Builtin function TIME elapsed</title>
-<programlisting>
-time("E")    ->    0          /* The first call */
+<programlisting language="rexx">time("E")    -->    0          /* The first call */
                   /* pause of one second here */
-time("E")    ->    1.020000   /* or thereabouts */
+time("E")    -->    1.020000   /* or thereabouts */
                   /* pause of one second here */
-time("R")    ->    2.030000   /* or thereabouts */
+time("R")    -->    2.030000   /* or thereabouts */
                   /* pause of one second here */
-time("R")    ->    1.050000   /* or thereabouts */
+time("R")    -->    1.050000   /* or thereabouts */
 </programlisting>
 </example>
 </para>
@@ -5131,18 +5056,16 @@ the Normal format. <emphasis role="italic">option2</emphasis> must specify the
 current time, for example, not "E" or "R". Here are some examples:
 <example id="ex.bif-time-2">
 <title>Builtin function TIME formatting</title>
-<programlisting>
-time("C","11:27:21")    ->    11:27am
-time("N","11:27am","C") ->    11:27:00
-time("N", "63326132161828000", "F")   ->   08:16:01
+<programlisting language="rexx">time("C","11:27:21")    -->    11:27am
+time("N","11:27am","C") -->    11:27:00
+time("N", "63326132161828000", "F")   -->   08:16:01
 </programlisting>
 </example>
 </para>
 <para>You can determine the difference between two times; for example:</para>
 <example id="ex.bif-time-3">
 <title>Builtin function TIME difference</title>
-<programlisting>
-If TIME("M","5:00pm","C")-TIME("M")&lt;=0
+<programlisting language="rexx">If TIME("M","5:00pm","C")-TIME("M")&lt;=0
 then say "Time to go home"
 else say "Keep working"
 </programlisting>
@@ -5159,8 +5082,7 @@ A time stamp for a time and date combination can be created by
 combining a value from Date('F') for the time of day.</para>
 <example id="ex.bif-time-4">
 <title>Builtin function TIME with F option</title>
-<programlisting>
-numeric digits 18  -- needed to add the timestamps
+<programlisting language="rexx">numeric digits 18  -- needed to add the timestamps
 timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </programlisting>
 </example>
@@ -5217,10 +5139,9 @@ even if interactive debugging is active. Also unlike the TRACE instruction,
 <secondary>TRACE function</secondary></indexterm>
 <example id="ex.bif-trace">
 <title>Builtin function TRACE</title>
-<programlisting>
-TRACE()       ->   "?R" /* maybe */
-TRACE("O")    ->   "?R" /* also sets tracing off */
-TRACE("?I")   ->   "O"  /* now in interactive debugging */
+<programlisting language="rexx">Say TRACE()       -->   "?R" /* maybe */
+Say TRACE("O")    -->   "?R" /* also sets tracing off */
+Say TRACE("?I")   -->   "O"  /* now in interactive debugging */
 </programlisting>
 </example>
 </para>
@@ -5286,15 +5207,14 @@ the string from the starting position to the end is used. </para>
 <secondary>TRANSLATE function</secondary></indexterm>
 <example id="ex.bif-translate">
 <title>Builtin function TRANSLATE</title>
-<programlisting>
-TRANSLATE("abcdef")                        ->    "ABCDEF"
-TRANSLATE("abcdef", , , , 2, 3)            ->    "aBCDef"
-TRANSLATE("abcdef", "12", "ec")            ->    "ab2d1f"
-TRANSLATE("abcdef", "12", "abcd", ".")     ->    "12..ef"
-TRANSLATE("APQRV", , "PR")                 ->    "A Q V"
-TRANSLATE("APQRV", XRANGE("00"X, "Q"))     ->    "APQ  "
-TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "4ab3"
-TRANSLATE("4123", "abcd", "1234")          ->    "dabc"
+<programlisting language="rexx">TRANSLATE("abcdef")                        -->    "ABCDEF"
+TRANSLATE("abcdef", , , , 2, 3)            -->    "aBCDef"
+TRANSLATE("abcdef", "12", "ec")            -->    "ab2d1f"
+TRANSLATE("abcdef", "12", "abcd", ".")     -->    "12..ef"
+TRANSLATE("APQRV", , "PR")                 -->    "A Q V"
+TRANSLATE("APQRV", XRANGE("00"X, "Q"))     -->    "APQ  "
+TRANSLATE("4123", "abcd", "1234", , 2, 2)  -->    "4ab3"
+TRANSLATE("4123", "abcd", "1234")          -->    "dabc"
 </programlisting>
 </example>
 </para>
@@ -5345,11 +5265,10 @@ in the result, any minus sign is removed.</para>
 <secondary>TRUNC function</secondary></indexterm>
 <example id="ex.bif-trunc">
 <title>Builtin function TRUNC</title>
-<programlisting>
-TRUNC(12.3)           ->    12
-TRUNC(127.09782,3)    ->    127.097
-TRUNC(127.1,3)        ->    127.100
-TRUNC(127,2)          ->    127.00
+<programlisting language="rexx">TRUNC(12.3)           -->    12
+TRUNC(127.09782,3)    -->    127.097
+TRUNC(127.1,3)        -->    127.100
+TRUNC(127,2)          -->    127.00
 </programlisting>
 </example>
 </para>
@@ -5391,10 +5310,9 @@ is not specified, the default is to convert the remainder of the string.
 <secondary>upper function</secondary></indexterm>
 <example id="ex.bif-upper">
 <title>Builtin function UPPER</title>
-<programlisting>
-upper("Albert Einstein")      ->    "ALBERT EINSTEIN"
-upper("abcdef", 4)            ->    "abcDEF"
-upper("abcdef", 3, 2)         ->    "abCDef"
+<programlisting language="rexx">upper("Albert Einstein")      -->    "ALBERT EINSTEIN"
+upper("abcdef", 4)            -->    "abcDEF"
+upper("abcdef", 3, 2)         -->    "abCDef"
 </programlisting>
 </example>
 </para>
@@ -5464,16 +5382,15 @@ assignment.</para>
 <secondary>VALUE function</secondary></indexterm>
 <example id="ex.bif-value">
 <title>Builtin function VALUE</title>
-<programlisting>
-/* After: Drop A3; A33=7; K=3; fred="K"; list.5="Hi" */
-VALUE("a"k)     ->  "A3" /* looks up A3                */
-VALUE("a"k||k)  ->  "7"
-VALUE("fred")   ->  "K"  /* looks up FRED              */
-VALUE(fred)     ->  "3"  /* looks up K                 */
-VALUE(fred,5)   ->  "3"  /* looks up K and             */
+<programlisting language="rexx">/* After: Drop A3; A33=7; K=3; fred="K"; list.5="Hi" */
+VALUE("a"k)     -->  "A3" /* looks up A3                */
+VALUE("a"k||k)  -->  "7"
+VALUE("fred")   -->  "K"  /* looks up FRED              */
+VALUE(fred)     -->  "3"  /* looks up K                 */
+VALUE(fred,5)   -->  "3"  /* looks up K and             */
                          /* then sets K=5              */
-VALUE(fred)     ->  "5"  /* looks up K                 */
-VALUE("LIST."k) ->  "Hi" /* looks up LIST.5            */
+VALUE(fred)     -->  "5"  /* looks up K                 */
+VALUE("LIST."k) -->  "Hi" /* looks up LIST.5            */
 </programlisting>
 </example>
 </para>
@@ -5521,16 +5438,14 @@ set to the null string.
 <para>The values assigned to the variables
 must not contain any character that is a hexadecimal zero ("00"X).
 For example:</para>
-<programlisting>
-Call VALUE "MYVAR", "FIRST" || "00"X || "SECOND", "ENVIRONMENT"
+<programlisting language="rexx">Call VALUE "MYVAR", "FIRST" || "00"X || "SECOND", "ENVIRONMENT"
 </programlisting>
 <para>sets MYVAR to &quot;FIRST&quot;, truncating "00"x and "SECOND".</para>
 </note>
 <para>Here are some more examples:
 <example id="ex.bif-value-1">
 <title>Builtin function VALUE</title>
-<programlisting>
-/* Given that an external variable FRED has a value of 4         */
+<programlisting language="rexx">/* Given that an external variable FRED has a value of 4         */
 share = "ENVIRONMENT"
 say VALUE("fred",7,share)      /* says "4" and assigns           */
                                /* FRED a new value of 7          */
@@ -5584,8 +5499,7 @@ no such object, it returns, by default, the string
 <secondary>VALUE function</secondary></indexterm>
 <example id="ex.bif-value-3">
 <title>Builtin function VALUE</title>
-<programlisting>
--- assume the environment name MYNAME identifies the string "Simon"
+<programlisting language="rexx">-- assume the environment name MYNAME identifies the string "Simon"
 name = value("MYNAME", , "")       -- sends MYNAME message to the environment
 say "Hello," name                  -- "Hello, Simon"
 
@@ -5608,8 +5522,7 @@ the object <emphasis role="italic">newvalue</emphasis> by the name
 <para>Here is an example:
 <example id="ex.bif-value-4">
 <title>Builtin function VALUE</title>
-<programlisting>
-call value "MYNAME", "David", ""   -- sends MYNAME=("David") message to the environment
+<programlisting language="rexx">call value "MYNAME", "David", ""   -- sends MYNAME=("David") message to the environment
 say "Hello," value("MYNAME", , "") -- "Hello, David"
 </programlisting>
 </example>
@@ -5645,13 +5558,12 @@ a symbol that has been assigned a value), or
 <secondary>VAR function</secondary></indexterm>
 <example id="ex.bif-var">
 <title>Builtin function VAR</title>
-<programlisting>
-/* Following: DROP A.3; J=3  */
-VAR("J")       -> 1
-VAR(J)         -> 0  /* has tested "3"    */
-VAR("a.j")     -> 0  /* has tested "A.3"  */
-VAR(2)         -> 0  /* a constant symbol */
-VAR("*")       -> 0  /* an invalid symbol */
+<programlisting language="rexx">/* Following: DROP A.3; J=3  */
+VAR("J")       --> 1
+VAR(J)         --> 0  /* has tested "3"    */
+VAR("a.j")     --> 0  /* has tested "A.3"  */
+VAR(2)         --> 0  /* a constant symbol */
+VAR("*")       --> 0  /* an invalid symbol */
 </programlisting>
 </example>
 </para>
@@ -5723,18 +5635,17 @@ than <computeroutput>LENGTH(string)</computeroutput>, the function returns
 <secondary>VERIFY function</secondary></indexterm>
 <example id="ex.bif-verify">
 <title>Builtin function VERIFY</title>
-<programlisting>
-VERIFY("123","1234567890")             ->    0
-VERIFY("1Z3","1234567890")             ->    2
-VERIFY("AB4T","1234567890")            ->    1
-VERIFY("AB4T","1234567890","M")        ->    3
-VERIFY("AB4T","1234567890","N")        ->    1
-VERIFY("1P3Q4","1234567890", ,3)       ->    4
-VERIFY("123","",N,2)                   ->    2
-VERIFY("ABCDE","", ,3)                 ->    3
-VERIFY("AB3CD5","1234567890","M",4)    ->    6
-VERIFY("ABCDEF","ABC","N",2,3)         ->    4
-VERIFY("ABCDEF","ADEF","M",2,3)        ->    4
+<programlisting language="rexx">VERIFY("123","1234567890")             -->    0
+VERIFY("1Z3","1234567890")             -->    2
+VERIFY("AB4T","1234567890")            -->    1
+VERIFY("AB4T","1234567890","M")        -->    3
+VERIFY("AB4T","1234567890","N")        -->    1
+VERIFY("1P3Q4","1234567890", ,3)       -->    4
+VERIFY("123","",N,2)                   -->    2
+VERIFY("ABCDE","", ,3)                 -->    3
+VERIFY("AB3CD5","1234567890","M",4)    -->    6
+VERIFY("ABCDEF","ABC","N",2,3)         -->    4
+VERIFY("ABCDEF","ADEF","M",2,3)        -->    4
 </programlisting>
 </example>
 </para>
@@ -5774,9 +5685,8 @@ must be a positive whole number. This function is equivalent to
 <secondary>WORD function</secondary></indexterm>
 <example id="ex.bif-word">
 <title>Builtin function WORD</title>
-<programlisting>
-WORD("Now is the time",3)    ->    "the"
-WORD("Now is the time",5)    ->    ""
+<programlisting language="rexx">WORD("Now is the time",3)    -->    "the"
+WORD("Now is the time",5)    -->    ""
 </programlisting>
 </example>
 </para>
@@ -5811,9 +5721,8 @@ are in <emphasis role="italic">string</emphasis>.
 <secondary>WORDINDEX function</secondary></indexterm>
 <example id="ex.bif-wordindex">
 <title>Builtin function WORDINDEX</title>
-<programlisting>
-WORDINDEX("Now is the time",3)    ->    8
-WORDINDEX("Now is the time",6)    ->    0
+<programlisting language="rexx">WORDINDEX("Now is the time",3)    -->    8
+WORDINDEX("Now is the time",6)    -->    0
 </programlisting>
 </example>
 </para>
@@ -5849,10 +5758,9 @@ returns <computeroutput>0</computeroutput> if less than
 <secondary>WORDLENGTH function</secondary></indexterm>
 <example id="ex.bif-wordlength">
 <title>Builtin function WORDLENGTH</title>
-<programlisting>
-WORDLENGTH("Now is the time",2)       ->    2
-WORDLENGTH("Now comes the time",2)    ->    5
-WORDLENGTH("Now is the time",6)       ->    0
+<programlisting language="rexx">WORDLENGTH("Now is the time",2)       -->    2
+WORDLENGTH("Now comes the time",2)    -->    5
+WORDLENGTH("Now is the time",6)       -->    0
 </programlisting>
 </example>
 </para>
@@ -5896,14 +5804,13 @@ word at which to start the search.</para>
 <secondary>WORDPOS function</secondary></indexterm>
 <example id="ex.bif-wordpos">
 <title>Builtin function WORDPOS</title>
-<programlisting>
-WORDPOS("the","now is the time")              ->  3
-WORDPOS("The","now is the time")              ->  0
-WORDPOS("is the","now is the time")           ->  2
-WORDPOS("is   the","now is the time")         ->  2
-WORDPOS("is   time ","now is   the time")     ->  0
-WORDPOS("be","To be or not to be")            ->  2
-WORDPOS("be","To be or not to be",3)          ->  6
+<programlisting language="rexx">WORDPOS("the","now is the time")              -->  3
+WORDPOS("The","now is the time")              -->  0
+WORDPOS("is the","now is the time")           -->  2
+WORDPOS("is   the","now is the time")         -->  2
+WORDPOS("is   time ","now is   the time")     -->  0
+WORDPOS("be","To be or not to be")            -->  2
+WORDPOS("be","To be or not to be",3)          -->  6
 </programlisting>
 </example>
 </para>
@@ -5941,9 +5848,8 @@ WORDPOS("be","To be or not to be",3)          ->  6
 <secondary>WORDS function</secondary></indexterm>
 <example id="ex.bif-words">
 <title>Builtin function WORDS</title>
-<programlisting>
-WORDS("Now is the time")    ->    4
-WORDS(" ")                  ->    0
+<programlisting language="rexx">WORDS("Now is the time")    -->    4
+WORDS(" ")                  -->    0
 </programlisting>
 </example>
 </para>
@@ -5988,10 +5894,9 @@ returns a null string.</para>
 <secondary>X2B function</secondary></indexterm>
 <example id="ex.bif-x2b">
 <title>Builtin function X2B</title>
-<programlisting>
-X2B("C3")        ->  "11000011"
-X2B("7")         ->  "0111"
-X2B("1 C1")      ->  "000111000001"
+<programlisting language="rexx">X2B("C3")        -->  "11000011"
+X2B("7")         -->  "0111"
+X2B("1 C1")      -->  "000111000001"
 </programlisting>
 </example>
 </para>
@@ -6000,10 +5905,9 @@ character strings into binary form.</para>
 <para>Here are some examples:
 <example id="ex.bif-x2b-1">
 <title>Builtin function X2B</title>
-<programlisting>
-X2B(C2X("C3"x))  ->  "11000011"
-X2B(D2X("129"))  ->  "10000001"
-X2B(D2X("12"))   ->  "1100"
+<programlisting language="rexx">X2B(C2X("C3"x))  -->  "11000011"
+X2B(D2X("129"))  -->  "10000001"
+X2B(D2X("12"))   -->  "1100"
 </programlisting>
 </example>
 </para>
@@ -6048,9 +5952,8 @@ returns a null string.</para>
 <secondary>X2C function</secondary></indexterm>
 <example id="ex.bif-x2c">
 <title>Builtin function X2C</title>
-<programlisting>
-X2C("4865 6c6c 6f") ->  "Hello"     /*  ASCII             */
-X2C("3732 73")      ->  "72s"       /*  ASCII             */
+<programlisting language="rexx">X2C("4865 6c6c 6f") -->  "Hello"     /*  ASCII             */
+X2C("3732 73")      -->  "72s"       /*  ASCII             */
 </programlisting>
 </example>
 </para>
@@ -6096,13 +5999,12 @@ an unsigned binary number.</para>
 <secondary>X2D function</secondary></indexterm>
 <example id="ex.bif-x2d">
 <title>Builtin function X2D</title>
-<programlisting>
-X2D("0E")        ->    14
-X2D("81")        ->    129
-X2D("F81")       ->    3969
-X2D("FF81")      ->    65409
-X2D("46 30"X)    ->    240          /*  ASCII   */
-X2D("66 30"X)    ->    240          /*  ASCII   */
+<programlisting language="rexx">X2D("0E")        -->    14
+X2D("81")        -->    129
+X2D("F81")       -->    3969
+X2D("FF81")      -->    65409
+X2D("46 30"X)    -->    240          /*  ASCII   */
+X2D("66 30"X)    -->    240          /*  ASCII   */
 </programlisting>
 </example>
 </para>
@@ -6124,14 +6026,13 @@ on the left with <computeroutput>0</computeroutput> characters
 <secondary>X2D function</secondary></indexterm>
 <example id="ex.bif-x2d-1">
 <title>Builtin function X2D</title>
-<programlisting>
-X2D("81",2)      ->    -127
-X2D("81",4)      ->    129
-X2D("F081",4)    ->    -3967
-X2D("F081",3)    ->    129
-X2D("F081",2)    ->    -127
-X2D("F081",1)    ->    1
-X2D("0031",0)    ->    0
+<programlisting language="rexx">X2D("81",2)      -->    -127
+X2D("81",4)      -->    129
+X2D("F081",4)    -->    -3967
+X2D("F081",3)    -->    129
+X2D("F081",2)    -->    -127
+X2D("F081",1)    -->    1
+X2D("0031",0)    -->    0
 </programlisting>
 </example>
 </para>
@@ -6258,8 +6159,7 @@ The following POSIX character class names can be specified:
 <secondary>XRANGE function</secondary></indexterm>
 <example id="ex.bif-xrange">
 <title>Builtin function XRANGE</title>
-<programlisting>
-XRANGE("a", "f")                     --> "abcdef"
+<programlisting language="rexx">XRANGE("a", "f")                     --> "abcdef"
 XRANGE('03'x, '07'x)                 --> '0304050607'x
 XRANGE(, '04'x)                      --> '0001020304'x
 XRANGE('FE'x, '02'x)                 --> 'FEFF000102'x

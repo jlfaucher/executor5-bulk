@@ -57,8 +57,7 @@ objects that are always accessible.  The Environment object is automatically sea
 are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
 Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
 </para>
-<para><programlisting>
-say .true                   -- Displays "1"
+<para><programlisting language="rexx">say .true                   -- Displays "1"
 say .environment~true       -- Also displays "1"
 say .environment["TRUE"]    -- "1"
 say .environment["true"]    -- The NIL object
@@ -108,8 +107,7 @@ object, as a null string represents a string with no characters. It has only
 the methods of the Object class. Note that you use the Nil object
 (rather than the null string (&quot;&quot;)) to test for the absence of data
 in an array or other Collection class entry: </para>
-<programlisting>
-if .nil = board[row,col]   /* .NIL rather than "" */
+<programlisting language="rexx">if .nil = board[row,col]   /* .NIL rather than "" */
 then ...
 </programlisting>
 </section>
@@ -124,8 +122,8 @@ of the <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/>
 and gives access to Rexx language information and other platform-specific
 information in a single place.
 </para>
-<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 1 Sep 2016 /* e. g. */
-]]></programlisting>
+<programlisting language="rexx">say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 1 Sep 2016 /* e. g. */
+</programlisting>
 </section>
 
 <section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
@@ -177,14 +175,12 @@ objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
 <example>
 <title>.LOCAL</title>
-<programlisting>
-/* .LOCAL example--places something in the Local environment directory */
+<programlisting language="rexx">/* .LOCAL example--places something in the Local environment directory */
 .local~my.alarm = theAlarm
 /* To retrieve it                                                      */
 say .local~my.alarm
 </programlisting>
-<programlisting>
-/* Another .LOCAL example (Windows) */
+<programlisting language="rexx">/* Another .LOCAL example (Windows) */
 .environment["MYAPP.PASSWORD"] = "topsecret"
 .environment["MYAPP.UID"] = 200
 
@@ -203,8 +199,7 @@ say .myapp.uid                         /* Displays "200"               */
 .output~destination(.stream~new("SAY_REDIRECT.TXT"))
 say "This goes into a file, and not onto the screen!"
 </programlisting>
-<programlisting>
-/* .LOCAL example--get the individual command line arguments */
+<programlisting language="rexx">/* .LOCAL example--get the individual command line arguments */
 cmdargs = .local~syscargs
 do carg over cmdargs
    say carg
@@ -361,8 +356,7 @@ individual C arguments passed to the program.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <example id="ex.local-syscargs">
 <title>SysCArgs Array</title>
-<programlisting>
-say .SysCArgs~items "SysCArgs" .SysCArgs~makeString(, ",")
+<programlisting language="rexx">say .SysCArgs~items "SysCArgs" .SysCArgs~makeString(, ",")
 say arg() "ARGs" arg(1, "A")~makeString(, ",")
 
 /* when called with command line parameters 1 "2 3" 4, displays:
@@ -426,8 +420,7 @@ If there are no such methods, the .METHODS symbol has the default value of
 <computeroutput>.METHODS</computeroutput>.</para>
 <example>
 <title>.METHODS</title>
-<programlisting>
-/* .methods contains one entry with the index (method name) "TALK" */
+<programlisting language="rexx">/* .methods contains one entry with the index (method name) "TALK" */
 o=.object~enhanced(.methods)  /* create object, enhance it with methods */
 o~talk("echo this text")  /* test "TALK" method */
 ::method talk  /* floating method by the name of "TALK" */
@@ -455,8 +448,7 @@ the .ROUTINES symbol has the default value of
 <computeroutput>.ROUTINES</computeroutput>.</para>
 <example>
 <title>.ROUTINES</title>
-<programlisting>
-/* .routines contains one entry with the index (routine name) "TALK" */
+<programlisting language="rexx">/* .routines contains one entry with the index (routine name) "TALK" */
 .routines~talk~call("echo this text")  /* test talk routine */
 ::routine talk  /* floating routine by the name of "TALK" */
   use arg text  /* retrieve the argument */
@@ -485,8 +477,7 @@ the .RESOURCES symbol has the default value of
 <computeroutput>.RESOURCES</computeroutput>.</para>
 <example>
 <title>.RESOURCE</title>
-<programlisting>
-do name over .resources
+<programlisting language="rexx">do name over .resources
   say name":" .resources[name]~items "lines"
   say .resources[name]~makeString
 end
