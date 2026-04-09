@@ -870,8 +870,10 @@ return testResult
   dir["test"] = "file io"
   dir["number"] = 42
 
-  .json~toJsonFile("/tmp/test_json_io.json", dir)
-  readBack = .json~fromJsonFile("/tmp/test_json_io.json")
+  tmpFile=.TemporaryTestFile~new(.nil, "test_json_io.json")
+  .json~toJsonFile(tmpFile, dir)
+  readBack = .json~fromJsonFile(tmpFile)
+
   self~assertSame("file io", readBack["test"],   "file I/O > string value")
   self~assertSame(42,        readBack["number"], "file I/O > number value")
 
@@ -881,8 +883,10 @@ return testResult
   dir["test"] = "file io"
   dir["number"] = 42
 
-  .json~toJsonFile("/tmp/test_json_io_legible.json", dir, .true)
-  readBack = .json~fromJsonFile("/tmp/test_json_io_legible.json")
+  tmpFile=.TemporaryTestFile~new(.nil, "test_json_io_legible.json")
+  .json~toJsonFile(tmpFile, dir, .true)
+  readBack = .json~fromJsonFile(tmpFile)
+
   self~assertSame("file io", readBack["test"],   "file I/O legible > string value")
   self~assertSame(42,        readBack["number"], "file I/O legible > number value")
 
