@@ -357,7 +357,8 @@ end
                                          -- mb~append(" ",revInfo)
                                           -- if revision exists, save in ${book}/revision_info.txt
                                          if \newVal~isNil then
-                                            .stream~new(revFileName)~~open("replace")~~charout(revInfo)~~close
+                                            .stream~new(revFileName)~~open("replace")~~charout(newVal)~~close
+                                            -- .stream~new(revFileName)~~open("replace")~~charout(revInfo)~~close
                                      end
                                   end
                                   if \newVal~isNil then  -- if non-ignorable revision available, use and append it
