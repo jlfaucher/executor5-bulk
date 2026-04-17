@@ -1,0 +1,71 @@
+#!/usr/bin/rexx
+/*
+   name:             ooRexx.Base.RunOnlyABS.runTests
+   author:           Rony G. Flatscher
+   date:             2005-08-20
+   version:          0.0.1
+
+   changed:
+
+
+   languageLevel:    6.0
+   purpose:          Show how to run one particular test case
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+
+   remark:           Serves as an example of how to use and drive the ooRexxUnit framework
+
+   category:
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+   -- make sure, that the tests are not run when CALLing/REQUIRE'ing the testUnit programs
+.local~bRunTestsLocally=.false   -- do not run tests, if calling/requiring the testUnit files
+
+   -- now call all testUnit Rexx programs, each containing a testUnit class with testmethods
+call ooRexx.Base.String.testUnit  -- contained class "ooRexxBaseStringTestUnit"
+                                -- will be put into environment
+
+   -- only test the ABS-functionality test unit, accessible via the method named "testABS"
+tr=.ooRexx.Base.String.TestUnit~new("testABS")~execute -- test case of method "testABS"
+
+   -- show brief results
+call simpleDumpTestResults tr, "ooRexxBaseRunOnlyABS.runTests (run only one particular testUnit test)"
+
+

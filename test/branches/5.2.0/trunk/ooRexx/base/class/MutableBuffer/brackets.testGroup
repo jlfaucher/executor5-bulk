@@ -1,0 +1,165 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2014-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.BRACKETS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "BRACKETS.testGroup" subclass ooTestCase public
+
+
+::method 'test001'
+  m001=.mutablebuffer~new('mutablebuffer')
+  m001[1,1]='1234'
+  self~assertSame("1234utablebuffer",m001)
+
+
+::method 'test002'
+  m002=.mutablebuffer~new('mutablebuffer')
+  m002[3,0]='1234'
+  self~assertSame("mu1234tablebuffer",m002)
+
+
+::method 'test003'
+  m003=.mutablebuffer~new('mutablebuffer')
+  m003[3,3]='1234'
+  self~assertSame("mu1234lebuffer",m003)
+
+
+::method 'test004'
+  m004=.mutablebuffer~new('mutablebuffer')
+  m004[5,]='1234'
+  self~assertSame("muta1234uffer",m004)
+
+
+::method 'test005'
+  self~expectSyntax(88.901)
+  m005=.mutablebuffer~new('mutablebuffer')
+  m005[,2]='1234'
+
+::method 'test006'
+  self~expectSyntax(88.912)
+  m006=.mutablebuffer~new('mutablebuffer')
+  m006[0,1]='1234'
+
+::method 'test007'
+  self~expectSyntax(88.912)
+  m007=.mutablebuffer~new('mutablebuffer')
+  m007[-1,2]='1234'
+
+::method 'test008'
+  self~expectSyntax(88.912)
+  m008=.mutablebuffer~new('mutablebuffer')
+  m008["a",1]='1234'
+
+::method 'test009'
+  self~expectSyntax(88.911)
+  m009=.mutablebuffer~new('mutablebuffer')
+  m009[1,"a"]='1234'
+
+::method 'test010'
+  self~expectSyntax(88.901)
+  m010=.mutablebuffer~new('mutablebuffer')
+  m010[,2]='1234'
+
+::method 'test011'
+  self~expectSyntax(88.901)
+  m011=.mutablebuffer~new('mutablebuffer')
+  m011[,]='1234'
+
+::method 'test012'
+  self~expectSyntax(35.1)
+  m011=.mutablebuffer~new('mutablebuffer')
+  Interpret 'm0121[1,1]='
+
+::method 'test013'
+  m=.mutablebuffer~new('mutablebuffer')
+  m13=m
+  Do i=1 To 3
+    Select
+      When i=1 Then
+        self~assertSame("mutablebuffer",m13)
+      When i=2 Then
+        self~assertSame("mutablxbuffer",m13)
+      When i=3 Then Do
+        self~assertSame("mutablxbuffxr",m13)
+        self~expectSyntax(88.912)
+        End
+      End
+      m13[m13~pos('e'),1]='x'
+  end
+
+::method 'test014'
+  m=.mutablebuffer~new('mutablebuffer')
+  mx=m~string~copies(2)
+--Say mx
+  m14=m
+  m14[m14~length+1]=m14
+--Say m14~string
+  self~assertSame(mx,m14~string)
+
+::method 'test015'
+  m=.mutablebuffer~new('mutablebuffer')
+  mx=m~string~copies(4)
+  m15=m~copy
+  Do i=1 To 2
+    m15[m15~length+1]=m15
+    End
+  self~assertSame(mx,m15~string)
+  self~assertSame(4*m~length,m15~length)
+
+::method 'test016'
+  m=.mutablebuffer~new('12345')
+  m16=m
+  Do i=1 To 10
+    m16=m~copy
+    m16[i]='x'
+    --Say i m16~string
+    self~assertSame(m~substr(1,i-1,' ')||'x'||m~substr(i+1),m16~string)
+    End
+
+
+::options novalue error

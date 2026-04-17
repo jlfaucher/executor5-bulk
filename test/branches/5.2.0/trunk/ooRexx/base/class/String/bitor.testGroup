@@ -1,0 +1,496 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_bitorMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_bitorMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(''~bitor, '')
+
+::method "test_2"
+   self~assertSame('X'~bitor, 'X')
+
+::method "test_3"
+   self~assertSame('C1'x~bitor, 'C1'x)
+
+::method "test_4"
+   self~assertSame('abc'~bitor, 'abc')
+
+::method "test_5"
+   self~assertSame('abc'x~bitor, 'abc'x)
+
+::method "test_6"
+   self~assertSame('a bc de'x~bitor, '0ABCDE'x)
+
+::method "test_7"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(v.30~bitor, '1234567890abcdefghijklmnopqrst')
+
+::method "test_8"
+   v100000=Copies('abcd',25000)
+   self~assertSame(v255.~bitor, v255.)
+
+::method "test_9"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(v256~bitor, v256)
+
+::method "test_10"
+   v100000=Copies('abcd',25000)
+   self~assertSame(v100000~bitor, Copies('abcd',25000))
+
+::method "test_11"
+   self~assertSame("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X~bitor, x2C(Copies('1234',61)))
+
+::method "test_12"
+   self~assertSame("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"~bitor, Copies('19',125))
+
+::method "test_13"
+   self~assertSame(('an expression' '+'||'others')~bitor, 'an expression +others')
+
+::method "test_14"
+   self~assertSame((17+4)~bitor, '21')
+
+::method "test_15"
+   self~assertSame((12345/3)~bitor, '4115')
+
+::method "test_16"
+   numeric digits 9
+   self~assertSame((1E-122/7)~bitor, '1.42857143E-123')
+
+::method "test_17"
+   self~assertSame(SUBSTR('FFFFFF FF'X,3,1)~bitor, 'FF'X)
+
+::method "test_18"
+   self~assertSame('echoed'~bitor, 'echoed')
+
+::method "test_19"
+   self~assertSame(copies('one more Time', 2)~bitor, 'one more Timeone more Time')
+
+::method "test_20"
+   self~assertSame(nv1~bitor, nv1)
+
+::method "test_21"
+   self~assertSame(nv2.~bitor(,), nv2.)
+
+::method "test_22"
+   self~assertSame(nv2.3~bitor(,), nv2.3)
+
+::method "test_23"
+   self~assertSame(''~bitor, '')
+
+::method "test_24"
+   self~assertSame(''~bitor('a'), 'a')
+
+::method "test_25"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(''~bitor(v.30), '1234567890abcdefghijklmnopqrst')
+
+::method "test_26"
+   v100000=Copies('abcd',25000)
+   self~assertSame(''~bitor(v100000), v100000)
+
+::method "test_27"
+   self~assertSame('X'~bitor('f3 fe'x), 'FBFE'x)
+
+::method "test_28"
+   self~assertSame('C1'x~bitor('.'), 'EF'x)
+
+::method "test_29"
+   self~assertSame('X'~bitor('1'), '79'x)
+
+::method "test_30"
+   self~assertSame('abc'~bitor('cde'), 'cfg')
+
+::method "test_31"
+   self~assertSame('abc'x~bitor('abcd'x), 'ABFD'x)
+
+::method "test_32"
+   self~assertSame('a bc de'x~bitor(""""), '2ABCDE'x)
+
+::method "test_33"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(v.30~bitor('1'), '1234567890abcdefghijklmnopqrst')
+
+::method "test_34"
+   v255.=copies('*',255)
+   self~assertSame(v255.~bitor('55'x), bitor('*','55'x)||substr(v255.,2))
+
+::method "test_35"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(v256~bitor(''), v256)
+
+::method "test_36"
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   self~assertSame(v100000~bitor(n100000), v100000)
+
+::method "test_37"
+   xffff='ffff'x
+   self~assertSame("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X~bitor('ffff'X), xffff||x2C(Copies('1234',60)))
+
+::method "test_38"
+   z=Copies('19',125)
+   self~assertSame(z~bitor("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('19',125))
+
+::method "test_39"
+   self~assertSame(('an expression' '+'||'others')~bitor('other'||'expression' 'a'), '6F7E68657A757A7573777B7F6F6F6F6F7568657273'X)
+
+::method "test_40"
+   self~assertSame((17+4)~bitor(99+0), '3B39'X)
+
+::method "test_41"
+   numeric digits 9
+   self~assertSame((12345/3)~bitor(3/12345), '343F313530323433303133333636'X)
+
+::method "test_42"
+   numeric digits 9
+   self~assertSame((1E-122/7)~bitor(1e+122/7), '1.42857143E/123')
+
+::method "test_43"
+   self~assertSame(SUBSTR('FFFFFF FF'X,3,1)~bitor(delstr('4567',2,2)), 'FF37'X)
+
+::method "test_44"
+   self~assertSame('echoed'~bitor('  c  '), '65636B6F6564'X)
+
+::method "test_45"
+   self~assertSame(copies('one more Time',2)~bitor('c2'X), 'EF'X||'ne more Timeone more Time')
+
+::method "test_46"
+   v100000=Copies('abcd',25000)
+   vr74a='67726F6D616F7774736B6765'x||COPIES('abcd',49997)
+   self~assertSame('from outside'~bitor(copies(v100000,2)), vr74a)
+
+::method "test_47"
+   self~assertSame(''~bitor(33), '33')
+
+::method "test_48"
+   self~assertSame(copies('3'x,2)~bitor(bitor(1,' ')), '3303'x)
+
+::method "test_49"
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = '2'~bitor(.nil)
+
+::method "test_50"
+   self~assertSame('2'~bitor(nv2.3), '7E56322E33'x)
+
+::method "test_51"
+   self~assertSame('1'~bitor(nv1), '7F'X||'V1')
+
+::method "test_52"
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = '2'~bitor(.nil)
+
+::method "test_53"
+   self~assertSame('3'~bitor(nv2.3), '7F'X||'V2.3')
+
+::method "test_54"
+   self~assertSame(nv1~bitor(nv2.3), 'NV3.3')
+
+::method "test_55"
+   self~assertSame(nv2~bitor(nv3), 'NV3')
+
+::method "test_56"
+   self~assertSame(''~bitor(,"A"), '')
+
+::method "test_57"
+   self~assertSame('X'~bitor(,'00'X), 'X')
+
+::method "test_58"
+   self~expectSyntax(93.922)
+   self~assertSame('C1'X~bitor(,'sp'), 'X')
+
+::method "test_59"
+   v="0F"X
+   self~assertSame('abc'~bitor(,v), '6F6F6F'X)
+
+::method "test_60"
+   v="0F"X
+   self~assertSame('abc'X~bitor(,v), '0FBF'X)
+
+::method "test_61"
+   self~assertSame("a bc de"X~bitor(,'' ''), '2ABCFE'X)
+
+::method "test_62"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(v.30~bitor(,'1'), '1335577991qssuuwwyy'||'7b7b7d7d7f7f'x||'qqssu')
+
+::method "test_63"
+   v255.=copies('*',255)
+   self~assertSame(v255.~bitor(,'80'X), Copies('AA'X,255))
+
+::method "test_64"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(v256~bitor(,'2'), Copies('3A'X,255)||'3E'X)
+
+::method "test_65"
+   x7f="7f"X
+   v100000=Copies('abcd',25000)
+   self~assertSame(v100000~bitor(,x7f), Copies('7f'X,100000))
+
+::method "test_66"
+   x08='08'X
+   self~assertSame("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X~bitor(,x08), x2C(Copies('1a3c',61)))
+
+::method "test_67"
+   x75='75'x
+   self~assertSame("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"~bitor(,x75), Copies('757D'X,125))
+
+::method "test_68"
+   self~assertSame(('an expression' '+'||'others')~bitor(,1+4), '757F35757D75777577777D7F7F353F7F757D757777'X)
+
+::method "test_69"
+   self~assertSame((17+4)~bitor(,12/3), '65')
+
+::method "test_70"
+   self~assertSame((12345/3)~bitor(,10/2), '5555')
+
+::method "test_71"
+   numeric digits 9
+   self~assertSame((1E-122/7)~bitor(,9+12-20), 1'3F3533393537313533753D313333'X)
+
+::method "test_72"
+   self~assertSame(SUBSTR('FFFFFF FF'X,3,1)~bitor(,'.'), 'FF'X)
+
+::method "test_73"
+   self~assertSame('echoed'~bitor(,1), '7573797F7575'X)
+
+::method "test_74"
+   self~assertSame(copies('one more Time',2)~bitor(,3+'3'), '7F7E77367F7F767736767F7F777F7E77367F7F767736767f7f77'X)
+
+::method "test_75"
+   self~assertSame(''~bitor(,'/'), '')
+
+::method "test_76"
+   self~assertSame(copies('3'x,2)~bitor(,x2c(copies('a',2))), 'ABAB'X)
+
+::method "test_77"
+   self~assertSame(nv2.~bitor(,'x'), '7E7E7A7E'x)
+
+::method "test_78"
+   self~assertSame(nv2.3~bitor(,'x'), '7E7E7A7E'x||'{')
+
+::method "test_79"
+   self~assertSame(nv1~bitor(,'x'), '7E7E79'x)
+
+::method "test_80"
+    self~expectSyntax(88.909) -- Argument .. must have a string value
+    xre = ''~bitor(.nil,'x')
+
+::method "test_81"
+   self~assertSame(''~bitor(nv2.3,'x'), '7E7E7A7E'x||'{')
+
+::method "test_82"
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   self~assertSame('   '~bitor(,.nil), ' ')
+
+::method "test_83"
+   self~expectSyntax(93.922)
+   self~assertSame('   '~bitor(,nv2.3), ' ')
+
+::method "test_84"
+   self~expectSyntax(93.922)
+   self~assertSame('v2.'~bitor(,nv2.3), ' ')
+
+::method "test_85"
+   self~expectSyntax(93.922)
+   self~assertSame(''~bitor('',''), '')
+
+::method "test_86"
+   self~expectSyntax(93.922)
+   self~assertSame(''~bitor('a',''), '')
+
+::method "test_87"
+   v100000=Copies('abcd',25000)
+   a100000a=Copies('7B7A7B7E'x,25000)
+   self~assertSame(''~bitor(v100000, 'z'), a100000a)
+
+::method "test_88"
+   x23='23'X
+   self~assertSame('X'~bitor('f3 fe'X,x23), 'FBFF'X)
+
+::method "test_89"
+   self~assertSame('C1'X~bitor('.',','), 'EF'X)
+
+::method "test_90"
+   self~assertSame('X'~bitor('1',13-6-1), '79'X)
+
+::method "test_91"
+   self~expectSyntax(93.922)
+   self~assertSame('abc'~bitor('cde',-1e2-92), '79'X)
+
+::method "test_92"
+   self~expectSyntax(93.922)
+   self~assertSame('abc'X~bitor('abcd'x,'1 11'x), '79'X)
+
+::method "test_93"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(v.30~bitor('1',3), '1337777'||'3b3b33737373777777777B7B7B7B7F7F7F7F7373737377'x)
+
+::method "test_94"
+   v255.=copies('*',255)
+   self~assertSame(v255.~bitor('55'x,'*'), bitor('*','55'x)||substr(v255.,2))
+
+::method "test_95"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(v256~bitor('','1'), copies('3B'x,255)'3D'x)
+
+::method "test_96"
+   xff="ff"X
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   self~assertSame(v100000~bitor(n100000,xff), v100000)
+
+::method "test_97"
+   self~assertSame("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X~bitor('0000'X,'1'), '1234'x||x2C(Copies('3335',60)))
+
+::method "test_98"
+   z=Copies('19',125)
+   x0000='0000'x
+   self~assertSame(z~bitor("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",RIGHT(x0000,1)), Copies('19',125))
+
+::method "test_99"
+   self~assertSame((17+4)~bitor(99+0,1+1), '3B39'X)
+
+::method "test_100"
+   numeric digits 9
+   self~assertSame((12345/3)~bitor(3/12345,8/2), '343f313534363437343537373636'X)
+
+::method "test_101"
+   self~expectSyntax(93.922)
+   self~assertSame((1E-122/7)~bitor(1e+122/7,2/89), '')
+
+::method "test_102"
+   xfe="fe"X
+   self~assertSame(SUBSTR('FFFFFF FF'X,3,1)~bitor(delstr('4567',2,2),xfe), 'FFFF'X)
+
+::method "test_103"
+   self~assertSame('echoed'~bitor('  c  ',a), 'eckoee')
+
+::method "test_104"
+   self~assertSame(copies('one more Time',2)~bitor('c2'X,';'), 'EF7F7F3B7F7F7B7F3B7F7B7F7F7F7F7F3B7F7F7B7F3B7F7B7F7F'X)
+
+::method "test_105"
+   v100000=Copies('abcd',25000)
+   vr102a='67726F6D616F7774736B6765'x||COPIES('7F7E7F7E'X,49997)
+   self~assertSame('from outside'~bitor(copies(v100000,2),'~'), vr102a)
+
+::method "test_106"
+   self~assertSame((''||'')~bitor(33,"@"), 'ss')
+
+::method "test_107"
+   self~assertSame(copies('3'x,2)~bitor(bitor(1,' '),"Z"), '335B'X)
+
+::method "test_108"
+   self~expectSyntax(93.922)
+   self~assertSame('1'~bitor('1',nv1), '1')
+
+::method "test_109"
+   self~expectSyntax(93.922)
+   self~assertSame('3'~bitor('111',nv2.3), '311')
+
+::method "test_110"
+   self~expectSyntax(93.922)
+   self~assertSame(nv1~bitor(mv2,mv2.3), '311')
+
+::method "test_bitor2method111"
+   self~assertSame(u~bitor(u,u), u)
+
+::method "test_bitor2method112"
+   self~expectSyntax(93.922)
+   self~assertSame(nv1~bitor(nv1,nv1), nv1)
+
+::method "test_bitor2method113"
+   self~expectSyntax(88.909) -- Argument .. must have a string value
+   self~assertSame(nv2.~bitor(.nil,.nil), nv2.)
+
+::method "test_bitor2method114"
+   self~expectSyntax(93.922)
+   self~assertSame(nv2.3~bitor(nv2.3,nv2.3), nv2.3)
+
+::method "test_bitor2method115"
+   self~expectSyntax(93.922)
+   self~assertSame('C1'X~bitor(,'sp'), 'C1'x)
+
+::method "test_bitor2method116"
+   self~expectSyntax(93.922)
+   self~assertSame(''~bitor('',''), '')
+
+::method "test_bitor2method117"
+   self~expectSyntax(93.922)
+   self~assertSame(''~bitor('a',''), 'a')
+
+::method "test_bitor2method118"
+   self~expectSyntax(93.922)
+   self~assertSame('abc'X~bitor('abcd'x,'1 11'x), 'abc'x)
+
+-- rexxref documentation tests
+
+::method "test_bitor2method201"
+   self~assertSame('12'x~bitor, "12"x)
+
+::method "test_bitor2method202"
+   self~assertSame('15'x~bitor('24'x), "35"x)
+
+::method "test_bitor2method203"
+   self~assertSame('15'x~bitor('2456'x), "3556"x)
+
+::method "test_bitor2method204"
+   self~assertSame('15'x~bitor('2456'x, 'F0'x), "35F6"x)
+
+::method "test_bitor2method205"
+   self~assertSame("1111"x~bitor( ,"4D"x), "5D5D"x)
+
+::method "test_bitor2method206"
+   self~assertSame('pQrS'~bitor( ,'20'x), "pqrs")
+
+
+

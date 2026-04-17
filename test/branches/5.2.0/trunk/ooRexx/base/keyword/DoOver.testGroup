@@ -1,0 +1,289 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.DoOver.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "DoOver.testGroup" subclass ooTestCase public
+::method test_do_over
+
+  items = .array~new
+  do v over ('a', 'b', 'c')
+     items~append(v)
+  end v    -- test control variable also
+
+  self~assertSameList(('a', 'b', 'c'), items)
+
+  items = .array~new
+  do v over ('a', 'b', 'c') for 2
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  -- verify the control variables are set before the for test
+  self~assertSame('c', v)
+
+
+  items = .array~new
+  do v over ('a', 'b', 'c') while v \= 'c'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  -- verify the control variables are set before the for test
+  self~assertSame('c', v)
+
+  items = .array~new
+  do v over ('a', 'b', 'c') until v = 'b'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  -- The until test happens before the control variables are set
+  self~assertSame('b', v)
+
+  -- verify that the iteration is over a snapshot
+  arr = ('a', 'b', 'c')
+
+  items = .array~new
+  do v over arr
+     items~append(v)
+     arr[2] = 'z'
+  end
+
+  self~assertSameList(('a', 'b', 'c'), items)
+
+  -- label keyword tests
+
+  items = .array~new
+  do label foo v over ('a', 'b', 'c')
+     if v = 'b' then iterate foo
+     items~append(v)
+  end foo
+
+  self~assertSameList(('a', 'c'), items)
+
+
+  items = .array~new
+  do label foo v over ('a', 'b', 'c')
+     items~append(v)
+     if v = 'b' then leave foo
+  end foo
+
+  self~assertSameList(('a', 'b'), items)
+
+  v = 'abc'
+  -- an empty array
+  arr = .array~new
+
+  items = .array~new
+  do v over arr
+     items~append(v)
+  end
+
+  self~assertEquals(0, items~items)
+  self~assertEquals('abc', v)
+
+  -- for combined with WHILE/UNTIL
+  items = .array~new
+  do v over ('a', 'b', 'c') for 4 while v \= 'c'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  do v over ('a', 'b', 'c') for 2 while v \= 'd'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  do v over ('a', 'b', 'c') for 4 until v = 'b'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  do v over ('a', 'b', 'c') for 2 until v = 'd'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  -- verify the control variables are set before the for test
+  self~assertSame('c', v)
+
+::method test_no_makearray
+  self~expectSyntax(98.913)
+  do v over .nil
+  end
+
+::method test_dot_var
+  self~assertSyntaxError(31.3, ("do . over (1,2)", "end"))
+
+::method test_num_var
+  self~assertSyntaxError(31.2, ("do 1 over (1,2)", "end"))
+
+::method test_env_var
+  self~assertSyntaxError(31.3, ("do .a over (1,2)", "end"))
+
+::method test_over_no_expr
+  self~assertSyntaxError(35.911, ("do i over", "end"))
+
+::method test_over_no_expr2
+  self~assertSyntaxError(35.911, ("do i over for 3", "end"))
+
+::method test_over_no_expr3
+  self~assertSyntaxError(35.911, ("do i over while .true", "end"))
+
+::method test_over_no_expr4
+  self~assertSyntaxError(35.911, ("do i over until .true", "end"))
+
+::method test_for_no_expr
+  self~assertSyntaxError(35.907, ("do i over (1,2) for", "end"))
+
+::method test_while_no_expr
+  self~assertSyntaxError(35.929, ("do i over (1,2) while", "end"))
+
+::method test_until_no_expr
+  self~assertSyntaxError(35.929, ("do i over (1,2) until", "end"))
+
+::method test_while_missing_expr1
+  self~assertSyntaxError(35.929, ("do i over (1,2) while ,.true", "end"))
+
+::method test_until_missing_expr1
+  self~assertSyntaxError(35.929, ("do i over (1,2) until ,.false", "end"))
+
+::method test_while_missing_expr2
+  self~assertSyntaxError(35.929, ("do i over (1,2) while .true,,.true", "end"))
+
+::method test_until_missing_expr2
+  self~assertSyntaxError(35.929, ("do i over (1,2) until .false,,.false", "end"))
+
+::method test_dup_for
+  self~assertSyntaxError(27.902, ("do v over sup for 3 for 4", "end"))
+
+::method test_dup_while
+  self~assertSyntaxError(27.1, ("do with index i item v over sup while .true while .false", "end"))
+
+::method test_dup_until
+  self~assertSyntaxError(27.1, ("do v over sup until .true until .false", "end"))
+
+::method test_while_until
+  self~assertSyntaxError(27.1, ("do v over sup until .true while .false", "end"))
+
+::method test_no_end
+   -- DO or LOOP instruction on line .. requires matching END
+   self~assertSyntaxError(14.5, ("do i over sup"))
+
+
+::method test_for_negative
+  self~expectSyntax(26.3)
+  do i over (1,2) for -1
+  end
+
+::method test_for_non_integer
+  self~expectSyntax(26.3)
+  do i over (1,2) for 1.1
+  end
+
+::method test_for_non_numeric
+  self~expectSyntax(26.3)
+  do i over (1,2) for 'a'
+  end
+
+::method test_while_bad_truth
+  self~expectSyntax(34.3)
+  do i over (1,2) while 1.0
+  end
+
+::method test_until_bad_truth
+  self~expectSyntax(34.4)
+  do i over (1,2) until 1.0
+  end
+
+-- tests for different keywords acting as expression terminators
+::method test_over_no_expr1
+  self~assertSyntaxError(35.911, ("do i over for 4", "end"))
+
+::method test_over_no_expr5
+  self~assertSyntaxError(35.911, ("do i over while .true", "end"))
+
+::method test_over_no_expr6
+  self~assertSyntaxError(35.911, ("do i over until .true", "end"))
+
+::method test_for_no_expr1
+  self~assertSyntaxError(35.907, ("do i over x for for", "end"))
+
+::method test_for_no_expr2
+  self~assertSyntaxError(35.907, ("do i over x for while", "end"))
+
+::method test_for_no_expr3
+  self~assertSyntaxError(35.907, ("do i over x for until", "end"))
+
+::method test_while_no_expr1
+  self~assertSyntaxError(35.929, ("do i over x while while", "end"))
+
+::method test_while_no_expr2
+  self~assertSyntaxError(35.929, ("do i over x while until", "end"))
+
+::method test_until_no_expr1
+  self~assertSyntaxError(35.929, ("do i over x until while", "end"))
+
+::method test_until_no_expr2
+  self~assertSyntaxError(35.929, ("do i over x until until", "end"))
+
+
+::options novalue error

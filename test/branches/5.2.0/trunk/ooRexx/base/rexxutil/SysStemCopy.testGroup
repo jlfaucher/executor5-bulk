@@ -1,0 +1,254 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.SysStemCopy.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: SysStemCopy.testGroup  - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "SysStemCopy.testGroup" public subclass ooTestCase
+
+::method test_copies
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c', 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 4))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2, 1))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.', 2,, 0))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',,,,'o'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2,,'O'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2, 1, 'Overlay'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.', 2,, 0, 'o'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c', 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 4,, 'o'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'd', 'e', 'f', 'a', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.',,,,'i'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'e', 'f', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2,,'I'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'd', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 2, 1, 'Insert'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c')
+  self~assertEquals(0, SysStemCopy(b., 'a.', 2,, 0, 'i'))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~of(e., 'a', 'b', 'c', 'd', 'e', 'f')
+  self~assertEquals(0, SysStemCopy(b., 'a.',, 4,, 'i'))
+  self~verifySeq(a., e.)
+
+::method test_unset_to_count
+  a.1 = 'a'
+  self~of('b.', 'c')
+  self~expectSyntax("40.922")
+  rv = SysStemCopy(a., b.)
+
+::method test_bad_to_count
+  a.0 = '*'
+  a.1 = 'a'
+  self~of('b.', 'c')
+  self~expectSyntax("40.922")
+  rv = SysStemCopy(a., b.)
+
+::method test_unset_from_count
+  a.1 = 'a'
+  self~of('b.', 'c')
+  self~expectSyntax("40.922")
+  rv = SysStemCopy(b., a.)
+
+::method test_bad_from_count
+  a.0 = '*'
+  a.1 = 'a'
+  self~of('b.', 'c')
+  self~expectSyntax("40.922")
+  rv = SysStemCopy(b., a.)
+
+::method test_to_out_of_range
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+--  self~expectSyntax("40.923")
+  rv = SysStemCopy('a.',b., 5)
+
+::method test_from_out_of_range
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~expectSyntax("40.923")
+  rv = SysStemCopy('a.',b.,, 5)
+
+::method test_count_out_of_range
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  self~expectSyntax("40.923")
+  rv = SysStemCopy('a.',b.,,,4)
+
+::method test_invalid_option
+  self~of(a., 'a', 'b', 'c')
+  self~of(a., 'd', 'e', 'f')
+  self~expectSyntax("40.920")
+  rv = SysStemCopy('a.',b.,,,,'d')
+
+::method test_sparse_insert_target
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  drop b.2
+  self~expectSyntax("40.924")
+  rv = SysStemCopy('a.',b.,,,,'i')
+
+::method test_sparse_insert_source
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  drop a.2
+  self~expectSyntax("40.924")
+  rv = SysStemCopy('a.',b.,,,,'i')
+
+::method test_sparse_overlay_source
+  self~of(a., 'a', 'b', 'c')
+  self~of(b., 'd', 'e', 'f')
+  drop a.2
+  self~expectSyntax("40.924")
+  rv = SysStemCopy('a.',b.,,,,'o')
+
+
+
+
+::method verifySeq
+  use arg source., result.
+
+  do i=0 to result.0
+     self~assertEquals(source.i, result.i)
+  end
+
+::method of
+  use arg target.
+  values = arg(2, 'a')
+
+  target.0 = values~items
+  do i = 1 to target.0
+      target.i = values[i]
+  end
+
+::method dumpstem
+  use arg a.
+  say "size is" a.0
+
+  do i = 1 to a.0
+      say "Item" i "is" a.i
+  end
+
+-- End of class: SysStemSort.testGroup
+
+
+::options novalue error
+

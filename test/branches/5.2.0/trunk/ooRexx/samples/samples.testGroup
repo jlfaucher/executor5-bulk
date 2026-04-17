@@ -1,0 +1,196 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2025 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.samples.testGroup)
+if locateSamplePrg(".") = .nil then
+  group~markNoTests("No ooRexx samples file folder can be located")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+
+::class samples.testgroup subclass ooTestCase public
+
+::constant ooTestType (.ooTestTypes~SAMPLE_TEST)
+
+::method assertSampleRuns
+  use strict arg name, nrLines = 1, input = .nil, code = 0
+  sample = locateSamplePrg(name)
+  self~assertNotNil(sample, "sample" name "not found")
+  output = .Array~new
+  error = .Array~new
+  self~assertRc(code, execRexxPrg(sample, output, error, input), "sample" name)
+
+  -- typically error should be empty
+  -- in case of an expected negative rc it must contain error message lines
+  if code >= 0 then
+    self~assertSame(0, error~items, "sample" name "prints unexpected error output" .endofline error)
+  else
+    self~assertTrue(error~items >= 3, "sample" name "should print at least three error message lines" .endofline error)
+
+  -- ignore empty lines
+  output = output~toString~changeStr(.endofline~copies(2), .endofline)~makeArray
+  self~assertTrue(output~items >= nrLines, "sample" name "expected to print at least" nrLines "line(s) of output; found" .endofline output)
+  return output
+
+-- tests for the basic Rexx samples
+
+::method test_arithmeticEvaluation
+  self~assertSampleRuns("arithmeticEvaluation.rex", 6)
+
+::method test_arrayCallback
+  self~assertSampleRuns("arrayCallback.rex", 10)
+
+::method test_ccreply
+  self~assertSampleRuns("ccreply.rex", 20)
+
+-- takes a long time to run: approx. 30 seconds
+::method test_concurrency
+  self~assertSampleRuns("concurrency.rex", 40)
+
+::method test_constrained
+  self~assertSampleRuns("constrained.rex", 3)
+
+::method test_delegation
+  self~assertSampleRuns("delegation.rex", 5)
+
+-- drives.rex is Windows only
+
+::method test_dynamicMethod
+  self~assertSampleRuns("dynamicMethod.rex", 3)
+
+::method test_factor
+  self~assertSampleRuns("factor.rex", 1, .Array~of(7))
+
+::method test_greply
+  self~assertSampleRuns("greply.rex", 14)
+
+-- animal guessing
+-- answer "y" to question "I bet you're thinking of a bear. Right?"
+-- answer "n" to question "Wanna try another animal?"
+::method test_guess
+  self~assertSampleRuns("guess.rex", 7, ("y", "n"))
+
+-- this sample intentionally ends with
+-- Error 93.965:  Method NAME is ABSTRACT and cannot be directly invoked.
+::method test_interface
+  self~assertSampleRuns("interface.rex", 5, , -93)
+
+-- GUARD instruction sample
+-- answer "" to "Press enter to set guard expression true"
+::method test_ktguard
+  self~assertSampleRuns("ktguard.rex", 20, .Array~of(""))
+
+-- answer "n" to question "clear the screen?"
+-- answer "" to "press enter to continue"
+::method test_makestring
+  self~assertSampleRuns("makestring.rex", 20, ("n", ""))
+
+::method test_month
+  self~assertSampleRuns("month.rex", 28)
+
+-- takes a long time to run: approx. 60 seconds
+::method test_philfork
+  self~assertSampleRuns("philfork.rex", 40)
+
+-- not a nice test: it writes a file to the user's directory
+::method test_properties
+  self~assertSampleRuns("properties.rex", 10, .Array~of(""))
+
+::method test_qdate
+  self~assertSampleRuns("qdate.rex", 2)
+
+::method test_qtime
+  self~assertSampleRuns("qtime.rex", 1)
+
+::method test_rexxcps
+  output = self~assertSampleRuns("rexxcps.rex", 5)
+  -- last output line should be "Performance: nnnnnn REXX clauses per second"
+  cps = "REXX clauses per second"
+  line = output[output~last]~strip
+  parse var line before (cps)
+  self~assertTrue(line~contains(cps) & before~words > 0, "last line expected to contain 'nnnnnn" cps"'; found" .endofline line)
+  n = before~word(before~words)
+  -- e. g. the Raspberry Pi rexxcps value is below 500.000
+  self~assertTrue(n > 200000 & n < 100000000, cps "expected to be between 200.000 and 100.000.000; found" .endofline line)
+
+/*
+  for now, these samples have their own test groups:
+  scclient/scserver
+  sfclient/sfserver
+
+  semcls.cls is obsolete and should be removed
+*/
+
+::method test_singleLinkedList
+  self~assertSampleRuns("singleLinkedList.rex", 8)
+
+::method test_sortComposite
+  self~assertSampleRuns("sortComposite.rex", 44)
+
+::method test_stack
+  self~assertSampleRuns("stack.rex", 4)
+
+::method test_synchronousConcurrency
+  self~assertSampleRuns("synchronousConcurrency.rex", 30)
+
+::method test_timezone
+  self~assertSampleRuns("timezone.rex", 5)
+
+::method test_treeTraversal
+  self~assertSampleRuns("treeTraversal.rex", 4)
+
+::method test_usecomp
+  self~assertSampleRuns("usecomp.rex", 8)
+
+::method test_usepipe
+  self~assertSampleRuns("usepipe.rex", 25)
+
+::method test_usesingleton
+  self~assertSampleRuns("usesingleton.rex", 8)
+
+::method test_usetree
+  self~assertSampleRuns("usetree.rex", 16)
+
+
+::options all syntax

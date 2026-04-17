@@ -1,0 +1,740 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2019-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . s
+
+group = .TestGroup~new(s)
+-- adding a suite will allow for one-time setup and tearDown
+group~addWithSuite(.SysFileTree.testGroup, .SysFileTree.testSuite)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+-- by defining a test suite we can have a setup method run just once
+-- before all tests and a tearDown method once after all tests
+::class SysFileTree.testSuite subclass ooTestSuite public
+::method setup
+  .SysFileTree.testGroup~create
+
+::method tearDown
+  .SysFileTree.testGroup~remove
+
+
+::class SysFileTree.testGroup subclass ooTestCase public
+
+::constant isWindows (.RexxInfo~platform~caselessStartsWith("Windows"))
+::constant isUnix (\self~isWindows)
+-- to retrieve access attributes on Unix we need rxunixsys SysStat()
+-- we load it here, silently failing when on Windows
+::constant unixExtensions (.context~package~loadLibrary("rxunixsys"))
+
+-- the base of our test tree which we use as our current directory
+::constant root (filespec("l", self~package~name) || "sysfiletree" || .File~separator)
+::constant noFiles (.Array~new)
+
+::attribute allFiles class get
+::attribute allFiles get
+  return self~class~allFiles
+
+
+-- any changes to this test file tree will very likely require updates
+-- to our test_tree_* methods
+-- format is: F=file/D=directory, H=hidden/R=read-only, file size, path
+::resource sysfiletree
+F -   0 f
+F H   1 .h
+F - 999 b b
+F R   2 UpperFile
+D -   - UpperDir
+D -   - d
+F -  10 d/F
+F H  11 d/.h
+D HR  - .d
+F -  20 .d/f
+F H  21 .d/.h
+::END
+
+-- will run exactly once before all our tests run
+::method create class
+  expose allFiles root current
+
+  -- we must keep references to all our temporary files and directories
+  -- so that they won't be deleted prematurely
+  root = .TemporaryTestDirectory~new(self, "sysfiletree")~~create
+
+  -- a list of all files for use by our test cases
+  allFiles = .Array~new(.resources~sysfiletree~items)
+
+  -- step 1. create test files and directories
+  do line over .resources~sysfiletree
+   parse var line type attr size name
+   path = "sysfiletree/" || name
+   select case type
+     when "D" then allFiles~append(.TemporaryTestDirectory~new(self, path)~~create)
+     when "F" then allFiles~append(.TemporaryTestFile~new(self, path)~~create("x"~copies(size)))
+    end
+  end
+
+  -- we set our current directory for all our test cases with relative
+  -- paths and also here for the ATTRIB command with a relative path
+  current = directory()
+  call directory self~root
+
+  -- step 2. modify test file/directory attributes
+  -- (we do this as a second step, as e. g. on Unix no files can be
+  -- created in a read-only directory)
+  do line over .resources~sysfiletree
+   parse var line type attr size name
+    if self~isWindows, attr~contains("H") then
+      address "path" 'attrib +H "'name'"' with output stem attr.
+    if attr~contains("R") then
+      .File~new(name)~setReadOnly
+  end
+
+  -- step 3. randomly modify date and time to get better test coverage
+  do counter n file over allFiles
+   select case n
+     when 1 then -- yesterday, 0:00 midnight
+       file~lastModified = .DateTime~new~date~addDays(-1)
+     when 2 then -- yesterday, 12:00 noon
+       file~lastModified = .DateTime~new~date~addDays(-1)~addHours(12)
+     when 3 then -- today, 23:59:59.999999, a future date
+       file~lastModified = .DateTime~new~date~addDays(1)~addMicroseconds(-1)
+     when 4 then -- 1890-01-02T03:04:05.000000
+       file~lastModified = .DateTime~fromIsoDate("1890-01-02T03:04:05.000000")
+     otherwise -- subtract n hours from now
+       file~lastModified = .DateTime~new~addHours(-n)
+    end
+  end
+
+-- will run exactly once after all tests have finished
+::method remove class
+  expose allFiles root current
+
+  -- remove files and directories in reversed order of creation
+  do f = allFiles~items to 1 by -1
+    allFiles[f]~delete
+  end
+  root~delete
+  drop allFiles
+  drop root
+
+  -- we reset our current path to what it was before
+  call directory current
+
+-- test cases
+
+::method test_no_args
+  self~expectSyntax((88.901, 1)) -- Missing argument; argument 1 is required
+  call SysFileTree
+
+::method test_one_arg
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
+  call SysFileTree "%"
+
+::method test_arg_one_null
+  self~expectSyntax((40.21, "SysFileTree", 1)) -- SysFileTree argument 1 must not be a null string
+  call SysFileTree "", f.
+
+-- on Windows the characters double quote and : < > | are invalid
+::method test_arg_one_invalid_char_windowsonly
+  if \self~isWindows then
+    return
+  do char over '":<>|'~makeArray("")
+    -- The filename, directory name, or volume label syntax is incorrect
+    self~assertSame(123, SysFileTree(char, f.))
+    self~assertSame(0, f.0)
+  end
+
+-- wildcards are allowed in the last part of the path only
+--@@ disabled test
+::method disabled_test_arg_one_wildcard
+  -- we might expect this to raise an error, but it doesn't
+  -- call SysFileTree('\win*\*', f.)
+
+::method test_arg_two_null
+  self~expectSyntax(40.925) -- Argument 2 must be an array object, a stem object, or a stem name value
+  call SysFileTree "%", ""
+
+::method test_arg_two_invalid
+  self~expectSyntax(40.925) -- Argument 2 must be an array object, a stem object, or a stem name value
+  call SysFileTree "%", "s.1"
+
+::method test_arg_three_null
+  self~expectSyntax((40.21, "SysFileTree", 3)) -- SysFileTree argument 1 must not be a null string
+  call SysFileTree "%", f., ""
+
+::method test_arg_three_invalid
+  self~expectSyntax((40.900, 'SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or H; found "X"'))
+  call SysFileTree "%", f., "X"
+
+::method test_arg_three_blank
+  self~expectSyntax((40.900, 'SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or H; found "f d"'))
+  call SysFileTree "%", f., "f d"
+
+::method test_arg_four_blank
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., , " "
+
+::method test_arg_four_invalid
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., , "x"
+
+::method test_arg_four_too_long
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., , "******"
+
+::method test_arg_five_blank
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., , , " "
+
+::method test_arg_five_invalid
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., ,  ,"x"
+
+::method test_arg_five_too_long
+  -- 40.900:  SysFileTree argument 4 must be 5 characters or less in length containing only '+', '-', or '*'
+  self~expectSyntax(40.900)
+  call SysFileTree "%", f., , , "******"
+
+::method test_six_args_too_many
+  self~expectSyntax((88.922, 5)) -- Too many arguments in invocation; 5 expected
+  call SysFileTree "%", f., , , , ""
+
+::method test_arg_one
+  do name over "*", "??", ".", "..", "[xyz]", "../*"
+    self~assertSame(0, SysFileTree(name, f., "do"))
+  end
+
+::method test_arg_two
+  self~assertSame(0, SysFileTree("%", stem.))
+  self~assertSame(0, stem.0)
+
+  stem.0 = "none"
+  self~assertSame(0, SysFileTree("%", stem.))
+  self~assertSame(0, stem.0)
+
+  self~assertSame(0, SysFileTree("%", "stem."))
+  self~assertSame(0, stem.0)
+
+  name = "st"
+  self~assertSame(0, SysFileTree("%", name))
+  self~assertSame(0, st.0)
+
+  self~assertSame(0, SysFileTree("%", "name"))
+  self~assertSame(0, name.0)
+
+  s = .Stem~new
+  self~assertSame(0, SysFileTree("%", s))
+  self~assertSame(0, s[0])
+
+  -- instead of a Stem, SysFileTree can also return an Array
+  array = .Array~of(1, 2, 3)
+  self~assertSame(0, SysFileTree("%", array))
+  self~assertSame(0, array~items)
+
+
+::method test_arg_three
+  -- we test each option character and a bunch of combos
+  -- argument three can also be omitted, but we've already tested this
+  options = "bdfhilost"
+  options ||= options~upper
+  do option over options~makeArray("")~appendAll((options, options~reverse, "FDB", "ff", "foothill", "tollbooth", "offshoot", "liftoff"))
+    self~assertSame(0, SysFileTree("%", f., option))
+  end
+  self~assertSame(0, SysFileTree("%", f.))
+
+-- test the tattrib and nattrib arguments
+::method test_arg_four_five
+  -- we test everything from "", "*", "+", "-", "**", up to "-----"
+  -- both arguments can also be omitted, but we've already tested this
+  do length = 0 to 5
+    do attributeNr = 0 to 3 ** length - 1
+      attribute = ""
+      a = attributeNr
+      do length
+        attribute ||= "*+-"[a // 3 + 1]
+        a %= 3
+      end
+      self~assertSame(0, SysFileTree("%", f., , attribute))
+      self~assertSame(0, SysFileTree("%", f., , , attribute))
+    end
+  end
+
+::method test_huge
+  -- these could be very large files, maybe above our "H" limit of 10 GB
+  if self~isWindows then do
+    drive = value("SystemDrive", , "environment")
+    hugeFiles = (drive || "\hiberfil.sys", drive || "\pagefile.sys")
+  end
+  else
+    hugeFiles = .Array~of("/dev/core")
+
+  do name over hugeFiles
+    message = "SysFileTree("name")"
+    self~assertSame(0, SysFileTree(name, f., "tf"), message "option F")
+    self~assertSame(0, SysFileTree(name, fh., "tfh"), message "option FH")
+    if f.0 = 1, fh.0 = 1 then do
+      -- in a type T output, size is the second blank-delimited word
+      parse var f.1 . sizeF .
+      parse var fh.1 . sizeH .
+      size = .File~new(name)~length
+      -- the FH file size must be the same as the real file size
+      self~assertSame(size, sizeH, message "option FH size")
+      -- the F file size must be either the real file size or 9,999.999,999
+      self~assertOneOrAnother(size, 9999999999, sizeF, message "option F size")
+    end
+  end
+
+-- test paths longer than the Windows standard limit of 260 chars (Windows-only)
+::method test_long_paths_windowsonly
+  if \self~isWindows then
+    return
+
+  -- by using the Win32 namespace prefix \\?\ we can create paths longer
+  -- than the Windows standard limit of 260 chars
+  root = "\\?\" || filespec("l", self~class~package~name)
+  -- each path component must still be shorter than 256 chars
+  dir = .String~alpha || '\'
+  -- create nested directories
+  dirs = .Array~new
+  do n = 1 to 75 -- this gives us a total path length of approx. 4K
+    dirPath = root || dir~copies(n)
+    dirs~append(dirPath)
+    -- we don't mind if it already exists
+    -- 183: Cannot create a file when that file already exists.
+    self~assertOneOrAnother(0, 183, SysMkDir(dirPath))
+  end
+
+  -- assert that SysFileTree can handle this
+  self~assert(root || dir, "so", dirs~section(2))
+
+  -- remove our nested directory tree
+  do i = dirs~items to 1 by -1
+    call SysRmDir dirs[i]
+  end
+
+-- single-file tests, no wildcard characters
+::method test_tree_single_file
+
+  -- omitted options
+  self~assert("f", , "f")
+
+  -- all single char options, except S
+  do option over "bfdhilot"~makeArray("")
+    if option \= "d" then
+      self~assert("f", option, "f")
+    if option \= "f" then
+      self~assert("d", option~upper, "d")
+  end
+
+  -- f is not a directory, and d is not a file
+  self~assert("f", "d", self~noFiles)
+  self~assert("d", "f", self~noFiles)
+
+  -- relative path, absolute path
+  self~assert("../sysfiletree/d", "h", "d")
+  self~assert(self~root || "d", "il", "d")
+
+  -- last one of F, D, or B wins
+  self~assert("UpperFile", "bdf", "UpperFile")
+  self~assert("UpperDir", "fd", "UpperDir")
+
+  -- case matters (or not)
+  self~assert("upperfile", "fi", "UpperFile")
+  if .File~isCaseSensitive then
+    -- on a case-sensitive file system
+    self~assert("upperfile", "o", self~noFiles)
+
+  -- blanks in file names should work
+  self~assert("b b", "f", "b b")
+
+  -- L overrides T
+  self~assert("d", "dt", "d")
+  self~assert("d", "ldt", "d")
+
+  -- Windows short names should work
+  --@@ actually, short names don't work .. skip them for now
+  if 0, self~isWindows then do
+    self~assert(SysGetShortPathName("upperfile"), "o" ,"UpperFile")
+    self~assert(SysGetShortPathName("sysfiletree\upperfile"), "h" ,"UpperFile")
+    self~assert(SysGetShortPathName("sysfiletree\UpperFile") || "*", "h" ,"UpperFile")
+  end
+
+-- single-level directory tests: wildcards, but no S option
+::method test_tree_directory
+
+  -- last one of F, D, or B wins
+  self~assert("Upper*", "bdf", "UpperFile")
+  self~assert("Upper*", "fd", "UpperDir")
+  self~assert("Upper*", "dfb", ("UpperDir", "UpperFile"))
+
+  -- case matters (or not)
+  self~assert("u*", "fi", "UpperFile")
+  if .File~isCaseSensitive then
+    -- on a case-sensitive file system
+    self~assert("u*", "o", self~noFiles)
+
+  -- blanks in file names should work
+  self~assert("b?b", "fo", "b b")
+
+  -- should return all files/directories, including hidden ones
+  allFiles = ("f", ".h", "b b", "UpperFile")
+  allDirs = ("d", ".d", "UpperDir")
+  all = allFiles~copy~appendAll(allDirs)
+  self~assert("*", , all)
+  self~assert("*", "F", allFiles)
+  self~assert("*", "D", allDirs)
+  self~assert("../sysfiletree/*", , all)
+  self~assert(self~root || "*", "i", all)
+
+  -- all these paths are expected to be automatically wildcarded
+  self~assert("../sysfiletree/", , all)
+  self~assert(".", "h", all)
+  self~assert("./.", "o", all)
+  self~assert("d/..", "l", all)
+  self~assert(self~root, "i", all) -- self~root has a trailing slash
+
+  -- ? wildcard
+  self~assert("?", "h", ("d", "f"))
+  self~assert("?", "hf", "f")
+  self~assert("?", "d", "d")
+  self~assert("../sysfiletree/?", "ob", ("d", "f"))
+  self~assert("../sysfiletree/?", "of", "f")
+  self~assert("../sysfiletree/?", "do", "d")
+
+  -- wildcards are only allowed in the path's name part
+  -- (we might expect this to raise an error, but it doesn't)
+  self~assert("../sysfiletree*/d", , self~noFiles)
+  self~assert("../*/d", , self~noFiles)
+  self~assert("../**/d", , self~noFiles)
+
+  -- brackets, Unix-only
+  if self~isUnix then do
+    self~assert("[fd]", , ("d", "f"))
+    self~assert("../sysfiletree/[fd]", , ("d", "f"))
+  end
+
+  -- check a random directory: our temporary path
+  self~assert(.File~new("*", .File~temporaryPath)~absolutePath, , .File~temporaryPath~listFiles)
+
+-- test recursion into subdirectories
+::method test_tree_subdirectories
+
+  -- all single char options, each plus SI or S
+  do option over "bfdhilot"~makeArray("")
+    if option \= "d" then
+      self~assert("f", option~upper || "SI", ("f", "d/F", ".d/f"))
+    if option \= "f" then
+      self~assert("d", option || "s", "d")
+  end
+
+  -- case sensitive?
+  if .File~isCaseSensitive then
+    self~assert("f", option~upper || "S", ("f", ".d/f"))
+
+  -- f is not a directory, and d is not a file
+  self~assert("f", "sd", self~noFiles)
+  self~assert("d", "sf", self~noFiles)
+
+  -- our full test tree
+  self~assert("*", "s", self~allFiles)
+  self~assert("*", "sD", ("UpperDir", "d", ".d"))
+
+-- test argument four, tattrib ADHRS (Windows only)
+::method test_tree_windows_tattrib
+  if \self~isWindows then
+    return
+
+  -- all files
+  self~assert("*", ("s", "*****"), self~allFiles)
+  -- all hidden files
+  self~assert("*", ("s", "**+**"), (".h", "d/.h", ".d", ".d\.h"))
+  -- all read-only files
+  self~assert("*", ("s", "***+*"), (".d", "UpperFile"))
+  -- all read-only, but no directories
+  self~assert("*", ("s", "*-*+*"), "UpperFile")
+  -- all hidden but not read-only files
+  self~assert("*", ("s", "**+-*"), (".h", "d/.h", ".d/.h"))
+
+  -- there can be no directories with cleared directory attribute
+  self~assert("*", ("SD", "*-***"), self~noFiles)
+  -- also there can be no files with set directory attribute
+  self~assert("**", ("fs", "*+***"), self~noFiles)
+
+
+-- helper methods
+
+-- assert that data returned by SysFileTree is as expected
+-- this checks for a zero return code, the correct number of lines
+-- returned, and for each line whether all fields match the actual
+-- values retrieved from the file system
+::method assert
+  use strict arg path, args = "", filenames
+  -- allow optional tattrib argument
+  if args~isA(.String) then
+    args = .Array~of(args)
+  options = args[1]
+  tAttrib = args[2]
+  -- filenames can be a String or an Array of Strings or .File instances
+  -- due to different sorting strategies for Arrays of Strings vs.
+  -- Arrays of File instances we need to consolidate
+  names = .Array~new
+  do name over filenames
+    if name~isA(.String) then
+      names~append(.File~new(name))
+    else
+      names~append(name)
+  end
+  names~sort
+
+  if tAttrib = .nil then
+    message = "SysFileTree("path"," options")"
+  else
+    message = "SysFileTree("path"," options"," tAttrib")"
+
+  -- call SysFileTree and check rc
+  if options = "" then
+    self~assertSame(0, SysFileTree(path, f.), message "return code")
+  else if tAttrib = .nil then
+    self~assertSame(0, SysFileTree(path, f., options), message "return code")
+  else
+    self~assertSame(0, SysFileTree(path, f., options, tAttrib), message "return code")
+
+  -- number of lines returned must match the specified files
+  self~assertSame(names~items, f.0, message "lines returned" .endofline self~toArray(f.))
+
+  -- which field layout should we expect?
+  select
+    -- O overrides all other options
+    when options~caselessContains("O") then typeT = "O"
+    -- L overrides any T, if specified
+    when options~caselessContains("L") then typeT = "L"
+    when options~caselessContains("T") then typeT = "T"
+    otherwise typeT = ""
+  end
+  typeS = options~caselessContains("H")~?("H", "")
+
+  -- SysFileTree returns its output in an unspecified order.  We sort it
+  -- here by its returned file paths to compare against the expected
+  -- list of files (which is also sorted by name)
+
+  -- the starting column of the file path field
+  if typeT = "O" then
+    startOfFilePath = 1
+  else
+    startOfFilePath = 1 + self~widthTimestamp(typeT) + 2 -
+      + self~widthSize(typeS) + 2 + self~widthAttributes + 2
+
+  f = self~toArray(f.)~sortWith(.ColumnComparator~new(startOfFilePath))
+  do i = 1 to f~items
+    self~assertLine(f[i], typeT, typeS, names[i], message)
+  end
+
+/* our formats are
+Unix....+....1....+....2....+....3....+....4....+....5
+o:  /home/USER/sysfiletree/f
+t:  19/12/07/22/07           4  -rw-rw-r--  /home/USER/sysfiletree/f
+b:  12/07/19  10:07p           4  -rw-rw-r--  /home/USER/sysfiletree/f
+l:  2019-12-07 22:07:41           4  -rw-rw-r--  /home/USER/sysfiletree/f
+th: 19/12/07/22/07                     4  -rw-rw-r--  /home/USER/sysfiletree/f
+bh: 12/07/19  10:07p                     4  -rw-rw-r--  /home/USER/sysfiletree/f
+lh: 2019-12-07 22:07:41                     4  -rw-rw-r--  /home/USER/sysfiletree/f
+
+Windows.+....1....+....2....+....3....+....4....+....5
+o:  C:\Users\USER\sysfiletree\f
+t:  19/12/08/17/23           4  A----  C:\Users\USER\sysfiletree\f
+b:  12/08/19   5:23p           4  A----  C:\Users\USER\sysfiletree\f
+l:  2019-12-08 17:23:31           4  A----  C:\Users\USER\sysfiletree\f
+th: 19/12/08/17/23                     4  A----  C:\Users\USER\sysfiletree\f
+bh: 12/08/19   5:23p                     4  A----  C:\Users\USER\sysfiletree\f
+lh: 2019-12-08 17:23:31                     4  A----  C:\Users\USER\sysfiletree\f
+*/
+-- assert that a returned line is valid
+::method assertLine
+  use strict arg line, typeT, typeS, file, message
+
+  if typeT = "O" then
+    -- the "O" format returns one field: the file path
+    self~assertSame(file~absolutePath, line, message "file path")
+  else do
+    -- the full layout has four fields: timestamp, file size,
+    -- attributes, and file path
+
+    -- file system values
+    time = file~lastModified
+    size = file~length
+    attr = self~attribute(file)
+    path = file~absolutePath
+
+    -- message insert
+    msg = .endofline line .endofline time~string size attr path
+
+    -- SysFileTree values
+    parse var line -
+     timestamp +(self~widthTimestamp(typeT)) blanks1 +2 -
+     filesize +(self~widthSize(typeS)) blanks2 +2 -
+     attributes +(self~widthAttributes) blanks3 +2 -
+     filepath
+
+    -- this could happen when a test_tree_* test case lists a
+    -- non-existing file as one of those it expects to see
+    self~AssertNotNull(time, message "lastModified of" file~name "is nil" msg)
+
+    -- assert all four fields
+    self~AssertSame(path, filepath, message "file path" msg)
+    self~assertTimestamp(time, timestamp, typeT, message, msg)
+    self~assertFileSize(size, filesize, typeS, message, msg)
+    self~AssertSame(attr, attributes, message "attribute string" msg)
+
+    -- we always have two blanks as a separator
+    self~AssertSame("  ", blanks1, message "blank separator between timestamp and size" msg)
+    self~AssertSame("  ", blanks2, message "blank separator between size and attributes" msg)
+    self~AssertSame("  ", blanks3, message "blank separator between attributes and filename" msg)
+  end
+
+-- assert that the timestamp string returned by SysFileTree matches
+::method assertTimestamp
+  use strict arg time, string, type, message, msg
+
+  select case type
+    when "" then
+      -- default timestamp [M]M/DD/YY  HH:MMa
+      self~AssertSame(time~usaDate~strip("l", "0")~right(8) time~civilTime~strip("t", "m")~right(7), string, message "default timestamp" msg)
+    when "T" then
+      -- option T timestamp YY/MM/DD/HH/MM
+      self~AssertSame(time~orderedDate || "/" || time~normalTime~left(5)~translate("/", ":"), string, message "type L timestamp" msg)
+    when "L" then
+      -- option L timestamp YYYY-MM-DD HH:MM:SS
+      self~AssertSame(time~isoDate~left(19)~translate(" ", "T"), string, message "type T timestamp" msg)
+  end
+
+-- assert that the filesize string returned by SysFileTree matches
+::method assertFilesize
+  use strict arg size, string, type, message, msg
+
+  numeric digits 20
+  if type~endsWith("H") then
+    self~AssertSame(size~format(self~widthSize("H")), string, message "type H file size" msg)
+  else
+    self~AssertSame((size > 99999999999)~?(99999999999, size~format(self~widthSize(""))), string, message "file size" msg)
+
+::method widthTimestamp
+  use strict arg type = ""
+  select case type
+    when "" then return "12/08/19   5:23p"~length     -- default
+    when "T" then return "19/12/08/17/23"~length      -- option T
+    when "L" then return "2019-12-08 17:23:31"~length -- option L
+  end
+
+::method widthSize
+  use strict arg type = ""
+  select case type
+    when "" then return 10                            -- default
+    when "H" then return 20                           -- option H
+  end
+
+::method widthAttributes
+  return self~isWindows~?("ADHRS"~length, "drwxrwxrwx"~length)
+
+::method attribute
+  use strict arg file
+  if self~isUnix then
+    return SysStat(file~absolutePath, "permissions")
+
+  -- on Windows we don't seem to have a way to retrieve the archive or
+  -- system bit of a file .. we need to resort to the ATTRIB command
+  address "path" 'attrib "'file~absolutePath'"' with output stem attr.
+  attr = attr.1~left(6)
+
+  -- ATTRIB returns attributes in the form A..SHR.I
+  -- we return as ADHRS
+  return -
+   (attr[1] = "A")~?("A", "-") || -
+   file~isDirectory~?("D", "-") || -
+   (attr[5] = "H")~?("H", "-") || -
+   (attr[6] = "R")~?("R", "-") || -
+   (attr[4] = "S")~?("S", "-")
+
+-- convert "array stem" to array
+::method toArray
+  use strict arg stem.
+  a = .Array~new(stem.0)
+  do i = 1 to stem.0
+    a~append(stem.i)
+  end
+  return a
+
+
+-- define a ColumnComparator that doesn't require a length specification
+::class ColumnComparator mixinclass Comparator
+::method init
+  expose start isCaseSensitive
+  use strict arg start
+  isCaseSensitive = .File~isCaseSensitive
+
+::method compare
+  expose start isCaseSensitive
+  use strict arg left, right
+  -- we need to make sure that sorting uses the same case-sensitivity as
+  -- sorting an Array of File instances
+  if isCaseSensitive then
+    return left~compareTo(right, start)
+  else
+    return left~caselessCompareTo(right, start)
+
+/*
+Todos:
+* add matches to many files test (short name/long name issue): *.rex, (a.rex1 == A~1235.REX, a.rex) test
+* add nattrib tests
+* add tests for Windows \\?\ and \\server\share
+
+Issues:
+* [bugs:#1682] Windows short names don't work
+* wildcards in path don't raise an error
+* rc=123 for |<>" chars is probably a bug
+*/
+
+::options novalue syntax

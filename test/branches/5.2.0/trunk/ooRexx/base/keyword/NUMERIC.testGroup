@@ -1,0 +1,707 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.NUMERIC.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "NUMERIC.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   NUMERIC DIGITS 1
+   self~assertSame(COPIES('9',499)+1, 1E+499)
+
+::method "test_2"
+   NUMERIC DIGITS 9
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',8)||'E+499')
+
+::method "test_3"
+   NUMERIC DIGITS 10
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',9)||'E+499')
+
+::method "test_4"
+   NUMERIC DIGITS 11
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',10)||'E+499')
+   return
+
+::method "test_5"
+   NUMERIC DIGITS 25
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',24)||'E+499')
+
+::method "test_6"
+   NUMERIC DIGITS 64
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',63)||'E+499')
+
+::method "test_7"
+   NUMERIC DIGITS 100
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',99)||'E+499')
+
+::method "test_8"
+   NUMERIC DIGITS 200
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',199)||'E+499')
+
+::method "test_9"
+   NUMERIC DIGITS 254
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',253)||'E+499')
+
+::method "test_10"
+   NUMERIC DIGITS 255
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',254)||'E+499')
+
+::method "test_11"
+   NUMERIC DIGITS 256
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',255)||'E+499')
+
+::method "test_12"
+   NUMERIC DIGITS 300
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',299)||'E+499')
+
+::method "test_13"
+   NUMERIC DIGITS 400
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',399)||'E+499')
+
+::method "test_14"
+   NUMERIC DIGITS 500
+   self~assertSame(COPIES('9',499)+1, '1'||COPIES('0',499))
+
+::method "test_15"
+   Numeric Digits 12
+   Numeric Fuzz    2
+   Numeric Form Engineering
+   a1=digits() fuzz() form()
+   Call X
+   a4=digits() fuzz() form()
+   Pull a2
+   Pull a3
+   self~assertSame(a1, '12 2 ENGINEERING')
+   self~assertSame(a2, '12 2 ENGINEERING')
+   self~assertSame(a3, '9 0 SCIENTIFIC')
+   self~assertSame(a4, '12 2 ENGINEERING')
+   return
+
+   X: Procedure
+   a2=digits() fuzz() form()
+   Numeric Digits  9
+   Numeric Fuzz    0
+   Numeric Form
+   a3=digits() fuzz() form()
+   Queue a2
+   Queue a3
+   Return
+
+::method "test_16"
+   Numeric Digits 1
+   Parse Value digits() fuzz() form() With dig fuz for
+
+   self~assertSame((dig fuz for), ('1 0 SCIENTIFIC'))
+
+   Numeric Digits 2
+   Parse Value '123456789.123456789.' With a +12 b
+   self~assertSame(a, '123456789.12')
+
+   Parse Value '123456789.123456789.' With a 12 b
+   self~assertSame(a, '123456789.1')
+
+::method "test_17"
+   self~expectSyntax(26.2)
+   Numeric Digits 1
+   i4=0; Do 12; i4=i4+1; End
+
+::method "test_18"
+   self~expectSyntax(26.3)
+   Numeric Digits 1
+   i4=0; Do i=1 by 2 For 12; i4=i4+1; End
+   return
+
+::method "test_19"
+   Numeric Digits 13
+   self~assertSame(digits(), 13)
+
+::method "test_20"
+   Numeric Digits 13
+   Numeric Fuzz 12
+   self~assertSame(digits(), 13)
+
+::method "test_21"
+   self~expectSyntax(33.1)
+   Numeric Fuzz 0
+   Numeric Digits 2
+   Numeric Fuzz 12
+
+::method "test_22"
+   self~expectSyntax(24.901)
+   Numeric Digits 1
+   Trace 13
+
+::method "test_23"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   Say    100%3
+
+::method "test_24"
+   self~expectSyntax(26.12)
+   Numeric Digits 1
+   Say    100//3
+
+::method "test_25"
+   Numeric Digits 1
+   s=''
+   Do i=01.2 to 5
+     s=s i
+     End
+   self~assertSame(s, ' 1 2 3 4 5')
+
+::method "test_26"
+   Numeric Digits 1
+   s=''
+   Do i=1 to 10
+     s=s||i||'/'
+     If length(s)>30 Then Leave
+     End
+   self~assertSame(s, '1/2/3/4/5/6/7/8/9/1E+1/1E+1/1E+1/1E+1/')
+
+::method "test_27"
+   default = digits()
+   Numeric Digits 13
+   Numeric Digits
+   self~assertSame(digits(), default)
+   return
+
+::method "test_28"
+   self~expectSyntax(26.5)
+   Numeric Digits ''
+
+::method "test_30"
+   self~expectSyntax(26.5)
+   Numeric Digits ' '
+
+::method "test_31"
+   self~expectSyntax(26.5)
+   if .ooRexxUnit.architecture == 32 then
+       Numeric Digits 9999999999
+   else
+       Numeric Digits 9999999999999999999
+
+::method "test_32"
+   self~expectSyntax(26.5)
+   Numeric Digits +12.5
+
+::method "test_33"
+   default = (1/3)~length - 2
+
+   self~assertSame(dig(), default)
+   Numeric Digits +12.0
+   self~assertSame(dig(), 12)
+   return
+   dig: Return digits()
+
+::method "test_34"
+   Numeric Digits 1.1E1+1.0
+   self~assertSame(dig(), 12)
+   return
+   dig: Return digits()
+
+::method "test_35"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits '  + .111E+03  '  ;
+
+::method "test_36"
+   Numeric Digits 3
+   Numeric Digits '  + .111E+03  '  ;
+   self~assertSame(dig(), 111)
+   return
+   dig: Return digits()
+
+::method "test_37"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits + .111E+03
+
+::method "test_38"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits +'   .111E+03'
+
+::method "test_39"
+   self~expectSyntax(26.5)
+   Numeric Digits 2
+   Numeric Digits -' - .111E+03'
+
+::method "test_40"
+   Numeric Digits 2
+   Numeric Digits intfun1()
+   self~assertSame(dig(), 1)
+   return
+   intfun1: Return 1
+   dig: Return digits()
+
+::method "test_41"
+   Numeric Digits RANDOM(8,8)
+   self~assertSame(dig(), 8)
+   return
+   dig: Return digits()
+
+::method "test_42"
+   a.=11
+   a.a=12
+   sv=13
+   i='A'
+   Numeric,
+    Digits,
+    a.
+   self~assertSame(dig(), 11)
+   Numeric Digits a.i
+   self~assertSame(dig(), 12)
+   Numeric Digits sv
+   self~assertSame(dig(), 13)
+   /**/Numeric/**/Digits/**/3/**/
+   self~assertSame(dig(), 3)
+   dig: Return digits()
+
+::method "test_43"
+   Numeric dIGITs '33'x
+   self~assertSame(dig(), 3)
+   return
+   dig: Return digits()
+
+::method "test_44"
+   self~expectSyntax(26.5)
+   Numeric Digits 13 "extra"
+
+::method "test_45"
+   self~expectSyntax(26.5)
+   FORM='FORM'; ENGINEERING='ENGINEERING'
+   Numeric Digits 13 FORM ENGINEERING
+
+::method "test_46"
+   FORM=''; ENGINEERING=''
+   Numeric Digits 13 FORM ENGINEERING
+   self~assertSame(dig(), 13)
+   return
+   dig: Return digits()
+
+::method "test_47"
+   Numeric Digits 1000
+   Numeric Fuzz
+   self~assertSame(fuz(), 0)
+   return
+   fuz: Return fuzz()
+
+::method "test_48"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz ''
+
+::method "test_49"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz ' '
+
+::method "test_50"
+   self~expectSyntax(26.6)
+   use32 = .ooRexxUnit.architecture == 32
+
+   Numeric Digits 1000
+   if use32 then
+       Numeric Fuzz 9999999999
+   else
+       Numeric Fuzz 9999999999999999999
+
+::method "test_51"
+   self~expectSyntax(26.6)
+   Numeric Digits 1000
+   Numeric Fuzz +12.5
+   return
+
+::method "test_52"
+   self~assertSame(fuz(), 0)
+   return
+   fuz: Return fuzz()
+
+::method "test_53"
+   Numeric Digits 1000
+   Numeric Fuzz +12.0
+   self~assertSame(fuz(), 12)
+   return
+   fuz: Return fuzz()
+
+::method "test_54"
+   Numeric Digits 1000
+   Numeric Fuzz 1.1E1+1.0
+   self~assertSame(fuz(), 12)
+   return
+   fuz: Return fuzz()
+
+::method "test_55"
+   Numeric Digits 1000
+   Numeric Fuzz intfun1()
+   self~assertSame(fuz(), 1)
+   return
+   fuz: Return fuzz()
+   intfun1: Return 1
+
+::method "test_56"
+   Numeric Digits 1000
+   Numeric Fuzz RANDOM(8,8)
+   self~assertSame(fuz(), 8)
+   return
+   fuz: Return fuzz()
+
+::method "test_57"
+   Numeric Digits 1000
+   a.=11
+   Numeric,
+    Fuzz,
+    a.,
+    ;
+   self~assertSame(fuz(), 11)
+   return
+   fuz: Return fuzz()
+
+::method "test_58"
+   Numeric Digits 1000
+   a.=11
+   i='A'
+   Numeric Fuzz a.i
+   self~assertSame(fuz(), 11)
+   return
+   fuz: Return fuzz()
+
+::method "test_59"
+   Numeric Digits 1000
+   sv=13
+   Numeric Fuzz sv
+   self~assertSame(fuz(), 13)
+   return
+   fuz: Return fuzz()
+
+::method "test_60"
+   Numeric Digits 1000
+   /**/Numeric/**/Fuzz/**/3/**/
+   self~assertSame(fuz(), 3)
+   return
+   fuz: Return fuzz()
+
+::method "test_62"
+   sc='SCIENTIFIC'
+   Numeric Form
+   self~assertSame(for(), sc)
+   return
+   for: Return form()
+
+::method "test_63"
+   self~expectSyntax(25.11)
+   Numeric Form ''
+
+::method "test_64"
+   self~expectSyntax(25.11)
+   Numeric Form ' '
+
+::method "test_65"
+   self~expectSyntax(25.11)
+   Numeric Form 'terrible'
+
+::method "test_66"
+   self~expectSyntax(25.11)
+   Numeric Form 'ENGI' 'NEERING'
+
+::method "test_67"
+   sc='SCIENTIFIC'
+   self~assertSame(for(), sc)
+   return
+   for: Return form()
+
+::method "test_68"
+   en='ENGINEERING'
+   Numeric Form Value 'ENGINEERING'
+   self~assertSame(for(), en)
+   return
+   for: Return form()
+
+::method "test_69"
+   sc='SCIENTIFIC'
+   Numeric Form Value 'SCIENTI'||'FI'||'43'x
+   self~assertSame(for(), sc)
+   return
+   for: Return form()
+
+::method "test_70"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'engineering'
+
+::method "test_71"
+   sc='SCIENTIFIC'
+   Numeric Form scientific
+   self~assertSame(for(), sc)
+   return
+   for: Return form()
+
+::method "test_72"
+   en='ENGINEERING'
+   Numeric Form Value en
+   self~assertSame(en, form())
+
+::method "test_73"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'scientific'
+
+::method "test_74"
+   en='ENGINEERING'
+   Numeric Form Value intfun('f')
+   self~assertSame(for(), en)
+   return
+   intfun: If "ARG"(1)='f' Then Return 'ENGINEERING'
+   for: Return form()
+
+::method "test_75"
+   self~expectSyntax(25.11)
+   Numeric Form Value substr('veryengineering',5);
+
+::method "test_76"
+   sc='SCIENTIFIC'
+   a.='ENGINEERING'
+   a.a='SCIENTIFIC'
+   sv='ENGINEERING'
+   i='A'
+   Numeric Form Value a.i
+   self~assertSame(for(), sc)
+   return
+   for: Return form()
+
+::method "test_77"
+   sv='ENGINEERING'
+   en='ENGINEERING'
+   Numeric Form Value sv
+   self~assertSame(for(), en)
+   return
+   for: Return form()
+
+::method "test_79"
+   self~expectSyntax(25.11)
+   FORM='FORM'; ENGINEERING='ENGINEERING'
+   Numeric Form Value 13 FORM ENGINEERING;
+
+::method "test_80"
+   self~expectSyntax(25.11)
+   FORM=''; ENGINEERING=''
+   Numeric Form Value ENGINEERING FORM ENGINEERING;
+
+::method "test_81"
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   self~assertSame(("DIGITS"() "FUZZ"() "FORM"()), (12 9 'ENGINEERING'))
+   Parse Value digits() fuzz() form() With X
+   self~assertSame(X, '12 9 ENGINEERING')
+
+::method "test_82"
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   Numeric Digits 999999999
+   self~assertTrue(1)
+
+::method "test_83"
+   self~expectSyntax(33.1)
+   Numeric Digits 12
+   Numeric Fuzz 9
+   Numeric Form Engineering
+   Numeric Fuzz   999999998
+
+::method "test_86"
+   self~expectSyntax(25.11)
+   Numeric Form Value 'engineering'
+
+::method "test_87"
+
+   self~expectSyntax(25.11)
+   Numeric Form Value 'scientific'
+
+::method "test_88"
+   str='ENGINEERING'
+   Numeric Form Value str
+   self~assertSame(case(), str)
+   str='SCIENTIFIC'
+   Numeric Form Value str
+   self~assertSame(case(), str)
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_89"
+   str.1='ENGINEERING'
+   Numeric Form Value str.1
+   self~assertSame(case(), str.1)
+   str.2='SCIENTIFIC'
+   Numeric Form Value str.2
+   self~assertSame(case(), str.2)
+   return
+   case:
+   case=form()
+   Return case
+
+::method "test_91"
+   case=''
+   str='ENGINEERINGSCIENTIFIC'
+   Numeric Form Value 'SUBSTR'(str,1,11)
+   self~assertSame(case(), SUBSTR(str,1,11))
+   str='ENGINEERINGSCIENTIFIC'
+   Numeric Form Value 'SUBSTR'(str,12,10)
+   self~assertSame(case(), SUBSTR(str,12,10))
+   return
+   case:
+   case=form()
+   Return case
+
+
+::method test_numeric_nosymbol
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(20.905, "numeric")
+
+::method test_numeric_nosymbol_string
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(20.905, "numeric 'DIGITS'")
+
+::method test_numeric_symbol_invalid
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(25.15, "numeric digi")
+
+::method test_numeric_symbol_number
+  -- NUMERIC must be followed by one of the keywords DIGITS, FORM, or FUZZ
+  self~assertSyntaxError(25.15, "numeric 9")
+
+::method test_digits_smaller_than_fuzz
+  numeric fuzz 8
+  self~expectSyntax((33.1, 7, 8)) -- Value of NUMERIC DIGITS ("7") must exceed value of NUMERIC FUZZ ("8")
+  numeric digits 7
+
+::method test_digits_equal_to_fuzz
+  numeric fuzz 5
+  self~expectSyntax((33.1, 5, 5)) -- Value of NUMERIC DIGITS ("5") must exceed value of NUMERIC FUZZ ("5")
+  numeric digits 5
+
+::method test_fuzz_larger_than_digits
+  self~expectSyntax((33.1, 9, 10)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("10")
+  numeric fuzz 10
+
+::method test_fuzz_equal_to_digits
+  self~expectSyntax((33.1, 9, 9)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("9")
+  numeric fuzz 9
+
+::method test_digits_default_smaller
+  numeric digits 18
+  numeric fuzz 12
+  self~expectSyntax((33.1, 9, 12)) -- Value of NUMERIC DIGITS ("9") must exceed value of NUMERIC FUZZ ("12")
+  numeric digits
+
+::method test_fuzz_default_larger
+  -- Value of NUMERIC DIGITS ("5") must exceed value of NUMERIC FUZZ ("5")
+  self~assertSyntaxError(33.1, -
+   "numeric fuzz 0; numeric digits 5; numeric fuzz; ::options fuzz 5")
+
+::method test_digits_fuzz_default
+  -- NUMERIC DIGITS without an expression should reset to package default
+  self~assertSame(10, self~runDynamicSource( -
+   "numeric digits 9; numeric digits; return digits(); ::options digits 10"))
+
+  -- NUMERIC FUZZ without an expression should reset to package default
+  self~assertSame(1, self~runDynamicSource( -
+   "numeric fuzz 2; numeric fuzz; return fuzz(); ::options fuzz 1"))
+
+::method test_fuzz_integer
+  a = 555555555
+  b = a + 1
+  do f = 1 to 8
+    numeric fuzz f
+    self~assertTrue( a  = b, "fuzz" f a "=" b)
+    self~assertTrue( a <= b, "fuzz" f a "<=" b)
+    self~assertTrue( a >= b, "fuzz" f a "<=" b)
+    self~assertFalse(a \= b, "fuzz" f a "\=" b)
+    self~assertFalse(a  < b, "fuzz" f a "<" b)
+    self~assertFalse(a  > b, "fuzz" f a ">" b)
+    a = a % 10
+    b = b % 10 + 1
+  end
+
+::method test_fuzz
+  numeric fuzz 0
+  a = 123456789e2
+  b = 123456785e2
+  do 21
+    a /= 10; b /= 10
+    self~assertFalse(a  = b, "fuzz 0" a "=" b)
+    self~assertFalse(a <= b, "fuzz 0" a "<=" b)
+    self~assertTrue( a >= b, "fuzz 0" a "<=" b)
+    self~assertTrue( a \= b, "fuzz 0" a "\=" b)
+    self~assertFalse(a  < b, "fuzz 0" a "<" b)
+    self~assertTrue( a  > b, "fuzz 0" a ">" b)
+  end
+  do f = 1 to 2
+    numeric fuzz f
+    a = 123456789e2
+    b = 123456785e2
+    do 21
+      a /= 10; b /= 10
+      self~assertTrue( a  = b, "fuzz" f a "=" b)
+      self~assertTrue( a <= b, "fuzz" f a "<=" b)
+      self~assertTrue( a >= b, "fuzz" f a "<=" b)
+      self~assertFalse(a \= b, "fuzz" f a "\=" b)
+      self~assertFalse(a  < b, "fuzz" f a "<" b)
+      self~assertFalse(a  > b, "fuzz" f a ">" b)
+    end
+  end
+
+::method test_form_default
+  -- NUMERIC FORM without an expression should reset to package default
+  self~assertSame("ENGINEERING", self~runDynamicSource( -
+   "numeric form scientific; numeric form; return form(); ::options form engineering"))
+
+
+-- some legacy tests require novalue and lostdigits NOT to be raised
+::options all syntax novalue condition lostdigits condition

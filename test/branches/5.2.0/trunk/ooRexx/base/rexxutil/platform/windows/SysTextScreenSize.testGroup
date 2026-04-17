@@ -1,0 +1,234 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+    group~add(.SysTextScreenSize.testGroup)
+    group~restrictOS("WINDOWS")
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SysTextScreenSize.testgroup' subclass ooTestCase public
+
+::method test_no_console
+  -- without a character-mode console all zeroes should be returned
+  if \self~console_available then do
+    self~assertSame("0 0", SysTextScreenSize())
+    self~assertSame("0 0", SysTextScreenSize("buffersize"))
+    self~assertSame("0 0", SysTextScreenSize("maxwindowsize"))
+    self~assertSame("0 0 0 0", SysTextScreenSize("windowrect"))
+  end
+
+::method test_option_null
+    self~expectSyntax(40.920)
+    call SysTextScreenSize "" -- argument option must be one of "BUFFERSIZE, WINDOWRECT, or MAXWINDOWSIZE"
+
+::method test_option_nil
+    self~expectSyntax(88.909) -- Argument 1 must have a string value
+    call SysTextScreenSize .nil
+
+::method test_option_invalid
+    self~expectSyntax(40.920) -- argument option must be one of "BUFFERSIZE, WINDOWRECT, or MAXWINDOWSIZE"
+    call SysTextScreenSize "does-not-exist"
+
+::method test_set_default_too_few_args
+    self~expectSyntax(40.1) -- External routine failed
+    call SysTextScreenSize , 1
+
+::method test_set_default_omitted_arg
+    self~expectSyntax(40.1) -- External routine failed
+    call SysTextScreenSize , , 2
+
+::method test_set_default_too_many_args
+    self~expectSyntax(40.1) -- External routine failed
+    call SysTextScreenSize , 1, 2, 3
+
+::method test_set_buffersize_negative
+    self~expectSyntax(88.907) -- argument must be in the range 0 to 999999999...
+    call SysTextScreenSize "buffersize", -1, 80
+
+-- SetConsoleScreenBufferSize's COORD struct allows SHORT only
+::method test_set_buffersize_too_large
+    self~expectSyntax(40.1)
+    call SysTextScreenSize "buffersize", 33000, 80
+
+-- "maxwindowsize" cannot be set
+::method test_set_maxwindowsize
+    self~expectSyntax(40.1)
+    call SysTextScreenSize "maxwindowsize", 25, 80
+
+::method test_set_windowrect_too_few_args
+    self~expectSyntax(40.1)
+    call SysTextScreenSize "windowrect", 1, 2, 3
+
+::method test_set_windowrect_omitted_arg
+    self~expectSyntax(40.1)
+    call SysTextScreenSize "windowrect", 1, 2, , 4
+
+::method test_set_windowrect_too_many_args
+    self~expectSyntax(88.922) -- Too many arguments in invocation; 5 expected
+    call SysTextScreenSize "windowrect", 1, 2, 3, 4, 5
+
+::method test_set_windowrect_negative
+    self~expectSyntax(88.907) -- argument must be in the range 0 to 999999999...
+    call SysTextScreenSize "windowrect", -1, 0, 50, 80
+
+-- SetConsoleWindowInfo's SMALL_RECT struct allows SHORT only
+::method test_set_windowrect_too_large
+    self~expectSyntax(40.1)
+    call SysTextScreenSize "windowrect", 0, 0, 33000, 80
+
+::method test_options_default
+  self~assertSame(SysTextScreenSize(), SysTextScreenSize("buffersize"))
+
+::method test_options_get
+  -- test on real console only
+  if self~console_available then do
+
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
+    parse value SysTextScreenSize("maxwindowsize") with maxRows maxCols
+    parse value SysTextScreenSize("windowrect") with top left bottom right
+
+    -- console buffer size should be whole numbers 1 .. n
+    self~assertTrue(bufferRows~dataType("wholenumber"))
+    self~assertTrue(bufferRows >= 1)
+    self~assertTrue(bufferCols~dataType("wholenumber"))
+    self~assertTrue(bufferCols >= 1)
+
+    -- maximum window size should be whole numbers 1 .. n
+    self~assertTrue(maxRows~dataType("wholenumber"))
+    self~assertTrue(maxRows >= 1)
+    self~assertTrue(maxCols~dataType("wholenumber"))
+    self~assertTrue(maxCols >= 1)
+
+    -- the maximum window must not be larger than the console buffer
+    self~assertTrue(maxCols <= bufferCols)
+    self~assertTrue(maxRows <= bufferRows)
+
+    -- actual window rectangle should be whole numbers 1 .. n
+    self~assertTrue(top~dataType("wholenumber"))
+    self~assertTrue(top >= 0)
+    self~assertTrue(left~dataType("wholenumber"))
+    self~assertTrue(left >= 0)
+    self~assertTrue(bottom~dataType("wholenumber"))
+    self~assertTrue(bottom >= 1)
+    self~assertTrue(right~dataType("wholenumber"))
+    self~assertTrue(right >= 1)
+
+    self~assertTrue(top < bottom)
+    self~assertTrue(left < right)
+
+    -- the actual window rectangle should fit into the console buffer size
+    self~assertTrue(top < bufferRows)
+    self~assertTrue(bottom < bufferRows)
+    self~assertTrue(left < bufferCols)
+    self~assertTrue(right < bufferCols)
+
+    -- the actual window rectangle should not be larger than the maximum window
+    self~assertTrue(bottom - top < maxRows)
+    self~assertTrue(right - left < maxCols)
+
+  end
+
+::method test_set_buffersize
+  -- test on real console only
+  if self~console_available then do
+
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
+
+    -- set buffer size to the same value
+    self~assertSame(0, SysTextScreenSize("buffersize", bufferRows, bufferCols))
+    self~assertSame(bufferRows bufferCols, SysTextScreenSize("buffersize"))
+
+  end
+
+-- buffer size must be large than actual window size
+::method test_set_buffersize_too_deep
+  -- test on real console only
+  if self~console_available then do
+
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
+    parse value SysTextScreenSize("windowrect") with top left bottom right
+
+    -- set buffer size one line smaller than our actual window size
+    -- 87 (ERROR_INVALID_PARAMETER): The parameter is incorrect.
+    self~assertSame(87, SysTextScreenSize("buffersize", bottom - top, right - left + 1))
+    self~assertSame(bufferRows bufferCols, SysTextScreenSize("buffersize"))
+
+  end
+
+::method test_set_windowrect
+  -- test on real console only
+  if self~console_available then do
+
+    parse value SysTextScreenSize("windowrect") with top left bottom right
+
+    -- set actual window rectangle to the same value
+    self~assertSame(0, SysTextScreenSize("windowrect", top, left, bottom, right))
+    self~assertSame(top left bottom right, SysTextScreenSize("windowrect"))
+
+  end
+
+::method test_set_windowrect_too_wide
+  -- test on real console only
+  if self~console_available then do
+
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
+    parse value SysTextScreenSize("windowrect") with top left bottom right
+
+    -- set actual window rectangle one column wider than the buffer size
+    -- 87 (ERROR_INVALID_PARAMETER): The parameter is incorrect.
+    self~assertSame(87, SysTextScreenSize("windowrect", top, left, bottom, bufferCols - left + 1))
+    self~assertSame(top left bottom right, SysTextScreenSize("windowrect"))
+
+  end
+
+
+-- check whether we have a console available in character mode
+::method console_available
+    return SysCurPos()~length > 0
+
+
+::options novalue error

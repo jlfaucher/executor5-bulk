@@ -1,0 +1,259 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.StackFrame.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+::class "StackFrame.testGroup" subclass ooTestCase public
+
+::method testMethodFrame
+  -- the top frame is for this method call.  We can just use that to
+  -- double check
+  info = grabContextInfo(.context, .line, .context~stackFrames)
+
+  frame = info~stackFrames[1]
+
+  self~checkFrame("METHOD", self, frame, info)
+
+::method testRoutineFrame
+  info = routineContext()
+
+  frame = info~stackFrames[1]
+
+  self~checkFrame("ROUTINE", .nil, frame, info)
+
+::method testInternalCallFrame
+  info = internalContext()
+
+  frame = info~stackFrames[1]
+
+  self~checkFrame("INTERNALCALL", .nil, frame, info)
+  exit
+
+  internalContext:
+  return grabContextInfo(.context, .line, .context~stackFrames)
+
+::method testInterpretFrame
+
+  interpret "info = grabContextInfo(.context, .line, .context~stackFrames)"
+  frame = info~stackFrames[1]
+  -- interpret frames do not have a name
+  info~name = ""
+
+  self~checkFrame("INTERPRET", .nil, frame, info)
+  exit
+
+::method testCompileFrame
+
+  signal on syntax
+  .Method~new("", "~~")
+  -- we should never reach this
+  self~expectSyntax(35.1)              -- Incorrect expression detected at "~~"
+  return
+
+  syntax:
+  info = grabContextInfo(.Context, .line, condition("o")["STACKFRAMES"])
+
+  -- in contrast to .Context~stackFrames(), which returns an Array of stack frames,
+  -- the condition object's "STACKFRAMES" entry returns a List of stack frames
+  -- thus we have to use firstItem() here, using [1] won't work
+  frame = info~stackFrames~firstItem
+  -- COMPILE frames do not have arguments, nor name, executable, target, or context
+  -- here, line is 1
+  self~assertSame("COMPILE", frame~type)
+  self~assertSame(0, frame~arguments~items)
+  self~assertSame("", frame~name)
+  self~assertNull(frame~executable)
+  self~assertSame(1, frame~line)
+  self~assertNull(frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makeString)
+
+::method testProgramFrame
+
+  -- our top-most stack frame should be of type PROGRAM
+  frame = .Context~stackFrames~lastItem
+  -- we don't know much about our PROGRAM frame, so that's a pretty generic test
+  self~assertSame("PROGRAM", frame~type)
+  self~assertIsA(frame~arguments, .Array)
+  self~assertIsA(frame~name, .String)
+  self~assertIsA(frame~executable, .Routine)
+  self~assertTrue(frame~line~dataType("n"))
+  self~assertNull(frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makeString)
+
+::method testNativeCodeFrame
+  test = .array~of(1,2)
+
+  comparator = .ContextComparator~new
+  test~sortwith(comparator)
+
+  -- the sortwith method should be one back
+  frame = comparator~stackframes[2]
+  self~assertSame("METHOD", frame~type)
+  self~assertTrue(.array~of(comparator)~equivalent(frame~arguments))
+  self~assertSame("SORTWITH", frame~name)
+  self~assertSame(.Array~method("SORTWITH"), frame~executable)
+  self~assertSame(.nil, frame~line)
+  self~assertSame(test, frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makestring)
+
+::method testExternalNativeCodeFrame
+  signal on syntax
+
+  s = .stream~new("test.dat")
+  s~charin("abc")
+
+  exit
+  syntax:
+
+  o = condition('o')
+
+  frame = o~stackframes~firstItem
+  self~assertSame("METHOD", frame~type)
+  self~assertTrue(.array~of("abc")~equivalent(frame~arguments))
+  self~assertSame("CHARIN", frame~name)
+  self~assertSame(.Stream~method("CHARIN"), frame~executable)
+  self~assertSame(.nil, frame~line)
+  self~assertSame(s, frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makestring)
+
+-- [bugs:#1751] INTERPRET wipes out its parent's StackFrame name
+::method test_bug_stackframe_name
+  name = .context~stackFrames[1]~name
+  self~assertSame("test_bug_stackframe_name"~upper, name)
+  interpret ""
+  self~assertSame(name, .context~stackFrames[1]~name)
+
+
+-- test invocation information
+::method test_invocation_entry
+  curr_invocation=.context~invocation
+  self~assertTrue(curr_invocation = .context~stackframes[1]~invocation, curr_invocation "=" .context~stackframes[1]~invocation "(.context~stackframes[1]~invocation)")
+
+
+-- perform a series of validity checks on a frame
+::method checkFrame
+  use arg type, target, frame, info
+
+  self~assertSame(type, frame~type, "StackFrame type() mismatch")
+  self~assertTrue(info~args~equivalent(frame~arguments), "StackFrame araguments() mismatch")
+  self~assertSame(info~name, frame~name, "StackFrame name() mismatch")
+  self~assertIdentical(info~executable, frame~executable, "StackFrame executable() mismatch")
+  self~assertSame(info~line, frame~line, "StackFrame line() mismatch")
+  self~assertSame(target, frame~target, "StackFrame target() mismatch")
+  self~assertSame(frame~traceLine, frame~string, "StackFrame string() mismatch")
+  self~assertSame(frame~traceLine, frame~makestring, "StackFrame makeString() mismatch")
+
+
+::method testContextEntry
+
+  r=.routine~new("testContextEntry", .resources~testContextEntryCode)
+  ctxt=r~call(self)
+  self~expectSyntax(98.981)   -- "Target RexxContext is no longer active."
+  ctxt~line
+
+::resource testContextEntryCode
+   /*
+     test that we can a) retrieve the context entry from a stackframe and
+     b) if we return it and try to access it that we get a syntax 98.981
+     ("Target RexxContext is no longer active.")
+   */
+   use arg testObj
+   ctxt=r1(testObj)      -- call routine R1
+   t=.test~new~~m1(testObj)
+   return ctxt
+
+   ::routine r1
+     use arg testObj
+     sf=.context~stackframes
+     ctxt=sf[1]~context
+     testObj~assertSame(.context,ctxt,".context = .context~stackrames[1]~context)")
+     return ctxt
+
+   ::class test
+   ::method m1
+     use arg testObj
+     sf=.context~stackframes
+     ctxt=sf[1]~context
+     testObj~assertSame(.context,ctxt,".context = .context~stackrames[1]~context)")
+     return ctxt
+::END
+
+
+
+
+::class ContextComparator subclass NumericComparator
+::attribute stackframes
+
+::method compare
+  self~stackframes = .context~stackframes
+  forward class(super)
+
+
+::routine routineContext
+  return grabContextInfo(.context, .line, .context~stackFrames)
+
+::routine grabContextInfo
+  use strict arg context, line, stackframes
+
+  info = .directory~new
+  info~name = context~name
+  info~stackFrames = stackframes
+  info~executable = context~executable
+  info~line = line
+  info~args = context~args
+
+  return info
+
+
+::options all syntax

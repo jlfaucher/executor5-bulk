@@ -1,0 +1,177 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2024 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.LABEL.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class LABEL.testGroup subclass ooTestCase public
+
+-- labels are not allowed with certain clauses
+
+-- a label is not allowed preceding EXPOSE
+::method test_label_expose
+  -- EXPOSE must be the first instruction executed after a method invocation
+  self~assertSyntaxError(99.907, ".Method~new('m', 'lbl: expose')")
+
+
+-- a label is not allowed in an INTERPRET
+::method test_label_interpret
+  -- INTERPRET data must not contain labels; found "LBL"
+  self~assertSyntaxError(47.1, "interpret 'lbl:'")
+
+
+-- a label is not allowed inside a DO/LOOP block
+-- 47.2  Labels are not allowed within a DO/LOOP block; found "LBL"
+::method test_label_do_1
+  self~assertSyntaxError(47.2, "do; lbl: end")
+::method test_label_do_2_1
+  self~assertSyntaxError(47.2, "do 1; lbl: a = 1; end")
+::method test_label_do_2_2
+  self~assertSyntaxError(47.2, "do 1; a = 1; lbl: end")
+::method test_label_do_3_1
+  self~assertSyntaxError(47.2, "do i = 1 to 1; lbl: a = 1; end")
+::method test_label_do_3_2
+  self~assertSyntaxError(47.2, "do i = 1 to 1; a = i; lbl: end")
+::method test_label_do_4_1
+  self~assertSyntaxError(47.2, "do forever; lbl: a = 1; end")
+::method test_label_do_4_2
+  self~assertSyntaxError(47.2, "do forever; a = 1; lbl: end")
+::method test_label_do_5_1
+  self~assertSyntaxError(47.2, "do i over 1, 2, 3; lbl: a = i; end")
+::method test_label_do_5_2
+  self~assertSyntaxError(47.2, "do i over 1, 2, 3; a = i; lbl: end")
+::method test_label_do_6_1
+  self~assertSyntaxError(47.2, "do with index x item i over 1, 2, 3; lbl: a = x; b = i; end")
+::method test_label_do_6_2
+  self~assertSyntaxError(47.2, "do with index x item i over 1, 2, 3; a = x; lbl: b = i; end")
+::method test_label_do_6_3
+  self~assertSyntaxError(47.2, "do with index x item i over 1, 2, 3; a = x; b = i; lbl: end")
+::method test_label_do_7_1
+  self~assertSyntaxError(47.2, "do while .false; lbl: a = 1; end")
+::method test_label_do_7_2
+  self~assertSyntaxError(47.2, "do while .false; a = 1; lbl: end")
+::method test_label_do_8_1
+  self~assertSyntaxError(47.2, "loop; lbl: a = 1; end")
+::method test_label_do_8_2
+  self~assertSyntaxError(47.2, "loop; a = 1; lbl: end")
+
+
+-- a label is not allowed inside an IF block
+-- 47.3  Labels are not allowed within an IF block; found "LBL"
+::method test_label_if_1_1
+  self~assertSyntaxError(18.1, "if .true lbl: then nop") -- IF instruction ... requires matching THEN clause
+::method test_label_if_1_2
+  self~assertSyntaxError(47.3, "if .true then lbl: nop")
+::method test_label_if_2_1
+  self~assertSyntaxError(47.3, "if .true then lbl: nop; else nop")
+::method test_label_if_2_3
+  self~assertSyntaxError(47.3, "if .true then nop; else lbl: nop")
+::method test_label_if_3_1
+  self~assertSyntaxError(47.3, "if .true then lbl: do; nop; end; else do; nop; end")
+::method test_label_if_3_2
+  self~assertSyntaxError(47.2, "if .true then do; lbl: nop; end; else do; nop; end") -- DO BLOCK
+::method test_label_if_3_3
+  self~assertSyntaxError(47.2, "if .true then do; nop; lbl: end; else do; nop; end") -- DO BLOCK
+::method test_label_if_3_4
+  self~assertSyntaxError(47.3, "if .true then do; nop; end; lbl: else do; nop; end")
+::method test_label_if_3_5
+  self~assertSyntaxError(47.3, "if .true then do; nop; end; else lbl: do; nop; end")
+::method test_label_if_3_6
+  self~assertSyntaxError(47.2, "if .true then do; nop; end; else do; lbl: nop; end") -- DO BLOCK
+::method test_label_if_3_7
+  self~assertSyntaxError(47.2, "if .true then do; nop; end; else do; nop; lbl: end") -- DO BLOCK
+
+
+-- a label is not allowed inside a SELECT block
+-- 47.4:  Labels are not allowed within a SELECT block; found "LBL"
+  ::method test_select_1_1
+  self~assertSyntaxError(47.4, "select; lbl: when .true then nop; otherwise nop; end")
+  ::method test_select_1_2
+  self~assertSyntaxError(18.2, "select; when .true lbl: then nop; otherwise nop; end") -- WHEN instruction ... requires matching THEN clause
+  ::method test_select_1_3
+  self~assertSyntaxError(47.4, "select; when .true then lbl: nop; otherwise nop; end")
+  ::method test_select_1_4
+  self~assertSyntaxError(47.4, "select; when .true then nop; lbl: otherwise nop; end")
+  ::method test_select_1_5
+  self~assertSyntaxError(47.4, "select; when .true then nop; otherwise lbl: nop; end")
+  ::method test_select_1_6
+  self~assertSyntaxError(47.4, "select; when .true then nop; otherwise nop; lbl: end")
+  ::method test_select_2_1
+  self~assertSyntaxError(47.4, "select case c; lbl: when .true then nop; otherwise nop; end")
+  ::method test_select_2_2
+  self~assertSyntaxError(18.2, "select case c; when .true lbl: then nop; otherwise nop; end") -- WHEN instruction ... requires matching THEN clause
+  ::method test_select_2_3
+  self~assertSyntaxError(47.4, "select case c; when .true then lbl: nop; otherwise nop; end")
+  ::method test_select_2_4
+  self~assertSyntaxError(47.4, "select case c; when .true then nop; lbl: otherwise nop; end")
+  ::method test_select_2_5
+  self~assertSyntaxError(47.4, "select case c; when .true then nop; otherwise lbl: nop; end")
+  ::method test_select_2_6
+  self~assertSyntaxError(47.4, "select case c; when .true then nop; otherwise nop; lbl: end")
+
+
+::method test_label
+  -- simple
+  lbl:
+  -- duplicate
+  lbl: lbl: lbl:
+  -- multiple
+  l1: l2: l3:
+  -- flush
+  a:b:c:
+  -- around clauses
+  lbl1: nop; lbl2:nop; nop; lbl3:
+  -- special
+  !: ?: _: .: .local:
+  -- numerics
+  0: 1e3:
+  -- strings
+  "": " ":
+  -- hex strings
+  ''x: '0'x: 'ff'x:
+  -- binary strings
+  ''b: '0'b: '1111 1111'b:
+
+
+::options all syntax

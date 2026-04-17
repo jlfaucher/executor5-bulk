@@ -1,0 +1,992 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.STREAM.testGroup)
+  group~add(.StreamQueryExists)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: STREAM.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "STREAM.testGroup" public subclass ooTestCase
+
+::attribute streamTestingFile
+
+::method setup
+  self~streamTestingFile = .nil
+
+::method tearDown
+  fileName = self~streamTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+
+::method test_simple_open
+
+  f = 'streamTest.delMe'
+  ret = stream(f, 'C', "OPEN")
+  self~assertSame("READY:", ret)
+
+  -- We need to close the stream so we can delete the file.
+
+  -- Close should return READY: on success (from docs.)
+  ret = stream(f, 'C', "CLOSE")
+  self~assertSame("READY:", ret)
+
+  j = deleteFile(f)
+
+::method test_open_isUsable
+
+  f = 'streamTest.delMe'
+  ret = stream(f, 'C', "OPEN")
+  self~assertSame("READY:", ret)
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = lineout(f, "line 1")
+  self~assertSame(0, ret)
+
+  ret = stream(f, 'C', "CLOSE")
+  self~assertSame("READY:", ret)
+
+  line = linein(f)
+  self~assertSame("line 1", line)
+
+  -- Need to close again so we can delete the file.
+  ret = stream(f, 'C', "CLOSE")
+  self~assertSame("READY:", ret)
+
+  j = deleteFile(f)
+
+::method test_close_twice
+
+  f = "streamCloseTest.delMe"
+
+  -- Lineout should open the file and write the line.
+  ret = lineout(f, 'line 1')
+  self~assertSame(0, ret)
+
+  -- Close the file, return should be READY: and query state should be unknown
+  ret = stream(f, 'C', "CLOSE")
+  state = stream(f, "STATE")
+
+  self~assertSame("READY:", ret)
+  self~assertSame("UNKNOWN", state)
+
+  -- Close it again. This time the return should be the empty string (docs.)
+  ret = stream(f, 'C', "CLOSE")
+  state = stream(f, "STATE")
+
+  self~assertSame("", ret)
+  self~assertSame("UNKNOWN", state)
+
+  ret = deleteFile(f)
+
+::method test_description_arg
+  parse source junk notUsed streamName
+  retString = stream(streamName, "Description")
+  p = pos(":", retString)
+  self~assertTrue(p > 0)
+
+::method  test_description_state_same
+  parse source junk notUsed streamName
+
+  retDiscrpt = stream(streamName, "Description")
+  retState   = stream(streamName, "State")
+
+  retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
+
+  self~assertSame(retDiscrpt, retState)
+
+::method test_wrong_2nd_arg
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.904)
+  retDiscrpt = stream(streamName, "FILESTATE")
+
+::method test_wrong_too_many_args_D
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "DESCRIPTION", "QUERY SIZE")
+
+::method test_wrong_too_many_args_S
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "STATE", "QUERY SIZE")
+
+::method test_wrong_too_few_args_C
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.3)
+  retDiscrpt = stream(streamName, "COMMAND")
+
+::method test_wrong_too_many_args_C
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "COMMAND", "QUERY SIZE", "IN BYTES")
+
+-- Tests opening non-existent file in binary with no record length
+::method test_simple_bin
+  fileName = 'delMe_charoutSyntaxBinary'
+  self~streamTestingFile = fileName
+
+  self~expectSyntax(93.0)
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
+::method test_no_args
+
+  self~expectSyntax(40.3)
+  retDiscrpt = stream()
+
+::method test_abbrev_good_C
+  parse source junk notUsed streamName
+
+  ret = stream(streamName, "c", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+  ret = stream(streamName, "C", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+  ret = stream(streamName, "CDESCRIPTION", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+::method test_abbrev_good_D
+  parse source junk notUsed streamName
+
+  goodReturns = .set~of("ERROR", "NOTREADY", "READY", "UNKNOWN")
+  ret = stream(streamName, "d")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+  ret = stream(streamName, "D")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+  ret = stream(streamName, "DESCR")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+::method test_abbrev_good_S
+  parse source junk notUsed streamName
+
+  goodReturns = .set~of("ERROR", "NOTREADY", "READY", "UNKNOWN")
+  ret = stream(streamName, "S")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+  ret = stream(streamName, "ssss")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+  ret = stream(streamName, "s")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+
+/*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'OPEN' section
+\*----------------------------------------------------------------------------*/
+
+::method test_openBoth_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open both append")
+  self~assertSame("READY:", ret)
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = (2 * str~length) + (2 * .endOfLine~length)
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 2
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openBoth_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open both replace")
+  self~assertSame("READY:", ret)
+  self~assertSame(0, stream(fileName, 'C', "query size"))
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = str~length +.endOfLine~length
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 1
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openWrite_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open write append")
+  self~assertSame("READY:", ret)
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = (2 * str~length) + (2 * .endOfLine~length)
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 2
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openWrite_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open write replace")
+  self~assertSame("READY:", ret)
+  self~assertSame(0, stream(fileName, 'C', "query size"))
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = str~length +.endOfLine~length
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 1
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openRead_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  self~expectSyntax(93.0)
+  ret = stream(fileName, 'C', "open read append")
+  self~assertSame("READY:", ret)
+
+
+::method test_openRead_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+  currentSize = stream(fileName, 'C', "query size")
+
+  self~expectSyntax(93.0)
+  ret = stream(fileName, 'C', "open read replace")
+
+  self~assertSame(currentSize, stream(fileName, 'C', "query size"))
+
+
+-- Regression test for bug  3274050
+-- The function call : stream(file, "c", "open write append")
+-- fails when file has write-only permissions.
+-- On Linux / Unix this test case will fail if run by root.
+-- So, we check for root and if so fail the test case.
+::method test_open_write_only_3274050_a
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of an empty file
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  self~streamTestingFile = fileName
+  line = "line1"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+::method test_open_write_only_3274050_b
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of a non empty file
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  self~streamTestingFile = fileName
+  line = "line2"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+::method test_open_write_only_3274050_c
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of an empty file, using a command
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  self~streamTestingFile = fileName
+  ret = stream(fileName, "c", "open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line1"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+::method test_open_write_only_3274050_d
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of a non empty file, using command
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly '"' || filename || '"'
+  self~streamTestingFile = fileName
+  ret = stream(fileName, "c", "open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line2"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+
+/*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'SEEK' section
+\*----------------------------------------------------------------------------*/
+
+-- Regression test for bug  2785896
+::method test_seek_closedFile_2785896
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_seek")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', 'open both shareread nobuffer')
+  self~assertSame("READY:", ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  -- The bug was, doing a seek on a closed stream caused a crash
+  ret = stream(fileName, 'C', 'Seek =1 line')
+  self~assertSame(1, ret)
+
+
+-- Regression test for bug  2769867
+::method test_seek_2769867
+
+  src = .array~new(5)
+  do i = 1 to 5
+    src[i] = i~copies(10)
+  end
+  bytes = (5 * 10) + (5 * .endOfLine~length)
+
+  fileName = createFile(src, "delMe.test_stream_seek_2769867")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  size = stream(fileName, 'C', 'Query Size')
+  self~assertSame(bytes, size)
+
+  ret = stream(fileName, 'C', 'Open Write')
+  self~assertSame("READY:", ret)
+
+  offSet = size - (10 + .endOfLine~length) + 1
+
+  ret = stream(fileName, 'C', 'Seek' offSet)
+  self~assertSame(offSet, ret)
+
+  -- write new last line
+  ret = lineout(fileName, 6~copies(10))
+  ret = stream(fileName, 'C', 'Close')
+  self~assertSame("READY:", ret)
+
+  -- Size should remain the same.
+  size = stream(fileName, 'C', 'Query Size')
+  self~assertSame(bytes, size)
+
+  ret = stream(fileName, 'C', 'Open Read')
+  self~assertSame("READY:", ret)
+
+  -- Lines except 5th line should be the same
+  do i = 1 to 4
+    l = linein(fileName)
+    self~assertSame(src[i], l)
+  end
+  l = linein(fileName)
+  self~assertSame(6~copies(10), l)
+
+
+-- Regression test for bug  2787994
+::method test_seek_closedFile_2787994
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_seek2787994 ")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', 'Seek =1 line')
+  self~assertSame(1, ret)
+
+  -- The above should have implicitly opened the stream, so we should be able to
+  -- close it.
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  -- To be sure the file got closed, we should be able to delete it.
+  j = deleteFile(fileName)
+  self~assertSame(.false, SysFileExists(fileName))
+
+  -- Since we deleted it, tell tearDown() to skip it.
+  self~streamTestingFile = .nil
+
+
+
+/*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'QUERY' section
+\*----------------------------------------------------------------------------*/
+
+-- Tests the command 'query' option, with an existing file, not yet opened.
+::method test_queryFile_exists_notOpen
+
+  eSize = '1234567890'~length + .endOfLine~length
+  fileName = createFile(.array~of('1234567890'), "delMe.test_stream_query")
+
+  -- we've just created the file, this time stamp is as close a possible
+  now = .DateTime~new
+
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- QUERY DATETIME returns mm-dd-yy hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, 'c', 'query datetime') with date time
+  timeStamp = .DateTime~fromUsaDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query datetime" date time", now" now)
+
+  ret = stream(fileName, 'c', 'query exists')
+  self~assertSame(fileName, ret)
+
+  ret = stream(fileName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query size')
+  self~assertSame(eSize, ret)
+
+  ret = stream(fileName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  -- QUERY TIMESTAMP returns yyyy-mm-dd hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, "c", "query timestamp") with date time
+  timeStamp = .DateTime~fromStandardDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query timestamp" date time", now" now)
+
+-- Tests the command 'query' option, with an existing file, after stream is
+-- opened.  Query position in separate method
+::method test_queryFile_exists_opened_01
+
+  src = .array~of('1234567890')
+  eSize = '1234567890'~length + .endOfLine~length
+  fileName = createFile(src, "delMe.test_queryFile_exists_opened01")
+
+  -- we've just created the file, this time stamp is as close a possible
+  now = .DateTime~new
+
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- QUERY DATETIME returns mm-dd-yy hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, 'c', 'query datetime') with date time
+  timeStamp = .DateTime~fromUsaDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query datetime" date time", now" now)
+
+  ret = stream(fileName, 'c', 'query exists')
+  self~assertSame(fileName, ret)
+
+  -- The handle is almost for sure 3, but probably can't rely on that 100%
+  ret = stream(fileName, 'c', 'query handle')
+  self~assertTrue(ret~datatype('W'))
+  self~assertTrue(ret > 0)
+
+  ret = stream(fileName, 'c', 'query size')
+  self~assertSame(eSize, ret)
+
+  ret = stream(fileName, 'c', 'query streamtype')
+  self~assertSame("PERSISTENT", ret)
+
+  -- QUERY TIMESTAMP returns yyyy-mm-dd hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, "c", "query timestamp") with date time
+  timeStamp = .DateTime~fromStandardDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query timestamp" date time", now" now)
+
+
+-- Tests the command 'query position read' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_02
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened02")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- We haven't moved, so read should be at position 1 for everything.  Read
+  -- is the default for files opened read / write.  (As we opened this file.)
+  ret = stream(fileName, 'c', 'query position')
+  self~assertSame(1, ret)
+
+  -- seek is a synonym for position, so we should always get the same return.
+  ret2 = stream(fileName, 'c', 'query seek')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read char')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read char')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read line')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read line')
+  self~assertSame(ret, ret2)
+
+
+-- Tests the command 'query position write' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_03
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened03")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- Calculate the number of characters in the file.
+  charSize = '1234567890'~length + .endOfLine~length
+
+  -- Write should be positioned at the end of the file.
+  ret = stream(fileName, 'c', 'query position write')
+  self~assertSame(charSize + 1, ret)
+  ret2 = stream(fileName, 'c', 'query seek write')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position write char')
+  self~assertSame(charSize + 1, ret)
+  ret2 = stream(fileName, 'c', 'query seek write char')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position write line')
+  self~assertSame(2, ret)
+  ret2 = stream(fileName, 'c', 'query seek write line')
+  self~assertSame(ret, ret2)
+
+-- Tests the command 'query position sys' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_04
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened04")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- Calculate the number of characters in the file.
+  charSize = '1234567890'~length + .endOfLine~length
+
+  -- The system position should 0, we haven't done anything. (IS this true for
+  -- ALL OSes?)
+  ret = stream(fileName, 'c', 'query position sys')
+  self~assertSame(0, ret)
+
+  do i = 1 to charSize
+    discard = charin(fileName)
+    self~assertNotSame("", discard)
+
+    rexxPos = stream(fileName, 'c', 'query position')
+    sysPos = stream(fileName, 'c', 'query position sys')
+    self~assertSame(i + 1, rexxPos, "iteration" i)
+    self~assertSame(i, sysPos, "iteration" i)
+  end
+
+  -- Close the file and delete it
+  j = lineout(fileName)
+  j = deleteFile(fileName)
+
+  -- Now create an empty file.
+  fileName = 'deleteMe.queryFile_sys'
+  r = stream(fileName, 'C', "open nobuffer")
+  r = stream(fileName, 'C', "close")
+  self~assertTrue(SysFileExists(fileName))
+  self~streamTestingFile = fileName
+
+  -- Stream's not open, return empty string
+  ret = stream(fileName, 'C', "query position sys")
+  self~assertTrue("" == ret)
+
+  -- Now try again after opening the file.
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+  ret = stream(fileName, 'C', "query position sys")
+  self~assertTrue(0 == ret)
+
+  -- tearDown() will delete the file
+
+
+-- Tests the command 'query' option, with a non-existent file.
+::method test_queryFile_not_exists
+
+  fileName = "zzaa___tt"
+  -- Make sure this doesn't exist for some bizarre reason.
+  self~assertFalse(SysFileExists(fileName))
+
+  ret = stream(fileName, 'c', 'query datetime')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query size')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  ret = stream(fileName, 'c', 'query timestamp')
+  self~assertSame("", ret)
+
+
+-- Tests the command 'query' option, with an existing directory.
+::method test_queryDir_exists
+
+  dirName = 'TempTestingDir'
+
+  -- Make sure this doesn't exist
+  call SysRmDir dirName
+  self~assertFalse(SysFileExists(dirName), "directory" dirName "should not exist")
+
+  now = .DateTime~new
+  -- wait a bit if SysMkDir might run in the next second
+  do while now~microseconds > 950000
+    call SysSleep 0.05
+    now = .DateTime~new
+  end
+  self~assertSame(0, SysMkDir(dirName))
+  parse value now~isoDate with d 'T' t '.' .
+  eTimeStamp = d t
+  eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
+
+  ret = stream(dirName, 'c', 'query datetime')
+  self~assertSame(eDateTime, ret)
+
+  ret = stream(dirName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query size')
+  self~assertSame(0, ret)
+
+  ret = stream(dirName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  ret = stream(dirName, 'c', 'query timestamp')
+  self~assertSame(eTimeStamp, ret)
+
+  j = SysRmDir(dirName)
+
+
+-- Tests the command 'query' option, with a non-existent directory.
+::method test_queryDir_not_exists
+
+  dirName = 'Tssllll___Dir'
+  -- Make sure this doesn't exist for some bizarre reason.
+  self~assertFalse(SysFileExists(dirName))
+
+  ret = stream(dirName, 'c', 'query datetime')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query size')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  ret = stream(dirName, 'c', 'query timestamp')
+  self~assertSame("", ret)
+
+
+-- End of class: STREAM.testGroup
+
+
+-- The StreamQueryExists test cases are dependent on the known test suite
+-- directory structure.  If the structure and the test cases fail, then fix the
+-- test cases.
+
+::class "StreamQueryExists" public subclass ooTestCase
+
+-- Set up and tear down are used to quarentee we know what directory we are in
+-- for each test, and that the original working directory is restored at the end
+-- of each test.
+::method setup
+  parse source . . file
+  newDir = directory(filespec('L', file))
+
+::method teardown
+
+  newDir = directory(.ooTest.originalWorkingDir)
+
+::method test_relative_file_exists
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'class'sl'Array.testGroup'
+
+  -- Something like: ../class/Array.testGroup
+  file = ".."sl"class"sl"Array.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_exists2
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl'ooRexx'sl'API'sl'oo'sl'CONVERSION.testGroup'
+
+  -- Something like: ../../../ooRexx/API/oo/CONVERSION.testGroup
+  file = ".."sl'..'sl'..'sl'ooRexx'sl'API'sl"oo"sl"CONVERSION.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_not_exists
+  sl = .ooRexxUnit.directory.separator
+  expected = ""
+
+  -- Something like: ../class/noSuchThing.testGroup
+  file = ".."sl"class"sl"noSuchThing.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_not_exists2
+  sl = .ooRexxUnit.directory.separator
+  expected = ""
+
+  -- Something like: ../../../ooRexx/API/oo/notA.real.file
+  file = ".."sl'..'sl'..'sl'ooRexx'sl'API'sl"oo"sl"notA.real.file"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)

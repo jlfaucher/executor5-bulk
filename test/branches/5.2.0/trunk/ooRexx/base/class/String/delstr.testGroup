@@ -1,0 +1,347 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_delstrMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_delstrMethod.testGroup" subclass ooTestCase public
+
+::method 'test01'
+    vblank = ' '
+    self~expectSyntax(93.924)
+    r = delStr(vblank,0)
+
+::method 'test02'
+    self~assertSame('', ''~delstr(1))
+
+::method 'test03'
+    vblank = ' '
+    self~assertSame('', vblank~delstr('31'x))
+
+::method 'test04'
+    self~assertSame('*', '2A'x~delstr(0002))
+
+::method 'test05'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123', 'abcdefghijklmnopqrstuvwxyz1234'~delstr('00030'))
+
+::method 'test06'
+    v256 = copies('12345678',32)
+    self~assertSame(copies('12345678',31)||'1', v256~delstr(2.5E+2))
+
+::method 'test07'
+    self~assertSame(copies('\',10000), copies('5C'x,10000)~delstr('5E+4'))
+
+::method 'test08'
+    self~assertSame(copies('\',10000), copies('5C'x,10000)~delstr('+999999999'))
+
+::method 'test09'
+    self~expectSyntax(93.924)
+    r = copies('5C'x,10000)~delstr('5E+9999')
+
+::method 'test10'
+    self~expectSyntax(93.924)
+    r = copies('5C'x,10000)~delstr('5E+9999')
+
+::method 'test11'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
+    self~assertSame('', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1))
+
+::method 'test12'
+    r = ''
+    self~assertSame(r, '8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~delstr(1))
+
+::method 'test13'
+    v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz12', v30~delstr(29))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123', v30~delstr(30))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', v30~delstr(31))
+    self~assertSame('abcdefghij', v30~delstr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+
+::method 'test14'
+    v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~expectSyntax(93.924)
+    r = v30~delstr(1.2)
+
+::method 'test15'
+    self~expectSyntax(93.924)
+    r = v30~delstr('-31')
+
+::method 'test16'
+    self~expectSyntax(93.924)
+    if .ooRexxUnit.architecture == 32 then
+        r = 'hasdghj'~delstr(1E10)
+    else
+        r = 'hasdghj'~delstr(1E19)
+
+::method 'test17'
+    self~expectSyntax(93.924)
+    r = 'hasdghj'~delstr('cc'x)
+
+::method 'test18'
+    self~assertSame('ha', 'hasdghj'~delstr(000000000000000000000000000000000000000000003))
+
+::method 'test19'
+    self~assertSame('dghj', 'hasdghj'~delstr(1,000000000000000000000000000000000000000000003))
+
+::method 'test20'
+    self~assertSame('', 'hasdghj'~delstr(1,9))
+
+::method 'test21'
+    v10000 = copies('ª',10000)
+    self~assertSame('ª', v10000~delstr(2))
+    self~assertSame('', v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame('', v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test22'
+    self~assertSame('', ''~delstr(2-1,0))
+
+::method 'test23'
+    vblank = ' '
+    self~expectSyntax(93.924)
+    r = vblank~delstr(0,'31'x)
+
+::method 'test24'
+    self~assertSame('', '2A'x~delstr('31'x,0001))
+
+::method 'test25'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(0035,'9'))
+
+::method 'test26'
+    self~assertSame('abcdefghijklmnopqrstuvwxy', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(0026,'9'))
+
+::method 'test27'
+    v256 = copies('12345678',32)
+    self~assertSame(v256, v256~delstr('10000','0010'))
+
+::method 'test28'
+    self~assertSame('', copies('5C'x,10000)~delstr('000001'))
+
+::method 'test29'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
+    self~assertSame('67890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
+    self~assertSame('67890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
+
+::method 'test30'
+    v10000 = copies('ª',10000)
+    self~assertSame(copies('ª',9998), v10000~delstr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9998), v10000~delstr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9998), v10000~delstr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9997), v10000~delstr(9998,17))
+
+::method 'test31'
+    self~assertSame('', ''~delstr((2*3)-1,'2.55E+2'))
+
+::method 'test32'
+    self~assertSame('', vblank~delstr(1,200+50+6))
+
+::method 'test33'
+    self~assertSame('', '2A'x~delstr('31'x,32768))
+
+::method 'test34'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(00015,'30'x))
+
+::method 'test35'
+    self~assertSame(copies('12345678',31)||'1234567', copies('3132333435363738'x,32)~delstr('256'))
+
+::method 'test36'
+    self~assertSame(copies('ª',9999), copies('ª',10000)~delstr('00010000'))
+
+::method 'test37'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
+    self~assertSame('', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,22))
+
+::method 'test38'
+    v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~assertSame('', v30~delstr(1,40))
+    self~assertSame('efghijklmnopqrstuvwxyz1234', v30~delstr(1,04))
+
+::method 'test39'
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*2))
+
+::method 'test40'
+    self~assertSame('7+7+7 84/4 700-699', '2*7 7+7+7+7+7+7 84/4 700-699'~delstr(699-698,5*2))
+
+::method 'test41'
+    self~expectSyntax(93.924)
+    r = '2*7 7+7+7+7+7+7 84/4 700-699'~delstr('699-698',5*2)
+
+::method 'test42'
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*3))
+
+::method 'test43'
+    numeric digits 1
+    self~assertSame('2E+1 0', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*2))
+    self~assertSame('7+7+7 84/4 700-699', '2*7 7+7+7+7+7+7 84/4 700-699'~delstr(6.99-6.00,5*2))
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*3))
+
+::method 'test44'
+    self~assertSame('', nv~delstr(1,3))
+
+::method 'test45'
+    self~assertSame('', nv.~delstr(1,10003))
+
+::method 'test46'
+    self~assertSame('', nv.10~delstr(1,60))
+
+::method 'test47'
+    self~expectSyntax(93.924)
+    r = 'nv'~delstr(nv,3)
+
+::method 'test48'
+    self~expectSyntax(93.924)
+    r = 'nv.'~delstr(nv.,4)
+
+::method 'test49'
+    self~expectSyntax(93.924)
+    r = 'nv.10'~delstr(nv.10,6)
+
+::method 'test50'
+    self~expectSyntax(93.923)
+    r = 'nv.'~delstr(1,nv.)
+
+::method 'test51'
+    self~expectSyntax(93.923)
+    r = 'nv.10'~delstr(1,nv.10)
+
+::method 'test52'
+    self~expectSyntax(93.924)
+    r = noval1~delstr(noval2,noval3)
+
+::method 'test53'
+    self~assertSame('B', WORD('ABCD BCDE CDEF DEFG',2)~delstr(LEFT(subword('10 20 30 40',2,1),1)))
+
+::method 'test54'
+    self~assertSame('DCBA', reverse('ABCD BCDE CDEF')~delstr(DATATYPE(7,'N'),X2D('A')))
+
+::method 'test55'
+    self~assertSame('B', subword('AB BC CD ',2,5)~delstr(POS('O','WORD'),compare('1234','123')))
+
+::method 'test56'
+    self~assertSame('M', datatype(7)~delstr(compare('X','Y'),POS('X',' X')))
+
+::method 'test57'
+    self~assertSame('167890', '1234567890'~delstr(2,1)~delstr(2,1)~delstr(2,1)~delstr(2,1))
+
+::method 'test58'
+    self~assertSame('AB BC CD DE', 'AB BC CD DE EF'~delstr('1234567890'~delstr(3),22))
+
+::method 'test59'
+    self~assertSame(' EF', 'AB BC CD DE EF'~delstr(1,'123'~delstr(2)||'321'~delstr(1,2)))
+
+::method 'test60'
+    v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~assertSame('fghijklmnopqrxyz1234', v30~delstr(1,5)~delstr('123'~delstr(2)||'456'~delstr(2),567~delstr(2)))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DELSTR"
+    self~assertSame('ab', 'abcd'~delstr(3))
+    self~assertSame('abe', 'abcde'~delstr(3,2))
+    self~assertSame('abcde', 'abcde'~delstr(6))
+
+   -- new tests
+    self~assertSame('', 'abcde'~delstr(1))
+    self~assertSame('bcde', 'abcde'~delstr(1,1))
+    self~assertSame('abcde', 'abcde'~delstr(1,0))
+    self~assertSame('abcde', 'abcde'~delstr(3,0))
+    self~assertSame('abde', 'abcde'~delstr(3,1))
+    self~assertSame('abcde', 'abcde'~delstr(9))
+
+
+::method test_arg_none
+  self~assertSame("", 123456~delstr)
+  self~assertSame("", ""~delstr)
+
+::method test_args_one_start_zero
+  -- 93.924:  Invalid position argument specified
+  self~expectSyntax(93.924)
+  123456~delstr(0)
+
+::method test_args_one_start
+  self~assertSame("", 123456~delstr(1))
+  self~assertSame(1, 123456~delstr(2))
+  self~assertSame(12345, 123456~delstr(6))
+  self~assertSame(123456, 123456~delstr(7))
+
+::method test_args_one_length_negative
+  -- 93.923:  Invalid length argument specified
+  self~expectSyntax(93.923)
+  123456~delstr(, -1)
+
+::method test_args_two_length
+  self~assertSame(123456, 123456~delstr(, 0))
+  self~assertSame( 23456, 123456~delstr(, 1))
+  self~assertSame(  3456, 123456~delstr(, 2))
+  self~assertSame(   "6", 123456~delstr(, 5))
+  self~assertSame(    "", 123456~delstr(, 6))
+  self~assertSame(    "", 123456~delstr(, 7))
+
+::method test_args_two_start_zero
+  -- 93.924:  Invalid position argument specified
+  self~expectSyntax(93.924)
+  123456~delstr(0, 1)
+
+::method test_args_two_length_negative
+  -- 93.923:  Invalid length argument specified
+  self~expectSyntax(93.923)
+  123456~delstr(1, -1)
+
+::method test_args_two_both
+  self~assertSame(123456, 123456~delstr(1, 0))
+  self~assertSame(123456, 123456~delstr(6, 0))
+  self~assertSame(123456, 123456~delstr(7, 0))
+  self~assertSame( 23456, 123456~delstr(1, 1))
+  self~assertSame(12345 , 123456~delstr(6, 1))
+  self~assertSame(123456, 123456~delstr(7, 1))
+  self~assertSame(    "", 123456~delstr(1, 6))
+  self~assertSame(12345 , 123456~delstr(6, 2))
+  self~assertSame(123456, 123456~delstr(7, 2))
+
+::method test_args_three
+  -- 93.902:  Too many arguments in invocation of method
+  self~expectSyntax(93.902)
+  123456~delstr(1, 1, 1)
+

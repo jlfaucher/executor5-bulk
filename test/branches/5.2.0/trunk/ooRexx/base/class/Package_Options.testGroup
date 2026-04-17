@@ -1,0 +1,838 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Package_Options.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires "FileUtils.cls"
+
+
+::class "Package_Options.testGroup" subclass ooTestCase public
+
+::constant standardOptionsDirective "::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
+
+::method setUp       -- make sure we reset these global settings
+  .package~defaultOptions('defineDefaultOptions', self~standardOptionsDirective)
+  .package~defaultOptions('countOverride'          , 0                            )
+
+::method tearDown    -- make sure we reset these global settings
+  .package~defaultOptions('defineDefaultOptions', self~standardOptionsDirective)
+  .package~defaultOptions('countOverride'          , 0                            )
+
+::method test_options
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+
+   -- ~options
+  expected="::OPTIONS DIGITS 9 FORM SCIENTIFIC FUZZ 0 NUMERIC NOINHERIT ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION PROLOG TRACE NORMAL"
+  self~assertEquals(expected, pkg~options)
+  self~assertEquals(9,pkg~options("DIGITS"))
+  self~assertEquals(9,pkg~options("D",6))
+  self~assertEquals(6,pkg~options("DIGITS"))
+
+  self~assertEquals("SCIENTIFIC" ,pkg~options("FORM"))
+  self~assertEquals("SCIENTIFIC" ,pkg~options("FO","E"))
+  self~assertEquals("ENGINEERING",pkg~options("fo"))
+
+  self~assertEquals(0,pkg~options("fuzz"))
+  self~assertEquals(0,pkg~options("Fu","4"))
+  self~assertEquals(4,pkg~options("fu"))
+
+  self~assertEquals("CONDITION",pkg~options("error"))
+  self~assertEquals("CONDITION",pkg~options("e","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("E"))
+
+  self~assertEquals("CONDITION",pkg~options("failure"))
+  self~assertEquals("CONDITION",pkg~options("fa","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("FA"))
+
+  self~assertEquals("CONDITION",pkg~options("lostdigits"))
+  self~assertEquals("CONDITION",pkg~options("l","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("l"))
+
+  self~assertEquals("CONDITION",pkg~options("nostring"))
+  self~assertEquals("CONDITION",pkg~options("nos","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOS"))
+
+  self~assertEquals("CONDITION",pkg~options("novalue"))
+  self~assertEquals("CONDITION",pkg~options("nov","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOV"))
+
+  self~assertEquals("CONDITION",pkg~options("notready"))
+  self~assertEquals("CONDITION",pkg~options("not","s"))
+  self~assertEquals("SYNTAX"   ,pkg~options("NOt"))
+
+  self~assertEquals("PROLOG"  ,pkg~options("proplog"))
+  self~assertEquals("PROLOG"  ,pkg~options("prolog","n"))
+  self~assertEquals("NOPROLOG",pkg~options("prolog","p"))
+  self~assertEquals("PROLOG"  ,pkg~options("prolog","n"))
+  self~assertEquals("NOPROLOG",pkg~options("prolog"))
+
+  self~assertEquals("NORMAL"       ,pkg~options("trace"))
+  self~assertEquals("NORMAL"       ,pkg~options("trace","all"))
+  self~assertEquals("ALL"          ,pkg~options("trace","results"))
+  self~assertEquals("RESULTS"      ,pkg~options("trace","intermediates"))
+  self~assertEquals("INTERMEDIATES",pkg~options("trace","labels"))
+  self~assertEquals("LABELS"       ,pkg~options("trace","error"))
+  self~assertEquals("ERROR"        ,pkg~options("trace","failure"))
+  self~assertEquals("FAILURE"      ,pkg~options("trace","commands"))
+  self~assertEquals("COMMANDS"     ,pkg~options("trace","off"))
+  self~assertEquals("OFF"          ,pkg~options("trace","normal"))
+
+  self~assertEquals("NORMAL"       ,pkg~options("trace"))
+  self~assertEquals("NORMAL"       ,pkg~options("trace","a"))
+  self~assertEquals("ALL"          ,pkg~options("trace","r"))
+  self~assertEquals("RESULTS"      ,pkg~options("trace","i"))
+  self~assertEquals("INTERMEDIATES",pkg~options("trace","l"))
+  self~assertEquals("LABELS"       ,pkg~options("trace","e"))
+  self~assertEquals("ERROR"        ,pkg~options("trace","f"))
+  self~assertEquals("FAILURE"      ,pkg~options("trace","c"))
+  self~assertEquals("COMMANDS"     ,pkg~options("trace","o"))
+  self~assertEquals("OFF"          ,pkg~options("trace","n"))
+
+  options_02="::OPTIONS DIGITS 6 FORM ENGINEERING FUZZ 4 NUMERIC NOINHERIT ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX NOPROLOG TRACE NORMAL"
+  self~assertEquals(options_02, pkg~options)
+
+  curr4all_1="ERROR SYNTAX FAILURE SYNTAX LOSTDIGITS SYNTAX NOSTRING SYNTAX NOTREADY SYNTAX NOVALUE SYNTAX"
+  self~assertEquals(curr4all_1,pkg~options("all","condition"))
+  curr4all_2="ERROR CONDITION FAILURE CONDITION LOSTDIGITS CONDITION NOSTRING CONDITION NOTREADY CONDITION NOVALUE CONDITION"
+  self~assertEquals(curr4all_2,pkg~options("all","syntax"))
+
+  self~assertEquals(curr4all_1,pkg~options("a","c"))
+  self~assertEquals(curr4all_2,pkg~options("a","s"))
+
+::method test_options_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "D[igits] E[rror] FA[ilure] FO[rm] FU[zz] L[ostdigits] NOS[tring] NOT[ready] NOV[alue] P[rolog] T[race]"; found "XYZ".
+  pkg~options("_XYZ_")
+
+::method test_options_all_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("all","wrong")
+
+-- tests for NUMERIC DIGITS | FORM | FUZZ ... ------------------------------------------
+::method test_options_digital_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.907)
+  -- Method argument 2 must be a positive whole number; found "-1".
+  pkg~options("digital",-1)
+
+::method test_options_digital_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.907)
+  -- Method argument 2 must be a positive whole number; found "-1".
+  pkg~options("digital",0)
+
+::method test_options_digital_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(33.1)
+  -- Value of NUMERIC DIGITS ("4") must exceed value of NUMERIC FUZZ ("5").
+  pkg~options("fuzz",5)
+  pkg~options("digital",4)
+
+::method test_options_digital_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.905)
+  -- Method argument 2 must be a whole number; found "abc".
+  pkg~options("digits","abc")
+
+::method test_options_form_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "E[ngineering] S[cientific]"; found "wrong".
+  pkg~options("form","wrong")
+
+::method test_options_fuzz_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "-1".
+  pkg~options("fuzz",-1)
+
+::method test_options_fuzz_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(26.900)
+  -- NUMERIC FUZZ value 19 must be smaller than NUMERIC DIGITS (current value=9).
+  pkg~options("fuzz",19)
+
+::method test_options_fuzz_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "abc".
+  pkg~options("fuzz","abc")
+
+::method test_options_fuzz_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.906)
+  -- Method argument 2 must be zero or a positive whole number; found "abc".
+  pkg~options("fuzz","abc")
+
+
+::method test_options_numeric_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~assertEquals("NOINHERIT", pkg~options('numeric'))
+
+  self~assertEquals("NOINHERIT", pkg~options('numeric', 'i'))
+  self~assertEquals("INHERIT"  , pkg~options('nu'))
+
+  self~expectSyntax(93.914)
+  --  Method argument 2 must be one of "I[nherit] N[oInherit]"; found "x".
+  pkg~options('nu','x')    -- wrong argument
+
+::method test_options_numeric_2
+   -- let the package carry out the assertions, hence supplying the testcase object
+  r  =.routine~new("package4options", .resources~test_options_numeric_2)
+  pkg=r~callWith(.array~of(self))   -- supply the test case object for assertions
+
+   ::resource test_options_numeric_2 END "   ::END"
+      use strict arg testCaseObj
+
+      pkg = .context~package
+      testCaseObj~assertEquals("NOINHERIT", pkg~options('numeric'))
+
+      val_main       = digits() fuzz() form() 1/171
+      val_main_internal_calc = calc()
+      val_main_routine_calc1 = calc1()
+
+      testCaseObj~assertEquals(val_main, val_main_internal_calc)
+      testCaseObj~assertEquals(val_main, val_main_routine_calc1)
+
+      numeric digits 30
+
+      val_main_b       = digits() fuzz() form() 1/171
+      val_main_internal_calc_b = calc()
+      val_main_routine_calc1_b = calc1()
+
+      testCaseObj~assertEquals(val_main_b, val_main_internal_calc_b)
+      testCaseObj~assertEquals(val_main, val_main_routine_calc1_b)   -- no inheritance defined
+
+      oldValue = pkg~options('numeric','inherit')  -- now inherit numeric settings in routines and methods of this package
+      testCaseObj~assertEquals("NOINHERIT",oldValue)
+      val_main_routine_calc1_c = calc1()
+      testCaseObj~assertEquals(val_main_b, val_main_routine_calc1_c) -- inheritance now defined
+
+      return pkg
+
+      calc: procedure
+         return digits() fuzz() form() 1/171
+
+      ::routine calc1
+         return digits() fuzz() form() 1/171
+
+      ::routine pp
+        return "["arg(1)"]"
+   ::END
+
+
+::method test_options_numeric_arg_error_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+
+
+::method test_require_options_numeric_error_1
+  --  Symbol expected after the NUMERIC subdirective keyword.
+  self~expectSyntax(20.935)
+  pkg=.routine~new("package4options", "return .context~package ; ::options numeric")~call
+
+::method test_require_options_numeric_error_2
+  -- Subdirective NUMERIC must be followed by one of the keywords INHERIT or NOINHERIT; found "NIXINOXI".
+  self~expectSyntax(25.935)
+  pkg=.routine~new("package4options", "return .context~package ; ::options numeric nixinoxi")~call
+
+
+
+-- tests for CONDITIONS ... ------------------------------------------
+::method test_options_condition_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("error","wrong")
+
+::method test_options_condition_argerror_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("failure","wrong")
+
+::method test_options_condition_argerror_3
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("lostdigits","wrong")
+
+::method test_options_condition_argerror_4
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("nostring","wrong")
+
+::method test_options_condition_argerror_5
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("notready","wrong")
+
+::method test_options_condition_argerror_6
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "C[ondition] S[yntax]"; found "wrong".
+  pkg~options("novalue","wrong")
+
+-- test for PROLOG  ... ------------------------------------------
+::method test_options_prolog_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- Method argument 2 must be one of "N[oprolog] P[rolog]"; found "wrong".
+  pkg~options("prolog","wrong")
+
+-- test for TRACE   ... ------------------------------------------
+::method test_options_trace_argerror_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(24.1)
+  -- TRACE request letter must be one of "ACEFILNOR"; found "w".
+  pkg~options("trace","wrong")
+
+   -- test for "initialPackageSettings"
+::method test_options_initialPackageSettings
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~assertNotNil(pkg~options("initialPackageSettings"))
+  self~assertEquals(self~standardOptionsDirective, pkg~options("initialPackageSettings"))
+
+::method test_options_initialPackageSettings_argerror_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.902)
+  -- Too many arguments in invocation of method; 1 expected.
+  pkg~options("initialPackageSettings","wrong")
+
+   -- test for "setPackageOptions" & "reset"
+::method test_options_setPackageOptions_Reset
+  pkg=.routine~new("package4options", ("return .context~package","::OPTIONS DIGITS 21 FUZZ 3"))~call
+  ori1 = pkg~options
+  ips  = pkg~options("initialPackageSettings")
+  ori2 = pkg~options("setPackageOptions", "::OPTIONS digits 11 fuzz 0")
+  new1 = pkg~options
+  new2 = pkg~options("reset")
+  ori3 = pkg~options
+  self~assertEquals(ori1, ips )
+  self~assertEquals(ori1, ori2)
+  self~assertEquals(new1, new2)
+  self~assertEquals(ori1, ori3)
+
+
+::method test_options_override_counter_call_1_minus  -- will override all packages
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
+
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", -1)
+   call (fn1)
+   rc1=result
+   self~assertEquals(16, rc1)
+   self~assertEquals(-4, .package~defaultOptions("count"))
+
+
+::method test_options_override_counter_call_1_plus   -- will override exactly once
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
+
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 1)
+   call (fn1)
+   rc1=result
+   self~assertEquals(28, rc1)
+   self~assertEquals(0, .package~defaultOptions("count"))
+
+
+::method test_options_override_counter_call_2_plus   -- will override exactly twice
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("call" quote(fn2), "rc2=result", "return digits()+rc2", "::options digits 10 fuzz 1") )
+  file2~create( ("call" quote(fn3), "rc3=result", "return digits()+rc3", "::options           fuzz 2") )
+  file3~create( (                      "return digits()   ", "::options           fuzz 3") )
+
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 2)
+   call (fn1)
+   rc1=result
+   self~assertEquals(22, rc1)
+   self~assertEquals(0, .package~defaultOptions("count"))
+
+
+::method test_options_override_counter_requires_1_minus  -- will override all packages
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
+
+   -- override from now on
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", -1)
+   call (fn1)
+   pkg=result     -- fetch returned package
+   sum = sumPackageDigits(pkg, 0)
+   self~assertEquals(16, sum)
+   self~assertEquals(-4, .package~defaultOptions("count"))
+   return
+
+sumPackageDigits: procedure      -- sum digits() of package and all imported packages
+   use strict arg pkg, sum
+   sum = sum + pkg~digits
+   do p over pkg~importedPackages
+      sum=sumPackageDigits(p,sum)
+   end
+   return sum
+
+
+
+
+::method test_options_override_counter_requires_1_plus   -- will override exactly once
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
+
+   -- override once
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 1)
+   call (fn1)
+   pkg=result     -- fetch returned package
+   sum = sumPackageDigits(pkg, 0)
+   self~assertEquals(28, sum)
+   self~assertEquals(0, .package~defaultOptions("count"))
+   return
+
+sumPackageDigits: procedure      -- sum digits() of package and all imported packages
+   use strict arg pkg, sum
+   sum = sum + pkg~digits
+   do p over pkg~importedPackages
+      sum=sumPackageDigits(p,sum)
+   end
+   return sum
+
+
+::method test_options_override_counter_requires_2_plus   -- will override exactly twice
+  fn_base=.context~name
+  fn1=fn_base"_a.rex"
+  fn2=fn_base"_b.rex"
+  fn3=fn_base"_c.rex"
+  file1 = .TemporaryTestFile~new(.nil, fn1)
+  file2 = .TemporaryTestFile~new(.nil, fn2)
+  file3 = .TemporaryTestFile~new(.nil, fn3)
+  fn1   =file1~fullName
+  fn2   =file2~fullName
+  fn3   =file3~fullName
+  file1~create( ("return .context~package", "::requires" quote(fn2), "::options digits 10 fuzz 1") )
+  file2~create( ("::requires" quote(fn3),   "::options           fuzz 2") )
+  file3~create( (                           "::options           fuzz 3") )
+
+   -- override twice
+  .package~defaultOptions("defineDefaultOptions", "::options digits 3 fuzz 0")
+  .package~defaultOptions("count", 2)
+   call (fn1)
+   pkg=result     -- fetch returned package
+   sum = sumPackageDigits(pkg, 0)
+   self~assertEquals(22, sum)
+   self~assertEquals(0, .package~defaultOptions("count"))
+   return
+
+sumPackageDigits: procedure      -- sum digits() of package and all imported packages
+   use strict arg pkg, sum
+   sum = sum + pkg~digits
+   do p over pkg~importedPackages
+      sum=sumPackageDigits(p,sum)
+   end
+   return sum
+
+
+
+::method test_options_setPackageOptions_Error_1
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.900)
+  --  argument is not an ::OPTIONS directive.
+  pkg~options("SetPackageSettings","wrong")
+
+::method test_options_setPackageOptions_Error_2
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.901)
+  --   Not enough arguments for method; 2 expected.
+  pkg~options("SetPackageSettings")
+
+   -- addressed to package instance 'options' method:
+   --    optionNames not available: "overrideSettings", "countOverride"
+::method test_instance_options_override_option_error_1
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- TRACE request letter must be one of "ACEFILN"; found "overrideSettings".
+  pkg~options("overrideSettings","wrong")
+
+::method test_instance_options_override_error_2
+   -- get package with standard OPTIONS set
+  pkg=.routine~new("package4options", "return .context~package")~call
+  self~expectSyntax(93.914)
+  -- TRACE request letter must be one of "ACEFILN"; found "countOverride".
+  pkg~options("countOverride","wrong")
+
+
+
+--- Package class method OPTIONS
+
+   -- addressed to .package class' options method:
+   /*
+       - optionNames NOT available: "All", "Digits", "FOrm", "FUzz", "Error",
+                 "FAIlure", "Lostdigigs", "NOString", "NOTready", "NOValue",
+                 "Trace"
+   */
+::method test_class_options_optionNameError_1
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("A")
+
+::method test_class_options_optionNameError_2
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("_nixi_")
+
+::method test_class_options_optionNameError_3
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("FO")
+
+::method test_class_options_optionNameError_4
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("FU")
+
+::method test_class_options_optionNameError_5
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("E")
+
+::method test_class_options_optionNameError_6
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("FAI")
+
+::method test_class_options_optionNameError_7
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("L")
+
+::method test_class_options_optionNameError_8
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("NOS")
+
+::method test_class_options_optionNameError_9
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("NOT")
+
+::method test_class_options_optionNameError_10
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("NOV")
+
+::method test_class_options_optionNameError_11
+  self~expectSyntax(93.914)
+  -- Method argument 1 must be one of "O[verridePackageSettings] C[ountOverrides]"; found "A".
+  .package~defaultOptions("T")
+
+   -- option newValue wrong
+::method test_class_options_override_option_argerror_1
+   -- get package with standard OPTIONS set
+  self~expectSyntax(93.900)
+  -- argument is not an ::OPTIONS directive.
+  .package~defaultOptions("defineDefaultOptions","wrong")
+
+::method test_class_options_override_argerror_2
+  self~expectSyntax(93.905)
+   -- get package with standard OPTIONS set
+  -- Method argument 2 must be a whole number; found "wrong".
+  .package~defaultOptions("countOverride","wrong")
+
+
+::method test_class_options_defaults
+  self~assertNotNil(.package~defaultOptions("defineDefaultOptions"))
+  self~assertEquals(self~standardOptionsDirective, .package~defaultOptions("defineDefaultOptions"))
+
+  self~assertNotNil(.package~defaultOptions("count"))
+  self~assertEquals(0, .package~defaultOptions("count"))
+
+
+::method test_option_x  -- will override all packages
+  test_options = ("::OPTIONS DIGITS 8"               ,"DIGITS"      ), -
+                 ("::OPTIONS FUZZ 2"                 ,"FUZZ"        ), -
+                 ("::OPTIONS FORM ENGINEERING"       ,"FORM"        ), -
+                 ("::OPTIONS NUMERIC INHERIT"        ,"NUMERIC"     ), -
+                 ("::OPTIONS ALL SYNTAX"             ,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE"), -
+                 ("::OPTIONS ERROR SYNTAX"           ,"ERROR"       ), -
+                 ("::OPTIONS FAILURE SYNTAX"         ,"FAILURE"     ), -
+                 ("::OPTIONS LOSTDIGITS SYNTAX"      ,"LOSTDIGITS"  ), -
+                 ("::OPTIONS NOSTRING SYNTAX"        ,"NOSTRING"    ), -
+                 ("::OPTIONS NOTREADY SYNTAX"        ,"NOTREADY"    ), -
+                 ("::OPTIONS NOVALUE SYNTAX"         ,"NOVALUE"     ), -
+                 ("::OPTIONS NOPROLOG"               ,"NOPROLOG"    ), -
+                 ("::OPTIONS TRACE OFF"              ,"TRACE"       )
+
+  newLine = .endOfLine
+  test_options_items = test_options~items
+  base_code=("use arg nr, testcase, arr;"                                  , -
+             "testcase~assertSame(arr[2], .context~package~options('X')); ", -
+             "return .nil;")
+
+  fn_base=.context~name
+  do counter c arr over test_options
+     code=base_code~copy~~append(arr[1])
+     name=fn_base"_"c~right(2,0)
+     routine=.routine~new(name, code)
+     routine~callWith((c,self,arr))
+  end
+
+
+
+
+
+::method test_default_options_overrides  -- will override all packages
+  default_options = "DIGITS 15", "FUZZ 5", "FORM SCIENTIFIC", "NUMERIC NOINHERIT",   -
+                    "ERROR CONDITION", "FAILURE CONDITION", "LOSTDIGITS CONDITION",  -
+                    "NOSTRING CONDITION", "NOTREADY CONDITION", "NOVALUE CONDITION", -
+                    "PROLOG", "TRACE N"
+  str_options     = "::OPTIONS" default_options~toString('L',' ')
+
+  test_options = ("::OPTIONS DIGITS 8"               ,"DIGITS"      ), -
+                 ("::OPTIONS FUZZ 2"                 ,"FUZZ"        ), -
+                 ("::OPTIONS FORM ENGINEERING"       ,"FORM"        ), -
+                 ("::OPTIONS NUMERIC INHERIT"        ,"NUMERIC"     ), -
+                 ("::OPTIONS ALL SYNTAX"             ,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE"), -
+                 ("::OPTIONS ERROR SYNTAX"           ,"ERROR"       ), -
+                 ("::OPTIONS FAILURE SYNTAX"         ,"FAILURE"     ), -
+                 ("::OPTIONS LOSTDIGITS SYNTAX"      ,"LOSTDIGITS"  ), -
+                 ("::OPTIONS NOSTRING SYNTAX"        ,"NOSTRING"    ), -
+                 ("::OPTIONS NOTREADY SYNTAX"        ,"NOTREADY"    ), -
+                 ("::OPTIONS NOVALUE SYNTAX"         ,"NOVALUE"     ), -
+                 ("::OPTIONS NOPROLOG"               ,"NOPROLOG"    ), -
+                 ("::OPTIONS TRACE OFF"              ,"TRACE"       )
+
+
+  test_options_items = test_options~items
+  base_code=("use arg testcase, arr; testcase~assertSame(arr[2], .context~package~options('X')); ")
+
+  .package~defaultOptions("defineDefaultOptions", str_options)
+  .package~defaultOptions("counter", -1) -- apply to all called programs
+
+  base_code=.resources~test_default_options_overrides
+  fn_base=.context~name
+  do counter c arr over test_options
+     code=base_code~copy~~append(arr[1])
+     name=fn_base"_"c~right(2,0)
+     routine=.routine~new(name, code)
+     a=routine~callWith((self,default_options,str_options,arr))
+  end
+
+
+
+  ::RESOURCE test_default_options_overrides END "  ::END"
+  use strict arg testCase, arrDefaultOptions, str_options, arrTestOptions
+
+  thisPkg=.context~package
+  initialOptions    = thisPkg~options('I')  -- returns the initial ::OPTIONS string
+  definedOptions    = thisPkg~options('X')  -- returns a string of explicitly set option names
+  currentOptions    = thisPkg~options       -- returns an ::OPTIONS string
+
+     -- note: the testdata do not contain PROLOG as an option name in the test options
+  option_names = "DIGITS", "FUZZ", "FORM", "NUMERIC", "ERROR", "FAILURE", "LOSTDIGITS", -
+                 "NOSTRING", "NOTREADY", "NOVALUE", "PROLOG", "NOPROLOG", "TRACE"
+  option_names_all = "ERROR", "FAILURE", "LOSTDIGITS", "NOSTRING", "NOTREADY", "NOVALUE"
+
+  do xOpt over definedOptions
+     allInHand?=(xopt="ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")
+     if allInHand? then
+     do
+        testCase~assertEquals(arrTestOptions[1],"::OPTIONS ALL SYNTAX")
+        iterate
+     end
+     else
+     do
+        initialWPos = wordPos(xOpt, initialOptions)
+        testCase~assertNotEquals(initialWPos,0,"initialWPos")       -- option name must be contained
+     end
+
+     currentWPos = wordPos(xOpt, currentOptions)
+     if currentWPos=0, xopt="NOPROLOG" then  -- testdata dependent (NOPROLOG option, but currently only PROLOG)
+        iterate
+     testCase~assertNotEquals(currentWPos,0,"currentWPos")       -- option name must be contained
+
+     definedWPos = wordPos(xOpt, definedOptions)
+     testCase~assertNotEquals(definedWPos,0,"definedWPos")       -- option name must be contained
+
+     testWPos = wordPos(xOpt, arrTestOptions[2])  -- defined option must be the same as test option used
+     testCase~assertNotEquals(testWPos,0,"testWPos")
+
+        -- must not be overridden with defaultOptions
+     parse value arrTestOptions[1] with . optionName optionValue
+     if optionName="ALL", wordpos(xopt,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")>0 then
+     do
+        testCase~assertEquals(word(currentWPos+1, 1), optionValue)
+     end
+     else
+     do
+        if xopt="NOPROLOG" then    -- testoptions do not define "PROLOG"
+        do
+           testCase~assertEquals(xopt, word(currentOptions, currentWpos, 1))  -- must not be overridden
+        end
+        else
+        do
+           testCase~assertEquals(subword(currentOptions, currentWPos, 2), subword(arrTestOptions[1], 2, 2))
+        end
+     end
+
+        -- must be overridden with defaultOptions
+     do tmpOpt over option_names
+        if tmpOpt="ALL", wordpos(xopt,"ERROR FAILURE LOSTDIGITS NOSTRING NOTREADY NOVALUE")>0 then
+           iterate  -- will be checked one by one above
+
+        if tmpOpt=xopt then iterate   -- we just handled this special case already above
+
+        if tmpOpt="PROLOG"then
+        do
+           if xopt<>"NOPROLOG" then
+              testCase~assertEquals(.true, wordPos(' PROLOG', currentOptions)>0, "currentOptions must have PROLOG set")
+        end
+        else
+        do
+           currValue   =subword(currentOptions, currentWPos, 2)
+           testCase~assertEquals(currValue, optionName optionValue, "currValue must be the same as default optionValue")
+        end
+     end
+  end
+  return .nil
+
+  ::END
+
+
+
+
+::routine pp
+  return "["arg(1)"]"
+
+::routine quote
+  return '"'arg(1)'"'
+
+
+::options all syntax

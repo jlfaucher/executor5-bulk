@@ -1,0 +1,173 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_lengthMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_lengthMethod.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v1 = 'a'
+    .local~v30 = copies('8',28)||'  '
+    .local~v255 = xrange('01'x,'ff'x)
+    .local~v256 = xrange('88'x,'87'x)
+    .local~v32768 = copies('*',32768)
+    .local~v100000 = right('z',100000)
+
+::method 'test001'
+    self~assertSame('0', ''~length())
+
+::method 'test002'
+    self~assertSame('0', ''x~length())
+
+::method 'test0003'
+    self~assertSame('1', '00'x~length())
+
+::method 'test004'
+    self~assertSame('2', '00'~length())
+
+::method 'test005'
+    self~assertSame('1', .v1~length())
+
+::method 'test006'
+    self~assertSame('30', .v30~length())
+
+::method 'test007'
+    self~assertSame('255', .v255~length())
+
+::method 'test008'
+    self~assertSame('256', .v256~length())
+
+::method 'test009'
+    self~assertSame('32768', .v32768~length())
+
+::method 'test010'
+    self~assertSame('100000', .v100000~length())
+
+::method 'test011'
+    self~assertSame('250', 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
+
+::method 'test012'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('1', zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
+
+::method 'test013'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('4', (zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
+
+::method 'test014'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    self~assertSame('100001', (zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
+
+::method 'test015'
+    xre = '200'
+    self~assertSame(.true, '8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
+
+::method 'test016'
+    self~assertSame('6', .v100000~length()~length())
+
+::method 'test017'
+    self~assertSame('9', (.v100000~length()||'abc')~length())
+
+::method 'test018'
+    self~assertSame('2', (17+4)~length())
+
+::method 'test019'
+    numeric digits 9
+    self~assertSame('14', (+10000000000000000000000000000000000)~length())
+
+::method 'test020'
+    self~assertSame('36', '+10000000000000000000000000000000000'~length())
+
+::method 'test021'
+    len1 = 1
+    numeric digits 9
+    self~assertSame(len1, 1.0000000001**1000000~length())
+
+::method 'test022'
+    self~assertSame('4', 1111~length())
+
+::method 'test023'
+    self~assertSame('4', '1111'~length())
+
+::method 'test024'
+    self~assertSame('4', 'f1f1f1f1'x~length())
+
+::method 'test025'
+    self~assertSame('3', ...~length())
+
+::method 'test026'
+    self~assertSame('2', nv~length())
+
+::method 'test027'
+    self~assertSame('3', nv.~length())
+
+::method 'test028'
+    self~assertSame('4', nv.i~length())
+
+::method 'test029'
+    self~assertSame('4', nv.i~length())
+
+::method 'test030'
+    self~assertSame(8, 'abcdefgh'~length())
+
+::method 'test040'
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(v32768)
+    .local~remove(v100000)
+
+-- from bif.testgroup
+-- test the BIF, using examples from the documentation
+::method 'test_length'
+    self~assertSame(8, 'abcdefgh'~length())
+    self~assertSame(8, 'abc defg'~length())
+    self~assertSame(0, ''~length())
+
+
+

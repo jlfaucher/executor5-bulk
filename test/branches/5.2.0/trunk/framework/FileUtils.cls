@@ -1,0 +1,380 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+/** FileUtils.cls
+ *
+ * Provides common public routines and utility classes to do file system related
+ * tasks, to make writing test units easier.
+ */
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'OOREXXUNIT.CLS'
+
+
+/** issueCmd()
+ * Issues a command and returns its output and return code.
+ *
+ * @param cmd     REQUIRED
+ *   The command to issue.  This should include any arguments to the command.
+ *
+ * @param output  REQUIRED [In/Out]
+ *   An array.  The output produced by issuing the command is returned in this
+ *   array.  The output is appended to the array.
+ *
+ * @param error  OPTIONAL [In / Out]
+ *   An array.  The error output produced by issuing the command is returned in
+ *   this array.  Lines are appended to the array.  If not specified, error
+ *   lines are returned together with output.
+ *
+ * @param input  OPTIONAL [In]
+ *   An optional array object providing standard input to the executed program.
+ *
+ * @return  Returns the return code produced by issuing the command.
+ */
+::routine issueCmd public
+  use strict arg cmd, output, error = (output), input = .nil
+
+  if output = .nil then
+    output = .Array~new
+  if error = .nil then
+    error = output
+
+  if input == .nil then
+    address '' with output append using (output) error append using (error)
+  else
+    address '' with output append using (output) error append using (error) input using (input)
+  address '' cmd
+  return rc
+
+
+/** locateSamplePrg()
+ * Locates a sample program normally shipped with the ooRexx distribution.
+ *
+ * An attempt is made to find it using the assumption that the test is being
+ * executed from within a build directory.  This allows the test suite to be
+ * run by a developer from his build directory without having a regular
+ * install.  The sample is also searched for in the location(s) for sample
+ * programs in a normal install.
+ *
+ * @param   name REQUIRED
+ *            The name of the sample program.
+ *
+ * @return  The complete path name of the sample if it is located, otherwise
+ *          .nil.
+ */
+::routine locateSamplePrg public
+  use strict arg name
+
+  /*
+  CMake build tree definitions
+  set (CMAKE_SAMPLES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/samples)
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
+  CMake install definitions (Windows, Unix)
+  set (INSTALL_SAMPLES_DIR samples)
+  set (INSTALL_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/samples)
+
+  if the executable is ...               the samples are located in ...
+  C:\Program Files...\ooRexx\rexx.exe    C:\Program Files...\ooRexx\samples\ (Win installed)
+  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\samples\ (Win build)
+  C:\...\ooRexxBuild**\bin\rexx.exe      C:\...\ooRexxBuild**\NSIS\files\Samples\samples\ (*) (Win NSIS build tree)
+  /usr/local/bin/rexx.exe                /usr/local/share/ooRexx/samples/ (Unix Linux)
+  /.../oorexxbuild/rel/bin/rexx.exe      /.../oorexxbuild/rel/samples/ (*) (?)
+  /Applications/.../bin/rexx             /Applications/.../share/ooRexx/samples/ (macOS/Darwin installed)
+  /Users/.../Applications/.../bin/rexx   /Users/.../Applications/.../share/ooRexx/samples/ (macOS/Darwin installed)
+  /Library/Frameworks/.../Commands/rexx  /Library/Frameworks/.../Shared/ooRexx/samples/ (BSF4ooRexx installed)
+  /.../oorexxbuild/bin/rexx.exe      /.../oorexxbuild/samples/ (macOS/Darwin build)
+
+  (*) currently not all samples are copied into the build tree, e. g. those
+      Windows-specific samples in misc, ole, oodialog, or ooSQLite
+      This is a hack to find those samples in the NSIS build tree
+  ** 32 or 64 depending on bitness of Win
+
+  */
+
+  -- if .RexxInfo~executable returns .nil (like it does on OpenBSD) we use
+  -- .RexxInfo~libraryPath as a fall-back
+  if .RexxInfo~executable \= .nil then
+    install = .RexxInfo~executable~parent
+  else
+    install = .RexxInfo~libraryPath~parent
+
+  do samples over "samples/", "../samples/", "../NSIS/files/Samples/samples/", "../share/ooRexx/samples/", "../Shared/ooRexx/samples/"
+    sample = .File~new(samples || name, install)
+    if sample~exists then
+      return sample~absolutePath
+  end
+  -- We can't find the sample.  As a last resort, we might have an environment
+  -- variable giving the path to a samples directory (e. g. in the SVN tree)
+  sample = .File~new(name, value("OOREXX_SAMPLES", , "environment"))
+  if sample~exists then
+      return sample~absolutePath
+  return .nil
+
+
+/* createFile( src, name ) - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Writes out a file using the supplied source.
+
+  Input:
+    src   REQUIRED
+      An array containing the lines to be written to the file.
+
+    name  REQUIRED
+      The name of the file to be written.
+
+  Returns:
+    The fully qualified name of the file on succes.  Returns the empty string
+    on error.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine createFile public
+  use strict arg src, name
+
+  fileName = ""
+  fsObj = .stream~new(name)
+  state = fsObj~open("WRITE REPLACE")
+  if state~abbrev("READY") then do
+    fsObj~arrayout(src)
+    fsObj~close
+    fileName = fsObj~qualify
+  end
+
+return fileName
+-- End createFile( src, name )
+
+/* Convenience method.  Calls createFile() with .rex tacked onto basename. */
+::routine createRexxPrgFile public
+  use strict arg src, baseName
+return createFile(src, baseName || '.rex')
+
+/* addToFile( src, name )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Appends to an existing file using the supplied source.
+
+  Input:
+    src   REQUIRED
+      An array containing the lines to be added to the file.
+
+    name  REQUIRED
+      The name of the file being appended.
+
+  Returns:
+    The fully qualified name of the file on succes.  Returns the empty string
+    on error.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine addToFile public
+  use strict arg src, name
+
+  fileName = ""
+  fsObj = .stream~new(name)
+  state = fsObj~open("WRITE APPEND")
+  if state~abbrev("READY") then do
+    do line over src
+      fsObj~lineout(line)
+    end
+    fsObj~close
+    fileName = fsObj~qualify
+  end
+
+return fileName
+-- End addToFile( src, name )
+
+/* deleteFile( fileName )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Provides a platform independent file delete.
+
+  Input:
+    fileName REQUIRED
+      The file to delete.
+
+  Returns:
+    The operating system return code when the delete is done.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine deleteFile public
+  use strict arg fileName
+
+  file = .File~new(fileName)
+  file~setWritable
+  return file~delete
+
+
+/* execRexxPrgWithArgs( prgName, params, output )- - - - - - - - - - - - - - -*\
+
+  Executes a Rexx program using a separate instance of the interpreter.  This
+  function captures the output and the return code from the executed program and
+  returns it to the caller.
+
+  Input:
+    prgName REQUIRED
+      The Rexx program to execute.
+
+    params  REQUIRED
+      The arguments to the Rexx program.  If the Rexx program has no arguments,
+      either use the empty string, or use the convenience function execRexxPrg
+
+    output  OPTIONAL  [In / Out]
+      An array object in which the executed program's standard output is returned.
+      The output lines are appended to the array, so the array does not need to
+      be empty.
+
+    error  OPTIONAL [In / Out]
+      An array object in which the executed program's error output is returned.
+      Error lines are appended to the array.  If error is not specified, error
+      lines are returned together with output.
+
+    input  OPTIONAL [In]
+      An optional array object providing standard input to the executed program.
+
+  Returns:
+    The return code produced by executing the program on success.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine execRexxPrgWithArgs public
+  use strict arg prgName, params, output = .nil, error = (output), input = .nil
+
+  -- find our current interpreter, or try for fall-back
+  rexx = .RexxInfo~executable
+
+  -- if .RexxInfo~executable is .nil like on OpenBSD we check
+  -- if .RexxInfo~libraryPath "..\bin\rexx" exists
+  -- else we use plain "rexx"
+  if rexx = .nil then
+    rexx = .File~new("..\bin\rexx", .RexxInfo~libraryPath)
+
+  if rexx~exists then
+    -- quote the path as it may contain blanks
+    rexx = '"' || rexx~absolutePath || '"'
+  else
+    rexx = "rexx"
+
+  return issueCmd(rexx prgName params, output, error, input)
+
+
+/**
+ * This is a convenience method to execute a Rexx program with no arguments.  It
+ * delegates to execRexxPrgWithArgs().
+ */
+::routine execRexxPrg public
+  use strict arg prgName, output = .nil, error = (output), input = .nil
+  return execRexxPrgWithArgs(prgName, "", output, error, input)
+
+-- run rexx with inline code
+::routine execRexxInline public
+  use strict arg code, output = .nil, error = (output), input = .nil
+  -- our inline rexx code must be quoted
+  return execRexxPrgWithArgs("-e", '"' || code || '"', output, error, input)
+
+
+/* createOleObject( id ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Creates an .OLEObject instance, a proxy for the specified COM object.  This
+  routine is used to trap the REXX error that happens when the proxied COM
+  object can not be created.
+
+  Input:
+    id          REQUIRED
+      The string used to create the COM object.  I.e., the ProgID or CLSID.
+
+    withEvents  OPTIONAL
+      If true, create the OLE object with events, otherwise without events.  The
+      default is false.
+
+    beVerbose   OPTIONAL
+      If true and the OleObject is not created, the error message is displayed.
+      If false, the default, the message is not displayed.
+
+      Use this option for test case development only.  Tests run for an
+      automated test should not produce output.
+
+  Returns:
+    An instance of .OLEObject on success, .nil on failure.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine createOleObject public
+  use strict arg id, withEvents = .false, beVerbose = .false
+
+  if \ isBoolean(withEvents) then
+    raise syntax 88.900 array ("withEvents must be set to true or false; found:" withEvents)
+
+  if \ isBoolean(beVerbose) then
+    raise syntax 88.900 array ("beVerbose must be set to true or false; found:" beVerbose)
+
+  signal on syntax name returnNil
+
+  if withEvents then oleObject = .OLEObject~new(id, "WITHEVENTS")
+  else oleObject = .OLEObject~new(id, "NOEVENTS")
+
+  return oleObject
+
+returnNil:
+  if beVerbose then do
+    cObj = condition("O")
+    say "Error" rc":    " errortext(rc)
+    say "Code " cObj~code":" cObj~message
+  end
+
+  return .nil
+-- End createOleObject( id, verbose )
+
+
+/** testForOleObject()
+ * Provides a quick check to see if there would be a problem creating an
+ * OLEObject on the current system.  (For example if the OLE Automation
+ * application is not installed.)
+ *
+ * @param id  REQUIRED
+ *   The string used to create the OLE Automation object.  I.e., the ProgID or
+ *   CLSID.
+ *
+ * @return  Returns 0 if there are no problems, otherwise the syntax error
+ *          code produced by the failure to create the OLE Automation object.
+ */
+::routine testForOleObject public
+  use strict arg id
+
+  signal on syntax name returnCode
+
+  oleObject = .OLEObject~new(id, "NOEVENTS")
+  drop oleObject
+  return 0
+
+returnCode:
+  return condition('O')~code
+
+
+::options all syntax error condition

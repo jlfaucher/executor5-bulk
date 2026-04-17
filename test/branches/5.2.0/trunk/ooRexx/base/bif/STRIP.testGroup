@@ -1,0 +1,442 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.STRIP.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "STRIP.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v100001 = copies('*',50000)||'a'||copies('*',50000)
+    .local~vr1 = copies(' ',50)||.v100001||copies(' ',50)
+    .local~vr2 = '     '||copies('Y',256)
+    .local~v255 = copies('X',255)
+    .local~v256 = copies('Y',256)
+    .local~b50 = copies(' ',50)
+
+::method 'test001'
+    self~assertSame('', strip('','B'))
+
+::method 'test002'
+    self~assertSame('1', strip('1','B',' '))
+
+::method 'test003'
+    self~assertSame(' @@aaa@@ ', strip('@ @@aaa@@ @',,'@'))
+
+::method 'test004'
+    self~assertSame('@ @@aaa@@ @', strip('@ @@aaa@@ @',,''))
+
+::method 'test005'
+    self~assertSame('aaa', strip('@@@aaa@@@',,'@'))
+
+::method 'test006'
+    self~assertSame('aaa', strip('@@@aaa@@@',,'@@'))
+
+::method 'test007'
+    self~assertSame('aaa@@@', strip('@@@aaa@@@','L','@'))
+
+::method 'test008'
+    self~assertSame('@@@aaa', strip('@@@aaa@@@','T','@'))
+
+::method 'test009'
+    self~assertSame('aaa', strip('@@@aaa@@@','B','@'))
+
+::method 'test010'
+    self~assertSame('aaa', strip('@@@aaa@@@','B','40'x))
+
+::method 'test011'
+    self~assertSame('aaa', strip(' aaa '))
+
+::method 'test012'
+    self~assertSame('aaa ', strip(' aaa ','L'))
+
+::method 'test013'
+    self~assertSame(' aaa', strip(' aaa ','T'))
+
+::method 'test014'
+    self~assertSame('aaa', strip(' aaa ','B'))
+
+::method 'test015'
+    self~assertSame(' aaa ', strip(' aaa ','B','5B'X))
+
+::method 'test016'
+    self~assertSame('aaa', strip(' aaa ','B',' '))
+
+::method 'test017'
+    self~assertSame('aaa', strip(' aaa ','B','  '))
+
+::method 'test018'
+    self~expectSyntax(93.915)
+    xre=strip(' aaa ','x',' ')
+
+::method 'test019'
+    self~assertSame('asdfgasdfgasdfgasdfgasdfgasdfg', strip(' asdfgasdfgasdfgasdfgasdfgasdfg ','BLT','20'x))
+
+::method 'test020'
+    self~assertSame(.v255||'     ', strip('     '||.v255||'     ','4c4254'x,' '))
+
+::method 'test021'
+    self~assertSame(.vr2, strip('     '||.v256||'     ','TBL'))
+
+::method 'test022'
+    self~assertSame('asdfgasdfgasdfgasdfgasdfgasdfg', strip(' asdfgasdfgasdfgasdfgasdfgasdfg ','blt','20'x))
+
+::method 'test023'
+    self~assertSame(.v255||'     ', strip('     '||.v255||'     ','6c6274'x,' '))
+
+::method 'test024'
+    self~assertSame('     '||.v256, strip('     '||.v256||'     ','tbl'))
+
+::method 'test025'
+    self~assertSame('@     asdf     @', strip('     @     asdf     @     '))
+
+::method 'test026'
+    self~assertSame('asdfgasdfgasdfgasdfgasdfgasdfg', strip(' asdfgasdfgasdfgasdfgasdfgasdfg ',BLT,'20'x))
+
+::method 'test027'
+    self~assertSame(.v255||'     ', strip('     '||.v255||'     ',LTB,' '))
+
+::method 'test028'
+    self~assertSame('     '||.v256, strip('     '||.v256||'     ',TBL))
+
+::method 'test029'
+    self~assertSame('asdfgasdfgasdfgasdfgasdfgasdfg', strip(' asdfgasdfgasdfgasdfgasdfgasdfg ',blt,'20'x))
+
+::method 'test030'
+    self~assertSame(.v255||'     ', strip('     '||.v255||'     ',ltb,' '))
+
+::method 'test031'
+    self~assertSame('     '||.v256, strip('     '||.v256||'     ',tbl))
+
+::method 'test032'
+    self~assertSame('1', strip('NO.V1',,no.v2))
+
+::method 'test033'
+    self~assertSame('0', strip(202+202,,'4'))
+
+::method 'test034'
+    self~assertSame('0', strip(020+020,,'4'))
+
+::method 'test035'
+    self~assertSame('+', strip('44+44',,4))
+
+::method 'test036'
+    self~assertSame('+', strip('44+44',,2+2))
+
+::method 'test037'
+    self~assertSame('4c4254'x, strip('202020204c4254202020'x,'B'))
+
+::method 'test038'
+    self~assertSame('JJ', strip(strip('JJBBJJBBJJ',,'J'),strip('JJBBJJBBJJ',,'J'),strip('--B--','B','-')))
+
+::method 'test039'
+    self~assertSame('a', strip(.v100001,,'*'))
+
+::method 'test040'
+    self~assertSame(.b50||copies('*',50000)||'a', strip(.b50||.v100001,,'*'))
+
+::method 'test041'
+    self~assertSame(.vr1, strip(.b50||.v100001||.b50,,'*'))
+
+::method 'test042'
+    self~assertSame('a'||copies('*',50000)||.b50, strip(.v100001||.b50,,'*'))
+
+::method 'test043'
+    .local~remove(v100001)
+    .local~remove(vr1)
+    .local~remove(vr2)
+    .local~remove(v255)
+    .local~remove(v256)
+    .local~remove(b50)
+
+::method 'test044'
+    .local~s = xRange()||REVERSE(xRange())
+    self~assertSame(512, length(.s))
+
+::method 'test045'
+    .local~c = .s
+    .local~s = .c
+
+::method 'test046'
+    do i = 0 To 255
+        .local~s = strip(.s,'l',d2c(i))
+    End
+    self~assertSame(reverse(xRange(,'fe'x)), .s)
+
+::method 'test047'
+    .local~s = .c
+    do i = 0 To 255
+        .local~s = strip(.s,'t',d2c(i))
+    end
+    self~assertSame(xRange(,'fe'x), .s)
+
+::method 'test048'
+    .local~s = .c
+    do i = 0 To 255
+        .local~s = strip(.s,'b',d2c(i))
+    end
+    self~assertSame('', .s)
+
+::method 'test049'
+    .local~remove(c)
+    .local~remove(s)
+
+::method 'test050'
+    .local~s = "  This is  mother_s    program   "
+    .local~blank = ' '
+    .local~both = 'b'
+    .local~pad = '@'
+    .local~v256 = copies('  abcd  ',32)
+    .local~v255 = copies('@',127)||'.'||copies('@',127)
+    .local~dbcss = '0ec1c10f'x
+    .local~xr = xrange()
+    .local~xr2 = xr||reverse(xr)
+
+::method 'test051'
+    self~assertSame('', strip(''))
+
+::method 'test052'
+    self~assertSame('', strip('',,' '))
+
+::method 'test053'
+    self~assertSame('', strip(''||' ',,' '||''))
+
+::method 'test054'
+    self~assertSame('', strip('',.both,' '))
+
+::method 'test055'
+    self~assertSame('m', strip('omo',.both,'o'))
+
+::method 'test056'
+    self~assertSame('', strip('@',,'@'))
+
+::method 'test057'
+    self~assertSame('', strip('@','l','@'))
+
+::method 'test058'
+    self~assertSame('', strip('@','t','@'))
+
+::method 'test059'
+    self~assertSame('S', strip('S',,'@'))
+
+::method 'test060'
+    self~assertSame('S', strip('S','l','@'))
+
+::method 'test061'
+    self~assertSame('S', strip('S','t','@'))
+
+::method 'test062'
+    self~assertSame('', strip('@@',,'@'))
+
+::method 'test063'
+    self~assertSame('', strip('@@','l','@'))
+
+::method 'test064'
+    self~assertSame('', strip('@@','t','@'))
+
+::method 'test065'
+    self~assertSame('This is  mother_s    program', strip(.s))
+
+::method 'test066'
+    self~assertSame('This is  mother_s    program   ', strip(.s,'l'))
+
+::method 'test067'
+    self~assertSame('  This is  mother_s    program', strip(.s,'trailing'))
+
+::method 'test068'
+    self~assertSame('This is  mother_s    program', strip(.s,'bye bye'))
+
+::method 'test069'
+    self~assertSame(.s, strip(.s,'B','a'))
+
+::method 'test070'
+    self~assertSame(.s, strip(.s,'T','a'))
+
+::method 'test071'
+    self~assertSame(.s, strip(.s,'L','a'))
+
+::method 'test072'
+    self~assertSame(.s, strip(.s,,'a'))
+
+::method 'test073'
+    self~expectSyntax(93.915)
+    xre = strip(.s,'c','a')
+
+::method 'test074'
+    self~expectSyntax(93.915)
+    xre = strip(.s,nov.2)
+
+::method 'test076'
+    self~expectSyntax(93.915)
+    xre = strip(nov1,nov2,nov3)
+
+::method 'test077'
+    self~assertSame('NOV', strip(nov))
+
+::method 'test078'
+    self~expectSyntax(93.915)
+    xre = strip(.s,nov.2)
+
+::method 'test079'
+    self~assertSame('OV1', strip(nov1,'b',n))
+
+::method 'test080'
+    self~assertSame('12.5', strip(0012.500,,0))
+
+::method 'test081'
+    self~assertSame('12.7', strip(12.70000,,+00))
+
+::method 'test082'
+    self~assertSame('12.7', strip(12.70000,,00))
+
+::method 'test083'
+    self~assertSame('6', strip(12*5,,0))
+
+::method 'test084'
+    self~assertSame(88, strip(778877,,4+3))
+
+::method 'test085'
+    self~assertSame(88, strip(778877,'b',4+3))
+
+::method 'test086'
+    self~assertSame(88, strip(778877,'Bla',4+3))
+
+::method 'test087'
+    self~assertSame('bcd    '||copies('abcd    ',30)||'abc', strip(strip(strip(.v256),'l','a'),'t','d'))
+
+::method 'test088'
+    self~assertSame(strip(.v255,.both,.pad), strip(strip(.v255,'l',.pad),'t',.pad))
+
+::method 'test089'
+    self~assertSame('y the way, this is ', strip('by the way, this is' .both,,'b'))
+
+::method 'test090'
+    self~assertSame(' b "',strip('''''' .both '"''',,''''))
+
+::method 'test091'
+    self~assertSame('This is  mother_s    program      This is  mother_s    program      This is  mother_s    program', strip(.s .s .s,,.blank))
+
+::method 'test092'
+    self~assertSame('This is  mother_s    program      This is  mother_s    program      This is  mother_s    program', strip(.s .s .s,))
+
+::method 'test093'
+    self~assertSame('This is  mother_s    program      This is  mother_s    program      This is  mother_s    program', strip(.s .s .s,,'20'x))
+
+::method 'test094'
+    self~assertSame('This is  mother_s    program      This is  mother_s    program      This is  mother_s    program', strip(.s .s .s,'42'x,'20'x))
+
+::method 'test095'
+    self~assertSame('This is  mother_s    program      This is  mother_s    program      This is  mother_s    program', strip(.s .s .s,'42112233'x,'20'x))
+
+::method 'test096'
+    self~assertSame(' first literal beginning with ', strip('a first literal beginning with a','bon-bon','a'))
+
+::method 'test097'
+    self~assertSame('abc', strip(copies(.blank,5.4321e5)||'abc '))
+
+::method 'test098'
+    self~assertSame('abc ', strip(copies(.blank,5.4321e5)||'abc ','l'))
+
+::method 'test099'
+    self~assertSame(2, strip(17+4,x2c(c2x('t')),9-8))
+
+::method 'test101'
+    self~assertSame(xrange('01'x), strip(xrange(),,'00'x))
+
+::method 'test102'
+    self~assertSame(xrange(,'fe'x), strip(xrange(),,'ff'x))
+
+::method 'test103'
+    self~assertSame('a', strip(strip('@  a  @@',,'@')))
+
+::method 'test104'
+    self~assertSame(copies('1000000000000000000000000',9)||'1000000000000', strip('0000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000','l','0'))
+
+::method 'test105'
+    self~assertSame('0000000000001'||copies('0000000000000000000000001',9), strip('0000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000000000000000100000000000000000000000010000000000000000000000001000000000000','Toto',99//3))
+
+::method 'test106'
+    self~assertSame('', strip(.,,.))
+
+::method 'test107'
+    self~assertSame('1', strip(100,,0))
+
+::method 'test108'
+    .local~remove(s)
+    .local~remove(blank)
+    .local~remove(both)
+    .local~remove(pad)
+    .local~remove(v256)
+    .local~remove(v255)
+    .local~remove(dbcss)
+    .local~remove(xr)
+    .local~remove(xr2)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_STRIP"
+    self~assertSame('ab c', STRIP('  ab c  '))
+    self~assertSame('ab c  ', STRIP('  ab c  ','L'))
+    self~assertSame('  ab c', STRIP('  ab c  ','t'))
+    self~assertSame('12.7', STRIP('12.7000', ,0))
+    self~assertSame('12.7', STRIP('0012.700', ,0))
+
+   -- new tests
+    self~assertSame('', STRIP(''    ))
+    self~assertSame('', STRIP('    '))
+
+::method testMultiChar
+  self~assertSame("a-+b", strip("+-+-a-+b-+-+",,"-+"))
+  self~assertSame("a-+b", strip("+-+-a-+b-+-+",'B',"-+"))
+  self~assertSame("a-+b-+-+", strip("+-+-a-+b-+-+",'L',"-+"))
+  self~assertSame("+-+-a-+b", strip("+-+-a-+b-+-+",'T',"-+"))
+  self~assertSame("abc", strip("abc",,""))
+  self~assertSame("", strip("+-+--+-+-+",,"-+"))
+  self~assertSame("abc", strip('0001'x||"abc"||'0100'x,,'0001'x))
+
+
+

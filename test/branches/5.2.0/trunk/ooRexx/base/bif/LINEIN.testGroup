@@ -1,0 +1,154 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.LINEIN.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: LINEIN.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "LINEIN.testGroup" public subclass ooTestCase
+
+::attribute lineInTestingFile
+
+::method setup
+  self~lineInTestingFile = .nil
+
+::method tearDown
+  fileName = self~lineInTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+
+::method test_linein
+
+  src = .array~of("line 1", "line 2")
+  fileName = createFile(src, "delMe.test_linein")
+  self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
+
+  l = linein(fileName)
+  self~assertSame(src[1], l)
+
+  l = linein(fileName)
+  self~assertSame(src[2], l)
+
+::method  test_lineinArgs
+
+  src = .array~of("task 1", "task 2", "task 3")
+  fileName = createFile(src, "delMe.test_linein")
+  self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
+
+  l = linein(fileName, 1)
+  self~assertSame(src[1], l)
+
+  l = linein(fileName, 2)
+  self~assertSame(src[2], l)
+
+  l = linein(fileName, 3)
+  self~assertSame(src[3], l)
+
+
+-- Regression test for bug  2778601
+--
+-- 2 factors contributed to this bug and shouldn't be changed here.  1.) file1
+-- and file2 have to have the same name.  2.) The line to file2 has to be
+-- shorter than the first line.
+::method test_open_theWalterBug
+
+  file1 = 'bug4_dir1.txt'
+  file2 = 'bug4_dir1.txt'
+  self~lineInTestingFile = file2
+
+  'echo hello hello>' file1
+  line1 = linein(file1)
+  self~assertSame('hello hello', line1)
+  call lineout file1
+
+  'echo hello hell>' file2
+  line2 = linein(file2)
+  self~assertSame('hello hell', line2)
+  call lineout file2
+
+
+-- Regression test for bug  2772244
+::method test_lineIn_long_2772244
+
+  src = .array~new(4)
+  src[1] = '<av0700_2 xmlns="urn:xxxx.no/ec">'
+  src[2] = '<Header><EcMessageID /><SourceRef>PO_enh_888888_2009-04-14</SourceRef><Version>1.0</Version><UserName /><SecurityToken /><SystemCode>pppp</SystemCode><TimestampPublish>2009-04-14 00:01:00</TimestampPublish><TimestampEcIn /><TimestampEcOut /><TimestampSubscribe /></Header><dagsoppgjor><organisasjonsnavn>yyyyy</organisasjonsnavn><divisjon>520</divisjon><kategori>PN pppp</kategori><bilagsid>pppp-2009-04-14</bilagsid><bilagsdato>2009-04-14</bilagsdato><bilagslinje><konto>29990</konto><kost_enhetsnr>888888</kost_enhetsnr><oppr_enhetsnr>888888</oppr_enhetsnr><belop>-652643</belop></bilagslinje>'
+  src[3] = '<bilagslinje><konto>15790</konto><kost_enhetsnr>888888</kost_enhetsnr><oppr_enhetsnr>888888</oppr_enhetsnr><belop>652643</belop></bilagslinje>'
+  src[4] = '</dagsoppgjor></av0700_2>'
+
+  fileName = createFile(src, "delMe.test_lineIn_long_2772244")
+  self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
+
+  count = 0
+  do i = 1 to 999
+    if lines(fileName) = 0 then leave
+    count += 1
+    l = linein(fileName)
+    self~assertSame(src[i], l)
+  end
+
+  self~assertSame(src~items, count)
+
+
+-- End of class: LINEIN.testGroup
+
+
+::options novalue error

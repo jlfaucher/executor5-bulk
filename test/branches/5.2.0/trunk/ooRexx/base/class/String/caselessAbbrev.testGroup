@@ -1,0 +1,674 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.caselessAbbrev.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "caselessAbbrev.testGroup" subclass ooTestCase public
+
+   -- test the BIF, using examples from the documentation
+::method "test_ABBREV_caseless"
+
+   self~assertTrue('Print'~caselessABBREV("Pri"))
+
+   self~assertTrue("PRINT"~caselessABBREV("Pri"))
+   self~assertFalse("PRINT"~caselessABBREV("PRI", 4))
+   self~assertFalse("PRINT"~caselessABBREV("PRY"))
+   self~assertTrue("PRINT"~caselessABBREV(""))
+   self~assertFalse("PRINT"~caselessABBREV("", 1))
+
+::method "test_1"
+   self~assertSame(.true, ''~caselessAbbrev(''))
+
+::method "test_2"
+   self~assertSame(.false, ''~caselessAbbrev('a'))
+
+::method "test_3"
+   self~assertSame(.true, 'a'~caselessAbbrev(''))
+
+::method "test_4"
+   self~assertSame(.true, 'a'~caselessAbbrev('a'))
+
+::method "test_5"
+   self~assertSame(.false, 'a'~caselessAbbrev('b'))
+
+::method "test_6"
+   s="XRANGE"('00'x,'FF'x)
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      self~assertSame(.true, s~caselessAbbrev(t))
+      r="ABBREV"(s30,t)
+      If i<=30 Then
+         self~assertSame(.true, s30~caselessAbbrev(t))
+      Else                 /* longer string is never abbrev of shorter */
+         self~assertSame(.false, s30~caselessAbbrev(t))
+      End
+
+::method "test_7"
+    skips = .array~new()
+    skips~append('65-97')
+    skips~append('66-98')
+    skips~append('67-99')
+    skips~append('68-100')
+    skips~append('69-101')
+    skips~append('70-102')
+    skips~append('71-103')
+    skips~append('72-104')
+    skips~append('73-105')
+    skips~append('74-106')
+    skips~append('75-107')
+    skips~append('76-108')
+    skips~append('77-109')
+    skips~append('78-110')
+    skips~append('79-111')
+    skips~append('80-112')
+    skips~append('81-113')
+    skips~append('82-114')
+    skips~append('83-115')
+    skips~append('84-116')
+    skips~append('85-117')
+    skips~append('86-118')
+    skips~append('87-119')
+    skips~append('88-120')
+    skips~append('89-121')
+    skips~append('90-122')
+    skips~append('97-65')
+    skips~append('98-66')
+    skips~append('99-67')
+    skips~append('100-68')
+    skips~append('101-69')
+    skips~append('102-70')
+    skips~append('103-71')
+    skips~append('104-72')
+    skips~append('105-73')
+    skips~append('106-74')
+    skips~append('107-75')
+    skips~append('108-76')
+    skips~append('109-77')
+    skips~append('110-78')
+    skips~append('111-79')
+    skips~append('112-80')
+    skips~append('113-81')
+    skips~append('114-82')
+    skips~append('115-83')
+    skips~append('116-84')
+    skips~append('117-85')
+    skips~append('118-86')
+    skips~append('119-87')
+    skips~append('120-88')
+    skips~append('121-89')
+    skips~append('122-90')
+
+    do i = 0 to 255
+        do j = 0 to 255
+            s = i~d2c()||j~d2c()
+            t = j~d2c()
+            if skips~hasItem(i'-'j) then
+                iterate j
+            self~assertSame((i = j), s~caselessAbbrev(t, 1))
+        end
+    end
+
+::method "test_7a"
+    skips = .array~new()
+    skips~append('65-97')
+    skips~append('66-98')
+    skips~append('67-99')
+    skips~append('68-100')
+    skips~append('69-101')
+    skips~append('70-102')
+    skips~append('71-103')
+    skips~append('72-104')
+    skips~append('73-105')
+    skips~append('74-106')
+    skips~append('75-107')
+    skips~append('76-108')
+    skips~append('77-109')
+    skips~append('78-110')
+    skips~append('79-111')
+    skips~append('80-112')
+    skips~append('81-113')
+    skips~append('82-114')
+    skips~append('83-115')
+    skips~append('84-116')
+    skips~append('85-117')
+    skips~append('86-118')
+    skips~append('87-119')
+    skips~append('88-120')
+    skips~append('89-121')
+    skips~append('90-122')
+    skips~append('97-65')
+    skips~append('98-66')
+    skips~append('99-67')
+    skips~append('100-68')
+    skips~append('101-69')
+    skips~append('102-70')
+    skips~append('103-71')
+    skips~append('104-72')
+    skips~append('105-73')
+    skips~append('106-74')
+    skips~append('107-75')
+    skips~append('108-76')
+    skips~append('109-77')
+    skips~append('110-78')
+    skips~append('111-79')
+    skips~append('112-80')
+    skips~append('113-81')
+    skips~append('114-82')
+    skips~append('115-83')
+    skips~append('116-84')
+    skips~append('117-85')
+    skips~append('118-86')
+    skips~append('119-87')
+    skips~append('120-88')
+    skips~append('121-89')
+    skips~append('122-90')
+
+    do k = 1 to skips~items
+        parse value skips[k] with i'-'j
+        s = i~d2c()||j~d2c()
+        t = j~d2c()
+        self~assertSame((i \= j), s~caselessAbbrev(t, 1))
+    end
+
+::method "test_8"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~caselessAbbrev(slong))
+
+::method "test_9"
+   li=10000
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~caselessAbbrev(tlong))
+
+::method "test_10"
+   li=10000
+   tlong=tlong||'x'
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.false, slong~caselessAbbrev('00'x))
+
+::method "test_11"
+   self~assertSame(.false, slong~caselessAbbrev(tlong))
+
+::method "test_12"
+   self~assertSame(.true, ''~caselessAbbrev('', 0))
+
+::method "test_13"
+   self~assertSame(.false, ''~caselessAbbrev('', 1))
+
+::method "test_14"
+   self~assertSame(.false, ''~caselessAbbrev('a', 1))
+
+::method "test_15"
+   self~assertSame(.false, 'a'~caselessAbbrev('', 1))
+
+::method "test_16"
+   self~assertSame(.true, 'a'~caselessAbbrev('a', 0))
+
+::method "test_17"
+   self~assertSame(.true, 'a'~caselessAbbrev('a', 1))
+
+::method "test_18"
+   self~assertSame(.false, 'a'~caselessAbbrev('a', 2))
+
+::method "test_19"
+   self~assertSame(.false, 'a'~caselessAbbrev('b', 1))
+
+::method "test_20"
+   s="XRANGE"('00'x,'FF'x)
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      i1="MAX"(i-1,0)
+      i2=i+1
+      self~assertSame(.true, s~caselessAbbrev(t, i1))
+      self~assertSame(.true, s~caselessAbbrev(t, i))
+      self~assertSame(.false, s~caselessAbbrev(t, i2))
+      If 15<=i & i<=30 Then
+         self~assertSame(.true, s30~caselessAbbrev(t, 15))
+      Else
+         self~assertSame(.false, s30~caselessAbbrev(t, 15))
+      End
+
+::method "test_21"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~caselessAbbrev(slong, 30*li))
+
+::method "test_23"
+   li=10000
+   ll=2**29-1
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   self~assertSame(.false, slong~caselessAbbrev(slong, ll))
+
+::method "test_24"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~caselessAbbrev(tlong, (li-1)*length(s)))
+
+::method "test_25"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   tlong=tlong||'x'
+   self~assertSame(.false, slong~caselessAbbrev('00'x, 1))
+
+::method "test_26"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   tlong=tlong||'x'
+   self~assertSame(.false, slong~caselessAbbrev(tlong, 0000100))
+
+::method "test_27"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~caselessAbbrev(info, 3))
+
+::method "test_28"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.false, inform~caselessAbbrev(info, 004))
+
+::method "test_29"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~caselessAbbrev(info, 2E0))
+
+::method "test_30"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.false, inform~caselessAbbrev(info, 02E+00000002))
+
+::method "test_31"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~caselessAbbrev(info, '      3    '))
+
+::method "test_32"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~caselessAbbrev(info, '20202B2033'x))
+
+::method "test_35"
+   inform='Walter Pachl'
+   info='Wal'
+   a=3
+   self~assertSame(.true, inform~caselessAbbrev(info, a))
+
+::method "test_36"
+   inform='Walter Pachl'
+   info='Wal'
+   a=3
+   self~assertSame(.true, inform~caselessAbbrev(info, a-1))
+
+::method "test_42"
+   inform='Walter Pachl'
+   info='Wal'
+   do i=0 to 255
+      x="D2C"(i)
+      info=x||x||x
+      self~assertSame(.true, info~caselessAbbrev(x))
+      If "ABBREV"(info,'  ') Then
+         self~assertSame(.true, info~caselessAbbrev('  '))
+      End
+
+::method "test_43"
+   self~assertSame(.true, '1.000003'~caselessAbbrev(1.000, 5))
+
+::method "test_44"
+   self~assertSame(.true, '12345678'x~caselessAbbrev('123456'x, 2))
+
+::method "test_45"
+   n='translator'
+   self~assertSame(.true, n~caselessAbbrev('tr', 2))
+
+::method "test_46"
+   n=17+4
+   self~assertSame(.true, n~caselessAbbrev(+.2e1, 1))
+
+::method "test_47"
+   self~assertSame(.true, novalue~caselessAbbrev('NOV'))
+
+::method "test_48"
+   self~assertSame(.true, 'NOVALUE'~caselessAbbrev(nov))
+
+::method "test_49"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, 'NOVALUE'~caselessAbbrev('NOV', novalue))
+
+::method "test_50"
+   self~assertSame(.true, novalue~caselessAbbrev('NOV'))
+
+::method "test_51"
+   self~assertSame(.true, ''~caselessAbbrev(''))
+
+::method "test_52"
+   self~assertSame(.true, 'a'~caselessAbbrev(''))
+
+::method "test_53"
+   self~assertSame(.true, v30~caselessAbbrev(''))
+
+::method "test_54"
+   self~assertSame(.true, v250~caselessAbbrev(''))
+
+::method "test_55"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev(''))
+
+::method "test_56"
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.true, v10000~caselessAbbrev(''))
+
+::method "test_57"
+   self~assertSame(.true, (12+4)~caselessAbbrev(''))
+
+::method "test_58"
+   self~assertSame(.false, ''~caselessAbbrev('X'))
+
+::method "test_59"
+   self~assertSame(.true, 'a'~caselessAbbrev('a'))
+
+::method "test_60"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~caselessAbbrev('abc'))
+
+::method "test_61"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0001'x))
+
+::method "test_62"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev('0001'x))
+
+::method "test_63"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~caselessAbbrev(v9999))
+
+::method "test_64"
+   self~assertSame(.true, (12+4)~caselessAbbrev('1'))
+
+::method "test_65"
+   self~assertSame(.false, 'a'~caselessAbbrev('b'))
+
+::method "test_66"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~caselessAbbrev('acb'))
+
+::method "test_67"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0102'x))
+
+::method "test_68"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.false, v255~caselessAbbrev('fffe'x))
+
+::method "test_69"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9998  ="RIGHT"(v10000,9998)
+   self~assertSame(.false, v10000~caselessAbbrev(v9998))
+
+::method "test_70"
+   self~assertSame(.false, (12+4)~caselessAbbrev('2'))
+
+::method "test_71"
+   self~assertSame(.false, 'aa'~caselessAbbrev('bb'))
+
+::method "test_72"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~caselessAbbrev(v30))
+
+::method "test_73"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.true, v250~caselessAbbrev(v250))
+
+::method "test_74"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev(v255))
+
+::method "test_75"
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.true, v10000~caselessAbbrev(v10000))
+
+::method "test_76"
+   self~assertSame(.true, (12+4)~caselessAbbrev('16'))
+
+::method "test_77"
+   self~assertSame(.false, 'aa'~caselessAbbrev('aaa'))
+
+::method "test_78"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~caselessAbbrev(v30||'5'))
+
+::method "test_79"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev(v250||'.'))
+
+::method "test_80"
+   v255="XRANGE"('00'x,'FF'x)
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.false, v255~caselessAbbrev(v10000))
+
+::method "test_81"
+   v10000 ="COPIES"('123456789Z',1000)
+   v10001.=v10000.||'*'
+   self~assertSame(.false, v10000~caselessAbbrev(v10001))
+
+::method "test_82"
+   self~assertSame(.false, (12+4)~caselessAbbrev('16 '))
+
+::method "test_83"
+   self~assertSame(.false, (12+4)~caselessAbbrev('4+11+1'))
+
+::method "test_84"
+   self~assertSame(.true, 'aa'~caselessAbbrev('a', 0))
+
+::method "test_85"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~caselessAbbrev('abc', 0))
+
+::method "test_86"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0001'x, 0))
+
+::method "test_87"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev('0001'x, 0))
+
+::method "test_88"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~caselessAbbrev(v9999, 0))
+
+::method "test_89"
+   self~assertSame(.true, (12+4)~caselessAbbrev('1', 0))
+
+::method "test_90"
+   self~assertSame(.true, 'aba'~caselessAbbrev('ab', 1))
+
+::method "test_91"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~caselessAbbrev('abc', 2))
+
+::method "test_92"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0001'x, 1))
+
+::method "test_93"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev('000102'x, 2))
+
+::method "test_94"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~caselessAbbrev(v9999, 9998))
+
+::method "test_95"
+   self~assertSame(.true, (123+4)~caselessAbbrev('12', 1))
+
+::method "test_96"
+   self~assertSame(.true, 'aba'~caselessAbbrev('ab', 2))
+
+::method "test_97"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~caselessAbbrev('abc', 3))
+
+::method "test_98"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0001'x, 2))
+
+::method "test_99"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~caselessAbbrev('000102'x, 03))
+
+::method "test_100"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~caselessAbbrev(v9999, 9999))
+
+::method "test_101"
+   self~assertSame(.true, (123+4)~caselessAbbrev('12', 2))
+
+::method "test_102"
+   self~assertSame(.false, 'aba'~caselessAbbrev('ab', 4))
+
+::method "test_103"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~caselessAbbrev('abc', 4))
+
+::method "test_104"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~caselessAbbrev('0001'x, 3))
+
+::method "test_105"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.false, v255~caselessAbbrev('000102'x, 4))
+
+::method "test_106"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.false, v10000~caselessAbbrev(v9999, 10000))
+
+::method "test_107"
+   self~assertSame(.false, (123+4)~caselessAbbrev('12', 4))
+
+::method "test_108"
+   self~assertSame(.true, 1.00000000000003~caselessAbbrev(1.00))
+
+::method "test_109"
+   self~assertSame(.true, 1.00000000000003~caselessAbbrev(1.00, 1.00))
+
+::method "test_110"
+   self~assertSame(.true, '   1.2E+99999999999999    '~caselessAbbrev('   1.2E+99', 3))
+
+::method "test_111"
+   self~assertSame(.true, noval~caselessAbbrev(n))
+
+::method "test_112"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, noval~caselessAbbrev(1, n))
+
+::method "test_113"
+   self~assertSame(.true, n~caselessAbbrev(n))
+
+::method "test_114"
+   self~assertSame(.false, 'N.NN'~caselessAbbrev(n, 3))
+
+::method "test_115"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, 'NNNN'~caselessAbbrev('N', n))
+
+::method "test_116"
+   three=3
+   self~assertSame(.false, 'NNNN'~caselessAbbrev('N', three))
+
+::method "test_117"
+   self~assertSame(.true, noval.1~caselessAbbrev(n))
+
+::method "test_118"
+   self~assertSame(.true, 'NNNN'~caselessAbbrev(n))
+
+::method "test_119"
+   self~assertSame(.true, 'N.NN'~caselessAbbrev(n))
+
+::method "test_120"
+   self~assertSame(.false, 'N.3N'~caselessAbbrev(n, 3))
+
+::method "test_121"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~caselessAbbrev('1234567890012', 12))
+
+::method "test_122"
+   Numeric Digits 1
+   self~assertSame(.true, '12345678900987654321'~caselessAbbrev('12345678900', +12))
+
+::method "test_123"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~caselessAbbrev('1234567890012', 1e1))
+
+::method "test_124"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~caselessAbbrev('1234567890012', +0.01e2))
+
+::method "test_125"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, '12345678900987654321'~caselessAbbrev('1234567890012', +0.01e1))
+
+
+
+

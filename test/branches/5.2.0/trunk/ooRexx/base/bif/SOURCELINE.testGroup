@@ -1,0 +1,115 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SOURCELINE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+return testResult
+
+::requires 'ooTest.frm'
+
+-- class named exactly like file
+::class "SOURCELINE.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~expectSyntax(40.14)
+    xre = sourceLine(0)
+
+::method 'test002'
+    self~expectSyntax(40.12)
+    xre = sourceLine("")
+
+::method 'test003'
+    self~expectSyntax(40.14)
+    xre = sourceLine(-1)
+
+::method 'test_negative_number'
+    self~expectSyntax(40.14)
+    src = sourceLine(-25000)
+
+::method 'test_non_integer_number'
+    self~expectSyntax(40.12)
+    src = sourceLine(15.450)
+
+::method 'test_too_large_a_number'
+    self~expectSyntax(40.34)
+    src = sourceLine(15000)
+
+::method 'test_too_large_by_one'
+    self~expectSyntax(40.34)
+    src = sourceLine(203)
+
+::method "test_sourceline_with_no_args"
+    self~assertTrue(sourceline()~datatype("N"), "sourceline() datatype must be a number")
+
+::method test_sourceline_full_file
+  parse source . . path
+  thisFile = .Stream~new(path)
+  thisFile~open("read shared")
+  lines = thisFile~ArrayIn
+  thisFile~close
+  self~assertSame(lines~last, sourceline())
+  do n = 1 to lines~last
+    self~assertSame(lines[n], sourceline(n))
+  end
+
+::method test_sourceline_first_line
+  -- test various first lines, including hashbangs
+  do first over "", .String~tab, "-- comment", "/* comment */", "#!", "#!/usr/bin/rexx"
+    r = .Routine~new("", (first, "return sourceline(1)"))
+    self~assertSame(first, r[])
+  end
+  -- now a two-line comment
+  first = "/* REXX"
+  r = .Routine~new("", (first, "*/", "return sourceline(1)"))
+  self~assertSame(first, r[])
+
+::method test_sourceline_last_line
+  do last over "", .String~tab, "-- comment", "/* comment */"
+    r = .Routine~new("", ("return sourceline(sourceline())", last))
+    self~assertSame(last, r[])
+  end
+  last = "*/"
+  r = .Routine~new("", ("return sourceline(sourceline())", "/*", last))
+  self~assertSame(last, r[])
+
+
+::options novalue error

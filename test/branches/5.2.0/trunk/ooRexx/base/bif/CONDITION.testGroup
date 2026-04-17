@@ -1,0 +1,500 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . s
+
+group = .TestGroup~new(s)
+group~add(.CONDITION.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+
+::requires 'ooTest.frm'
+
+::class CONDITION.testGroup subclass ooTestCase public
+
+::method test_condition_invalid_arg_null
+  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDEIORS
+  call condition ""
+
+::method test_condition_invalid_arg_z
+  self~expectSyntax(40.904)            -- CONDITION argument 1 must be one of ACDEIORS
+  call condition "Z"
+
+::method test_condition_too_many_args
+  self~expectSyntax(40.4)              -- Too many arguments in invocation of CONDITION
+  call condition , .nil
+
+::constant validObjectIndexes ( -
+  "ADDITIONAL", "DESCRIPTION", "INSTRUCTION", "CONDITION", "RESULT", -
+  "RC", "CODE", "ERRORTEXT", "MESSAGE", "PACKAGE", "POSITION", -
+  "PROGRAM", "STACKFRAMES", "TRACEBACK", "PROPAGATED" )
+
+::constant mandatoryObjectIndexes ( -
+  self~validObjectIndexes~difference( -
+    ("ADDITIONAL", "RESULT", "RC", "CODE", "ERRORTEXT", "MESSAGE", "POSITION")) )
+
+-- defaults should be returned if no active condition
+-- also, only option's first letter is checked
+::method test_condition_none
+  -- "a" and "o" should return .nil
+  do option over "a", "Add", "o", "object"
+    self~assertSame(.nil, condition(option), "CONDITION(" || option || ") should be .nil after a CONDITION(R)")
+  end
+  -- all other options should return null string
+  do option over "c", "cn", "d", "D ", "e", "EX", "i", "Instr", "s", "state"
+    self~assertSame("", condition(option), "CONDITION(" || option || ") should be null string after a CONDITION(R)")
+  end
+  self~assertSame("", condition("r"))
+  self~assertSame("", condition("RESET"))
+
+-- SIGNAL trap all possible exceptions, and check CONDITION() results
+::method test_condition_signal
+  cond = 0
+  instruction = "SIGNAL"
+
+  start:
+  signal on any
+  cond += 1
+  drop rc                              -- reset for RC tests
+  select case cond
+    when 1 then do
+      expected = ("ERROR", "exit 1")
+      "exit 1"                         -- ERROR, Windows/Linux
+    end
+    when 2 then do
+      expected = ("FAILURE", "fails")
+      trace off                        -- avoid trace output from FAILURE
+      address a_failure "fails"        -- FAILURE
+    end
+    when 3 then do
+      expected = ("HALT", "raised", "halt")
+      call raiseHalt                   -- HALT
+    end
+    when 4 then do
+      expected = ("LOSTDIGITS", 9999999999)
+      a = 1 / 9999999999               -- LOSTDIGITS
+    end
+    when 5 then do
+      expected = ("NOMETHOD", "NO_METHOD", "object")
+      "object"~no_method               -- NOMETHOD
+    end
+    when 6 then do
+      expected = ("NOSTRING", "a RexxInfo", .RexxInfo)
+      call datatype .RexxInfo          -- NOSTRING
+    end
+    when 7 then do
+      expected = ("NOTREADY", "/", "/")
+      call charin "/"                  -- NOTREADY
+    end
+    when 8 then do
+      expected = ("NOVALUE", "NO_VALUE")
+      call datatype no_value           -- NOVALUE
+    end
+    when 9 then do
+      expected = ("SYNTAX", "", .Array~of("NO_TARGET"))
+      call no_target                   -- SYNTAX
+    end
+    when 10 then do
+      expected = ("USER USER_CONDITION", "raised", "user")
+      call raiseUser                   -- USER USER_CONDITION
+    end
+    otherwise return                   -- finished
+  end
+  self~fail("condition" cond "didn't raise")  -- should never happen
+
+  any:
+  -- we'll test both against CONDITION() bif and condition object
+  object = condition("object")
+
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
+
+  -- CONDITION("I") must be the same as object["INSTRUCTION"]
+  self~assertSame(instruction, condition())         -- default is "Instruction"
+  self~assertSame(instruction, condition("Instruction"), "CONDITION(I)")
+  self~assertSame(instruction, object["INSTRUCTION"], "object[INSTRUCTION]")
+
+  -- CONDITION("C") must be the same as object["CONDITION"]
+  self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
+  self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
+
+  -- CONDITION("E") and RC
+  -- only for SYNTAX will an error code be placed in rc
+  -- but rc is also set for ERROR and FAILURE because of how we raise it
+  select case condition("c")
+    when "ERROR" then self~assertSame(1, rc) -- rc from "exit 1"
+    when "FAILURE" then self~assertSame(30, rc) -- rc from invalid address
+    when "SYNTAX" then do
+      self~assertSame(43, rc) -- rc from the invalid call
+      self~assertIsA(object["RC"], .String, "for SYNTAX errors the condition object should have an RC item")
+      self~assertSame(rc, object["RC"])
+      self~assertIsA(object["CODE"], .String, "for SYNTAX errors the condition object should have a CODE item")
+      parse value object["CODE"] with code "." subcode
+      self~assertSame(code, rc)
+      self~assertSame(subcode, condition("e"))
+      self~assertIsA(object["ERRORTEXT"], .String, "for SYNTAX errors the condition object should have an ERRORTEXT item")
+      self~assertSame(errortext(rc), object["ERRORTEXT"])
+    end
+    otherwise self~assertFalse(var("RC")) -- no rc if no SYNTAX error
+  end
+
+  -- CONDITION("D") must be the same as object["DESCRIPTION"]
+  self~assertSame(expected[2], condition("description"), "CONDITION(D)")
+  self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
+
+  -- CONDITION("A") must be the same as object["ADDITIONAL"]
+  if expected[3]~isA(.Collection) then do
+    self~assertSameList(expected[3], condition("additional"), "CONDITION(A)")
+    self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+  else do
+    self~assertSame(expected[3], condition("additional"), "CONDITION(A)")
+    self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+
+  -- for SIGNAL ON nnnnn the condition status is always OFF
+  -- not sure when CONDITION("S") would ever be "ON" or "DELAY"
+  self~assertSame("OFF", condition("status"), "CONDITION(S)")
+
+  -- assert that CONDITION('R') works as expected
+  call condition "reset"
+  do option over "c", "d", "e", "i", "s"
+    self~assertSame("", condition(option), "CONDITION(" || option || ") should be null string after a CONDITION(R)")
+  end
+  do option over "a", "o"
+    self~assertSame(.nil, condition(option), "CONDITION(" || option || ") should be .nil after a CONDITION(R)")
+  end
+
+  -- go around, do next condition
+  signal start
+
+
+-- CALL trap all possible exceptions, and check CONDITION() results
+::method test_condition_call
+  instruction = "CALL"
+  raised = 0
+
+  drop rc                              -- reset for RC tests
+  call on error name any
+  expected = ("ERROR", "exit 1")
+  "exit 1"                             -- ERROR, Windows/Linux
+
+  drop rc                              -- reset for RC tests
+  call on failure name any
+  expected = ("FAILURE", "fails")
+  trace off                            -- avoid trace output from FAILURE
+  address a_failure "fails"            -- FAILURE
+  trace normal
+
+  drop rc                              -- reset for RC tests
+  call on halt name any
+  expected = ("HALT", "raised", "halt")
+  call raiseHalt                       -- HALT
+
+  drop rc                              -- reset for RC tests
+  call on notready name any
+  expected = ("NOTREADY", "/", "/")
+  call charin "/"                      -- NOTREADY
+
+  drop rc                              -- reset for RC tests
+  call on user USER_CONDITION name any
+  expected = ("USER USER_CONDITION", "raised", "user")
+  call raiseUser                       -- USER USER_CONDITION
+
+  self~assertSame(5, raised)           -- a condition should have been raised 5 times
+
+  return                               -- finished
+
+  any:
+  raised += 1                          -- count how often we've been called
+
+  -- we'll test both against CONDITION() bif and condition object
+  object = condition("object")
+
+  -- for CALL ON the trap is called with one argument: the condition object
+  -- it should be the same as our condition object here
+  self~assertSame(1, arg(), "we expect one argument: the condition object")
+  conditionArg = arg(1)
+  self~assertIsA(conditionArg, .Directory)
+  self~assertTrue(conditionArg~equivalent(object))
+  do index over conditionArg~allIndexes
+    self~assertSame(conditionArg[index], object[index], "condition object index" index "values should be the same")
+  end
+
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
+
+  -- CONDITION("I") must be the same as object["INSTRUCTION"]
+  self~assertSame(instruction, condition())         -- default is "Instruction"
+  self~assertSame(instruction, condition("Instruction"), "CONDITION(I)")
+  self~assertSame(instruction, object["INSTRUCTION"], "object[INSTRUCTION]")
+
+  -- CONDITION("C") must be the same as object["CONDITION"]
+  self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
+  self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
+
+  -- CONDITION("E") and RC
+  self~assertSame("", condition("extra"), "CONDITION(E) should be null string")
+  -- rc wont't be set (except for ERROR and FAILURE)
+  select case condition("c")
+    when "ERROR" then self~assertSame(1, rc) -- rc from "exit 1"
+    when "FAILURE" then self~assertSame(30, rc) -- rc from invalid address
+    otherwise self~assertFalse(var("RC")) -- no rc if no SYNTAX error
+  end
+
+  -- CONDITION("D") must be the same as object["DESCRIPTION"]
+  self~assertSame(expected[2], condition("description"), "CONDITION(D)")
+  self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
+
+  -- CONDITION("A") must be the same as object["ADDITIONAL"]
+  if expected[3]~isA(.Collection) then do
+    self~assertSameList(expected[3], condition("additional"), "CONDITION(A)")
+    self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+  else do
+    self~assertSame(expected[3], condition("additional"), "CONDITION(A)")
+    self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+
+  -- for CALL ON ANY the condition status is always OFF (maybe a bug)
+  -- for CALL ON nnnnn the condition status is always DELAY
+  -- not sure when CONDITION("S") would ever be "ON"
+  self~assertSame("DELAY", condition("status"), "CONDITION(S)")
+
+  -- assert that CONDITION('R') works as expected
+  call condition "reset"
+  self~assertSame("", condition("status"), "CONDITION(S) should be null string after a CONDITION(R)")
+  self~assertSame(.nil, condition("object"), "CONDITION(O) should be .nil after a CONDITION(R)")
+
+  return
+
+-- the CALL trap can also be an external routine
+::method test_condition_call_external
+  .external~raised = 0
+  .external~self = self
+  call on any name external
+
+  .external~expected = ("ERROR", "exit 1")
+  "exit 1"                             -- ERROR, Windows/Linux
+
+  .external~expected = ("FAILURE", "fails")
+  trace off                            -- avoid trace output from FAILURE
+  address a_failure "fails"            -- FAILURE
+  trace normal
+
+  .external~expected = ("HALT", "raised", "halt")
+  call raiseHalt                       -- HALT
+
+  .external~expected = ("NOTREADY", "/", "/")
+  call charin "/"                      -- NOTREADY
+
+  .external~expected = ("USER USER_CONDITION", "raised", "user")
+  call raiseUser                       -- USER USER_CONDITION
+
+  self~assertSame(5, .external~raised) -- ANY should have been raised 5 times
+
+  return
+
+
+-- the CALL trap can also be a BIF, although there's really no known use case
+::method test_condition_call_bif
+  -- we could run real tests here, because the reverse BIF would raises NOSTRING
+  -- because it receives the condition object as its only argument
+  -- this is for another day; we just turn NOSTRING OFF
+  signal off nostring
+  call on any name reverse
+
+  expected = ("ERROR", "exit 1")
+  "exit 1"                             -- ERROR, Windows/Linux
+
+  expected = ("FAILURE", "fails")
+  trace off                            -- avoid trace output from FAILURE
+  address a_failure "fails"            -- FAILURE
+  trace normal
+
+  expected = ("HALT", "raised", "halt")
+  call raiseHalt                       -- HALT
+
+  expected = ("NOTREADY", "/", "/")
+  call charin "/"                      -- NOTREADY
+
+  expected = ("USER USER_CONDITION", "raised", "user")
+  call raiseUser                       -- USER USER_CONDITION
+
+
+-- NOVALUE tests (not really a CONDITION BIF test, but found no better place ..
+-- according to rexxref "Conditions and Condition Traps" NOVALUE is raised
+-- if an uninitialized variable is used as:
+-- .) A term in an expression
+-- .) The name following the VAR subkeyword of a PARSE instruction
+-- .) A variable reference in an EXPOSE instruction, a PROCEDURE instruction, or a DROP instruction
+-- .) A method selection override specifier in a message term
+-- NOVALUE is not raised for any uninitialized variables in tails in compound variables.
+
+::method test_novalue_term
+  self~expectSyntax((98.986, "NO_VAR")) -- Reference to unassigned variable "NO_VAR"
+  -- a term
+  no_var~"*"(2)
+
+::method test_novalue_parse_var
+  self~expectSyntax((98.986, "NO_VAR")) -- Reference to unassigned variable "NO_VAR"
+  -- name following PARSE VAR
+  parse var no_var
+
+::method test_novalue_method_expose
+  self~expectSyntax((98.986, "NO_LIST")) -- Reference to unassigned variable "NO_LIST"
+  self~expose_novalue
+
+::method expose_novalue
+  -- variable substitution list in an EXPOSE instruction
+  expose (no_list)
+
+::method test_novalue_proedure_expose
+  self~expectSyntax((98.986, "NO_LIST")) -- Reference to unassigned variable "NO_LIST"
+  call expose_novalue
+  return
+  -- variable substitution list in a PROCEDURE EXPOSE instruction
+  expose_novalue: procedure expose (no_list)
+
+::method test_novalue_drop
+  self~expectSyntax((98.986, "NO_LIST")) -- Reference to unassigned variable "NO_LIST"
+  -- variable substitution list in a DROP instruction
+  drop (no_list)
+
+::method test_novalue_override
+  self~expectSyntax((98.986, "NO_VAR")) -- Reference to unassigned variable "NO_VAR"
+  -- method selection override
+  self~hashCode:no_var
+
+
+::routine raiseHalt
+  raise halt description "raised" additional "halt"
+
+::routine raiseUser
+  raise user user_condition description "raised" additional "user"
+
+-- an external routine as a trap for CALL ON
+::routine external
+  use strict arg condition
+
+  .external~raised += 1                -- count how often we've been called
+  expected = .external~expected
+  self = .external~self
+
+  -- the trap is called with one argument: the condition object
+  self~assertSame(1, arg(), "we expect one argument: the condition object")
+  object = arg(1)
+
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), object["CONDITION"] "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), object["CONDITION"] "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
+
+  -- object["INSTRUCTION"] must be "CALL"
+  self~assertSame("CALL", object["INSTRUCTION"], "object[INSTRUCTION]")
+
+  -- object["CONDITION"] must be as expected
+  self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
+
+  -- object["DESCRIPTION"] must be as expected
+  self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
+
+  -- object["ADDITIONAL"] must be as expected
+  if expected[3]~isA(.Collection) then do
+    self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+  else do
+    self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+
+  return
+
+::class external
+::attribute raised class
+::attribute expected class
+::attribute self class
+
+
+--::options novalue error
+::options all syntax
+
