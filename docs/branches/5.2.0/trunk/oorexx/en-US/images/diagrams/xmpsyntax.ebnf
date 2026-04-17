@@ -1,0 +1,14 @@
+/* How to Read the Syntax Diagrams */
+xmpsyntax_dummy ::= 'use this dummy diagram to cut out the diagrams needed for'
+                    'beginning of statement' 'statement continuation' 'and end of statement'  
+
+xmpsyntax01 ::= 'STATEMENT' required_item
+xmpsyntax02 ::= 'STATEMENT' optional_item?
+xmpsyntax03 ::= 'STATEMENT' (required_choice1 | required_choice2)
+xmpsyntax04 ::= 'STATEMENT' ( | optional_choice1 | optional_choice2)
+xmpsyntax05 ::= 'STATEMENT' ( | default_choice | optional_choice | optional_choice)
+xmpsyntax06 ::= 'STATEMENT' repeatable_item (',' repeatable_item)*
+xmpsyntax07 ::= 'STATEMENT' (DETAIL - fragment)
+
+xmpsyntax ::= 'MAX(' number ( ',' number )* ')'
+

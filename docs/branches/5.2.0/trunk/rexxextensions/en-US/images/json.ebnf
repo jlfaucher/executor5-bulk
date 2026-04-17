@@ -1,0 +1,185 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2010-2026, Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+/* json.cls — Railroad diagram EBNF grammars */
+/* Feed to the Railroad Diagram Generator at https://www.bottlecaps.de/rr/ui */
+
+/* ======================================================================== */
+/* JsonError class                                                          */
+/* ======================================================================== */
+
+JsonError_init
+         ::= 'init(' message ( ',' lineNumber ( ',' column ( ',' contextLine )? )? )? ')'
+
+JsonError_makeString
+         ::= 'makeString'
+
+JsonError_message
+         ::= 'message'
+
+JsonError_lineNumber
+         ::= 'lineNumber'
+
+JsonError_column
+         ::= 'column'
+
+JsonError_contextLine
+         ::= 'contextLine'
+
+/* ======================================================================== */
+/* JsonBoolean class                                                        */
+/* ======================================================================== */
+
+JsonBoolean_true
+         ::= 'true'
+
+JsonBoolean_false
+         ::= 'false'
+
+JsonBoolean_activate
+         ::= 'activate'
+
+JsonBoolean_init
+         ::= 'init(' value ')'
+
+JsonBoolean_unknown
+         ::= 'unknown(' messageName ',' arguments ')'
+
+JsonBoolean_equal
+         ::= '=(' other ')'
+
+JsonBoolean_notEqual
+         ::= ( '\=(' | '<>(' | '><(' ) other ')'
+
+JsonBoolean_compareTo
+         ::= 'compareTo(' other ')'
+
+JsonBoolean_value
+         ::= 'value'
+
+JsonBoolean_makeString
+         ::= 'makeString'
+
+JsonBoolean_makeJSON
+         ::= 'makeJSON'
+
+/* ======================================================================== */
+/* JsonString class                                                         */
+/* ======================================================================== */
+
+JsonString_makeJSON
+         ::= 'makeJSON'
+
+/* ======================================================================== */
+/* Json class — class attributes                                            */
+/* ======================================================================== */
+
+Json_true
+         ::= 'true'
+
+Json_false
+         ::= 'false'
+
+/* ======================================================================== */
+/* Json class — instance creation                                           */
+/* ======================================================================== */
+
+Json_init
+         ::= 'init'
+
+/* ======================================================================== */
+/* Json class — file utilities (class methods)                              */
+/* ======================================================================== */
+
+Json_fromJsonFile
+         ::= 'fromJsonFile(' fn ')'
+
+Json_toJsonFile
+         ::= 'toJsonFile(' fn ',' rexxObject ( ',' legible )? ')'
+
+/* ======================================================================== */
+/* Json class — encoding/decoding (instance and class methods)              */
+/* ======================================================================== */
+
+Json_toJSON
+         ::= 'toJSON(' rexxObject ( ',' legible )? ')'
+
+Json_fromJSON
+         ::= 'fromJSON(' jsonString ')'
+
+/* ======================================================================== */
+/* Json class — XML support (class methods)                                */
+/* ======================================================================== */
+
+Json_jsonToXml
+         ::= 'jsonToXml(' rexxObject ( ',' schema )? ')'
+
+Json_jsonToXmlFile
+         ::= 'jsonToXmlFile(' rexxObject ',' path ( ',' schema )? ')'
+
+/* ======================================================================== */
+/* Json class — XML support (instance methods)                             */
+/* ======================================================================== */
+
+Json_parseXml
+         ::= 'parseXml(' input ')'
+
+Json_parseXmlFile
+         ::= 'parseXmlFile(' path ')'
+
+/* ======================================================================== */
+/* JsonXmlEmitter class                                                     */
+/* ======================================================================== */
+
+JsonXmlEmitter_init
+         ::= 'init(' ( schema )? ')'
+
+JsonXmlEmitter_emit
+         ::= 'emit(' rexxObject ')'
+
+/* ======================================================================== */
+/* JsonXmlParser class                                                      */
+/* ======================================================================== */
+
+JsonXmlParser_parse
+         ::= 'parse(' input ')'
+
+/* ======================================================================== */
+/* string2json routine                                                      */
+/* ======================================================================== */
+
+string2json
+         ::= 'string2json(' buffer ',' rexxObject ( ',' forceQuoted )? ')'
