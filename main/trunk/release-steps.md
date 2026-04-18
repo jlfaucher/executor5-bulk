@@ -1,12 +1,13 @@
 2022-12-15, Release Steps for ooRexx 5.0.0 as a role model
-2025-04-29, Updated for 5.1.0 release
-2025-05-01/03, Updated for 5.1.0 release
+2025-04-29, Updated for 5.2.0 release
+2025-05-01/03, Updated for 5.2.0 release
 2026-03-14, Updated for 5.2.0 release
+2026-04-18, Updated for 5.3.0 release
 ===
 
 Step 1.
 -------
-- create a branch for `5.2.0` using current trunk (if no show stopper errors occur
+- create a branch for `5.3.0` using current trunk (if no show stopper errors occur
   running the ooRexx testsuite) for
       `main/trunk` to `main/branches` and
       `test/trunk` to `test/branches`,
@@ -14,21 +15,21 @@ Step 1.
 
   here the svn command for code and test (replace "userId" with yours)
 
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.0/trunk  -m "Creating code branch 5.2.0 to prepare release."
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.0/trunk -m "Creating test branch 5.2.0 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk  -m "Creating code branch 5.3.0 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.0/trunk -m "Creating test branch 5.3.0 to prepare release."
 
   alternative (locally from oorexx/code-0 directory):
 
-      svn mkdir main/branches/5.2.0
-      svn copy main/trunk main/branches/5.2.0
-      svn ci -m "Creating code branch 5.2.0 to prepare release."
+      svn mkdir main/branches/5.3.0
+      svn copy main/trunk main/branches/5.3.0
+      svn ci -m "Creating code branch 5.3.0 to prepare release."
 
-      svn mkdir test/branches/5.2.0
-      svn copy test/trunk test/branches/5.2.0
-      svn ci -m "Creating test branch 5.2.0 to prepare release."
+      svn mkdir test/branches/5.3.0
+      svn copy test/trunk test/branches/5.3.0
+      svn ci -m "Creating test branch 5.3.0 to prepare release."
 
 
-- *before* creating the docs `docs/branches/5.2.0/trunk`, the necessary steps:
+- *before* creating the docs `docs/branches/5.3.0/trunk`, the necessary steps:
 
   - make sure all authors who have committed in the meantime are listed in their appropriate
     `${book}/en-US/Author_Group.xml`; to detect one can use `tools/listAuthorsAsOfLate.rex`
@@ -40,19 +41,19 @@ Step 1.
 
   - make sure that all copyright texts are updated (you can use `tools/updateCopyright.rex`)
 
-  - *NOTE:* copyright of `main/branches/5.2.0/trunk/ReleaseNotes` needs to be adjusted as well!
+  - *NOTE:* copyright of `main/branches/5.3.0/trunk/ReleaseNotes` needs to be adjusted as well!
 
-- create the docs branch for `5.2.0` using current `docs/trunk` to `docs/branches/5.2.0/trunk`
+- create the docs branch for `5.3.0` using current `docs/trunk` to `docs/branches/5.3.0/trunk`
 
   here the svn command for code, documentation and test (replace "userId" with yours)
 
-      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.0/trunk -m "Creating docs branch 5.2.0 to prepare release."
+      svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.0 -m "Creating docs branch 5.3.0 to prepare release."
 
   alternative (locally from oorexx/code-0 directory):
 
-      svn mkdir docs/branches/5.2.0
-      svn copy docs/trunk docs/branches/5.2.0
-      svn ci -m "Creating docs branch 5.2.0 to prepare release."
+      svn mkdir docs/branches/5.3.0
+      svn copy docs/trunk docs/branches/5.3.0
+      svn ci -m "Creating docs branch 5.3.0 to prepare release."
 
 
 These steps are performed mainly using a script that will replace the xml files defining all jobs on the Jenkins Controller
@@ -60,9 +61,9 @@ There is a step-by-step list to follow for this phase.
 
 - adjust release information:
 
-  - update `main/branches/5.2.0/NOTICE` (a text file) to reflect the current copyright year
+  - update `main/branches/5.3.0/NOTICE` (a text file) to reflect the current copyright year
 
-  - update `main/branches/5.2.0./CHANGES` (a text file) to document all changes from the last release for
+  - update `main/branches/5.3.0./CHANGES` (a text file) to document all changes from the last release for
 
        - Bugs
        - Feature-requests
@@ -112,7 +113,7 @@ There is a step-by-step list to follow for this phase.
 
      - repeat, if more than 250 hits
 
-    4) a `Milestone` `5.2.0` and `5.2.1` (for potential bug fix releases) needs to be
+    4) a `Milestone` `5.3.0` and `5.2.1` (for potential bug fix releases) needs to be
        created, here the steps needed for `Bugs`:
 
        - pick `Administration`
@@ -124,7 +125,7 @@ There is a step-by-step list to follow for this phase.
 
        - choose `Field Management`
 
-       - add `5.2.0` and `5.2.1` to `Milestones` which represents ooRexx
+       - add `5.3.0` and `5.2.1` to `Milestones` which represents ooRexx
          version numbers offered when new bugs get created; to take effect
          one needs to press the `Save` button underneath the visual frame
 
@@ -136,7 +137,7 @@ There is a step-by-step list to follow for this phase.
 
 Step 2.
 -------
-- update the ooRexx version related information in main/trunk to `5.2.0`
+- update the ooRexx version related information in main/trunk to `5.3.0`
 
   cf. <https://sourceforge.net/p/oorexx/code-0/12539/#diff-1> changes to:
 
@@ -154,19 +155,24 @@ Step 2.
 
       main/trunk/api/oorexxapi.h  -- Add a new version identifier define for the new release.
 
+      platform/unix/rexx.1
+      platform/unix/rexxc.1
+      platform/unix/rxqueue.1
+      platform/unix/rxsubcom.1
+
 
 - create the following directories in files area on Sourceforge:
 
-      oorexx/files/5.2.0_Release_Candidate        ... to receive the tested builds from branches/5.2/trunk
-      oorexx/oorexx-docs/5.2.0_Release_Candidate  ... to receive the new documentation from docs/branches/5.2/trunk
+      oorexx/files/5.3.0_Release_Candidate        ... to receive the tested builds from branches/5.2/trunk
+      oorexx/oorexx-docs/5.3.0_Release_Candidate  ... to receive the new documentation from docs/branches/5.2/trunk
 
       oorexx/files/5.3.0beta        ... to receive the new builds from trunk
       oorexx/oorexx-docs/5.3.0beta  ... to receive the new documentation from trunk
 
 - NOTE The following steps are done using the script that replaces the xml files defining all jobs on Jenkins
 - DO NOT modify the Jenkins build jobs manually during the build process!
-- adjust the build scripts on Jenkins and feed the oorexx/files/5.2.0_Release_Candidate
-- adjust the build scripts on Jenkins and feed the oorexx/oorexx-docs/5.2.0_Release_Candidate
+- adjust the build scripts on Jenkins and feed the oorexx/files/5.3.0_Release_Candidate
+- adjust the build scripts on Jenkins and feed the oorexx/oorexx-docs/5.3.0_Release_Candidate
 
 When that is complete and all artifacts have been uploaded
 
@@ -180,7 +186,7 @@ Step 3.
 -------
 - do the release:
 
-  - rename the folders from `5.2.0_Release_Candidate` to `5.2.0`
+  - rename the folders from `5.3.0_Release_Candidate` to `5.3.0`
 
   - Update the SourceForge default download links to point to the new releases
 
@@ -195,33 +201,33 @@ Step 3.
   - add a release entry in the SourceForge project's "News" section using
     the link: <https://sourceforge.net/p/oorexx/news/>
 
-  - use "svn move" to move `main/branches/5.2.0/trunk` to `main/releases/5.2.0/trunk`, 
-  - do the same for the documentation `docs/branches/5.2.0/trunk` to `docs/releases/5.2.0/trunk`
-  - and tests `test/branches/5.2.0/trunk` to `test/releases/5.2.0/trunk`
+  - use "svn move" to move `main/branches/5.3.0/trunk` to `main/releases/5.3.0/trunk`,
+  - do the same for the documentation `docs/branches/5.3.0/trunk` to `docs/releases/5.3.0/trunk`
+  - and tests `test/branches/5.3.0/trunk` to `test/releases/5.3.0/trunk`
 
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk -m "Creating main/releases/5.2.0 to conclude release process."
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk -m "Creating docs/releases/5.2.0 to conclude release process."
-        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk -m "Creating test/releases/5.2.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.2.0/trunk -m "Creating main/releases/5.3.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.2.0/trunk -m "Creating docs/releases/5.3.0 to conclude release process."
+        svn move --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0/trunk -m "Creating test/releases/5.3.0 to conclude release process."
 
     alternative (locally from oorexx/code-0 directory)vely:
 
-        svn mkdir docs/releases/5.2.0
-        svn move  docs/branches/5.2/trunk docs/releases/5.2.0/trunk
-        svn rm    docs/branches/5.2.0
+        svn mkdir docs/releases/5.3.0
+        svn move  docs/branches/5.2/trunk docs/releases/5.3.0/trunk
+        svn rm    docs/branches/5.3.0
 
-        svn mkdir main/releases/5.2.0
-        svn move  main/branches/5.2.0/trunk main/releases/5.2.0/trunk
-        svn rm    main/branches/5.2.0
+        svn mkdir main/releases/5.3.0
+        svn move  main/branches/5.3.0/trunk main/releases/5.3.0/trunk
+        svn rm    main/branches/5.3.0
 
-        svn mkdir test/releases/5.2.0
-        svn move  test/branches/5.2.0/trunk test/releases/5.2.0/trunk
-        svn rm    test/branches/5.2.0
+        svn mkdir test/releases/5.3.0
+        svn move  test/branches/5.3.0/trunk test/releases/5.3.0/trunk
+        svn rm    test/branches/5.3.0
 
-        svn ci -m "Creating main/releases/5.2.0 to conclude release process."
+        svn ci -m "Creating main/releases/5.3.0 to conclude release process."
 
   - change into docs/trunk/tools and run
 
-        updateEntityValues.rex -y 2026 -v "5.2.0 -> 5.3.0" -e "2026.03.14" -r 99999 ..
+        updateEntityValues.rex -y 2026 -v "5.3.0 -> 5.3.0" -e "2026.05.17" -r 99999 ..
 
   - update the ooRexx documentation in trunk to not show *CHG* and *NEW* for 51 anymore by
     setting the replacement text to the empty string `""`, from
@@ -241,11 +247,11 @@ Step 3.
     `winextensions/en-US/winextensions.ent`
 
   - change into main/trunk, edit CHANGES to remove all changes documented for
-    5.2.0, keep the headings
+    5.3.0, keep the headings
 
   - change into `main/trunk`, edit `ReleaseNotes` to remove all changes documented for
-    5.2.0, adjust copyright year and version (change from `5.1.0` to `5.2.0` and
-    `5.1.0` to `5.2.0`)
+    5.3.0, adjust copyright year and version (change from `5.2.0` to `5.3.0` and
+    `5.2.0` to `5.3.0`)
 
 
 Step 4.
@@ -256,7 +262,7 @@ Step 4.
         trunk, then create the branch
 
   - t1: create the installation packages from the branch and upload them to a
-        staged directory `5.2.0/trunk`
+        staged directory `5.3.0/trunk`
 
   - t2: apply the necessary changes in the branch (version information update,
         release information update): within (t0+7) days the longest
@@ -266,7 +272,7 @@ Step 4.
   - t4: once the release has been finalized, create a x.x.(n+1) branch from the release branch
         to be used for potential bug fix releases. This includes updating the release number information
         in the build.
-        move the `main|docs|test"/branches/5.2.0/trunk` to `main|docs|test"/releases/5.2.0`
+        move the `main|docs|test"/branches/5.3.0/trunk` to `main|docs|test"/releases/5.3.0`
 
 
 Step 5.
@@ -274,14 +280,14 @@ Step 5.
 - in the case that updates are needed to the release version one needs to create
   appropriate branches: `branches/5.2.1` for `main`, `docs`, `test` to work in
 
-*QUESTION*: is this really necessary? can we not just overwrite the /branches/5.1.0/trunk compare to version 4 releases
+*QUESTION*: is this really necessary? can we not just overwrite the /branches/5.2.0/trunk compare to version 4 releases
 - Since we have MOVED /branches/5.X.0 to /releases/5.X.0 we need to recreate /branches/5.X.0 renamed as /branches/5.X.Y
 - In the past branches/4.0, 4.1, 4.2 were used and COPIED OVER at release, not like today when they are moved.
   It is my (P.O.) understanding that a `branches/4.X` could serve as a starting point for all 4.X.Y minor releases, if kept.
 
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.2.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.1/trunk -m "Creating code branch 5.2.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.1/trunk -m "Creating docs branch 5.2.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.1/trunk -m "Creating test branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.1/trunk -m "Creating code branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.3.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.1/trunk -m "Creating docs branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.1/trunk -m "Creating test branch 5.2.1."
 
 
 ----
@@ -390,33 +396,33 @@ The script when run modify the xml files defining each jobs in /var/lib/jenkins/
 Change Build Repository URL from trunk
 https://svn.code.sf.net/p/oorexx/code-0/main/trunk
 to Release Candidate
-https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.0/trunk
+https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk
 
 For all Test jobs
 
 Change Test Repository URL from trunk (not yet done)
 https://svn.code.sf.net/p/oorexx/code-0/test/trunk
 to Release Candidate
-https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.0/trunk
+https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.0/trunk
 
 in ooRexx-docs-build
 
 change the Documentation Repository URL from trunk
 https://svn.code.sf.net/p/oorexx/code-0/docs/trunk
 to the release candidate
-https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.0/trunk
+https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.0/trunk
 
 Currently the upload of all docs go to the same folder /oorexx-docs/
 The PDF docs are uploaded as-is whereas the html documentation is zipped (extension .zip)
 
-oorexx-docs/5.2.0_Release_Candidate (staged)
+oorexx-docs/5.3.0_Release_Candidate (staged)
 Warning: it seems sftp does not work for staged folders, to be sure the upload works make
 the upload folder on sourceforge visible and then stage it once the upload has been completed.
 
 ooRexx-{sourceforge-upload}
 Currently the upload of  artifacts go to
-sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.2.0beta"
-sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.2.0_Release_Candidate" (staged)
+sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.3.0beta"
+sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.3.0_Release_Candidate" (staged)
 
 This change will influence jenkinsArtifactUpload.rex in /var/lib/jenkins/workspace/ooRexx-{sourceforge-upload}
 
@@ -431,27 +437,27 @@ In order to get the correct documentation added to Windows and macOS installers 
 
 On several *nix platforms the installer build is tested after build
 
-sudo rpm --upgrade ooRexx-5.2.0-*.rpm || true
-rpm --query --info "ooRexx-5.2.0-*"
-sudo rpm --erase "ooRexx-5.2.0-*"
-sudo rpm --install ooRexx-5.2.0-*.rpm
+sudo rpm --upgrade ooRexx-5.3.0-*.rpm || true
+rpm --query --info "ooRexx-5.3.0-*"
+sudo rpm --erase "ooRexx-5.3.0-*"
+sudo rpm --install ooRexx-5.3.0-*.rpm
 
 BEFORE the build of the release candidate make sure to uninstall manually on all *nix platforms
 
 TODO List for ooRexx 5 after a release is done
 
-Remove oorexx-docs/5.2.0beta documentation on Sourceforge
+Remove oorexx-docs/5.3.0beta documentation on Sourceforge
 
-Remove oorexx/5.2.0beta on Sourceforge
+Remove oorexx/5.3.0beta on Sourceforge
 
 After release Jenkins shold go back to trunk
 
 For Build Projects change
-from https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.0/trunk
+from https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk
 to   https://svn.code.sf.net/p/oorexx/code-0/main/trunk
 
 For Test Projects change
-from https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.0/trunk
+from https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.0/trunk
 to https://svn.code.sf.net/p/oorexx/code-0/test/trunk
 
 Change Jenkins upload go to oorexx/5.3.0beta/ -> input to uploading script in upload job

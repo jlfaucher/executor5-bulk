@@ -82,7 +82,7 @@ set (CMAKE_SAMPLES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/samples)
 # The version of ooRexx to make
 set (ORX_API_LEVEL 4)
 set (ORX_MAJOR 5)
-set (ORX_MINOR 2)
+set (ORX_MINOR 3)
 set (ORX_MOD_LVL 0)
 set (ORX_BLD_LVL 0)
 set (ORX_VERSION ${ORX_MAJOR}.${ORX_MINOR}.${ORX_MOD_LVL})
