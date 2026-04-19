@@ -3,6 +3,7 @@
 2025-05-01/03, Updated for 5.2.0 release
 2026-03-14, Updated for 5.2.0 release
 2026-04-18, Updated for 5.3.0 release
+2026-04-19, Adding information on Jenkins
 ===
 
 Step 1.
@@ -55,10 +56,6 @@ Step 1.
       svn copy docs/trunk docs/branches/5.3.0
       svn ci -m "Creating docs branch 5.3.0 to prepare release."
 
-
-These steps are performed mainly using a script that will replace the xml files defining all jobs on the Jenkins Controller
-There is a step-by-step list to follow for this phase.
-
 - adjust release information:
 
   - update `main/branches/5.3.0/NOTICE` (a text file) to reflect the current copyright year
@@ -85,6 +82,27 @@ There is a step-by-step list to follow for this phase.
 
        queries the four categories on SourceForge and creates the text for the entries
        to be added to `CHANGES`
+
+- At this stage it is time to switch the Jenkins build system to start building the
+  release candidate. This is done with a script "Modifybuildjobs.rex" that modifies
+  the xml templates defining all Jenkins jobs on the Jenkins Controller. A detailed
+  step-by-step explanation
+
+    "Necessary steps to perform when making a new release for ooRexx"
+
+  is found in the SVN tree at
+
+    "oorexx/code-0/HEAD/tree/build-utilities/trunk/common/release/"
+
+  These steps are performed during the first phase
+
+- create the following directories in files area on Sourceforge:
+    oorexx/files/5.3.0_Release_Candidate        ... to receive the tested builds from branches/5.3/trunk
+    oorexx/oorexx-docs/5.3.0_Release_Candidate  ... to receive the new documentation from docs/branches/5.3/trunk
+
+  When the steps in the first phase (building the release candidate) have been performed
+  the release  candidate and the documentation should be available on sourceforge.
+  Then continue here.
 
     3) change all tickets with the status `pending` and `accepted` with no pending work items
        to `closed` using `bulk-edit` (categories: Bugs, Feature-requests, Documentation, Patches):
@@ -160,26 +178,23 @@ Step 2.
       platform/unix/rxqueue.1
       platform/unix/rxsubcom.1
 
+- At this stage it is time to switch the Jenkins build system to start building the
+  next beta version. This is done using the same script "Modifybuildjobs.rex" with different
+  settings. Reference is now made to the 2nd phase of the document
+
+    "Necessary steps to perform when making a new release for ooRexx"
+
+  These steps are performed during that phase
 
 - create the following directories in files area on Sourceforge:
-
-      oorexx/files/5.3.0_Release_Candidate        ... to receive the tested builds from branches/5.2/trunk
-      oorexx/oorexx-docs/5.3.0_Release_Candidate  ... to receive the new documentation from docs/branches/5.2/trunk
 
       oorexx/files/5.3.0beta        ... to receive the new builds from trunk
       oorexx/oorexx-docs/5.3.0beta  ... to receive the new documentation from trunk
 
-- NOTE The following steps are done using the script that replaces the xml files defining all jobs on Jenkins
 - DO NOT modify the Jenkins build jobs manually during the build process!
-- adjust the build scripts on Jenkins and feed the oorexx/files/5.3.0_Release_Candidate
-- adjust the build scripts on Jenkins and feed the oorexx/oorexx-docs/5.3.0_Release_Candidate
+- Read the document referred to above for details
 
-When that is complete and all artifacts have been uploaded
-
-- NOTE The following steps are done using the script that replaces the xml files defining all jobs on Jenkins
-- again DO NOT modify the Jenkins build jobs manually during the build process!
-- adjust the build scripts on Jenkins and feed the `oorexx/files/5.3.0beta`
-- adjust the build scripts on Jenkins and feed the `oorexx/oorexx-docs/5.3.0beta`
+- When that is complete and all artifacts have been uploaded continue here
 
 
 Step 3.
@@ -280,14 +295,10 @@ Step 5.
 - in the case that updates are needed to the release version one needs to create
   appropriate branches: `branches/5.2.1` for `main`, `docs`, `test` to work in
 
-*QUESTION*: is this really necessary? can we not just overwrite the /branches/5.2.0/trunk compare to version 4 releases
-- Since we have MOVED /branches/5.X.0 to /releases/5.X.0 we need to recreate /branches/5.X.0 renamed as /branches/5.X.Y
-- In the past branches/4.0, 4.1, 4.2 were used and COPIED OVER at release, not like today when they are moved.
-  It is my (P.O.) understanding that a `branches/4.X` could serve as a starting point for all 4.X.Y minor releases, if kept.
 
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.1/trunk -m "Creating code branch 5.2.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.3.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.1/trunk -m "Creating docs branch 5.2.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.1/trunk -m "Creating test branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.1/trunk -m "Creating code branch 5.3.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.3.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.1/trunk -m "Creating docs branch 5.3.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.1/trunk -m "Creating test branch 5.3.1."
 
 
 ----
@@ -305,10 +316,11 @@ Helpful SourceForge resources:
   <https://www.software.ac.uk/resources/guides/how-create-and-manage-sourceforge-projects>
 
 
-
 ------------
 
-Changes to be made to Jenkins are set out in a separate document here a short list of the jobs 2025-05-29
+This section could better be moved to the Book oorexxbuild.pdf: StillToBeDone.
+
+This is a short summary of the Jenkins jobs (2026-04-17):
 
 1 Documentation job:
 ooRexx-docs-build
@@ -316,10 +328,10 @@ ooRexx-docs-build
 1 Source-Package job:
 ooRexx-source-package-build
 
-1 sourceforge-upload job:
+1 upload job:
 ooRexx-sourceforge-upload
 
-1 sourceforge-zip-installer-upload job:
+1 zip-installer upload job:
 ooRexx-sourceforge-zip-installer-upload
 
 33 Build jobs to process:
@@ -337,8 +349,8 @@ ooRexx-windows11_32-build
 ooRexx-windows11_64-build
 
 3 macOS build jobs to process:
-ooRexx-macOS10-X86_64-build	    (High Sierra)
-ooRexx-macOS15-X86_64-build		(Sequoia)
+ooRexx-macOS10-X86_64-build	(High Sierra)
+ooRexx-macOS15-X86_64-build	(Sequoia)
 ooRexx-macOS26-M4-build         (Tahoe)
 
 21 *nix build jobs to process:
@@ -390,8 +402,8 @@ Throttling a group of jobs
 
 20 *nix test jobs (both ubuntu16 builds use the same test job)
 
-The following changes are made by the script Modifybuildjobs.rex located in ooRexxSVN-Code-0/build-utilities/trunk/common/release/
-The script when run modify the xml files defining each jobs in /var/lib/jenkins/jobs/* It is also possible (safer) to copy the entire /var/lib/jenkins/jobs branch to a local workingplace and run the script on that path and thereafte copying back the entire branch again, overwriting the existing branch. During the copying Jenkins should be shut off
+The following changes are made by the script Modifybuildjobs.rex located in /build-utilities/trunk/common/release/
+The script when run modify the xml files defining each job in /var/lib/jenkins/jobs/* It is also possible (safer) to copy the entire /var/lib/jenkins/jobs branch to a local workingplace and run the script on that path and thereafte copying back the entire branch again, overwriting the existing branch. During the copying Jenkins should be shut down.
 
 Change Build Repository URL from trunk
 https://svn.code.sf.net/p/oorexx/code-0/main/trunk
@@ -400,7 +412,7 @@ https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk
 
 For all Test jobs
 
-Change Test Repository URL from trunk (not yet done)
+Change Test Repository URL from trunk
 https://svn.code.sf.net/p/oorexx/code-0/test/trunk
 to Release Candidate
 https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.0/trunk
@@ -415,14 +427,12 @@ https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.0/trunk
 Currently the upload of all docs go to the same folder /oorexx-docs/
 The PDF docs are uploaded as-is whereas the html documentation is zipped (extension .zip)
 
-oorexx-docs/5.3.0_Release_Candidate (staged)
-Warning: it seems sftp does not work for staged folders, to be sure the upload works make
-the upload folder on sourceforge visible and then stage it once the upload has been completed.
+oorexx-docs/5.3.0_Release_Candidate
 
 ooRexx-{sourceforge-upload}
 Currently the upload of  artifacts go to
 sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.3.0beta"
-sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.3.0_Release_Candidate" (staged)
+sourceforgeFiles = "/home/frs/project/oorexx/oorexx/5.3.0_Release_Candidate"
 
 This change will influence jenkinsArtifactUpload.rex in /var/lib/jenkins/workspace/ooRexx-{sourceforge-upload}
 
@@ -442,15 +452,13 @@ rpm --query --info "ooRexx-5.3.0-*"
 sudo rpm --erase "ooRexx-5.3.0-*"
 sudo rpm --install ooRexx-5.3.0-*.rpm
 
-BEFORE the build of the release candidate make sure to uninstall manually on all *nix platforms
-
 TODO List for ooRexx 5 after a release is done
 
 Remove oorexx-docs/5.3.0beta documentation on Sourceforge
 
 Remove oorexx/5.3.0beta on Sourceforge
 
-After release Jenkins shold go back to trunk
+After release Jenkins shold go back to trunk, this is done with the same script Modifybuildjobs.rex
 
 For Build Projects change
 from https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.0/trunk
@@ -463,8 +471,6 @@ to https://svn.code.sf.net/p/oorexx/code-0/test/trunk
 Change Jenkins upload go to oorexx/5.3.0beta/ -> input to uploading script in upload job
 
 Change Jenkins doc upload go to oorexx-docs/5.3.0beta/ -> in Docbuild Project
-
-Make sure to build only AFTER documentation has been built
 
 Problem 1:
 oorexx-docs-bildutils folder on sourceforge is not automatically updated.
