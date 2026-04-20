@@ -164,7 +164,7 @@ Step 2.
                         # The version of ooRexx to make
                         set (ORX_API_LEVEL 4)
                         set (ORX_MAJOR 5)
-                        set (ORX_MINOR 2)
+                        set (ORX_MINOR 3)
                         set (ORX_MOD_LVL 0)
                         set (ORX_BLD_LVL 0)
 
@@ -242,7 +242,7 @@ Step 3.
 
   - change into docs/trunk/tools and run
 
-        updateEntityValues.rex -y 2026 -v "5.3.0 -> 5.3.0" -e "2026.05.17" -r 99999 ..
+        updateEntityValues.rex -y 2026 -v "5.2.0 -> 5.3.0" -e "2026.05.17" -r 99999 ..
 
   - update the ooRexx documentation in trunk to not show *CHG* and *NEW* for 51 anymore by
     setting the replacement text to the empty string `""`, from
@@ -296,9 +296,9 @@ Step 5.
   appropriate branches: `branches/5.2.1` for `main`, `docs`, `test` to work in
 
 
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.3.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.1/trunk -m "Creating code branch 5.3.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.3.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.1/trunk -m "Creating docs branch 5.3.1."
-        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.1/trunk -m "Creating test branch 5.3.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/releases/5.2.0/trunk svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/main/branches/5.3.1/trunk -m "Creating code branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/docs/branches/5.3.1/trunk -m "Creating docs branch 5.2.1."
+        svn copy --username=userId svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/releases/5.2.0       svn+ssh://orexx@svn.code.sf.net/p/oorexx/code-0/test/branches/5.3.1/trunk -m "Creating test branch 5.2.1."
 
 
 ----
