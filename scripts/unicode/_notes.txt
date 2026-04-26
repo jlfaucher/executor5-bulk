@@ -1,0 +1,53 @@
+================================================================================
+Output of incorrect_character.rex
+================================================================================
+
+-- macOS
+--  say a {
+--  say a ¬
+--  say a €
+--  say a 🦖
+--  say a ?
+--  say a ?
+
+-- Windows with chcp 431
+--  say a {
+--  say a ┬¼
+--  say a Γé¼
+--  say a ≡ƒªû
+--  say a └
+--  say a Ç
+
+-- Windows with chcp 65001
+--  say a {
+--  say a ¬
+--  say a €
+--  say a 🦖
+--  say a �
+--  say a �
+
+-- WSL Ubuntu
+--  say a {
+--  say a ¬
+--  say a €
+--  say a 🦖
+--  say a �
+--  say a �
+
+Remember:
+I don't know why
+    13 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('C0'X).
+shows "?" instead of "└" or "Ç".
+
+    -- Windows with chcp 431
+    5: "say a " || "C0"x || "= 1"
+        13 *-* say a └
+        13 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('C0'X).
+    Incorrect character in program "└" ('C0'X).
+    Error code= 13.1
+
+    6: "say a " || "80"x || "= 1"
+        16 *-* say a Ç
+        16 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('80'X).
+    Incorrect character in program "Ç" ('80'X).
+    Error code= 13.1

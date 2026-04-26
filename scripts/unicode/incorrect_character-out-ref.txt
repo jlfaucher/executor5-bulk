@@ -1,0 +1,36 @@
+
+1: say a {= 1
+     5 *-* say a {
+     5 *-* interpret s      -- Error 13.1:  Incorrect character in program "{" ('7B'X).
+Incorrect character in program "{" ('7B'X).
+Error code= 13.1
+
+2: say a ¬= 1
+     6 *-* say a ¬
+     6 *-* interpret s      -- Error 13.1:  Incorrect character in program "¬" ('C2AC'X).
+Incorrect character in program "¬" ('C2AC'X).
+Error code= 13.1
+
+3: say a €= 1
+     7 *-* say a €
+     7 *-* interpret s      -- Error 13.1:  Incorrect character in program "€" ('E282AC'X).
+Incorrect character in program "€" ('E282AC'X).
+Error code= 13.1
+
+4: say a 🦖= 1
+     8 *-* say a 🦖
+     8 *-* interpret s     -- Error 13.1:  Incorrect character in program "🦖" ('F09FA696'X).
+Incorrect character in program "🦖" ('F09FA696'X).
+Error code= 13.1
+
+5: "say a " || "C0"x || "= 1"
+    13 *-* say a ?
+    13 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('C0'X).
+Incorrect character in program "?" ('C0'X).
+Error code= 13.1
+
+6: "say a " || "80"x || "= 1"
+    16 *-* say a ?
+    16 *-* interpret s    -- Error 13.1:  Incorrect character in program "?" ('80'X).
+Incorrect character in program "?" ('80'X).
+Error code= 13.1
