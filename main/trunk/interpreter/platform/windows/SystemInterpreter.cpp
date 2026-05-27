@@ -138,12 +138,12 @@ void SystemInterpreter::processStartup(HINSTANCE mod)
     h = GetStdHandle(STD_OUTPUT_HANDLE);
     if (h != NULL && h != INVALID_HANDLE_VALUE && GetConsoleMode(h, &mode) != 0)
     {
-        SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN);
+        SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING /*| DISABLE_NEWLINE_AUTO_RETURN*/);
     }
     h = GetStdHandle(STD_ERROR_HANDLE);
     if (h != NULL && h != INVALID_HANDLE_VALUE && GetConsoleMode(h, &mode) != 0)
     {
-        SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN);
+        SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING /*| DISABLE_NEWLINE_AUTO_RETURN*/);
     }
 
     // Because of using the stand-alone runtime library or when using different compilers,

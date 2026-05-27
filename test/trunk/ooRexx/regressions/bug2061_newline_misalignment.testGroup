@@ -1,0 +1,105 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.bug2061_newline_misalignment.testGroup)
+  group~restrictOS("WINDOWS")
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+
+/* class: bug2061_newline_misalignment.testGroup - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "bug2061_newline_misalignment.testGroup" public subclass ooTestCase
+
+/*
+The display of the cursor position is supported on Windows only.
+When stdout is redirected, the cursor position is not available ("").
+The misalignment is only a matter of display.
+When capturing stdout, there is no leading spaces.
+
+Console output on Windows before fix:
+line 1 6
+        line 2 14
+                 line 3 23
+
+Console output on Windows after fix:
+line 1 6
+line 2 6
+line 3 6
+*/
+
+::method test_stdout_newline
+    LF = "0A"x
+    columns = .array~new
+    do i = 1 to 3
+        call charout .STDOUT, "line" i
+        column = syscurpos()~word(2)
+        columns~append(column)
+        call charout .STDOUT, " "column
+        call charout .STDOUT, LF
+    end
+    .STDOUT~say
+    self~assertEquals((6, 6, 6), columns, "The STDOUT cursor column should be always 6")
+
+::method test_stderr_newline
+    LF = "0A"x
+    columns = .array~new
+    do i = 1 to 3
+        call charout .STDERR, "line" i
+        column = syscurpos()~word(2)
+        columns~append(column)
+        call charout .STDERR, " "column
+        call charout .STDERR, LF
+    end
+    .STDERR~say
+    self~assertEquals((6, 6, 6), columns, "The STDERR cursor column should be always 6")
+
+
+-- End of class: bug2061_newline_misalignment.testGroup
