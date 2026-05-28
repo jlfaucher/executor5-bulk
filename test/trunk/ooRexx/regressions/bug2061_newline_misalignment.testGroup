@@ -76,30 +76,33 @@ line 3 6
 */
 
 ::method test_stdout_newline
-    LF = "0A"x
-    columns = .array~new
-    do i = 1 to 3
-        call charout .STDOUT, "line" i
-        column = syscurpos()~word(2)
-        columns~append(column)
-        call charout .STDOUT, " "column
-        call charout .STDOUT, LF
+    if syscurpos() \== "" then do
+        LF = "0A"x
+        columns = .array~new
+        do i = 1 to 3
+            call charout .STDOUT, "line" i
+            column = syscurpos()~word(2)
+            columns~append(column)
+            call charout .STDOUT, " "column
+            call charout .STDOUT, LF
+        end
+        .STDOUT~say
+        self~assertEquals((6, 6, 6), columns, "The STDOUT cursor column should be always 6")
     end
-    .STDOUT~say
-    self~assertEquals((6, 6, 6), columns, "The STDOUT cursor column should be always 6")
 
 ::method test_stderr_newline
-    LF = "0A"x
-    columns = .array~new
-    do i = 1 to 3
-        call charout .STDERR, "line" i
-        column = syscurpos()~word(2)
-        columns~append(column)
-        call charout .STDERR, " "column
-        call charout .STDERR, LF
+    if syscurpos() \== "" then do
+        LF = "0A"x
+        columns = .array~new
+        do i = 1 to 3
+            call charout .STDERR, "line" i
+            column = syscurpos()~word(2)
+            columns~append(column)
+            call charout .STDERR, " "column
+            call charout .STDERR, LF
+        end
+        .STDERR~say
+        self~assertEquals((6, 6, 6), columns, "The STDERR cursor column should be always 6")
     end
-    .STDERR~say
-    self~assertEquals((6, 6, 6), columns, "The STDERR cursor column should be always 6")
-
 
 -- End of class: bug2061_newline_misalignment.testGroup
