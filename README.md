@@ -10,6 +10,13 @@ Miscellaneous notes:
 - [Diary][diary]
 - [Instructions to build Executor5-bulk from scratch][build_executor5_bulk]
 
+
+<br/>
+<br/>
+<div align="center">
+<img src="images/Executor5-bulk_mascot.png" alt="The repositories">
+</div>
+
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
 [executor]: https://github.com/jlfaucher/executor "Executor"
 [executor5]: https://github.com/jlfaucher/executor5 "Executor5"
