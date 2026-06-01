@@ -14,7 +14,7 @@ Miscellaneous notes:
 <br/>
 <br/>
 <div align="center">
-<img src="images/Executor5-bulk_mascot.png" alt="The repositories">
+<img src="images/Executor5-bulk_mascot_wbg.png" alt="The repositories">
 </div>
 
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
