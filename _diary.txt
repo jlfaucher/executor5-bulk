@@ -26,6 +26,84 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 [Unicode]
 
+New class RexxUnicode
+---------------------
+
+Subclass of RexxUnicodeServices.
+
+.RexxUnicode~info=
+a StringTable (5 items)
+'ICU4ooRexxIsRegistered' :  1
+'maxCodepoint'           :  1114111
+'systemIsLittleEndian'   :  1
+'unicodeVersion'         : '17.0.0'
+'utf8procVersion'        : '2.11.3'
+
+
+
+New class RexxUnicodeCharacter
+------------------------------
+If ICU4ooRexx is loaded, the character names are available.
+
+-- Search by name
+.RexxUnicode ~character("FATHER CHRISTMAS")=    -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+
+-- Search by codepoint
+.RexxUnicode ~character("U+1F385")=             -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode ~character("127877")=              -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+
+-- Search directly a character if it's made of one codepoint only
+.RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+
+-- Properties of a character
+.RexxUnicode~character("🎅")~info=
+a StringTable (17 items)
+'bidiClass'       : 'ON'
+'bidiClassName'   : 'Other Neutrals'
+'bidiMirrored'    :  0
+'category'        : 'So'
+'categoryName'    : 'Other_Symbol'
+'charWidth'       :  2
+'codepoint'       : 'U+1F385'
+'combiningClass'  :  0
+'controlBoundary' :  0
+'ignorable'       :  0
+'isLower'         :  0
+'isUpper'         :  0
+'name'            : 'FATHER CHRISTMAS'
+'toLower'         : 'U+1F385'
+'toTitle'         : 'U+1F385'
+'toUpper'         : 'U+1F385'
+'UTF8'            : '0xF09F8E85'
+
+-- \u{bed} is different from \u{0bed}
+.RexxUnicode ~character("bed")=                                -- ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
+.RexxUnicode ~character("bed", , /*hexadecimal:*/ .true)=      -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
+.RexxUnicode ~character("U+0bed")=                             .RexxUnicode ~character("U+0bed")=
+
+
+New class CodepointSupplier
+--------------------------
+
+.CodepointSupplier~new("100€")==
+a CodepointSupplier
+ 1 :  49
+ 2 :  48
+ 3 :  48
+ 4 :  8364
+
+
+Validation
+----------
+
+scripts/unicode/RexxUnicode_test.rex
+
+
+===============================================================================
+2026 June 13
+
+[Unicode]
+
 New native class RexxUnicodeServices.
 
 This class is implemented using the UTF8Proc library.

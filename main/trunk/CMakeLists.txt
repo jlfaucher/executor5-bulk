@@ -1651,6 +1651,7 @@ copy_build_file(socket.cls       ${build_extensions_rxsock_dir})
 copy_build_file(streamsocket.cls ${build_extensions_rxsock_dir})
 copy_build_file(mime.cls         ${build_extensions_rxsock_dir})
 copy_build_file(smtp.cls         ${build_extensions_rxsock_dir})
+copy_build_file(rxunicode.cls    ${build_extensions_unicode_dir})
 copy_samples_file(complex.cls       ${build_samples_dir})
 copy_samples_file(pipe.cls          ${build_samples_dir})
 copy_samples_file(semcls.cls        ${build_samples_dir})
@@ -1705,6 +1706,7 @@ add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dateparser.cls
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxunicode.cls
 
     ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/complex.cls
     ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/pipe.cls
@@ -1726,6 +1728,7 @@ install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/socket.cls COMPONENT Core DESTIN
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/streamsocket.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxunicode.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 # technically a sample, but this is so useful we add it to the binary dir
 install(PROGRAMS ${CMAKE_SAMPLES_OUTPUT_DIRECTORY}/rexxtry.rex COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR})
 
