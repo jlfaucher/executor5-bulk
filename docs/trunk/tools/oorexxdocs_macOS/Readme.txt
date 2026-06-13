@@ -1,3 +1,5 @@
+NOTE: The use of oorexxdocs_macOS is deprecated; use bldoc_orx instead. The tools in this directory may be outdated.
+
 Readme.txt
 
 Toolset for building ooRexx documentation on macOS

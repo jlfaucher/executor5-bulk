@@ -2,7 +2,7 @@
 /*
 # -----------------------------------------------------------------------------
 #
-# Copyright (c) 2024-2025 Rexx Language Association. All rights reserved.
+# Copyright (c) 2024-2026 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -61,35 +61,31 @@ trace o
 --  newneedle = enter here the ooRexx version to release, rc = release candidate
 
 -- needle1 for all build jobs, also for source package build
-  needle1     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/trunk</remote>'
---  newneedle1  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.1/trunk</remote>'
-  newneedle1  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/releases/5.1.0/trunk</remote>'
+   needle1     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/trunk</remote>'
+   newneedle1  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/main/branches/5.2.0/trunk</remote>'
 
 -- needle 2 and needle3 are for the documentation build
 -- remember we must build the complete release documentation once before we build the installers
-  needle2     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/trunk</remote>'
---  newneedle2  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk</remote>'
-  newneedle2  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk</remote>'
+   needle2     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/trunk</remote>'
+   newneedle2  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.0/trunk</remote>'
 
-  needle3     ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/trunk /home/frs/project/oorexx/oorexx-docs/5.2.0beta'
---  newneedle3  ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/branches/5.1/trunk /home/frs/project/oorexx/oorexx-docs/5.1.1'
-  newneedle3  ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/releases/5.1.0/trunk /home/frs/project/oorexx/oorexx-docs/5.1.1'
+   needle3     ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/trunk /home/frs/project/oorexx/oorexx-docs/5.2.0beta'
+   newneedle3  ='rexx BuildandUploadDocs.rex svn.code.sf.net/p/oorexx/code-0/docs/branches/5.2.0/trunk /home/frs/project/oorexx/oorexx-docs/5.2.0'
 
 -- ooRexx-sourceforge-upload and ooRexx-sourceforge-zip-installer-upload can take 3 arguments:
 -- the upload folder tail part
 -- the version number indicated in the filename
 -- the min revision, set to release number
-  needle4     ='rexx jenkinsArtifactUpload.rex 5.2.0beta 5.2.0 0'
---  newneedle4  ='rexx jenkinsArtifactUpload.rex 5.1.1 5.1.1 12973'
-  newneedle4  ='rexx jenkinsArtifactUpload.rex 5.1.1 5.1.0 12973'
-  needle5     ='rexx jenkinsZIPArtifactUpload.rex 5.2.0beta 5.2.0 0'
---  newneedle5  ='rexx jenkinsZIPArtifactUpload.rex 5.1.1 5.1.1 12973'
-  newneedle5  ='rexx jenkinsZIPArtifactUpload.rex 5.1.1 5.1.0 12973'
+   needle4     ='rexx jenkinsArtifactUpload.rex 5.2.0beta 5.2.0 0'
+   newneedle4  ='rexx jenkinsArtifactUpload.rex 5.2.0 5.2.0 13142'
 
--- ooRexx tests jobs new 2025-04-30
-  needle6     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/trunk</remote>'
---  newneedle6  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.1/trunk</remote>'
-  newneedle6  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/releases/5.1.0/trunk</remote>'
+-- https://sourceforge.net/projects/oorexx/files/oorexx/5.2.0/portable/
+   needle5     ='rexx jenkinsZIPArtifactUpload.rex 5.2.0beta 5.2.0 0'
+   newneedle5  ='rexx jenkinsZIPArtifactUpload.rex 5.2.0 5.2.0 13142'
+
+-- ooRexx tests jobs new 2026-04-18
+   needle6     ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/trunk</remote>'
+   newneedle6  ='<remote>https://svn.code.sf.net/p/oorexx/code-0/test/branches/5.2.0/trunk</remote>'
 
 -- Add here distinctive parts of build that are NOT part of the ooRexx release
   IgnoreItems = '-configuration_best_practises- Android.Build crexx_aarch64_linux Jenkins-Environment-Variables-List NetRexx-aarch64-jvm11-build regina-rexx-bsd-build regina-rexx-bsd-build-delete regina-rexx-deb-build regina-rexx-macos-build regina-rexx-rpm-build throttle_test ooRexx-docs-buildutils-check'

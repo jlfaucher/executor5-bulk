@@ -1,0 +1,158 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.DIGITS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires "ooTest.frm"     -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "DIGITS.testGroup" subclass ooTestCase public
+
+::method 'test01'
+    if (1/3)~length == 11 then
+        self~assertSame('9', digits())
+    else
+        self~assertSame('18', digits())
+
+::method 'test02'
+    self~assertSame('0', fuzz())
+
+::method 'test03'
+    self~assertSame('SCIENTIFIC', form())
+
+::method 'test04'
+    numeric digits '3130'x
+    self~assertSame('10', digits())
+
+::method 'test05'
+    numeric digits '3130'x
+    numeric fuzz '39'x
+    self~assertSame(9, fuzz())
+
+::method 'test06'
+    numeric digits .11E+2
+    numeric fuzz .10E+2
+    self~assertSame(11, digits())
+    self~assertSame(10, fuzz())
+
+::method 'test07'
+    v16 = 16
+    v15 = 15
+    numeric digits v16
+    numeric fuzz v15
+    self~assertSame(16, digits())
+    self~assertSame(15, fuzz())
+
+::method 'test08'
+    numeric digits 200 + 55
+    numeric fuzz   200 + 54
+    self~assertSame(255, digits())
+    self~assertSame(254, fuzz())
+
+::method 'test09'
+    v55  = 55
+    v56  = 56
+    v200 = 200
+    numeric digits v200 + v56
+    numeric fuzz v200 + v55
+    self~assertSame(256, digits())
+    self~assertSame(255, fuzz())
+
+::method 'test10'
+    numeric fuzz 0
+    numeric digits 9
+    self~assertSame('SCIENTIFIC', form())
+
+    numeric form ENGINEERING
+    self~assertSame('ENGINEERING', form())
+
+::method 'test11'
+    numeric form VALUE '534349454e5449464943'x
+    self~assertSame('SCIENTIFIC', form())
+
+::method 'test12'
+    self~assertSame('1.2E+19', 1.2E19+0)
+
+::method 'test13'
+    numeric digits 30
+    numeric form VALUE D2C(83785541140138055747325511)
+    self~assertSame('ENGINEERING', form())
+    numeric digits 9
+    self~assertSame('120E+15', 1.2E17+0)
+
+-- Some additional syntax checks added by Lee
+::method 'test14'
+    self~expectSyntax(26.5)
+    numeric digits 0
+
+::method 'test15'
+    self~expectSyntax(26.5)
+    numeric digits 'a'
+
+::method 'test16'
+    self~expectSyntax(26.5)
+    numeric digits -1
+
+::method 'test17'
+    numeric digits 8
+    self~expectSyntax(33.1)
+    numeric fuzz 9
+
+::method 'test18'
+    self~expectSyntax(33.1)
+    if .ooRexxUnit.architecture == 32 then
+       numeric fuzz 10
+    else
+       numeric fuzz 19
+
+   -- test the BIF
+::method "test_DIGITS"
+    self~assertTrue(datatype(digits(),"N"))  -- make sure a number is returned
+    self~assertTrue(digits()>0)  -- make sure a number is returned
+
+
+::options novalue syntax

@@ -1,0 +1,507 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2018-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.Validate.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+::class "Validate.testGroup" subclass ooTestCase public
+
+-- number
+::method test_validate_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~number
+
+::method test_validate_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~number("")
+
+::method test_validate_number_arg_one_required
+  self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+  .Validate~number(, 1)
+
+::method test_validate_number_too_many_args_three
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~number("", 1, 9)
+
+::method test_validate_number_fails_nil
+  self~expectSyntax(88.902) -- The .. argument must be a number
+  .Validate~number("", .nil)
+
+::method test_validate_number_fails_non_numeric
+  self~expectSyntax(88.902) -- The .. argument must be a number
+  .Validate~number("", "string")
+
+::method test_validate_number
+  .Validate~number("", 0)
+  .Validate~number("", -1.1)
+  .Validate~number("", -1e3)
+  .Validate~number("", -1111111111)
+  .Validate~number("", "9"~copies(19))
+
+-- numberRange
+::method test_validate_number_range_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~numberRange
+
+::method test_validate_number_range_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~numberRange("")
+
+::method test_validate_number_range_too_few_args_two
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~numberRange("", 1)
+
+::method test_validate_number_range_too_few_args_three
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~numberRange("", 1, 0)
+
+::method test_validate_number_range_too_few_args_four
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~numberRange("", 1, 0)
+
+::method test_validate_number_range_too_many_args_six
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~numberRange("", 1, 0, 10, , 0)
+
+::method test_validate_number_range_fails_nil
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~numberRange("", .nil, -100, 100)
+
+::method test_validate_number_range_fails_non_numeric
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~numberRange("", "string", -1, 1)
+
+::method test_validate_number_range_fails
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~numberRange("", -1, 0, 10)
+
+::method test_validate_number_range
+  .Validate~numberRange("", 1, 0, 10)
+  .Validate~numberRange("", 1.1, 0, 10, 9)
+  .Validate~numberRange("", 0.0, 0, 10)
+  .Validate~numberRange("", -11, -11, 10)
+  .Validate~numberRange("", 10.1, -11.5, 10.1)
+  .Validate~numberRange("", 999999999, 0, 999999999)
+  numeric digits 18
+  .Validate~numberRange("", -999999999999999999, -999999999999999999, 999999999, digits())
+
+-- nonNegativeNumber
+::method test_validate_non_negative_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~nonNegativeNumber
+
+::method test_validate_non_negative_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~nonNegativeNumber("")
+
+::method test_validate_non_negative_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~nonNegativeNumber("", 1, 9, 0)
+
+::method test_validate_non_negative_number_fails_nil
+  self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
+  .Validate~nonNegativeNumber("", .nil)
+
+::method test_validate_non_negative_number_fails_non_numeric
+  self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
+  .Validate~nonNegativeNumber("", "string")
+
+::method test_validate_non_negative_number_fails
+  self~expectSyntax(88.925) -- The .. argument must be zero or a positive number
+  .Validate~nonNegativeNumber("", -0.1)
+
+::method test_validate_non_negative_number
+  .Validate~nonNegativeNumber("", 0)
+  .Validate~nonNegativeNumber("", -0)
+  .Validate~nonNegativeNumber("", 0.1)
+  .Validate~nonNegativeNumber("", "9"~copies(19))
+
+-- positiveNumber
+::method test_validate_positive_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~positiveNumber
+
+::method test_validate_positive_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~positiveNumber("")
+
+::method test_validate_positive_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~positiveNumber("", 1, 9, 0)
+
+::method test_validate_positive_number_fails_nil
+  self~expectSyntax(88.926) -- The .. argument must be a positive number
+  .Validate~positiveNumber("", .nil)
+
+::method test_validate_positive_number_fails_non_numeric
+  self~expectSyntax(88.926) -- The .. argument must be a positive number
+  .Validate~positiveNumber("", "string")
+
+::method test_validate_positive_number_fails
+  self~expectSyntax(88.926) -- The .. argument must be a positive number
+  .Validate~positiveNumber("", 0)
+
+::method test_validate_positive_number
+  .Validate~positiveNumber("", 1)
+  .Validate~positiveNumber("", 0.1)
+  .Validate~positiveNumber("", "9"~copies(19))
+
+
+-- wholeNumber
+::method test_validate_whole_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumber
+
+::method test_validate_whole_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumber("")
+
+::method test_validate_whole_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~wholeNumber("", 1, 9, 0)
+
+::method test_validate_whole_number_fails_nil
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", .nil)
+
+::method test_validate_whole_number_fails_non_numeric
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", "string")
+
+::method test_validate_whole_number_fails_not_whole
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", 1.5)
+
+::method test_validate_whole_number_fails_too_large
+  self~expectSyntax(88.903) -- The .. argument must be a whole number
+  .Validate~wholeNumber("", .RexxInfo~internalMaxNumber + 1)
+
+::method test_validate_whole_number
+  .Validate~wholeNumber("", 0)
+  .Validate~wholeNumber("", 1)
+  .Validate~wholeNumber("", -1e3)
+  .Validate~wholeNumber("", 999999999)
+  .Validate~wholeNumber("", 1~copies(19), 19)
+
+-- wholeNumberRange
+::method test_validate_whole_number_range_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumberRange
+
+::method test_validate_whole_number_range_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumberRange("")
+
+::method test_validate_whole_number_range_too_few_args_two
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumberRange("", 1)
+
+::method test_validate_whole_number_range_too_few_args_three
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumberRange("", 1, 0)
+
+::method test_validate_whole_number_range_too_few_args_four
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~wholeNumberRange("", 1, 0)
+
+::method test_validate_whole_number_range_too_many_args_six
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~wholeNumberRange("", 1, 0, 10, , 0)
+
+::method test_validate_whole_number_range_fails_nil
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", .nil, 0, 10)
+
+::method test_validate_whole_number_range_fails_non_numeric
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", "string", 0, 10)
+
+::method test_validate_whole_number_range_fails_not_whole
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", 1.5, 0, 10)
+
+::method test_validate_whole_number_range_fails
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", -1, 0, 10)
+
+::method test_validate_whole_number_range_max_min
+  self~expectSyntax(88.907) -- The .. argument must be in the range 0 to 10
+  .Validate~wholeNumberRange("", 5, 10, 0)
+
+::method test_validate_whole_number_range
+  .Validate~wholeNumberRange("", 1, 0, 10)
+  .Validate~wholeNumberRange("", 0.0, 0, 10)
+  .Validate~wholeNumberRange("", -11, -11, 10)
+  .Validate~wholeNumberRange("", 10, -11.5, 10.1)
+  .Validate~wholeNumberRange("", 999999999, 0, 999999999)
+  numeric digits 18
+  .Validate~wholeNumberRange("", -999999999999999999, -999999999999999999, 999999999, digits())
+
+-- nonNegativeWholeNumber
+::method test_validate_non_negative_whole_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~nonNegativeWholeNumber
+
+::method test_validate_non_negative_whole_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~nonNegativeWholeNumber("")
+
+::method test_validate_non_negative_whole_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~nonNegativeWholeNumber("", 1, 9, 0)
+
+::method test_validate_non_negative_whole_number_fails_nil
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", .nil)
+
+::method test_validate_non_negative_whole_number_fails_non_numeric
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", "string")
+
+::method test_validate_non_negative_whole_number_fails_not_whole
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", 1.5)
+
+::method test_validate_non_negative_whole_number_fails
+  self~expectSyntax(88.904) -- The .. argument must be zero or a positive whole number
+  .Validate~nonNegativeWholeNumber("", -1)
+
+::method test_validate_non_negative_whole_number
+  .Validate~nonNegativeWholeNumber("", 0)
+  .Validate~nonNegativeWholeNumber("", -0)
+  .Validate~nonNegativeWholeNumber("", 999999999)
+  .Validate~nonNegativeWholeNumber("", "9"~copies(19), 19)
+
+-- positiveWholeNumber
+::method test_validate_positive_whole_number_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~positiveWholeNumber
+
+::method test_validate_positive_whole_number_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~positiveWholeNumber("")
+
+::method test_validate_positive_whole_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~positiveWholeNumber("", 1, 9, 0)
+
+::method test_validate_postive_whole_number_fails_nil
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", .nil)
+
+::method test_validate_positive_whole_number_fails_non_numeric
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", "string")
+
+::method test_validate_positive_whole_number_fails_not_whole
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", 1.5)
+
+::method test_validate_positive_whole_number_fails
+  self~expectSyntax(88.905) -- The .. argument must be a positive whole number
+  .Validate~positiveWholeNumber("", 0)
+
+::method test_validate_positive_whole_number
+  .Validate~positiveWholeNumber("", 1)
+  .Validate~nonNegativeWholeNumber("", 999999999)
+  .Validate~positiveWholeNumber("", "9"~copies(19), 19)
+
+
+-- length
+::method test_validate_length_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~length
+
+::method test_validate_length_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~length("")
+
+::method test_validate_length_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~length("", 1, 9, 0)
+
+::method test_validate_length_fails_negative
+  self~expectSyntax(88.911) -- Argument .. is an invalid length value
+  .Validate~length("", -1)
+
+::method test_validate_length_fails_not_whole
+  self~expectSyntax(88.911) -- Argument .. is an invalid length value
+  .Validate~length("", 1.5)
+
+::method test_validate_length_fails_too_large
+  self~expectSyntax(88.911) -- Argument .. is an invalid length value
+  max = .RexxInfo~internalDigits -- 9 on 32-bit, 18 on 64-bit
+  numeric digits max + 1
+  .Validate~length("", 10 ** max)
+
+::method test_validate_length
+  .Validate~length("", 0)
+  .Validate~length("", 1)
+  .Validate~length("", 1e3)
+  -- 999.999.999 on 32-bit, 999.999.999.999.999.999 on 64-bit
+  .Validate~length("", .RexxInfo~internalMaxNumber)
+
+
+-- position
+::method test_validate_position_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~position
+
+::method test_validate_position_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~position("")
+
+::method test_validate_position_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~position("", 1, 9, 0)
+
+::method test_validate_position_fails_zero
+  self~expectSyntax(88.912) -- Argument .. is an invalid position value
+  .Validate~position("", 0)
+
+::method test_validate_position_fails_not_whole
+  self~expectSyntax(88.912) -- Argument .. is an invalid position value
+  .Validate~position("", 1.5)
+
+::method test_validate_position_fails_too_large
+  self~expectSyntax(88.912) -- Argument .. is an invalid position value
+  max = .RexxInfo~internalDigits -- 9 on 32-bit, 18 on 64-bit
+  numeric digits max + 1
+  .Validate~position("", 10 ** max)
+
+::method test_validate_position
+  .Validate~position("", 1)
+  -- 999.999.999 on 32-bit, 999.999.999.999.999.999 on 64-bit
+  .Validate~position("", .RexxInfo~internalMaxNumber)
+
+
+-- classType
+::method test_validate_class_type_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~classType
+
+::method test_validate_class_type_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~classType("")
+
+::method test_validate_class_type_too_few_args_two
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~classType("", 1)
+
+::method test_validate_class_type_number_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~positiveNumber("", 1, .String, 9)
+
+::method test_validate_class_type_fails
+  self~expectSyntax(88.914) -- Argument .. must be an instance of the Array class
+  .Validate~classType("", 1, .Array)
+
+::method test_validate_class_type
+  .Validate~classType("", 1, .String)
+  .Validate~classType("", (1, 2), .Array)
+
+
+-- logical
+::method test_validate_logical_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~logical
+
+::method test_validate_logical_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~logical("")
+
+::method test_validate_logical_too_many_args_three
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~logical("", .true, 9)
+
+::method test_validate_logical_fails_nil
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", .nil)
+
+::method test_validate_logical_fails_non_numeric
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", "string")
+
+::method test_validate_logical_fails_not_whole
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", 1.0)
+
+::method test_validate_logical_fails
+  self~expectSyntax(88.927) -- The .. argument must be exactly "0" or "1"
+  .Validate~logical("", -1)
+
+::method test_validate_logical
+  .Validate~logical("", .true)
+  .Validate~logical("", .false)
+
+
+-- requestClassType
+::method test_validate_request_class_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~requestClassType
+
+::method test_validate_request_class_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~requestClassType("")
+
+::method test_validate_request_class_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~requestClassType("", 123, .String, .nil)
+
+::method test_validate_request_class_fails_file
+  self~expectSyntax((93.978, "name", .File~id, "filename")) -- Method argument ... could not be converted to type ...; found "..."
+  .Validate~requestClassType("name", "filename", .File)
+
+::method test_validate_request_class_fails_string
+  self~expectSyntax((93.978, 1, .String~id, .nil)) -- Method argument ... could not be converted to type ...; found "..."
+  .Validate~requestClassType(1, .nil, .String)
+
+::method test_validate_request_class
+  self~assertSame("Abc", .Validate~requestClassType("", "Abc", .String))
+  self~assertSame("Abc", .Validate~requestClassType("", .MutableBuffer~new("Abc"), .String))
+  self~assertSame("Abc", .Validate~requestClassType("", .Array~of("Abc"), .String))
+  self~assertSame(.nil, .Validate~requestClassType("", .nil, .Object))
+
+
+::options all syntax lostdigits condition

@@ -1,0 +1,335 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+group~add(.SocketClass.testGroup)
+if group~isAutomatedTest then return group
+suite = group~suite
+testResult = suite~execute
+testResult~print
+return testResult
+
+::requires 'ooTest.frm'
+::requires 'socket.cls'
+
+::class "SocketClass.testGroup" public subclass ooTestCase
+
+::constant host '127.0.0.1'
+::constant port 8083
+
+::method test_001
+   -- can we obtain a socket?
+   s = .socket~new()
+   self~assertNotEquals(-1, s)
+   retc = s~close()
+   self~assertNotEquals(-1, retc)
+   return
+
+::method test_002
+   -- can we obtain an internet address?
+   addr = .inetaddress~new(self~host, self~port)
+   self~assertTrue(addr~isA(.inetaddress))
+   self~assertSame(self~host, addr~address)
+   self~assertSame(self~port, addr~port)
+   return
+
+::method test_003
+   -- can we set a socket option?
+   s = .socket~new()
+   s~setoption('SO_REUSEADDR', 1)
+   addr = .inetaddress~new(self~host, self~port)
+   retc = s~bind(addr)
+   self~assertNotEquals(-1, retc)
+   s~close()
+   return
+
+
+-- getOption, setOption
+
+::method test_getoption_no_args
+  self~expectSyntax((93.901, 1)) -- Not enough arguments for method; 1 expected
+  .Socket~new~getOption
+
+::method test_getoption_invalid_option
+  self~expectSyntax(93.914) -- Method argument 1 must be one of SO_...
+  .Socket~new~getOption("invalid-option")
+
+::method test_getoption_two_args
+  self~expectSyntax((93.902, 1)) -- Too many arguments in invocation of method; 1 expected
+  .Socket~new~getOption("so_keepalive", "")
+
+::method test_setoption_no_args
+  self~expectSyntax((93.901, 2)) -- Not enough arguments for method; 2 expected
+  .Socket~new~setOption
+
+::method test_setoption_one_arg
+  self~expectSyntax((93.903, 1)) -- Missing argument in method; argument 1 is required
+  .Socket~new~setOption(, .true)
+
+::method test_setoption_invalid_option
+  self~expectSyntax(93.914) -- Method argument 1 must be one of SO_...
+  .Socket~new~setOption("invalid-option", .true)
+
+::method test_setoption_invalid_value
+  self~expectSyntax(93.907) -- The value argument must be zero or a positive whole number
+  .Socket~new~setOption("so_keepalive", "")
+
+::method test_setoption_two_args
+  self~expectSyntax((93.902, 2)) -- Too many arguments in invocation of method; 2 expected
+  .Socket~new~setOption("so_keepalive", .true, "")
+
+-- SO_BROADCAST applies to DGRAM only
+::method test_option_broadcast
+  s = .Socket~new(, "SOCK_DGRAM")
+  -- default should be .false
+  self~assertFalse(s~getOption("SO_BROADCAST"))
+  -- set to .true
+  self~assertSame(0, s~setOption("SO_BROADCAST", .true))
+  -- even though we've set this to .true, on platforms like macOS or
+  -- OpenIndiana getsockopt() returns a number of the form 2^n
+  value = s~getOption("SO_BROADCAST")
+  self~assertTrue(value > 0, "SO_BROADCAST returns" value)
+  self~assertSame(0, s~close)
+
+-- we expect these "boolean" options to work on all platforms
+::method test_options_boolean
+  s = .Socket~new
+  -- on Linux setting SO_DEBUG to true needs CAP_NET_ADMIN Capabilities,
+  -- else fails with Permission denied - so we don't test it here
+  -- on OpenBSD, setting SO_DONTROUTE returns .nil, so don't test it
+  do opt over "keepalive", "oobinline", "reuseaddr"
+    option = "so_"opt
+    -- default is .false for all boolean options
+    self~assertFalse(s~getOption(option), option~upper "default should be .false")
+    -- set option to true
+    self~assertSame(0, s~setOption(option, .true), option~upper)
+    -- same as above: may be .true or 2^n on some platforms
+    value = s~getOption(option)
+    self~assertTrue(value > 0, option~upper "returns" value)
+    -- set back to .false
+    self~assertSame(0, s~setOption(option, .false), option~upper)
+    self~assertFalse(s~getOption(option), option~upper "should be .false")
+  end
+  self~assertSame(0, s~close)
+
+-- SO_LINGER expects two numbers (but socket.cls currently doesn't check)
+::method test_option_linger
+  s = .Socket~new
+  self~assertSame("0 0", s~getOption("SO_LINGER")) -- default should be 0 0
+  self~assertSame(0, s~setOption("SO_LINGER", "1 10"))
+  -- same as above: linger onoff may be .true or 2^n on some platforms
+  parse value s~getOption("SO_LINGER") with onoff seconds
+  self~assertTrue(onoff > 0, "SO_LINGER returns" onoff )
+  self~assertSame(10, seconds)
+  self~assertSame(0, s~close)
+
+-- SO_ERROR can be queried, but cannot be set
+::method test_option_error
+  s = .Socket~new
+  self~assertNil(s~setOption("SO_ERROR", 0))
+  self~assertSame(0, s~getOption("SO_ERROR"))
+  self~assertSame(0, s~close)
+
+-- SO_RCVTIMEO, SO_SNDTIMEO
+::method test_options_timeout
+  s = .socket~new()
+
+  milliseconds = 300
+  self~assertSame(0, s~setOption("SO_RCVTIMEO", milliseconds))
+  -- there seems to be some rounding/adjusting going on on Linux
+  -- we accept a delta of up to 10 ms
+  ms = s~getOption("SO_RCVTIMEO")
+  self~assertTrue((milliseconds - ms)~abs <= 10, "SO_RCVTIMEO set to" milliseconds", get returns" ms)
+
+  milliseconds = 9876
+  self~assertSame(0, s~setOption("SO_SNDTIMEO", milliseconds))
+  -- there seems to be some rounding/adjusting going on on Linux
+  -- we accept a delta of up to 10 ms
+  ms = s~getOption("SO_SNDTIMEO")
+  self~assertTrue((milliseconds - ms)~abs <= 10, "SO_SNDTIMEO set to" milliseconds", get returns" ms)
+  self~assertSame(0, s~close)
+
+-- SO_RCVBUF, SO_SNDBUF
+::method test_options_buffer
+  s = .Socket~new
+
+  -- Linux doubles the value set for SO_RCVBUF and returns this doubled value
+  -- with get.  Also the minimum (doubled) value for SO_RCVBUF is 2304.
+  -- we test with 1300 and allow either the same or the doubled size to be returned
+  size = 1300
+  self~assertSame(0, s~setOption("SO_RCVBUF", size))
+  sz = s~getOption("SO_RCVBUF")
+  self~assertOneOrAnother(size, size * 2, sz, "SO_RCVBUF size set to" size", get returns" sz)
+
+  -- Linux doubles the value set for SO_SNDBUF and returns this doubled value
+  -- with get.  Also the minimum (doubled) value for SO_SNDBUF is 4608.
+  -- we test with 3000 and allow either the same or the doubled size to be returned
+  size = 3000
+  self~assertSame(0, s~setOption("SO_SNDBUF", size))
+  -- allow either the same size or the doubled size to be returned
+  sz = s~getOption("SO_SNDBUF")
+  self~assertOneOrAnother(size, size * 2, sz, "SO_SNDBUF size set to" size", get returns" sz)
+
+  self~assertSame(0, s~close)
+
+-- SO_TYPE can be queried, but cannot be set
+::method test_option_type
+  s = .Socket~new -- SOCK_STREAM is default
+  self~assertNil(s~setOption("SO_TYPE", 0))
+  self~assertSame("STREAM", s~getOption("SO_TYPE"))
+  s~close
+  s = .Socket~new(, "SOCK_DGRAM") -- DGRAM socket
+  self~assertSame("DGRAM", s~getOption("SO_TYPE"))
+  s~close
+
+-- SO_USELOOPBACK is unavailable on Linux and not supported for Winsock
+::method test_option_useloopback
+  s = .Socket~new
+  -- no meaningful test is possible
+  self~assertOneOrAnother(.nil, 0, s~setOption("SO_USELOOPBACK", .true))
+  s~getOption("SO_USELOOPBACK")
+  s~close
+
+
+::method test_004
+   -- can we bind a socket?
+   s = .socket~new()
+   retc = s~setoption('SO_REUSEADDR', 1)
+   self~assertNotEquals(-1, retc)
+   s~close
+
+::method test_005
+   -- test client and server
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+
+::method test_006
+   -- test client and server (small message)
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'This is test 006'
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+
+::method test_007
+   -- test client and server (large message)
+   srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
+   call syssleep 1
+   call client self, self~host, self~port, 'This is test 007 '~copies(1000)
+   call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep 1
+
+
+-- the client routine
+
+::routine client
+   use strict arg self, host, port, message
+   -- get a new socket
+   s = .socket~new()
+   self~assertNotEquals(-1, s)
+   -- set the server address/port to connection information
+   addr = .inetaddress~new(host, port)
+   -- connect to the server
+   retc = s~connect(addr)
+   self~assertEquals(0, retc)
+   -- send the command
+   retc = s~send(message)
+   self~assertNotEquals(-1, retc)
+   -- receive the command back
+   buf = s~recv(4096)
+   self~assertNotSame(.nil, buf)
+   -- close the socket
+   s~close()
+   self~assertNotEquals(-1, retc)
+
+
+-- the socket server class
+
+::class server
+::method init
+   use strict arg cself, host, port
+   -- get a new socket
+   s = .socket~new()
+   cself~assertNotEquals(-1, s)
+   -- set the socket to reuse the addresses assigned to it
+   retc = s~setoption('SO_REUSEADDR', 1)
+   -- bind the socket to an address/port
+   addr = .inetaddress~new(host, port)
+   retc = s~bind(addr)
+   cself~assertNotEquals(-1, retc)
+   -- mark it as a listening socket
+   retc = s~listen(3)
+   cself~assertNotEquals(-1, retc)
+   reply
+   stop = .false
+   do while \stop
+      -- accept a client connection socket
+      cs = s~accept()
+      cself~assertNotEquals(-1, cs)
+      -- receive the command from the client
+      cmd = cs~recv(4096)
+      cself~assertNotEquals(0, cmd~length())
+      -- if there's more to receive, wait before sending back
+      if cmd~length = 4096 then
+        call syssleep 1
+      -- echo the command back to the client
+      retc = cs~send(cmd)
+      cself~assertNotEquals(-1, retc)
+      -- close the client connection socket
+      retc = cs~close()
+      cself~assertNotEquals(-1, retc)
+      -- if the command was stop then stop the server
+      if cmd~upper() = 'STOP' then do
+         stop = .true
+         end
+      end
+   -- close the socket
+   retc = s~close()
+   cself~assertNotEquals(-1, retc)
+
+
+::options all syntax

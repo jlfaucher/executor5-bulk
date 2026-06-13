@@ -1,0 +1,529 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.BITXOR.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "BITXOR.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(BITXOR(''), '')
+
+::method "test_2"
+   self~assertSame(BITXOR('X'), 'X')
+
+::method "test_3"
+   self~assertSame(BITXOR('41'x), 'A')
+
+::method "test_4"
+   self~assertSame(BITXOR('abc'), 'abc')
+
+::method "test_5"
+   self~assertSame(BITXOR('abc'x), 'abc'x)
+
+::method "test_6"
+   self~assertSame(BITXOR("a bc de"X), '0ABCDE'X)
+
+::method "test_7"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR(v.30), '1234567890abcdefghijklmnopqrst')
+
+::method "test_8"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(BITXOR(v255.), v255.)
+
+::method "test_9"
+   v255.=copies('*',255)
+   self~assertSame(BITXOR(v256), v256)
+
+::method "test_10"
+   v100000=Copies('abcd',25000)
+   self~assertSame(BITXOR(v100000), Copies('abcd',25000))
+
+::method "test_11"
+   self~assertSame(BITXOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X), x2C(Copies('1234',61)))
+
+::method "test_12"
+   self~assertSame(BITXOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('19',125))
+
+::method "test_13"
+   self~assertSame(BITXOR('an expression' '+'||'others'), 'an expression +others')
+
+::method "test_14"
+   self~assertSame(BITXOR(17+4), '21')
+
+::method "test_15"
+   self~assertSame(BITXOR(12345/3), '4115')
+
+::method "test_16"
+   self~assertSame(BITXOR(1.42857143E-123), '1.42857143E-123')
+
+::method "test_17"
+   self~assertSame(BITXOR(SUBSTR('FFFFFF FF'X,3,1)), 'FF'X)
+
+::method "test_18"
+   self~assertSame(BITXOR('echoed'), 'echoed')
+
+::method "test_19"
+   self~assertSame(BITXOR(copies('one more Time',2)), 'one more Timeone more Time')
+
+::method "test_20"
+   self~assertSame(BITXOR('from outside'), 'from outside')
+
+::method "test_21"
+   self~assertSame(BITXOR(''||''), '')
+
+::method "test_22"
+   self~assertSame(BITXOR(copies('3'x,2)), '0303'X)
+
+::method "test_23"
+   self~assertSame(BITXOR(nv2.), 'NV2.')
+
+::method "test_24"
+   self~assertSame(BITXOR(nv2.3), 'NV2.3')
+
+::method "test_25"
+   self~assertSame(BITXOR(nv1), 'NV1')
+
+::method "test_26"
+   self~assertSame(BITXOR('',''), '')
+
+::method "test_27"
+   self~assertSame(BITXOR('','a'), 'a')
+
+::method "test_28"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR('',v.30), '1234567890abcdefghijklmnopqrst')
+
+::method "test_29"
+   v100000=Copies('abcd',25000)
+   self~assertSame(BITXOR('',v100000), v100000)
+
+::method "test_30"
+   self~assertSame(BITXOR('X','f3 fe'X), 'ABFE'X)
+
+::method "test_31"
+   self~assertSame(BITXOR('C1'X,'.'), 'EF'X)
+
+::method "test_32"
+   self~assertSame(BITXOR('X','1'), '69'X)
+
+::method "test_33"
+   self~assertSame(BITXOR('abc','cde'), '020606'X)
+
+::method "test_34"
+   self~assertSame(BITXOR('abc'X,'abcd'x), 'A171'X)
+
+::method "test_35"
+   self~assertSame(BITXOR("a bc de"X,""""), '28BCDE'X)
+
+::method "test_36"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR(v.30,'1'), '003233343536373839306162636465666768696A6B6C6D6E6F7071727374'X)
+
+::method "test_37"
+   v255.=copies('*',255)
+   self~assertSame(BITXOR(v255.,'55'x), bitxor('*','55'x)||substr(v255.,2))
+
+::method "test_38"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(BITXOR(v256,''), v256)
+
+::method "test_39"
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   self~assertSame(BITXOR(v100000,n100000), v100000)
+
+::method "test_40"
+   self~assertSame(BITXOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'4312'X), '5126'x||x2C(Copies('1234',60)))
+
+::method "test_41"
+   z=Copies('19',125)
+   self~assertSame(BITXOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('00'X,250))
+
+::method "test_42"
+   self~assertSame(BITXOR('an expression' '+'||'others','other'||'expression' 'a'), '0E1A48000A150A1501161A1C074F454F1568657273'X)
+
+::method "test_43"
+   self~assertSame(BITXOR(17+4,99+0), '0B08'X)
+
+::method "test_44"
+   self~assertSame(BITXOR(4115,0.000243013366), '041F010530323433303133333636'X)
+
+::method "test_45"
+   self~assertSame(BITXOR(1.42857143E-123,1.42857143E+121), '000000000000000000000006000002'X)
+
+::method "test_46"
+   self~assertSame(BITXOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2)), 'CB37'X)
+
+::method "test_47"
+   self~assertSame(BITXOR('echoed','  c  '), '45430B4F4564'X)
+
+::method "test_48"
+   self~assertSame(BITXOR(copies('one more Time',2),'c2'X), 'AD'x||'ne more Timeone more Time')
+
+::method "test_49"
+   v100000=Copies('abcd',25000)
+   vr73='07100C09410D1610120B0701'x||COPIES('abcd',49997)
+   self~assertSame(BITXOR('from outside',copies(v100000,2)), vr73)
+
+::method "test_50"
+   self~assertSame(BITXOR(''||'',33), '33')
+
+::method "test_51"
+   self~assertSame(BITXOR(copies('3'x,2),bitxor(1,' ')), '1203'x)
+
+::method "test_52"
+   self~assertSame(BITXOR('',nv1), nv1)
+
+::method "test_53"
+   self~assertSame(BITXOR('2',nv2.), '7C56322E'x)
+
+::method "test_54"
+   self~assertSame(BITXOR('3',nv2.3), '7D56322E33'x)
+
+::method "test_55"
+   self~assertSame(BITXOR('1',nv1), '7F5631'X)
+
+::method "test_56"
+   self~assertSame(BITXOR('2',nv2.), '7C56322E'X)
+
+::method "test_57"
+   self~assertSame(BITXOR('3',nv2.3), '7D56322E33'X)
+
+::method "test_58"
+   self~assertSame(BITXOR(nv1,mv2), '030003'x)
+
+::method "test_59"
+   self~assertSame(BITXOR(nv2.,mv2.), '03000000'X)
+
+::method "test_60"
+   self~assertSame(BITXOR(nv2.3,mv2.3), '0300000000'X)
+
+::method "test_61"
+   self~assertSame(BITXOR('',,"A"), '')
+
+::method "test_62"
+   self~assertSame(BITXOR('X',,'00'X), 'X')
+
+::method "test_63"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('C1'X,,'sp'), 'X')
+
+::method "test_64"
+   v="0F"X
+   self~assertSame(BITXOR('abc',,v), 'nml')
+
+::method "test_65"
+   v="0F"X
+   self~assertSame(BITXOR('abc'X,,v), '05B3'X)
+
+::method "test_66"
+   self~assertSame(BITXOR("a bc de"X,,'' ''), '2A9CFE'X)
+
+::method "test_67"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR(v.30,,'1'), '000302050407060908015053525554575659585B5A5D5C5F5E4140434245'X)
+
+::method "test_68"
+   v255.=copies('*',255)
+   self~assertSame(BITXOR(v255.,,'48'X), copies('62'X,255))
+
+::method "test_69"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(BITXOR(v256,,'1'), copies('1B'X,255)||'0D'X)
+
+::method "test_70"
+   x7f="7f"X
+   v100000=Copies('abcd',25000)
+   self~assertSame(BITXOR(v100000,,x7f), Copies('1E1D1C1B'x,25000))
+
+::method "test_71"
+   xff="ff"X
+   self~assertSame(BITXOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,,xff), x2C(Copies('edcb',61)))
+
+::method "test_72"
+   x7f="7f"X
+   self~assertSame(BITXOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",,x7f), Copies('NF',125))
+
+::method "test_73"
+   self~assertSame(BITXOR('an expression' '+'||'others',1+4), '54'X||'n expression +others')
+
+::method "test_74"
+   self~assertSame(BITXOR(17+4,,12/3), '0605'X)
+
+::method "test_75"
+   self~assertSame(BITXOR(12345/3,,10/2), '01040400'X)
+
+::method "test_76"
+   self~assertSame(BITXOR(1.42857143E-123,,9+12-20), '001F0503090406000502741C000302'X)
+
+::method "test_77"
+   self~assertSame(BITXOR(SUBSTR('FFFFFF FF'X,3,1),,'.'), 'D1'X)
+
+::method "test_78"
+   self~assertSame(BITXOR('echoed',,1), '5452595E5455'X)
+
+::method "test_79"
+   self~assertSame(BITXOR(copies('one more Time',2),,3+'3'), '595853165B59445316625F5B53595853165B59445316625F5B53'X)
+
+::method "test_80"
+   self~assertSame(BITXOR(''||'',,'/'), '')
+
+::method "test_81"
+   self~assertSame(BITXOR(copies('3'x,2),,x2c(copies('a',2))), 'A9A9'X)
+
+::method "test_82"
+   self~assertSame(BITXOR(nv1,,'x'), '6.I')
+
+::method "test_83"
+   self~assertSame(BITXOR(nv2.,,'x'), '362E4A56'x)
+
+::method "test_84"
+   self~assertSame(BITXOR(nv2.3,,'x'), '6.JVK')
+
+::method "test_85"
+   self~assertSame(BITXOR(nv1,,'x'), '362E49'X)
+
+::method "test_86"
+   self~assertSame(BITXOR(nv2.,,'x'), '362E4A56'X)
+
+::method "test_87"
+   self~assertSame(BITXOR(nv2.3,,'x'), '362E4A564B'X)
+
+::method "test_88"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(' ',,nv1), ' ')
+
+::method "test_89"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('   ',,nv2.3), ' ')
+
+::method "test_90"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(' ',,nv1), ' ')
+
+::method "test_91"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('  ',,nv2.), ' ')
+
+::method "test_92"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('v2.',,nv2.3), ' ')
+
+::method "test_93"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('','',''), ' ')
+
+::method "test_94"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('','a',''), ' ')
+
+::method "test_95"
+   self~expectSyntax(40.4)
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR('',v.30,,'x'), '')
+
+::method "test_96"
+   v100000=Copies('abcd',25000)
+   self~assertSame(BITXOR('',v100000, 'z'), Copies('1B18191E'X,25000))
+
+::method "test_97"
+   x23='23'X
+   self~assertSame(BITXOR('X','f3 fe'X,x23), 'ABDD'X)
+
+::method "test_98"
+   self~assertSame(BITXOR('C1'X,'.',','), 'EF'X)
+
+::method "test_99"
+   self~assertSame(BITXOR('X','1',13-6-1), '69'X)
+
+::method "test_100"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('abc','cde',-1e2-92), '69'X)
+
+::method "test_101"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('abc'X,'abcd'x,'1 11'x), '69'X)
+
+::method "test_102"
+   self~expectSyntax(40.4)
+   x24='24'X
+   self~assertSame(BITXOR("a bc de"X,"""",,x24), '69'X)
+
+::method "test_103"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITXOR(v.30,'1',3), '000100070605040B0A03525150575655545B5A59585F5E5D5C4342414047'X)
+
+::method "test_104"
+   v255.=copies('*',255)
+   self~assertSame(BITXOR(v255.,'55'x,'*'), '7F'X||copies('00'X,254))
+
+::method "test_105"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(BITXOR(v256,'','1'), copies('1B'X,255)'0D'X)
+
+::method "test_106"
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   xff="ff"X
+   self~assertSame(BITXOR(v100000,n100000,xff), v100000)
+
+::method "test_107"
+   self~assertSame(BITXOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'0000'X,'1'), '1234'X||COPIES('2305'X,60))
+
+::method "test_108"
+   z=Copies('19',125)
+   self~assertSame(BITXOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",RIGHT(x0000,1)), Copies('00'x,250))
+
+::method "test_109"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('expression' '+'||'others','other'||'expression' 'a',''b''), '')
+
+::method "test_110"
+   self~assertSame(BITXOR(17+4,99+0,1+1), '0B08'X)
+
+::method "test_111"
+   self~assertSame(BITXOR(4115,0.000243013366,8/2), '041F010504060007040507070202'X)
+
+::method "test_112"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(1E-122/7,1e+122/7,2/89), '041F010504060007040507070202'X)
+
+::method "test_113"
+   self~expectSyntax(40.23)
+   x7f="7f"X
+   self~assertSame(BITXOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2),xfe), 'CBC9'X)
+
+::method "test_114"
+   self~assertSame(BITXOR('echoed','  c  ',a), '45430B4F4525'X)
+
+::method "test_115"
+   self~assertSame(BITXOR(copies('one more Time',2),'c2'X,';'), 'AD555E1B5654495E1B6F52565E54555E1B5654495E1B6F52565E'X)
+
+::method "test_116"
+   v100000=Copies('abcd',25000)
+   vr102='07100C09410D1610120B0701'x||COPIES('1F1C1D1A'x,49997)
+   self~assertSame(BITXOR('from outside',copies(v100000,2),'~'), vr102)
+
+::method "test_117"
+   self~assertSame(BITXOR(''||'',33,"@"), '7373'X)
+
+::method "test_118"
+   self~assertSame(BITXOR(copies('3'x,2),bitxor(1,' '),"Z"), '1259'X)
+
+::method "test_119"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('1','1',nv1), '1259'X)
+
+::method "test_120"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('3','111',nv2.3), '1259'X)
+
+::method "test_121"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('1','1',nv1), '1259'X)
+
+::method "test_122"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('2','1',nv2.), '1259'X)
+
+::method "test_123"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR('3','111',nv2.3), '1259'X)
+
+::method "test_124"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(nv1,mv1,mv1), '1259'X)
+
+::method "test_125"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(nv2.3,mv2.3,mv2.3), '1259'X)
+
+::method "test_126"
+   self~assertSame(BITXOR(u,u,u), '00'x)
+
+::method "test_127"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(nv1,nv1,nv1), '1259'X)
+
+::method "test_128"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(nv2.,nv2.,nv2.), '1259'X)
+
+::method "test_129"
+   self~expectSyntax(40.23)
+   self~assertSame(BITXOR(nv2.3,nv2.3,nv2.3), '1259'X)
+
+-- rexxref documentation tests
+
+::method "test_201"
+    self~assertSame('12'x, BITXOR('12'x))
+
+::method "test_202"
+    self~assertSame('30'x, BITXOR('12'x,'22'x))
+
+::method "test_203"
+    self~assertSame('3011'x, BITXOR('1211'x,'22'x))
+
+::method "test_204"
+    self~assertSame('555544'x, BITXOR('1111'x,'444444'x))
+
+::method "test_205"
+    self~assertSame('555504'x, BITXOR('1111'x,'444444'x,'40'x))
+
+::method "test_206"
+    self~assertSame('5C5C'x, BITXOR('1111'x, ,'4D'x))
+
+::method "test_207"
+    self~assertSame('E53302'x, BITXOR('C711'x,'222222'x,' '))
+

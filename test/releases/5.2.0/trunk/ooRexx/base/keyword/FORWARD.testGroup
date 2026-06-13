@@ -1,0 +1,190 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2022      Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.FORWARD.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "FORWARD.testGroup" subclass ooTestCase public
+
+
+-- TODO: tests for all FORWARD options
+
+-- FORWARD: tests with mixinclasses
+::method test_forward_mixinclasses_01
+  o=.mixin2~new
+  self~assertEquals("mixin2"  , o~info                     )
+  self~assertEquals("mixin2"  , o~testForward_to_info      )
+  self~assertEquals("base"    , o~testForwardSuper_Base    )
+  self~assertEquals("mixin1a" , o~testForwardSuper_Mixin1a )
+  self~assertEquals("mixin1b" , o~testForwardSuper_Mixin1b )
+  self~assertEquals("mixin2"  , o~testForwardSuper_Mixin2  )
+
+  self~expectSyntax(93.957)    -- 93.957 "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  self~assertEquals("nixinoxi", o~testForwardSuper_NixiNoxi)
+
+::method test_forward_mixinclasses_no_class_01
+  o=.mixin2~new
+  self~expectSyntax(88.914)    -- 88.914 "Argument SCOPE must be an instance of the Class class."
+  o~testForwardSuper_no_class_01
+
+::method test_forward_mixinclasses_no_class_02
+  o=.mixin2~new
+  self~expectSyntax(88.914)    -- 88.914 "Argument SCOPE must be an instance of the Class class."
+  o~testForwardSuper_no_class_02
+
+
+-- FORWARD: tests with mixinclasses at the class object level
+::method test_forward_mixinclasses_01_class
+  o=.mixin2
+  self~assertEquals("mixin2_class"  , o~clzInfo                        )
+  self~assertEquals("mixin2_class"  , o~testForward_to_info_class      )
+  self~assertEquals("base_class"    , o~testForwardSuper_Base_class    )
+  self~assertEquals("mixin1a_class" , o~testForwardSuper_Mixin1a_class )
+  self~assertEquals("mixin1b_class" , o~testForwardSuper_Mixin1b_class )
+  self~assertEquals("mixin2_class"  , o~testForwardSuper_Mixin2_class  )
+
+  self~expectSyntax(93.957)    -- 93.957 "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  self~assertEquals("nixinoxi", o~testForwardSuper_NixiNoxi_class)
+
+::method test_forward_mixinclasses_no_class_01_class
+  o=.mixin2
+  self~expectSyntax(88.914)    -- 88.914 "Argument SCOPE must be an instance of the Class class."
+  o~testForwardSuper_no_class_01_class
+
+::method test_forward_mixinclasses_no_class_02_class
+  o=.mixin2
+  self~expectSyntax(88.914)    -- 88.914 "Argument SCOPE must be an instance of the Class class."
+  o~testForwardSuper_no_class_02_class
+
+
+
+::class nixinoxi     -- has info method, but class is on its own
+::method clzInfo class
+  return "nixinoxi_class"
+::method info
+  return "nixinoxi"
+
+::class base
+-- class methods
+::method clzInfo class
+  return "base_class"
+
+::method testForward_to_info_class class
+  forward message "clzInfo"
+
+::method testForwardSuper_Base_class class
+  forward class (.base) message "clzInfo"
+
+::method testForwardSuper_Mixin1a_class class
+  forward class (.mixin1a) message "clzInfo"
+
+::method testForwardSuper_Mixin1b_class class
+  forward class (.mixin1b) message "clzInfo"
+
+::method testForwardSuper_Mixin2_class class
+  forward class (.mixin2) message "clzInfo"
+
+::method testForwardSuper_NixiNoxi_class class
+  forward class (.nixinoxi) message "clzInfo"
+
+::method testForwardSuper_no_class_01_class class
+  forward class ("nixi, noxi") message "clzInfo"
+
+::method testForwardSuper_no_class_02_class class
+  forward class (.rexxinfo) message "clzInfo"
+
+-- instance methods
+::method info
+  return "base"
+
+::method testForward_to_info
+  forward message "info"
+
+::method testForwardSuper_Base
+  forward class (.base) message "info"
+
+::method testForwardSuper_Mixin1a
+  forward class (.mixin1a) message "info"
+
+::method testForwardSuper_Mixin1b
+  forward class (.mixin1b) message "info"
+
+::method testForwardSuper_Mixin2
+  forward class (.mixin2) message "info"
+
+::method testForwardSuper_NixiNoxi
+  forward class (.nixinoxi) message "info"
+
+::method testForwardSuper_no_class_01
+  forward class ("nixi, noxi") message "info"
+
+::method testForwardSuper_no_class_02
+  forward class (.rexxinfo) message "info"
+
+
+
+::class mixin1a mixinclass base
+::method clzInfo class
+  return "mixin1a_class"
+::method info
+  return "mixin1a"
+
+::class mixin1b mixinclass base
+::method clzInfo class
+  return "mixin1b_class"
+::method info
+  return "mixin1b"
+
+::class mixin2 mixinclass mixin1b inherit mixin1a
+::method clzInfo class
+  return "mixin2_class"
+::method info
+  return "mixin2"
+
+::options novalue error
+
+

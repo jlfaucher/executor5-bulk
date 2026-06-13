@@ -1,0 +1,411 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.BITAND.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "BITAND.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(bitand(''), '')
+
+::method "test_2"
+   self~assertSame(bitand('abc'), 'abc')
+
+::method "test_3"
+   self~assertSame(bitand('abc'x), x2c('0abc'))
+
+::method "test_4"
+   self~assertSame(bitand('a bc de'x), x2c('0abcde'))
+
+::method "test_5"
+   v30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(bitand(v30), '1234567890abcdefghijklmnopqrst')
+
+::method "test_6"
+   v255.=copies('*',255)
+   self~assertSame(bitand(v255), v255)
+
+::method "test_7"
+   v255.=copies('*',255)
+   v256=v255.||'<'
+   self~assertSame(bitand(v256), v256)
+
+::method "test_8"
+   v100000=Copies('abcd',25000)
+   self~assertSame(bitand(v100000), Copies('abcd', 25000))
+
+::method "test_9"
+   xre = x2C(Copies('1234',116))
+   self~assertSame(bitand("12341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X), xre)
+
+::method "test_10"
+   xre = x2C(Copies('1234',116))
+   self~assertSame(bitand("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('19',125))
+
+::method "test_11"
+   self~assertSame(bitand('X'), 'X')
+
+::method "test_12"
+   self~assertSame(bitand('41'x), 'A')
+
+::method "test_13"
+   self~assertSame(bitand('abcde'x), 'abcde'x)
+
+::method "test_14"
+   self~assertSame(bitand('an expression' '+'||'others'), 'an expression +others')
+
+::method "test_15"
+   self~assertSame(bitand(17+4), '21')
+
+::method "test_16"
+   self~assertSame(bitand('1.42857143E-123'), '1.42857143E-123')
+
+::method "test_18"
+   self~assertSame(bitand(SUBSTR('FFFFFF FF'X,3,1)), 'ff'x)
+
+::method "test_19"
+   self~assertSame(bitand('echoed'), 'echoed')
+
+::method "test_20"
+   self~assertSame(bitand(nv1), 'NV1')
+
+::method "test_21"
+   self~assertSame(bitand(nv1.3), 'NV1.3')
+
+::method "test_22"
+   self~assertSame(bitand('X','f3 fe'X), '50fe'x)
+
+::method "test_23"
+   self~assertSame(bitand('41'x,'.'), '00'x)
+
+::method "test_24"
+   self~assertSame(bitand('X','1'), '10'x)
+
+::method "test_25"
+   self~assertSame(bitand('abc','cde'), '616061'x)
+
+::method "test_26"
+   self~assertSame(bitand('abc'X,'abcd'x), '0a8c'x)
+
+::method "test_27"
+   self~assertSame(bitand("a bc de"X,""""), '02bcde'x)
+
+::method "test_28"
+   v30 = '1234567890abcdefghijklmnopqrst'
+   self~assertSame(bitand(v30,'1'), '1234567890abcdefghijklmnopqrst')
+
+::method "test_29"
+   v255 = copies('*',255)
+   self~assertSame(bitand(v255,'55'x), bitand('*','55'x)||substr(v255,2))
+
+::method "test_30"
+   v255 = copies('*',255)
+   v256 = v255||'<'
+   self~assertSame(bitand(v256,''), v256)
+
+::method "test_31"
+   v100000 = Copies('abcd',25000)
+   n100000 = Copies('00'X,100000)
+   self~assertSame(bitand(v100000,n100000), n100000)
+
+::method "test_32"
+   x0000 = '0000'x
+   self~assertSame(bitand("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'0000'X), x0000||x2C(Copies('1234',60)))
+
+::method "test_33"
+   self~assertSame(bitand(17+4,99+0), '01')
+
+::method "test_34"
+   self~assertSame(bitand(4115,0.000243013366), '3020'x||'000243013366')
+
+::method "test_35"
+   self~assertSame(bitand(1.42857143E-123,1.42857143E+121), '1.42857143E'||'29'x||'121')
+
+::method "test_36"
+   self~assertSame(bitand(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2)), '47')
+
+::method "test_37"
+   self~assertSame(bitand('echoed', '  c  '), '202060202064'X)
+
+::method "test_38"
+   self~assertSame(bitand('one more Time', 'c2'X), '42'X||'ne more Time')
+
+::method "test_39"
+   self~assertSame(bitand('1', nv1), '00'x|| 'V1')
+
+::method "test_40"
+   self~assertSame(bitand('2', nv2), '02'x|| 'V2')
+
+::method "test_41"
+   self~assertSame(bitand('3', nv2.3), '02'x|| 'V2.3')
+
+::method "test_42"
+   self~assertSame(bitand(nv1, nv1), 'NV1')
+
+::method "test_43"
+   self~assertSame(bitand(nv2, nv2), 'NV2')
+
+::method "test_44"
+   self~assertSame(bitand(nv2.3, nv2.3), 'NV2.3')
+
+::method "test_45"
+   self~assertSame(bitand('', , 'A'), '')
+
+::method "test_46"
+   self~assertSame(bitand('X', , '00'x), '00'x)
+
+::method "test_47"
+   self~expectSyntax(40.23)
+   self~assertSame(bitand('41'x, , 'sp'), '00'x)
+
+::method "test_48"
+   v='0F'X
+   self~assertSame(bitand('abc', , v), '010203'x)
+
+::method "test_49"
+   v='0F'X
+   self~assertSame(bitand('abc'x, , v), '0A0C'x)
+
+::method "test_50"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(bitand(v.30, , '1'), '313031303130313031302120212021202120212021202120213031303130'x)
+
+::method "test_51"
+   v255.=copies('L',255)
+   self~assertSame(bitand(v255., , '48'x), copies('48'X,255))
+
+::method "test_52"
+   v255.=copies('L',255)
+   v256=v255.||'o'
+   self~assertSame(bitand(v256, , '1'), copies('00'x,255)||'21'x)
+
+::method "test_53"
+   self~expectSyntax(40.23)
+   v100000=Copies('abcd',25000)
+   self~assertSame(bitand(v100000, , x7f), copies('61626364'x,25000))
+
+::method "test_54"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,,xff), x2C(Copies('1234',61)))
+
+::method "test_55"
+   self~assertSame(BITAND("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,,'ff'x), x2C(Copies('1234',61)))
+
+::method "test_56"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",,x7f), copies('3139'x,125))
+
+::method "test_57"
+   self~assertSame(BITAND("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",,'7f'x), copies('3139'x,125))
+
+::method "test_58"
+   self~assertSame(BITAND('an expression' '+'||'others',,1+4), '212420253030302531312125242021253420253031'x)
+
+::method "test_59"
+   self~assertSame(BITAND(17+4,,12/3), '3030'x)
+
+::method "test_60"
+   self~assertSame(BITAND(12345/3,,10/2), '34313135'x)
+
+::method "test_61"
+   self~assertSame(BITAND(1.42857143E-123,,9+12-20), '312030303031313130310121313031'x)
+
+::method "test_62"
+   self~assertSame(BITAND(SUBSTR('FFFFFF FF'X,3,1),,'.'), '.')
+
+::method "test_63"
+   self~assertSame(BITAND('echoed', ,1), '212120212120'x)
+
+::method "test_64"
+   self~assertSame(BITAND('one more Time',,3+'3'), '26262420242632242014202424'x)
+
+::method "test_65"
+   self~assertSame(BITAND('', , '/'), '')
+
+::method "test_66"
+   self~assertSame(BITAND('03'x||'03'x, , x2c('aa')), '0202'x)
+
+::method "test_67"
+   self~assertSame(BITAND(nv1, , 'x'), 'HP0')
+
+::method "test_68"
+   self~assertSame(BITAND(nv2, , 'x'), '485030'x)
+
+::method "test_69"
+   self~assertSame(BITAND(nv2., , 'x'), '48503028'x)
+
+::method "test_70"
+   self~assertSame(BITAND(nv2.3, , 'x'), '4850302830'x)
+
+::method "test_71"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND(' ', , nv1), 'NV1')
+
+::method "test_72"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('   ', , nv2.3), 'NV2.3')
+
+::method "test_73"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('v2.', , nv2.3), 'V2.')
+
+::method "test_74"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('', '', ''), '')
+
+::method "test_75"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('', 'a', ''), '')
+
+::method "test_76"
+   a100000=Copies('60626260'x,25000)
+   v100000=Copies('abcd',25000)
+   self~assertSame(BITAND('', v100000, 'z'), a100000)
+
+::method "test_77"
+   x23='23'X
+   self~assertSame(BITAND('X','f3 fe'X,x23), '5022'X)
+
+::method "test_78"
+   self~assertSame(BITAND('41'x,'.',','), '00'X)
+
+::method "test_79"
+   self~assertSame(BITAND('X','1',13-6-1), '10'X)
+
+::method "test_80"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('abc','cde',-1e2-92), '10'X)
+
+::method "test_81"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('abc'X,'abcd'x,'1 11'x), '10'X)
+
+::method "test_82"
+   v.30='1234567890abcdefghijklmnopqrst'
+   self~assertSame(BITAND(v.30,'1',3), '313233303132333031302122232021222320212223202122233031323330'x)
+
+::method "test_83"
+   v255.=copies('L',255)
+   self~assertSame(BITAND(v255.,'55'x,'*'), '44'x||copies('08'x,254))
+
+::method "test_84"
+   v255.=copies('L',255)
+   v256=v255.||'o'
+   self~assertSame(BITAND(v256,'','1'), copies('00'x,255)'21'x)
+
+::method "test_85"
+   self~expectSyntax(40.23)
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   self~assertSame(BITAND(v100000,n100000,xff), n100000)
+
+::method "test_86"
+   v100000=Copies('abcd',25000)
+   n100000=Copies('00'X,100000)
+   self~assertSame(BITAND(v100000,n100000,'ff'x), n100000)
+
+::method "test_87"
+   x0000='0000'x
+   self~assertSame(BITAND("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'0000'X,'1'), x0000||x2C(Copies('1030',60)))
+
+::method "test_88"
+   z=Copies('19',125)
+   x0000='0000'x
+   self~assertSame(BITAND(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",RIGHT(x0000,1)), Copies('19',125))
+
+::method "test_89"
+   self~assertSame(BITAND(17+4,99+0,1+1), '01')
+
+::method "test_90"
+   self~assertSame(BITAND(4115,0.000243013366,8/2), '3020303030303430303030303434'x)
+
+::method "test_91"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND(1E-122/7,1e+122/7,2/89), '3020303030303430303030303434'x)
+
+::method "test_92"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2),xfe), '46')
+
+::method "test_93"
+   self~assertSame(BITAND(u,u,u), u)
+
+::method "test_94"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND(nv1,nv1,nv1), nv1)
+
+::method "test_95"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND(nv2.3,nv2.2,nv2.3), nv2.3)
+
+::method "test_96"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('41'x,,'sp'), 'sp')
+
+::method "test_97"
+   self~expectSyntax(40.23)
+   self~assertSame(BITAND('abc'x,'abc'x,'1 11'x), 'abc'x)
+
+-- rexxref documentation tests
+
+::method "test_201"
+   self~assertSame(BITAND('12'x), '12'x)
+
+::method "test_202"
+   self~assertSame(BITAND('73'x, '27'x), '23'x)
+
+::method "test_203"
+   self~assertSame(BITAND('13'x, '5555'x), '1155'x)
+
+::method "test_204"
+   self~assertSame(BITAND('13'x, '5555'x, '74'x), '1154'x)
+
+::method "test_205"
+   self~assertSame(BITAND('pQrs', , 'DF'x), 'PQRS')
+

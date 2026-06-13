@@ -1,0 +1,211 @@
+            Fixes and Changes in Open Object Rexx 5.2.0
+
+The following is a list of fixes, enhancements, and other relevant changes
+to ooRexx since the 5.1.0 release.  The numbers for each item can be used to
+look up the item in the appropriate tracker in the ooRexx project on
+SourceForge, i.e. the Bugs tracker, the Feature Requests tracker, etc.
+
+
+  Overview / Major Changes
+  ------------------------
+
+  Keyword instructions
+        none
+
+  Built-in functions
+        none
+
+  Added notation
+        none
+
+  Directives
+        none
+
+  Changes to classes and methods
+        none
+
+  Environment variables
+        none
+
+
+  Bugs
+  ----
+  https://sourceforge.net/p/oorexx/bugs/nnnn
+
+   1: # 2056 Bug in docprep.rex
+             (entered by Josep Maria Blasco on       2026-04-05     ->       2026-04-05    )
+   2: # 2052 ooTest framework typo replace "rn" by "n" in ooTest.frm
+             (entered by jfaucher on       2026-03-18     ->       2026-03-19    )
+   3: # 2050 ooTest framework: unassigned variable "LFILE"' when asking for a log file
+             (entered by jfaucher on       2026-03-06     ->       2026-03-06    )
+   4: # 2049 Missing p = p->next; in Activity::liveGeneral
+             (entered by jfaucher on       2026-03-01     ->       2026-03-01    )
+   5: # 2046 VariableReference::flatten is marking instead of flattening
+             (entered by jfaucher on       2026-01-23     ->       2026-01-27    )
+   6: # 2044 json.cls: string consisting of numbers not handled as a string
+             (entered by Rony G. Flatscher on       2025-12-31     ->       2026-01-02    )
+   7: # 2042 Syntax 47.2 in samples\ole\apps\MSInternetExplorer_search.rex
+             (entered by Josep Maria Blasco on       2025-12-15     ->       2026-01-20    )
+   8: # 2041 Crash when specifying  only -O or -OG on the command line for Rexx.exe
+             (entered by Dom Wise on       2025-12-14     ->       2026-03-12    )
+   9: # 2038 say .buffer~method("INIT") crashes the interpreter
+             (entered by jfaucher on       2025-12-01     ->       2026-04-09    )
+  10: # 2033 Evaluation order of boolean expressions is wrong
+             (entered by Josep Maria Blasco on       2025-09-24     ->       2026-01-27    ) ***TODO: [tests]
+  11: # 2030 Hang running the BSF4ooRexx850 sample fxml_99/MainApp.rex
+             (entered by Rony G. Flatscher on       2025-08-17     ->       2025-10-27    )
+  12: # 2025 a[1] = 1,2,3 fails
+             (entered by Josep Maria Blasco on       2025-06-24     ->       2025-06-26    )
+  13: # 2021 fix RexxStart translate-only option
+             (entered by Erich on       2025-05-30     ->       2025-05-30    )
+  14: # 2019 man files on Linux/Unix report the wrong version
+             (entered by Per Olov Jonsson on       2025-05-16     ->       2025-05-21    )
+  15: # 2017 cmake warnings
+             (entered by Erich on       2025-05-02     ->       2025-05-21    )
+  16: # 2012 Call Insert a,b,-1 complains about a length but -1 is a pos
+             (entered by Josep Maria Blasco on       2025-04-17     ->       2026-01-28    )
+  17: # 2008 Arg(-n) returns ""
+             (entered by Josep Maria Blasco on       2025-04-17     ->       2025-06-26    )
+  18: # 2003 GUARD ON WHEN issue
+             (entered by Erich on       2025-03-26     ->       2026-03-18    )
+  19: # 1991 MapCollection~of() should return an empty collection
+             (entered by Josep Maria Blasco on       2024-12-08     ->       2026-01-25    )
+  20: # 1923 "Insufficient control stack space; cannot continue execution." building rexx.img on AIX 7.2
+             (entered by Jeffrey H. Johnson on       2023-10-29     ->       2024-01-13    ) ***TODO: [tests]
+  21: # 1904 Problem with Do ... Over
+             (entered by Gil Barmwater on       2023-06-03     ->       2023-06-06    ) ***TODO: [tests]
+  22: # 1880 Stem objects not properly converting into a string value
+             (entered by Rick McGuire on       2023-04-02     ->       2023-04-02    ) ***TODO: [tests]
+  23: # 1878 SEEK does not affect WRITE position
+             (entered by AvdP on       2023-03-15     ->       2023-08-11    ) ***TODO: [tests]
+  24: # 1872 Crash on terminating Rexx instances on different threads
+             (entered by Rony G. Flatscher on       2023-02-23     ->       2025-08-11    )
+  25: # 1850 TRACE issues
+             (entered by Erich on       2022-11-21     ->       2023-08-17    ) ***TODO: [code+doc+test]
+  26: # 1837 circular requires: some public classes are not visible
+             (entered by jfaucher on       2022-08-09     ->       2022-12-20    ) ***TODO: [doc+test]
+  27: # 1786 RexxPullFromQueue() returning invalid data for a null queue entry
+             (entered by Daniel Erdos on       2021-11-05     ->       2021-11-27    ) ***TODO: [tests]
+  28: # 1763 StreamSocket issues
+             (entered by Ruurd Idenburg on       2021-05-11     ->       2022-06-27    ) ***TODO: [code+doc+test]
+  29: # 1762 pushing very large data hangs RexxQueue
+             (entered by Erich on       2021-05-04     ->       2021-07-07    ) ***TODO: [code+test]
+  30: # 1742 Stream RECLENGTH 1 issues
+             (entered by Erich on       2021-02-05     ->       2021-02-05    ) ***TODO: [tests]
+  31: # 1447 Clean builds without compiler warnings
+             (entered by Erich on       2017-05-09     ->       2025-05-31    ) ***TODO: [code]
+
+
+  Requests For Enhancement
+  ------------------------
+  https://sourceforge.net/p/oorexx/feature-requests/nnn
+
+   1: #  873 Upate json.cls
+             (entered by Rony G. Flatscher on       2026-03-31     ->       2026-04-05    )
+   2: #  872 Add class methods arrayIn and arrayOut to .Stream
+             (entered by Rony G. Flatscher on       2026-03-28     ->       2026-04-03    )
+   3: #  871 Add support for YAML
+             (entered by Rony G. Flatscher on       2026-03-22     ->       2026-04-05    )
+   4: #  870 ooSQLite: enable R*Tree
+             (entered by Erich on       2026-03-13     ->       2026-03-13    ) ***TODO: [doc+test]
+   5: #  869 Packages should be able to block GlobalOptions requests
+             (entered by Dom Wise on       2025-12-14     ->       2026-01-02    )
+   6: #  864 Add Unicode (UTF-8) support to syntax error 13.1
+             (entered by Josep Maria Blasco on       2025-11-28     ->       2026-03-23    ) ***TODO: [doc]
+   7: #  863 Make CMake use IPO if available
+             (entered by Rony G. Flatscher on       2025-11-20     ->       2025-11-20    )
+   8: #  861 Make search for Xalan with CMake platform independent
+             (entered by Rony G. Flatscher on       2025-10-27     ->       2025-10-27    )
+   9: #  860 Add ability to propagate numeric settings to called routines and methods using  ::options
+             (entered by Rony G. Flatscher on       2025-10-23     ->       2025-10-25    )
+  10: #  858 Add ability to override package options at runtime
+             (entered by Rony G. Flatscher on       2025-10-16     ->       2025-10-22    )
+  11: #  857 Add ability to dynamically change options package wide ("dynamic ::OPTIONS")
+             (entered by Rony G. Flatscher on       2025-10-09     ->       2025-10-11    )
+  12: #  855 Add NOTIFY class attribute to TraceObject class
+             (entered by Rony G. Flatscher on       2025-05-19     ->       2025-08-25    )
+  13: #  806 Allow RexxInstance->Terminate() to be called from any thread.
+             (entered by Rick McGuire on       2022-07-20     ->       2025-08-11    )
+  14: #  803 extensions to complex.cls
+             (entered by Walter on       2022-06-02     ->       2022-06-03    ) ***TODO: [tests]
+  15: #  581 Add item data capability to combo box
+             (entered by Mark Miesfeld on       2014-01-30     ->       2014-01-30    ) ***TODO: [doc+test]
+  16: #  578 Accept string keywords instead of requiring numeric value in image related methods
+             (entered by Mark Miesfeld on       2013-12-28     ->       2013-12-28    ) ***TODO: [doc]
+  17: #  576 Add support for the 'split button'
+             (entered by Mark Miesfeld on       2013-12-25     ->       2013-12-25    ) ***TODO: [code+doc+test]
+  18: #  569 Allow direct creation of dialog control windows.
+             (entered by Mark Miesfeld on       2013-12-21     ->       2013-12-21    ) ***TODO: [code+doc+test]
+  19: #  552 Add the ToolBar control to ooDialog
+             (entered by Mark Miesfeld on       2013-09-12     ->       2013-09-21    ) ***TODO: [code+doc+test]
+  20: #  550 Add the ReBar dialog control to ooDialog
+             (entered by Mark Miesfeld on       2013-08-30     ->       2013-09-21    ) ***TODO: [doc+test]
+  21: #  544 Allow the registration of user defined SQL functions and aggregates
+             (entered by Mark Miesfeld on       2013-05-08     ->       2013-05-19    ) ***TODO: [doc]
+  22: #  353 Embedded Database
+             (entered by Anonymous on       2009-05-01     ->       2012-12-21    ) ***TODO: [doc]
+  23: #   22 RFE4IBM: allow triggering garbage collector explicitly
+             (entered by Rony G. Flatscher on       2005-01-20     ->       2025-08-30    )
+
+
+  Documentation Bugs
+  ------------------
+  https://sourceforge.net/p/oorexx/documentation/nnn
+
+   1: #  361 RexxRef example 5.249 wrong
+             (entered by Gil Barmwater on       2026-04-09     ->       2026-04-10    )
+   2: #  356 rexxref chapter 2 wrong
+             (entered by Josep Maria Blasco on       2026-02-03     ->       2026-02-07    )
+   3: #  355 Stem hasindex, put and remove use "tail" instead of several indexes
+             (entered by Josep Maria Blasco on       2026-01-29     ->       2026-02-07    )
+   4: #  352 Collection classes erratically documented as MapCollections
+             (entered by Josep Maria Blasco on       2025-11-01     ->       2025-11-02    )
+   5: #  351 Namespaces in directives
+             (entered by Josep Maria Blasco on       2025-10-31     ->       2026-01-20    )
+   6: #  350 rexxref 3.4 ::CONSTANT Note 2 incomplete
+             (entered by Josep Maria Blasco on       2025-10-10     ->       2025-10-24    )
+   7: #  349 Unreadable paragraph in rexxref 1.13.4 Stems
+             (entered by Josep Maria Blasco on       2025-09-28     ->       2025-10-24    )
+   8: #  348 Chapter 9 and positional patterns
+             (entered by Josep Maria Blasco on       2025-08-09     ->       2026-01-26    )
+   9: #  347 Missing words in last paragraph of rexxref 9.3
+             (entered by Josep Maria Blasco on       2025-08-09     ->       2026-01-25    )
+  10: #  346 Rexxref 5.3.16.6. Stem AT wrong.
+             (entered by Josep Maria Blasco on       2025-07-26     ->       2026-01-23    )
+  11: #  345 rexxref Example 18.3. Misplaced closing tag
+             (entered by jfaucher on       2025-05-19     ->       2025-05-19    )
+  12: #  343 rexxref 5.4.16  RexxContext Class imprecise
+             (entered by Josep Maria Blasco on       2025-05-19     ->       2026-01-23    )
+  13: #  342 Missing information about the arithmetic operators.
+             (entered by Rick McGuire on       2025-04-17     ->       2025-08-09    )
+  14: #  341 Typo in Example 7.70. Builtin function SETLOCAL, and information imprecise
+             (entered by Josep Maria Blasco on       2025-04-14     ->       2025-10-24    )
+  15: #  337 rexxref 1.13.2 incorrect
+             (entered by Josep Maria Blasco on       2024-11-18     ->       2026-01-25    )
+  16: #  336 rexxref chapter 16 erroneous
+             (entered by Josep Maria Blasco on       2024-09-11     ->       2026-01-23    )
+  17: #  326 rexxref 2.16 NUMERIC wrong
+             (entered by Josep Maria Blasco on       2024-08-18     ->       2025-10-24    )
+  18: #  325 rexxref 2.3 CALL and chapter 11 should document namespaces
+             (entered by Josep Maria Blasco on       2024-08-17     ->       2026-01-31    )
+  19: #  307 3.8. *NEW* ::RESOURCE incomplete
+             (entered by Josep Maria Blasco on       2023-08-30     ->       2026-01-26    )
+  20: #  298 Description of delete method in Array class is confusing
+             (entered by Josep Maria Blasco on       2023-04-09     ->       2026-01-23    )
+
+
+  Patches
+  -------
+  https://sourceforge.net/p/oorexx/patches/nnn
+
+
+Windows
+=======
+  none
+
+
+Unix/Linux
+==========
+
+  none
+

@@ -1,0 +1,524 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.CLASS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "CLASS.testGroup" subclass ooTestCase public
+
+-- basic subclass tests
+::method test_subclass
+
+  class = self~runDynamicSource(("return .test", "::class test", "::method testValue class", "return 'class'", "::method testValue", "return 'instance'"))
+  -- a lot of basic construction tests here.  We won't repeat a lot of these later
+  self~assertEquals("TEST", class~id)
+  self~assertSame(.Object, class~superclass)
+  -- as a non-mixin, the class is its own baseclass
+  self~assertSame(class, class~baseclass)
+  self~assertEquals("The TEST class", class~defaultname)
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+  self~assertIsA(class~method('testValue'), .method)
+  self~assertFalse(class~queryMixinclass)
+  self~assertTrue(class~subclasses~isempty)
+  superclasses = class~superclasses
+  self~assertEquals(1, superclasses~items)
+  self~assertSame(.Object, superclasses[1])
+
+  -- now test method invocation and instantiation
+  self~assertEquals('class', class~testValue)
+
+  instance = class~new
+  self~assertIsA(instance, class)
+  self~assertEquals('instance', instance~testValue)
+
+  -- base stuff out of the way, now just test simpler subclass syntax variants
+
+  -- explicit subclass
+  class = self~runDynamicSource(("return .test", "::class test subclass object"))
+  self~assertSame(.Object, class~superclass)
+
+  -- explicit subclass using string name
+  class = self~runDynamicSource(("return .test", "::class test subclass 'object'"))
+  self~assertSame(.Object, class~superclass)
+
+  -- explicit subclass using REXX namespace
+  class = self~runDynamicSource(("return .test", "::class test subclass rexx:object"))
+  self~assertSame(.Object, class~superclass)
+
+  -- create a metaclass
+  class = self~runDynamicSource(("return .test", "::class test subclass class"))
+  self~assertSame(.Class, class~superclass)
+  self~asserttrue(class~isMetaclass)
+
+  -- explicit subclass another class in same package.  Also tests ordering because
+  -- the superclass is defined second in the package
+  package = self~runDynamicSource(("return .context~package", "::class test subclass testSuper private", "::class 'testSuper' public"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+  -- explicit subclass another class in required package.
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "import_class.cls")
+  file~create(("::class testSuper public", "::constant testValue 123"))
+
+  package = self~runDynamicSource(("return .context~package", "::class test subclass testSuper private", "::requires 'import_class.cls'"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+  -- explicit subclass using a namespace qualifier
+
+  -- we're using the same requires file
+
+  package = self~runDynamicSource(("return .context~package", "::class test subclass test:testSuper private", "::requires 'import_class.cls' namespace test"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+::method test_subclass_no_name
+  self~assertSyntaxError(19.907, "::class test subclass")
+
+::method test_subclass_unknown_class
+  self~assertSyntaxError(98.909, "::class test subclass badFile")
+
+::method test_subclass_bad_name
+  self~assertSyntaxError(19.907, "::class test subclass *")
+
+::method test_subclass_no_class_local
+  -- "INPUT" is not a valid class
+  self~assertSyntaxError(99.949, "::class test subclass input")
+
+::method test_subclass_no_class_environment
+  -- "REXXINFO" is not a valid class
+  self~assertSyntaxError(99.949, "::class test subclass RexxInfo")
+
+::method test_subclass_missing_namespace_class
+  self~assertSyntaxError(20.921, "::class test subclass rexx:")
+
+::method test_subclass_unknown_namespace_class
+  self~assertSyntaxError(98.988, "::class test subclass rexx:nothere")
+
+::method test_subclass_unknown_namespace
+  self~assertSyntaxError(98.987, "::class test subclass rexxxxxx:nothere")
+
+::method test_subclass_twice
+  self~assertSyntaxError(25.901, "::class test subclass object subclass array")
+
+::method test_subclass_mixinclass
+  self~assertSyntaxError(25.901, "::class test subclass object mixinclass array")
+
+::method test_recursive_inheritance1
+  self~assertSyntaxError(98.911, ("::class test1 subclass test2", "::class test2 subclass test1"))
+
+::method test_recursive_inheritance2
+  self~assertSyntaxError(98.911, ("::class test1 mixinclass test2", "::class test2 subclass test1"))
+
+::method test_recursive_inheritance3
+  self~assertSyntaxError(98.911, ("::class test1 subclass test2", "::class test2 mixinclass test1"))
+
+::method test_recursive_inheritance4
+  self~assertSyntaxError(98.911, ("::class test1 mixinclass test2", "::class test2 mixinclass test1"))
+
+-- basic mixinclass tests
+::method test_mixinclass
+
+  class = self~runDynamicSource(("return .test", "::class test mixinclass Object", "::method testValue class", "return 'class'", "::method testValue", "return 'instance'"))
+  -- a lot of basic construction tests here.  We won't repeat a lot of these later
+  self~assertEquals("TEST", class~id)
+  self~assertSame(.Object, class~superclass)
+  -- as a non-mixin, base class is the superclass
+  self~assertSame(.Object, class~baseclass)
+  self~assertEquals("The TEST class", class~defaultname)
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+  self~assertIsA(class~method('testValue'), .method)
+  self~assertTrue(class~queryMixinclass)
+  self~assertTrue(class~subclasses~isempty)
+  superclasses = class~superclasses
+  self~assertEquals(1, superclasses~items)
+  self~assertSame(.Object, superclasses[1])
+
+  -- now test method invocation and instantiation
+  self~assertEquals('class', class~testValue)
+
+  instance = class~new
+  self~assertIsA(instance, class)
+  self~assertEquals('instance', instance~testValue)
+
+  -- base stuff out of the way, now just test simpler mixinclass syntax variants
+
+  -- explicit mixinclass
+  class = self~runDynamicSource(("return .test", "::class test mixinclass object"))
+  self~assertSame(.Object, class~superclass)
+
+  -- explicit mixinclass using string name
+  class = self~runDynamicSource(("return .test", "::class test mixinclass 'object'"))
+  self~assertSame(.Object, class~superclass)
+
+  -- explicit mixinclass using REXX namespace
+  class = self~runDynamicSource(("return .test", "::class test mixinclass rexx:object"))
+  self~assertSame(.Object, class~superclass)
+
+  -- create a metaclass
+  class = self~runDynamicSource(("return .test", "::class test mixinclass class"))
+  self~assertSame(.Class, class~superclass)
+  self~asserttrue(class~isMetaclass)
+
+  -- explicit mixinclass another class in same package.  Also tests ordering because
+  -- the superclass is defined second in the package
+  package = self~runDynamicSource(("return .context~package", "::class test mixinclass testSuper private", "::class 'testSuper' public"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+  -- explicit mixinclass another class in required package.
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "import_class.cls")
+  file~create(("::class testSuper public", "::constant testValue 123"))
+
+  package = self~runDynamicSource(("return .context~package", "::class test mixinclass testSuper private", "::requires 'import_class.cls'"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+  -- explicit mixinclass using a namespace qualifier
+
+  -- we're using the same requires file
+
+  package = self~runDynamicSource(("return .context~package", "::class test mixinclass test:testSuper private", "::requires 'import_class.cls' namespace test"))
+  test = package~findClass('test')
+  testSuper = package~findClass('testSuper')
+
+  self~assertSame(testSuper, test~superclass)
+  -- only one of the classes is public, check out the searches
+  self~assertSame(.nil, package~findPublicClass('test'))
+  self~assertSame(testSuper, package~findPublicClass('testSuper'))
+
+::method test_mixinclass_no_name
+  self~assertSyntaxError(19.913, "::class test mixinclass")
+
+::method test_mixinclass_unknown_class
+  self~assertSyntaxError(98.909, "::class test mixinclass badFile")
+
+::method test_mixinclass_bad_name
+  self~assertSyntaxError(19.913, "::class test mixinclass *")
+
+::method test_mixinclass_missing_namespace_class
+  self~assertSyntaxError(20.921, "::class test mixinclass rexx:")
+
+::method test_mixinclass_unknown_namespace_class
+  self~assertSyntaxError(98.988, "::class test mixinclass rexx:nothere")
+
+::method test_mixinclass_unknown_namespace
+  self~assertSyntaxError(98.987, "::class test mixinclass rexxxxxx:nothere")
+
+::method test_mixinclass_twice
+  self~assertSyntaxError(25.901, "::class test mixinclass object mixinclass array")
+
+::method test_mixinclass_subclass
+  self~assertSyntaxError(25.901, "::class test mixinclass object subclass array")
+
+::method test_metaclass
+
+  -- explicit default meta class
+  class = self~runDynamicSource(("return .test", "::class test metaclass Class"))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+
+  -- explicit default meta class using literal string name
+  class = self~runDynamicSource(("return .test", "::class test metaclass 'class'"))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+
+  -- explicit default meta class via namespace
+  class = self~runDynamicSource(("return .test", "::class test metaclass rexx:Class"))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+
+  -- use a custon metaclass
+  class = self~runDynamicSource(("return .test", "::class test metaclass testMetaclass", "::class testMetaclass subclass class", "::method testValue", "return 123"))
+  self~assertNotSame(.Class, class~metaclass)
+  self~assertEquals(123, class~testValue)
+
+  -- use a custom metaclass from an imported package
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "custom_metaclass.cls")
+  file~create(("::class testMetaclass subclass class public ", "::method testValue", "return 123"))
+
+  class = self~runDynamicSource(("return .test", "::class test metaclass testMetaclass", "::requires 'custom_metaclass.cls'"))
+  self~assertNotSame(.Class, class~metaclass)
+  self~assertEquals(123, class~testValue)
+
+  -- use a custom metaclass from an imported package with namespace
+  -- this uses the same requires file as the previous test
+
+  class = self~runDynamicSource(("return .test", "::class test metaclass test:testMetaclass", "::requires 'custom_metaclass.cls' namespace test"))
+  self~assertNotSame(.Class, class~metaclass)
+  self~assertEquals(123, class~testValue)
+
+::method test_metaclass_no_name
+  self~assertSyntaxError(19.906, "::class test metaclass")
+
+::method test_metaclass_unknown_class
+  self~assertSyntaxError(98.908, "::class test metaclass badFile")
+
+::method test_metaclass_bad_name
+  self~assertSyntaxError(19.906, "::class test metaclass *")
+
+::method test_metaclass_missing_namespace_class
+  self~assertSyntaxError(20.921, "::class test metaclass rexx:")
+
+::method test_metaclass_unknown_namespace_class
+  self~assertSyntaxError(98.988, "::class test metaclass rexx:nothere")
+
+::method test_metaclass_unknown_namespace
+  self~assertSyntaxError(98.987, "::class test metaclass rexxxxxx:nothere")
+
+::method test_metaclass_twice
+  self~assertSyntaxError(25.901, "::class test metaclass object metaclass array")
+
+::method test_nonmetaclass
+  self~assertSyntaxError(99.927, "::class test metaclass object")
+
+-- various valid inherit tests
+::method test_inherit
+
+  -- Note, the methods from the inheritance are covered in the class tests,
+  -- so we're not doing much here to validate those
+
+  -- use a simple inheritance test of a system interface
+  class = self~runDynamicSource(("return .test", "::class test inherit comparable"))
+  -- a lot of basic construction tests here.  We won't repeat a lot of these later
+  self~assertEquals("TEST", class~id)
+  self~assertSame(.Object, class~superclass)
+  -- as a non-mixin, base class is the superclass
+  self~assertSame(class, class~baseclass)
+  self~assertEquals("The TEST class", class~defaultname)
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertSame(.Class, class~metaclass)
+  self~assertFalse(class~isMetaclass)
+  self~assertFalse(class~queryMixinclass)
+  self~assertTrue(class~subclasses~isempty)
+  superclasses = class~superclasses
+  self~assertEquals(2, superclasses~items)
+  self~assertSameList((.Object, .Comparable), superclasses)
+
+  -- same situation, but multiple mixins, specified different ways
+  class = self~runDynamicSource(("return .test", "::class test inherit rexx:comparable 'orderable'"))
+  self~assertSame(.Object, class~superclass)
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertTrue(class~issubclassof(.Orderable))
+  superclasses = class~superclasses
+  self~assertEquals(3, superclasses~items)
+  self~assertSameList((.Object, .Comparable, .Orderable), superclasses)
+
+  -- inherit from another package mixin.  Also tests dependency ordering
+  -- same situation, but multiple mixins, specified different ways
+  package = self~runDynamicSource(("return .context~package", "::class test inherit testMixin rexx:comparable 'orderable'", "::class 'testMixin' mixinclass object"))
+
+  class = package~findClass('test')
+  mixin = package~findClass('testMixin')
+
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertTrue(class~issubclassof(.Orderable))
+  self~assertTrue(class~issubclassof(mixin))
+
+  superclasses = class~superclasses
+  self~assertSameList((.Object, mixin, .Comparable, .Orderable), superclasses)
+
+  -- inherit from a mixin in a requires file.
+  package = self~runDynamicSource(("return .context~package", "::class test inherit testMixin rexx:comparable 'orderable'", "::class 'testMixin' mixinclass object"))
+
+  class = package~findClass('test')
+  mixin = package~findClass('testMixin')
+
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertTrue(class~issubclassof(.Orderable))
+  self~assertTrue(class~issubclassof(mixin))
+
+  superclasses = class~superclasses
+  self~assertSameList((.Object, mixin, .Comparable, .Orderable), superclasses)
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "custom_mixin.cls")
+  file~create(("::class testMixin mixinclass object public"))
+
+  package = self~runDynamicSource(("return .context~package", "::class test inherit comparable 'testMixin' rexx:orderable", "::requires 'custom_mixin.cls'"))
+
+  class = package~findClass('test')
+  mixin = package~findClass('testMixin')
+
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertTrue(class~issubclassof(.Orderable))
+  self~assertTrue(class~issubclassof(mixin))
+
+  superclasses = class~superclasses
+  self~assertSameList((.Object, .Comparable, mixin, .Orderable), superclasses)
+
+  -- inherit from a requires file using a namespace
+
+  -- this uses the same requires file as above
+
+  package = self~runDynamicSource(("return .context~package", "::class test inherit comparable test:testMixin rexx:orderable", "::requires 'custom_mixin.cls' namespace test"))
+
+  class = package~findClass('test')
+  mixin = package~findClass('testMixin')
+
+  self~assertTrue(class~issubclassof(.Object))
+  self~assertTrue(class~issubclassof(.Comparable))
+  self~assertTrue(class~issubclassof(.Orderable))
+  self~assertTrue(class~issubclassof(mixin))
+
+  superclasses = class~superclasses
+  self~assertSameList((.Object, .Comparable, mixin, .Orderable), superclasses)
+
+::method test_inherit_no_name
+  self~assertSyntaxError(19.908, "::class test inherit")
+
+::method test_inherit_unknown_class
+  self~assertSyntaxError(98.909, "::class test inherit badFile")
+
+::method test_inherit_bad_name
+  self~assertSyntaxError(19.908, "::class test inherit *")
+
+::method test_inherit_missing_namespace_class
+  self~assertSyntaxError(20.921, "::class test inherit rexx:")
+
+::method test_inherit_unknown_namespace_class
+  self~assertSyntaxError(98.988, "::class test inherit rexx:nothere")
+
+::method test_inherit_unknown_namespace
+  self~assertSyntaxError(98.987, "::class test inherit rexxxxxx:nothere")
+
+::method test_nonmixin
+  self~assertSyntaxError(98.942, "::class test inherit object")
+
+::method test_inherit_recursive
+  self~assertSyntaxError(98.911, ("::class test1 mixinclass object inherit test2", "::class test2 mixinclass object inherit test1"))
+
+::method test_bad_baseclass
+  self~assertSyntaxError(98.943, ("::class test1 inherit test2", "::class test2 mixinclass datetime"))
+
+-- public and private semantics are tested rather extensively in the requires tests, so
+-- we're only going to test basic syntax issues here.
+
+::method test_public_twice
+  self~assertSyntaxError(25.901, "::class test public subclass object public")
+
+::method test_private_twice
+  self~assertSyntaxError(25.901, "::class test metaclass class private subclass object private")
+
+::method test_private_public
+  self~assertSyntaxError(25.901, "::class test private mixinclass object public metaclass class")
+
+::method test_public_private
+  self~assertSyntaxError(25.901, "::class test public private")
+
+::method test_direct_abstract_subclass
+  self~assertSyntaxError(98.989, ("x = .test~new", "::class test abstract"))
+
+::method test_direct_abstract_mixinclass
+  self~assertSyntaxError(98.989, ("x = .test~new", "::class test abstract mixinclass object"))
+
+::method test_create_abstract_subclass
+  instance = self~runDynamicSource(("return .test~new", "::class test subclass abstractClass", "::class abstractClass abstract"))
+
+  self~expectSyntax(98.989)
+  -- verify that the superclass is an abstract
+  x = instance~class~superclass~new
+
+::method test_create_abstract_mixinclass
+  instance = self~runDynamicSource(("return .test~new", "::class test mixinclass abstractClass", "::class abstractClass abstract"))
+
+  self~expectSyntax(98.989)
+  -- verify that the superclass is an abstract
+  x = instance~class~superclass~new
+
+::method test_inherit_abstract_mixin
+  -- this should just complete without error
+  instance = self~runDynamicSource(("return .test~new", "::class test inherit abstractClass", "::class abstractClass mixinclass object abstract"))
+
+::method test_abstract_metaclass
+  self~assertSyntaxError(98.990, ("x = .test~new", "::class test abstract subclass class"))
+
+::method test_abstract_twice
+  self~assertSyntaxError(25.901, ("x = .test~new", "::class test abstract subclass object abstract"))
+
+
+::options all syntax

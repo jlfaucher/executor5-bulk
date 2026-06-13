@@ -1,0 +1,197 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2023-2026 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+parse source . . fileSpec
+group = .TestGroup~new(fileSpec)
+group~add(.IncorrectCharacters.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls' -- for issueCmd
+
+::class IncorrectCharacters.testGroup subclass ooTestCase public
+
+::method test_incorrect_characters
+    do i = 1 to 6
+        resource_name = "test_incorrect_character_" || i
+        resource = .resources~send(resource_name)
+        -- item 1 = expression returning the source
+        -- item 2..6 = expected error output
+        self~assertNotNil(resource, resource_name "resource not found")
+
+        expression = resource[1]
+        self~assertNotNil(expression, resource_name "resource is empty")
+        -- use a routine because the console output is independant of the program's location
+        source = ".routine~new(''," expression ")"
+
+        incorrectCharacter.tmp.rex = .TemporaryTestFile~new(self, 'incorrectCharacter.tmp.rex')~create(source)~fullName
+        theCmd = "rexx" incorrectCharacter.tmp.rex
+        consoleOutput = .Array~new
+        theRC = issueCmd(theCmd, consoleOutput)
+
+        expectedOutput = resource~section(2)
+        call compareArrays self, expectedOutput, consoleOutput, resource_name
+    end
+
+::routine compareArrays
+    use strict arg self, expected, actual, resource_name
+
+    message = "The console output for" resource_name "should have" expected~items "lines, got" actual~items "lines"
+    self~assertEquals(expected~items, actual~items, message)
+
+    do line = 1 to expected~items
+        expectedOutput = expected[line]
+        expectedOutput = replaceCharacters(expectedOutput)
+        expectedOutput = expectedOutput expectedOutput~c2x
+        actualOutput = actual[line]
+        actualOutput = actualOutput actualOutput~c2x
+        message = "Line" line "of console output for" resource_name "differs from the expected value"
+        self~assertEquals(expectedOutput, actualOutput, message)
+    end
+
+::routine replaceCharacters
+    -- If a byte character is followed by ['XX'x] then replace this byte character by the 'XX'x character.
+    -- Example:
+    -- "AB['62'x]CD['64'x]EF['66'x]" becomes "AbCdEf"
+    -- "AB[''x]CD['6'x]EF['660'x]" is unchanged because the substitutions are not 2 hexdigits
+    -- "['00'x]AB" is unchanged because no preceding character
+    -- "[['5D'x]AB" becomes "]AB"
+    -- Note:
+    -- This script is limited to ONE byte character.
+    -- It would be over-engineering to extend this script to support multibyte characters such as the Unicode replacement character.
+    use strict arg string
+    start = 2 -- not 1 because ['XX'x] must be preceded by the character to replace
+    do forever
+        start = string~pos("['", start)
+        if start == 0 then return string
+        parse var string . =(start) "['" hexdigits "'x]"
+        if hexdigits~length == 2 then do
+            at = start - 1
+            new = hexdigits~x2c
+            length = 1 /* the character to replace */ -
+                   + 2 /* [' */ -
+                   + 2 /* hexdigits */ -
+                   + 3 /* 'x] */
+            string = string~replaceAt(new, at, length)
+            -- no need to update start, it's aleady good: ['XX'x] has been deleted
+        end
+        else do
+            -- skip invalid substitution
+            start += 2 /* [' */ -
+                   + hexdigits~length -
+                   + 3 /* 'x] */
+        end
+    end
+
+
+-- Note about the expected output:
+-- the expected output has been copied from a macOS console.
+-- a simple copy-paste of the console output is not good...
+-- on macOS, the 'C0'x character is replaced by a '?'.
+-- on Windows with chcp 65001 and on WSL Ubuntu, the 'C0'x is replaced by the UTF-8 encoding of the Unicode replacement character 'EFBFBD'x.
+-- on Windows with chcp 437, the 'C0'x is kept as-is.
+-- Workaround:
+-- if a character is followed by ["XX"x] then replace this character by the "XX"x character.
+-- it's still a good way to detect unexpected output.
+
+-- Valid UTF-8 characters
+::resource test_incorrect_character_1
+"say a {= 1"
+     1 *-* say a {
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a {= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "{" ('7B'X).
+::END
+
+-- Valid UTF-8 characters
+::resource test_incorrect_character_2
+"say a ¬= 1"
+     1 *-* say a ¬
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a ¬= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "¬" ('C2AC'X).
+::END
+
+-- Valid UTF-8 characters
+::resource test_incorrect_character_3
+"say a €= 1"
+     1 *-* say a €
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a €= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "€" ('E282AC'X).
+::END
+
+-- Valid UTF-8 characters
+::resource test_incorrect_character_4
+"say a 🦖= 1"
+     1 *-* say a 🦖
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a 🦖= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "🦖" ('F09FA696'X).
+::END
+
+-- Invalid UTF-8 characters
+-- Lonely start character: a valid UTF-8 start byte (0xC0) that is not followed by the required continuation bytes.
+::resource test_incorrect_character_5
+"say a " || "C0"x || "= 1"
+     1 *-* say a ?['C0'x]
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a " || "C0"x || "= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "?['C0'x]" ('C0'X).
+::END
+
+-- Invalid UTF-8 characters
+-- Invalid single-byte sequences: 0x80 to 0xBF (these are only valid as continuation bytes, not standalone).
+::resource test_incorrect_character_6
+"say a " || "80"x || "= 1"
+     1 *-* say a ?['80'x]
+       *-* Compiled method "NEW" with scope "Routine".
+     1 *-* .routine~new('', "say a " || "80"x || "= 1" )
+Error 13 running  line 1:  Invalid character in program.
+Error 13.1:  Incorrect character in program "?['80'x]" ('80'X).
+::END
+
+
+::options novalue error

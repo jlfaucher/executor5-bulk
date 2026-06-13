@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -238,7 +238,8 @@ typedef struct _RexxMethodEntry
 #define REXX_INTERPRETER_5_0_0  0x00050000
 #define REXX_INTERPRETER_5_1_0  0x00050100
 #define REXX_INTERPRETER_5_2_0  0x00050200
-#define REXX_CURRENT_INTERPRETER_VERSION REXX_INTERPRETER_5_2_0
+#define REXX_INTERPRETER_5_3_0  0x00050300
+#define REXX_CURRENT_INTERPRETER_VERSION REXX_INTERPRETER_5_3_0
 #define NO_VERSION_YET NULL
 
 #define REXX_LANGUAGE_6_03 0x00000603

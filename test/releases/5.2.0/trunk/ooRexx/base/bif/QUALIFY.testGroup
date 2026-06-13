@@ -1,0 +1,272 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.qualify.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: qualify.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+   Note well - most of the tests in this group are dependent on the known
+   directory structure of the test suite.  If that structure changes, some tests
+   will fail.  Just fix the tests.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "qualify.testGroup" public subclass ooTestCase
+
+-- Set up and tear down are used to quarentee we know what directory we are in
+-- for each test, and that the original working directory is restored at the end
+-- of each test.
+::method setup
+  parse source . . file
+  newDir = directory(filespec('L', file))
+
+::method teardown
+
+  -- This clean up should have been done in the test_lower_dirs test case.  But,
+  -- if the test case failed, the clean up is not done.  Needs to be done here
+  -- before we change back the directory.
+  if SysFileExists('testOne') then do
+    sl = .ooRexxUnit.directory.separator
+    file = directory() || sl'testOne'sl'testTwo'sl'test.file'
+    ret = deleteFile(file)
+    ret = SysRmDir('testOne'sl'testTwo')
+    ret = SysRmDir('testOne')
+  end
+
+  newDir = directory(.ooTest.originalWorkingDir)
+
+::method test_simpleName
+
+  parse source . . file
+  self~assertSame(file, qualify("QUALIFY.testGroup"))
+
+::method test_simpleName2
+
+  parse source . . file
+  self~assertSame(file, qualify(file))
+
+::method  test_thisDir_name
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  fileToQualify = '.'sl"QUALIFY.testGroup" -- ./qualify.testGroup
+
+  self~assertSame(file, qualify(fileToQualify))
+
+::method  test_no_such_file
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  pathPart = filespec('L', file)
+  notAFile = "xxNoSuchFileyy"
+
+  fileToQualify = notAFile
+  expected = pathPart || notAFile
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_no_such_file2
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  notAFile = "xxNoSuchFileyy"
+
+  fileToQualify = '..'sl || notAFile
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl || notAFile
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_dot_file
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  pathPart = filespec('L', file)
+  fileToQualify = '.notAFile'
+  expected = pathPart || fileToQualify
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_dotSlash_removal
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  baseDir = .ooTest.dir || sl
+  suffixPart = 'ooRexx'sl'base'sl'bif'sl || fileSpec('N', file)
+
+  -- Something like: /dir/dirs/ooTestDir/./ooRexx/base/bif/QUALIFY.testGroup
+
+  fileToQualify = baseDir || '.'sl || suffixPart
+  expected = baseDir || suffixPart
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_extraSlash_removal
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  baseDir = .ooTest.dir || sl || sl
+  suffixPart = 'ooRexx'sl || sl'base'sl || sl'bif' || sl || sl || fileSpec('N', file)
+
+  -- Something like: /dir/dirs/ooTestDir//ooRexx//base//bif//QUALIFY.testGroup
+
+  fileToQualify = baseDir || '.'sl || suffixPart
+  expected = file
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_upThree
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl'ooTest.frm'
+
+  fileToQualify = '..'sl'..'sl'..'sl'ooTest.frm'
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_upTwo_andOver
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'class'sl'Array.testGroup'
+
+  fileToQualify = '..'sl'..'sl'base'sl'class'sl'Array.testGroup'
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method  test_dot_dot_slash_removal
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = file
+
+  -- something like: ..\..\base\bif\..\..\base\bif\QUALIFY.testgroup
+  fileToQualify = '..'sl'..'sl'base'sl'bif'sl'..'sl'..'sl'base'sl'bif'sl'QUALIFY.testGroup'
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+::method test_lower_dirs
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  pathPart = filespec('L', file)
+
+  ret = SysMkDir('testOne')
+  self~assertSame(0, ret)
+  ret = SysMkDir('testOne'sl'testTwo')
+  self~assertSame(0, ret)
+  testFileName = 'test.file'
+  src = .array~of(" ", " ")
+
+  expected = createFile(src, 'testOne'sl'testTwo'sl || testFileName)
+
+  fileToQualify = 'testOne'sl'testTwo'sl || testFileName
+
+  self~assertSame(expected, qualify(fileToQualify))
+
+  ret = deleteFile(expected)
+  ret = SysRmDir('testOne'sl'testTwo')
+  ret = SysRmDir('testOne')
+
+
+::method test_qualify_no_args
+  self~expectSyntax(40.3) -- Not enough arguments in invocation of QUALIFY; minimum expected is 1
+  call qualify
+
+::method test_qualify_two_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of QUALIFY; maximum expected is 1
+  call qualify '', ''
+
+::method test_qualify_arg_dot
+  self~assertSame(directory(), qualify("."))
+  self~assertSame(directory(), qualify("./."))
+
+::method test_qualify_arg_short
+  do name over "*", "??", "xxxxxxxx"
+    self~assertSame(directory() || .File~separator || name, qualify(name))
+  end
+
+::method test_qualify_arg_long
+  -- a name to make currentDirectory"/"name as long as allowed
+  name = "x"~copies(.RexxInfo~maxPathLength - directory()~length - 1)
+  self~assertSame(directory() || .File~separator || name, qualify(name))
+
+::method test_qualify_arg_device
+  select case .RexxInfo~platform~upper
+    when "WINDOWSNT"
+      then devices = "aux", "com1", "con", "lpt1", "nul", "prn"
+    when "LINUX", "DARWIN"
+      then devices = "/dev/console", "/dev/null", "/dev/random", "/dev/tty"
+    otherwise
+      devices = .Array~new(0)
+  end
+  do device over devices
+    -- devices and/or special files should return as-is, without any leading "\\.\"
+    -- (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
+    self~assertSame(device, qualify(device), "qualify("device") should be '"device"'")
+  end
+
+::method test_qualify_arg_windows_drive
+  if .RexxInfo~platform~caselessAbbrev("WINDOWS") then do
+    -- qualify() should return the current directory for "d:"
+    drive = filespec("drive", directory())
+    self~assertSame(directory(), qualify(drive), "qualify("drive") should be" directory())
+  end
+  else do
+    -- on a Unix-like system qualify("~") should return the home directory
+    home = value("HOME", , "environment")
+    self~assertSame(home, qualify("~"), "qualify('~') should be $HOME("home")")
+  end
+
+
+::options novalue error

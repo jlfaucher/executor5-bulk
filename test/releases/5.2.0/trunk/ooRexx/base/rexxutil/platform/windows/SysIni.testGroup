@@ -1,0 +1,203 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . s
+group = .TestGroup~new(s)
+-- adding a suite will allow for one-time setup and tearDown
+group~add(.SysIni.testGroup)
+group~restrictOS("WINDOWS")
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
+
+::requires 'ooTest.frm'
+
+
+::class SysIni.testgroup subclass ooTestCase public
+
+::constant iniFile (.TemporaryTestFile~new(self, "test_sysini.ini")~createFromResource("iniFile"))
+::constant ini (self~iniFile~absolutePath)
+
+::method test_no_args
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
+  call SysIni
+
+::method test_one_arg
+  self~expectSyntax((88.901, 2)) -- Missing argument; argument 2 is required
+  call SysIni self~ini
+
+::method test_two_args
+  self~expectSyntax((88.901, 3)) -- Missing argument; argument 3 is required
+  call SysIni self~ini, "app1"
+
+::method test_apps_no_stem
+  self~expectSyntax((88.901, 3)) -- Missing argument; argument 3 is required
+  call SysIni self~ini, "ALL:"
+
+::method test_keys_no_stem
+  self~expectSyntax((88.901, 4)) -- Missing argument; argument 4 is required
+  call SysIni self~ini, "app2", "all:"
+
+::method test_stem_null
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", ""
+
+::method test_stem_bad
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", "a.1"
+
+::method test_delete_extra
+  self~expectSyntax(40.4) -- Too many arguments in invocation
+  call SysIni self~ini, "", "DELETE:", ""
+
+::method test_app_stem_extra
+  self~expectSyntax(40.4) -- Too many arguments in invocation
+  call SysIni self~ini, "all:", stem., ""
+
+::method test_key_stem_extra
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 4 expected
+  call SysIni self~ini, "app1", "all:", stem., ""
+
+::method test_stem_no_array_no_stem
+  self~expectSyntax(40.925) -- Argument 3 must be an array object, a stem object, or a stem name value
+  call SysIni self~ini, "app1", "all:", .Bag~new
+
+-- query a single key value
+::method test_query_single_key
+  self~assertSame("val1.1", SysIni(self~ini, "app1", "key1"))
+  self~assertSame("val3.2", SysIni(self~ini, "app2", "key3"))
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", ""))
+  self~assertSame("ERROR:", SysIni(self~ini, "app4", ""))
+  self~assertSame("ERROR:", SysIni(self~ini, "", ""))
+
+-- query all apps
+::method test_query_all_apps
+  allApps = "app1", "app2", "app3"
+  self~assertStem(allApps, SysIni(self~ini, "all:", list.), list.)
+  self~assertStem(allApps, SysIni(self~ini, "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allApps, SysIni(self~ini, "all:", list), list)
+  list = .Array~new
+  self~assertArray(allApps, SysIni(self~ini, "all:", list), list)
+
+-- query all keys
+::method test_query_all_keys
+  allKeys = .Array~of("key1")
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", list.), list.)
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allKeys, SysIni(self~ini, "app1", "all:", list), list)
+  list = .Array~new
+  self~assertArray(allKeys, SysIni(self~ini, "app1", "all:", list), list)
+
+  allKeys = "key1", "key2", "key3"
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", list.), list.)
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", "list"), list.)
+  list = .Stem~new
+  self~assertStem(allKeys, SysIni(self~ini, "app2", "all:", list), list)
+  list = .Array~new
+  self~assertArray(allKeys, SysIni(self~ini, "app2", "all:", list), list)
+
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list.))
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", "list"))
+  list = .Stem~new
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list))
+  list = .Array~new
+  self~assertSame("ERROR:", SysIni(self~ini, "app3", "all:", list))
+
+::method test_delete
+  -- this is a "delete" test, so we give it its own ini file
+  ini = .TemporaryTestFile~new(self, "test_sysini_delete.ini")
+  ini~createFromResource("iniFile")
+  iniName = ini~absolutePath
+
+  self~assertEquals("",       SysIni(iniName, "app1", "DELETE:"))
+  self~assertEquals("ERROR:", SysIni(iniName, "app1", "ALL:", stem.))
+
+  self~assertEquals("",       SysIni(iniName, "app2", "key2", "delete:"))
+  self~assertEquals("ERROR:", SysIni(iniName, "app2", "key2"))
+
+  self~assertStem(("app2", "app3"), SysIni(iniName, "all:", s.), s.)
+  self~assertStem(("key1", "key3"), SysIni(iniName, "app2", "all:", s.), s.)
+
+  ini~delete
+
+::method test_set
+  -- this is a "set" test, so we give it its own ini file
+  ini = .TemporaryTestFile~new(self, "test_sysini_read_write.ini")
+  ini~createFromResource("iniFile")
+  iniName = ini~absolutePath
+
+  self~assertEquals("", SysIni(iniName, "app2", "key1", "new value"))
+  self~assertEquals("new value", SysIni(iniName, "app2", "key1"))
+
+  a = .Array~new
+  self~assertArray(("key1", "key2", "key3"), SysIni(iniName, "APP2", "ALL:", a), a)
+
+  ini~delete
+
+
+::method assertStem
+  use strict arg expected, rc, actual
+  self~assertSame("", rc)
+  self~assertIsA(actual, .Stem)
+  self~assertSame(expected~items, actual[0])
+  do i = 1 to actual[0]
+    self~assertSame(expected[i], actual[i])
+  end
+
+::method assertArray
+  use strict arg expected, rc, actual
+  self~assertSame("", rc)
+  self~assertIsA(actual, .Array)
+  self~assertSameList(expected, actual)
+
+
+::resource iniFile
+[app1]
+key1=val1.1
+[app2]
+key1=val1.2
+key2=val2.2
+key3=val3.2
+[app3]
+::END
+
+
+::options all syntax

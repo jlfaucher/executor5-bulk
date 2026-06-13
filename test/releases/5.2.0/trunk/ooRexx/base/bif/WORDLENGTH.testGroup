@@ -1,0 +1,332 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.WORDLENGTH.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "WORDLENGTH.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~vblank = ' '
+    .local~zeros1 = copies('0',10000)||'1'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v30c = 'asdfQWERzxcvASDFqwerZXCVJRjrJR'
+    .local~v125 = "'"copies('* ',125)"'"
+    .local~v250c = copies('*',250)
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = copies('J ',9999)||'K '
+    .local~vwbw = 'John'||copies(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    .local~v19 = '19'
+    .local~v14 = '14'
+
+::method 'test0001'
+    self~assertSame('0', wordLength('',1))
+
+::method 'test0002'
+    self~expectSyntax(40.12)
+    xre = wordLength('WORD1 WORD2',1.000000009)
+
+::method 'test0003'
+    self~expectSyntax(40.12)
+    xre = wordLength('WORD1 WORD2',2.000000009)
+
+::method 'test0004'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSame('5', wordLength('WORD1 WORD2',1.000000004))
+    else
+        self~assertSame('5', wordLength('WORD1 WORD2',1.000000000000000004))
+
+::method 'test0005'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSame('5', wordLength('WORD1 WORD2',2.000000004))
+    else
+        self~assertSame('5', wordLength('WORD1 WORD2',2.000000000000000004))
+
+::method 'test0006'
+    self~assertSame('1', wordLength('4a'x,.zeros1))
+
+::method 'test0007'
+    self~assertSame('0', wordLength(.vblank,2.55*200-255))
+
+::method 'test0008'
+    self~assertSame('4', wordLength('WORD','31'x))
+
+::method 'test0009'
+    self~expectSyntax(93.924)
+    xre = wordLength('WORD','30'x)
+
+::method 'test010'
+    self~expectSyntax(93.924)
+    xre = wordLength(' ','30'x)
+
+::method 'test011'
+    self~assertSame('0', wordLength('4a52'x,2E0))
+
+::method 'test012'
+    self~assertSame('0', wordLength(.v30c,'323535'x))
+
+::method 'test013'
+    self~assertSame('1', wordLength('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1'))
+
+::method 'test014'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,'1'||'2'))
+
+::method 'test015'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,' +12 '))
+
+::method 'test016'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,+12))
+
+::method 'test017'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,12))
+
+::method 'test018'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,.v19))
+
+::method 'test019'
+    numeric digits 1
+    self~assertSame('1', wordLength(.v26,.v14))
+
+::method 'test020'
+    numeric digits 1
+    self~assertSame('4', wordLength(12+6,1))
+
+::method 'test021'
+    numeric digits 1
+    self~assertSame('4', wordLength('12+6',1))
+
+::method 'test022'
+    self~assertSame('0', wordLength(.v250c,2))
+
+::method 'test023'
+    self~assertSame('0', wordLength('**********************************************************************************************************************************************************************************************************************************************************',3))
+
+::method 'test024'
+    self~assertSame('4', wordLength('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3'))
+
+::method 'test025'
+    self~assertSame('4', wordLength(.v8,-4+8))
+
+::method 'test026'
+    self~expectSyntax(93.924)
+    xre = wordLength(.v8,-4-8)
+
+::method 'test027'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v8,1.5)
+
+::method 'test028'
+    self~assertSame('0', wordLength('6173646620717765722041534446205157455220'x,'30303035'x))
+
+::method 'test029'
+    self~assertSame('4', wordLength('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9))
+
+::method 'test030'
+    self~assertSame('2', wordLength(nv,1))
+
+::method 'test031'
+    self~assertSame('3', wordLength(nv.,1))
+
+::method 'test032'
+    self~assertSame('5', wordLength(nv.10,1))
+
+::method 'test033'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v125,nv)
+
+::method 'test034'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v125,nv.)
+
+::method 'test035'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v125,nv.10)
+
+::method 'test036'
+    self~expectSyntax(40.12)
+    xre = wordLength(novala,novalb)
+
+::method 'test037'
+    self~assertSame(3, wordLength(nv.,1))
+
+::method 'test038'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v125,nv)
+
+::method 'test039'
+    self~expectSyntax(40.12)
+    xre = wordLength(.v125,nv.10)
+
+::method 'test040'
+    self~expectSyntax(40.12)
+    xre = wordLength(novala,novalb)
+
+::method 'test041'
+    self~assertSame('1', wordLength(.v10000,9999))
+
+::method 'test042'
+    self~assertSame('1', wordLength(.v10000,10000))
+
+::method 'test043'
+    self~assertSame('0', wordLength(.v10000,10001))
+
+::method 'test044'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', wordLength(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7))
+
+::method 'test045'
+    self~assertSame('1', wordLength(.vwbwwbw,1))
+
+::method 'test046'
+    self~assertSame('10000', wordLength(.vwbwwbw,2))
+
+::method 'test047'
+    self~assertSame('1', wordLength(.vwbwwbw,3))
+
+::method 'test048'
+    self~assertSame('4', wordLength(.vwbw,1))
+
+::method 'test049'
+    self~assertSame('7', wordLength(.vwbw,2))
+
+::method 'test050'
+    self~assertSame('5', wordLength((00345),1))
+
+::method 'test051'
+    self~assertSame('1', wordLength((3 4 5),1))
+
+::method 'test052'
+    self~assertSame('1', wordLength((3 4 5),2))
+
+::method 'test053'
+    self~assertSame('1', wordLength((3 4 5),3))
+
+::method 'test054'
+    self~assertSame('3', wordLength((.v8),1))
+
+::method 'test055'
+    self~assertSame('3', wordLength((.v8),6))
+
+::method 'test056'
+    self~assertSame('5', wordLength((.v8),8))
+
+::method 'test057'
+    v8. = .v8
+    self~assertSame('3', wordLength((v8.),1))
+
+::method 'test058'
+    v8. = .v8
+    self~assertSame('3', wordLength((v8.),2))
+
+::method 'test059'
+    v8. = .v8
+    self~assertSame('0', wordLength((v8.),9))
+
+::method 'test060'
+    v8. = .v8
+    self~assertSame('4', wordLength((v8.10),4))
+
+::method 'test061'
+    v8. = .v8
+    self~assertSame('4', wordLength((v8.10),5))
+
+::method 'test062'
+    v8. = .v8
+    self~assertSame('3', wordLength((v8.10),6))
+
+::method 'test063'
+    self~assertSame('1', wordLength(.v26||' '||reverse(.v26),1))
+
+::method 'test064'
+    self~assertSame('1', wordLength(.v26' 'reverse(.v26),26))
+
+::method 'test065'
+    self~assertSame('1', wordLength(.v26 reverse(.v26),27))
+
+::method 'test066'
+    self~assertSame('5', wordLength(subStr('one two three four',5,9),2))
+
+::method 'test067'
+    self~assertSame('1', wordLength(.v26,x2d(16)))
+
+::method 'test068'
+    self~assertSame('4', wordLength(dataType(6) dataType('A'),2))
+
+::method 'test069'
+    self~assertSame('4', wordLength(errorText(40),lastPos('O','WORD')))
+
+::method 'test070'
+    self~assertSame('1', wordLength('A B C D E F G',wordLength('A B C',2)))
+
+::method 'test071'
+    .local~remove(vblank)
+    .local~remove(zeros1)
+    .local~remove(v26)
+    .local~remove(v30c)
+    .local~remove(v125)
+    .local~remove(v250c)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(v19)
+    .local~remove(v14)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDLENGTH"
+    self~assertEquals(2, WORDLENGTH('Now is the time',2))
+    self~assertEquals(5, WORDLENGTH('Now comes the time',2))
+    self~assertEquals(0, WORDLENGTH('Now is the time',6))
+

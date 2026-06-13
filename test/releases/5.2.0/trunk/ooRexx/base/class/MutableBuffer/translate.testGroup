@@ -1,0 +1,166 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_translateMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_translateMethod.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~vit = copies('0',100000)||'b'
+    .local~vot = copies('1',100000)||'B'
+
+::method 'test001'
+    self~assertSame(('ABC'), .mutablebuffer~new('abc')~translate()~string)
+
+::method 'test002'
+    self~assertSame(('123$'), .mutablebuffer~new('00010203'x)~translate('123',,'$')~string)
+
+::method 'test003'
+    self~assertSame(('123 '), .mutablebuffer~new('00010203'x)~translate('123')~string)
+
+::method 'test004'
+    self~assertSame(('123 '), .mutablebuffer~new('00010203'x)~translate('123',)~string)
+
+::method 'test005'
+    self~assertSame(('aBc'), .mutablebuffer~new('abc')~translate(.vot,.vit)~string)
+
+::method 'test006'
+    self~assertSame(('14.def'), .mutablebuffer~new('abcdef')~translate('123456','aaabbbcc','.')~string)
+
+::method 'test007'
+    self~assertSame('$$$$$$$', .mutablebuffer~new('abcdef ')~translate(,,'$')~string)
+
+::method 'test008'
+    self~expectSyntax(93.922)
+    xre = .mutablebuffer~new('abcdef ')~translate(,,'$1')
+
+::method 'test009'
+    self~assertSame('1bEdef ', .mutablebuffer~new('abcdef ')~translate(1e+17,'ac','1')~string)
+
+::method 'test010'
+    numeric digits 100
+    self~assertSame('1b0def ', .mutablebuffer~new('abcdef ')~translate(+1e+17,'ac','1')~string)
+
+::method 'test011'
+    self~expectSyntax(93.922)
+    xre = .mutablebuffer~new('abc')~translate(.vot,.vit,nov)
+
+::method 'test012'
+    self~expectSyntax(93.922)
+    xre = .mutablebuffer~new(nov1)~translate(nov2,nov3,nov4)
+
+::method 'test013'
+    numeric digits 100
+    self~assertSame('NOV', .mutablebuffer~new(nov)~translate(.vot,.vit,'$')~string)
+
+::method 'test014'
+    numeric digits 100
+    self~assertSame('a$c', .mutablebuffer~new('abc')~translate(nov,.vit,'$')~string)
+
+::method 'test015'
+    numeric digits 100
+    self~assertSame('abc', .mutablebuffer~new('abc')~translate(.vot,nov,'$')~string)
+
+::method 'test016'
+    self~expectSyntax(93.922)
+    xre = .mutablebuffer~new('abc')~translate(.vot,.vit,nov)
+
+::method 'test017'
+    self~expectSyntax(93.922)
+    xre = .mutablebuffer~new(nov1)~translate(nov2,nov3,nov4)
+
+::method 'test019'
+    .local~remove(vit)
+    .local~remove(vot)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_TRANSLATE"
+    self~assertSame('ABCDEF', .mutablebuffer~new('abcdef')~translate()~string)
+    self~assertSame('ab2d1f', .mutablebuffer~new('abcdef')~translate('12','ec')~string)
+    self~assertSame('12..ef', .mutablebuffer~new('abcdef')~translate('12','abcd','.')~string)
+    self~assertSame('A Q V', .mutablebuffer~new('APQRV')~translate( ,'PR')~string)
+    self~assertSame('APQ  ', .mutablebuffer~new('APQRV')~translate(XRANGE('00'X,'Q'))~string)
+    self~assertSame('dabc', .mutablebuffer~new('4123')~translate('abcd','1234')~string)
+
+::method "testStart01"
+    self~assertSame(('aBC'), .mutablebuffer~new('abc')~translate(,,,2)~string)
+    self~assertSame(('aBc'), .mutablebuffer~new('abc')~translate(,,,2,1)~string)
+    self~assertSame(('Abc'), .mutablebuffer~new('abc')~translate(,,,,1)~string)
+    self~assertSame(('a4.def'), .mutablebuffer~new('abcdef')~translate('123456','aaabbbcc','.', 2, 3)~string)
+    self~assertSame('a$$def ', .mutablebuffer~new('abcdef ')~translate(,,'$',2,2)~string)
+    self~assertSame('a$$$$$$', .mutablebuffer~new('abcdef ')~translate(,,'$',2)~string)
+    self~assertSame('abcdef ', .mutablebuffer~new('abcdef ')~translate(,,'$',2,0)~string)
+    self~assertSame('abcdef ', .mutablebuffer~new('abcdef ')~translate(,,'$',8,6)~string)
+
+::method testStart02
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',0,6)
+
+::method testStart03
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',"xxx",6)
+
+::method testStart04
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',0.5,6)
+
+::method testStart05
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',-5,6)
+
+::method testStart06
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, -6)
+
+::method testStart07
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, 'x')
+
+::method testStart08
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, 0.5)

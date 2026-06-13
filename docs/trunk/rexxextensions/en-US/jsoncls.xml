@@ -1,0 +1,1279 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+ "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+    <!ENTITY % BOOK_ENTITIES SYSTEM "rexxextensions.ent">
+    %BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: json.cls — DocBook chapter
+    #
+    # Copyright (c) 2010-2026, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="jsoncls"><title>JSON Support (Package "json.cls")</title>
+<indexterm><primary>json.cls</primary></indexterm>
+
+<para>The <literal>json.cls</literal> package provides a JSON encoder and
+decoder for ooRexx, conforming to RFC 8259
+(<literal>https://www.rfc-editor.org/rfc/rfc8259</literal>).  It encodes
+ooRexx objects as JSON text and decodes JSON text back into ooRexx objects.
+Any JSON value (object, array, string, number, boolean, null) is accepted
+at the top level, as permitted by RFC 8259.</para>
+
+<para>The package defines the following public classes and routines:</para>
+
+<variablelist>
+ <varlistentry>
+  <term><xref linkend="clsJson" xrefstyle="select:title"/></term>
+  <listitem><para>The main encoder/decoder class.  Provides both class
+   methods for convenience and instance methods for full control.</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><xref linkend="clsJsonBoolean" xrefstyle="select:title"/></term>
+  <listitem><para>Sentinel class for JSON boolean values.  Two singletons
+   represent <literal>true</literal> and <literal>false</literal>.</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><xref linkend="clsJsonString" xrefstyle="select:title"/></term>
+  <listitem><para>Subclass of <classname>String</classname> that forces
+   numeric values to be encoded as JSON strings rather than JSON
+   numbers.</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><xref linkend="clsJsonError" xrefstyle="select:title"/></term>
+  <listitem><para>Represents a JSON parsing error, carrying the error message,
+   source location, and offending input line.</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><xref linkend="rtString2json" xrefstyle="select:title"/></term>
+  <listitem><para>Public routine that encodes a Rexx string as a JSON value
+   and appends it to a <classname>MutableBuffer</classname>.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Encoding (ooRexx &#x2192; JSON):</emphasis>
+<classname>MapCollection</classname> objects are encoded as JSON objects (keys
+sorted alphabetically), <classname>OrderedCollection</classname> objects as
+JSON arrays, <literal>.nil</literal> as <literal>null</literal>,
+<classname>JsonBoolean</classname> singletons as <literal>true</literal> or
+<literal>false</literal>, <classname>JsonString</classname> values as quoted
+strings (even when numeric), and plain strings as numbers when numeric or as
+quoted strings otherwise.  Objects that provide a
+<methodname>makeJSON</methodname>, <methodname>makeArray</methodname>, or
+<methodname>makeString</methodname> method are handled
+transparently.</para>
+
+<para><emphasis role="bold">Decoding (JSON &#x2192; ooRexx):</emphasis>
+JSON objects are decoded as <classname>Directory</classname> objects, JSON
+arrays as <classname>Array</classname> objects, JSON strings as
+<classname>JsonString</classname> instances, JSON numbers as plain ooRexx
+strings, JSON booleans as <classname>JsonBoolean</classname> singletons, and
+JSON null as <literal>.nil</literal>.</para>
+
+<para><emphasis role="bold">\uXXXX handling:</emphasis> Since ooRexx has no
+native Unicode support, <literal>\u00XX</literal> escape sequences are decoded
+to the corresponding single-byte character.  Non-<literal>\u00XX</literal>
+sequences (e.g. <literal>\u4E16</literal>) are kept as literal
+<literal>\uXXXX</literal> text.  During encoding, any literal
+<literal>\uXXXX</literal> pattern already present in a source string is passed
+through unchanged, so that a Rexx string containing the six characters
+<literal>\u0041</literal> will encode as <literal>\u0041</literal> (decoded as
+<literal>A</literal> by a JSON consumer), rather than escaping the
+backslash.</para>
+
+<para><emphasis role="bold">Quick start &#x2013; Parse a JSON string and re-encode it:</emphasis></para>
+<programlisting language="rexx">
+json = .json~new
+doc  = json~fromJSON('{"name": "Alice", "age": 30, "active": true}')
+say doc["name"]           -- Alice
+say doc["age"]            -- 30
+say doc["active"]         -- 1  (a JsonBoolean singleton)
+say .json~toJSON(doc)     -- {"active":true,"age":30,"name":"Alice"}
+
+::requires "json.cls"
+</programlisting>
+
+<para><emphasis role="bold">Example 1 &#x2013; Build an ooRexx tree and emit JSON:</emphasis></para>
+<programlisting language="rexx">
+doc = .directory~new
+doc["title"]  = "My Application"
+doc["version"] = .jsonString~new("2")  -- force quoted
+authors = .array~of("Alice", "Bob")
+doc["authors"] = authors
+say .json~toJSON(doc, .true)
+-- Output:
+--   {
+--      "authors": [
+--         "Alice",
+--         "Bob"
+--      ],
+--      "title": "My Application",
+--      "version": "2"
+--   }
+
+::requires "json.cls"
+</programlisting>
+
+<para><emphasis role="bold">Example 2 &#x2013; Read a JSON file and write it back:</emphasis></para>
+<programlisting language="rexx">
+doc = .json~fromJsonFile("config.json")
+say doc["title"]
+.json~toJsonFile("config_pretty.json", doc, .true)
+
+::requires "json.cls"
+</programlisting>
+
+<para><emphasis role="bold">Example 3 &#x2013; Round-trip with booleans:</emphasis></para>
+<programlisting language="rexx">
+json = .json~new
+doc = json~fromJSON('{"active": true, "deleted": false}')
+say doc["active"]~isA(.JsonBoolean)  -- 1
+say doc["active"]                    -- 1
+say .json~toJSON(doc)
+-- Output: {"active":true,"deleted":false}
+
+::requires "json.cls"
+</programlisting>
+
+<!-- ================================================================== -->
+<!--  Json Class                                                        -->
+<!-- ================================================================== -->
+<section id="clsJson"><title>Json Class</title>
+<indexterm><primary>Json class</primary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>false attribute</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>fromJSON method</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>fromJsonFile method</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>init method</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>toJSON method</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>toJsonFile method</secondary></indexterm>
+<indexterm><primary>Json class</primary>
+<secondary>true attribute</secondary></indexterm>
+
+<para>The <classname>Json</classname> class is the main entry point of the
+<literal>json.cls</literal> package.  Encoding and decoding are available both
+as class methods (convenience wrappers that create a temporary instance) and as
+instance methods.  Each instance initialises its own escape/unescape tables and
+maintains internal parsing state.</para>
+
+<table id="ooRexxJsonClass" frame="all" pgwide="1">
+<title>Json Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the Object class</entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Json</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthJsonFalseClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonFromJSON" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonFromJsonFile" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonToJSON" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonToJsonFile" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonTrueClsMth" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+
+<!-- false (class attribute) -->
+<section id="mthJsonFalseClsMth"><title>false (Class Attribute)</title>
+<indexterm><primary>false attribute</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_false.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the <classname>JsonBoolean</classname> proxy for
+<literal>.false</literal>.  It can be used interchangeably with ooRexx&apos;
+<literal>.false</literal> or <literal>0</literal> values.</para>
+</section>
+
+<!-- fromJSON -->
+<section id="mthJsonFromJSON"><title>fromJSON</title>
+<indexterm><primary>fromJSON method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_fromJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Decodes a JSON text into an ooRexx object tree.  JSON objects become
+<classname>Directory</classname> instances, JSON arrays become
+<classname>Array</classname> instances, JSON strings become
+<classname>JsonString</classname> instances, JSON numbers become plain ooRexx
+strings, JSON booleans become <classname>JsonBoolean</classname> singletons,
+and JSON null becomes <literal>.nil</literal>.</para>
+
+<para>This method is available both as an instance method and as a class method.
+When called as a class method, a temporary instance is created
+internally.</para>
+
+<para>Numbers are validated against the RFC 8259 grammar: leading plus signs,
+leading zeros, trailing dots, and leading dots are rejected.  Strings are
+validated per RFC 8259 &#x00A7;7: raw control characters U+0000 through
+U+001F inside quoted strings are rejected (they must be escaped using
+<literal>\uXXXX</literal> notation).  Invalid JSON
+raises a <classname>Syntax</classname> condition with a
+<classname>JsonError</classname> description in the additional
+information.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">jsonString</emphasis></term>
+ <listitem><para>A JSON text string.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> the ooRexx object tree
+representing the decoded JSON.</para>
+</section>
+
+<!-- fromJsonFile (class method) -->
+<section id="mthJsonFromJsonFile"><title>fromJsonFile (Class Method)</title>
+<indexterm><primary>fromJsonFile method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_fromJsonFile.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Convenience class method that reads a JSON file and decodes it into an
+ooRexx object tree.  Opens the file, reads its entire contents, creates a
+<classname>Json</classname> instance, and delegates to
+<methodname>fromJSON</methodname>.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">fn</emphasis></term>
+ <listitem><para>The file name or file object to read JSON data
+  from.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> the ooRexx object tree
+representing the decoded JSON.</para>
+</section>
+
+<!-- init -->
+<section id="mthJsonInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Creates a new <classname>Json</classname> instance and initialises the
+escape/unescape lookup tables, the set of value-terminating control characters,
+and the platform&apos;s end-of-line sequence.  The lookup tables are also stored
+as package-local variables so that the <function>string2json</function> routine
+can access them.</para>
+
+<para>Takes no arguments.</para>
+</section>
+
+<!-- jsonToXml (class method) -->
+<section id="mthJsonJsonToXml"><title>&added52; jsonToXml (Class Method)</title>
+<indexterm><primary>jsonToXml method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_jsonToXml.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Serialises an ooRexx object tree to XML conforming to either
+<filename>json.xsd</filename> (with namespace
+<literal>urn:json:xml:1.0</literal>) or <filename>json.dtd</filename>
+(with DOCTYPE, no namespace).</para>
+
+<para>Internally creates a <classname>JsonXmlEmitter</classname> instance and
+calls its <methodname>emit</methodname> method.  The emitter sorts object keys
+alphabetically for deterministic output, matching the behaviour of
+<methodname>toJSON</methodname>.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The ooRexx object tree to serialise.  Any JSON-compatible
+  value is accepted: <classname>Directory</classname>,
+  <classname>Array</classname>, <classname>String</classname>,
+  <classname>JsonString</classname>, <classname>JsonBoolean</classname>,
+  or <literal>.nil</literal>.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">schema</emphasis></term>
+ <listitem><para>Optional schema type: <literal>"xsd"</literal> (default)
+  or <literal>"dtd"</literal>.</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> a well-formed XML
+string.</para>
+</section>
+
+<!-- jsonToXmlFile (class method) -->
+<section id="mthJsonJsonToXmlFile"><title>&added52; jsonToXmlFile (Class Method)</title>
+<indexterm><primary>jsonToXmlFile method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_jsonToXmlFile.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Serialises an ooRexx object tree to XML and writes it to a file.
+Calls <methodname>jsonToXml</methodname> internally and writes the result
+using <classname>Stream</classname> with <literal>charOut</literal> to
+ensure platform-independent output.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The ooRexx object tree to serialise.</para></listitem>
+ </varlistentry>
+ <varlistentry><term><emphasis role="italic">path</emphasis></term>
+ <listitem><para>The file system path to write.</para></listitem>
+ </varlistentry>
+ <varlistentry><term><emphasis role="italic">schema</emphasis></term>
+ <listitem><para>Optional schema type: <literal>"xsd"</literal> (default)
+  or <literal>"dtd"</literal>.</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- parseXml -->
+<section id="mthJsonParseXml"><title>&added52; parseXml</title>
+<indexterm><primary>parseXml method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_parseXml.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Parses an XML string conforming to <filename>json.xsd</filename> or
+<filename>json.dtd</filename> back into an ooRexx object tree.  This is
+an instance method.  Internally creates a
+<classname>JsonXmlParser</classname> and delegates to its
+<methodname>parse</methodname> method.</para>
+
+<para>Type preservation is maintained: <literal>&lt;boolean&gt;</literal>
+elements produce <classname>JsonBoolean</classname> instances,
+<literal>&lt;string&gt;</literal> elements produce
+<classname>JsonString</classname> instances,
+<literal>&lt;null/&gt;</literal> produces <literal>.nil</literal>, and
+<literal>&lt;number&gt;</literal> elements produce plain numeric
+strings.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">input</emphasis></term>
+ <listitem><para>An XML string or an <classname>Array</classname> of
+  lines.</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> the ooRexx object
+tree.</para>
+</section>
+
+<!-- parseXmlFile -->
+<section id="mthJsonParseXmlFile"><title>&added52; parseXmlFile</title>
+<indexterm><primary>parseXmlFile method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_parseXmlFile.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Reads an XML file and parses it into an ooRexx object tree.  Opens
+the file, reads all lines into an <classname>Array</classname>, and
+delegates to <methodname>parseXml</methodname>.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">path</emphasis></term>
+ <listitem><para>The file system path to read.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> the ooRexx object
+tree.</para>
+</section>
+
+<!-- toJSON -->
+<section id="mthJsonToJSON"><title>toJSON</title>
+<indexterm><primary>toJSON method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_toJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Encodes an ooRexx object as a JSON text string.  The encoder dispatches
+based on object type: <classname>String</classname> objects are encoded via the
+<function>string2json</function> routine,
+<classname>OrderedCollection</classname> objects as JSON arrays,
+<classname>MapCollection</classname> objects as JSON objects (keys sorted
+alphabetically for reproducible output), <literal>.nil</literal> as
+<literal>null</literal>, and objects with a <methodname>makeJSON</methodname>
+method (including <classname>JsonBoolean</classname>) via that method.  Objects
+with <methodname>makeArray</methodname> or <methodname>makeString</methodname>
+methods are handled as fallbacks.</para>
+
+<para>This method is available both as an instance method and as a class method.
+When called as a class method, a temporary instance is created
+internally.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The ooRexx object to encode.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">legible</emphasis></term>
+ <listitem><para>Optional logical value (default <literal>.false</literal>).
+  When <literal>.true</literal>, the output includes ignorable whitespace
+  (newlines and 3-space indentation) for human readability.  When
+  <literal>.false</literal>, the output is minimised (no extra
+  whitespace).</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> a JSON text string.</para>
+</section>
+
+<!-- toJsonFile (class method) -->
+<section id="mthJsonToJsonFile"><title>toJsonFile (Class Method)</title>
+<indexterm><primary>toJsonFile method</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_toJsonFile.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Convenience class method that encodes an ooRexx object as JSON and writes
+it to a file.  Creates a <classname>Json</classname> instance, delegates to
+<methodname>toJSON</methodname>, and writes the result to the specified
+file.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">fn</emphasis></term>
+ <listitem><para>The file name or file object to write the produced JSON text
+  to.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The ooRexx object to encode.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">legible</emphasis></term>
+ <listitem><para>Optional logical value (default <literal>.false</literal>).
+  When <literal>.true</literal>, the output includes ignorable whitespace for
+  human readability.</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- true (class attribute) -->
+<section id="mthJsonTrueClsMth"><title>true (Class Attribute)</title>
+<indexterm><primary>true attribute</primary>
+<secondary>of Json class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/json_true.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the <classname>JsonBoolean</classname> proxy for
+<literal>.true</literal>.  It can be used interchangeably with ooRexx&apos;
+<literal>.true</literal> or <literal>1</literal> values.</para>
+</section>
+
+</section>
+<!-- End of Json class -->
+
+<!-- ================================================================== -->
+<!--  JsonBoolean Class                                                 -->
+<!-- ================================================================== -->
+<section id="clsJsonBoolean"><title>JsonBoolean Class</title>
+<indexterm><primary>JsonBoolean class</primary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>= method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>\= method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>activate method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>compareTo method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>false attribute</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>init method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>makeJSON method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>makeString method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>true attribute</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>unknown method</secondary></indexterm>
+<indexterm><primary>JsonBoolean class</primary>
+<secondary>value method</secondary></indexterm>
+
+<para>Sentinel class for JSON boolean values.  Two singleton instances
+(<literal>.JsonBoolean~true</literal> and
+<literal>.JsonBoolean~false</literal>) are created at class activation time.
+They behave transparently as <literal>1</literal> and <literal>0</literal>
+via <methodname>makeString</methodname> and the
+<methodname>unknown</methodname> method, but can be detected with
+<literal>isA(.JsonBoolean)</literal> for type-aware serialisation.</para>
+
+<para>It is advised to use the <classname>Json</classname> class attributes
+<literal>.Json~true</literal> and <literal>.Json~false</literal> as convenient
+accessors to the singleton instances.</para>
+
+<para>The <classname>JsonBoolean</classname> class inherits from the
+<classname>Comparable</classname> mixin class.</para>
+
+<table id="ooRexxJsonBooleanClass" frame="all" pgwide="1">
+<title>JsonBoolean Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the Object class</entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Comparable (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the Comparable class</entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">JsonBoolean</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthJsonBooleanActivate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanCompareTo" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanEqual" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanFalseClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanMakeJSON" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanMakeString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanNotEqual" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanTrueClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanUnknown" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonBooleanValue" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+
+<!-- activate (class method) -->
+<section id="mthJsonBooleanActivate"><title>&added52; activate (Class Method)</title>
+<indexterm><primary>activate method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_activate.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Finalises the class initialisation by creating the two singleton class
+attribute values <literal>true</literal> and <literal>false</literal>.  This
+method is called automatically when the class is loaded and does not normally
+need to be invoked directly.</para>
+</section>
+
+<!-- compareTo -->
+<section id="mthJsonBooleanCompareTo"><title>&added52; compareTo</title>
+<indexterm><primary>compareTo method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_compareTo.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Implements the abstract method inherited from the mixinclass
+<classname>Comparable</classname>.  If <emphasis role="italic">other</emphasis>
+is a <classname>JsonBoolean</classname>, its logical value is obtained via the
+<methodname>value</methodname> method; otherwise, the string representation is
+requested.  If the other object has no <methodname>makeString</methodname>
+method, a <classname>Syntax</classname> condition is raised.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">other</emphasis></term>
+ <listitem><para>The other object representing a boolean/logical value.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis>
+<literal>-1</literal> if this value is less than <emphasis role="italic">other</emphasis>,
+<literal>0</literal> if equal,
+<literal>1</literal> if greater.</para>
+</section>
+
+<!-- = -->
+<section id="mthJsonBooleanEqual"><title>&added52; = (Equal)</title>
+<indexterm><primary>= method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_equal.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Equal comparison operator.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">other</emphasis></term>
+ <listitem><para>The other object representing a boolean/logical value.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis>
+<literal>.true</literal> if this object and <emphasis role="italic">other</emphasis>
+are equal, <literal>.false</literal> otherwise.</para>
+</section>
+
+<!-- false (class attribute) -->
+<section id="mthJsonBooleanFalseClsMth"><title>false (Class Attribute)</title>
+<indexterm><primary>false attribute</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_false.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Class getter attribute that returns the singleton representing
+<literal>.false</literal>.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> the
+<classname>JsonBoolean</classname> proxy for <literal>.false</literal>.</para>
+</section>
+
+<!-- init -->
+<section id="mthJsonBooleanInit"><title>&added52; init</title>
+<indexterm><primary>init method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Constructor that stores the logical value.  Note that the
+<methodname>new</methodname> class method is private; only the class itself
+can create instances via the <methodname>activate</methodname> method.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">value</emphasis></term>
+ <listitem><para>A Rexx logical value (<literal>0</literal> or
+  <literal>1</literal>).</para></listitem>
+ </varlistentry>
+</variablelist>
+</section>
+
+<!-- makeJSON -->
+<section id="mthJsonBooleanMakeJSON"><title>&added52; makeJSON</title>
+<indexterm><primary>makeJSON method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_makeJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Renders this object as a JSON string representing its logical value.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> <literal>"true"</literal> or
+<literal>"false"</literal>.</para>
+</section>
+
+<!-- makeString -->
+<section id="mthJsonBooleanMakeString"><title>&added52; makeString</title>
+<indexterm><primary>makeString method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_makeString.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Renders this object as a Rexx string representing its logical value,
+allowing instances of this class to be used as plug-in replacements for Rexx
+logical values.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> <literal>"1"</literal> or
+<literal>"0"</literal>.</para>
+</section>
+
+<!-- \= / <> / >< -->
+<section id="mthJsonBooleanNotEqual"><title>&added52; \= (Not Equal)</title>
+<indexterm><primary>\= method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_notEqual.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Unequal comparison operator.  The synonyms <literal>&lt;&gt;</literal>
+and <literal>&gt;&lt;</literal> forward to this method.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">other</emphasis></term>
+ <listitem><para>The other object representing a boolean/logical value.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis>
+<literal>.true</literal> if this object and <emphasis role="italic">other</emphasis>
+are not equal, <literal>.false</literal> otherwise.</para>
+</section>
+
+<!-- true (class attribute) -->
+<section id="mthJsonBooleanTrueClsMth"><title>true (Class Attribute)</title>
+<indexterm><primary>true attribute</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_true.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Class getter attribute that returns the singleton representing
+<literal>.true</literal>.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> the
+<classname>JsonBoolean</classname> proxy for <literal>.true</literal>.</para>
+</section>
+
+<!-- unknown -->
+<section id="mthJsonBooleanUnknown"><title>&added52; unknown</title>
+<indexterm><primary>unknown method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_unknown.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Forwards any unrecognised message to the underlying string value,
+so that <classname>JsonBoolean</classname> can be used transparently
+wherever a Rexx logical value is expected.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">messageName</emphasis></term>
+ <listitem><para>The name of the unrecognised message.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">arguments</emphasis></term>
+ <listitem><para>The arguments array.</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- value -->
+<section id="mthJsonBooleanValue"><title>&added52; value</title>
+<indexterm><primary>value method</primary>
+<secondary>of JsonBoolean class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonBoolean_value.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the underlying Rexx logical value.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> <literal>1</literal> for true,
+<literal>0</literal> for false.</para>
+</section>
+
+</section>
+<!-- End of JsonBoolean class -->
+
+<!-- ================================================================== -->
+<!--  JsonString Class                                                  -->
+<!-- ================================================================== -->
+<section id="clsJsonString"><title>&added52; JsonString Class</title>
+<indexterm><primary>JsonString class</primary></indexterm>
+<indexterm><primary>JsonString class</primary>
+<secondary>makeJSON method</secondary></indexterm>
+
+<para>A subclass of <classname>String</classname> that forces numeric values to
+be encoded as JSON strings rather than JSON numbers.  When the encoder
+encounters a <classname>JsonString</classname>, it always quotes the value,
+even if it is numeric.  For example,
+<literal>.JsonString~new("123")</literal> encodes as
+<literal>"123"</literal> rather than <literal>123</literal>.</para>
+
+<para>Strings decoded from JSON are returned as
+<classname>JsonString</classname> instances, preserving their identity as
+JSON string values through round-trips.</para>
+
+<para>Since <classname>JsonString</classname> is a subclass of
+<classname>String</classname>, it inherits all string methods and can be used
+transparently wherever a Rexx string is expected.</para>
+
+<table id="ooRexxJsonStringClass" frame="all" pgwide="1">
+<title>JsonString Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">String</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the String class</entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">JsonString</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthJsonStringMakeJSON" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+
+<!-- makeJSON -->
+<section id="mthJsonStringMakeJSON"><title>&added52; makeJSON</title>
+<indexterm><primary>makeJSON method</primary>
+<secondary>of JsonString class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonString_makeJSON.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Encodes this string as a quoted JSON value using the
+<function>string2json</function> routine, regardless of whether the content
+is numeric.</para>
+
+<para><emphasis role="bold">Returns:</emphasis> a JSON-encoded quoted
+string.</para>
+</section>
+
+</section>
+<!-- End of JsonString class -->
+
+<!-- ================================================================== -->
+<!--  JsonError Class                                                   -->
+<!-- ================================================================== -->
+<section id="clsJsonError"><title>&added52; JsonError Class</title>
+<indexterm><primary>JsonError class</primary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>column attribute</secondary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>contextLine attribute</secondary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>init method</secondary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>lineNumber attribute</secondary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>makeString method</secondary></indexterm>
+<indexterm><primary>JsonError class</primary>
+<secondary>message attribute</secondary></indexterm>
+
+<para>Represents an error encountered during JSON parsing.  Instances are
+raised via <literal>Raise Syntax</literal> and carry the error message,
+source location, and the offending input line for diagnostic purposes.</para>
+
+<table id="ooRexxJsonErrorClass" frame="all" pgwide="1">
+<title>JsonError Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the Object class</entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">JsonError</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthJsonErrorColumn" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonErrorContextLine" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonErrorInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonErrorLineNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonErrorMakeString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthJsonErrorMessage" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+
+<!-- column -->
+<section id="mthJsonErrorColumn"><title>&added52; column (Attribute)</title>
+<indexterm><primary>column attribute</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_column.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The 1-based column where the error was detected (0 if unknown).
+This is a read-write attribute.</para>
+</section>
+
+<!-- contextLine -->
+<section id="mthJsonErrorContextLine"><title>&added52; contextLine (Attribute)</title>
+<indexterm><primary>contextLine attribute</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_contextLine.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The source line that triggered the error (empty string if unavailable).
+This is a read-write attribute.</para>
+</section>
+
+<!-- init -->
+<section id="mthJsonErrorInit"><title>&added52; init</title>
+<indexterm><primary>init method</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Creates a new <classname>JsonError</classname> instance.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">message</emphasis></term>
+ <listitem><para>The error description.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">lineNumber</emphasis></term>
+ <listitem><para>Optional 1-based line number (default 0).</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">column</emphasis></term>
+ <listitem><para>Optional 1-based column (default 0).</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">contextLine</emphasis></term>
+ <listitem><para>Optional source line text (default "").</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- lineNumber -->
+<section id="mthJsonErrorLineNumber"><title>&added52; lineNumber (Attribute)</title>
+<indexterm><primary>lineNumber attribute</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_lineNumber.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The 1-based line number where the error was detected (0 if unknown).
+This is a read-write attribute.</para>
+</section>
+
+<!-- makeString -->
+<section id="mthJsonErrorMakeString"><title>&added52; makeString</title>
+<indexterm><primary>makeString method</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_makeString.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a human-readable representation of the error, including the
+line number, column, and context line when available.  The format is:</para>
+
+<programlisting>
+JsonError: <emphasis role="italic">message</emphasis> (line <emphasis role="italic">N</emphasis>, column <emphasis role="italic">M</emphasis>)
+  > <emphasis role="italic">contextLine</emphasis>
+</programlisting>
+
+<para><emphasis role="bold">Returns:</emphasis> a formatted error string.</para>
+</section>
+
+<!-- message -->
+<section id="mthJsonErrorMessage"><title>&added52; message (Attribute)</title>
+<indexterm><primary>message attribute</primary>
+<secondary>of JsonError class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonError_message.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>The human-readable error description.  This is a read-write
+attribute.</para>
+</section>
+
+</section>
+<!-- End of JsonError class -->
+
+<!-- ================================================================== -->
+<!--  JsonXmlEmitter Class                                              -->
+<!-- ================================================================== -->
+<section id="clsJsonXmlEmitter"><title>&added52; JsonXmlEmitter Class</title>
+<indexterm><primary>JsonXmlEmitter class</primary></indexterm>
+
+<para>Serialises an in-memory ooRexx object tree to XML conforming to either
+<filename>json.xsd</filename> (with namespace
+<literal>urn:json:xml:1.0</literal>) or <filename>json.dtd</filename>
+(with DOCTYPE, no namespace).</para>
+
+<para>This class is used internally by
+<methodname>Json~jsonToXml</methodname> and
+<methodname>Json~jsonToXmlFile</methodname>.  It can also be used
+directly if more control over the emission process is needed.</para>
+
+<para>The XML vocabulary maps JSON types to elements as follows:</para>
+<informaltable>
+<tgroup cols="3">
+<colspec colwidth="1*" />
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
+<thead>
+<row><entry>JSON type</entry><entry>XML element</entry>
+<entry>Content</entry></row>
+</thead>
+<tbody>
+<row><entry>root</entry><entry><literal>&lt;json&gt;</literal></entry>
+<entry>one value element</entry></row>
+<row><entry>object</entry><entry><literal>&lt;object&gt;</literal></entry>
+<entry><literal>&lt;entry&gt;</literal> children</entry></row>
+<row><entry>(entry)</entry><entry><literal>&lt;entry&gt;</literal></entry>
+<entry><literal>&lt;n&gt;</literal> + <literal>&lt;value&gt;</literal></entry></row>
+<row><entry>array</entry><entry><literal>&lt;array&gt;</literal></entry>
+<entry><literal>&lt;item&gt;</literal> children</entry></row>
+<row><entry>string</entry><entry><literal>&lt;string&gt;</literal></entry>
+<entry>text (XML-escaped)</entry></row>
+<row><entry>number</entry><entry><literal>&lt;number&gt;</literal></entry>
+<entry>text</entry></row>
+<row><entry>boolean</entry><entry><literal>&lt;boolean&gt;</literal></entry>
+<entry><literal>true</literal> or <literal>false</literal></entry></row>
+<row><entry>null</entry><entry><literal>&lt;null/&gt;</literal></entry>
+<entry>self-closing</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+
+<!-- init -->
+<section id="mthJsonXmlEmitterInit"><title>&added52; init</title>
+<indexterm><primary>init method</primary>
+<secondary>of JsonXmlEmitter class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonXmlEmitter_init.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Creates a new <classname>JsonXmlEmitter</classname> instance.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">schema</emphasis></term>
+ <listitem><para>Optional schema type: <literal>"xsd"</literal> (default)
+  or <literal>"dtd"</literal>.  Determines whether the output includes an
+  XML namespace declaration (XSD) or a DOCTYPE declaration
+  (DTD).</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- emit -->
+<section id="mthJsonXmlEmitterEmit"><title>&added52; emit</title>
+<indexterm><primary>emit method</primary>
+<secondary>of JsonXmlEmitter class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonXmlEmitter_emit.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Emits the given ooRexx object tree as a well-formed XML string.
+Object keys are sorted alphabetically for deterministic output.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The root object to serialise.</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> a well-formed XML
+string.</para>
+</section>
+
+</section>
+<!-- End of JsonXmlEmitter class -->
+
+<!-- ================================================================== -->
+<!--  JsonXmlParser Class                                               -->
+<!-- ================================================================== -->
+<section id="clsJsonXmlParser"><title>&added52; JsonXmlParser Class</title>
+<indexterm><primary>JsonXmlParser class</primary></indexterm>
+
+<para>Parses XML conforming to <filename>json.xsd</filename> or
+<filename>json.dtd</filename> back into ooRexx objects.  This is a
+purpose-built parser for the JSON XML vocabulary &#x2014; it is not a
+general-purpose XML parser.</para>
+
+<para>This class is used internally by
+<methodname>Json~parseXml</methodname> and
+<methodname>Json~parseXmlFile</methodname>.  It can also be used
+directly.</para>
+
+<para>Type preservation is maintained during parsing:
+<literal>&lt;boolean&gt;</literal> elements produce
+<classname>JsonBoolean</classname> instances,
+<literal>&lt;string&gt;</literal> elements produce
+<classname>JsonString</classname> instances,
+<literal>&lt;number&gt;</literal> elements produce plain numeric
+strings (normalised via <literal>+ 0</literal>),
+<literal>&lt;object&gt;</literal> elements produce
+<classname>Directory</classname> instances, and
+<literal>&lt;array&gt;</literal> elements produce
+<classname>Array</classname> instances.</para>
+
+<!-- parse -->
+<section id="mthJsonXmlParserParse"><title>&added52; parse</title>
+<indexterm><primary>parse method</primary>
+<secondary>of JsonXmlParser class</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/jsonXmlParser_parse.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Parses an XML string into an ooRexx object tree.</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">input</emphasis></term>
+ <listitem><para>A well-formed XML string conforming to the JSON XML
+  vocabulary.</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis> the ooRexx object
+tree.</para>
+</section>
+
+</section>
+<!-- End of JsonXmlParser class -->
+
+<!-- ================================================================== -->
+<!--  string2json Routine                                               -->
+<!-- ================================================================== -->
+<section id="rtString2json"><title>&added52; string2json Public Routine</title>
+<indexterm><primary>string2json routine</primary></indexterm>
+<indexterm><primary>routine</primary>
+<secondary>string2json</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/json/string2json.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Encodes a Rexx string as a JSON value and appends it to a
+<classname>MutableBuffer</classname>.  If the string is numeric and is a plain
+<classname>String</classname> (not a <classname>JsonString</classname>), it is
+appended unquoted as a JSON number, normalised via <literal>+ 0</literal>
+(e.g. <literal>.5</literal> becomes <literal>0.5</literal>,
+<literal>042</literal> becomes <literal>42</literal>).  If it is a
+<classname>JsonString</classname>, the numeric value is quoted.  Non-numeric
+strings are always quoted with proper JSON escaping of control characters,
+backslashes, and double quotes.</para>
+
+<para>Any <literal>\uXXXX</literal> pattern already present in the source string
+is passed through unchanged (see the <literal>json.cls</literal> package
+documentation for the rationale).</para>
+
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+ <varlistentry><term><emphasis role="italic">buffer</emphasis></term>
+ <listitem><para>The <classname>MutableBuffer</classname> to append
+  to.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">rexxObject</emphasis></term>
+ <listitem><para>The string to encode.</para></listitem></varlistentry>
+ <varlistentry><term><emphasis role="italic">forceQuoted</emphasis></term>
+ <listitem><para>Optional; if <literal>.true</literal>, always quote the value
+  regardless of whether it is numeric.  This is used when encoding JSON object
+  keys, which must always be quoted strings.</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</chapter>

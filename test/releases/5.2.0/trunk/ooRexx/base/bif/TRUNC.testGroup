@@ -1,0 +1,222 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.TRUNC.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "TRUNC.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v2 = 2
+    .local~v10 = 10
+    .local~v50 = 50.00
+    .local~v60 = 60.99
+    .local~vzeros = copies('0',10000)
+    .local~vnines = copies('9',250)
+
+::method 'test001'
+    self~assertSame('0', trunc(0))
+
+::method 'test002'
+    self~assertSame('0.00', trunc( -0.0067 ,2))
+
+::method 'test003'
+    self~assertSame('0.00', trunc('-0.0067',2))
+
+::method 'test004'
+    self~assertSame('0', trunc('-0'))
+
+::method 'test005'
+    self~assertSame('1', trunc(000001))
+
+::method 'test006'
+    self~assertSame('5', trunc(.5E+1))
+
+::method 'test007'
+    self~assertSame('9', trunc('     9     '))
+
+::method 'test008'
+    self~assertSame('11', trunc('3131'x))
+
+::method 'test009'
+    self~assertSame('-4927', trunc(-4927.99))
+
+::method 'test010'
+    self~assertSame('50', trunc(.v50))
+
+::method 'test011'
+    self~assertSame('110', trunc(.v50+.v60))
+
+::method 'test012'
+    self~assertSame(42, trunc(21.001*2))
+
+::method 'test013'
+    self~assertSame('-2000', trunc('-'||'2'||'.'||'E'||'+'||'3'))
+
+::method 'test014'
+    self~expectSyntax(93.943)
+    xre = trunc('AB.CD')
+
+::method 'test015'
+    numeric digits 9
+    self~assertSame(102939, trunc(102938.999999))
+    numeric digits 18
+    self~assertSame(102939, trunc(102938.999999999999999))
+
+::method 'test016'
+    self~assertSame(0, trunc(.1111111111))
+
+::method 'test017'
+    numeric digits 9
+    self~assertSame(1, trunc(.9999999999))
+    numeric digits 18
+    self~assertSame(1, trunc(.9999999999999999999))
+
+::method 'test018'
+    self~assertSame(255, trunc('  000255  ','30'x))
+
+::method 'test019'
+    self~assertSame(256.00000, trunc(.000256E+6,' 5 '))
+
+::method 'test020'
+    numeric digits 9
+    self~assertSame(32768.32770, trunc(.3276832768E+5,.005E+3))
+
+::method 'test021'
+    numeric digits 9
+    self~assertSame(65536.6554000000, trunc(65536.65536,.v10))
+
+::method 'test022'
+    numeric digits 9
+    self~assertSame(65536.65540000000000000000, trunc(65536.65536,.v10*2))
+
+::method 'test023'
+    self~expectSyntax(40.12)
+    xre=trunc(100000,'V')
+
+::method 'test024'
+    self~assertSame(65536.65, trunc(          65536.65536       ,   2                   ))
+
+::method 'test025'
+    numeric digits 9
+    self~assertSame(0.1111111110, trunc(.1111111111,.v10))
+    numeric digits 18
+    self~assertSame(0.1111111111111111110, trunc(.1111111111111111111,19))
+
+::method 'test026'
+    numeric digits 9
+    self~assertSame('1.'||copies('0',42), trunc(.9999999999,.v10+32))
+    numeric digits 18
+    self~assertSame('1.'||copies('0',42), trunc(.9999999999999999999,.v10+32))
+
+::method 'test027'
+    numeric digits 10
+    self~assertSame(0.11111, trunc(.1111111111,.v10/.v2))
+
+::method 'test028'
+    numeric digits 10
+    self~assertSame(0.1111111111, trunc(.1111111111,.v10))
+
+::method 'test029'
+    numeric digits 10
+    self~assertSame('0.9999999999'||copies('0',32), trunc(.9999999999,.v10+32))
+
+::method 'test030'
+    self~assertSame('1'||copies('0',250)||'.00000', trunc(.vnines,5))
+
+::method 'test031'
+    self~assertSame('0.0000000000', trunc(.vzeros,10))
+
+::method 'test032'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = copies('3',100000)
+    numeric digits 9
+    self~assertSame(copies('3',9)||copies('0',99991)||'.000000000000000', trunc(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,15))
+
+::method 'test033'
+    self~expectSyntax(93.943)
+    xre=trunc(nov,5)
+
+::method 'test034'
+    self~expectSyntax(40.12)
+    xre=trunc(5,nov)
+
+::method 'test035'
+    self~expectSyntax(40.12)
+    xre=trunc(nov1,no.v2)
+
+::method 'test036'
+    self~expectSyntax(93.943)
+    xre=trunc(nov,5)
+
+::method 'test037'
+    self~expectSyntax(40.12)
+    xre=trunc(5,nov)
+
+::method 'test038'
+    self~expectSyntax(40.12)
+    xre=trunc(nov1,no.v2)
+
+::method 'test039'
+    self~assertSame('77.9900', trunc(trunc(77.77)||'.'||trunc(99.99),trunc(4,2)))
+
+::method 'test040'
+    .local~remove(v2)
+    .local~remove(v10)
+    .local~remove(v50)
+    .local~remove(v60)
+    .local~remove(vzeros)
+    .local~remove(vnines)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_TRUNC"
+    self~assertSame(12, TRUNC(12.3))
+    self~assertSame(127.097, TRUNC(127.09782,3))
+    self~assertSame(127.100, TRUNC(127.1,3))
+    self~assertSame(127.00, TRUNC(127,2))
+
+

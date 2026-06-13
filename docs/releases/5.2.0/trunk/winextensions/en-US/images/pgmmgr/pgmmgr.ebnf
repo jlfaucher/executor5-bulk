@@ -1,0 +1,24 @@
+pgmmgr_new ::= 'new'
+
+pgmmgr_adddesktopicon ::= 'addDesktopIcon(' name ',' program ',' iconfile? ',' ( '0' | iconr )?
+                                            ',' workdir? ',' ( 'PERSONAL' | 'COMMON' )?
+                                            ',' args? ',' hotkey? ',' 
+                                            ( 'NORMAL' | 'MAXIMIZED' | 'MINIMIZED' )? ')'
+
+pgmmgr_addshortcut ::= 'addShortcut(' name ',' program ',' iconfile? ',' ( '0' | iconr )?
+                                      ',' workdir? ',' ( 'PERSONAL' | 'COMMON' )?
+                                      ',' args? ',' hotkey? ',' 
+                                      ( 'NORMAL' | 'MAXIMIZED' | 'MINIMIZED' )? ')'
+
+pgmmgr_addgroup ::= 'addGroup(' group ')'
+
+pgmmgr_additem ::= 'addItem(' shortcut ',' program ',' iconfile? ',' iconnumber? ',' workdir? ')'
+
+pgmmgr_deletedesktopicon ::= 'deleteDesktopIcon(' name ',' ( 'PERSONAL' | 'COMMON' ) ')'
+
+pgmmgr_deletegroup ::= 'deleteGroup(' group ')'
+
+pgmmgr_deleteitem ::= 'deleteItem(' shortcut ')'
+
+pgmmgr_showgroup ::= 'showGroup(' group ( ',' ( 'MIN' | 'MAX' ) )? ')'
+

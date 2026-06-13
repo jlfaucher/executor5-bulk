@@ -1,0 +1,1049 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Message.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Message.testGroup" subclass ooTestCase public
+
+::method test_send
+  m = .message~new('abc', 'length')
+  self~assertEquals('abc', m~target)
+  self~assertEquals('LENGTH', m~messageName)
+  self~assertTrue(m~arguments~isEmpty)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+  self~assertEquals(3, m~send)
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+  -- verify this can be invoked a second time
+  self~assertEquals(3, m~send)
+  -- specify a different receiver
+  self~assertEquals(5, m~send("aeiou"))
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+
+  -- new method that takes arguments
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  self~assertEquals('c', m~send)
+  self~assertEquals('a', m~send(,1))
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertEquals('e', m~send('def',2))
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+  self~assertEquals('i', m~sendWith('ghi',.array~of(3)))
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+
+  self~assertEquals('g', m~sendWith(,.array~of(1)))
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+-- simple start tests
+::method test_start
+  m = .message~new('abc', 'length')
+
+  m~start
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- specify a different receiver
+  m = .message~new('abc', 'length')
+  m~start('aeiou')
+
+  self~assertEquals(5, m~result)
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+
+  -- new method that takes arguments
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start
+  self~assertEquals('c', m~result)
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start(,1)
+  self~assertEquals('a', m~result)
+
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start('def',2)
+  self~assertEquals('e', m~result)
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  m~startWith('ghi',.array~of(3))
+  self~assertEquals('i', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+
+  m = .message~new('ghi', 'subchar', 'individual', 3)
+  m~startWith(,.array~of(1))
+  self~assertEquals('g', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+  m = .message~new(.StartTester~new, 'delayValueReturn', 'i', 'abc')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- wait for completion
+  self~assertEquals('abc', m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  m = .message~new(.StartTester~new, 'delayNovalueReturn')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  self~assertEquals(.nil, m~result)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  self~disableTraceOutput
+
+  m = .message~new(.StartTester~new, 'delayErrorReturn')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- use wait rather than result because we don't want to raise the error
+  m~wait
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(42.3, condition~code)
+
+  m = .message~new(.StartTester~new, 'stackframes')
+  m~start
+  frames = m~result
+  self~assertIsA(frames, .array)
+  self~assertEquals(1, frames~items)
+
+-- simple reply tests
+::method test_reply
+  mbase = .message~new('abc', 'length')
+
+  m = mbase~reply
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- verify that we can reuse this object
+  m = mbase~reply
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- specify a different receiver
+  mbase = .message~new('abc', 'length')
+  m = mbase~reply('aeiou')
+
+  self~assertEquals(5, m~result)
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+  self~assertEquals('aeiou', mbase~target)
+
+  -- new method that takes arguments
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(3)))
+  m = mbase~reply
+  self~assertEquals('c', m~result)
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~reply(,1)
+  self~assertEquals('a', m~result)
+
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertTrue(mbase~arguments~equivalent(.array~of(1)))
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~reply('def',2)
+  self~assertEquals('e', m~result)
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+  self~assertEquals('def', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(2)))
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~replyWith('ghi',.array~of(3))
+  self~assertEquals('i', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  self~assertEquals('ghi', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(3)))
+
+  mbase = .message~new('ghi', 'subchar', 'individual', 3)
+  m = mbase~replyWith(,.array~of(1))
+  self~assertEquals('g', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertEquals('ghi', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(1)))
+
+  mbase = .message~new(.StartTester~new, 'delayValueReturn', 'i', 'abc')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- wait for completion
+  self~assertEquals('abc', m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  mbase = .message~new(.StartTester~new, 'delayNovalueReturn')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  self~assertEquals(.nil, m~result)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  self~disableTraceOutput
+
+  mbase = .message~new(.StartTester~new, 'delayErrorReturn')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- use wait rather than result because we don't want to raise the error
+  m~wait
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(42.3, condition~code)
+
+  mbase = .message~new(.StartTester~new, 'stackframes')
+  m = mbase~reply
+  frames = m~result
+  self~assertIsA(frames, .array)
+  self~assertEquals(1, frames~items)
+
+::method test_notify
+  m = .message~new('abc', 'reverse')
+  -- messages should be message notifiers
+  self~assertIsA(m, .MessageNotification)
+  n1 = .notificationCounter~new
+  mn1 = .message~new(n1, 'countNotification')
+  m~notify(mn1)
+  m~send
+
+  self~assertEquals(1, n1~count)
+  -- add a second notifier
+  n2 = .notificationCounter~new
+  m~notify(n2)
+  -- because we have a completed message, this notification object
+  -- is notified immediately.
+  self~assertEquals(1, n2~count)
+
+  m~send
+  self~assertEquals(2, n1~count)
+  self~assertEquals(2, n2~count)
+  self~assertSame(m, n2~lastMessage)
+
+  -- make a copy...this should get all of the notifiers
+  m2 = m~copy
+  n3 = .notificationCounter~new
+  m2~notify(n3)
+  -- this is a new copy and all state should be reset.  This
+  -- should not have been notified yet
+  self~assertEquals(0, n3~count)
+
+  m~send
+  m2~send
+
+  self~assertEquals(4, n1~count)
+  self~assertEquals(4, n2~count)
+  self~assertSame(m2, n2~lastMessage)
+  self~assertEquals(1, n3~count)
+  self~assertSame(m2, n3~lastMessage)
+
+  -- now test with reply
+  m3 = m~reply
+  m3~wait
+
+  self~assertEquals(5, n1~count)
+  self~assertEquals(5, n2~count)
+  self~assertSame(m3, n2~lastMessage)
+
+  -- and finally a start
+  m~start
+  m~wait
+
+  self~assertEquals(6, n1~count)
+  self~assertEquals(6, n2~count)
+  self~assertSame(m, n2~lastMessage)
+
+::method test_super_override
+  t1 = .SuperTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+
+  self~assertEquals(123, t1~sendMsg(m))
+  self~assertEquals(123, t1~replyMsg(m))
+  self~assertEquals(123, t1~startMsg(m))
+
+  m = .message~new(t1, ('testOverride', .SuperTester))
+
+  self~assertEquals(456, t1~sendMsg(m))
+  self~assertEquals(456, t1~replyMsg(m))
+  self~assertEquals(456, t1~startMsg(m))
+
+::method test_no_args
+  self~expectSyntax(93.901)
+  m = .message~new
+
+::method test_no_target
+  self~expectSyntax(88.901)
+  m = .message~new(, 'length')
+
+::method test_no_message
+  self~expectSyntax(93.901)
+  m = .message~new('abc')
+
+::method test_no_option
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'substr', , 1, 2)
+
+::method test_invalid_option
+  self~expectSyntax(93.915)
+  m = .message~new('abc', 'substr', 'something', 1, 2)
+
+::method test_array_option_no_arg
+  self~expectSyntax(93.901)
+  m = .message~new('abc', 'substr', 'array')
+
+::method test_sendwith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi')
+
+::method test_sendwith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi', .nil)
+
+::method test_sendwith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi', (1,2), 3)
+
+::method test_startwith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi')
+
+::method test_startwith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi', .nil)
+
+::method test_startwith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi', (1,2), 3)
+
+::method test_replywith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi')
+
+::method test_replywith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi', .nil)
+
+::method test_replywith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi', (1,2), 3)
+
+-- issued from a different class context
+::method test_send_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  self~assertEquals(123, m~send)
+
+-- issued from a different class context
+::method test_sendwith_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  self~assertEquals(123, m~sendwith(, (1,2)))
+
+-- issued from a different class context
+::method test_start_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~start
+  self~assertEquals(123, m~result)
+
+-- issued from a different class context
+::method test_startwith_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~startWith(, (1,2))
+  self~assertEquals(123, m~result)
+
+-- issued from a different class context
+::method test_reply_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  self~assertEquals(123, m~reply~result)
+
+-- issued from a different class context
+::method test_replywith_override_context
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  self~assertEquals(123, m~replyWith(, (1,2))~result)
+
+::method test_override_empty_array
+  self~expectSyntax(93.946)
+  m = .message~new(.nil, .array~new(0))
+
+::method test_override_missing_name
+  self~expectSyntax(88.901)
+  m = .message~new(.nil, (,.SuperTesterBase))
+
+::method test_override_missing_scope
+  self~expectSyntax(93.946)
+  m = .message~new(.nil, ('testOverride',))
+
+::method test_override_extra_stuff
+  self~expectSyntax(93.946)
+  m = .message~new(.nil, ('testOverride', .SuperTesterBase, 'Extra'))
+
+::method test_override_non_string_name
+  self~expectSyntax(88.909)
+  m = .message~new(.nil, (.array, .SuperTesterBase))
+
+::method test_override_non_class_scope
+  self~expectSyntax(88.914)
+  m = .message~new(.nil, ('testOverride', 'SuperTesterBase'))
+
+::method test_override_non_class_scope2
+  self~expectSyntax(88.914)
+  m = .message~new(.nil, ('testOverride', .nil))
+
+::method test_send_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~sendMsg(m)
+
+::method test_sendwith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~sendWithMsg(m, (1,2))
+
+::method test_start_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~startMsg(m)
+
+::method test_startwith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~startWithMsg(m, (1,2))
+
+::method test_reply_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~replyMsg(m)
+
+::method test_replywith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~replyWithMsg(m, (1,2))
+
+::method test_send_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~sendMsg(m)
+
+::method test_sendwith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~sendWithMsg(m, (1,2))
+
+::method test_start_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~startMsg(m)
+
+::method test_startwith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~startWithMsg(m, (1,2))
+
+::method test_reply_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~replyMsg(m)
+
+::method test_replywith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~replyWithMsg(m, (1,2))
+
+::method test_send_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~send
+
+::method test_sendwith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~sendWith(,(1,2))
+
+::method test_start_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~start
+  m~result
+
+::method test_startwith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~startWith(,(1,2))
+  m~result
+
+::method test_reply_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~reply~result
+
+::method test_replywith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~replyWith(,(1,2))~result
+
+::method test_halt_start
+  self~disableTraceOutput
+  m = .message~new(.startTester~new, 'delayValueReturn')
+  -- test that an inactive message returns false
+  self~assertFalse(m~halt)
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt)
+  m~wait
+
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(4.1, condition~code)
+
+  m = .message~new(.startTester~new, 'delayValueReturn')
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt('HALT Test'))
+  m~wait
+
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(4.1, condition~code)
+  -- not description set if the error condition is raised
+  self~assertEquals('', condition~description)
+
+  m = .message~new(.startTester~new, 'delayHaltReturn')
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt('HALT Test'))
+
+  m~wait
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~result
+  self~assertIsA(condition, .directory)
+  self~assertEquals('HALT', condition~condition)
+  -- not description set if the error condition is raised
+  self~assertEquals('HALT Test', condition~description)
+
+-- MESSAGEINSTRUCTION
+::method test_override_from_nonself
+  arr="a","b"
+  self~assertEquals(2,arr~items)
+  self~assertEquals(2,arr~items:.collection)
+  self~assertEquals(2,arr~copy:.object~items)
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~items:not_a_superclass)
+
+
+::method test_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  self~assertEquals(2,arr~items:.rexxinfo)   -- is not a superclass of .array
+
+
+::method test_override_among_mixinclasses
+  o=.mixin2~new
+  self~assertEquals("mixin2" , o~info)
+  self~assertEquals("mixin2" , o~info:.mixin2)
+  self~assertEquals("base"   , o~info:.base)
+  self~assertEquals("mixin1a", o~info:.mixin1a)
+  self~assertEquals("mixin1b", o~info:.mixin1b)
+
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  o~info:.nixinoxi
+
+
+-- SEND at class object level in mixins
+::method test_send_override_among_mixinclasses_class
+  o=.mixin2       -- use the class object
+  m=.message~new(o,"clzInfo")
+  self~assertEquals("mixin2_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin2))
+  self~assertEquals("mixin2_class" , m~send)
+
+  m=.message~new(o,("clzInfo",.base))
+  self~assertEquals("base_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin1a))
+  self~assertEquals("mixin1a_class" , m~send)
+  m=.message~new(o,("clzInfo",.mixin1b))
+  self~assertEquals("mixin1b_class" , m~send)
+
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m=.message~new(o, ("clzInfo",.nixinoxi))
+  m~send
+
+-- SEND
+::method test_send_override_from_nonself
+  arr="a","b"
+  m=.message~new(arr, "items")
+  self~assertEquals(2,m~send)
+
+  m=.message~new(arr, ("items",.collection) )
+  self~assertEquals(2,m~send)
+
+  m1=.message~new(arr, ("copy",.object) )
+  m2=.message~new(arr, ("items") )
+  self~assertEquals(2,m2~send(m1~send))
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)  -- SCOPE must be an instance of the Class class.
+  m=.message~new(arr, ("items",not_a_superclass) )
+  self~assertEquals(2,m~send)
+
+::method test_send_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  m=.message~new(arr, ("items",.rexxinfo))
+  self~assertEquals(2,m~send)   -- is not a superclass of .array
+
+
+::method test_send_override_among_mixinclasses
+  o=.mixin2~new
+  m=.message~new(o,"info")
+  self~assertEquals("mixin2" , m~send)
+  m=.message~new(o,("info",.mixin2))
+  self~assertEquals("mixin2" , m~send)
+
+  m=.message~new(o,("info",.base))
+  self~assertEquals("base" , m~send)
+  m=.message~new(o,("info",.mixin1a))
+  self~assertEquals("mixin1a" , m~send)
+  m=.message~new(o,("info",.mixin1b))
+  self~assertEquals("mixin1b" , m~send)
+
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m=.message~new(o, ("info",.nixinoxi))
+  m~send
+
+-- SENDWITH
+::method test_sendWith_override_from_nonself
+  arr="a","b"
+  m=.message~new(arr, "items")
+  self~assertEquals(2,m~sendWith(arr,.array~new))
+
+  m=.message~new(arr, ("items",.collection) )
+  self~assertEquals(2,m~sendWith(arr,.array~new))
+
+  m1=.message~new(arr, ("copy",.object) )
+  m2=.message~new(arr, ("items") )
+  self~assertEquals(2,m2~sendWith(m1~sendWith(arr,.array~new),.array~new))
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)  -- SCOPE must be an instance of the Class class.
+  m=.message~new(arr, ("items",not_a_superclass) )
+  self~assertEquals(2,m~sendWith(arr,.array~new))
+
+::method test_sendWith_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  m=.message~new(arr, ("items",.rexxinfo))
+  self~assertEquals(2,m~sendWith(arr,.array~new))   -- is not a superclass of .array
+
+
+::method test_sendWith_override_among_mixinclasses
+  o=.mixin2~new
+  m=.message~new(o,"info")
+  self~assertEquals("mixin2" , m~sendWith(o,(1,2)))
+  m=.message~new(o,("info",.mixin2))
+  self~assertEquals("mixin2" , m~sendWith(o,(1,2)))
+
+  m=.message~new(o,("info",.base))
+  self~assertEquals("base" , m~sendWith(o,(1,2)))
+  m=.message~new(o,("info",.mixin1a))
+  self~assertEquals("mixin1a" , m~sendWith(o,(1,2)))
+  m=.message~new(o,("info",.mixin1b))
+  self~assertEquals("mixin1b" , m~sendWith(o,(1,2)))
+
+  m=.message~new(o, ("info",.nixinoxi))
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m~sendWith(o,(1,2))
+
+-- START
+::method test_start_override_from_nonself
+  arr="a","b"
+  m=.message~new(arr, "items")
+  self~assertEquals(2,m~~start~result)
+
+  m=.message~new(arr, ("items",.collection) )
+  self~assertEquals(2,m~~start~result)
+
+  m1=.message~new(arr, ("copy",.object) )
+  m2=.message~new(arr, ("items") )
+  self~assertEquals(2,m2~~start(m1~~start~result)~result)
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)  -- SCOPE must be an instance of the Class class.
+  m=.message~new(arr, ("items",not_a_superclass) )
+  self~assertEquals(2,m~~start~result)
+
+::method test_start_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  m=.message~new(arr, ("items",.rexxinfo))
+  self~assertEquals(2,m~~start~result)   -- is not a superclass of .array
+
+
+::method test_start_override_among_mixinclasses
+  o=.mixin2~new
+  m=.message~new(o,"info")
+  self~assertEquals("mixin2" , m~~start~result)
+  m=.message~new(o,("info",.mixin2))
+  self~assertEquals("mixin2" , m~~start~result)
+
+  m=.message~new(o,("info",.base))
+  self~assertEquals("base" , m~~start~result)
+  m=.message~new(o,("info",.mixin1a))
+  self~assertEquals("mixin1a" , m~~start~result)
+  m=.message~new(o,("info",.mixin1b))
+  self~assertEquals("mixin1b" , m~~start~result)
+
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m=.message~new(o, ("info",.nixinoxi))
+  m~start~result
+
+-- STARTWITH
+::method test_startWith_override_from_nonself
+  arr="a","b"
+  m=.message~new(arr, "items")
+  self~assertEquals(2,m~~startWith(arr,.array~new)~result)
+
+  m=.message~new(arr, ("items",.collection) )
+  self~assertEquals(2,m~~startWith(arr,.array~new)~result)
+
+  m1=.message~new(arr, ("copy",.object) )
+  m2=.message~new(arr, ("items") )
+  self~assertEquals(2,m2~~startWith(m1~~startWith(arr,.array~new)~result,.array~new)~result)
+
+  not_a_superclass="nixi, noxi"
+  self~expectSyntax(88.914)  -- SCOPE must be an instance of the Class class.
+  m=.message~new(arr, ("items",not_a_superclass) )
+  self~assertEquals(2,m~~startWith(arr,.array~new)~result)
+
+::method test_startWith_override_from_nonself_method_not_in_superclass
+  arr="a","b"
+  self~expectSyntax(88.914)   -- "Argument SCOPE must be an instance of the Class class."
+  m=.message~new(arr, ("items",.rexxinfo))
+  self~assertEquals(2,m~~startWith(arr,.array~new)~result)   -- is not a superclass of .array
+
+
+::method test_startWith_override_among_mixinclasses
+  o=.mixin2~new
+  m=.message~new(o,"info")
+  self~assertEquals("mixin2" , m~~startWith(o,(1,2))~result)
+  m=.message~new(o,("info",.mixin2))
+  self~assertEquals("mixin2" , m~~startWith(o,(1,2))~result)
+
+  m=.message~new(o,("info",.base))
+  self~assertEquals("base" , m~~startWith(o,(1,2))~result)
+  m=.message~new(o,("info",.mixin1a))
+  self~assertEquals("mixin1a" , m~~startWith(o,(1,2))~result)
+  m=.message~new(o,("info",.mixin1b))
+  self~assertEquals("mixin1b" , m~~startWith(o,(1,2))~result)
+
+  m=.message~new(o, ("info",.nixinoxi))
+  self~expectSyntax(93.957)   -- "Target object "a MIXIN2" is not a subclass of the message override scope (The NIXINOXI class)."
+  m~~startWith(o,(1,2))~result
+
+
+::class nixinoxi     -- has info method, but class is on its own
+::method clzInfo class
+  return "nixinoxi_class"
+
+::method info
+  return "nixinoxi"
+
+::class base
+::method clzInfo class
+  return "base_class"
+::method info
+  return "base"
+
+::class mixin1a mixinclass base
+::method clzInfo class
+  return "mixin1a_class"
+::method info
+  return "mixin1a"
+
+::class mixin1b mixinclass base
+::method clzInfo class
+  return "mixin1b_class"
+::method info
+  return "mixin1b"
+
+::class mixin2 mixinclass mixin1b inherit mixin1a
+::method clzInfo class
+  return "mixin2_class"
+::method info
+  return "mixin2"
+
+
+
+-- simple class with methods for testing async operation
+::class StartTester
+::method delayValueReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+
+  -- return the first argument as a result
+  return arg(1)
+
+::method delayNovalueReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+  return  -- no return value on this one
+
+::method delayErrorReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+
+  return 1/0   -- cause an execution error
+
+::method delayHaltReturn
+  signal on HALT
+  -- 2 seconds should be long enough
+  call syssleep 2
+  x = 123
+  return .nil
+
+  halt:
+  return condition('o')
+
+
+-- return the stack frames to verify this is on another thread.
+::method stackFrames
+  return .context~stackFrames
+
+
+::class NotificationCounter inherit MessageNotification
+::method init
+  expose count lastMessage
+  count = 0
+  lastMessage = .nil
+
+::method countNotification
+  expose count
+  count += 1
+
+::attribute count
+::attribute lastMessage
+
+::method messageComplete
+  use strict arg message
+
+  self~countNotification
+  self~lastMessage = message
+
+-- base class for testing message overrides
+::class SuperTesterBase
+::method testOverride
+  return 123
+
+
+-- used for testing messages with superclass overrides
+::class SuperTester subclass SuperTesterBase
+::method sendMsg unguarded
+  use strict arg msg
+  return msg~send
+
+::method startMsg unguarded
+  use strict arg msg
+  msg~start
+  return msg~result
+
+::method replyMsg unguarded
+  use strict arg msg
+  m2 = msg~reply
+  return m2~result
+
+::method sendWithMsg unguarded
+  use strict arg msg, args
+  return msg~sendWith(,args)
+
+::method startWithMsg unguarded
+  use strict arg msg, args
+  msg~startWith(,args)
+  return msg~result
+
+::method replyWithMsg unguarded
+  use strict arg msg, args
+  m2 = msg~replyWith(,args)
+  return m2~result
+
+::method testOverride
+  return 456
+
+
+::options novalue error

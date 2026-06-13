@@ -1,0 +1,212 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Chapter5Section1.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: Chapter5Section1.testGroup - - - - - - - - - - - - - - - - - - - - -*\
+
+    The Chapter 5, section 1 test unit class.  Each method starting with 'test_'
+    is an individual test case for an example in this section of the
+    documentation.
+
+    Note that in the comment for the test cases here, there is a reference to
+    the exact section of the doc that the example is in.  It is highly likely
+    that the section numbers will change in the documentation.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Chapter5Section1.testGroup' public subclass ooTestCase
+
+  /* test_object_start( )- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Test the example from 5.1.1.19 (currently.)  This is the example for the
+    Object class, the start method of the Object class.  The following is
+    the current example:
+
+    world=.WorldObject~new
+    msg1=world~start("HELLO")                /* same as next line     */
+    msg2=.message~new(world,"HELLO")~~start  /* same as previous line */
+
+    say msg1~result           /* Produces Hello world 21:04:25.065000 */
+                              /* for example                          */
+    say msg2~result           /* Produces Hello world 21:04:25.081000 */
+                              /* for example                          */
+
+    ::class 'WorldObject' public
+    ::method hello
+      return "Hello world" time('L')
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_object_start
+
+    world=.WorldObject~new
+    self~assertTrue(world~class == .WorldObject, "world object must be a WorldObj object")
+
+    msg1=world~start("HELLO")
+    self~assertTrue(msg1~class == .Message, "msg1 must be a Message object")
+
+    j = SysSleep(.025)
+
+    msg2=.message~new(world,"HELLO")~~start
+    self~assertTrue(msg2~class == .Message, "msg2 must be a Message object")
+
+    -- Now test that each message result is correct.  The result should begin
+    -- with Hello world.
+    res1 = msg1~result
+    self~assertTrue(res1~abbrev("Hello world"), "result should begin with Hello World for msg1")
+    res2 = msg2~result
+    self~assertTrue(res2~abbrev("Hello world"), "result should begin with Hello World for msg2")
+
+    -- In addition the return of the hello method has the long time appended to
+    -- it.  So the message result is a string, but should not be the exact same
+    -- string.
+    self~assertNotSame(res1, res2, "result strings should not be exactly equal")
+
+  -- End test_object_start( )
+
+  /* test_object_isInstanceOf( ) - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Test the example from 5.1.1.13 (currently.)  This is the example for the
+    Object class, the isInstanceOf method of the Object class.  The following is
+    the current example:
+
+    "abc"~isInstanceOf(.string) -> 1
+    "abc"~isInstanceOf(.object) -> 1
+    "abc"~isInstanceOf(.mutablebuffer) -> 0
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_object_isInstanceOf
+
+    obj = "abc"
+    self~assertTrue(obj~isInstanceOf(.String), "abc should be instance of .String")
+    self~assertTrue(obj~isInstanceOf(.Object), "abc should be instance of .Object")
+    self~assertFalse(obj~isInstanceOf(.MutableBuffer), "abc should not be instance of .MutableBuffer")
+
+    -- Note that section 5.1.1.12 is for the isA method which is declared to be
+    -- an alias for isInstanceOf.
+    self~assertTrue(obj~isA(.String), "abc should be instance of .String")
+    self~assertTrue(obj~isA(.Object), "abc should be instance of .Object")
+    self~assertFalse(obj~isA(.MutableBuffer), "abc should not be instance of .MutableBuffer")
+
+  -- End test_object_isInstanceOf( )
+
+  /* test_object_ObjectNameEquals( ) - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Test the example from 5.1.1.15 (currently.)  This is the example for the
+    Object class, the objectName= method of the Object class.  The following is
+    the current example:
+
+    points=.array~of("N","S","E","W")
+    say points~objectName            /* (no change yet) Says: "an Array" */
+    points~objectName=("compass")    /* Changes obj name POINTS to "compass"*/
+    say points~objectName            /* Shows new obj name. Says: "compass" */
+    say points~defaultName           /* Default is still available. */
+                                     /* Says "an Array" */
+    say points                       /* Says string representation of */
+                                     /* points "compass" */
+    say points[3]                    /* Says: "E" Points is still an array */
+                                     /* of 4 items */
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_object_ObjectNameEquals
+
+    points=.array~of("N","S","E","W")
+    self~assertTrue(points~class == .Array, "points must be an array")
+
+    -- Need to change the example slightly to test
+    self~assertSame(points~objectName, "an Array", "objectName should still be an Array")
+
+    points~objectName=("compass")
+    self~assertSame(points~objectName, "compass", "objectName should now be compass")
+    self~assertSame(points~defaultName, "an Array", "default name should still be an Array")
+
+    -- say points
+    --
+    -- A hard thing to translate into a test case.  points is an object,
+    -- compass is an object.  The following commented out assertion fails
+    -- because the two objects are *not* the same.
+    /*
+    self~assertSame(points, "compass", "string representation should be compass")
+    */
+
+    -- So, a little creativity.  We need a way to capture a say statement, but
+    -- still keep the test automated.  So, temporarily change the destination of
+    -- a "say" to a file.  Then read back the file.
+    fName = "ttXXTemp.out"
+    outObj = .stream~new(fName)~~command("OPEN WRITE REPLACE")
+    .output~destination(outObj)
+
+    say points
+
+    -- Reset the destination for output
+    .output~destination(.Stdout)
+
+    -- Close the file, reopen, read the output, delete the file, do the test
+    outObj~close
+    inObj = .stream~new(fName)~~command("OPEN READ")
+    pointsStr = inObj~linein
+    inObj~close
+    j = SysFileDelete(fName)
+
+    self~assertSame(points[3], "E", "points is still an array, should be 'E'")
+
+  -- End test_object_ObjectNameEquals( )
+
+-- End of class: Chapter5Section1.testGroup
+
+
+-- Helper class for the test_object_start test case.
+::class 'WorldObject' public
+::method hello
+  return "Hello world" time('L')
+
+
+::options novalue error

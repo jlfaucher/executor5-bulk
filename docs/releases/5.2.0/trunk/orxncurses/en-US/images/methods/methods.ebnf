@@ -1,0 +1,411 @@
+window_new1 ::= '.' Window '~' new '()'
+
+window_new2 ::= '.' Window '~' new '(' nlines ',' ncols ',' begin_y ',' begin_x ')'
+
+window_orxncurses_version ::= '.' Window '~' orxncurses_version '()'
+
+window_setbase ::= '.' Window '~' 'setbase(' ( base )? ')'
+
+window_slk_init ::= '.' Window '~' 'slk_init(' fmt ')'
+
+window_acs_map ::= win '~' 'acs_map(' str ')'
+
+window_addch ::= win '~' 'addch(' ch ')'
+
+window_addchnstr ::= win '~' 'addchnstr(' str ',' n ')'
+
+window_addchstr ::= win '~' 'addchstr(' str ')'
+
+window_addnstr ::= win '~' 'addnstr(' str ',' n ')'
+
+window_addstr ::= win '~' 'addstr(' str ')'
+
+window_assume_default_colors ::= win '~' 'assume_default_colors(' fg ',' bg ')'
+
+window_attroff ::= win '~' 'attroff(' attr ')'
+
+window_attron ::= win '~' 'attron(' attr ')'
+
+window_attrset ::= win '~' 'attrset(' attr ')'
+
+window_baudrate ::= win '~' 'baudrate()'
+
+window_beep ::= win '~' 'beep()'
+
+window_bkgd ::= win '~' 'bkgd(' attr ')'
+
+window_bkgdset ::= win '~' 'bkgdset(' attr ')'
+
+window_border ::= win '~' 'border(' ls ',' rs ',' bs ',' tl ',' tr ',' bl ',' br ')'
+
+window_box ::= win '~' 'box(' vchr ',' hch ')'
+
+window_can_change_color ::= win '~' 'can_change_color()'
+
+window_cbreak ::= win '~' 'cbreak()'
+
+window_chgat ::= win '~' 'chgat(' n ',' attr ',' color ')'
+
+window_clear ::= win '~' 'clear()'
+
+window_clearok ::= win '~' 'clearok(' bf ')'
+
+window_cleartobot ::= win '~' 'cleartobot()'
+
+window_cleartoeol ::= win '~' 'cleartoeol()'
+
+window_color_pair ::= win '~' 'color_pair()'
+
+window_color_pairs ::= win '~' 'color_pairs()'
+
+window_colors ::= win '~' 'colors()'
+
+window_colorset ::= win '~' 'colorset(' num ')'
+
+window_cols ::= win '~' 'cols()'
+
+window_copywin ::= win '~' 'copywin(' swin ',' sminrow ',' smincol ',' dminrow ',' dmincol ','
+                                      dmaxrow ',' dmaxcol ',' overlay ')'
+
+window_curs_set ::= win '~' 'curs_set(' vis ')'
+
+window_curses_version ::= win '~' 'curses_version()'
+
+window_delch ::= win '~' 'delch()'
+
+window_deleteln ::= win '~' 'deleteln()'
+
+window_delwin ::= win '~' 'delwin()'
+
+window_derwin ::= win '~' 'derwin(' nlinex ',' ncols ',' begy',' begx ')'
+
+window_doupdate ::= win '~' 'doupdate()'
+
+window_dupwin ::= win '~' 'dupwin()'
+
+window_echo ::= win '~' 'echo()'
+
+window_echochar ::= win '~' 'echochar()'
+
+window_endwin ::= win '~' 'endwin()'
+
+window_erase ::= win '~' 'erase()'
+
+window_erasechar ::= win '~' 'erasechar()'
+
+window_filter ::= win '~' 'filter()'
+
+window_flash ::= win '~' 'flash()'
+
+window_flushinp ::= win '~' 'flushinp()'
+
+window_getbegyx ::= win '~' 'getbegyx()'
+
+window_getbkgd ::= win '~' 'getbkgd()'
+
+window_getch ::= win '~' 'getch()'
+
+window_getmaxyx ::= win '~' 'getmaxyx()'
+
+window_getmouse ::= win '~' 'getmouse()'
+
+window_getnstr ::= win '~' 'getnstr(' n ')'
+
+window_getparyx ::= win '~' 'getparyx()'
+
+window_getstr ::= win '~' 'getstr()'
+
+window_getwin ::= win '~' 'getwin(' filename ')'
+
+window_getyx ::= win '~' 'getyx()'
+
+window_halfdelay ::= win '~' 'halfdelay()'
+
+window_has_colors ::= win '~' 'has_colors()'
+
+window_has_ic ::= win '~' 'has_ic()'
+
+window_has_il ::= win '~' 'has_il()'
+
+window_hlins ::= win '~' 'hline(' ch ',' n ')'
+
+window_idcok ::= win '~' 'idcok(' bf ')'
+
+window_idlok ::= win '~' 'idlok(' bf ')'
+
+window_immeok ::= win '~' 'immeok(' bf ')'
+
+window_inch ::= win '~' 'inch()'
+
+window_inchstr ::= win '~' 'inchstr()'
+
+window_inchnstr ::= win '~' 'inchnstr(' n ')'
+
+window_init_color ::= win '~' 'init_color(' c ',' r ',' g',' b ')'
+
+window_init_pair ::= win '~' 'init_pair(' c ',' f',' b ')'
+
+window_innstr ::= win '~' 'innstr(' n ')'
+
+window_insch ::= win '~' 'insch(' ch ')'
+
+window_insdelin ::= win '~' 'insdelin(' n ')'
+
+window_insertln ::= win '~' 'insertln()'
+
+window_insnstr ::= win '~' 'insnstr(' str ')'
+
+window_insstr ::= win '~' 'insstr(' str ')'
+
+window_instr ::= win '~' 'instr()'
+
+window_intrflush ::= win '~' 'intrflush(' bf ')'
+
+window_is_linetouched ::= win '~' 'is_linetouched(' n ')'
+
+window_is_wintouched ::= win '~' 'is_wintouched()'
+
+window_isbitset ::= win '~' 'isbitset(' filed ',' bit ')'
+
+window_isendwin ::= win '~' 'isendwin()'
+
+window_keyname ::= win '~' 'keyname()'
+
+window_keypad ::= win '~' 'keypad(' bf ')'
+
+window_killchar ::= win '~' 'killchar()'
+
+window_leaveok ::= win '~' 'leaveok(' bf ')'
+
+window_lines ::= win '~' 'lines()'
+
+window_longname ::= win '~' 'longname()'
+
+window_meta ::= win '~' 'meta(' bf ')'
+
+window_mouse_trafo ::= win '~' 'mouse_trafo(' y ',' x ',' bf ')'
+
+window_mousemask ::= win '~' 'mousemask(' ( new )? ')'
+
+window_move ::= win '~' 'move(' y ',' x ')'
+
+window_mvaddch ::= win '~' 'mvaddch(' y ',' x ',' ch ')'
+
+window_mvaddchnstr ::= win '~' 'mvaddchnstr(' y ',' x ',' str ',' n ')'
+
+window_mvaddchstr ::= win '~' 'mvaddchstr(' y ',' x ',' str ')'
+
+window_mvaddnstr ::= win '~' 'mvaddnstr(' y ',' x ',' str ',' n ')'
+
+window_mvaddstr ::= win '~' 'mvaddstr(' y ',' x ',' str ')'
+
+window_mvchgat ::= win '~' 'mvchgat(' y ',' x ',' n ',' arrt ',' color ')'
+
+window_mvderwin ::= win '~' 'mvderwin(' y ',' x ')'
+
+window_mvgetch ::= win '~' 'mvgetch(' y ',' x ')'
+
+window_mvgetstr ::= win '~' 'mvgetnstr(' y ',' x ',' n ')'
+
+window_mvgetstr ::= win '~' 'mvgetstr(' y ',' x ')'
+
+window_orxcurmvgetstr ::= win '~' 'orxcurmvgetstr(' y ',' x ')'
+
+window_mvhline ::= win '~' 'mvhline(' y ',' x ',' ch ',' n ')'
+
+window_mvinch ::= win '~' 'mvinch(' y ',' x ')'
+
+window_mvinchnstr ::= win '~' 'mvinchnstr(' y ',' x ',' n ')'
+
+window_mvinchstr ::= win '~' 'mvinchstr(' y ',' x ')'
+
+window_mvinnstr ::= win '~' 'mvinnstr(' y ',' x ',' n ')'
+
+window_mvinsch ::= win '~' 'mvinsch(' y ',' x ',' ch ')'
+
+window_mvinsstr ::= win '~' 'mvinsstr(' y ',' x ',' str ')'
+
+window_mvinstr ::= win '~' 'mvinstr(' y ',' x ')'
+
+window_mvvline ::= win '~' 'mvvline(' y ',' x ',' ch ',' n ')'
+
+window_mvwin ::= win '~' 'mvwin(' y ',' x ')'
+
+window_napma ::= win '~' 'napma(' n ')'
+
+window_ncurses_mouse_version ::= win '~' 'ncurses_mouse_version()'
+
+window_ncurses_version ::= win '~' 'ncurses_version()'
+
+window_nl ::= win '~' 'nl()'
+
+window_nocbreak ::= win '~' 'nocbreak()'
+
+window_nodelay ::= win '~' 'nodelay(' bf ')'
+
+window_noecho ::= win '~' 'noecho()'
+
+window_nonl ::= win '~' 'nonl()'
+
+window_noqiflush ::= win '~' 'noqiflush()'
+
+window_noraw ::= win '~' 'noraw()'
+
+window_notimeout ::= win '~' 'notimeout(' bf ')'
+
+window_overlay ::= win '~' 'overlay(' dwin ')'
+
+window_overwrite ::= win '~' 'overwrite(' dwin ')'
+
+window_pair_content ::= win '~' 'pair_content()'
+
+window_pair_number ::= win '~' 'pair_number(' attr ')'
+
+window_pechochar ::= win '~' 'pechochar()'
+
+window_pnoutrefresh ::= win '~' 'pnoutrefresh()'
+
+window_prefresh ::= win '~' 'prefresh()'
+
+window_putwin ::= win '~' 'putwin(' fname ')'
+
+window_qiflush ::= win '~' 'qiflush()'
+
+window_raw ::= win '~' 'raw()'
+
+window_redrawwin ::= win '~' 'redrawwin()'
+
+window_refresh ::= win '~' 'refresh()'
+
+window_scr_dump ::= win '~' 'scr_dump(' fname ')'
+
+window_scr_restore ::= win '~' 'scr_restore(' fname ')'
+
+window_scrl ::= win '~' 'scrl(' num ')'
+
+window_scroll ::= win '~' 'scroll()'
+
+window_scrollok ::= win '~' 'scrollok(' bf ')'
+
+window_setscrreg ::= win '~' 'setscrreg(' top ',' bot ')'
+
+window_slk_attr ::= win '~' 'slk_attr()'
+
+window_slk_attroff ::= win '~' 'slk_attroff(' attr ')'
+
+window_slk_attron ::= win '~' 'slk_attron(' attr ')'
+
+window_slk_attrset ::= win '~' 'slk_attrset(' attr ')'
+
+window_slk_clear ::= win '~' 'slk_clear()'
+
+window_slk_color ::= win '~' 'slk_color(' color ')'
+
+window_slk_label ::= win '~' 'slk_label(' num ')'
+
+window_slk_noutrefresh ::= win '~' 'slk_noutrefresh()'
+
+window_slk_refresh ::= win '~' 'slk_refresh()'
+
+window_slk_restore ::= win '~' 'slk_restore()'
+
+window_slk_set ::= win '~' 'slk_set(' text ',' num ')'
+
+window_slk_touch ::= win '~' 'slk_touch()'
+
+window_standend ::= win '~' 'standend()'
+
+window_standout ::= win '~' 'standout()'
+
+window_start_color ::= win '~' 'start_color()'
+
+window_subpad ::= win '~' 'subpad()'
+
+window_subwin ::= win '~' 'subwin(' nlines ',' ncols ',' begy ',' begx ')'
+
+window_syncok ::= win '~' 'syncok(' bf ')'
+
+window_tabsize ::= win '~' 'tabsize(' ( sz )? ')'
+
+window_termattrs ::= win '~' 'termattrs()'
+
+window_termname ::= win '~' 'termname()'
+
+window_timeout ::= win '~' 'timeout(' tmout ')'
+
+window_touchline ::= win '~' 'touchline(' bf ')'
+
+window_touchwin ::= win '~' 'touchwin()'
+
+window_typeahead ::= win '~' 'typeahead(' fd ')'
+
+window_unctrl ::= win '~' 'unctrl(' ch ')'
+
+window_ungetch ::= win '~' 'ungetch(' ch ')'
+
+window_untouchwin ::= win '~' 'untouchwin()'
+
+window_use_default_colors ::= win '~' 'use_default_colors()'
+
+window_use_env ::= win '~' 'use_env()'
+
+window_vline ::= win '~' 'vline(' ch ',' n ')'
+
+window_wenclose ::= win '~' 'wenclose(' y ',' x ')'
+
+window_wnoutrefresh ::= win '~' 'wnoutrefresh()'
+
+window_wredrawln ::= win '~' 'wredrawln(' beg ',' n ')'
+
+window_wsyncdown ::= win '~' 'wsyncdown()'
+
+window_wsyncup ::= win '~' 'wsyncup()'
+
+window_wtouchln ::= win '~' 'wtouchln(' y ',' n ',' bf ')'
+
+pad_new ::= '.Pad' '~' 'new(' nlines ',' ncols ')'
+
+pad_echochar ::= pad '~' 'echochar()'
+
+pad_mvwin ::= pad '~' 'mvwin()'
+
+pad_pechochar ::= pad '~' 'pechochar()'
+
+pad_pnoutrefresh ::= pad '~' 'pnoutrefresh(' minrow ',' mincol ',' sminwor ',' smincol ',' smaxrow ',' smaxcol ')'
+
+pad_prefresh ::= pad '~' 'prefresh(' minrow ',' mincol ',' sminwor ',' smincol ',' smaxrow ',' smaxcol ')'
+
+pad_redrawwin ::= pad '~' 'redrawwin()'
+
+pad_refresh ::= pad '~' 'refresh()'
+
+pad_scrl ::= pad '~' 'scrl()'
+
+pad_scroll ::= pad '~' 'scroll()'
+
+pad_scrollok ::= pad '~' 'scrollok()'
+
+pad_subpad ::= pad '~' 'subpad(' nlines ',' ncols ',' begy ',' begx ')'
+
+pad_subwin ::= pad '~' 'subwin()'
+
+pad_wnoutrefresh ::= pad '~' 'wnoytrefresh()'
+
+me_bstate ::= me '~' 'bstate()'
+
+me_id ::= me '~' 'id()'
+
+me_x ::= me '~' 'x()'
+
+me_y ::= me '~' 'y()'
+
+cht_new ::= '.Chtype' '~' 'new(' attr ',' num ',' char ')'
+
+cht_attr ::= cht '~' 'attr()'
+
+cht_char ::= cht '~' 'char()'
+
+cht_colorpair ::= cht '~' 'colorpair()'
+
+cht_string ::= cht '~' 'string()'
+

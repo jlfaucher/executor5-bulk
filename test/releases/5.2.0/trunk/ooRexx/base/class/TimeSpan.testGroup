@@ -1,0 +1,359 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.TimeSpan.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "TimeSpan.testGroup" subclass ooTestCase public
+
+::method 'test_fromDays'
+    expected = '1.12:00:00.000000'
+    self~assertEquals(expected, .timespan~fromDays(1.5))
+
+    full = .TimeSpan~fromDays(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromDays(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
+::method 'test_fromHours'
+    expected = '18:00:00.000000'
+    self~assertEquals(expected, .timespan~fromHours(18))
+
+    full = .TimeSpan~fromHours(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromHours(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
+::method 'test_fromMinutes'
+    expected = '00:25:00.000000'
+    self~assertEquals(expected, .timespan~fromMinutes(25))
+
+    full = .TimeSpan~fromMinutes(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromMinutes(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
+::method 'test_fromSeconds'
+    expected = '00:00:15.000000'
+    self~assertEquals(expected, .timespan~fromSeconds(15))
+
+    full = .TimeSpan~fromSeconds(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromSeconds(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
+::method 'test_fromMicroSeconds'
+    expected = '00:00:00.000012'
+    self~assertEquals(expected, .timespan~fromMicroSeconds(12 + 1 / 7))
+
+::method 'test_fromNormalTime'
+    a_normalTime = '10:03:44'
+    expected = '10:03:44.000000'
+    self~assertEquals(expected, .timespan~fromNormalTime(a_normalTime))
+
+::method 'test_fromCivilTime'
+    a_civilTime = '10:11am'
+    expected = '10:11:00.000000'
+    self~assertEquals(expected, .timespan~fromCivilTime(a_civilTime))
+
+::method 'test_fromLongTime'
+    a_longTime = '10:14:48.546000'
+    expected = '10:14:48.546000'
+    self~assertEquals(expected, .timespan~fromLongTime(a_longTime))
+
+::method 'test_InitA'
+    expected = '15:37:30.000000'
+    self~assertEquals(expected, .timespan~new(time('f','15:37:30','n')))
+
+::method 'test_InitB'
+    expected = '15:37:30.000000'
+    self~assertEquals(expected, .timespan~new(15,37,30))
+
+::method 'test_initC'
+    expected = '6.04:33:15.000100'
+    self~assertEquals(expected, .timespan~new(6,4,33,15,100))
+
+::method 'test_ComparisonA'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,30)
+
+    expected = 1
+    self~assertEquals(expected, a_timeSpan1 == a_timeSpan2)
+
+::method 'test_ComparisonB'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,45)
+
+    expected = 0
+    self~assertEquals(expected, a_timeSpan1 == a_timeSpan2)
+
+::method 'test_CompareToA'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,30)
+    a_timeSpan3 = .timespan~new(15,37,45)
+
+    expected = 0
+    self~assertEquals(expected, a_timeSpan1~compareTo(a_timeSpan2))
+
+::method 'test_CompareToB'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,30)
+    a_timeSpan3 = .timespan~new(15,37,45)
+
+    expected = -1
+    self~assertEquals(expected, a_timeSpan1~compareTo(a_timeSpan3))
+
+::method 'test_CompareToC'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,30)
+    a_timeSpan3 = .timespan~new(15,37,45)
+
+    expected = 1
+    self~assertEquals(expected, a_timeSpan3~compareTo(a_timeSpan1))
+
+::method 'test_duration'
+    a_timeSpan1 = .timespan~new(6,4,33,15,100)
+    a_timeSpan2 = .timespan~new(6,4,33,15,110)
+    expected = '00:00:00.000010'
+    self~assertEquals(expected, (a_timeSpan2 - a_timeSpan1)~duration)
+
+::method 'test_days'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = 6
+    self~assertEquals(expected, a_timeSpan~days)
+
+::method 'test_hours'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = 4
+    self~assertEquals(expected, a_timeSpan~hours)
+
+::method 'test_minutes'
+    a_timeSpan = .timespan~new(6,4,3,5,100)
+    expected = 3
+    self~assertEquals(expected, a_timeSpan~minutes)
+
+::method 'test_seconds'
+    a_timeSpan = .timespan~new(6,4,3,5,100)
+    expected = 5
+    self~assertEquals(expected, a_timeSpan~seconds)
+
+::method 'test_microSeconds'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = 100
+    self~assertEquals(expected, a_timeSpan~microSeconds)
+
+::method 'test_totalDays'
+    a_timeSpan = .timespan~new(6,12,0,0,0)
+    expected = 6.5
+    self~assertEquals(expected, a_timeSpan~totalDays)
+
+----
+::method 'test_totalHours'
+    a_timeSpan = .timespan~new(6,12,0,0,0)
+    expected = 156
+    self~assertEquals(expected, a_timeSpan~totalHours)
+
+::method 'test_totalMinutes'
+    a_timeSpan = .timespan~new(6,12,15,0,0)
+    expected = 9375
+    self~assertEquals(expected, a_timeSpan~totalMinutes)
+
+::method 'test_totalSeconds'
+    a_timeSpan = .timespan~new(6,12,15,10,0)
+    expected = 562510
+    self~assertEquals(expected, a_timeSpan~totalSeconds)
+
+-- skipping hashCode
+
+::method 'test_addWeeks'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '16.16:33:15.000100'
+    self~assertEquals(expected, a_timeSpan~addWeeks(1.5))
+
+::method 'test_addDays'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '7.16:33:15.000100'
+    self~assertEquals(expected, a_timeSpan~addDays(1.5))
+
+::method 'test_addHours'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '6.06:03:15.000100'
+    self~assertEquals(expected, a_timeSpan~addHours(1.5))
+
+::method 'test_addMinutes'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '6.04:34:45.000100'
+    self~assertEquals(expected, a_timeSpan~addMinutes(1.5))
+
+::method 'test_addSeconds'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '6.04:33:16.500100'
+    self~assertEquals(expected, a_timeSpan~addSeconds(1.5))
+
+::method 'test_addMicroSeconds'
+    a_timeSpan = .timespan~new(6,4,33,15,100)
+    expected = '6.04:33:16.000100'
+    self~assertEquals(expected, a_timeSpan~addMicroSeconds(1000000))
+
+::method 'test_signA'
+    a_timeSpan1 = .timespan~new(time('f','15:37:30','n'))
+    a_timeSpan2 = .timespan~new(15,37,30)
+
+    expected = 0
+    self~assertEquals(expected, (a_timeSpan1 - a_timeSpan2)~sign)
+
+::method 'test_signB'
+    a_timeSpan1 = .timespan~new(15,37,30)
+    a_timeSpan2 = .timespan~new(15,37,45)
+
+    expected = -1
+    self~assertEquals(expected, (a_timeSpan1 - a_timeSpan2)~sign)
+
+::method 'test_signC'
+    a_timeSpan1 = .timespan~new(15,37,30)
+    a_timeSpan2 = .timespan~new(15,37,45)
+
+    expected = 1
+    self~assertEquals(expected, (a_timeSpan2 - a_timeSpan1)~sign)
+
+::method test_string
+    self~assertSame("00:00:00.000000", .TimeSpan~new(0))
+    self~assertSame("00:00:00.000100", .TimeSpan~new(100))
+
+    self~assertSame("00:00:00.000000", .TimeSpan~new(0, 0, 0))
+    self~assertSame("00:00:01.000000", .TimeSpan~new(0, 0, 1))
+    self~assertSame("09:00:00.000000", .TimeSpan~new(9, 0, 0))
+    self~assertSame("09:02:01.000000", .TimeSpan~new(9, 2, 1))
+
+    self~assertSame("00:00:00.000000", .TimeSpan~new(0, 0, 0, 0))
+    self~assertSame("09:00:00.000000", .TimeSpan~new(0, 9, 0, 0))
+    self~assertSame("1.00:00:00.000000", .TimeSpan~new(1, 0, 0, 0))
+    self~assertSame("1.02:00:00.000000", .TimeSpan~new(1, 2, 0, 0))
+    self~assertSame("1.00:04:00.000000", .TimeSpan~new(1, 0, 4, 0))
+    self~assertSame("1.00:00:08.000000", .TimeSpan~new(1, 0, 0, 8))
+    self~assertSame("1.02:04:08.000000", .TimeSpan~new(1, 2, 4, 8))
+
+    self~assertSame("00:00:00.000000", .TimeSpan~new(0, 0, 0, 0, 0))
+    self~assertSame("00:00:00.000123", .TimeSpan~new(0, 0, 0, 0, 123))
+    self~assertSame("900.00:00:00.000000", .TimeSpan~new(900, 0, 0, 0, 0))
+    self~assertSame("900.00:00:00.000123", .TimeSpan~new(900, 0, 0, 0, 123))
+    self~assertSame("900.00:00:59.000000", .TimeSpan~new(900, 0, 0, 59, 0))
+    self~assertSame("900.00:59:00.000000", .TimeSpan~new(900, 0, 59, 0, 0))
+    self~assertSame("900.23:00:00.000000", .TimeSpan~new(900, 23, 0, 0, 0))
+    self~assertSame("900.23:59:59.999999", .TimeSpan~new(900, 23, 59, 59, 999999))
+
+    self~assertSame( "04:33:15.000000",   .TimeSpan~new(4, 33, 15))
+    self~assertSame("-04:33:15.000000", - .TimeSpan~new(4, 33, 15))
+    self~assertSame( "6.04:33:15.000100",   .TimeSpan~new(6, 4, 33, 15, 100))
+    self~assertSame("-6.04:33:15.000100", - .TimeSpan~new(6, 4, 33, 15, 100))
+
+
+::method 'test_fromStringFormat'
+    a_string   = '6.4:33:15'
+    expected = 88.918
+    self~expectSyntax(expected)
+    a_timespan = .timespan~fromStringFormat(a_string)
+
+::method 'test_fromStringFormatA'
+    a_string   = '6.4:33:15.0'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .true
+    self~assertEquals(expected, a_timespan~isA(.timespan))
+
+::method 'test_fromStringFormatB'
+    a_string   = '6.4:33:15.0'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .false
+    self~assertEquals(expected, a_timespan~isA(.string))
+
+::method 'test_fromStringFormatC'
+    a_string   = '4:33:15.0'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .true
+    self~assertEquals(expected, a_timespan~string == '0'a_string'00000')
+
+::method 'test_fromStringFormatD'
+    a_string   = '-6.4:33:15.000100'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .true
+    self~assertEquals(expected, a_timespan~isA(.timespan))
+
+::method 'test_fromStringFormatE'
+    a_string   = '-4:33:15.000100'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .true
+    self~assertEquals(expected, a_timespan~isA(.timespan))
+
+::method 'test_fromStringFormatF'
+    a_string   = '4:33:15.000100'
+    a_timespan = .timespan~fromStringFormat(a_string)
+    expected = .true
+    self~assertEquals(expected, a_timespan~string == '0'a_string)
+
+
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .TimeSpan~new(1)~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .TimeSpan~new(1)~makeString(.nil)
+
+::method test_string_makestring
+  t =  .TimeSpan~new(123)
+  self~assertSame(t~string, t~makeString)
+
+
+
+::options all syntax

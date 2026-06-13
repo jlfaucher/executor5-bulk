@@ -1,0 +1,255 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_absMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_absMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   numeric digits 9
+   self~assertSame(5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555~abs, '5.55555556E+249')
+   numeric digits 18
+   self~assertSame(5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555~abs, '5.55555555555555556E+249')
+
+::method "test_2"
+   self~assertSame((-99999%3)~abs, 33333)
+
+::method "test_3"
+   numeric digits 9
+   self~assertSame((5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555/3)~abs, 1.85185185E+249)
+   numeric digits 18
+   self~assertSame((5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555/3)~abs, 1.85185185185185185E+249)
+
+::method "test_4"
+   self~assertSame(003~abs, '3')
+
+::method "test_5"
+   self~assertSame((-000003)~abs, '3')
+
+::method "test_6"
+   self~assertSame((-.003E22)~abs, '3E+19')
+
+::method "test_7"
+   self~assertSame(.03E2~abs, '3')
+
+::method "test_8"
+   self~assertSame((copies(' ',1000)'   3  ')~abs, '3')
+
+::method "test_9"
+   self~assertSame('   3  '~abs, '3')
+
+::method "test_10"
+   self~assertSame(' + 31 '~abs, '31')
+
+::method "test_11"
+   self~assertSame(' - 31 '~abs, '31')
+
+::method "test_12"
+   self~assertSame(0 + 31 ~abs, '31')
+
+::method "test_13"
+   self~assertSame(( 0 + '  31 ' )~abs, '31')
+
+::method "test_14"
+   self~expectSyntax(93.943)
+   self~assertSame(' 0 + 31 '~abs, '31')
+
+::method "test_15"
+   self~assertSame('300  '~abs, '300')
+
+::method "test_16"
+   self~assertSame('          300'~abs, '300')
+
+::method "test_17"
+   self~assertSame('2B303033'x~abs, '3')
+
+::method "test_18"
+   a=11111111
+   self~assertSame(a~abs, '11111111')
+
+::method "test_19"
+   a=11111111
+   b=-33333333
+   self~assertSame((a+b)~abs, '22222222')
+
+::method "test_20"
+   self~assertSame((2-9)~abs, '7')
+
+::method "test_21"
+   self~assertSame(('-'||2||'.'||'E+3')~abs, '2000')
+
+::method "test_22"
+   self~expectSyntax(93.943)
+   self~assertSame('a'~abs, 'a')
+
+::method "test_23"
+   self~assertSame('-4.2'~abs, '4.2')
+
+::method "test_24"
+   self~assertSame('414253'x( -4.2), '4.2')
+
+::method "test_25"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame(n~abs, '33.333E+6')
+
+::method "test_26"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame((-n)~abs, '33.333E+6')
+
+::method "test_27"
+   n=-33333333
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame(1E-0234567890~abs, 10E-234567891)
+
+::method "test_28"
+   Numeric Digits 5
+   Numeric Form Engineering
+   self~assertSame(10.5e12-1389004007~abs, '10.499E+12')
+
+::method "test_29"
+   self~expectSyntax(93.943)
+   x = 1E1234567890~abs
+
+::method "test_30"
+   self~expectSyntax(93.943)
+   self~assertSame(novalue~abs, 1)
+
+::method "test_31"
+   self~expectSyntax(93.943)
+   three = 3
+   self~assertSame(stem.three~abs, 3)
+
+::method "test_abs_subtest32"
+   self~expectSyntax(93.943)
+   self~assertSame(invalid~abs, 3)
+
+::method "test_33"
+   Numeric Digits 5
+   Numeric Form Engineering
+   stem.=-18.000000000000000004
+   self~assertSame(stem.four~abs, '18.000')
+
+::method "test_34"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   li=Copies('6',8000)
+   self~assertSame(li~abs, copies('6', 8000))
+
+::method "test_35"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame('12.3'~abs, '12.3')
+
+::method "test_36"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame('-0.307'~abs, '0.307')
+
+::method "test_37"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(0, ' -0'~abs)
+
+::method "test_38"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(0, ' +0'~abs)
+
+::method "test_39"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(0, ' - 0 '~abs)
+
+::method "test_40"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(0, ' + 0 '~abs)
+
+::method "test_41"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(1, ' -1'~abs)
+
+::method "test_42"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(1, ' +1'~abs)
+
+::method "test_43"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(1, ' - 1 '~abs)
+
+::method "test_44"
+   Numeric Digits 10000
+   Numeric Form Engineering
+   self~assertSame(1, ' + 1 '~abs)
+
+   -- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame(12.3, '12.3'~abs)
+
+::method "test_102"
+   self~assertSame(0.307, ' -0.307'~abs)
+
+      -- new tests
+   self~assertEquals(0, ' -0'~ABS)
+   self~assertEquals(0, ' +0'~ABS)
+   self~assertEquals(0, ' - 0 '~ABS)
+   self~assertEquals(0, ' + 0 '~ABS)
+   self~assertEquals(1, ' -1'~ABS)
+   self~assertEquals(1, ' +1'~ABS)
+   self~assertEquals(1, ' - 1 '~ABS)
+   self~assertEquals(1, ' + 1 '~ABS)
+
+

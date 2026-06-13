@@ -1,0 +1,969 @@
+#!/usr/bin/env rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* https://www.oorexx.org/license.html                                        */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.DateTime.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "DateTime.testGroup" subclass ooTestCase public
+
+::method 'test_minDate'
+    expected = '0001-01-01T00:00:00.000000'
+    self~assertSame(expected, .datetime~minDate)
+
+    expected = '0001-01-0100:00:00.000000'
+    self~assertNotEquals(expected, .datetime~minDate)
+
+::method 'test_maxDate'
+    expected = '9999-12-31T23:59:59.999999'
+    self~assertSame(expected, .datetime~maxDate)
+
+    expected = '9999-12-3123:59:59.999999'
+    self~assertNotEquals(expected, .datetime~maxDate)
+
+::method 'test_today'
+    todays = date('s')
+    expected = todays~left(4)'-'todays~substr(5,2)'-'todays~right(2)'T00:00:00.000000'
+    self~assertSame(expected, .datetime~today)
+
+    todayb = date('b')
+    yesterday = date('s',todayb-1,'b')
+    expected = yesterday~left(4)'-'yesterday~substr(5,2)'-'yesterday~right(2)'T00:00:00.000000'
+    self~assertNotEquals(expected, .datetime~today)
+
+::method 'test_fromNormalDate'
+    a_normalDate1 = '8 Oct 2007'
+    a_normalDate2 = '8-Oct-2007'
+    a_normalDate3 = '8Oct2007'
+
+    expected = '2007-10-08T00:00:00.000000'
+
+    self~assertSame(expected, .datetime~fromNormalDate(a_normalDate1))
+    self~assertSame(expected, .datetime~fromNormalDate(a_normalDate1,' '))
+
+    self~assertSame(expected, .datetime~fromNormalDate(a_normalDate2,'-'))
+
+    self~assertSame(expected, .datetime~fromNormalDate(a_normalDate3,''))
+
+::method 'test_fromEuropeanDate'
+    a_europeanDate1 = '08/10/07'
+    a_europeanDate2 = '08-10-07'
+    a_europeanDate3 = '081007'
+
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromEuropeanDate(a_europeanDate1))
+    self~assertSame(expected, .datetime~fromEuropeanDate(a_europeanDate1,'/'))
+
+    self~assertSame(expected, .datetime~fromEuropeanDate(a_europeanDate2,'-'))
+
+    self~assertSame(expected, .datetime~fromEuropeanDate(a_europeanDate3,''))
+
+::method 'test_fromOrderedDate'
+    a_orderedDate1 = '07/10/08'
+    a_orderedDate2 = '07-10-08'
+    a_orderedDate3 = '071008'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromOrderedDate(a_orderedDate1))
+    self~assertSame(expected, .datetime~fromOrderedDate(a_orderedDate1,'/'))
+
+    self~assertSame(expected, .datetime~fromOrderedDate(a_orderedDate2,'-'))
+
+    self~assertSame(expected, .datetime~fromOrderedDate(a_orderedDate3,''))
+
+::method 'test_fromStandardDate'
+    a_standardDate1 = '20071008'
+    a_standardDate2 = '2007-10-08'
+    a_standardDate3 = '2007/10/08'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromStandardDate(a_standardDate1))
+    self~assertSame(expected, .datetime~fromStandardDate(a_standardDate1,''))
+
+    self~assertSame(expected, .datetime~fromStandardDate(a_standardDate2,'-'))
+
+    self~assertSame(expected, .datetime~fromStandardDate(a_standardDate3,'/'))
+
+::method 'test_fromUsaDate'
+    a_usaDate1 = '10/08/07'
+    a_usaDate2 = '10-08-07'
+    a_usaDate3 = '100807'
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromUsaDate(a_usaDate1))
+    self~assertSame(expected, .datetime~fromUsaDate(a_usaDate1,'/'))
+
+    self~assertSame(expected, .datetime~fromUsaDate(a_usaDate2,'-'))
+
+    self~assertSame(expected, .datetime~fromUsaDate(a_usaDate3,''))
+
+::method 'test_fromNormalTime'
+    a_normalTime = '13:16:07'
+
+    expected = '0001-01-01T13:16:07.000000'
+    self~assertSame(expected, .datetime~fromNormalTime(a_normalTime))
+
+::method 'test_fromCivilTime'
+    a_civilTime1 = '1:16pm'
+    a_civilTime2 = '1:16am'
+    a_civilTime3 = '0:00am'
+    a_civilTime4 = '11:59pm'
+
+    expected = '0001-01-01T13:16:00.000000'
+    self~assertSame(expected, .datetime~fromCivilTime(a_civilTime1))
+
+    expected = '0001-01-01T01:16:00.000000'
+    self~assertSame(expected, .datetime~fromCivilTime(a_civilTime2))
+
+    expected = '0001-01-01T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromCivilTime(a_civilTime3))
+
+    expected = '0001-01-01T23:59:00.000000'
+    self~assertSame(expected, .datetime~fromCivilTime(a_civilTime4))
+
+::method 'test_fromLongTime'
+    a_longTime = '13:40:22.093000'
+
+    expected = '0001-01-01T13:40:22.093000'
+    self~assertSame(expected, .datetime~fromLongTime(a_longTime))
+
+::method 'test_fromBaseDate'
+    a_baseDate = 732956
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, .datetime~fromBaseDate(a_baseDate))
+
+::method 'test_fromTicks'
+    a_ticksTime = '1191851246'
+
+    expected = '2007-10-08T13:47:26.000000'
+    self~assertSame(expected, .datetime~fromTicks(a_ticksTime))
+
+::method 'test_fromIsoDate'
+    a_isoDate = '2007-10-08T13:47:26.000000'
+
+    expected = '2007-10-08T13:47:26.000000'
+    self~assertSame(expected, .datetime~fromIsoDate(a_isoDate))
+
+::method 'test_fromUtcIsoDate'
+    expected = '2007-10-08T13:47:26.000000'
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000Z')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(0), d~offset)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000-04:00')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(-240), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000-04:00', d~utcIsoDate)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000+04:00')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(240), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000+04:00', d~utcIsoDate)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000-04:30')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(-270), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000-04:30', d~utcIsoDate)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000+04:30')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(270), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000+04:30', d~utcIsoDate)
+
+::method 'test_compareTo'
+    a_dateTime1 = .DateTime~fromIsoDate('2007-10-08T13:47:26.000000')
+    a_dateTime2 = .DateTime~fromIsoDate('2007-10-08T13:47:26.000000')
+    a_dateTime3 = .DateTime~fromIsoDate('2007-10-08T13:47:26.000001')
+    a_dateTime4 = a_dateTime1~toTimeZone(-240)
+
+    expected = 0
+    self~assertSame(expected, a_dateTime1~compareTo(a_dateTime2))
+
+    expected = -1
+    self~assertSame(expected, a_dateTime1~compareTo(a_dateTime3))
+
+    expected = 1
+    self~assertSame(expected, a_dateTime3~compareTo(a_dateTime1))
+
+    expected = 0
+    self~assertSame(expected, a_dateTime1~compareTo(a_dateTime4))
+
+::method 'test_year_etc'
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456)
+    self~assertSame(2007, a_dateTime~year)
+    self~assertSame(10, a_dateTime~month)
+    self~assertSame(8, a_dateTime~day)
+    self~assertSame(13, a_dateTime~hours)
+    self~assertSame(10, a_dateTime~minutes)
+    self~assertSame(5, a_dateTime~seconds)
+    self~assertSame(123456, a_dateTime~microseconds)
+    self~assertSame(790, a_dateTime~dayMinutes)
+    self~assertSame(47405, a_dateTime~daySeconds)
+    self~assertSame(47405123456, a_dateTime~dayMicroseconds)
+
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456, -240)
+    self~assertSame(2007, a_dateTime~year)
+    self~assertSame(10, a_dateTime~month)
+    self~assertSame(8, a_dateTime~day)
+    self~assertSame(13, a_dateTime~hours)
+    self~assertSame(10, a_dateTime~minutes)
+    self~assertSame(5, a_dateTime~seconds)
+    self~assertSame(123456, a_dateTime~microseconds)
+    self~assertSame(790, a_dateTime~dayMinutes)
+    self~assertSame(47405, a_dateTime~daySeconds)
+    self~assertSame(47405123456, a_dateTime~dayMicroseconds)
+    self~assertSame(.TimeSpan~fromMinutes(-240), a_dateTime~offset)
+
+::method 'test_hash'
+    a_dateTime1 = .dateTime~new(2007,10,8,13,10,5,123456)
+
+    a_dateTime2 = a_dateTime1~addDays(1)
+    a_dateTime3 = a_dateTime1~addMinutes(1440)
+
+    expected = .true
+    self~assertSame(expected, a_dateTime2~hashCode == a_dateTime3~hashCode)
+
+::method 'test_adds'
+
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456)
+
+    expected = '2019-10-08T13:10:05.123456'
+    d = a_dateTime~addYears(12)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-15T13:10:05.123456'
+    d = a_dateTime~addWeeks(1)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2008-01-07T13:10:05.123456'
+    d = a_dateTime~addWeeks(13)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-12-31T13:10:05.123456'
+    d = a_dateTime~addDays(84)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2008-01-02T13:10:05.123456'
+    d = a_dateTime~addDays(86)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-08T23:10:05.123456'
+    d = a_dateTime~addHours(10)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-09T00:10:05.123456'
+    d = a_dateTime~addHours(11)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-08T13:59:05.123456'
+    d = a_dateTime~addMinutes(49)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-08T14:05:05.123456'
+    d = a_dateTime~addMinutes(55)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-08T13:10:59.123456'
+    d = a_dateTime~addSeconds(54)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-09T13:10:05.123456'
+    d = a_dateTime~addSeconds(86400)  -- 1 whole day
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-08T13:10:05.777777'
+    d = a_dateTime~addMicroSeconds(654321)
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+    expected = '2007-10-09T13:10:05.123456'
+    d = a_dateTime~addMicroSeconds(86400000000)  -- 1 whole day
+    self~assertSame(expected, d)
+    self~assertSame(a_dateTime~offset, d~offset)
+
+-- Not sure what isoDate is susposed to do
+
+::method 'test_back2RexxDate'
+    a_dateTime = .dateTime~new(2007,10,8)
+
+    expected = 732956
+    self~assertSame(expected, a_dateTime~baseDate)
+
+    expected = 1
+    self~assertSame(expected, a_dateTime~weekDay)
+
+    expected = '08/10/07'
+    self~assertSame(expected, a_dateTime~europeanDate)
+
+-- skipping languageDate since it is language dependent
+
+    expected = '8 Oct 2007'
+    self~assertSame(expected, a_dateTime~normalDate)
+
+    expected = '07/10/08'
+    self~assertSame(expected, a_dateTime~orderedDate)
+
+    expected = 20071008
+    self~assertSame(expected, a_dateTime~standardDate)
+
+    expected = '10/08/07'
+    self~assertSame(expected, a_dateTime~usaDate)
+
+::method 'test_back2RexxTime'
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456)
+
+    expected = '1:10pm'
+    self~assertSame(expected, a_dateTime~civilTime)
+
+    expected = '13:10:05'
+    self~assertSame(expected, a_dateTime~normalTime)
+
+    expected = 1191849005
+    self~assertSame(expected, a_dateTime~ticks)
+
+    expected = '2007-10-08T00:00:00.000000'
+    self~assertSame(expected, a_dateTime~date)
+
+::method 'test_neverHadBeFore'
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456)
+
+    expected = 281
+    self~assertSame(expected, a_dateTime~yearDay)
+
+    expected = 'October'
+    self~assertSame(expected, a_dateTime~monthName)
+
+    expected = '13:10:05.123456'
+    self~assertSame(expected, a_dateTime~longTime)
+
+    expected = 63327445805123456
+    self~assertSame(expected, a_dateTime~fullDate)
+
+    expected = '13:10:05.123456'
+    self~assertSame(expected, a_dateTime~timeOfDay)
+
+    expected = 0
+    self~assertSame(expected, a_dateTime~isLeapYear)
+
+    a_dateTime2 = .dateTime~new(2008,10,8,13,10,5,123456)
+    expected = 1
+    self~assertSame(expected, a_dateTime2~isLeapYear)
+
+    expected = 31
+    self~assertSame(expected, a_dateTime~daysInMonth)
+
+    expected = '2007-10-08T13:10:05.123456'
+    self~assertSame(expected, a_dateTime~string)
+
+    expected = '2007-10-08T13:10:05.123456'
+    self~assertSame(expected, a_dateTime~isoDate)
+
+::method testUtcIsoDate
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,0)
+
+    expected = '2007-10-08T13:10:05.123456Z'
+    self~assertSame(expected, a_dateTime~utcIsoDate)
+
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,-240)
+
+    expected = '2007-10-08T13:10:05.123456-04:00'
+    self~assertSame(expected, a_dateTime~utcIsoDate)
+
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,240)
+
+    expected = '2007-10-08T13:10:05.123456+04:00'
+    self~assertSame(expected, a_dateTime~utcIsoDate)
+
+::method 'test_SyntaxBadDate1'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0000,00,0,13,10,5,123456)
+
+::method 'test_SyntaxBadDate2'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,13,0,13,10,5,123456)
+
+::method 'test_SyntaxBadDate3'
+    expected = '40.19'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,9,31,13,10,5,123456)
+
+::method 'test_SynTaxBadTime1'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,01,1,-1,0,0,0)
+
+::method 'test_SynTaxBadTime2'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,01,1,0,60,0,0)
+
+::method 'test_SynTaxBadTime3'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,01,1,0,0,60,0)
+
+::method 'test_SynTaxBadTime4'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,01,1,0,0,0,-1)
+
+::method 'test_SynTaxBadTime5'
+    expected = '88.907'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,01,1,0,0,0,1234567)
+
+::method 'test_BadArg1'
+    expected = '93.903'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(,1,1,0,0,0,0)
+
+::method 'test_BadArg2'
+    expected = '93.903'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,,1,0,0,0,0)
+
+::method 'test_BadArg3'
+    expected = '93.903'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,1,,0,0,0,0)
+
+::method 'test_BadArg4'
+    expected = '93.903'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,1,1,,0,0,0)
+
+::method 'test_BadArg5'
+    expected = '93.903'
+    self~expectSyntax(expected)
+    a_dateTime = .dateTime~new(0001,1,1,0,,0,0)
+
+::method 'test_InitA'
+    a_dateTime  = .dateTime~new
+    timeN       = time('n')
+    todayS      = date('s')
+    a_dateTimeS = a_dateTime~string
+
+    -- Note: This test may fail is minute rolls over between execution of 1st 2 statements above
+    expected = todayS~left(4)'-'todayS~substr(5,2)'-'todayS~right(2)'T'timeN~left(5)':'
+    self~assertSame(expected, a_dateTimeS~left(17))
+
+::method 'test_InitB'
+    day = .dateTime~new(date('f','20070930','s'))
+    expected = '2007-09-30T00:00:00.000000'
+    self~assertSame(expected, day)
+
+    day = .dateTime~new(date('f','20070930','s'), -240)
+    expected = '2007-09-30T00:00:00.000000'
+    self~assertSame(expected, day)
+    self~assertSame(.TimeSpan~fromMinutes(-240), day~offset)
+
+::method 'test_InitC'
+    day = .dateTime~new(2007,9,30)
+    expected = '2007-09-30T00:00:00.000000'
+    self~assertSame(expected, day)
+
+    day = .dateTime~new(2007,9,30,-240)
+    expected = '2007-09-30T00:00:00.000000'
+    self~assertSame(expected, day)
+    self~assertSame(.TimeSpan~fromMinutes(-240), day~offset)
+
+::method 'test_InitD'
+    day = .dateTime~new(2007,9,30,10,33,00)
+    expected = '2007-09-30T10:33:00.000000'
+    self~assertSame(expected, day)
+
+    day = .dateTime~new(2007,9,30,10,33,00,,-240)
+    expected = '2007-09-30T10:33:00.000000'
+    self~assertSame(expected, day)
+    self~assertSame(.TimeSpan~fromMinutes(-240), day~offset)
+
+::method 'test_Comparison'
+    d = .dateTime~new(2007,10,8,11,30,0)
+    midnight = d~date
+    startTime = midnight~addHours(9.5)
+    endTime = startTime~addHours(8)
+    expected = 1
+    self~assertSame(expected, startTime <= d & d <= endTime)
+
+    d1 = .dateTime~new(2007,10,8,11,30,0,0,0)
+    d2 = .dateTime~new(2007,10,8,7,30,0,0,-240)
+    d3 = .dateTime~new(2007,10,8,15,30,0,0,240)
+    self~assertTrue(d1 = d2)
+    self~assertTrue(d1 == d2)
+    self~assertTrue(d1 = d3)
+    self~assertTrue(d1 == d3)
+    self~assertTrue(d2 = d3)
+    self~assertTrue(d2 == d3)
+
+::method 'test_daysInYear1'
+    a_dt = .dateTime~new(2007,10,8)
+    expected = 365
+    self~assertSame(expected, a_dt~daysInYear)
+    a_dt = .dateTime~new(1,1,1)
+    self~assertSame(365, a_dt~daysInYear, 'Year 1 should have 365 days')
+    a_dt = .dateTime~new(9999,11,13)
+    self~assertSame(365, a_dt~daysInYear, 'Year 9999 should have 365 days')
+
+    do i = 1 to 125
+      a_dt = .dateTime~new(i,1,31)
+      select
+         when i == 100 then expected = 365
+         when i // 4 == 0 then expected = 366
+         otherwise expected = 365
+      end
+      self~assertSame(expected, a_dt~daysInYear, 'Year' i 'should have' expected 'days')
+    end
+
+    do i = 9999 to 9888 by -1
+      a_dt = .dateTime~new(i,12,31)
+      select
+         when i // 100  == 0 then expected = 365
+         when i // 4 == 0 then expected = 366
+         otherwise expected = 365
+      end
+      self~assertSame(expected, a_dt~daysInYear, 'Year' i 'should have' expected 'days')
+    end
+
+::method 'test_daysInYear2'
+    a_dt = .dateTime~new(2008,10,8)
+    expected = 366
+    self~assertSame(expected, a_dt~daysInYear)
+
+::method 'test_elapsed1'
+    a_dt = .datetime~new
+    call syssleep 1
+    duration = a_dt~elapsed
+    expected = 1
+    self~assertSame(expected, (duration~seconds + duration~microseconds / 1e6)~round)
+
+::method 'test_FractionalAdds'
+-- need additional tests for fractional add values - adding one now for an example
+    a_dateTime = .dateTime~new(2007,10,8,13,0,0)
+    expected = '2007-10-09T01:00:00.000000'
+    self~assertSame(expected, a_dateTime~addDays(.5))
+
+::method testNormalDateOffset
+    a_Date = '8 Oct 2007'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromNormalDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromNormalDate(a_Date,,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromNormalDate(a_Date,,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testEuropeanDateOffset
+    a_Date = '08/10/07'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromEuropeanDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromEuropeanDate(a_Date,,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromEuropeanDate(a_Date,,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testOrderedDateOffset
+    a_Date = '07/10/08'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromOrderedDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromOrderedDate(a_Date,,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromOrderedDate(a_Date,,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testStandardDateOffset
+    a_Date = '20071008'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromStandardDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromStandardDate(a_Date,,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromStandardDate(a_Date,,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testUsaDateOffset
+    a_Date = '10/08/07'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromUsaDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromUsaDate(a_Date,,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromUsaDate(a_Date,,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testNormalTimeOffset
+    a_Date = '13:16:07'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromNormalTime(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromNormalTime(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromNormalTime(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testCivilTimeOffset
+    a_Date = '1:16pm'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromCivilTime(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromCivilTime(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromCivilTime(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testLongTimeOffset
+    a_Date = '13:40:22.093000'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromLongTime(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromLongTime(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromLongTime(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testBaseDateOffset
+    a_Date = 732956
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromBaseDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromBaseDate(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromBaseDate(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testTicksOffset
+    a_Date = '1191851246'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromTicks(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromTicks(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromTicks(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testIsoDateOffset
+    a_Date = '2007-10-08T13:47:26.000000'
+    localOffset = .TimeSpan~fromMinutes(self~getLocalOffset)
+    d = .datetime~fromIsoDate(a_Date)
+    self~assertSame(localOffset, d~offset)
+    d2 = .datetime~fromIsoDate(a_Date,self~getLocalOffset)
+    self~assertSame(localOffset, d2~offset)
+    self~assertSame(d, d2)
+    d3 = .datetime~fromIsoDate(a_Date,localOffset)
+    self~assertSame(localOffset, d3~offset)
+    self~assertSame(d, d3)
+
+::method testUtcDate
+    a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,0)
+    d = .DateTime~new(a_dateTime~utcDate, 0)
+
+    expected = '2007-10-08T13:10:05.123456Z'
+    self~assertSame(expected, d~utcIsoDate)
+
+    a_dateTime = .dateTime~new(2007,10,8,9,10,5,123456,-240)
+    d = .DateTime~new(a_dateTime~utcDate, 0)
+
+    expected = '2007-10-08T13:10:05.123456Z'
+    self~assertSame(expected, d~utcIsoDate)
+
+    a_dateTime = .dateTime~new(2007,10,8,17,10,5,123456,240)
+    d = .DateTime~new(a_dateTime~utcDate, 0)
+
+    expected = '2007-10-08T13:10:05.123456Z'
+    self~assertSame(expected, d~utcIsoDate)
+
+::method testToTimeZone
+    d = .dateTime~new(2007,10,8,13,10,5,123456,0)
+    self~assertSame('2007-10-08T13:10:05.123456Z', d~toTimeZone(0)~utcIsoDate)
+    self~assertSame('2007-10-08T09:10:05.123456-04:00', d~toTimeZone(-240)~utcIsoDate)
+    self~assertSame('2007-10-08T17:10:05.123456+04:00', d~toTimeZone(240)~utcIsoDate)
+
+::method testPlus
+    d = .dateTime~new(2007,10,8,13,10,5,123456,0)
+    t = .TimeSpan~fromDays(1)
+    d2 = d + t
+    self~assertSame('2007-10-09T13:10:05.123456Z', d2~utcIsoDate)
+    self~assertSame(d~offset, d2~offset)
+
+::method testMinus
+    d = .dateTime~new(2007,10,8,13,10,5,123456,0)
+    d2 = d~toTimeZone(-240)
+
+    self~assertSame(.TimeSpan~new(0), d - d2)
+
+::method testWeekNumber
+  self~checkWeekNumber('20080926', 52, '2008-W39-5')
+
+  -- a number of edge cases from the Wikipedia article:
+  -- https://en.wikipedia.org/wiki/ISO_week_date
+
+  self~checkWeekNumber('20041231', 53, '2004-W53-5')
+  self~checkWeekNumber('20050101', 52, '2004-W53-6')
+  self~checkWeekNumber('20050102', 52, '2004-W53-7')
+  self~checkWeekNumber('20051231', 52, '2005-W52-6')
+  self~checkWeekNumber('20060101', 52, '2005-W52-7')
+  self~checkWeekNumber('20060102', 52, '2006-W01-1')
+  self~checkWeekNumber('20061231', 52, '2006-W52-7')
+  self~checkWeekNumber('20070101', 52, '2007-W01-1')
+  self~checkWeekNumber('20071230', 52, '2007-W52-7')
+  self~checkWeekNumber('20071231', 52, '2008-W01-1')
+  self~checkWeekNumber('20080101', 52, '2008-W01-2')
+  self~checkWeekNumber('20081228', 52, '2008-W52-7')
+  self~checkWeekNumber('20081229', 52, '2009-W01-1')
+  self~checkWeekNumber('20081230', 52, '2009-W01-2')
+  self~checkWeekNumber('20081231', 52, '2009-W01-3')
+  self~checkWeekNumber('20090101', 53, '2009-W01-4')
+  self~checkWeekNumber('20091231', 53, '2009-W53-4')
+  self~checkWeekNumber('20100101', 52, '2009-W53-5')
+  self~checkWeekNumber('20100102', 52, '2009-W53-6')
+  self~checkWeekNumber('20100103', 52, '2009-W53-7')
+
+  -- a couple of real boundary cases
+  self~checkWeekNumber('00010101', 52, '0001-W01-1')
+  self~checkWeekNumber('99991231', 52, '9999-W52-5')
+
+
+::method testOrdinalDate
+  self~checkOrdinalDate('20190731', '2019-212')
+  self~checkOrdinalDate('20190101', '2019-001')
+  self~checkOrdinalDate('20191231', '2019-365')
+  self~checkOrdinalDate('20190110', '2019-010')
+  self~checkOrdinalDate('20190409', '2019-099')
+  self~checkOrdinalDate('20200229', '2020-060')
+  self~checkOrdinalDate('20201231', '2020-366')
+
+::method checkOrdinalDate
+  use strict arg date, ordinal
+
+  d = .datetime~fromStandardDate(date)
+  self~assertSame(ordinal, d~ordinalDate, "Incorrect ordinal date for" date)
+  self~assertSame(d, .DateTime~fromOrdinalDate(ordinal))
+
+::method checkWeekNumber
+  use strict arg date, weeksInYear, formatted
+  parse var formatted weekNumberYear '-W' weekNumber '-' dayNumber
+
+  -- need these without leading zeros
+  weekNumber += 0
+  dayNumber += 0
+
+  d = .datetime~fromStandardDate(date)
+
+  self~assertSame(weekNumber, d~weekNumber, "Incorrect weekNumber for date" date)
+  self~assertSame(dayNumber, d~weekDay, "Incorrect weekDayNumber for date" date)
+  self~assertSame(weeksInYear, d~weeksInYear, "Incorrect weeksInYear for date" date)
+  self~assertSame(weekNumberYear, d~weekNumberYear, "Incorrect weeksNumberYear for date" date)
+  self~assertSame(formatted, d~weekNumberDate, "Incorrect weekNumberDate for date" date)
+
+  self~assertSame(d, .DateTime~fromWeekNumberDate(d~weekNumberDate), "Incorrect weekNumberDate parsing for date" date)
+
+-- more exhaustive tests for the new ISO ordinal date and week-date methods
+::method test_brute_force
+  -- these tests just assume that addDays works correctly, without
+  -- implementing any ISO algorithms
+  -- (the strange use of "if .. then self~fail" is partially due to
+  --- runtime considerations)
+  do with index startingYear item nrOfYears over .StringTable~of((1, 4), (91, 10), (198, 4), (294, 7),  (396, 5), (491, 10), (998, 4), (1798, 4), (1894, 7), (1968, 65), (2091, 10),  (9996, 5))
+    -- Jan 1st of the starting year must be a Monday to give us a known start
+    d = .DateTime~new(startingYear, 1, 1)
+    self~assertSame(1, d~weekDay, "this test requires" startingYear "to be a Monday")
+
+    weekYear = startingYear
+    weekDay = 0
+    weekNumber = 0
+    yearDay = 0
+    hadFeb29 = .false
+
+    -- a block has approx. 400 years, but we must stop on 9999-12-31
+    do min((365.25 * nrOfYears)~ceiling, (.DateTime~new(9999, 12, 31) - d)~days)
+      day = d~day
+      month = d~month
+      year = d~year
+
+      -- calculate our day of week number
+      weekDay = weekDay // 7 + 1
+
+      -- bump yearDay and reset it back to 1 on each Jan 1st
+      yearDay += 1
+      if day = 1, month = 1 then
+        yearDay = 1
+
+      -- each Monday we calculate and check our week number
+      if weekDay = 1 then do
+        weekNumber += 1
+        -- we reset our week number in Jan or in late Dec
+        if weekNumber > 52, month = 1 | day >= 29 then do
+          weekNumber = 1
+          weekYear += 1
+        end
+        if d~weekNumber \= weekNumber then
+          self~fail("weekNumber expected" weekNumber", found" d~weekNumber "("d")")
+      end
+
+      -- on Feb 29 we check whether this is a leap year
+      if day = 29, month = 2 then do
+        if \d~isLeapYear then
+          self~fail("isleapYear expected .true, found" d~isleapYear "("d")")
+        hadFeb29 = .true
+      end
+
+      -- on each March 1, if we had no Feb 29, we confirm that this is no leap year
+      if day = 1, month = 3, \hadFeb29 then do
+        if d~isLeapYear then
+          self~fail("isleapYear expected .false, found" d~isleapYear "("d")")
+        hadFeb29 = .false
+      end
+
+      -- on Dec 31 we calculate and check number of weeks in year
+      if day = 31, month = 12 then do
+        weeksInYear = (weekNumber = 1)~?(52, weekNumber)
+        if d~weeksInYear \= weeksInYear then
+          self~fail("weeksInYear expected" weeksInYear", found" d~weeksInYear "("d")")
+      end
+
+      ordinal = year"-"yearDay~right(3, '0')
+      if d~ordinalDate \= ordinal then
+        self~fail("ordinalDate expected" ordinal", found" d~ordinalDate "("d")")
+      if .DateTime~fromOrdinalDate(ordinal) \= d then
+        self~fail("fromOrdinalDate("ordinal") expected" d", found" .DateTime~fromOrdinalDate(ordinal))
+
+      weekDate = weekYear~right(4, '0')"-W"||weekNumber~right(2, '0')"-"weekDay
+      if d~weekDay \= weekDay then
+        self~fail("weekDay expected" weekDay", found" d~weekDay "("d")")
+      if d~weekNumberDate \= weekDate then
+        self~fail("weekNumberDate expected" weekDate", found" d~weekNumberDate "("d")")
+      if .DateTime~fromWeekNumberDate(weekDate) \= d then
+        self~fail("fromWeekNumberDate("weekDate") expected" d", found" .DateTime~fromWeekNumberDate(weekDate))
+
+      if d~yearDay \= yearDay then
+        self~fail("yearDay expected" yearDay", found" d~yearDay "("d")")
+
+      d = d~addDays(1)
+    end
+  end
+
+
+-- string, makeString
+
+::method test_string_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .DateTime~new~string(.nil)
+
+::method test_makestring_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  .DateTime~new~makeString(.nil)
+
+::method test_string_makestring
+  d = .DateTime~new
+  self~assertSame(d~string, d~makeString)
+
+
+::method getUtcTime
+  numeric digits 20
+  return date('f') + time('o')
+
+::method getOffsetModifier
+  use arg offset
+  numeric digits 20
+
+  if offset == 0 then
+      return 'Z'
+
+  sign = offset~sign
+  offset = offset~abs
+  hours = right(offset % 60, 2, '0')
+  minutes = right(offset // 60, 2, '0')
+  if size == 1 then
+      return '+' || hours || minutes
+  else
+      return '-' || hours || minutes
+
+::method getLocalOffset
+  numeric digits 20
+  return time('o') / 60000000
+
+::method getLocalModifier
+  return self~getOffsetModifier(self~getLocalOffset)
+
+
+::options all syntax
