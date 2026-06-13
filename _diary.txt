@@ -22,6 +22,53 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 June 13
+
+[Unicode]
+
+New native class RexxUnicodeServices.
+
+This class is implemented using the UTF8Proc library.
+There is no dependency on UTF8Proc in the interface, apart from the utf8procVersion method.
+It is possible to replace UTF8Proc with another library and/or add additional libraries without impacting the RexxUnicodeServices interface.
+
+Methods:
+--------
+
+    RexxString *utf8procVersion();
+    RexxString *unicodeVersion();
+
+    RexxInteger *utf8DecodeCodepoint(RexxString *string, RexxInteger *indexB, VariableReference *refSizeB, VariableReference *refErrorCode, VariableReference *refErrorMsg);
+    MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
+
+    RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
+    // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
+
+    RexxInteger *graphemeBreak(ArrayClass *);
+
+    RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
+    RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean
+    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointCategory(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
+    RexxInteger *codepointCharWidth(RexxInteger *rexxCodepoint); // integer
+    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint); // integer 0..254
+    RexxInteger *codepointControlBoundary(RexxInteger *rexxCodepoint); // boolean
+    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
+
+    RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);
+    RexxInteger *codepointIsUpper(RexxInteger *rexxCodepoint);
+    RexxInteger *codepointToLower(RexxInteger *rexxCodepoint);
+    RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
+    RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
+
+Validation:
+-----------
+
+scripts/unicode/RexxUnicodeServices_test.rex
+
+
+===============================================================================
 2026 Mar 20
 
 I had 3 files that were considered modified by git, because of their EOL.

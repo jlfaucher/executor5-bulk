@@ -79,6 +79,7 @@
 #include "MutexSemaphore.hpp"
 #include "SysFile.hpp"
 #include "SysProcess.hpp"
+#include "support/Unicode/UnicodeServices.hpp"
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -1848,6 +1849,7 @@ void MemoryObject::restore()
     RESTORE_CLASS(VariableReference, RexxClass);
     RESTORE_CLASS(EventSemaphore, RexxClass);
     RESTORE_CLASS(MutexSemaphore, RexxClass);
+    RESTORE_CLASS(RexxUnicodeServices, RexxClass);
 
     // mark the memory object as old space.
     memoryObject.setOldSpace();

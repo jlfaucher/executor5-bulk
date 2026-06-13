@@ -111,6 +111,8 @@
 #define TheEventSemaphoreClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_EventSemaphoreClass])
 #define TheMutexSemaphoreBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MutexSemaphore])
 #define TheMutexSemaphoreClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_MutexSemaphoreClass])
+#define TheRexxUnicodeServicesBehaviour      (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeServices])
+#define TheRexxUnicodeServicesClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeServicesClass])
 #define TheNilObjectBehaviour      (&RexxBehaviour::primitiveBehaviours[T_NilObject])
 #define TheBehaviourBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Behaviour])
 #define TheMethodDictionaryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MethodDictionary])

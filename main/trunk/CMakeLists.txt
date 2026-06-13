@@ -499,6 +499,7 @@ set (build_extensions_rxsock_dir ${build_extensions_dir}/rxsock)
 set (build_extensions_orxncurses_dir ${build_extensions_dir}/orxncurses)
 set (build_extensions_hostemu_dir ${build_extensions_dir}/hostemu)
 set (build_extensions_hostemu_platform_dir ${build_extensions_hostemu_dir}/${ORX_PLATFORM_DIR})
+set (build_extensions_unicode_dir ${build_extensions_dir}/unicode)
 set (build_utilities_dir utilities)
 set (build_utilities_rexx_dir ${build_utilities_dir}/rexx/${ORX_PLATFORM_DIR})
 set (build_utilities_rexxc_dir ${build_utilities_dir}/rexxc/${ORX_PLATFORM_DIR})
@@ -663,6 +664,7 @@ set (classes_support_sources ${build_classes_support_dir}/HashCollection.cpp
             ${build_classes_support_dir}/CompoundVariableTail.cpp
             ${build_classes_support_dir}/RexxDateTime.cpp
             ${build_classes_support_dir}/StringUtil.cpp
+            ${build_classes_support_dir}/Unicode/UnicodeServices.cpp
             ${build_classes_support_dir}/Unicode/utf8proc/utf8proc.c)
 set (classes_sources ${build_classes_dir}/ArrayClass.cpp
             ${build_classes_dir}/BagClass.cpp

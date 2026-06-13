@@ -666,6 +666,7 @@ void DelegateCode::run(Activity *activity, MethodClass *method, RexxObject *rece
 #include "SetClass.hpp"
 #include "BagClass.hpp"
 #include "RexxInfoClass.hpp"
+#include "support/Unicode/UnicodeServices.hpp"
 
 // start of the exported methods table.  Any method used in Setup.cpp must also
 // be included in this table here so that methods can recover the pointer
@@ -1328,6 +1329,31 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(MutexSemaphoreClass::close),
     CPPM(MutexSemaphoreClass::release),
     CPPM(MutexSemaphoreClass::request),
+
+    CPPM(RexxUnicodeServicesClass::newRexx),
+    CPPM(RexxUnicodeServicesClass::copyRexx),
+    CPPM(RexxUnicodeServicesClass::systemIsLittleEndian),
+    CPPM(RexxUnicodeServicesClass::utf8procVersion),
+    CPPM(RexxUnicodeServicesClass::unicodeVersion),
+    CPPM(RexxUnicodeServicesClass::utf8DecodeCodepoint),
+    CPPM(RexxUnicodeServicesClass::utf8EncodeCodepoint),
+    CPPM(RexxUnicodeServicesClass::utf8Transform),
+    CPPM(RexxUnicodeServicesClass::graphemeBreak),
+    CPPM(RexxUnicodeServicesClass::codepointCategory),
+    CPPM(RexxUnicodeServicesClass::codepointCombiningClass),
+    CPPM(RexxUnicodeServicesClass::codepointBidiClass),
+    CPPM(RexxUnicodeServicesClass::codepointBidiMirrored),
+    CPPM(RexxUnicodeServicesClass::codepointDecompositionType),
+    CPPM(RexxUnicodeServicesClass::codepointIgnorable),
+    CPPM(RexxUnicodeServicesClass::codepointControlBoundary),
+    CPPM(RexxUnicodeServicesClass::codepointBoundClass),
+    CPPM(RexxUnicodeServicesClass::codepointCharWidth),
+    CPPM(RexxUnicodeServicesClass::codepointToLower),
+    CPPM(RexxUnicodeServicesClass::codepointToUpper),
+    CPPM(RexxUnicodeServicesClass::codepointToTitle),
+    CPPM(RexxUnicodeServicesClass::codepointIsLower),
+    CPPM(RexxUnicodeServicesClass::codepointIsUpper),
+
     // This NULL terminator is important to mark the end of the table.
     NULL
 };

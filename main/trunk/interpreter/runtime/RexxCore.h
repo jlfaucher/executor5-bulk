@@ -262,6 +262,7 @@ extern MemoryObject memoryObject;
 #define TheVariableReferenceClass VariableReference::classInstance
 #define TheEventSemaphoreClass EventSemaphoreClass::classInstance
 #define TheMutexSemaphoreClass MutexSemaphoreClass::classInstance
+#define TheRexxUnicodeServicesClass RexxUnicodeServicesClass::classInstance
 
 // shorthand access to some important objects.
 #define TheEnvironment memoryObject.environment

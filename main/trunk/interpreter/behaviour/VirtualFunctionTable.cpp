@@ -85,6 +85,7 @@
 #include "VariableReference.hpp"
 #include "EventSemaphore.hpp"
 #include "MutexSemaphore.hpp"
+#include "support/Unicode/UnicodeServices.hpp"
 #include "RexxBehaviour.hpp"
 #include "MethodDictionary.hpp"
 #include "LibraryPackage.hpp"
@@ -394,6 +395,12 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
    virtualFunctionTable[T_MutexSemaphoreClass] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxUnicodeServicesClass(RESTOREIMAGE);
+   virtualFunctionTable[T_RexxUnicodeServices] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
+   virtualFunctionTable[T_RexxUnicodeServicesClass] = getVftPointer(objectLoc);
    
    objectPtr = ::new (objectLoc) RexxNilObject(RESTOREIMAGE);
    virtualFunctionTable[T_NilObject] = getVftPointer(objectLoc);

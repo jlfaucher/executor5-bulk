@@ -92,6 +92,7 @@
 #include "VariableReference.hpp"
 #include "EventSemaphore.hpp"
 #include "MutexSemaphore.hpp"
+#include "support/Unicode/UnicodeServices.hpp"
 
 
 /**
@@ -321,6 +322,7 @@ void MemoryObject::createImage(const char *imageTarget)
     VariableReference::createInstance();
     EventSemaphoreClass::createInstance();
     MutexSemaphoreClass::createInstance();
+    RexxUnicodeServicesClass::createInstance();
 
     // build the common retrievers table.  This is needed before we can parse an
     // Rexx code.
@@ -1722,6 +1724,47 @@ StartClassDefinition(StackFrame)
     CompleteClassDefinition(StackFrame);
 
 EndClassDefinition(StackFrame);
+
+
+    /***************************************************************************/
+    /*           REXXUNICODESERVICES                                           */
+    /***************************************************************************/
+
+StartClassDefinition(RexxUnicodeServices)
+
+        AddClassMethod("New", RexxUnicodeServicesClass::newRexx, A_COUNT);
+        AddClassUnguardedMethod("SystemIsLittleEndian", RexxUnicodeServicesClass::systemIsLittleEndian, 0);
+        AddClassUnguardedMethod("UTF8ProcVersion", RexxUnicodeServicesClass::utf8procVersion, 0);
+        AddClassUnguardedMethod("UnicodeVersion", RexxUnicodeServicesClass::unicodeVersion, 0);
+        AddClassUnguardedMethod("UTF8DecodeCodepoint", RexxUnicodeServicesClass::utf8DecodeCodepoint, 5);
+        AddClassUnguardedMethod("UTF8EncodeCodepoint", RexxUnicodeServicesClass::utf8EncodeCodepoint, 3);
+        AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
+        AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 1);
+        AddClassUnguardedMethod("CodepointCategory", RexxUnicodeServicesClass::codepointCategory, 3);
+        AddClassUnguardedMethod("CodepointCombiningClass", RexxUnicodeServicesClass::codepointCombiningClass, 1);
+        AddClassUnguardedMethod("CodepointBidiClass", RexxUnicodeServicesClass::codepointBidiClass, 3);
+        AddClassUnguardedMethod("CodepointBidiMirrored", RexxUnicodeServicesClass::codepointBidiMirrored, 1);
+        AddClassUnguardedMethod("CodepointDecompositionType", RexxUnicodeServicesClass::codepointDecompositionType, 1);
+        AddClassUnguardedMethod("CodepointIgnorable", RexxUnicodeServicesClass::codepointIgnorable, 1);
+        AddClassUnguardedMethod("CodepointControlBoundary", RexxUnicodeServicesClass::codepointControlBoundary, 1);
+        AddClassUnguardedMethod("CodepointBoundClass", RexxUnicodeServicesClass::codepointBoundClass, 1);
+        AddClassUnguardedMethod("CodepointCharWidth", RexxUnicodeServicesClass::codepointCharWidth, 1);
+        AddClassUnguardedMethod("CodepointToLower", RexxUnicodeServicesClass::codepointToLower, 1);
+        AddClassUnguardedMethod("CodepointToUpper", RexxUnicodeServicesClass::codepointToUpper, 1);
+        AddClassUnguardedMethod("CodepointToTitle", RexxUnicodeServicesClass::codepointToTitle, 1);
+        AddClassUnguardedMethod("CodepointIsLower", RexxUnicodeServicesClass::codepointIsLower, 1);
+        AddClassUnguardedMethod("CodepointIsUpper", RexxUnicodeServicesClass::codepointIsUpper, 1);
+
+    CompleteClassMethodDefinitions();
+
+        AddMethod("Copy", RexxUnicodeServicesClass::copyRexx, 0);
+
+    CompleteMethodDefinitions();
+
+    CompleteClassDefinition(RexxUnicodeServices);
+
+EndClassDefinition(RexxUnicodeServices);
+
 
     /***************************************************************************/
     /***************************************************************************/
