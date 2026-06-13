@@ -32,12 +32,12 @@ New class RexxUnicode
 Subclass of RexxUnicodeServices.
 
 .RexxUnicode~info=
-a StringTable (5 items)
-'ICU4ooRexxIsRegistered' :  1
-'maxCodepoint'           :  1114111
-'systemIsLittleEndian'   :  1
-'unicodeVersion'         : '17.0.0'
-'utf8procVersion'        : '2.11.3'
+    a StringTable (5 items)
+    'ICU4ooRexxIsRegistered' :  1
+    'maxCodepoint'           :  1114111
+    'systemIsLittleEndian'   :  1
+    'unicodeVersion'         : '17.0.0'
+    'utf8procVersion'        : '2.11.3'
 
 
 
@@ -56,34 +56,34 @@ If ICU4ooRexx is loaded, the character names are available.
 .RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
 -- Properties of a character
-.RexxUnicode~character("🎅")~info=
-a StringTable (17 items)
-'bidiClass'       : 'ON'
-'bidiClassName'   : 'Other Neutrals'
-'bidiMirrored'    :  0
-'category'        : 'So'
-'categoryName'    : 'Other_Symbol'
-'charWidth'       :  2
-'codepoint'       : 'U+1F385'
-'combiningClass'  :  0
-'controlBoundary' :  0
-'ignorable'       :  0
-'isLower'         :  0
-'isUpper'         :  0
-'name'            : 'FATHER CHRISTMAS'
-'toLower'         : 'U+1F385'
-'toTitle'         : 'U+1F385'
-'toUpper'         : 'U+1F385'
-'UTF8'            : '0xF09F8E85'
+    .RexxUnicode~character("🎅")~info=
+    a StringTable (17 items)
+    'bidiClass'       : 'ON'
+    'bidiClassName'   : 'Other Neutrals'
+    'bidiMirrored'    :  0
+    'category'        : 'So'
+    'categoryName'    : 'Other_Symbol'
+    'charWidth'       :  2
+    'codepoint'       : 'U+1F385'
+    'combiningClass'  :  0
+    'controlBoundary' :  0
+    'ignorable'       :  0
+    'isLower'         :  0
+    'isUpper'         :  0
+    'name'            : 'FATHER CHRISTMAS'
+    'toLower'         : 'U+1F385'
+    'toTitle'         : 'U+1F385'
+    'toUpper'         : 'U+1F385'
+    'UTF8'            : '0xF09F8E85'
 
 -- \u{bed} is different from \u{0bed}
 .RexxUnicode ~character("bed")=                                -- ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
 .RexxUnicode ~character("bed", , /*hexadecimal:*/ .true)=      -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
-.RexxUnicode ~character("U+0bed")=                             .RexxUnicode ~character("U+0bed")=
+.RexxUnicode ~character("U+0bed")=                             -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
 
 
 New class CodepointSupplier
---------------------------
+---------------------------
 
 .CodepointSupplier~new("100€")==
 a CodepointSupplier
@@ -265,15 +265,16 @@ Before the fix:
     The inherited methods are not taken into account.
     say .weakreference~method("INIT") -- Object method not found.
 
+Note 2026, June 13: update
 After the fix:
     No crash when executing say .buffer~method("INIT").
-    Remains compatible with ooRexx 4.2:
+    Not compatible with ooRexx 4.2:
     say .weakreference~method("INIT") -- a Method
 
 
 Validation:
 say .buffer~method("INIT")          -- a Method instead of a crash
-say .weakreference~method("INIT")   -- a Method instead of .NIL
+say .weakreference~method("INIT")   -- Object method not found
 
 
 ===============================================================================
