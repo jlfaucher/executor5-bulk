@@ -67,6 +67,19 @@ P. PCG.    '[]'                         : 'RexxUnicode' 'RexxUnicode' (rxunicode
 [Info] [1] Class 'RexxUnicode' has 119 methods
 [Info] 57 lines displayed
 
+Description of the letter flags displayed at the start of each line:
+
+ooRexx[sh]> ?f
+Class flags
+    col 1: P=Public
+    col 2: M=Mixin
+Method flags
+    col 3: space separator
+    col 4: P=Public
+    col 5: C=Class
+    col 6: G=Guarded
+    col 7: P=Protected
+
 */
 
 signal skip
@@ -81,7 +94,12 @@ skip:
 
 say
 say "UTF8Proc version" .RexxUnicode~utf8procVersion
-say "Unicode version" .RexxUnicode~unicodeVersion
+say "UTF8Proc Unicode version" .RexxUnicode~unicodeVersion
+say
+say "ICU4ooRexx version" .ICU4ooRexx~version
+say "ICU4C compile-time version" .ICU4ooRexx~U_ICU_VERSION
+say "ICU4C runtime version" .ICU4ooRexx~u_getVersion
+say "ICU4C Unicode version" .ICU4ooRexx~u_getUnicodeVersion
 say
 say
 
