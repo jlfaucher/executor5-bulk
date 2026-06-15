@@ -13,8 +13,16 @@ Miscellaneous notes:
 
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <div align="center">
-<img src="images/Executor5-bulk_mascot_wbg.png" alt="The repositories">
+<img src="images/Executor5-bulk_mascot_wbg.png" alt="The repositories" width="60%">
 </div>
 
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
