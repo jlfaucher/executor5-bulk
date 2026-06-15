@@ -168,9 +168,11 @@ Character by name or by codepoint
 
     -- is name a character name?
     if by~caselessContains("N"), self~ICU4ooRexxIsRegistered then do
-        codepoint = .ICU4ooRexx~h_charFromLooseName(name)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
+        codepoint = .ICU4ooRexx~u_charFromName(name)
+        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(name)
+        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(name)
+        -- If not yet found, and is only ASCII then try a loose match
+        if codepoint == -1, name == name~translate("", xrange("80"x, "FF"x)) then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
         if codepoint \== -1 then return self~characterByCodepoint(codepoint)
     end
 
