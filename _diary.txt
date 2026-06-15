@@ -22,6 +22,25 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 June 15
+
+[Unicode]
+
+Add .RexxUnicode~assertICU4ooRexxIsRegistered(raiseError=.true)
+    Raise an error if ICU4ooRexx is not registered and raiseError == .true.
+    Otherwise, return .true if ICU4ooRexx is registered, and .false otherwise.
+
+Add .RexxUnicode~codepointName(raiseError=.false)
+    If ICU4ooRexx is registered, return the codepoint name (can be "").
+    Otherwise raise an error.
+
+Now it's possible to search a Unicode character by loose name.
+see https://unicode.org/reports/tr44/#UAX44-LM2
+    .RexxUnicode~character(" Father christmas  ")=  -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+
+
+
+===============================================================================
 2026 June 13
 
 [Unicode]
@@ -46,11 +65,11 @@ New class RexxUnicodeCharacter
 If ICU4ooRexx is loaded, the character names are available.
 
 -- Search by name
-.RexxUnicode ~character("FATHER CHRISTMAS")=    -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
 -- Search by codepoint
-.RexxUnicode ~character("U+1F385")=             -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
-.RexxUnicode ~character("127877")=              -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("U+1F385")=              -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("127877")=               -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
 -- Search directly a character if it's made of one codepoint only
 .RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
@@ -77,9 +96,9 @@ If ICU4ooRexx is loaded, the character names are available.
     'UTF8'            : '0xF09F8E85'
 
 -- \u{bed} is different from \u{0bed}
-.RexxUnicode ~character("bed")=                                -- ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
-.RexxUnicode ~character("bed", , /*hexadecimal:*/ .true)=      -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
-.RexxUnicode ~character("U+0bed")=                             -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
+.RexxUnicode~character("bed")=                                 -- ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
+.RexxUnicode~character("bed", , /*hexadecimal:*/ .true)=       -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
+.RexxUnicode~character("U+0bed")=                              -- ("௭"   U+0BED Nd Decimal_Number 1 "TAMIL DIGIT SEVEN")
 
 
 New class CodepointSupplier

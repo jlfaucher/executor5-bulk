@@ -108,6 +108,22 @@ Constants
 
 
 /*******************************************************************************
+Additional codepoint services
+*******************************************************************************/
+
+::method codepointName class
+    use strict arg codepoint, raiseError=.false
+    self~checkCodepoint(codepoint)
+    name = ""
+    if .RexxUnicode~assertICU4ooRexxIsRegistered(raiseError) then do
+        name = .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_UNICODE_CHAR_NAME)
+        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_EXTENDED_CHAR_NAME)
+        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_CHAR_NAME_ALIAS)
+    end
+    return name
+
+
+/*******************************************************************************
 Character by name or by codepoint
 *******************************************************************************/
 
@@ -152,10 +168,9 @@ Character by name or by codepoint
 
     -- is name a character name?
     if by~caselessContains("N"), self~ICU4ooRexxIsRegistered then do
-        looseMatchingIndex = name -- self~UAX44_LM2(name) returns a string that is NOT supported by ICU4C!
-        codepoint = .ICU4ooRexx~u_charFromName(looseMatchingIndex, .ICU4ooRexx~U_UNICODE_CHAR_NAME)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(looseMatchingIndex, .ICU4ooRexx~U_EXTENDED_CHAR_NAME)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(looseMatchingIndex, .ICU4ooRexx~U_CHAR_NAME_ALIAS)
+        codepoint = .ICU4ooRexx~h_charFromLooseName(name)
+        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
+        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
         if codepoint \== -1 then return self~characterByCodepoint(codepoint)
     end
 
@@ -202,7 +217,7 @@ Character by name or by codepoint
     invalid_hexadecimal_codepoint:          raise syntax 93.900 array("an hexadecimal codepoint is 1..8 hex digits, got '"name"'")
     invalid_decimal_codepoint:              raise syntax 93.900 array("a decimal codepoint is 1..7 digits, got '"name"'")
     invalid_u_plus:                         raise syntax 93.900 array("Expected U+ or u+ followed by 4..6 hex digits, got '"name"'")
-    character_made_of_several_codepoints:   raise syntax 93.900 array("The character '"name"' is made of several codepoints:" self~c2x(name))
+    character_made_of_several_codepoints:   raise syntax 93.900 array("The character '"name"' is made of several codepoints:" self~c2u(name))
     ICU4ooRexx_not_loaded:                  raise syntax 93.900 array("Name '"name"' not found (ICU4ooRexx not loaded)")
     name_not_found:                         raise syntax 93.900 array("Name '"name"' not found")
 
@@ -762,6 +777,13 @@ Direct access to codepoints and graphemes
     class_not_found:              raise syntax 93.900 array("Class" quoted(className) "not found")
     version_requirement:          raise syntax 93.900 array("Minimum ICU4ooRexx version must be" versionRequirement || ", current version is" ICU4ooRexx~version)
     method_not_found:             raise syntax 93.900 array("The ICU4ooRexx class does not understand message" quoted(methodName))
+
+
+::method assertICU4ooRexxIsRegistered class
+    use strict arg raiseError=.true
+    if self~ICU4ooRexxIsRegistered then return .true
+    if \ raiseError then return .false
+    raise syntax 93.900 array("The ICU4ooRexx class is not registered")
 
 
 /******************************************************************************/
