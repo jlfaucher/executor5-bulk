@@ -82,6 +82,14 @@ Method flags
 
 */
 
+signal on syntax name afterLoadingICU4ooRexx
+-- Not using ::requires because optional.
+-- When ICU4ooRexx is loaded after rxunicode.cls, it automatically registers
+-- itself alongside rxunicode.cls.
+.context~package~loadPackage("ICU4ooRexx.cls")
+afterLoadingICU4ooRexx:
+signal off syntax
+
 signal skip
 
 -- Error 93.967:  NEW method is not supported for the RexxUnicode class.
@@ -96,12 +104,14 @@ say
 say "UTF8Proc version" .RexxUnicode~utf8procVersion
 say "UTF8Proc Unicode version" .RexxUnicode~unicodeVersion
 say
-say "ICU4ooRexx version" .ICU4ooRexx~version
-say "ICU4C compile-time version" .ICU4ooRexx~U_ICU_VERSION
-say "ICU4C runtime version" .ICU4ooRexx~u_getVersion
-say "ICU4C Unicode version" .ICU4ooRexx~u_getUnicodeVersion
-say
-say
+
+if .RexxUnicode~ICU4ooRexxIsRegistered then do
+    say "ICU4ooRexx version" .ICU4ooRexx~version
+    say "ICU4C compile-time version" .ICU4ooRexx~U_ICU_VERSION
+    say "ICU4C runtime version" .ICU4ooRexx~u_getVersion
+    say "ICU4C Unicode version" .ICU4ooRexx~u_getUnicodeVersion
+    say
+end
 
 
 say "************"
@@ -381,8 +391,4 @@ Demo helper
     say
 
 
--- The order is important:
--- When ICU4ooRexx is loaded after rxunicode.cls, it automatically registers
--- itself alongside rxunicode.cls.
 ::requires "rxunicode.cls"
-::requires "ICU4ooRexx.cls"
