@@ -104,35 +104,19 @@ to determine if it is: </para>
 ::METHOD</para></listitem>
 <listitem><para>A message instruction, such as:
 
-<programlisting>
-<![CDATA[
-.array~new
-]]>
-</programlisting></para></listitem>
+<programlisting language="rexx">.array~new</programlisting></para></listitem>
 
 <listitem><para>A keyword instruction, such as: </para>
 
-<programlisting>
-<![CDATA[
-say "Type total number"
-]]>
-</programlisting>
+<programlisting language="rexx">say "Type total number"</programlisting>
 
 <para>or </para>
 
-<programlisting>
-<![CDATA[
-pull input
-]]>
-</programlisting></listitem>
+<programlisting language="rexx">pull input</programlisting></listitem>
 
 <listitem><para>A variable assignment (any valid symbol followed by an equal sign), such as:
 
-<programlisting>
-<![CDATA[
-price = cost * 1.2
-]]>
-</programlisting></para></listitem>
+<programlisting language="rexx">price = cost * 1.2</programlisting></para></listitem>
 
 <listitem><para>A label for calling other routines</para></listitem>
 <listitem><para>A null (empty) clause</para></listitem></itemizedlist>
@@ -144,13 +128,9 @@ handler will process it as if you had entered it at the command prompt.
 <para>The following example shows a Rexx clause that uses the Windows <emphasis role="italic">DIR</emphasis>
 command to display a list of files in the current directory. </para>
 
-<programlisting>
-<![CDATA[
-/* display current directory */
+<programlisting language="rexx">/* display current directory */
 say "DIR command using Rexx"
-dir
-]]>
-</programlisting>
+dir</programlisting>
 
 <para>The clause <computeroutput>dir</computeroutput> is not a Rexx
 instruction or a label, so Rexx evaluates it and passes the resulting
@@ -166,13 +146,9 @@ quotes, which makes the command a literal string. Rexx does not evaluate the
 contents of strings, so the string is passed to Windows as-is.
 Here is an example using the <emphasis role="italic">PATH</emphasis> command:</para>
 
-<programlisting>
-<![CDATA[
-/* display current path      */
+<programlisting language="rexx">/* display current path      */
 say "PATH command using Rexx"
-"path"
-]]>
-</programlisting>
+"path"</programlisting>
 
 <para>The following example, <code>dp.rex</code>, shows a program using the <emphasis role="italic">DIR</emphasis>
 and <emphasis role="italic">PATH</emphasis> commands.
@@ -181,46 +157,39 @@ a key before issuing the next instruction or command. Borders are added too.</pa
 <example>
 <title>DIR and PATH commands</title>
 
-<programlisting>
-<![CDATA[
-/* dp.rex -- Issue DIR and PATH commands to Windows */
+<programlisting language="rexx">/* dp.rex -- Issue DIR and PATH commands to Windows */
 
-say "="~copies(40)    /* display line of equal   */
-                      /* signs (=) for a border  */
+say "="~copies(40)    /* display line of equal      */
+                      /* signs (=) for a border     */
 
-"dir"                 /* display listing of      */
-                      /* the current directory   */
+"dir"                 /* display listing of         */
+                      /* the current directory      */
 
-"pause"               /* pauses processing and   */
-                      /* tells user to "Press    */
-                      /* any key to continue."   */
+"pause"               /* pauses processing and      */
+                      /* tells user to "Press       */
+                      /* any key to continue."      */
 
-say "="~copies(40)    /* display line of =       */
-"path"                /* display the current     */
-                      /* PATH setting            */
-]]>
-</programlisting>
+say "="~copies(40)    /* display line of =          */
+"path"                /* display the current        */
+                      /* PATH setting               */</programlisting>
 
 </example>
 <para>When you specify the following:</para>
 
 <programlisting>
-<![CDATA[
 [C:\]rexx dp
-]]>
 </programlisting>
 
 <para>a possible output would be:</para>
 
 <programlisting>
-<![CDATA[
 ========================================
 
 The volume label in drive C is WIN.
 Directory of C:\EXAMPLES
 
-.            <DIR>     10-16-94  12:43p
-..           <DIR>     10-16-94  12:43p
+.            &lt;DIR&gt;     10-16-94  12:43p
+..           &lt;DIR&gt;     10-16-94  12:43p
 EX4_1    CMD     nnnn  10-16-94   1:08p
 DEMO     TXT      117  10-16-94   1:10p
 4 File(s)   12163072 bytes free
@@ -229,7 +198,6 @@ Press any key when ready . . .
 ========================================
 PATH=C:\WINDOWS
 [C:\]
-]]>
 </programlisting>
 
 <note>
@@ -260,39 +228,32 @@ Rather than remembering the rules, it may be easier to avoid a potential problem
 by using the built in <computeroutput>directory()</computeroutput> or
 <computeroutput>value()</computeroutput> functions rather than issuing a host command
 for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, etc.</para>
+</note>
 
 <example>
 <title>Environment commands (Windows)</title>
 
-<programlisting>
-<![CDATA[
-'cd c:\tmp'               /* executed in Rexx program process */
-'cd "c:\R&D (secret)"'    /* executed in Rexx program process */
-'cd c:\windows && dir c:' /* executed in child process (2 commands) */
-'d:'                      /* executed in Rexx program process */
-'set myvar=my value'      /* executed in Rexx program process */
-]]>
-</programlisting>
+<programlisting language="rexx">'cd c:\tmp'               /* executed in Rexx program process       */
+'cd "c:\R&amp;D (secret)"'    /* executed in Rexx program process       */
+'cd c:\windows &amp;&amp; dir c:' /* executed in child process (2 commands) */
+'d:'                      /* executed in Rexx program process       */
+'set myvar=my value'      /* executed in Rexx program process       */</programlisting>
 </example>
 
 <example>
 <title>Environment commands (Unix)</title>
 
-<programlisting>
-<![CDATA[
-'cd'                      /* executed in Rexx program process: go to $HOME directory */
-'cd ~/"R&D (secret)"'     /* executed in Rexx program process: go to $HOME/R&D (secret) */
-'cd ~/"R&D \"secret\""'   /* executed in Rexx program process: go to $HOME/R&D "secret" */
-'cd ~john'                /* executed in Rexx program process: go to John's home directory */
-'cd /tmp && pwd'          /* executed in child process (2 commands) */
-'set myvar=my value'      /* executed in Rexx program process */
-'export myvar=my value'   /* executed in Rexx program process */
-'unset myvar'             /* executed in Rexx program process */
-]]>
-</programlisting>
+<programlisting language="rexx">'cd'                    /* executed in Rexx program process: go to $HOME directory    */
+'cd ~/"R&amp;D (secret)"'   /* executed in Rexx program process: go to $HOME/R&amp;D (secret) */
+'cd ~/"R&amp;D \"secret\""' /* executed in Rexx program process: go to $HOME/R&amp;D "secret" */
+'cd ~john'              /* executed in Rexx program process:                          */
+                        /* go to John's home directory                                */
+'cd /tmp &amp;&amp; pwd'        /* executed in child process (2 commands)                     */
+'set myvar=my value'    /* executed in Rexx program process                           */
+'export myvar=my value' /* executed in Rexx program process                           */
+'unset myvar'           /* executed in Rexx program process                           */</programlisting>
 </example>
 
-</note>
 </section>
 
 <section id="batch"><title>Rexx and Batch Files</title>
@@ -305,7 +266,6 @@ display a help message: </para>
 <title>Windows batch file</title>
 
 <programlisting>
-<![CDATA[
 @echo off
 if %1.==. goto msg
 if %1 == on goto yes
@@ -332,7 +292,6 @@ goto exit
 cls
 prompt
 :exit
-]]>
 </programlisting>
 
 </example>
@@ -340,9 +299,7 @@ prompt
 <example>
 <title>Rexx program</title>
 
-<programlisting>
-<![CDATA[
-/* help.rex -- Get help for a system message */
+<programlisting language="rexx">/* help.rex -- Get help for a system message */
 arg action .
 select
   when action=""    then     "helpmsg"
@@ -353,9 +310,7 @@ select
   end
   otherwise "helpmsg" action
 end
-exit
-]]>
-</programlisting>
+exit</programlisting>
 </example>
 </section>
 
@@ -370,33 +325,28 @@ and passes the resultant string to Windows: </para>
 <example>
 <title>showfile.rex (Windows)</title>
 
-<programlisting>
-<![CDATA[
-/* showfile.rex - build command with variables  */
+<programlisting language="rexx">/* showfile.rex - build command with variables  */
 
-/* prompt the user for a file name            */
+/* prompt the user for a file name              */
 say "Type a file name:"
 
-/* assign the response to variable FILENAME   */
+/* assign the response to variable FILENAME     */
 pull filename
 
-/* build a command string by concatenation    */
+/* build a command string by concatenation      */
 commandstr = "TYPE" filename
 
-/* Assuming the user typed "demo.txt,"        */
-/* the variable COMMANDSTR contains           */
-/* the string "TYPE DEMO.TXT" and so...       */
+/* Assuming the user typed "demo.txt,"          */
+/* the variable COMMANDSTR contains             */
+/* the string "TYPE DEMO.TXT" and so...         */
 
-commandstr           /* ...Rexx passes the    */
-                     /* string on to Windows  */
-]]>
-</programlisting>
+commandstr           /* ...Rexx passes the      */
+                     /* string on to Windows    */</programlisting>
 </example>
 
 <para>Rexx displays the following on the screen when you run the program:</para>
 
 <programlisting>
-<![CDATA[
 [C:\]rexx showfile
 Type a file name:
 demo.txt
@@ -407,7 +357,6 @@ commands can be issued from Rexx
 programs.
 
 [C:\]
-]]>
 </programlisting>
 
 </section>
@@ -421,28 +370,22 @@ name are the same: </para>
 <example>
 <title>dir.rex (Windows)</title>
 
-<programlisting>
-<![CDATA[
-/* dir.rex - assign a value to the symbol DIR  */
+<programlisting language="rexx">/* dir.rex - assign a value to the symbol DIR */
 say "DIR command using Rexx"
 dir = "echo This is not a directory."
 
-/* pass the evaluated variable to Windows         */
-dir
-]]>
-</programlisting>
+/* pass the evaluated variable to Windows     */
+dir</programlisting>
 
 </example>
 <para>Because dir is a variable that contains a string, the string
 is passed to the system. The <emphasis role="italic">DIR</emphasis> command is not executed. Here are the results: </para>
 
 <programlisting>
-<![CDATA[
 [C:\]rexx dir.rex
 DIR command using Rexx:
 This is not a directory.
 [C:\]
-]]>
 </programlisting>
 
 <para>Rexx evaluates a literal string--a string enclosed in matching quotation
@@ -451,16 +394,12 @@ evaluated as a variable, enclose it in matching quotation marks as follows:</par
 <example>
 <title>Passing values to command environments</title>
 
-<programlisting>
-<![CDATA[
-/* assign a value to the symbol DIR         */
+<programlisting language="rexx">/* assign a value to the symbol DIR         */
 say "DIR command using Rexx"
 dir = "echo This is another string now."
 
 /* pass the literal string "dir" to Windows */
-"dir"
-]]>
-</programlisting>
+"dir"</programlisting>
 
 </example>
 <para>Rexx displays a directory listing.</para>
@@ -470,15 +409,11 @@ when you use symbols that Rexx uses as operators.</para>
 <para>If you want to use a variable in the command string, leave the variable
 outside the quotation marks. For example: </para>
 
-<programlisting>
-<![CDATA[
-extension = "BAK"
+<programlisting language="rexx">extension = "BAK"
 "delete *." || extension
 
 option = "/w"
-"dir" option
-]]>
-</programlisting>
+"dir" option</programlisting>
 
 </section>
 
@@ -492,9 +427,7 @@ option = "/w"
 <para>To send a command to a specific environment, use this format of the ADDRESS
 instruction: </para>
 
-<programlisting>
-ADDRESS environment expression
-</programlisting>
+<programlisting language="rexx">ADDRESS environment expression</programlisting>
 
 <para>For <emphasis role="italic">environment</emphasis>
 specify the destination of the command.
@@ -505,9 +438,7 @@ the environment. Here are some examples: </para>
 <example>
 <title>ADDRESS instruction</title>
 
-<programlisting>
-<![CDATA[
-address CMD "dir"     /* pass the literal string      */
+<programlisting language="rexx">address CMD "dir"     /* pass the literal string      */
                       /* "dir" to Windows             */
 
 address "bash" "ls"   /* pass the literal string      */
@@ -520,9 +451,7 @@ address CMD cmdstr    /* Rexx passes the string       */
                       /* "dir *.txt" to Windows       */
 address edit "rain"   /* Rexx passes the "rain"       */
                       /* command to a fictitious      */
-                      /* environment named edit       */
-]]>
-</programlisting>
+                      /* environment named edit       */</programlisting>
 </example>
 
 <para>Notice that the ADDRESS instruction lets a single Rexx program issue commands
@@ -537,9 +466,7 @@ a Rexx array which then gets listed by the Rexx program in a DO loop.
 <example>
 <title>Redirecting the standard output to a Rexx array:</title>
 
-<programlisting>
-<![CDATA[
-parse source os .                /* get operating system name                 */
+<programlisting language="rexx">parse source os .                /* get operating system name                 */
 
    /* define external command to list all environment variables               */
 if os~startsWith("Win") then command='set'   /* Windows (sorted by default)   */
@@ -557,9 +484,7 @@ do counter i var over vars       /* list environment variables one by one     */
    say "#" i~right(len)":" var   /* show value of counter i right adjusted    */
 end
 
-say "operating system:" os', command was: "'command'", # vars:' vars~items
-]]>
-</programlisting>
+say "operating system:" os', command was: "'command'", # vars:' vars~items</programlisting>
 <para>Running the above Rexx program on Darwin (Apple) may yield an output like:</para>
 <screen>#  1: Apple_PubSub_Socket_Render=/private/tmp/com.apple.launchd.BNhGgJRBpz/Render
 #  2: HOME=/Users/some_username
@@ -611,13 +536,9 @@ The number depends on the command itself and the error encountered.</para>
 <example>
 <title>getrc.rex (Windows)</title>
 
-<programlisting>
-<![CDATA[
-/* getrc.rex report */
+<programlisting language="rexx">/* getrc.rex report */
 "TYPE nosuch.fil"
-say "the return code is" RC
-]]>
-</programlisting>
+say "the return code is" RC</programlisting>
 </example>
 
 <para>The special variable <emphasis role="italic">RC</emphasis> can be used in expressions like any other
@@ -626,16 +547,12 @@ returns a nonzero value in <emphasis role="italic">RC:</emphasis> </para>
 <example>
 <title>RC special variable</title>
 
-<programlisting>
-<![CDATA[
-/* Simple if/then error handler */
+<programlisting language="rexx">/* Simple if/then error handler */
 say "Type a file name:"
 pull filename
 "TYPE" filename
 if RC \= 0
-then say "Could not find" filename
-]]>
-</programlisting>
+then say "Could not find" filename</programlisting>
 </example>
 
 <para>This program tells you only that the system could not find a nonexistent
@@ -762,14 +679,10 @@ instructions with the OFF keyword, such as: </para>
 <example>
 <title>SIGNAL</title>
 
-<programlisting>
-<![CDATA[
-SIGNAL OFF ERROR
+<programlisting language="rexx">SIGNAL OFF ERROR
 SIGNAL OFF FAILURE
 CALL OFF ERROR
-CALL OFF FAILURE
-]]>
-</programlisting>
+CALL OFF FAILURE</programlisting>
 </example>
 
 </section>
@@ -804,9 +717,7 @@ programs: </para>
 <example>
 <title>Common error handling routine</title>
 
-<programlisting>
-<![CDATA[
-/* Here is a sample "main program" with an error            */
+<programlisting language="rexx">/* Here is a sample "main program" with an error            */
 signal on error        /* enable error handling             */
 "ersae myfiles.*"      /* mistyped "erase" instruction      */
 exit
@@ -818,9 +729,7 @@ say "error" rc "in system call."
 say
 say "line number =" sigl
 say "instruction = "  sourceline(sigl)
-exit
-]]>
-</programlisting>
+exit</programlisting>
 </example>
 
 </section>

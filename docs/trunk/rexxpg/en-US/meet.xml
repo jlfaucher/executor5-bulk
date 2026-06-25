@@ -222,18 +222,10 @@ variable Name, you send a SUBSTR
 message to the string object. In classic
 Rexx, you would do the following: </para>
 
-<programlisting>
-<![CDATA[
-s=substr(name,2,3)
-]]>
-</programlisting>
+<programlisting language="rexx">s=substr(name,2,3)</programlisting>
 
 <para>In Open Object Rexx, the equivalent would be: </para>
-<programlisting>
-<![CDATA[
-s=name~substr(2,3)
-]]>
-</programlisting>
+<programlisting language="rexx">s=name~substr(2,3)</programlisting>
 
 <indexterm><primary>~ (tilde, or twiddle)</primary></indexterm>
 <indexterm><primary>tilde (~)</primary></indexterm>
@@ -265,11 +257,7 @@ stem variables (such as <emphasis role="italic">text.1</emphasis> or <emphasis r
 To create an array object of five elements, you would send a NEW message to
 the Array class as follows: </para>
 
-<programlisting>
-<![CDATA[
-myarray=.array~new(5)
-]]>
-</programlisting>
+<programlisting language="rexx">myarray=.array~new(5)</programlisting>
 
 <para>A new instance of the Array class is created and reference
 to it is stored in the variable <literal>myarray</literal>.
@@ -279,15 +267,11 @@ The <literal>myarray</literal> Array object has five
 elements, but the array itself is currently empty.  Items can be added using methods
 defined by the Array class.</para>
 
-<programlisting>
-<![CDATA[
-myarray[1] = "Rick"
+<programlisting language="rexx">myarray[1] = "Rick"
 myarray[2] = "David"
 myarray[3] = "Mark"
 
-say myarray[1] myarray[2] myarray[3]
-]]>
-</programlisting>
+say myarray[1] myarray[2] myarray[3]</programlisting>
 
 <para>The Array class implements many more methods.  See the ooRexx reference for
 details on what additional methods are provided.</para>

@@ -1343,16 +1343,12 @@ the same object, as described in
 are used to create methods that directly access internal attributes of an object.
 For example, the Account class could define</para>
 
-<programlisting>
-::attribute balance
-</programlisting>
+<programlisting language="rexx">::attribute balance</programlisting>
 
 <para>Which would allow the account balance to be set or retrieved.</para>
 
-<programlisting>
-  anAccount~balance = 10000     -- set a new account balance
-  say anAccount~balance         -- display the current account balance
-</programlisting>
+<programlisting language="rexx">  anAccount~balance = 10000     -- set a new account balance
+  say anAccount~balance         -- display the current account balance</programlisting>
 
 <para>The access methods can created as read-only, or given private scope.</para>
 </section>
@@ -1380,11 +1376,7 @@ and objects of another program. This directive has the following form: </para>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES example</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-::REQUIRES program_name
-]]>
-</programlisting>
+<programlisting language="rexx">::REQUIRES program_name</programlisting>
 
 <para>::REQUIRES directives are processed before other directives and the order
 of the ::REQUIRES directives determines the search order for the classes and
@@ -1419,9 +1411,7 @@ directive.</para></listitem></orderedlist>
 <example>
 <title>Using directives</title>
 
-<programlisting>
-<![CDATA[
-asav = .savings~new              /* executable code begins */
+<programlisting language="rexx">asav = .savings~new              /* executable code begins */
 say asav~type                    /* executable code        */
 asav~name= "John Smith"          /* executable code ends   */
 
@@ -1435,9 +1425,7 @@ asav~name= "John Smith"          /* executable code ends   */
 ::class Savings subclass Account
 
   ::method type
-    return "a savings account"   /* ... directives end     */
-]]>
-</programlisting>
+    return "a savings account"   /* ... directives end     */</programlisting>
 </example>
 
 <indexterm><primary>SUBCLASS option</primary></indexterm>
@@ -1497,18 +1485,12 @@ object.</para>
 the executable program code: </para>
 <example>
 <title>Defining methods</title>
-<programlisting>
-<![CDATA[
-dino=.dinosaur~new         /* Create a new dinosaur instance and
-                                            /* initialize variables */
-dino~diet                  /* Run the DIET method          */
-exit
-]]>
- </programlisting>
+<programlisting language="rexx">dino=.dinosaur~new         /* Create a new dinosaur instance and */
+                           /* initialize variables               */
+dino~diet                  /* Run the DIET method                */
+exit </programlisting>
 
-<programlisting>
-<![CDATA[
-::class Dinosaur           /* Create the Dinosaur class  */
+<programlisting language="rexx">::class Dinosaur           /* Create the Dinosaur class  */
 
   ::method init            /* Create the INIT method     */
     expose type
@@ -1531,9 +1513,7 @@ exit
     when type="STEGOSAUR" then string="Plant-eater"
     otherwise string="Type of dinosaur or diet unknown"
     end
-    say string
-]]>
-</programlisting>
+    say string</programlisting>
 </example>
 
 </section>
@@ -1546,13 +1526,9 @@ define an instance of the Savings class named &quot;John Smith,&quot; and send
 John Smith the TYPE and NAME=
 messages to call the related methods, you enter: </para>
 
-<programlisting>
-<![CDATA[
-newaccount = savings~new
+<programlisting language="rexx">newaccount = savings~new
 say newaccount~type
-newaccount~name = "John Smith"
-]]>
-</programlisting>
+newaccount~name = "John Smith"</programlisting>
 
 </section>
 
@@ -1654,8 +1630,7 @@ method for computing a total of all the numeric elements of an array.</para>
 <example>
 <title>Creating an Array subclass</title>
 
-<programlisting>
-/* Creating an array subclass for statistics */
+<programlisting language="rexx">/* Creating an array subclass for statistics                            */
 
 ::class statArray subclass array public
 
@@ -1664,30 +1639,29 @@ method for computing a total of all the numeric elements of an array.</para>
   total = 0
   forward class (super)
 
-::method put     /*  Modify to increment running total */
+::method put     /*  Modify to increment running total                  */
   expose total
   use arg value
-  total = total + value  /* Should verify that value is numeric!!! */
+  total = total + value  /* Should verify that value is numeric!!!      */
   forward class (super)
 
-::method "[]="   /*  Modify to increment running total */
+::method "[]="   /*  Modify to increment running total                  */
   forward message "PUT"
 
-::method remove  /*  Modify to decrement running total */
+::method remove  /*  Modify to decrement running total                  */
   expose total
   use arg index
   forward message "AT" continue
   total = total - result
   forward class (super)
 
-::method average /*  Return the average of the array elements */
+::method average /*  Return the average of the array elements           */
   expose total
   return total / self~items
 
-::method total   /*  Return the running total of the array elements */
+::method total   /*  Return the running total of the array elements     */
   expose total
-  return total
-</programlisting>
+  return total</programlisting>
 </example>
 
 <para>You can use this method on the individual array
@@ -1719,89 +1693,85 @@ CLASS option. The second version uses a metaclass.</para>
 <example>
 <title>Adding a class method</title>
 
-<programlisting>
-/* Adding a class method using ::METHOD */
+<programlisting language="rexx">/* Adding a class method using ::METHOD                            */
 
-a = .point~new(1,1)               /* Create some point instances  */
+a = .point~new(1,1)               /* Create some point instances   */
 say "Created point instance" a
 b = .point~new(2,2)               /* create another point instance */
 say "Created point instance" b
 c = .point~new(3,3)               /* create another point instance */
 say "Created point instance" c
-                                  /* ask the point class how many */
-                                  /* instances it has created     */
+                                  /* ask the point class how many  */
+                                  /* instances it has created      */
 say "The point class has created" .point~instances "instances."
 
 
 
-::class point public                /* create Point class           */
+::class point public                /* create Point class          */
 
 ::method init class
   expose instanceCount
-  instanceCount = 0                 /* Initialize instanceCount     */
-  forward class (super)             /* Forward INIT to superclass   */
+  instanceCount = 0                 /* Initialize instanceCount    */
+  forward class (super)             /* Forward INIT to superclass  */
 
 ::method new class
-  expose instanceCount              /* Creating a new instance      */
-  instanceCount = instanceCount + 1 /* Bump the count               */
-  forward class (super)             /* Forward NEW to superclass    */
+  expose instanceCount              /* Creating a new instance     */
+  instanceCount = instanceCount + 1 /* Bump the count              */
+  forward class (super)             /* Forward NEW to superclass   */
 
 ::method instances class
-  expose instanceCount              /* Return the instance count    */
+  expose instanceCount              /* Return the instance count   */
   return instanceCount
 
 
 ::method init
-  expose xVal yVal                  /* Set object variables         */
-  use arg xVal, yVal                /* as passed on NEW             */
+  expose xVal yVal                  /* Set object variables        */
+  use arg xVal, yVal                /* as passed on NEW            */
 
 ::method string
-  expose xVal yVal                  /* Use object variables         */
-  return "("xVal","yVal")"          /* to return string value       */
-</programlisting>
+  expose xVal yVal                  /* Use object variables        */
+  return "("xVal","yVal")"          /* to return string value      */</programlisting>
 
 <para><emphasis role="bold">Version 2</emphasis></para>
 
-<programlisting>
-/* Adding a class method using a metaclass  */
+<programlisting language="rexx">/* Adding a class method using a metaclass                                */
 
-a = .point~new(1,1)                    /* Create some point instances  */
+a = .point~new(1,1)                    /* Create some point instances     */
 say "Created point instance" a
 b = .point~new(2,2)
 say "Created point instance" b
 c = .point~new(3,3)
 say "Created point instance" c
-                                       /* ask the point class how many */
-                                       /* instances it has created     */
+                                       /* ask the point class how many    */
+                                       /* instances it has created        */
 say "The point class has created" .point~instances "instances."
 
-::class InstanceCounter subclass class /* Create a new metaclass that */
-                                       /* will count its instances     */
+::class InstanceCounter subclass class /* Create a new metaclass that     */
+                                       /* will count its instances        */
 ::method init
   expose instanceCount
-  instanceCount = 0                    /* Initialize instanceCount     */
-  forward class (super)                /* Forward INIT to superclass   */
+  instanceCount = 0                    /* Initialize instanceCount        */
+  forward class (super)                /* Forward INIT to superclass      */
 
 ::method new
-  expose instanceCount                 /* Creating a new instance      */
-  instanceCount = instanceCount + 1    /* Bump the count               */
-  forward class (super)                /* Forward NEW to superclass    */
+  expose instanceCount                 /* Creating a new instance         */
+  instanceCount = instanceCount + 1    /* Bump the count                  */
+  forward class (super)                /* Forward NEW to superclass       */
 
 ::method instances
-expose instanceCount                   /* Return the instance count    */
+expose instanceCount                   /* Return the instance count       */
 return instanceCount
 
 
-::class point public metaclass InstanceCounter  /* Create Point class */
+::class point public metaclass InstanceCounter  /* Create Point class     */
                                        /* using InstanceCounter metaclass */
 ::method init
-  expose xVal yVal                     /* Set object variables         */
-  use arg xVal, yVal                   /* as passed on NEW             */
+  expose xVal yVal                     /* Set object variables            */
+  use arg xVal, yVal                   /* as passed on NEW                */
 
 ::method string
-  expose xVal yVal                     /* Use object variables         */
-  return "("xVal","yVal")"             /* to return string value       */
-</programlisting>
+  expose xVal yVal                     /* Use object variables            */
+  return "("xVal","yVal")"             /* to return string value          */</programlisting>
 </example>
 </section>
 </section>
