@@ -98,6 +98,7 @@ Constants
     "systemIsLittleEndian",,
     "unicodeVersion",,
     "utf8procVersion"
+
     info = .StringTable~new
     do message over messages
         value = self~send(message)
@@ -108,174 +109,296 @@ Constants
 
 
 /*******************************************************************************
+Additional string services
+*******************************************************************************/
+
+::method stringInfo class
+    if arg() == 2 then use strict arg string, >indexer
+    else use strict arg string
+    string = requestBaseString(string)
+    indexer = .RexxUnicodeStringIndexer~new(string)
+    g = indexer~graphemeIndexes
+    c = indexer~codepointIndexes
+    e = indexer~errors
+
+    info =    "(" ||,
+              self~stringIsASCII(string)~?("ASCII", "not-ASCII")"," -
+              g~items "grapheme" || singularPlural(g~items)"," -
+              c~items "codepoint" || singularPlural(c~items)"," -
+              string~length "byte" || singularPlural(string~length)"," -
+              e~items "error" || singularPlural(e~items) -
+              || ")"
+    return info
+
+
+::method stringIsASCII class
+    use strict arg string
+    string = requestBaseString(string)
+    -- No need to optimize, will be replaced by a native method .string~isASCII
+    ASCII = xrange("00"x, "7F"x)
+    return string~verify(ASCII) == 0
+
+
+::method stringToNFC class
+    use strict arg string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
+    string = requestBaseString(string)
+    return self~utf8Transform(string, casefold, lump, nlf, self~NFC,  stripCC, stripIgnorable, stripMark, stripNA)
+
+
+::method stringToNFD class
+    use strict arg string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
+    string = requestBaseString(string)
+    return self~utf8Transform(string, casefold, lump, nlf, self~NFD,  stripCC, stripIgnorable, stripMark, stripNA)
+
+
+::method stringToNFKC class
+    use strict arg string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
+    string = requestBaseString(string)
+    return self~utf8Transform(string, casefold, lump, nlf, self~NFKC,  stripCC, stripIgnorable, stripMark, stripNA)
+
+
+/*
+NFKC preserves the original case of letters (e.g., 'A' remains 'A').
+In contrast, NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+    Example: The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
+    Example: The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
+NFKC_CF is specifically optimized for identifier matching.
+As part of the "Default Case Folding" algorithm, it removes ignorable characters (such as certain formatting marks or zero-width spaces).
+NFKC retains these characters.
+*/
+::method stringToNFKC_CF class
+    use strict arg string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false
+    string = requestBaseString(string)
+    return self~utf8Transform(string, /*casefold*/ .true, lump, nlf, /*normalization*/ self~NFKC,  stripCC, /*stripIgnorable*/ .true, stripMark, stripNA)
+
+
+::method stringToNFKD class
+    use strict arg string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
+    string = requestBaseString(string)
+    return self~utf8Transform(string, casefold, lump, nlf, self~NFKD,  stripCC, stripIgnorable, stripMark, stripNA)
+
+
+/*******************************************************************************
 Additional codepoint services
 *******************************************************************************/
 
-::method codepointName class
+-- Returns .true if codepoint is in the range 0...RexxUnicode~maxCodepoint
+-- The range U+D800-U+DFFF is allowed (surrogates).
+-- If minusOneAllowed is true then -1 is allowed (special value used in case of error).
+::method checkCodepoint class
+    use strict arg codepoint, minusOneAllowed=.false
+    if \ datatype(codepoint, "W") then signal not_wholenumber
+    if codepoint == -1, minusOneAllowed then return .true
+    if codepoint < 0 | codepoint > self~maxCodepoint then signal error_range
+    return .true
+
+    not_wholenumber: raise syntax 88.900 array ("code point must be in the range 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)"); found" quoted(codepoint))
+    error_range: raise syntax 88.900 array ("Invalid code point" codepoint"; allowed range is 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)")")
+
+
+-- Returns the UTF-8 encoding of this codepoint.
+::method codepointUTF8Encoding class
+    use strict arg codepoint, buffer=.nil
+    self~checkCodepoint(codepoint)
+    returnBuffer = .nil <> buffer
+    if .nil == buffer then buffer = .MutableBuffer~new
+    self~utf8EncodeCodepoint(codepoint, buffer)
+    if returnBuffer then return buffer
+    return buffer~string
+
+
+::method codepointUnicodeEscapeNotation class
+    use strict arg codepoint, buffer=.nil
+    self~checkCodepoint(codepoint)
+    if .nil == buffer then do
+        if codepoint <= 65535 then return "\u" || codepoint~d2x~right(4, "0")
+        return "\U" || codepoint~d2x~right(8, "0")
+    end
+    if codepoint <= 65535 then buffer~append("\u", codepoint~d2x~right(4, "0"))
+    else buffer~append("\U", codepoint~d2x~right(8, "0"))
+    return buffer
+
+
+::method codepointIsPrintable class
+    use strict arg codepoint
+    self~checkCodepoint(codepoint)
+
+    /*
+    Non-printable categories - TODO is it correct?
+
+    Cc Control
+    Cf Format
+    Cn Unassigned (reserved, noncharacters)
+    Co Private_Use
+    Cs Surrogate
+    Zl Line_Separator
+    Zp Paragraph_Separator
+    */
+
+    category = self~codepointCategory(codepoint, >code)
+    return "Cc Cf Cn Co Cs Zl Zp"~wordpos(code) == 0
+
+/*
+Returns a printable string representation of this codepoint.
+Printable codepoints are returned as their UTF-8 character representation;
+non-printable codepoints are returned as a Unicode escape notation.
+*/
+::method codepointPrintableString class
+    use strict arg codepoint, buffer=.nil
+    self~checkCodepoint(codepoint)
+    returnBuffer = .nil <> buffer
+    if .nil == buffer then buffer = .MutableBuffer~new
+    if self~codepointIsPrintable(codepoint) then do
+        self~utf8EncodeCodepoint(codepoint, buffer)
+    end
+    else do
+        -- I think it's better to use the \u or \U notation, instead of the \x{ notation
+        self~codepointUnicodeEscapeNotation(codepoint, buffer)
+    end
+    if returnBuffer then return buffer
+    return buffer~string
+
+
+-- Unicode standard name, can be ""
+::method codepointCharName class
     use strict arg codepoint, raiseError=.false
     self~checkCodepoint(codepoint)
     name = ""
-    if .RexxUnicode~assertICU4ooRexxIsRegistered(raiseError) then do
-        name = .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_UNICODE_CHAR_NAME)
-        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_EXTENDED_CHAR_NAME)
-        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_CHAR_NAME_ALIAS)
+    if self~assertICU4ooRexxIsRegistered(raiseError) then do
+        name = .ICU4ooRexx~u_charName(codepoint)
+    end
+    return name
+
+
+-- All Unicode characters have an extended name.
+-- An extended name is either the standard name if defined, or a codepoint label algorithmically generated.
+::method codepointExtendedCharName class
+    use strict arg codepoint, raiseError=.false
+    self~checkCodepoint(codepoint)
+    name = ""
+    if self~assertICU4ooRexxIsRegistered(raiseError) then do
+        name = .ICU4ooRexx~h_extendedCharName(codepoint)
+    end
+    return name
+
+
+-- Unicode name alias, can be "".
+::method codepointCharNameAlias class
+    use strict arg codepoint, raiseError=.false
+    self~checkCodepoint(codepoint)
+    name = ""
+    if self~assertICU4ooRexxIsRegistered(raiseError) then do
+        name = .ICU4ooRexx~h_charNameAlias(codepoint)
     end
     return name
 
 
 /*******************************************************************************
-Character by name or by codepoint
+Codepoint from identifier
 *******************************************************************************/
 
--- For convenience
--- .RexxUnicode[key] is equivalent to .RexxUnicode~character(key)
-::method "[]" class
-    forward message "character"
+-- Gets a codepoint from a character name
+-- Private helper for .RexxUnicode~unescape and .RexxUnicode~codepoint
+::method codepointFromName class private
+    use strict arg name
+    name = requestBaseString(name, "name")
+
+    codepoint = -1
+    if self~ICU4ooRexxIsRegistered, self~stringIsASCII(name) then do
+        codepoint = .ICU4ooRexx~h_charFromExtendedName(name) -- The extended name space includes the standard name space
+        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromNameAlias(name)
+        if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
+    end
+    return codepoint
 
 
--- Return an instance of RexxUnicodeCharacter
+/*
+Gets a codepoint from a codepoint identifier.
+A codepoint identifier may be:
+- a decimal value (the codepoint itself),
+- a U+ notation,
+- a character name,
+- or a UTF-8 encoded character.
+*/
+::method codepoint class
+    use strict arg identifier
+    identifier = requestBaseString(identifier, "identifier")
+
+    -- is identifier a decimal codepoint ?
+    if datatype(identifier, "W") then do
+        codepoint = identifier
+        self~checkCodepoint(codepoint)
+        return codepoint
+    end
+
+    -- is identifier a U+ codepoint ?
+    if identifier~caselessStartsWith("U+") then do
+        codepoint = self~U2D(identifier, /*start*/ 1, /*raiseError*/ .true)
+        self~checkCodepoint(codepoint)
+        return codepoint
+    end
+
+    -- is identifier a character name?
+    codepoint = self~codepointFromName(identifier)
+    if codepoint \== -1 then return codepoint
+
+    -- fallback: if the identifier is made of just one codepoint then search this codepoint
+    indexer = .RexxUnicodeStringIndexer~new(identifier)
+    if indexer~graphemeIndexes~items == 1, indexer~codepointIndexes~items == 1 then return indexer~codepointAtIndexC(1)
+
+    additional = ""
+    if \ self~ICU4ooRexxIsRegistered then additional = " (ICU4ooRexx not loaded)"
+    raise syntax 98.900 array("Name" quoted(identifier) "not found" || additional)
+
+
+-- Gets a RexxUnicodeCharacter from a codepoint identifier.
+-- See the `codepoint` method for a definition of "codepoint identifier".
 ::method character class
-    use strict arg name, -
-                   by="DFHLNU", hexadecimal=.false -- can't be guessed: 100 in hexadecimal is different from 100 in decimal
-
-    name = name~strip
-    if name == "" then return self~characterByCodepoint(-1)
-
-    -- is name an hexadecimal codepoint ?
-    if by~caselessContains("H"), hexadecimal then do
-        call remove_leading_zeros
-        if name~length <= 6, datatype(name, "X") then do
-            return self~characterByCodepoint(name~x2d)
-        end
-        signal invalid_hexadecimal_codepoint
-    end
-
-    -- is name a decimal codepoint ?
-    if by~caselessContains("D"), datatype(name, "W") then do
-        call remove_leading_zeros
-        if name~length <= 7 then return self~characterByCodepoint(name)
-        signal invalid_decimal_codepoint
-    end
-
-    -- is name a U+ codepoint ?
-    if by~caselessContains("U"), name~caselessStartsWith("U+") then do
-        name = name~substr(3)
-        if name~length >= 4, name~length <= 6, datatype(name, "X") then do
-            return self~characterByCodepoint(name~x2d)
-        end
-        signal invalid_u_plus
-    end
-
-    -- is name a character name?
-    if by~caselessContains("N"), self~ICU4ooRexxIsRegistered then do
-        codepoint = .ICU4ooRexx~u_charFromName(name)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(name)
-        if codepoint == -1 then codepoint = .ICU4ooRexx~u_charFromName(name)
-        -- If not yet found, and is only ASCII then try a loose match
-        if codepoint == -1, name == name~translate("", xrange("80"x, "FF"x)) then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
-        if codepoint \== -1 then return self~characterByCodepoint(codepoint)
-    end
-
-    -- is name a code point label?
-    /*
-    code point labels are constructed by using a lowercase prefix derived from the code point type,
-    followed by a hyphen-minus and then a 4- to 6-digit hexadecimal representation of the code point.
-        Control         control-NNNN
-        Reserved        reserved-NNNN
-        Noncharacter    noncharacter-NNNN
-        Private-Use     private-use-NNNN
-        Surrogate       surrogate-NNNN
-    U+0008 label is <control-0008>
-    */
-    if by~caselessContains("L"), name~left(1) == "<", name~right(1) == ">", name~pos(" ") == 0 then do
-        hyphenPos = name~lastPos("-")
-        if hyphenPos \== 0 then do
-            parse var name "<" type =(hyphenPos) "-" hex ">"
-            if "control reserved noncharacter private-use surrogate"~wordPos(type) \== 0,,
-               hex~length >= 4, hex~length <= 6,,
-               hex~datatype("X"),
-            then do
-                return self~characterByCodepoint(hex~x2d)
-            end
-        end
-    end
-
-    -- fallback: if the name is made of just one codepoint then search this codepoint
-    if by~caselessContains("F") then do
-        self~createIndexers(name, >c, >g, >e)
-        if c~items == 1 then return self~characterByCodepoint(self~codepointAtIndexC(name, 1, c))
-        if g~items == 1 then signal character_made_of_several_codepoints
-    end
-
-    if by~caselessContains("N"), \ self~ICU4ooRexxIsRegistered then signal ICU4ooRexx_not_loaded
-    signal name_not_found
-
-    remove_leading_zeros:
-        firstNonZero = name~verify("0")
-        if firstNonZero == 0 then name = "0" -- 0[..0] replaced by 0
-        else if firstNonZero > 1 then name = name~substr(firstNonZero) -- remove all the leading zeros
-        return
-
-    invalid_hexadecimal_codepoint:          raise syntax 93.900 array("an hexadecimal codepoint is 1..8 hex digits, got '"name"'")
-    invalid_decimal_codepoint:              raise syntax 93.900 array("a decimal codepoint is 1..7 digits, got '"name"'")
-    invalid_u_plus:                         raise syntax 93.900 array("Expected U+ or u+ followed by 4..6 hex digits, got '"name"'")
-    character_made_of_several_codepoints:   raise syntax 93.900 array("The character '"name"' is made of several codepoints:" self~c2u(name))
-    ICU4ooRexx_not_loaded:                  raise syntax 93.900 array("Name '"name"' not found (ICU4ooRexx not loaded)")
-    name_not_found:                         raise syntax 93.900 array("Name '"name"' not found")
-
-
--- Return an instance of RexxUnicodeCharacter
-::method characterByCodepoint class
-    use strict arg codepoint
-    self~checkCodepoint(codepoint)
+    use strict arg identifier
+    identifier = requestBaseString(identifier, "identifier")
+    codepoint = self~codepoint(identifier)
     return .RexxUnicodeCharacter~new(codepoint)
 
 
-::method checkCodepoint class
-    use strict arg codepoint, minusOneAllowed=.false
-    .Validate~wholeNumber("codepoint", codepoint)
-    if codepoint < minusOneAllowed~?(-1, 0) | codepoint > self~maxCodepoint then signal error_range
-    return .true
-
-    error_range:
-    -- To be consistent with other checks, say the lower limit is 0, even if -1 is an allowed value
-    raise syntax 23.900 array ("Invalid codepoint" codepoint "("self~D2U(codepoint)"). Allowed range is 0.."self~maxCodepoint "(0.."self~D2U(self~maxCodepoint)")")
-
-
 /*******************************************************************************
-C2U C2X D2U U2D X2U
+C2U C2X D2U U2C U2D
 *******************************************************************************/
 
--- Return a sequence of U+XXXX... as string
+-- Returns an ASCII string containing a sequence of U+XXXX...
 ::method C2U class
-    use strict arg string
-    codepoints = .CodepointSupplier~new(string)
-    buffer = .MutableBuffer~new
+    use strict arg string, buffer=.nil
+    string = requestBaseString(string)
+    codepoints = .RexxUnicodeCodepointSupplier~new(string)
+    returnBuffer = .nil <> buffer
+    if .nil == buffer then buffer = .MutableBuffer~new
     first = .true
     do while codepoints~available
         if \first then buffer~append(" ")
         first = .false
         codepoint = codepoints~item("c") -- "c": get the codepoint as integer
-        UPlusCodepoint = self~D2U(codepoint)
-        buffer~append(UPlusCodepoint)
+        UPlusCodepoint = self~D2U(codepoint, buffer)
         codepoints~next
     end
+    if returnBuffer then return buffer
     return buffer~string
 
 
--- Specialized C2X: Insert a space between the codepoints
+-- Specialized C2X: Inserts a space between the codepoints
 ::method C2X class
-    use strict arg string
-    codepoints = .CodepointSupplier~new(string)
-    buffer = .MutableBuffer~new
+    use strict arg string, buffer=.nil
+    string = requestBaseString(string)
+    codepoints = .RexxUnicodeCodepointSupplier~new(string)
+    returnBuffer = .nil <> buffer
+    if .nil == buffer then buffer = .MutableBuffer~new
     first = .true
     do while codepoints~available
         if \first then buffer~append(" ")
         first = .false
-        codepoint = codepoints~item("b") -- "b": get the byte sequence
+        codepoint = codepoints~item("b") -- "b": get the byte sequence as a string
         buffer~append(codepoint~c2x)
         codepoints~next
     end
+    if returnBuffer then return buffer
     return buffer~string
 
 
@@ -287,23 +410,98 @@ respectively). Leading zeros are omitted, unless the code point would have fewer
 hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102345
 */
 ::method D2U class
-    use strict arg codepoint
-    .Validate~wholeNumber("codepoint", codepoint)
-    if codepoint == -1 then return "U+FFFFFF" -- in case of error (invalid)
-    if codepoint < 65536 then return "U+" || codepoint~d2x(4)
-    return "U+" || codepoint~d2x
+    use strict arg codepoint, buffer=.nil
+    self~checkCodepoint(codepoint)
+    if .nil == buffer then do
+        if codepoint < 0 then return "U+FFFFFF" -- in case of error (invalid)
+        if codepoint < 65536 then return "U+" || codepoint~d2x(4)
+        return "U+" || codepoint~d2x
+    end
+    else do
+        if codepoint < 0 then buffer~append("U+FFFFFF") -- in case of error (invalid)
+        else do
+            buffer~append("U+")
+            if codepoint < 65536 then buffer~append(codepoint~d2x(4))
+            else buffer~append(codepoint~d2x)
+        end
+        return buffer
+    end
 
 
+/*
+Encodes an ASCII string of the form "U+XXXX.. U+XXXX.. ..." into a UTF-8 string.
+The only valid separators are one or more spaces.
+If a buffer is passed, the decoded characters are appended to it.
+The update is atomic: either all decoded characters are appended, or the buffer is left unchanged.
+If an error occurs, any characters appended during this call are discarded.
+*/
+::method U2C class
+    use strict arg UPlusCodepoints, buffer=.nil
+    UPlusCodepoints = requestBaseString(UPlusCodepoints, "UPlusCodepoints")
+    returnBuffer = .nil <> buffer
+    if .nil == buffer then buffer = .MutableBuffer~new
+    bufferInitialLength = buffer~length
+    pos = 1
+    do while pos <= UPlusCodepoints~length
+        pos = UPlusCodepoints~verify(" ", "N", pos)
+        if pos == 0 then leave -- end of UPlusCodepoints string
+        codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .false, >length)
+        if codepoint == -1 then do
+            -- U+ decoding error, discard the characters appended so far
+            buffer~delete(bufferInitialLength + 1)
+            -- redo the decoding in mode raise error
+            codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .true, >length)
+            -- no return here
+        end
+        -- utf8proc implementation note:
+        -- Note: we allow encoding 0xd800-0xdfff here, so as not to change
+        -- the API, however, these are actually invalid in UTF-8
+        self~utf8EncodeCodepoint(codepoint, buffer, >size)
+        if size == 0 then do
+            -- UTF-8 encoding error, discard the characters appended so far
+            buffer~delete(bufferInitialLength + 1)
+            signal encoding_error
+        end
+        pos += length
+    end
+    if returnBuffer then return buffer
+    return buffer~string
+
+    encoding_error: raise syntax 98.900 array ("Cannot UTF-8 encode code point" UPlusCodepoints~substr(pos, length))
+
+
+/*
+Converts "U+XXXX.." to a decimal value.
+If refLength is passed by the caller, extra characters after the U+XXXX.. are allowed.
+Otherwise UPlusCodepoint must be strictly "U+" followed by 4 to 6 hex digits.
+The length of "U+XXXX.." is returned in refLength, allowing to skip it when parsing.
+In case of error, returns -1 by default or raises an error if requested.
+*/
 ::method U2D class
-    use strict arg UPlusCodepoint -- "U+XXXX..."
-    if UPlusCodepoint~startsWith("U+") then return UPlusCodepoint~substr(3)~x2d
+    argRefLength = arg() == 4 -- default value not supported for variable references
+    if argRefLength then use strict arg UPlusCodepoint, start=1, raiseError=.false, >refLength
+                    else use strict arg UPlusCodepoint, start=1, raiseError=.false
+    UPlusCodepoint = requestBaseString(UPlusCodepoint, "UPlusCodepoint")
+
+    refLength = 0
+    if UPlusCodepoint~substr(start, 2)~caselessEquals("U+") then do
+        endHexDigits = UPlusCodepoint~verify(.String~xdigit, "N", start + 2)
+        if endHexDigits \== 0 then do
+            if \argRefLength then signal invalid_u_plus -- extra characters not allowed
+            refLength = endHexDigits - start -- including "U+"
+            hexDigits = UPlusCodepoint~substr(start + 2, refLength - 2)
+        end
+        else do
+            refLength = UPlusCodepoint~length -- including "U+"
+            hexDigits = UPlusCodepoint~substr(start + 2)
+        end
+        if hexDigits~length >= 4, hexDigits~length <= 6 then return hexDigits~x2d
+        signal invalid_u_plus -- invalid number of hexadecimal digits
+    end
+
+    invalid_u_plus:
+    if raiseError then raise syntax 23.900 array("Expected U+ or u+ followed by 4..6 hex digits; found" quoted(UPlusCodepoint~substr(start)))
     return -1
-
-
-::method X2U class
-    use strict arg hexadecimalCP
-    codepoint = hexadecimalCP~x2d
-    return self~D2U(codepoint)
 
 
 /*******************************************************************************
@@ -315,8 +513,10 @@ UAX44-LM2.
 https://unicode.org/reports/tr44/#UAX44-LM2
 */
 ::method UAX44_LM2 class
-    use strict arg string
-    buffer = .MutableBuffer~new(string)
+    use strict arg name
+    name = requestBaseString(name, "name")
+    if \ self~stringIsASCII(name) then raise syntax 22.900 array("Name must be an ASCII string; found" quoted(name))
+    buffer = .MutableBuffer~new(name)
     /*
     1. remove all medial hyphens (except the medial hyphen in the name for U+1180
     HANGUL JUNGSEONG O-E).
@@ -357,12 +557,25 @@ https://unicode.org/reports/tr44/#UAX44-LM2
 
 
 /*
+UAX44_LM2 also available as a native method on ICU4ooRexx (faster):
+.ICU4ooRexx~h_UAX44_LM2
+*/
+::method h_UAX44_LM2 class
+    use strict arg name
+    name = requestBaseString(name, "name")
+    if self~ICU4ooRexxIsRegistered then forward to .ICU4ooRexx
+    forward message "UAX44_LM2"
+
+
+/*
 UAX44-LM3
 https://unicode.org/reports/tr44/#UAX44-LM3
 */
 ::method UAX44_LM3 class
-    use strict arg string
-    buffer = .MutableBuffer~new(string)
+    use strict arg name
+    name = requestBaseString(name, "name")
+    if \ self~stringIsASCII(name) then raise syntax 22.900 array("Name must be an ASCII string; found" quoted(name))
+    buffer = .MutableBuffer~new(name)
     /*
     Ignore case, whitespace, underscore ('_'), hyphens, and any initial prefix string "is".
 
@@ -378,23 +591,565 @@ https://unicode.org/reports/tr44/#UAX44-LM3
 
 
 /*******************************************************************************
-Direct access to codepoints and graphemes
+Escape characters
 *******************************************************************************/
 
--- Temporary implementation, to be replaced by a native indexer
-::method createIndexers class
-    use strict arg string, >codepointIndexes, >graphemeIndexes, >errors
-    string = string~string
+/*
+Supported escape characters:
+    \N{Unicode name}    Character name in the Unicode database
+    \u{X..X}            Unicode scalar value, 1-8 hex digits
+    \uXXXX              Unicode scalar value, exactly 4 hex digits
+    \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
+    \x{X..X}            Arbitrary number of hex digits
+    \xXX                1 byte, exactly 2 hex digits
+
+How other languages are supporting escape characters for Unicode:
+    \N{Unicode name}    Character name in the Unicode database (Python, Perl, C++23)
+    \o{X..X}            Arbitrary number of octal digits (C++23)
+    \u{nnnn ...}        One or more Unicode characters, each 1–6 hex digits, space-separated (Ruby)
+    \u{X..X}            Unicode scalar value, 1-8 hex digits (C++23, Swift)
+    \u{X..X}            Unicode scalar value, 1–6 hex digits (Rust)
+    \u{X..X}            Unicode scalar value, 1+ hex digits (beyond \uFFFF) (JavaScript (ES2015+))
+    \u{X..X}            hexadecimal Unicode scalar value UTF-8 encoded (1 or more digits) (Zig, PHP 7+)
+    \uXXXX              Unicode scalar value, exactly 4 hex digits (C, C++, C#, D, Go, Java, JavaScript, JSON, Julia, Netrexx, Python, Ruby)
+    \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits (C, C++, C#, D, Go, Julia, Python)
+    \x{X..X}            Arbitrary number of hex digits (C++23, Perl)
+    \xXX                1 byte, exactly 2 hex digits (D, Go, JavaScript, Netrexx, Python, Ruby, Zig)
+    \xXX                1 byte, exactly 2 hex digits, ASCII range only (0x00–0x7F) (Rust)
+    \xX..X              Variable-length hex digits (1–4) (C#)
+    \NNN                Character/byte denoted by up to 3 octal digits (terminates early at first non-octal digit) (C, C++, D, Go, Python, Ruby)
+
+    No language lets you write U+XXXX (conventionally 4–6 hex digits) inside a string literal;
+    each one wraps that same numeric value in its own escape grammar instead (\u{1F600}, \U0001F600, etc.).
+
+*/
+
+-- Escape characters are normally handled in string literals at parse time.
+-- This method handles them at run time instead.
+::method unescape class
+    use strict arg string, buffer=.nil
+    pos = string~pos("\")
+    if pos == 0 then do
+        -- don't create intermediate buffer if nothing to unescape
+        if .nil == buffer then return string
+        return buffer~~append(string)
+    end
+    returnBuffer = .nil \== buffer
+    if .nil == buffer then buffer = .MutableBuffer~new(, string~length)
+    from = 1
+    do until pos == 0
+        -- Here, pos is the index of a '\' in string.
+        slashPos = pos -- used in error messages
+
+        -- Append into buffer the part of the string
+        -- from the end of the previous escape character (or 1)
+        -- and the current escape character
+        substring = string~substr(from, pos - from)
+        buffer~append(substring)
+
+        pos += 1 -- skip '\'
+        character = string~subchar(pos) -- escape type letter '\', 'a', ..., 'N', 'u', 'U', 'x'
+        pos += 1 -- skip the escape type letter
+        select
+            when character == "\" then buffer~append("\")   -- escaped \
+            when character == "a" then buffer~append("07"x) -- audible bell (BEL)
+            when character == "b" then buffer~append("08"x) -- backspace (BS)
+            when character == "f" then buffer~append("0C"x) -- form feed (FF)
+            when character == "n" then buffer~append("0A"x) -- linefeed (LF)
+            when character == "r" then buffer~append("0D"x) -- carriage return (CR)
+            when character == "t" then buffer~append("09"x) -- horizontal tab (HT)
+            when character == "v" then buffer~append("0B"x) -- vertical tab (VT)
+
+            when character == "N" then do
+                -- \N{Unicode name}    Character name in the Unicode database
+                if string~subchar(pos) \== "{" then signal expected_name
+                pos += 1 -- skip {
+                first = pos
+                pos = string~pos("}", pos)
+                if pos == 0 then signal expected_name
+                length = pos - first
+                if length == 0 then signal expected_name
+                pos += 1 -- skip }
+                name = string~substr(first, length)
+                codepoint = self~codepointFromName(name)
+                if codepoint == -1 then signal name_not_found
+                self~utf8EncodeCodepoint(codepoint, buffer, >size)
+                if size == 0 then signal name_encoding_error
+            end
+
+            when character == "u" then do
+                -- \u{X..X}            Unicode scalar value, 1-8 hex digits
+                -- \uXXXX              Unicode scalar value, exactly 4 hex digits
+                if string~subchar(pos) == "{" then do
+                    pos += 1 -- skip {
+                    first = pos
+                    pos = string~pos("}", pos)
+                    if pos == 0 then signal expected_4_or_1_8_hexdigits
+                    length = pos - first
+                    if length == 0 then signal expected_4_or_1_8_hexdigits
+                    pos += 1 -- skip }
+                    hexdigits = string~substr(first, length)
+                    hexdigits = hexdigits~space(0) -- remove all spaces
+                    hexdigits = hexdigits~strip("L", "0") -- remove leading zeros
+                    if hexdigits~length == 0 | hexdigits~length > 8 then signal expected_4_or_1_8_hexdigits
+                    if \hexdigits~datatype("X") then signal expected_4_or_1_8_hexdigits
+                    numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
+                    codepoint = hexdigits~x2d
+                    self~utf8EncodeCodepoint(codepoint, buffer, >size)
+                    if size == 0 then signal encoding_1_8_hexdigits_error
+                end
+
+                else do
+                    -- \uXXXX
+                    length = min(4, string~length - pos + 1)
+                    if length \== 4 then signal expected_4_or_1_8_hexdigits
+                    hexdigits = string~substr(pos, 4)
+                    if \hexdigits~datatype("X") then signal expected_4_or_1_8_hexdigits
+                    codepoint = hexdigits~x2d
+                    self~utf8EncodeCodepoint(codepoint, buffer, >size)
+                    if size == 0 then signal encoding_1_4_hexdigits_error
+                    pos += 4
+                end
+            end
+
+            when character == "U" then do
+                -- \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
+                length = min(8, string~length - pos + 1)
+                if length \== 8 then signal expected_8_hexdigits
+                hexdigits = string~substr(pos, 8)
+                if \hexdigits~datatype("X") then signal expected_8_hexdigits
+                numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
+                codepoint = hexdigits~x2d
+                self~utf8EncodeCodepoint(codepoint, buffer, >size)
+                if size == 0 then signal encoding_1_8_hexdigits_error
+                pos += 8
+            end
+
+            when character == "x" then do
+                -- \x{X..X}         Arbitrary number of hex digits
+                -- \xXX             1 byte, exactly 2 hex digits
+                if string~subchar(pos) == "{" then do
+                    pos += 1 -- skip {
+                    first = pos
+                    pos = string~pos("}", pos)
+                    if pos == 0 then signal expected_2_or_1_n_hexdigits
+                    length = pos - first
+                    if length == 0 then signal expected_2_or_1_n_hexdigits
+                    pos += 1 -- skip }
+                    hexdigits = string~substr(first, length)
+                    if \hexdigits~datatype("X") then signal expected_2_or_1_n_hexdigits
+                    bytes = hexdigits~x2c -- 1..n bytes
+                    buffer~append(bytes)
+                end
+
+                else do
+                    -- \xXX
+                    length = min(2, string~length - pos + 1)
+                    if length \== 2 then signal expected_2_or_1_n_hexdigits
+                    hexdigits = string~substr(pos, 2)
+                    if \hexdigits~datatype("X") then signal expected_2_or_1_n_hexdigits
+                    bytes = hexdigits~x2c -- 2 bytes
+                    buffer~append(bytes)
+                    pos += 2
+                end
+
+            end
+
+            otherwise signal invalid_escape_character
+        end
+        from = pos
+        pos = string~pos("\", from)
+    end
+    buffer~append(string~substr(from))
+
+    if returnBuffer then return buffer
+    return buffer~string
+
+    invalid_escape_character:           raise syntax 23.900 array("Invalid escape character" quoted("\"character, "'") "at position" slashPos)
+
+    expected_name:                      raise syntax 23.900 array("Expected {a Unicode character name} after \"character "at position" slashPos)
+    name_not_found:                     additional = ""
+                                        if \ self~ICU4ooRexxIsRegistered then additional = " (ICU4ooRexx not loaded)"
+                                        raise syntax 98.900 array("Name" quoted(name) "at position" slashPos "not found" || additional)
+
+    -- not used, to delete
+    /*
+    expected_1_8_hexdigits:             raise syntax 23.900 array("Expected {1..8 hex digits} after \"character "at position" slashPos)
+    expected_2_hexdigits:               raise syntax 23.900 array("Expected 2 hex digits after \"character "at position" slashPos)
+    expected_4_hexdigits:               raise syntax 23.900 array("Expected 4 hex digits after \"character "at position" slashPos)
+    expected_1_n_hexdigits:             raise syntax 23.900 array("Expected {1..n hex digits} after \"character "at position" slashPos)
+    */
+
+    expected_8_hexdigits:               raise syntax 23.900 array("Expected 8 hex digits after \"character "at position" slashPos)
+    expected_4_or_1_8_hexdigits:        raise syntax 23.900 array("Expected either 4 hex digits or {1..8 hex digits} after \"character "at position" slashPos)
+    expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits or whitespace} after \"character "at position" slashPos)
+
+    name_encoding_error:                raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"name"} at position" slashPos)
+    encoding_1_8_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"hexdigits"} at position" slashPos)
+    encoding_1_4_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
+
+
+::method escape class
+    use strict arg string, buffer=.nil
+
+    returnBuffer = .nil \== buffer
+    if .nil == buffer then buffer = .MutableBuffer~new(, string~length)
+
+    codepoints = .RexxUnicodeCodepointSupplier~new(string)
+    do while codepoints~available
+        codepoint = codepoints~item -- integer
+        bytes = codepoints~item("b") -- byte sequence as string
+        error = codepoints~item("e")
+        if error \== "" then buffer~append("\x{", bytes~c2x, "}")
+        else do
+            select case codepoint
+                when 7 then buffer~append("\a")
+                when 8 then buffer~append("\b")
+                when 9 then buffer~append("\t")
+                when 10 then buffer~append("\n")
+                when 11 then buffer~append("\v")
+                when 12 then buffer~append("\f")
+                when 13 then buffer~append("\r")
+                when 92 then buffer~append("\\")
+                otherwise .RexxUnicode~codepointPrintableString(codepoint, buffer)
+            end
+        end
+        codepoints~next
+    end
+
+    if returnBuffer then return buffer
+    return buffer~string
+
+
+/******************************************************************************/
+::class "RexxUnicodeCodepointSupplier" public subclass Supplier
+/******************************************************************************/
+
+-- Codepoint supplier for UTF-8 strings without pre-indexing
+
+::method init
+    expose string indexB indexC defaultIndexType defaultItemType
+    use strict arg string, defaultIndexType="c", defaultItemType="c"
+    string = requestBaseString(string, "string")
+    empty = .array~new(0) -- No need to create a copy, the string is immutable
+    self~init:super(empty, empty)
+    indexB = 1
+    indexC = 1
+    self~decode
+
+
+::method decode
+    expose string indexB codepoint byteSequence error
+    use strict arg -- none
+    error = ""
+    codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+    if sizeB == 0 then do
+        codepoint = .nil -- end of string
+        byteSequence = ""
+    end
+    else do
+        if sizeB < 0 then do
+            error = "start byte-position" indexB ":" errorMsg
+            codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
+            indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative index indicates an invalid byte sequence
+        end
+        byteSequence = string~substr(abs(indexB), abs(sizeB))
+    end
+
+
+::method available
+    expose codepoint
+    use strict arg -- none
+    return .nil \== codepoint
+
+
+::method index
+    expose indexB indexC defaultIndexType
+    /*
+    type is a helper for validation.
+
+    Possible values:
+    -"b" to return the byte index (can be negative)
+    - "c" to return the codepoint index (default option)
+    */
+    use strict arg type=(defaultIndexType)
+    if self~available then do
+        if type == "b" then return indexB -- can be negative
+        if type == "c" then return indexC
+    end
+    -- error
+
+
+::method item
+    expose codepoint byteSequence error defaultItemType
+    /*
+    type serves both as:
+    - a helper for requesting different codepoint representations,
+    - and a workaround for the lack of higher-order functions such as ~each{...} when type is a class.
+
+    Possible values:
+    - "b" to return the codepoint byte sequence as a string
+    - "c" to return the codepoint as an integer (default)
+    - "e" to return the error message or ""
+    - "h" to return the codepoint byte sequence as hexadecimal digits
+    - "u" to return the codepoint in U+ notation
+    - "\" to return the codepoint byte sequence as an escaped string
+    - a class to return an instance of that class, initialized with item("c")
+    */
+    use strict arg type=(defaultItemType)
+    if self~available then do
+        if type == "b" then return byteSequence -- YES! ALWAYS return the raw byte sequence
+        if type == "c" then return codepoint
+        if type == "e" then return error
+        if type == "h" then return escapedHexdigits(byteSequence~c2x)
+        if type == "u" then return .RexxUnicode~D2U(codepoint)
+        if type == "\" then return .RexxUnicode~escape(byteSequence)
+        if type~isa(.Class) then return type~new(codepoint)
+    end
+    -- error
+
+
+::method next
+    expose indexB indexC byteSequence
+    use strict arg -- none
+    if self~available then do
+        indexB = abs(indexB)
+        indexB += byteSequence~length
+        indexC += 1
+        self~decode
+    end
+    -- error
+
+
+/******************************************************************************/
+::class "RexxUnicodeGraphemeSupplier" public subclass Supplier
+/******************************************************************************/
+
+-- Grapheme supplier for UTF-8 strings without pre-indexing
+
+::method init
+    expose string indexB indexG defaultIndexType defaultItemType -
+           /* coroutine internal state */ decodeNextStep
+    use strict arg string, defaultIndexType="g", defaultItemType="g"
+    string = requestBaseString(string, "string")
+    empty = .array~new(0) -- No need to create a copy, the string is immutable
+    self~init:super(empty, empty)
+    indexB = 1
+    indexG = 1
+    decodeNextStep = "START"
+    self~decode
+
+
+/*
+This method is called from ~init and from ~next.
+In both cases, nextGraphemeIndexB is set to .nil.
+
+This method is convoluted! I had difficulties to implement it...
+Using a coroutine design helped me to finalize the implementation.
+I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
+Maybe it can be simplified...
+*/
+::method decode
+    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error -
+           /* coroutine internal state */ -
+           decodeNextStep previousCodepoint graphemeBreakArgs -
+           codepoint sizeB errorCode errorMsg
+    use strict arg -- none
+    debug = .false -- keep it for the moment
+
+    -- coroutine
+    if debug then say "    signal value" decodeNextStep
+    signal value decodeNextStep
+
+    START:
+    graphemeIndexB = .nil
+    nextGraphemeIndexB = .nil
+    previousCodepoint = -1
+    graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
+
+    forever:
+        if debug then say "    forever:"
+        if debug then say "        indexB ==" indexB
+        if debug then say "        graphemeIndexB ==" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        if .nil \== nextGraphemeIndexB then do
+            grapheme = string~substr(abs(graphemeIndexB), abs(nextGraphemeIndexB) - abs(graphemeIndexB))
+            if debug then say "    grapheme =" grapheme
+            decodeNextStep = "NEXT_CODEPOINT"
+            return -- grapheme, graphemeIndexB and error ready for use
+            -- on reentry from ~next, graphemeIndexB == nextGraphemeIndexB and nextGraphemeIndexB == .nil
+        end
+
+        NEXT_CODEPOINT:
+        if debug then say "    NEXT_CODEPOINT:"
+        if debug then say "        indexB ==" indexB
+        if debug then say "        graphemeIndexB ==" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        error = ""
+        codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+        if sizeB == 0 then signal end_of_string
+        if sizeB < 0 then signal error
+
+        if previousCodepoint < 0 then call appendGraphemeIndex indexB -- First codepoint or Error recovery
+        else do
+            graphemeBreakArgs[1] = previousCodepoint
+            graphemeBreakArgs[2] = codepoint
+            if .RexxUnicode~graphemeBreak(graphemeBreakArgs) then call appendGraphemeIndex indexB
+        end
+        previousCodepoint = codepoint
+        indexB += sizeB
+        signal forever
+
+    END_OF_STRING:
+        -- here, nextGraphemeIndexB is necessarily .nil
+        -- but graphemeIndexB can be not .nil or .nil
+        -- error is ""
+        if debug then say "    END_OF_STRING:"
+        if debug then say "        indexB ==" indexB
+        if debug then say "        graphemeIndexB ==" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        if .nil \== graphemeIndexB then grapheme = string~substr(abs(graphemeIndexB))
+        else grapheme = .nil -- ~next will no longer reenter because ~available will return .false
+        if debug then say "    grapheme =" grapheme
+        decodeNextStep = "END_OF_STRING"
+        return -- grapheme, graphemeIndexB and error ready for use
+        -- on reentry from ~next, graphemeIndexB == .nil and nextGraphemeIndexB == .nil
+
+    error:
+        if debug then say "    error:"
+        if debug then say "        indexB ==" indexB
+        if debug then say "        graphemeIndexB ==" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        error = "start byte-position" indexB ":" errorMsg
+        call appendGraphemeIndex -indexB -- a negative index means "error"
+        graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
+        previousCodepoint = codepoint
+        indexB += abs(sizeB) -- skip the invalid bytes
+        if debug then say "        indexB =" indexB
+        signal forever
+
+    appendGraphemeIndex:
+        if debug then say "    appendGraphemeIndex:"
+        use arg newIndex
+        if debug then say "        newIndex ==" newIndex
+        if debug then say "        indexB ==" indexB
+        if debug then say "        graphemeIndexB ==" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        if graphemeIndexB~isNil then graphemeIndexB = newIndex
+        else if nextGraphemeIndexB~isNil then nextGraphemeIndexB = newIndex
+        else do
+            -- shift
+            graphemeIndexB = nextGraphemeIndexB
+            nextGraphemeIndexB = newIndex
+        end
+        if debug then say "        graphemeIndexB =" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB =" nextGraphemeIndexB
+        return
+
+
+::method available
+    expose grapheme
+    use strict arg -- none
+    return .nil \== grapheme
+
+
+::method index
+    expose graphemeIndexB indexG defaultIndexType
+    /*
+    type is a helper for validation.
+
+    Possible values:
+    - "b" to return the byte index (can be negative)
+    - "g" to return the grapheme index (default option)
+    */
+    use strict arg type=(defaultIndexType)
+    if self~available then do
+        if type == "b" then return graphemeIndexB -- (can be negative)
+        if type == "g" then return indexG
+    end
+    -- error
+
+
+::method item
+    expose grapheme error defaultItemType
+    /*
+    type serves both as:
+    - a helper for requesting different grapheme representations,
+    - and a workaround for the lack of higher-order functions like ~each{...} when type is a class.
+
+    Possible values:
+    - "b" to return the grapheme byte sequence as a string (same as "g")
+    - "e" to return the error message or ""
+    - "g" to return the grapheme as a string (default option)
+    - "h" to return the grapheme byte sequence as hexadecimal digits
+    - "u" to return the grapheme codepoints in U+ notation
+    - "\" to return the grapheme byte sequence as an escaped string
+    - a class to return an instance of that class, initialized with item("g")
+    */
+    use strict arg type=(defaultItemType)
+    if self~available then do
+        if type == "b" then return grapheme -- YES! ALWAYS return the raw byte sequence
+        if type == "e" then return error
+        if type == "g" then return grapheme
+        if type == "h" then return escapedHexdigits(.RexxUnicode~C2X(grapheme))
+        if type == "u" then return .RexxUnicode~C2U(grapheme)
+        if type == "\" then return .RexxUnicode~escape(grapheme)
+        if type~isa(.Class) then return type~new(grapheme)
+    end
+    -- error
+
+
+::method next
+    expose indexB indexG grapheme graphemeIndexB nextGraphemeIndexB
+    use strict arg -- none
+    debug = .false -- keep it for the moment
+    if debug then say "    method next"
+    if debug then say "        indexB ==" indexB
+    if debug then say "        graphemeIndexB ==" graphemeIndexB
+    if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+    if self~available then do
+        -- indexB += grapheme~length
+        indexG += 1
+        graphemeIndexB = nextGraphemeIndexB
+        nextGraphemeIndexB = .nil
+        if debug then say "        indexB =" indexB
+        if debug then say "        graphemeIndexB =" graphemeIndexB
+        if debug then say "        nextGraphemeIndexB =" nextGraphemeIndexB
+        self~decode
+    end
+    -- error
+
+
+/******************************************************************************/
+::class "RexxUnicodeStringIndexer" public
+/******************************************************************************/
+
+/*
+Direct access to codepoints and graphemes.
+This is a temporary implementation, to be replaced by a native indexer.
+The memory cost of the native grapheme indexer will be roughly 15% of the string size (12.5% for a bit vector and 2.5% for a two-level summary table).
+The native indexer will not index the codepoints (would add 15% of the string size to the memory cost).
+The memory cost of the invalid byte flags will be between 0% and 12.5% of the string size (bit vector).
+*/
+
+::attribute string get
+::attribute codepointIndexes get
+::attribute graphemeIndexes get
+::attribute errors get
+
+::method init
+    expose string codepointIndexes graphemeIndexes errors
+    use strict arg string
+    string = requestBaseString(string)
     codepointIndexes = .array~new
     graphemeIndexes = .array~new
     errors = .array~new
     indexB = 1
     previousCodepoint = -1
-    previousCodepointIndexB = -1
     graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
 
     forever:
-        codepoint = self~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+        codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
         if sizeB == 0 then return -- End of string
         if sizeB < 0 then signal error
 
@@ -403,12 +1158,11 @@ Direct access to codepoints and graphemes
         else do
             graphemeBreakArgs[1] = previousCodepoint
             graphemeBreakArgs[2] = codepoint
-            if self~graphemeBreak(graphemeBreakArgs) then graphemeIndexes~append(indexB)
+            if .RexxUnicode~graphemeBreak(graphemeBreakArgs) then graphemeIndexes~append(indexB)
         end
         previousCodepoint = codepoint
-        previousCodepointIndexB = indexB
         indexB += sizeB
-    signal forever
+        signal forever
 
     error:
         errors~append("start byte-position" indexB ":" errorMsg)
@@ -416,43 +1170,45 @@ Direct access to codepoints and graphemes
         graphemeIndexes~append(-indexB) -- idem
         graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
         previousCodepoint = codepoint
-        previousCodepointIndexB = indexB
         indexB += abs(sizeB) -- skip the invalid bytes
         signal forever
 
 
--- Convert a codepoint index into a byte index
-::method codepointIndexB class
-    use strict arg string, indexC, codepointIndexes
-    if indexC < 1 then raise syntax 23.900 array (self~description "invalid codepoint index:" indexC)
+-- Converts a codepoint index into a byte index
+::method codepointIndexB
+    expose string codepointIndexes
+    use strict arg indexC
+    if indexC < 1 then raise syntax 88.900 array ("invalid code point index:" indexC)
     if indexC > codepointIndexes~items then return string~length + 1
     return codepointIndexes[indexC]
 
 
--- Return the codepoint at position indexC
-::method codepointAtIndexC class
-    use strict arg string, indexC, codepointIndexes
-    string = string~string
-    startB = self~codepointIndexB(string, indexC, codepointIndexes)
+-- Returns the codepoint at position indexC
+::method codepointAtIndexC
+    expose string codepointIndexes
+    use strict arg indexC
+    startB = self~codepointIndexB(indexC)
     absStartB = abs(startB) -- startB can be negative (meaning current byte sequence is invalid)
 
     if startB < 0 then return "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
-    return self~utf8DecodeCodepoint(string, absStartB)
+    return .RexxUnicode~utf8DecodeCodepoint(string, absStartB)
 
 
--- Convert a grapheme index into a byte index
-::method graphemeIndexB class
-    use strict arg string, indexC, graphemeIndexes
-    if indexC < 1 then raise syntax 23.900 array (self~description "invalid grapheme index:" indexC)
-    if indexC > graphemeIndexes~items then return string~length + 1
-    return graphemeIndexes[indexC]
+-- Converts a grapheme index into a byte index
+::method graphemeIndexB
+    expose string graphemeIndexes
+    use strict arg indexG
+    if indexG < 1 then raise syntax 88.900 array ("invalid grapheme index:" indexG)
+    if indexG > graphemeIndexes~items then return string~length + 1
+    return graphemeIndexes[indexG]
 
 
--- Return the grapheme at position indexC
-::method graphemeAtIndexC class
-    use strict arg string, indexC, graphemeIndexes
-    startB = self~graphemeIndexB(string, indexC, graphemeIndexes)
-    nextB = self~graphemeIndexB(string, indexC+1, graphemeIndexes)
+-- Returns the grapheme at position indexG
+::method graphemeAtIndexG
+    expose string graphemeIndexes
+    use strict arg indexG
+    startB = self~graphemeIndexB(indexG)
+    nextB = self~graphemeIndexB(indexG+1)
     absStartB = abs(startB) -- startB can be negative (meaning current byte sequence is invalid)
     absNextB = abs(nextB) -- nextB can be negative (meaning next byte sequence is invalid)
     return string~substr(absStartB, absNextB - absStartB) -- yes, always the current byte sequence, even if invalid
@@ -462,33 +1218,68 @@ Direct access to codepoints and graphemes
 ::class "RexxUnicodeCharacter" public inherit Comparable
 /******************************************************************************/
 
-::attribute codepoint get
-::attribute name get
+::attribute codepoint get -- special value -1 for invalid character
+
+/*
+uname is the "best" Unicode name to display for the character.
+Use the standard name when not empty,
+otherwise use the alias when not empty (ICU gives only one alias,
+  even if NameAliases.txt defines several aliases),
+otherwise use the extended name (never empty)
+*/
+::attribute uname get
 
 
 ::method init
-    expose codepoint name
-    use strict arg codepoint, name=""
-    .RexxUnicode~checkCodepoint(codepoint)
-    if name == "", .RexxUnicode~ICU4ooRexxIsRegistered then do
-        name = .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_UNICODE_CHAR_NAME)
-        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_EXTENDED_CHAR_NAME)
-        if name == "" then .ICU4ooRexx~u_charName(codepoint, .ICU4ooRexx~U_CHAR_NAME_ALIAS)
-    end
+    expose codepoint uname
+    use strict arg codepoint
+    .RexxUnicode~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
+    uname = self~name
+    if uname == "" then uname = self~nameAlias
+    if uname == "" then uname = self~extendedName
 
 
 ::method string
-    expose codepoint name
-    if codepoint < 32 then string = "" -- the control characters are not displayed
-                      else string = self~UTF8
-    string = quoted(string) " "~copies(3 - self~charWidth)
-    string ||= .RexxUnicode~D2U(codepoint) self~category self~categoryName self~charWidth quoted(name)
-    return string
+    expose codepoint uname
+    use strict arg -- none
+    if codepoint == -1 then return "An invalid character"
+    utf8 = self~UTF8
+    if .RexxUnicode~codepointIsPrintable(codepoint) then
+        string = quoted(utf8)
+    else
+        string = "<?>" -- can't print the character
+    return string -
+           escapedHexdigits(utf8~c2x) -
+           .RexxUnicode~D2U(codepoint) -
+           self~category self~categoryName -
+           quoted(uname)
+
+
+::method name
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return ""
+    return .RexxUnicode~codepointCharName(codepoint)
+
+
+::method extendedName
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return ""
+    return .RexxUnicode~codepointExtendedCharName(codepoint)
+
+
+::method nameAlias
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return ""
+    return .RexxUnicode~codepointCharNameAlias(codepoint)
 
 
 ::method UTF8
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return ""
     return .RexxUnicode~utf8EncodeCodepoint(codepoint, .MutableBuffer~new)~string
 
 
@@ -496,6 +1287,7 @@ Direct access to codepoints and graphemes
 ::method category
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     .RexxUnicode~codepointCategory(codepoint, >refCode)
     return refCode
 
@@ -504,6 +1296,7 @@ Direct access to codepoints and graphemes
 ::method categoryName
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return ""
     .RexxUnicode~codepointCategory(codepoint, , >refLabel)
     return refLabel
 
@@ -512,6 +1305,7 @@ Direct access to codepoints and graphemes
 ::method combiningClass
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     return .RexxUnicode~codepointCombiningClass(codepoint)
 
 
@@ -519,6 +1313,7 @@ Direct access to codepoints and graphemes
 ::method bidiClass
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     .RexxUnicode~codepointBidiClass(codepoint, >refCode)
     return refCode
 
@@ -527,6 +1322,7 @@ Direct access to codepoints and graphemes
 ::method bidiClassName
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return ""
     .RexxUnicode~codepointBidiClass(codepoint, , >refLabel)
     return refLabel
 
@@ -535,6 +1331,7 @@ Direct access to codepoints and graphemes
 ::method bidiMirrored
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return .false
     return .RexxUnicode~codepointBidiMirrored(codepoint)
 
 
@@ -542,6 +1339,7 @@ Direct access to codepoints and graphemes
 ::method decompositionType
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     -- TODO enum code
     return .RexxUnicode~codepointDecompositionType(codepoint)
 
@@ -550,6 +1348,7 @@ Direct access to codepoints and graphemes
 ::method decompositionTypeName
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return ""
     -- TODO enum label
     return "?"
 
@@ -559,6 +1358,7 @@ Direct access to codepoints and graphemes
 ::method ignorable
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return .true
     return .RexxUnicode~codepointIgnorable(codepoint)
 
 
@@ -566,13 +1366,15 @@ Direct access to codepoints and graphemes
 ::method controlBoundary
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return .false
     return .RexxUnicode~codepointControlBoundary(codepoint)
 
 
--- Width of the displayed character (not a Unicode property)
+-- Width of the printed character (not a Unicode property)
 ::method charWidth
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     return .RexxUnicode~codepointCharWidth(codepoint)
 
 
@@ -580,7 +1382,8 @@ Direct access to codepoints and graphemes
 ::method boundClass
     expose codepoint
     use strict arg -- none
-    -- TOTO enum code
+    if codepoint == -1 then return -1
+    -- TODO enum code
     return .RexxUnicode~codepointBoundClass(codepoint)
 
 
@@ -588,6 +1391,7 @@ Direct access to codepoints and graphemes
 ::method boundClassName
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return ""
     -- TODO enum label
     return "?"
 
@@ -596,6 +1400,7 @@ Direct access to codepoints and graphemes
 ::method toLower
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     return .RexxUnicode~codepointToLower(codepoint)
 
 
@@ -603,6 +1408,7 @@ Direct access to codepoints and graphemes
 ::method toLowerFull
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     -- TODO
     return -1
 
@@ -611,6 +1417,7 @@ Direct access to codepoints and graphemes
 ::method toUpper
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     return .RexxUnicode~codepointToUpper(codepoint)
 
 
@@ -618,6 +1425,7 @@ Direct access to codepoints and graphemes
 ::method toUpperFull
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     -- TODO
     return -1
 
@@ -626,6 +1434,7 @@ Direct access to codepoints and graphemes
 ::method toTitle
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     return .RexxUnicode~codepointToTitle(codepoint)
 
 
@@ -633,6 +1442,7 @@ Direct access to codepoints and graphemes
 ::method toTitleFull
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return -1
     -- TODO
     return -1
 
@@ -640,17 +1450,20 @@ Direct access to codepoints and graphemes
 ::method isLower
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return .false
     return .RexxUnicode~codepointIsLower(codepoint)
 
 
 ::method isUpper
     expose codepoint
     use strict arg -- none
+    if codepoint == -1 then return .false
     return .RexxUnicode~codepointIsUpper(codepoint)
 
 
 ::method properties class
     -- TODO: align with UCD PropertyAliases.txt
+    -- https://unicode-org.github.io/icu/userguide/strings/properties.html
     expose properties
     if \ var("properties") then properties =,
         "bidiClass",,
@@ -666,10 +1479,12 @@ Direct access to codepoints and graphemes
         "controlBoundary",,
         ,, -- "decompositionTypeName",,
         ,, -- "decompositionType",,
+        "extendedName",,
         "ignorable",,
         "isLower",,
         "isUpper",,
         "name",,
+        "nameAlias",,
         "toLower",,
         ,, -- "toLowerFull",,
         "toTitle",,
@@ -682,21 +1497,23 @@ Direct access to codepoints and graphemes
 
 ::method propertiesSpecialDisplay class
     expose specialDisplay
+    use strict arg -- none
     if \ var("specialDisplay") then do
         specialDisplay = .StringTable~new
-        specialDisplay["codepoint"] =   "value = .RexxUnicode~C2U(self~UTF8)"
+        specialDisplay["codepoint"] =   "value = .RexxUnicode~D2U(self~codepoint)"
         specialDisplay["toLower"] =     "value = .RexxUnicode~D2U(self~toLower)"
         -- specialDisplay["toLowerFull"=   "value = .RexxUnicode~?2U(self~toLowerFull)"
         specialDisplay["toTitle"] =     "value = .RexxUnicode~D2U(self~toTitle)"
         -- specialDisplay["toTitleFull"] = "value = .RexxUnicode~D2U(self~toTitleFull)"
         specialDisplay["toUpper"] =     "value = .RexxUnicode~D2U(self~toUpper)"
         -- specialDisplay["toUpperFull"] = "value = .RexxUnicode~D2U(self~toUpperFull)"
-        specialDisplay["UTF8"] =        "value = '0x'self~UTF8~c2x"
+        specialDisplay["UTF8"] =        "value = escapedHexdigits(self~UTF8~c2x)"
     end
     return specialDisplay
 
 
 ::method info
+    use strict arg -- none
     properties = .StringTable~new
     do property over self~class~properties
         specialDisplay = self~class~propertiesSpecialDisplay[property]
@@ -705,12 +1522,6 @@ Direct access to codepoints and graphemes
         properties~put(value, property)
     end
     return properties
-
-
--- For convenience
--- .RexxUnicodeCharacter[key] is equivalent to .RexxUnicode~character(key)
-::method "[]" class
-    forward message "character" to (.RexxUnicode)
 
 
 ::method compareTo
@@ -775,115 +1586,111 @@ Direct access to codepoints and graphemes
 
     return
 
-    registered_different_package: raise syntax 93.900 array("ICU4ooRexx is already registered with a different package")
-    class_not_found:              raise syntax 93.900 array("Class" quoted(className) "not found")
-    version_requirement:          raise syntax 93.900 array("Minimum ICU4ooRexx version must be" versionRequirement || ", current version is" ICU4ooRexx~version)
-    method_not_found:             raise syntax 93.900 array("The ICU4ooRexx class does not understand message" quoted(methodName))
+    registered_different_package: raise syntax 48.900 array("ICU4ooRexx is already registered with a different package")
+    class_not_found:              raise syntax 48.900 array("Class" quoted(className) "not found")
+    version_requirement:          raise syntax 48.900 array("Minimum ICU4ooRexx version must be" versionRequirement || ", current version is" ICU4ooRexx~version)
+    method_not_found:             raise syntax 48.900 array("The ICU4ooRexx class does not understand message" quoted(methodName))
 
 
 ::method assertICU4ooRexxIsRegistered class
     use strict arg raiseError=.true
     if self~ICU4ooRexxIsRegistered then return .true
     if \ raiseError then return .false
-    raise syntax 93.900 array("The ICU4ooRexx class is not registered")
-
-
-/******************************************************************************/
-::class "CodepointSupplier" public subclass Supplier
-/******************************************************************************/
-
-::method init
-    expose string indexB indexC
-    use strict arg string
-    empty = .array~new(0) -- No need to create a copy, the string is immutable
-    self~init:super(empty, empty)
-
-    /*
-    Encountered a strange problem with TUTOR...
-    .RexxUnicode~c2x("€") returned 'E282AC2020' when TUTOR was active, and 'E282AC' when TUTOR was not active.
-    This problem is not limited to TUTOR; it can occur with any object that overrides ~length and ~substr.
-    The root cause lies in the decode method, which calls utf8DecodeCodepoint.
-    utf8DecodeCodepoint takes a string as its first argument and, if it is not a String, requests a string representation from the object.
-    So far, so good, but...
-    utf8DecodeCodepoint returns 3 as the byte count for the requested codepoint (which is correct).
-    The decode method uses this byte count to obtain the substring corresponding to the codepoint.
-    BOOM!
-    In the decode method, the string is not a String; it is a Text object (a TUTOR class).
-    Its length is 1 because Text operates on graphemes.
-    substr(string, 1, 3) is therefore padded with two spaces...
-    Fix applied:
-    a) Obtain the string representation of the string argument when initializing the supplier.
-    b) In utf8DecodeCodepoint, reject any argument that is not an actual String (subclasses are not accepted).
-    */
-
-    string = string~string
-    indexB = 1
-    indexC = 1
-    self~decode
-
-
-::method decode
-    expose string indexB sizeB codepoint byteSequence
-    use strict arg -- none
-    codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB)
-    if sizeB == 0 then codepoint = .nil -- end of string
-    if sizeB < 0 then codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
-    sizeB = abs(sizeB)
-    byteSequence = string~substr(indexB, sizeB)
-
-
-::method available
-    expose codepoint
-    use strict arg -- none
-    return .nil \== codepoint
-
-
-::method index
-    expose indexB indexC
-    use strict arg type="c" -- "c" to get the codepoint index, "b" to get the byte index
-    if self~available then do
-        if type == "c" then return indexC
-        if type == "b" then return indexB
-    end
-    -- error
-
-
-::method item
-    expose codepoint byteSequence
-    use strict arg type="c" -- "c" to get the codepoint as integer, "b" to get the byte sequence as string
-    if self~available then do
-        if type == "c" then return codepoint
-        if type == "b" then return byteSequence
-    end
-    -- error
-
-
-::method next
-    expose indexB sizeB indexC
-    use strict arg -- none
-    indexB += sizeB
-    indexC += 1
-    self~decode
+    raise syntax 48.900 array("The ICU4ooRexx class is not registered")
 
 
 /*******************************************************************************
 Other helpers
 *******************************************************************************/
 
-::routine quoted public
+::routine quoted public -- keep it public, used in demos
     use strict arg string, quote='"'
+    string = string~string -- can be called for any object, get its string representation
     return quote || string~changeStr(quote, quote||quote)  || quote
 
 
--- For convenience
--- .RexxUnicode(key) is equivalent to .RexxUnicode[key],
--- which is equivalent to .RexxUnicode~character(key)
-::routine .RexxUnicode public
-    return .RexxUnicode~sendWith("character", .context~args)
+::routine escapedHexdigits private
+    use strict arg hexdigits
+    -- The 0xNNNN notation is easier to read,
+    -- but the \x{NNNN} can be unescaped and supports an arbitrary number of N.
+    return "\x{" || hexdigits || "}"
+    return "0x" || hexdigits -- CAUTION: this notation is not adapted to hexdigits containing spaces!
+
+    -- Don't use the Rexx "XXXX"x notation because less readable when embedded in a string
+    return quoted(hexdigits) || "x"
 
 
--- For convenience
--- .RexxUnicodeCharacter(key) is equivalent to .RexxUnicodeCharacter[key],
--- which is equivalent to .RexxUnicode~character(key)
-::routine .RexxUnicodeCharacter public
-    return .RexxUnicode~sendWith("character", .context~args)
+::routine singularPlural private
+    use strict arg number, singularText="", pluralText="s"
+    if abs(number) <= 1 then return singularText
+    return pluralText
+
+
+::method singularPluralCount private
+    use strict arg number, singularText="", pluralText="s"
+    return number singularPlural(number, singularText, pluralText)
+
+
+/*******************************************************************************
+Subclasses of .String are not allowed
+*******************************************************************************/
+
+/*
+Encountered a strange problem in ooRexxShell when TUTOR is loaded and active.
+
+.RexxUnicode~c2x("€") returned 'E282AC2020' when TUTOR was active, and 'E282AC' when TUTOR was not active.
+This problem is not limited to TUTOR; it can occur with any object that overrides ~length and ~substr.
+
+The root cause lies in the .RexxUnicodeCodepointSupplier~decode method, which calls utf8DecodeCodepoint.
+utf8DecodeCodepoint takes a string as its first argument and, if it is not a String, requests a string representation from the object.
+So far, so good, but...
+
+utf8DecodeCodepoint returns 3 as the byte count for the requested codepoint (which is correct).
+The decode method uses this byte count to obtain the substring corresponding to the codepoint.
+BOOM!
+In the decode method, the string is not a String; it is a Text object (a TUTOR class).
+Its length is 1 because Text operates on graphemes.
+substr(string, 1, 3) is therefore padded with two spaces...
+
+Fix applied:
+a) Obtain the string representation of the string argument when initializing the supplier.
+b) In utf8DecodeCodepoint, reject any argument that is not an actual String (subclasses are not accepted).
+*/
+
+/*
+An other problem in ooRexxShell when TUTOR is loaded and active.
+    s = "a👨‍👩‍👧b"
+    .RexxUnicode~createIndexers(s, >c, >g, >e)
+    c=                                              -- [ 1, 2, 6, 9, 13, 16, 20]
+    g=                                              -- [ 1, 2, 20]
+    .RexxUnicode~graphemeAtIndexG(s, 3, g)=         -- Value of FOR expression in DO or LOOP instruction must be zero or a positive whole number; found "-16".
+
+Call stack:
+    TUTOR/Unicode.cls
+       734 *-* Do i = n For length
+    rxunicode.cls
+       613 *-* return string~substr(absStartB, absNextB - absStartB)
+    oorexxshell.rex
+       557 *-* result = .RexxUnicode~graphemeAtIndexG((U:Default(s)), (U:Default(3)), (U:Default(g))) ;
+
+graphemeAtIndexG(s, 3, g) calculates
+    startB = graphemeIndexB(s, 3, g)    --> g[3] == 20
+    nextB = graphemeIndexB(s, 4, g)     --> string~length + 1, which should be 21, but `s` is a Text object: TUTOR returns 4.
+    absStartB = abs(startB)             --> 20
+    absNextB = abs(nextB)               --> 4, instead of 21
+    return s~substr(absStartB, absNextB - absStartB) --> should be substr(s, 20, 1), but becomes substr(s, 20, -16)
+*/
+
+-- Ensure that a string is a .String instance, not an instance of a subclass of .String.
+-- No attempt is made to obtain a string from the object.
+-- This check is intended to detect accidental mixing of Unicode-aware objects with byte strings.
+::routine requestBaseString private
+    use strict arg object, argumentName="string"
+
+    -- Permissive
+    -- return object~string
+
+    -- Strict
+    if object~class == .String then return object
+    raise syntax 88.900 array ("Argument" argumentName "class: expected String, found" object~class~id)
+    --raise syntax 88.914 array (argumentName, .String~id)

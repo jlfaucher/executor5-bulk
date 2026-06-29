@@ -2,85 +2,17 @@
 This demo/validation script is similar to RexxUnicodeServices_test.rex.
 The helpers are not needed because they are provided by rxunicode.cls.
 
-
 The RexxUnicode class is a subclass of the RexxUnicodeServices class.
-Implemented in trunk/extension/unicode.
 
-List of the RexxUnicode methods, excluding the methods inherited from Object.
-ooRexx[sh]> ?cmi RexxUnicode <> "'Object' (REXX)"
-
-[Info] [1] Class 'RexxUnicode' P. (rxunicode.cls)
-P. PCG.    'ACTIVATE'                   : 'RexxUnicode' 'ICU4ooRexxInterface' (rxunicode.cls)
-P. PCG.    'C2U'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'C2X'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'CHARACTER'                  : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'CHARACTERBYCODEPOINT'       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'CHECKCODEPOINT'             : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'CODEPOINTATINDEXC'          : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'CODEPOINTBIDICLASS'         : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTBIDIMIRRORED'      : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTBOUNDCLASS'        : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTCATEGORY'          : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTCHARWIDTH'         : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTCOMBININGCLASS'    : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTCONTROLBOUNDARY'   : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTDECOMPOSITIONTYPE' : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTIGNORABLE'         : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PCG.    'CODEPOINTINDEXB'            : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'CODEPOINTISLOWER'           : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTISUPPER'           : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTTOLOWER'           : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTTOTITLE'           : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'CODEPOINTTOUPPER'           : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. P.G.    'COPY'                       : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PCG.    'CREATEINDEXERS'             : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'D2U'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'GRAPHEMEATINDEXC'           : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'GRAPHEMEBREAK'              : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PCG.    'GRAPHEMEINDEXB'             : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'ICU4OOREXXISREGISTERED'     : 'RexxUnicode' 'ICU4ooRexxInterface' (rxunicode.cls)
-P. PCG.    'ICU4OOREXXPACKAGE'          : 'RexxUnicode' 'ICU4ooRexxInterface' (rxunicode.cls)
-P. PCG.    'INFO'                       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. P...    'MAXCODEPOINT'               : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'MAXCODEPOINT'               : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'NEW'                        : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. P...    'NFC'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'NFC'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'NFD'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. P...    'NFD'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'NFKC'                       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. P...    'NFKC'                       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'NFKD'                       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. P...    'NFKD'                       : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'REGISTERICU4OOREXX'         : 'RexxUnicode' 'ICU4ooRexxInterface' (rxunicode.cls)
-P. PC..    'SYSTEMISLITTLEENDIAN'       : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PCG.    'U2D'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'UAX44_LM2'                  : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    'UAX44_LM3'                  : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PC..    'UNICODEVERSION'             : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'UTF8DECODECODEPOINT'        : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'UTF8ENCODECODEPOINT'        : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'UTF8PROCVERSION'            : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PC..    'UTF8TRANSFORM'              : 'RexxUnicode' 'RexxUnicodeServices' (REXX)
-P. PCG.    'X2U'                        : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-P. PCG.    '[]'                         : 'RexxUnicode' 'RexxUnicode' (rxunicode.cls)
-[Info] [1] Class 'RexxUnicode' has 119 methods
-[Info] 57 lines displayed
-
-Description of the letter flags displayed at the start of each line:
-
-ooRexx[sh]> ?f
-Class flags
-    col 1: P=Public
-    col 2: M=Mixin
-Method flags
-    col 3: space separator
-    col 4: P=Public
-    col 5: C=Class
-    col 6: G=Guarded
-    col 7: P=Protected
+Other classes provided by rxunicode.cls:
+- The RexxUnicodeCharacter class
+- The RexxUnicodeCodepointSupplier class
+- The RexxUnicodeGraphemeSupplier class
+- The RexxUnicodeStringIndexer class
 
 */
+
+arg option .
 
 signal on syntax name afterLoadingICU4ooRexx
 -- Not using ::requires because optional.
@@ -105,12 +37,16 @@ say "UTF8Proc version" .RexxUnicode~utf8procVersion
 say "UTF8Proc Unicode version" .RexxUnicode~unicodeVersion
 say
 
-if .RexxUnicode~ICU4ooRexxIsRegistered then do
-    say "ICU4ooRexx version" .ICU4ooRexx~version
-    say "ICU4C compile-time version" .ICU4ooRexx~U_ICU_VERSION
-    say "ICU4C runtime version" .ICU4ooRexx~u_getVersion
-    say "ICU4C Unicode version" .ICU4ooRexx~u_getUnicodeVersion
-    say
+-- Don't display the ICU versions when testing regression
+-- because the ICU versions are specific to each environment.
+if option \== "--TESTREGRESSION" then do
+    if .RexxUnicode~ICU4ooRexxIsRegistered then do
+        say "ICU4ooRexx version" .ICU4ooRexx~version
+        say "ICU4C compile-time version" .ICU4ooRexx~U_ICU_VERSION
+        say "ICU4C runtime version" .ICU4ooRexx~u_getVersion
+        say "ICU4C Unicode version" .ICU4ooRexx~u_getUnicodeVersion
+        say
+    end
 end
 
 
@@ -236,7 +172,7 @@ say "               stripMark = .false,     -- Strips all character markings (i.
 say "               stripNA = .false        -- Strips unassigned codepoints"
 say
 say "This string will be used as input for the transformations:"
-say 'string = "Le\u{IDEOGRAPHIC SPACE}\u{ZERO-WIDTH-SPACE}Père\t\u{HYPHEN}\u{SOFT-HYPHEN}Noël"'
+say 'string = "Le\N{IDEOGRAPHIC SPACE}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}Noël"'
 say "Character names and escape characters are not supported by UTF8Proc. Use hexadecimal notation:"
 string = "4C 65 E38080 E2808B 50 C3A8 72 65 09 E28090 C2AD 4E 6F C3AB 6C"
 say "string = " quoted(string)
@@ -250,7 +186,7 @@ say .RexxUnicode~C2X(string)
 say
 
 say "Performs unicode case folding (for case-insensitive string comparison)"
-tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/ .true)
+tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/ .true)
 say quoted(tstring)
 say .RexxUnicode~C2X(tstring)
 say
@@ -307,38 +243,34 @@ say quoted(string)
 say .RexxUnicode~C2X(string)
 say
 
-say "NFC=1"
 say "Normalization Form C"
 say "Canonical Decomposition, followed by Canonical Composition"
 say "Characters are decomposed and then recomposed by canonical equivalence."
-tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ 1)
+tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ .RexxUnicode~NFC)
 say quoted(tstring)
 say .RexxUnicode~C2X(tstring)
 say
 
-say "NFD=2"
 say "Normalization Form D"
 say "Canonical Decomposition"
 say "Characters are decomposed by canonical equivalence, and multiple combining characters are arranged in a specific order."
-tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ 2)
+tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ .RexxUnicode~NFD)
 say quoted(tstring)
 say .RexxUnicode~C2X(tstring)
 say
 
-say "NFKC=3"
 say "Normalization Form KC"
 say "Compatibility Decomposition, followed by Canonical Composition"
 say "Characters are decomposed by compatibility, then recomposed by canonical equivalence."
-tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ 3)
+tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ .RexxUnicode~NFKC)
 say quoted(tstring)
 say .RexxUnicode~C2X(tstring)
 say
 
-say "NFKD=4"
 say "Normalization Form KD"
 say "Compatibility Decomposition"
 say "Characters are decomposed by compatibility, and multiple combining characters are arranged in a specific order."
-tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ 4)
+tstring = .RexxUnicode~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ .RexxUnicode~NFKD)
 say quoted(tstring)
 say .RexxUnicode~C2X(tstring)
 say
@@ -363,27 +295,27 @@ Demo helper
     end
     say
 
-    .RexxUnicode~createIndexers(string, >codepointIndexes, >graphemeIndexes, >errors)
-    say "codepointIndexes:" codepointIndexes~toString(, " ")
-    say "graphemeIndexes:" graphemeIndexes~toString(, " ")
+    indexer = .RexxUnicodeStringIndexer~new(string)
+    say "codepointIndexes:" indexer~codepointIndexes~toString(, " ")
+    say "graphemeIndexes:" indexer~graphemeIndexes~toString(, " ")
 
-    if errors~items \== 0 then do
+    if indexer~errors~items \== 0 then do
         say "errors"
-        do i=1 to errors~items
-            say i~right(3) ":" errors[i]
+        do i=1 to indexer~errors~items
+            say i~right(3) ":" indexer~errors[i]
         end
     end
 
     say "codepoints"
-    do i=1 to codepointIndexes~items
-        codepoint = .RexxUnicode~codepointAtIndexC(string, i, codepointIndexes)
+    do i=1 to indexer~codepointIndexes~items
+        codepoint = indexer~codepointAtIndexC(i)
         say i~right(3) ":" .RexxUnicodeCharacter~new(codepoint)
     end
 
     say "graphemes"
-    do i=1 to graphemeIndexes~items
-        grapheme = .RexxUnicode~graphemeAtIndexC(string, i, graphemeIndexes)
-        isMalformed = .RexxUnicode~graphemeIndexB(string, i, graphemeIndexes) < 0
+    do i=1 to indexer~graphemeIndexes~items
+        grapheme = indexer~graphemeAtIndexG(i)
+        isMalformed = indexer~graphemeIndexB(i) < 0
         character = isMalformed~?("EFBFBD"x, grapheme) -- Use the replacement character if malformed
         say i~right(3) ":" character '"'.RexxUnicode~C2X(grapheme)'"x'
     end

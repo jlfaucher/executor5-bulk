@@ -170,7 +170,7 @@ say "               stripMark = .false,     -- Strips all character markings (i.
 say "               stripNA = .false        -- Strips unassigned codepoints"
 say
 say "This string will be used as input for the transformations:"
-say 'string = "Le\u{IDEOGRAPHIC SPACE}\u{ZERO-WIDTH-SPACE}Père\t\u{HYPHEN}\u{SOFT-HYPHEN}Noël"'
+say 'string = "Le\N{IDEOGRAPHIC SPACE}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}Noël"'
 say "Character names and escape characters are not supported by UTF8Proc. Use hexadecimal notation:"
 string = "4C 65 E38080 E2808B 50 C3A8 72 65 09 E28090 C2AD 4E 6F C3AB 6C"
 say "string = " quoted(string)

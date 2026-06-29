@@ -228,12 +228,12 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
 // To return the error message CONTINUATION_ERROR_RANGE___MSG3,
 // use the macro DECODE_ERROR_3 because the message takes 3 arguments,
 // and pass the ident CONTINUATION_ERROR_RANGE, the 3 arguments and the returned value.
-#define CONTINUATION_ERROR_RANGE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (codepoint > U+10FFFF)"
+#define CONTINUATION_ERROR_RANGE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (code point > U+10FFFF)"
 #define CONTINUATION_HIGH_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (high surrogate)"
 #define CONTINUATION_LOW_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (low surrogate)"
 #define CONTINUATION___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu"
 #define CONTINUATION_NON_SHORTEST_FORM___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (non-shortest form)"
-#define START_ERROR_RANGE___MSG2 "Invalid start byte %i ('%02X'x) (codepoint > U+10FFFF)"
+#define START_ERROR_RANGE___MSG2 "Invalid start byte %i ('%02X'x) (code point > U+10FFFF)"
 #define START_NON_SHORTEST_FORM___MSG2 "Invalid start byte %i ('%02X'x) (non-shortest form)"
 #define TRUNCATED___MSG1 "Truncated, expected %i bytes"
 
@@ -296,7 +296,6 @@ utf8proc_ssize_t utf8proc_iterate_extended(
      // if ((str + 1 >= end) || !utf_cont(*str) || !utf_cont(str[1]))
      //    return UTF8PROC_ERROR_INVALIDUTF8;
      if (str >= end) DECODE_ERROR_1(TRUNCATED, 3, -1);
-     if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 3, -2);
      if (!utf_cont(*str)) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 1, -1);
      if (uc == 0xed && *str > 0x9f)
      {   // case #1
@@ -304,6 +303,8 @@ utf8proc_ssize_t utf8proc_iterate_extended(
          else DECODE_ERROR_3(CONTINUATION_LOW_SURROGATE, *str, *str, index + 1, -1);
      }
      if (uc == 0xe0 && *str < 0xa0) DECODE_ERROR_3(CONTINUATION_NON_SHORTEST_FORM, *str, *str, index + 1, -1); // case #2 — non-shortest form
+
+     if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 3, -2);
      if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 2, -2)
 
      // Check for surrogate chars
@@ -322,12 +323,14 @@ utf8proc_ssize_t utf8proc_iterate_extended(
   // if ((str + 2 >= end) || !utf_cont(*str) || !utf_cont(str[1]) || !utf_cont(str[2]))
   //    return UTF8PROC_ERROR_INVALIDUTF8;
   if (str >= end) DECODE_ERROR_1(TRUNCATED, 4, -1);
-  if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 4, -2);
-  if (str + 2 >= end) DECODE_ERROR_1(TRUNCATED, 4, -3);
   if (!utf_cont(*str)) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 1, -1);
   if (uc == 0xf0 && *str < 0x90) DECODE_ERROR_3(CONTINUATION_NON_SHORTEST_FORM, *str, *str, index + 1, -1); // case #3
   if (uc == 0xf4 && *str >= 0x90) DECODE_ERROR_3(CONTINUATION_ERROR_RANGE, *str, *str, index + 1, -1); // case #4
+
+  if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 4, -2);
   if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 2, -2);
+
+  if (str + 2 >= end) DECODE_ERROR_1(TRUNCATED, 4, -3);
   if (!utf_cont(str[2])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 3, -3);
 
   // Make sure in correct range (0x10000 - 0x10ffff)
@@ -401,7 +404,13 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
         // RexxString *pstring = stringArgument(string, "string"); // Protected<RexxString> not needed
         // classArgument(string, TheStringClass, "string"); // not enough restrictive because an instance of a subclass is accepted
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass) reportException(Error_Invalid_argument_noclass, "string", TheStringClass->getId());
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+    // if (string->classObject() != TheStringClass) reportException(Error_Invalid_argument_noclass, "string", TheStringClass->getId());
 
     size_t index = positionArgument(indexB, "indexB"); // 1-based, range 1..n
     if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
@@ -501,8 +510,8 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
     classArgument(array, TheArrayClass, "1"); // ARG_ONE not supported
     // array = arrayArgument(array, ARG_ONE);
     // ProtectedObject p(array);
-    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(1), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The first codepoint must be a non negative integer");
-    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(2), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The second codepoint must be a non negative integer");
+    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(1), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The first code point must be a non negative integer");
+    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(2), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The second code point must be a non negative integer");
     utf8proc_int32_t state =      (utf8proc_int32_t)integerRange((RexxObject *)array->get(3), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak:The state must be a non negative integer");
     utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(codepoint1, codepoint2, &state);
     array->put(new_integer(state), 3); // Output argument
