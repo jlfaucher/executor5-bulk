@@ -8,6 +8,7 @@ Unlike [Executor5][executor5], this repository includes everything from
 Miscellaneous notes:
 
 - [Diary][diary]
+- [Unicode examples from the development diary][unicode_examples]
 - [Instructions to build Executor5-bulk from scratch][build_executor5_bulk]
 
 
@@ -25,8 +26,9 @@ Miscellaneous notes:
 <img src="images/Executor5-bulk_mascot_wbg.png" alt="The repositories" width="60%">
 </div>
 
-[sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
+[build_executor5_bulk]: https://github.com/jlfaucher/builder/blob/master/build-executor5-bulk.txt
+[diary]: https://github.com/jlfaucher/executor5-bulk/blob/main/_diary.txt "Diary"
 [executor]: https://github.com/jlfaucher/executor "Executor"
 [executor5]: https://github.com/jlfaucher/executor5 "Executor5"
-[diary]: https://github.com/jlfaucher/executor5-bulk/blob/main/_diary.txt "Diary"
-[build_executor5_bulk]: https://github.com/jlfaucher/builder/blob/master/build-executor5-bulk.txt
+[sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
+[unicode_examples]: https://htmlpreview.github.io/?https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/diary_examples-out.html "Unicode examples"
