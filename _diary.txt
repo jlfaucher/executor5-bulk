@@ -771,8 +771,9 @@ $ git status
 $ git push -u origin main
 
 
-# Fetch and rebase latest SVN changes
-git svn rebase
+# Fetch and merge latest SVN changes
+git svn fetch
+git merge refs/remotes/git-svn
 
 
 # For those who do not wish to clone the entire git repository, it will be
@@ -810,7 +811,7 @@ Next procedure is not adapted to my workflow
 https://gemini.google.com/share/1aa69a5a3c14
 cd /local/rexx/oorexx/executor5-bulk
 git svn fetch
-git svn rebase
+git svn rebase (DON'T DO THAT)
 
 My workflow:
 - create a git clone from the oorexx svn repository in sourceforge.
