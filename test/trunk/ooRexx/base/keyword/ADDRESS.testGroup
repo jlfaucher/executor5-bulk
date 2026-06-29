@@ -441,6 +441,20 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   -- see surfacing here.
   address "" "" with input using (.Array~new(2000)~~fill("-"~copies(100)))
 
+::method test_with_input_stream_notready
+  -- bug #2066 ADDRESS with input, child process blocked on stdin when stdin is not ready
+  file = .TemporaryTestFile~new(.nil, "notready")
+  file~create("") -- empty
+  fileName = file~fullName
+  cmd='rexx -e "say ''When reading from stdin not ready, I should not be blocked.'';' -
+      'parse pull data;' -
+      'say ''I was not blocked.'';' -
+      'say ''.stdin~state ='' .stdin~state;' -
+      'say ''data~length ='' data~length"'
+  address system cmd with input stream (filename)
+  address system cmd with input using (.stream~new(fileName))
+  return
+
 
 -- WITH OUTPUT
 

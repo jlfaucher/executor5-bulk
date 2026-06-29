@@ -108,8 +108,8 @@ public:
                     error = errno;
                 }
             }
-            close(pipe);
         }
+        close(pipe);
     }
 
     int         pipe;             // the pipe we read the data from
