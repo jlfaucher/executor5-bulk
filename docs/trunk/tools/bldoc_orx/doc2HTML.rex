@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2020-2026, Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2020-2026, Rexx Language Association. All rights reserved.   */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -128,7 +128,7 @@
     end
     say time() fileCount 'HTML files were created'
 
-::requires doc_props.rex
+::requires "doc_props.rex"
 
 ::routine do_rxcopy
     parse arg from_dir, to_dir

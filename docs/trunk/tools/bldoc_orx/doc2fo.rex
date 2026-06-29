@@ -90,4 +90,4 @@
     'xsltproc' x_opts '-o' fo_files||_||whichdoc'.fo pdf.xsl' indoc
     say time() '- Transformation complete'
 
-::requires doc_props.rex
+::requires "doc_props.rex"

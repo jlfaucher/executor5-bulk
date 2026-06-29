@@ -626,7 +626,10 @@ provides; any subclasses of the Class class are also metaclasses.
 </para>
 <para><example>
 <title>Class class &mdash; isMetaclass method</title>
-<programlisting language="rexx">do class over .RexxInfo~package~classes~allItems~appendAll(.context~package~classes~allItems)
+<programlisting language="rexx">
+do class over .RexxInfo~package~classes~allItems~appendAll( -
+  .context~package~classes~allItems                         -
+  )
   if class~isMetaclass then
     say class~string": metaclass"      -- The Class class: metaclass
                                        -- The META class: metaclass
@@ -1438,7 +1441,7 @@ use strict arg m
 say m~target~items "items sorted"
 </programlisting></example>
 will output
-<programlisting language="rexx">processing continues
+<programlisting>processing continues
 sorting complete
 1000 items sorted</programlisting></para>
 </section>

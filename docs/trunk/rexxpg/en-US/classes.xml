@@ -102,11 +102,7 @@ The following
 examples with <emphasis role="italic">myarray</emphasis> illustrate how to use new objects in Rexx programs.</para>
 <para></para>
 
-<programlisting>
-<![CDATA[
-myarray=.array~new(5)   /* array with initial capacity of 5 items          */
-]]>
-</programlisting>
+<programlisting language="rexx">myarray=.array~new(5)   /* array with initial capacity of 5 items          */</programlisting>
 
 <para>creates a new instance of the Array
 class, and assigns to the variable <emphasis role="italic">myarray</emphasis>. The period precedes a class name
@@ -120,24 +116,16 @@ the index number, the number of the location at which to store the value (item) 
 object <code>Hello</code> is stored at the index numbered <code>3</code>
 of <emphasis role="italic">myarray</emphasis>: </para>
 
-<programlisting>
-<![CDATA[
-myarray~put("Hello",3)  /* storing "Hello" at position 3                   */
-]]>
-</programlisting>
+<programlisting language="rexx">myarray~put("Hello",3)  /* storing "Hello" at position 3                   */</programlisting>
 
 <para>One way to retrieve values from an array object is by sending it an AT message.
 In the next example, the SAY instruction displays the value (item) stored at position (index) <code>3</code> of <emphasis role="italic">myarray</emphasis>: </para>
 
-<programlisting>
-<![CDATA[
-say myarray~at(3)       /* fetching item from position 3                   */
+<programlisting language="rexx">say myarray~at(3)       /* fetching item from position 3                   */
 
-Results:
-
-Hello
-]]>
-</programlisting>
+-- Results:
+--
+-- Hello</programlisting>
 
 <para>
 <indexterm><primary>SAY instruction</primary></indexterm>
@@ -157,54 +145,38 @@ In this example, the MAKESTRING method for an Array object returns the items cur
 stored in the array, in this case the string <literal>Hello</literal>.
 </para>
 
-<programlisting>
-<![CDATA[
-say myarray            /* SAY causes the MAKESTRING message to be sent to myarray   */
+<programlisting language="rexx">say myarray            /* SAY causes the MAKESTRING message to be sent to myarray   */
 
-Results:
-
-Hello
-]]>
-</programlisting>
+-- Results:
+--
+-- Hello</programlisting>
 
 <para>By contrast the STRING method of the Array class returns the string
 &quot;<computeroutput>an Array</computeroutput>&quot;:</para>
 
-<programlisting>
-<![CDATA[
-say myarray~string     /* sending explicitly the STRING message            */
+<programlisting language="rexx">say myarray~string     /* sending explicitly the STRING message            */
 
-Results:
-
-an Array
-]]>
-</programlisting>
+-- Results:
+--
+-- an Array</programlisting>
 
 <para>Whenever a method returns a string, you can use it within expressions that
 require a string. Here, the element of the array that AT returns is a string, so you can put an
 expression containing the AT method inside a string function like COPIES():</para>
 
-<programlisting>
-<![CDATA[
-say copies(myarray~at(3),4)   /* fetching item from position 3, copying it 4 times  */
+<programlisting language="rexx">say copies(myarray~at(3),4)   /* fetching item from position 3, copying it 4 times  */
 
-Results:
-
-HelloHelloHelloHello
-]]>
-</programlisting>
+-- Results:
+--
+-- HelloHelloHelloHello</programlisting>
 
 <para>This example produces the same result using only messages that cause the appropriate methods to be run: </para>
 
-<programlisting>
-<![CDATA[
-say myarray~at(3)~copies(4)   /* fetching item from position 3, copying it 4 times  */
+<programlisting language="rexx">say myarray~at(3)~copies(4)   /* fetching item from position 3, copying it 4 times  */
 
-Results:
-
-HelloHelloHelloHello
-]]>
-</programlisting>
+-- Results:
+--
+-- HelloHelloHelloHello</programlisting>
 
 <para>Notice that the expression is evaluated from left to right. You can also
 use parentheses to enforce an order of evaluation.</para>
@@ -213,42 +185,31 @@ The exceptions are to improve the readability of the language. The following
 example uses the []= (left-bracket right-bracket equal-sign) and []
 methods to set and retrieve array elements: </para>
 
-<programlisting>
-<![CDATA[
-myarray[4]="the fourth element"  /* storing string at position 4           */
-say myarray[4]                /* fetching item (a string) from position 4  */
+<programlisting language="rexx">myarray[4]="the fourth element"  /* storing string at position 4              */
+say myarray[4]                   /* fetching item (a string) from position 4  */
 
-Results:
-
-the fourth element
-]]>
-</programlisting>
+-- Results:
+--
+-- the fourth element</programlisting>
 
 <para>Although the previous instructions look like an ordinary array assignment
 and array reference, they are actually messages to the Array object referenced by <emphasis role="italic">myarray</emphasis>. You
 can prove this by executing these equivalent instructions, which use the twiddle
 to send the messages: </para>
 
-<programlisting>
-<![CDATA[
-myarray~"[]="("a new test",4)    /* storing string at position 4           */
-say myarray~"[]"(4)           /* fetching item (a string) from position 4  */
+<programlisting language="rexx">myarray~"[]="("a new test",4)    /* storing string at position 4              */
+say myarray~"[]"(4)              /* fetching item (a string) from position 4  */
 
-Results:
-
-a new test
-]]>
+-- Results:
+--
+-- a new test
 </programlisting>
 
 <para>Similarly, expression operators (such as +, -, /, and *) are actually methods,
 but you do not have to use the twiddle to send them: </para>
 
-<programlisting>
-<![CDATA[
-say 2+3              /* adds 3 to 2, displays result: 5 */
-say 2~"+"(3)         /* message version: adds 3 to 2, displays result: 5 */
-]]>
-</programlisting>
+<programlisting language="rexx">say 2+3              /* adds 3 to 2, displays result: 5                  */
+say 2~"+"(3)         /* message version: adds 3 to 2, displays result: 5 */</programlisting>
 
 <para>In the second SAY instruction, "+" must be a literal string because the message name
 contains characters not allowed in a Rexx symbol.</para>
@@ -322,14 +283,12 @@ and along with it, the two methods under discussion, STRING and INIT: </para>
 <example>
 <title>STRING and INIT Methods</title>
 
-<programlisting>
-<![CDATA[
-/* partdef.rex - Class and method definition file */
+<programlisting language="rexx">/* partdef.rex - Class and method definition file                 */
 
-/* Define the Part class as a public class */
+/* Define the Part class as a public class                        */
 ::class Part public
 
-/* Define the INIT method to initialize object variables */
+/* Define the INIT method to initialize object variables          */
 ::method init
    expose name description number
    use arg name, description, number
@@ -337,9 +296,7 @@ and along with it, the two methods under discussion, STRING and INIT: </para>
 /* Define the STRING method to return a string with the part name */
 ::method string
    expose name
-   return "Part name:" name
-]]>
-</programlisting>
+   return "Part name:" name</programlisting>
 
 </example>
 <para>In the ::CLASS directive, the
@@ -388,9 +345,7 @@ The RETURN instruction returns the result string.</para>
 <example>
 <title>How to use the Part class</title>
 
-<programlisting>
-<![CDATA[
-/* usepart.rex - use the Part class */
+<programlisting language="rexx">/* usepart.rex - use the Part class */
 mypartA=.part~new("Widget","A small widge",12345)
 mypartB=.part~new("Framistat","Device to control frams",899)
 say mypartA
@@ -398,12 +353,10 @@ say mypartB
 exit
 ::requires partdef
 
-Results:
-
-Part name: Widget
-Part name: Framistat
-]]>
-</programlisting>
+-- Results:
+--
+-- Part name: Widget
+-- Part name: Framistat</programlisting>
 
 </example>
 <para>The usepart.rex program creates two parts, which are instances of the Part
@@ -466,8 +419,7 @@ the object is reclaimed by the garbage collector.
 </para>
 <example>
 <title>UNINIT Method</title>
-<programlisting>
-/* uninit.rex - example of UNINIT processing */
+<programlisting language="rexx">/* uninit.rex - example of UNINIT processing */
 
 a = .scratchpad~new("Of all the things I&apos;ve lost")
 a = .scratchpad~new("I miss my mind the most")
@@ -482,8 +434,7 @@ say "Exiting program."
 
   ::method uninit
     expose text
-    say "Forgetting" text
-</programlisting>
+    say "Forgetting" text</programlisting>
 </example>
 
 <para>Whether uninitialization processing is needed depends on the circumstances,
@@ -526,20 +477,12 @@ For example, a FIND_CLUES method is running in an object called <emphasis role="
 When FIND_CLUES finds a clue, it sends a READ_LAST_PAGE
 message to <emphasis role="italic">Mystery_Novel</emphasis>:
 
-<programlisting>
-<![CDATA[
-self~read_last_page
-]]>
- </programlisting></para></listitem>
+<programlisting language="rexx">self~read_last_page</programlisting></para></listitem>
 
 <listitem><para>Pass references regarding an object to the methods of other
 objects. For example, a SING method is running in object <emphasis role="italic">Song</emphasis>. The code:
 
-<programlisting>
-<![CDATA[
-Singer2~duet(self)
-]]>
-</programlisting>
+<programlisting language="rexx">Singer2~duet(self)</programlisting>
 
 would give the DUET method access to the same Song.</para>
 </listitem></itemizedlist>
@@ -558,14 +501,12 @@ class, Account class, and Object class define. </para>
 <example>
 <title>SELF Variable</title>
 
-<programlisting>
-<![CDATA[
-::class Account
+<programlisting language="rexx">::class Account
 
   ::method INIT
     expose balance
     use arg balance
-    self~init:super    /* Forwards to the Object INIT method */
+    self~init:super           /* Forwards to the Object INIT method  */
 
   ::method TYPE
     return "an account"
@@ -580,20 +521,14 @@ class, Account class, and Object class define. </para>
     self~init:super(balance)  /* Forwards to the Account INIT method */
 
   ::method type
-    return "a savings account"
-]]>
-</programlisting>
+    return "a savings account"</programlisting>
 
 </example>
 <para>When the INIT method of the Savings
 class is called, the variable <emphasis role="italic">SUPER</emphasis> is set to the Account class object. For
 example: </para>
 
-<programlisting>
-<![CDATA[
-self~init:super(balance)
-]]>
-</programlisting>
+<programlisting language="rexx">self~init:super(balance)</programlisting>
 <para>This instruction sends
 the INIT message to the Account
 class rather than recursively invoking the INIT
@@ -602,11 +537,8 @@ of the Account class is
 called, the variable <emphasis role="italic">SUPER</emphasis> is assigned to the Object class
 as this is the Account class' direct super class: </para>
 
-<programlisting>
-<![CDATA[
-self~init:super
-]]>
-</programlisting><para>calls the INIT method of the Object
+<programlisting language="rexx">self~init:super</programlisting>
+<para>calls the INIT method of the Object
 class.</para>
 </listitem></varlistentry>
 </variablelist>
@@ -643,9 +575,7 @@ that starts with a dot, immediately followed by its index name. All the public R
 alternatively with <code>.environment~array</code>.
 To place something in the environment directory, you use the form: </para>
 
-<programlisting>
-.environment~your.object = value
-</programlisting>
+<programlisting language="rexx">.environment~your.object = value</programlisting>
 
 <para> Include a period (<code>.</code>) in any index name you use, to avoid conflicts with current or future Rexx
 entries to the environment directory <literal>.environment</literal>. In the above example the index name used for storing
@@ -653,10 +583,8 @@ entries to the environment directory <literal>.environment</literal>. In the abo
 To retrieve the <emphasis role="italic">value</emphasis>  stored with the index name <code>YOUR.OBJECT</code>
 from the <literal>.environment</literal> directory, you use one of the following two forms: </para>
 
-<programlisting>
-say .environment~your.object
-say .your.object        /* same as above        */
-</programlisting>
+<programlisting language="rexx">say .environment~your.object
+say .your.object        /* same as above        */</programlisting>
 
 <para>
 <indexterm><primary>symbols</primary>
@@ -670,11 +598,7 @@ directory. An <emphasis role="italic">environment symbol</emphasis> starts with 
 other character, and the symbol is not a valid numeric value. You have seen environment symbols
 earlier; for example in: </para>
 
-<programlisting>
-<![CDATA[
-asav = .savings~new
-]]>
-</programlisting>
+<programlisting language="rexx">asav = .savings~new</programlisting>
 
 <para> <literal>.savings</literal> is
 an environment symbol, and refers to the Savings class. The classes
@@ -694,12 +618,8 @@ characters. Its only methods are those of the Object class. You can use
 <emphasis role="italic">The NIL object</emphasis> (rather than the null string) to test for the absence
 of data in an array entry: </para>
 
-<programlisting>
-<![CDATA[
-if board[row,column] = .nil
-then ...
-]]>
-</programlisting>
+<programlisting language="rexx">if board[row,column] = .nil
+then ...</programlisting>
 </section>
 
 <section id="falseobject"><title>The False Environment Object (.false)</title>
@@ -745,9 +665,7 @@ The local environment object <literal>.local</literal> is a directory (an instan
 of interpreter instance-specific objects that are always accessible. To place something in the Local environment directory,
 you use the form: </para>
 
-<programlisting>
-.local~your.object =  value
-</programlisting>
+<programlisting language="rexx">.local~your.object =  value</programlisting>
 
 <para> Include a period (<code>.</code>) in any index name you use, to avoid conflicts with current or future Rexx
 entries to the local environment directory <literal>.local</literal>. In the above example the index name used for storing
@@ -755,10 +673,8 @@ entries to the local environment directory <literal>.local</literal>. In the abo
 To retrieve the <emphasis role="italic">value</emphasis> stored with the index name <code>YOUR.OBJECT</code>
 from the <literal>.local</literal> directory, you use one of the following two forms: </para>
 
-<programlisting>
-say .local~your.object
-say .your.object        /* same as above        */
-</programlisting>
+<programlisting language="rexx">say .local~your.object
+say .your.object        /* same as above        */</programlisting>
 
 <para>The scope of <literal>.local</literal> is the current interpreter instance.
 Each Rexx interpreter instance has its own copy of the local environment
@@ -864,8 +780,7 @@ makes this symbol an environment symbol).
 
 <example>
 <title>.SYSCARGS Environment Object</title>
-<programlisting>
-/* results for running this program with command line arguments
+<programlisting language="rexx">/* results for running this program with command line arguments
      one "second argument" three
 
    3 arguments
@@ -874,8 +789,7 @@ makes this symbol an environment symbol).
    three
 */
 say .sysCargs~items "arguments"
-say .sysCargs
-</programlisting>
+say .sysCargs</programlisting>
 
 </example>
 
@@ -992,10 +906,8 @@ with package local preferred over <literal>.LOCAL</literal>, and
 To avoid conflicts with future Rexx defined entries, it is recommended
 that the entries that you place in any of these directories include at least one
 period in the entry name, for example:
-<programlisting>
--- establish settings directory
-.local~setEntry("MyProgram.settings", .directory~new)
-</programlisting>
+<programlisting language="rexx">-- establish settings directory
+.local~setEntry("MyProgram.settings", .directory~new)</programlisting>
 </para>
 
 </section>
@@ -1084,38 +996,34 @@ a % message to <emphasis role="italic">mycost</emphasis>:</para>
 <example>
 <title>Messages</title>
 
-<programlisting>
-<![CDATA[
-say "Enter a price:"
+<programlisting language="rexx">say "Enter a price:"
 pull p
-mycost=.Cost~new(p)        /* Create a Cost instance        */
+mycost=.Cost~new(p)        /* Create a Cost instance                      */
 
-say "price:" mycost~price  /* ask current price             */
-mycost~"%"                 /* send % (increase) message     */
-say "price:" mycost~price  /* ask current price             */
-say "%    :" mycost~"%"    /* send % (increase) message     */
+say "price:" mycost~price  /* ask current price                           */
+mycost~"%"                 /* send % (increase) message                   */
+say "price:" mycost~price  /* ask current price                           */
+say "%    :" mycost~"%"    /* send % (increase) message                   */
 
-::class Cost               /* Cost class                    */
-::attribute price          /* allow access from others      */
+::class Cost               /* Cost class                                  */
+::attribute price          /* allow access from others                    */
 ::method init
   expose price increase    /* establish direct access to these attributes */
-  use arg price            /* save argument with attribute  */
-  increase=25              /* increase in percent           */
+  use arg price            /* save argument with attribute                */
+  increase=25              /* increase in percent                         */
 
-::method "%"               /* Increase price % method       */
-  expose price increase    /* Produces: Enter a price.      */
-  price=price*(100+increase)/100 /* increase                */
-     return price             /* return increased price        */
+::method "%"               /* Increase price % method                     */
+  expose price increase    /* Produces: Enter a price.                    */
+  price=price*(100+increase)/100 /* increase                              */
+     return price          /* return increased price                      */
 
-Results (example
+-- Results (example)
 
-Enter a price:
-100
-price: 100
-price: 125
-%    : 156.25
-]]>
-</programlisting>
+-- Enter a price:
+-- 100
+-- price: 100
+-- price: 125
+-- %    : 156.25</programlisting>
 
 </example>
 
@@ -1238,14 +1146,10 @@ a TYPE method for the Savings subclass, as follows: </para>
 <example>
 <title>SUBCLASS Option</title>
 
-<programlisting>
-<![CDATA[
-::class Savings subclass Account
+<programlisting language="rexx">::class Savings subclass Account
 
   ::method "TYPE"
-    return "a savings account"
-]]>
-</programlisting>
+    return "a savings account"</programlisting>
 </example>
 <para>To change
 the search order so Rexx searches for TYPE in the Account
@@ -1255,34 +1159,19 @@ subclass, enter this instead: </para>
 <example>
 <title>Changing the Subclass Method Search Order</title>
 
-<programlisting>
-<![CDATA[
-  ::method "TYPE"
-    return self~type:super -- returns the result of invoking the TYPE method of the superclass
-]]>
-</programlisting>
+<programlisting language="rexx">  ::method "TYPE"
+    return self~type:super -- returns the result of invoking
+                           -- the TYPE method of the superclass</programlisting>
 </example>
 <para>When you create an <computeroutput>asav</computeroutput> instance of
 the Savings subclass and send a TYPE message to
 <computeroutput>asav</computeroutput>: </para>
-<programlisting>
-<![CDATA[
-say asav~type
-]]>
-</programlisting>
+<programlisting language="rexx">say asav~type</programlisting>
 
 <para>Rexx displays: </para>
-<programlisting>
-<![CDATA[
-an account
-]]>
-</programlisting>
+<programlisting>an account</programlisting>
 <para> rather than: </para>
-<programlisting>
-<![CDATA[
-a savings account
-]]>
-</programlisting>
+<programlisting>a savings account</programlisting>
 <para> because Rexx searches for TYPE in the Account class first.</para>
 </section>
 
@@ -1309,9 +1198,7 @@ be accessed from other instances of the same class (or subclass instances).
 <example>
 <title>PUBLIC and PRIVATE options</title>
 
-<programlisting>
-<![CDATA[
-::class Savings
+<programlisting language="rexx">::class Savings
 ::method newCheckingAccount CLASS
   instance = self~new
   instance~makeChecking
@@ -1319,9 +1206,7 @@ be accessed from other instances of the same class (or subclass instances).
 
 ::method makeChecking private
   expose checking
-  checking = .true
-]]>
-</programlisting>
+  checking = .true</programlisting>
 </example>
 <para>The newCheckingAccount CLASS method
 is able to invoke the makeChecking method because
@@ -1332,9 +1217,7 @@ method of its class.  For example:</para>
 <example>
 <title>PUBLIC and PRIVATE Options</title>
 
-<programlisting>
-<![CDATA[
-::class Savings
+<programlisting language="rexx">::class Savings
 ::method init class
   expose counter
   counter = 0
@@ -1346,9 +1229,7 @@ method of its class.  For example:</para>
 
 ::method init
   expose accountNumber
-  accountNumber = self~class~allocateAccountNumber
-]]>
-</programlisting>
+  accountNumber = self~class~allocateAccountNumber</programlisting>
 </example>
 <para>The instance INIT method of the Savings class is able to invoke the
 allocateAccountNumber private

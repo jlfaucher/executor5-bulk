@@ -203,19 +203,13 @@ that perform an action, return data, or both. A message to an object must specif
 required</para></listitem></itemizedlist>
 <para>So the message format looks like this:</para>
 
-<programlisting>
-object~action(parameters)
-</programlisting>
+<programlisting language="rexx">object~action(parameters)</programlisting>
 
 <para>Assume that the object is the string
 <computeroutput>!iH.</computeroutput> Sending it a message
 to use its REVERSE action: </para>
 
-<programlisting>
-<![CDATA[
-"!iH"~reverse
-]]>
-</programlisting>
+<programlisting language="rexx">"!iH"~reverse</programlisting>
 
 <para>returns the string object <computeroutput>Hi!.</computeroutput></para>
 </section>
@@ -246,13 +240,9 @@ the methods you create.</para>
 <indexterm><primary>polymorphism</primary></indexterm>
 
 <para>Rexx lets you send the same message to objects that are different: </para>
-<programlisting>
-<![CDATA[
-"!iH"~reverse   /* Reverses the characters "!iH" to form "Hi!"  */
+<programlisting language="rexx">"!iH"~reverse   /* Reverses the characters "!iH" to form "Hi!"  */
 pen~reverse     /* Reverses the direction of a plotter pen      */
-ball~reverse    /* Reverses the direction of a moving ball      */
-]]>
-</programlisting>
+ball~reverse    /* Reverses the direction of a moving ball      */</programlisting>
 
 <para>As long as each object has its own REVERSE method, REVERSE runs
 even if the programming implementation is different for each object. This
@@ -281,12 +271,10 @@ elements provided by an object.  For example,</para>
 <example>
 
 <title>LOOP OVER</title>
-<programlisting>
-myarray = .array~of("Rick", "David", "Mark")
+<programlisting language="rexx">myarray = .array~of("Rick", "David", "Mark")
 loop name over myarray
    say name
-end
-</programlisting>
+end</programlisting>
 </example>
 
 <para>Will display the strings <literal>"Rick"</literal>, <literal>"David"</literal>, and <literal>"Mark"</literal>, in that sequence.  The
