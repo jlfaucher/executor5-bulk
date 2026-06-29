@@ -26,6 +26,45 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 [Unicode]
 
+Regression tests
+
+macOS and Linux:
+cdroot (or manually cd to the Git repository root if you're not using `builder`)
+cd scripts/unicode
+make (display help)
+    make all
+    make html
+    ---------- ooRexxShellFiles
+    make diary_examples
+    ---------- scriptsFiles
+    make incorrect_character
+    make RexxUnicode_test
+    make RexxUnicodeServices_test
+    ---------- html (needs asciinema and aha)
+    make diary_examples-out.html
+    ----------
+    make clean
+
+Windows:
+cdroot (or manually cd to the Git repository root if you're not using `builder`)
+cd scripts/unicode
+nmake (display help)
+    nmake all
+    ---------- ooRexxShellFiles
+    nmake diary_examples
+    ---------- scriptsFiles
+    nmake incorrect_character
+    nmake RexxUnicode_test
+    nmake RexxUnicodeServices_test
+    ----------
+    nmake clean
+
+
+===============================================================================
+2026 June 29
+
+[Unicode]
+
 Fix .RexxUnicodeServices~utf8DecodeCodepoint
     The returned size was incorrect for this test case:
     -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G67520

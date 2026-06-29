@@ -1,0 +1,676 @@
+
+-- Unicode Regression Tests
+
+prompt off address directory
+tutor off
+demo on
+
+
+-- ===============================================================================
+-- 2026 June 29
+
+/*
+[Unicode]
+
+Fix .RexxUnicodeServices~utf8DecodeCodepoint
+    The returned size was incorrect for this test case:
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G67520
+    -- Table 3-11. U+FFFD for Truncated Sequences
+*/
+    .RexxUnicodeServices~utf8DecodeCodepoint("F1 BF 41"x, 1, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=
+/*
+    Previous version:
+        -1
+        -3
+        'TRUNCATED'
+        'Truncated, expected 4 bytes'
+    Current version:
+        -1
+        -2
+        'CONTINUATION'
+        'Invalid continuation byte 191 (''BF''x) at byte-position 3'
+*/
+
+
+/*
+[Unicode]
+
+Update rxunicode.cls.
+
+Backward-incompatible changes:
+- The .RexxUnicode~codepointName was renamed to .RexxUnicode~codepointCharName.
+- The `hexadecimal` argument is no longer supported by the .RexxUnicode~character method.
+- The .RexxUnicode~X2U method was removed.
+- The .CodepointSupplier class was renamed .RexxUnicodeCodepointSupplier
+- The .RexxUnicode~"[]" method was removed.
+- The .RexxUnicodeCharacter~"[]" method was removed.
+- The ".RexxUnicode" routine was removed.
+- The ".RexxUnicodeCharacter" routine was removed.
+- the .RexxUnicode~createIndexers method was removed, replaced by .RexxUnicodeStringIndexer~new.
+- the .RexxUnicode~codepointIndexB method was removed, replaced by .RexxUnicodeStringIndexer~codepointIndexB.
+- the .RexxUnicode~codepointAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~codepointAtIndexC.
+- the .RexxUnicode~graphemeIndexB method was removed, replaced by .RexxUnicodeStringIndexer~graphemeIndexB.
+- the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
+
+
+Add .RexxUnicode~stringInfo(string)
+
+Add .RexxUnicode~stringIsASCII(string)
+    Returns .true if the string contains only characters <= "7F"x
+
+Add .RexxUnicode~stringToNFC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    Returns the string normalized to NFC, with optional transformations applied.
+
+Add .RexxUnicode~stringToNFD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    Returns the string normalized to NFD, with optional transformations applied.
+
+Add .RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    Returns the string normalized to NFKC, with optional transformations applied.
+
+Add .RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)
+    NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+    NFKC_CF is specifically optimized for identifier matching.
+    As part of the "Default Case Folding" algorithm, it removes ignorable characters (such as certain formatting marks or zero-width spaces).
+    Examples:
+    The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
+    The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
+
+Add .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    Returns the string normalized to NFKD, with optional transformations applied.
+
+
+Examples
+*/
+
+    .RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+    .RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+    .RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+    .RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+    .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+    .RexxUnicode~stringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+    .RexxUnicode~stringIsASCII("Noel")=     -- 1
+    .RexxUnicode~stringIsASCII("Noël")=     -- 0
+
+    .RexxUnicode~stringToNFC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=         -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+    .RexxUnicode~stringToNFD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=         -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+    .RexxUnicode~stringToNFKC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=        -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+    .RexxUnicode~stringToNFKC_CF("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=     -- 'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'
+    .RexxUnicode~stringToNFKD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=        -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+
+
+/*
+Add .RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)
+    Returns the UTF-8 encoding of this codepoint.
+
+Add .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
+    Returns the Unicode escape notation \uXXXX or \UXXXXXXXX
+
+Add .RexxUnicode~codepointIsPrintable(codepoint)
+    Returns true if the codepoint is printable according to its category.
+
+Add .RexxUnicode~codepointPrintableString(codepoint, buffer=.nil)
+    Returns a printable string representation of this codepoint.
+    Printable codepoints are returned as their UTF-8 character representation;
+    non-printable codepoints are returned as a Unicode escape notation.
+
+Rename .RexxUnicode~codepointName to .RexxUnicode~codepointCharName.
+    Now returns strictly the Unicode standard name.
+
+Add .RexxUnicode~codepointExtendedCharName(codepoint, raiseError=.false)
+    If ICU4ooRexx is registered, returns the codepoint extended char name.
+    Otherwise returns "" or raises an error.
+
+Add .RexxUnicode~codepoinCharNameAlias(codepoint, raiseError=.false)
+    If ICU4ooRexx is registered, returns the codepoint char name alias (can be "").
+    Otherwise returns "" or raises an error.
+
+
+Examples
+*/
+
+    .RexxUnicode~codepointUTF8Encoding(0)~c2x=                              -- 00
+    .RexxUnicode~codepointUTF8Encoding(65)~c2x=                             -- 41
+    .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=                       -- 'E29188'
+
+    .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
+    .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+
+    .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
+
+    .RexxUnicode~codepointIsPrintable(0)=             -- 0
+    .RexxUnicode~codepointIsPrintable(65)=            -- 1
+    .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
+
+    .RexxUnicode~codepointPrintableString(0)=           -- '\u0000'
+    .RexxUnicode~codepointPrintableString(65)=          -- 'A'
+    .RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
+
+    .RexxUnicode~codepointCharName(2448~x2d)=           -- 'OCR DASH'
+    .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
+    .RexxUnicode~codepointCharNameAlias(2448~x2d)=      -- 'MICR ON US SYMBOL'
+
+
+/*
+Add .RexxUnicode~codepoint(identifier)
+    Gets a codepoint from a codepoint identifier.
+    A codepoint identifier may be:
+    - a decimal value (the codepoint itself),
+    - a U+ notation,
+    - a character name,
+    - or a UTF-8 encoded character.
+
+Update .RexxUnicode~character(identifier)
+    Gets a RexxUnicodeCharacter from a codepoint identifier.
+    See the `codepoint` method for a definition of "codepoint identifier".
+    The search from an hexadecimal string has been removed.
+
+The string representation of a RexxUnicodeCharacter has been modified.
+    old:    (""    U+0000 Cc Control 0 "")
+    new:    (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    old:    ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+    new:    ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+    old:    ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
+    new:    ("🛏" \x{F09F9B8F} U+1F6CF So Other_Symbol "BED")
+
+
+Examples
+*/
+
+    -- Search by alias
+    .RexxUnicode~character("MICR ON US SYMBOL")=        -- ("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
+    .RexxUnicode~character(" MICR ON US SYMBOL")=       -- TODO support loose alias: Name " MICR ON US SYMBOL" not found.
+
+    -- Search control character by extended name
+    .RexxUnicode~character("<control-0000>")=           -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    .RexxUnicode~character("<control-000>")=            -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    .RexxUnicode~character("<control-00>")=             -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    .RexxUnicode~character("<control-0>")=              -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    .RexxUnicode~character("<control->")=               -- Name '<control->' not found
+
+    -- Search surrogate character by extended name
+    -- Strange... ICU uses "<lead surrogate-", wheras the Unicode standard uses "<surrogate-"
+    .RexxUnicode~character("<lead surrogate-D800>")=    -- (<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
+    .RexxUnicode~character("<surrogate-D800>")=         -- Name "<surrogate-D800>" not found
+
+
+/*
+Update .RexxUnicode~C2U(string, buffer=.nil)
+    Returns an ASCII string containing a sequence of U+XXXX...
+    New:
+    if a buffer is passed as argument, the result is appended to the buffer.
+    The result is either a string or the buffer passed as argument.
+
+Update .RexxUnicode~C2X(string, buffer=.nil)
+    Specialized C2X: Inserts a space between the codepoints
+    New:
+    if a buffer is passed as argument, the result is appended to the buffer.
+    The result is either a string or the buffer passed as argument.
+
+Update .RexxUnicode~D2U(codepoint, buffer=.nil)
+    Returns a U+XXXX.. string representing the codepoint passed as a decimal value.
+    New:
+    if a buffer is passed as argument, the result is appended to the buffer.
+    The result is either a string or the buffer passed as argument.
+
+Add .RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)
+    Encodes an ASCII string "U+XXXX.. U+XXXX.. ... U+XXXX.." into a utf8string.
+    The separators are 1..n spaces, nothing else.
+    if a buffer is passed as argument, the result is appended to the buffer.
+    The result is either a string or the buffer passed as argument.
+
+Add .RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, >refLength]
+    Converts "U+XXXX.." to a decimal value.
+    If refLength is passed by the caller, extra characters after the U+XXXX.. are allowed.
+    Otherwise UPlusCodepoint must be strictly "U+" followed by 4 to 6 hex digits.
+    The length of "U+XXXX.." is returned in refLength, allowing to skip it when parsing.
+    In case of error, returns -1 by default or raises an error if requested.
+
+Remove .RexxUnicode~X2U
+    You can use .RexxUnicode~D2U(hexdigits~x2d).
+
+
+Examples
+*/
+
+    .RexxUnicode~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+    .RexxUnicode~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+    .RexxUnicode~C2U("")=                               -- ''
+    .RexxUnicode~C2U("", .MutableBuffer~new)=           -- M''
+
+    .RexxUnicode~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
+    .RexxUnicode~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
+
+    -- Invalid string
+    -- U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+    .RexxUnicode~C2U("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+    .RexxUnicode~C2X("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'F4 91 92 93 FF 41 80 BF 42'
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+    .RexxUnicode~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+    .RexxUnicode~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
+
+    .RexxUnicode~D2U(235)=                              -- 'U+00EB'
+    .RexxUnicode~D2U(235, .MutableBuffer~new)=          -- M'U+00EB'
+    .RexxUnicode~D2U(127877)=                           -- 'U+1F385'
+    .RexxUnicode~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
+
+    .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
+    .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+    .RexxUnicode~D2U(-1)=                               -- Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).
+
+    .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
+    .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
+
+    .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
+
+    -- The update is atomic when passing a buffer:
+    -- either all decoded characters are appended, or the buffer is left unchanged.
+    b = .MutableBuffer~new("🤶 "); .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+    b=                                                                                      -- M'🤶 '
+
+    .RexxUnicode~U2D("U+00EB")=                                                                 -- 235
+    .RexxUnicode~U2D("U+00EB ")=                                                                -- -1
+    .RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+    .RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
+    .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
+    .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+    .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+
+
+/*
+Add .RexxUnicode~h_UAX44_LM2(name)
+    h_UAX44_LM2 delegates either to ICU4ooRexx, if registered,
+    or to .RexxUnicode~UAX44_LM2 (slower, but always available).
+
+
+Examples
+*/
+
+    .RexxUnicode~UAX44_LM2(" MICR on US SYMBOL")=       -- 'micronussymbol'
+    .RexxUnicode~h_UAX44_LM2(" MICR on US SYMBOL")=     -- 'micronussymbol'
+
+    .RexxUnicode~UAX44_LM3("Upper case")=               -- 'uppercase'
+    .RexxUnicode~UAX44_LM3(" Is Upper case")=           -- 'uppercase'
+    .RexxUnicode~UAX44_LM3("Is Pere Noel")=             -- 'perenoel'
+
+    -- ASCII name only
+    .RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must be an ASCII string; found "Père Noël".
+    .RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
+    .RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
+
+
+/*
+Add the .RexxUnicodeStringIndexer class.
+    Method naming convention: use the letter "G" for "grapheme".
+    When RexxText provides native O(1) grapheme indexing, this class will become
+    an internal implementation detail of RexxText, and the term "grapheme" will
+    be replaced with "character". The letter "C", for "character", will be used.
+    There will be no native O(1) access to codepoints; only sequential iteration
+    will be possible.
+
+Examples
+*/
+
+    indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+    indexer=                            -- (a👨‍👩‍👧b)
+    indexer~codepointIndexes=           -- [ 1, 2, 6, 9, 13, 16, 20]
+    indexer~graphemeIndexes=            -- [ 1, 2, 20]
+    indexer~errors=                     -- an Array (no shape, 0 items)
+    indexer~codepointAtIndexC(3)=       -- 8205
+    .RexxUnicodeCharacter~new(8205)=    -- (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+    indexer~graphemeAtIndexG(3)=        -- 'b'
+
+    -- U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+    indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x)
+    indexer~codepointIndexes=           -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
+    indexer~graphemeIndexes=            -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
+    indexer~errors==
+/*
+        an Array (shape [7], 7 items)
+         1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+         2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+         3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+         4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+         5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+         6 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+         7 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+*/
+    indexer~codepointAtIndexC(3)=       -- 65533
+    .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
+    indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid byte sequence)
+
+
+/*
+Rename the .CodepointSupplier class to .RexxUnicodeCodepointSupplier
+
+Add the RexxUnicodeGraphemeSupplier class
+
+
+Examples
+*/
+
+    -- Codepoint supplier
+    -- the default index type is the codepoint index
+    -- the default item type is the codepoint as an integer
+    .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅")==
+/*
+        a RexxUnicodeCodepointSupplier
+         1  :  110
+         2  :  111
+         3  :  235
+         4  :  108
+         5  :  128105
+         6  :  8205
+         7  :  128104
+         8  :  8205
+         9  :  128105
+         10 :  8205
+         11 :  128103
+         12 :  127877
+*/
+
+    -- Grapheme supplier
+    -- the default index type is the grapheme index
+    -- the default item type is the grapheme as a string
+    .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1 : 'n'
+         2 : 'o'
+         3 : 'ë'
+         4 : 'l'
+         5 : '👩‍👨‍👩‍👧'
+         6 : '🎅'
+*/
+
+    -- Codepoint supplier
+    -- It's possible to get other types of index and item
+    -- Here, we request the byte index and the codepoint byte sequence as hex digits
+    .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
+/*
+        a RexxUnicodeCodepointSupplier
+         1  : '\x{6E}'
+         2  : '\x{6F}'
+         3  : '\x{C3AB}'
+         5  : '\x{6C}'
+         6  : '\x{F09F91A9}'
+         10 : '\x{E2808D}'
+         13 : '\x{F09F91A8}'
+         17 : '\x{E2808D}'
+         20 : '\x{F09F91A9}'
+         24 : '\x{E2808D}'
+         27 : '\x{F09F91A7}'
+         31 : '\x{F09F8E85}'
+*/
+
+    -- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
+    .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1  : '\x{6E}'
+         2  : '\x{6F}'
+         3  : '\x{C3AB}'
+         5  : '\x{6C}'
+         6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+         31 : '\x{F09F8E85}'
+*/
+
+    -- Codepoint supplier providing the default index and the codepoint escaped string
+    .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
+/*
+        a RexxUnicodeCodepointSupplier
+         1  : 'n'
+         2  : 'o'
+         3  : 'ë'
+         4  : 'l'
+         5  : '👩'
+         6  : '\u200D'
+         7  : '👨'
+         8  : '\u200D'
+         9  : '👩'
+         10 : '\u200D'
+         11 : '👧'
+         12 : '🎅'
+*/
+
+    -- Grapheme supplier providing the default index and the grapheme escaped string
+    .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1 : 'n'
+         2 : 'o'
+         3 : 'ë'
+         4 : 'l'
+         5 : '👩\u200D👨\u200D👩\u200D👧'
+         6 : '🎅'
+*/
+
+
+    -- Codepoint supplier providing the default index and the codepoint in U+ notation
+    .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
+/*
+        a RexxUnicodeCodepointSupplier
+         1  : 'U+006E'
+         2  : 'U+006F'
+         3  : 'U+00EB'
+         4  : 'U+006C'
+         5  : 'U+1F469'
+         6  : 'U+200D'
+         7  : 'U+1F468'
+         8  : 'U+200D'
+         9  : 'U+1F469'
+         10 : 'U+200D'
+         11 : 'U+1F467'
+         12 : 'U+1F385'
+*/
+
+    -- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation
+    .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1 : 'U+006E'
+         2 : 'U+006F'
+         3 : 'U+00EB'
+         4 : 'U+006C'
+         5 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
+         6 : 'U+1F385'
+*/
+
+    -- Invalid string - U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+    .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x)==
+/*
+        a RexxUnicodeCodepointSupplier
+         1 :  65533
+         2 :  65533
+         3 :  65533
+         4 :  65533
+         5 :  65533
+         6 :  65
+         7 :  65533
+         8 :  65533
+         9 :  66
+*/
+
+    -- Invalid string - U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+    -- "\" for Grapheme escaped strings
+    .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1 : '\x{F4}'
+         2 : '\x{91}'
+         3 : '\x{92}'
+         4 : '\x{93}'
+         5 : '\x{FF}'
+         6 : 'A'
+         7 : '\x{80}'
+         8 : '\x{BF}'
+         9 : 'B'
+*/
+
+    -- Invalid string - U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+    .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
+/*
+        a RexxUnicodeCodepointSupplier
+         1 :  65533
+         2 :  65533
+         3 :  65533
+         4 :  65533
+         5 :  65
+*/
+
+    -- Invalid string - U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+    -- "\" for Grapheme escaped strings
+    .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
+/*
+        a RexxUnicodeGraphemeSupplier
+         1 : '\x{E180}'
+         2 : '\x{E2}'
+         3 : '\x{F09192}'
+         4 : '\x{F1BF}'
+         5 : 'A'
+*/
+
+
+/*
+Add .RexxUnicode~unescape(string, buffer=.nil)
+    Escape characters are normally handled in string literals at parse time.
+    This method handles them at run time instead.
+
+    Supported escape characters:
+        \\                  "\"
+        \a                  "07"x   audible bell (BEL)
+        \b                  "08"x   backspace (BS)
+        \f                  "0C"x   form feed (FF)
+        \n                  "0A"x   linefeed (LF)
+        \r                  "0D"x   carriage return (CR)
+        \t                  "09"x   horizontal tab (HT)
+        \v                  "0B"x   vertical tab (VT)
+
+        \N{Unicode name}    Character name in the Unicode database
+        \u{X..X}            Unicode scalar value, 1-8 hex digits
+        \uXXXX              Unicode scalar value, exactly 4 hex digits
+        \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
+        \x{X..X}            Arbitrary number of hex digits
+        \xXX                1 byte, exactly 2 hex digits
+
+Add .RexxUnicode~escape(string, buffer=.nil)
+    Escapes characters that are not printable:
+    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \x{XX..XX}.
+    - Non-printable codepoints are represented using the standard escape sequences (\a, \b, \t, \n, \v, \f, \r) when applicable;
+      otherwise, Unicode escape notation (\uXXXX or \UXXXXXXXX) is used.
+
+
+Examples
+*/
+
+    .RexxUnicode~unescape("")=                      -- ''
+    .RexxUnicode~unescape("no escape character")=   -- 'no escape character'
+
+    .RexxUnicode~unescape("", .MutableBuffer~new)=                      -- M''
+    .RexxUnicode~unescape("no escape character", .MutableBuffer~new)=   -- M'no escape character'
+
+    .RexxUnicode~unescape("\")=         -- Invalid escape character '\' at position 1.
+    .RexxUnicode~unescape(" \ ")=       -- Invalid escape character '\ ' at position 2.
+    .RexxUnicode~unescape(" \  ")=      -- Invalid escape character '\ ' at position 2.
+
+    .RexxUnicode~unescape("\z")=        -- Invalid escape character '\z' at position 1.
+    .RexxUnicode~unescape(" \z ")=      -- Invalid escape character '\z' at position 2
+    .RexxUnicode~unescape(" \z  ")=     -- Invalid escape character '\z' at position 2..
+
+    .RexxUnicode~unescape("\\")=            -- '\'
+    .RexxUnicode~unescape("a\\")=           -- 'a\'
+    .RexxUnicode~unescape("\\b")=           -- '\b'
+    .RexxUnicode~unescape("a\\b")=          -- 'a\b'
+    .RexxUnicode~unescape("a\\b, a\\b")=    -- 'a\b, a\b'
+
+    .RexxUnicode~unescape("\\", .MutableBuffer~new)=            -- M'\'
+    .RexxUnicode~unescape("a\\", .MutableBuffer~new)=           -- M'a\'
+    .RexxUnicode~unescape("\\b", .MutableBuffer~new)=           -- M'\b'
+    .RexxUnicode~unescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+    .RexxUnicode~unescape("a\\b, a\\b", .MutableBuffer~new)=    -- M'a\b, a\b'
+
+    .RexxUnicode~unescape("\a")~c2x=    -- 07
+    .RexxUnicode~unescape("\b")~c2x=    -- 08
+    .RexxUnicode~unescape("\f")~c2x=    -- '0C'
+    .RexxUnicode~unescape("\n")~c2x=    -- '0A'
+    .RexxUnicode~unescape("\r")~c2x=    -- '0D'
+    .RexxUnicode~unescape("\t")~c2x=    -- 09
+    .RexxUnicode~unescape("\v")~c2x=    -- '0B'
+
+    .RexxUnicode~unescape("\N")=        -- Expected {a Unicode character name} after \N at position 1..
+    .RexxUnicode~unescape("\N{")=       -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~unescape("\N{}")=      -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~unescape("\N{a")=      -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~unescape("\N{a}")=     -- Name "a" at position 1 not found.
+
+    .RexxUnicode~unescape("\N{OCR DASH}")=                  -- '⑈'
+    .RexxUnicode~unescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
+    .RexxUnicode~unescape("\N{<control-0000>}")=            -- '[00]'
+    .RexxUnicode~unescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
+
+    .RexxUnicode~unescape("\u")=            -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~unescape("\u0")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~unescape("\u{")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~unescape("\u{}")=          -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~unescape("\u{1D4_D0}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+
+    .RexxUnicode~unescape("\U")=            -- Expected 8 hex digits after \U at position 1.
+    .RexxUnicode~unescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
+    .RexxUnicode~unescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
+
+    .RexxUnicode~unescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1..
+    .RexxUnicode~unescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+    .RexxUnicode~unescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+    .RexxUnicode~unescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+    .RexxUnicode~unescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+
+    .RexxUnicode~unescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+
+    .RexxUnicode~escape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+
+    .RexxUnicode~escape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+
+/*
+    A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
+    (<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
+    A codepoint supplier returns 3 codepoints for U+D800:
+        1 : 'U+FFFD'
+        2 : 'U+FFFD'
+        3 : 'U+FFFD'
+    Codepoint byte sequence as hexadecimal digits (option "h):
+        1 : '\x{ED}'
+            2 : '\x{A0}'
+        3 : '\x{80}'
+    Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
+*/
+    .RexxUnicode~escape(.RexxUnicode~unescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
+
+
+-- ===============================================================================
+-- 2026 June 13
+
+-- Search by name
+.RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅" 0xF09F8E85 U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+-- Search by codepoint
+.RexxUnicode~character("U+1F385")=              -- ("🎅" 0xF09F8E85 U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+.RexxUnicode~character("127877")=               -- ("🎅" 0xF09F8E85 U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+-- Search directly a character if it's made of one codepoint only
+.RexxUnicode~character("🎅")=                   -- ("🎅" 0xF09F8E85 U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+-- Properties of a character
+.RexxUnicode~character("🎅")~info=
+
+-- \N{bed} is different from \u{0bed}
+.RexxUnicode~character("bed")=                  -- ("🛏" 0xF09F9B8F U+1F6CF So Other_Symbol "BED")
+.RexxUnicode~character("U+0bed")=               -- ("௭" 0xE0AFAD U+0BED Nd Decimal_Number "TAMIL DIGIT SEVEN")
+
+
+.RexxUnicodeCodepointSupplier~new("100€")==     -- a RexxUnicodeCodepointSupplier
