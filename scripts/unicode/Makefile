@@ -48,5 +48,5 @@ $(scriptsFiles):
 	$(DIFF) $@-out-ref.txt $@-out.txt > nul
 
 clean:
-	@-for %%f in ($(testFiles)) do @del -f %%f-out.txt
+	@-for %%f in ($(ooRexxShellFiles)) do @del -f %%f-out.txt
 	@-for %%f in ($(scriptsFiles)) do @del -f %%f-out.txt
