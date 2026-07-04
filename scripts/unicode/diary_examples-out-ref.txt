@@ -5,6 +5,199 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 July 04
+
+/*
+[Unicode enums]
+
+Add refCode and refLabel to
+    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
+    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // integer 0..254, enum
+    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
+
+Add >code and >label to
+    .RexxUnicodeServices~codepointBoundClass(codepoint, >code, >reflabel)
+    .RexxUnicode~codepointBoundClass(codepoint, >code, >reflabel)
+
+    .RexxUnicodeServices~codepointCombiningClass(codepoint, >code, >reflabel)
+    .RexxUnicode~codepointCombiningClass(codepoint, >code, >reflabel)
+
+    .RexxUnicodeServices~codepointDecompositionType(codepoint, >code, >reflabel)
+    .RexxUnicode~codepointDecompositionType(codepoint, >code, >reflabel)
+
+Add scripts/unicode/enums_test.rexx to the regression tests.
+
+
+Examples
+*/
+
+ooRexx>     .RexxUnicode~codepointBoundClass("0000"~x2d, >code, >label)=; code=; label=     --  4; 'CN'; 'Control'
+ 4
+'CN'
+'Control'
+ooRexx>     .RexxUnicode~codepointBoundClass("00A9"~x2d, >code, >label)=; code=; label=     --  19; 'EP'; 'Extended_Pictographic'
+ 19
+'EP'
+'Extended_Pictographic'
+ooRexx>     .RexxUnicode~codepointBoundClass("0300"~x2d, >code, >label)=; code=; label=     --  5; 'EX'; 'Extend'
+ 5
+'EX'
+'Extend'
+ooRexx>     .RexxUnicode~codepointBoundClass("1F1E6"~x2d, >code, >label)=; code=; label=    --  11; 'RI'; 'Regional_Indicator'
+ 11
+'RI'
+'Regional_Indicator'
+ooRexx>     .RexxUnicode~codepointBoundClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  1; 'XX'; 'Other'
+ 1
+'XX'
+'Other'
+
+ooRexx>     .RexxUnicode~codepointCombiningClass("0000"~x2d, >code, >label)=; code=; label=     --  0; 'NR'; 'Not_Reordered'
+ 0
+'NR'
+'Not_Reordered'
+ooRexx>     .RexxUnicode~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
+ 216
+'ATAR'
+'Attached_Above_Right'
+ooRexx>     .RexxUnicode~codepointCombiningClass("0F74"~x2d, >code, >label)=; code=; label=     --  132; 'CCC132'; 'CCC132'
+ 132
+'CCC132'
+'CCC132'
+ooRexx>     .RexxUnicode~codepointCombiningClass("16FF0"~x2d, >code, >label)=; code=; label=    --  6; 'HANR'; 'Han_Reading'
+ 6
+'HANR'
+'Han_Reading'
+ooRexx>     .RexxUnicode~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
+ 0
+'NR'
+'Not_Reordered'
+
+ooRexx>     .RexxUnicode~codepointDecompositionType("0000"~x2d, >code, >label)=; code=; label=      --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+ 0
+'None'
+'Code point not explicitly listed for Decomposition_Type'
+ooRexx>     .RexxUnicode~codepointDecompositionType("00A8"~x2d, >code, >label)=; code=; label=      --  16; 'Compat'; 'Unspecified compatibility character'
+ 16
+'Compat'
+'Unspecified compatibility character'
+ooRexx>     .RexxUnicode~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
+ 15
+'Fraction'
+'Vulgar fraction form'
+ooRexx>     .RexxUnicode~codepointDecompositionType("2460"~x2d, >code, >label)=; code=; label=      --  7; 'Circle'; 'Encircled form'
+ 7
+'Circle'
+'Encircled form'
+ooRexx>     .RexxUnicode~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+ 0
+'None'
+'Code point not explicitly listed for Decomposition_Type'
+
+
+-- ===============================================================================
+-- 2026 June 30
+
+/*
+[Unicode]
+
+Generalize support for -1 as a codepoint.
+This special codepoint -1 is returned in case of error.
+
+Examples
+*/
+
+ooRexx>     -- The special codepoint -1 is encoded as the empty string
+ooRexx>     .RexxUnicode~codepointUTF8Encoding(-1)=             -- ''
+''
+
+ooRexx>     -- The special codepoint -1 is represented using \UXXXXXXXX, even though the resulting value is not a valid Unicode scalar value
+ooRexx>     .RexxUnicode~codepointUnicodeEscapeNotation(-1)=    -- '\UFFFFFFFF'
+'\UFFFFFFFF'
+
+ooRexx>     -- The special codepoint -1 is not printable
+ooRexx>     .RexxUnicode~codepointIsPrintable(-1)=              -- 0
+ 0
+
+ooRexx>     -- Since the special codepoint -1 is not printable, it is represented using Unicode escape notation
+ooRexx>     .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+'\UFFFFFFFF'
+
+ooRexx>     -- The special codepoint -1 has no name
+ooRexx>     .RexxUnicode~codepointCharName(-1)=                 -- ''
+''
+
+ooRexx>     -- The special codepoint -1 has no extended name
+ooRexx>     .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
+''
+
+ooRexx>     -- The special codepoint -1 has no name alias
+ooRexx>     .RexxUnicode~codepointCharNameAlias(-1)=            -- ''
+''
+
+ooRexx>     -- Only -1 is supported as a special codepoint
+ooRexx>     -- All other negative codepoints are invalid
+ooRexx>     .RexxUnicode~codepoint(-1)=                         -- -1
+-1
+ooRexx>     .RexxUnicode~codepoint(-2)=                         -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+
+ooRexx>     -- The special codepoint -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+ooRexx>     .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
+'U+FFFFFF'
+
+ooRexx>     -- The special codepoint -1 can be represented using a RexxUnicodeCharacter
+ooRexx>     .RexxUnicode~character(-1)=                         -- (An invalid character)
+(An invalid character)
+ooRexx>     .RexxUnicode~character(-1)~class=                   -- (The RexxUnicodeCharacter class)
+(The RexxUnicodeCharacter class)
+ooRexx>     .RexxUnicode~character(-1)~info=
+a StringTable (19 items)
+'bidiClass'       : '?'
+'bidiClassName'   : '?'
+'bidiMirrored'    :  0
+'category'        : 'Cn'
+'categoryName'    : 'Unassigned'
+'charWidth'       : -1
+'codepoint'       : 'U+FFFFFF'
+'combiningClass'  : -1
+'controlBoundary' :  0
+'extendedName'    : ''
+'ignorable'       :  1
+'isLower'         :  0
+'isUpper'         :  0
+'name'            : ''
+'nameAlias'       : ''
+'toLower'         : 'U+FFFFFF'
+'toTitle'         : 'U+FFFFFF'
+'toUpper'         : 'U+FFFFFF'
+'UTF8'            : ''
+/*
+        a StringTable (19 items)
+        'bidiClass'       : '?'
+        'bidiClassName'   : '?'
+        'bidiMirrored'    :  0
+        'category'        : 'Cn'
+        'categoryName'    : 'Unassigned'
+        'charWidth'       : -1
+        'codepoint'       : 'U+FFFFFF'
+        'combiningClass'  : -1
+        'controlBoundary' :  0
+        'extendedName'    : ''
+        'ignorable'       :  1
+        'isLower'         :  0
+        'isUpper'         :  0
+        'name'            : ''
+        'nameAlias'       : ''
+        'toLower'         : 'U+FFFFFF'
+        'toTitle'         : 'U+FFFFFF'
+        'toUpper'         : 'U+FFFFFF'
+        'UTF8'            : ''
+*/
+
+
+-- ===============================================================================
 -- 2026 June 29
 
 /*
@@ -211,9 +404,8 @@ Examples
 ooRexx>     -- Search by alias
 ooRexx>     .RexxUnicode~character("MICR ON US SYMBOL")=        -- ("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
 ("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
-ooRexx>     .RexxUnicode~character(" MICR ON US SYMBOL")=       -- TODO support loose alias: Name " MICR ON US SYMBOL" not found.
-Name " MICR ON US SYMBOL" not found.
-Error code= 98.900
+ooRexx>     .RexxUnicode~character(" MICR ON US SYMBOL")=       -- ("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
+("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
 
 ooRexx>     -- Search control character by extended name
 ooRexx>     .RexxUnicode~character("<control-0000>")=           -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
@@ -317,9 +509,8 @@ ooRexx>     .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
 ooRexx>     .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 Error code= 88.900
-ooRexx>     .RexxUnicode~D2U(-1)=                               -- Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point -1; allowed range is 0 to 1114111 (U+10FFFF).
-Error code= 88.900
+ooRexx>     .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF' (was Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).)
+'U+FFFFFF'
 
 ooRexx>     .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
 'Noël 🎅'
@@ -384,7 +575,7 @@ ooRexx>     .RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must b
 Name must be an ASCII string; found "Père Noël".
 Error code= 22.900
 ooRexx>     .RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
-Name must be an ASCII string; found "Père Noël".
+[ICU4ooRexx] Name must be an ASCII string; found "Père Noël".
 Error code= 93.900
 ooRexx>     .RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
 Name must be an ASCII string; found "Is Père Noël".
@@ -910,20 +1101,20 @@ ooRexx>     .RexxUnicode~unescape("\U0000_0000")=   -- Expected 8 hex digits aft
 Expected 8 hex digits after \U at position 1.
 Error code= 23.900
 
-ooRexx>     .RexxUnicode~unescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1..
-Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+ooRexx>     .RexxUnicode~unescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..
+Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Error code= 23.900
-ooRexx>     .RexxUnicode~unescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+ooRexx>     .RexxUnicode~unescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Error code= 23.900
-ooRexx>     .RexxUnicode~unescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+ooRexx>     .RexxUnicode~unescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Error code= 23.900
-ooRexx>     .RexxUnicode~unescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+ooRexx>     .RexxUnicode~unescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Error code= 23.900
-ooRexx>     .RexxUnicode~unescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits or whitespace} after \x at position 1.
+ooRexx>     .RexxUnicode~unescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 
 ooRexx>     .RexxUnicode~unescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
@@ -944,7 +1135,7 @@ ooRexx>     .RexxUnicode~escape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
         3 : 'U+FFFD'
     Codepoint byte sequence as hexadecimal digits (option "h):
         1 : '\x{ED}'
-            2 : '\x{A0}'
+        2 : '\x{A0}'
         3 : '\x{80}'
     Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
 */
@@ -973,7 +1164,7 @@ ooRexx> .RexxUnicode~character("🎅")=                   -- ("🎅" 0xF09F8E85 
 ooRexx> .RexxUnicode~character("🎅")~info=
 a StringTable (19 items)
 'bidiClass'       : 'ON'
-'bidiClassName'   : 'Other Neutrals'
+'bidiClassName'   : 'Other_Neutral'
 'bidiMirrored'    :  0
 'category'        : 'So'
 'categoryName'    : 'Other_Symbol'

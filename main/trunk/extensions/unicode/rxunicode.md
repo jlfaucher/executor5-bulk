@@ -11,8 +11,17 @@ library embedded in ooRexx.
 - The `RexxUnicodeCodepointSupplier` class.
 
 > [!CAUTION]
-> Testing these classes from ooRexxShell with TUTOR enabled showed that a
+> Testing these classes from `ooRexxShell` with `TUTOR` enabled showed that a
 > defensive barrier is needed.
+>
+> In case of errors like
+>
+> - `Argument <name> class: expected String, found Text.     -- "Any string"`
+> - `Argument <name> class: expected String, found Bytes.    -- "E0 80 80"x`
+>
+> use `tutor off` for a permanent workaround  
+> or use `~string` for a tempoary workaround.
+>
 > The `requestBaseString` method ensures that any string passed as an argument
 > is a `.String` instance, not an instance of a subclass of `.String`.
 > No attempt is made to obtain a string from these arguments.
@@ -20,7 +29,7 @@ library embedded in ooRexx.
 > with byte strings and to allow users to adapt their code accordingly
 > (typically by requesting a `.String` from their TUTOR objects).
 > 
-> See the examples at the end of rxunicode.cls showing the internal errors that
+> See the examples at the end of `rxunicode.cls` showing the internal errors that
 > can occur when mixing graphemes and bytes.
 
 **Note on terminology:** This documentation and the code comments use the term "codepoint"

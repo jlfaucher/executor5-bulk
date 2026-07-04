@@ -1741,13 +1741,13 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
         AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 1);
         AddClassUnguardedMethod("CodepointCategory", RexxUnicodeServicesClass::codepointCategory, 3);
-        AddClassUnguardedMethod("CodepointCombiningClass", RexxUnicodeServicesClass::codepointCombiningClass, 1);
+        AddClassUnguardedMethod("CodepointCombiningClass", RexxUnicodeServicesClass::codepointCombiningClass, 3);
         AddClassUnguardedMethod("CodepointBidiClass", RexxUnicodeServicesClass::codepointBidiClass, 3);
         AddClassUnguardedMethod("CodepointBidiMirrored", RexxUnicodeServicesClass::codepointBidiMirrored, 1);
-        AddClassUnguardedMethod("CodepointDecompositionType", RexxUnicodeServicesClass::codepointDecompositionType, 1);
+        AddClassUnguardedMethod("CodepointDecompositionType", RexxUnicodeServicesClass::codepointDecompositionType, 3);
         AddClassUnguardedMethod("CodepointIgnorable", RexxUnicodeServicesClass::codepointIgnorable, 1);
         AddClassUnguardedMethod("CodepointControlBoundary", RexxUnicodeServicesClass::codepointControlBoundary, 1);
-        AddClassUnguardedMethod("CodepointBoundClass", RexxUnicodeServicesClass::codepointBoundClass, 1);
+        AddClassUnguardedMethod("CodepointBoundClass", RexxUnicodeServicesClass::codepointBoundClass, 3);
         AddClassUnguardedMethod("CodepointCharWidth", RexxUnicodeServicesClass::codepointCharWidth, 1);
         AddClassUnguardedMethod("CodepointToLower", RexxUnicodeServicesClass::codepointToLower, 1);
         AddClassUnguardedMethod("CodepointToUpper", RexxUnicodeServicesClass::codepointToUpper, 1);

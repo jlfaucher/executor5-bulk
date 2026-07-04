@@ -199,29 +199,34 @@ Additional codepoint services
 -- Returns the UTF-8 encoding of this codepoint.
 ::method codepointUTF8Encoding class
     use strict arg codepoint, buffer=.nil
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     returnBuffer = .nil <> buffer
     if .nil == buffer then buffer = .MutableBuffer~new
-    self~utf8EncodeCodepoint(codepoint, buffer)
+    if codepoint < 0 then nop -- the UTF-8 encoding is ""
+    else self~utf8EncodeCodepoint(codepoint, buffer)
     if returnBuffer then return buffer
     return buffer~string
 
 
 ::method codepointUnicodeEscapeNotation class
     use strict arg codepoint, buffer=.nil
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     if .nil == buffer then do
+        if codepoint < 0 then return "\UFFFFFFFF"
         if codepoint <= 65535 then return "\u" || codepoint~d2x~right(4, "0")
         return "\U" || codepoint~d2x~right(8, "0")
     end
-    if codepoint <= 65535 then buffer~append("\u", codepoint~d2x~right(4, "0"))
+    if codepoint < 0 then buffer~append("\UFFFFFFFF")
+    else if codepoint <= 65535 then buffer~append("\u", codepoint~d2x~right(4, "0"))
     else buffer~append("\U", codepoint~d2x~right(8, "0"))
     return buffer
 
 
 ::method codepointIsPrintable class
     use strict arg codepoint
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
+
+    if codepoint < 0 then return .false
 
     /*
     Non-printable categories - TODO is it correct?
@@ -245,7 +250,7 @@ non-printable codepoints are returned as a Unicode escape notation.
 */
 ::method codepointPrintableString class
     use strict arg codepoint, buffer=.nil
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     returnBuffer = .nil <> buffer
     if .nil == buffer then buffer = .MutableBuffer~new
     if self~codepointIsPrintable(codepoint) then do
@@ -262,7 +267,8 @@ non-printable codepoints are returned as a Unicode escape notation.
 -- Unicode standard name, can be ""
 ::method codepointCharName class
     use strict arg codepoint, raiseError=.false
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
+    if codepoint < 0 then return ""
     name = ""
     if self~assertICU4ooRexxIsRegistered(raiseError) then do
         name = .ICU4ooRexx~u_charName(codepoint)
@@ -274,7 +280,8 @@ non-printable codepoints are returned as a Unicode escape notation.
 -- An extended name is either the standard name if defined, or a codepoint label algorithmically generated.
 ::method codepointExtendedCharName class
     use strict arg codepoint, raiseError=.false
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
+    if codepoint < 0 then return ""
     name = ""
     if self~assertICU4ooRexxIsRegistered(raiseError) then do
         name = .ICU4ooRexx~h_extendedCharName(codepoint)
@@ -285,7 +292,8 @@ non-printable codepoints are returned as a Unicode escape notation.
 -- Unicode name alias, can be "".
 ::method codepointCharNameAlias class
     use strict arg codepoint, raiseError=.false
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
+    if codepoint < 0 then return ""
     name = ""
     if self~assertICU4ooRexxIsRegistered(raiseError) then do
         name = .ICU4ooRexx~h_charNameAlias(codepoint)
@@ -305,6 +313,12 @@ Codepoint from identifier
 
     codepoint = -1
     if self~ICU4ooRexxIsRegistered, self~stringIsASCII(name) then do
+        -- Keep this cascade of search, even if h_charFromLooseName is supposed to cover all possible cases.
+        -- Counterexamples where h_charFromLooseName fails to find the codepoint
+        -- but h_charFromExtendedName succeeds:
+        --   say .RexxUnicode~character("<control-000>")    -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+        --   say .RexxUnicode~character("<control-00>")     -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
+        --   say .RexxUnicode~character("<control-0>")      -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
         codepoint = .ICU4ooRexx~h_charFromExtendedName(name) -- The extended name space includes the standard name space
         if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromNameAlias(name)
         if codepoint == -1 then codepoint = .ICU4ooRexx~h_charFromLooseName(name)
@@ -327,14 +341,14 @@ A codepoint identifier may be:
     -- is identifier a decimal codepoint ?
     if datatype(identifier, "W") then do
         codepoint = identifier
-        self~checkCodepoint(codepoint)
+        self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
         return codepoint
     end
 
     -- is identifier a U+ codepoint ?
     if identifier~caselessStartsWith("U+") then do
         codepoint = self~U2D(identifier, /*start*/ 1, /*raiseError*/ .true)
-        self~checkCodepoint(codepoint)
+        self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
         return codepoint
     end
 
@@ -342,7 +356,7 @@ A codepoint identifier may be:
     codepoint = self~codepointFromName(identifier)
     if codepoint \== -1 then return codepoint
 
-    -- fallback: if the identifier is made of just one codepoint then search this codepoint
+    -- fallback: if the identifier is made of just one codepoint then return this codepoint
     indexer = .RexxUnicodeStringIndexer~new(identifier)
     if indexer~graphemeIndexes~items == 1, indexer~codepointIndexes~items == 1 then return indexer~codepointAtIndexC(1)
 
@@ -411,7 +425,7 @@ hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102
 */
 ::method D2U class
     use strict arg codepoint, buffer=.nil
-    self~checkCodepoint(codepoint)
+    self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     if .nil == buffer then do
         if codepoint < 0 then return "U+FFFFFF" -- in case of error (invalid)
         if codepoint < 65536 then return "U+" || codepoint~d2x(4)
@@ -782,7 +796,7 @@ How other languages are supporting escape characters for Unicode:
 
     expected_8_hexdigits:               raise syntax 23.900 array("Expected 8 hex digits after \"character "at position" slashPos)
     expected_4_or_1_8_hexdigits:        raise syntax 23.900 array("Expected either 4 hex digits or {1..8 hex digits} after \"character "at position" slashPos)
-    expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits or whitespace} after \"character "at position" slashPos)
+    expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \"character "at position" slashPos)
 
     name_encoding_error:                raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"name"} at position" slashPos)
     encoding_1_8_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"hexdigits"} at position" slashPos)
@@ -1287,7 +1301,7 @@ otherwise use the extended name (never empty)
 ::method category
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return "Cn"
     .RexxUnicode~codepointCategory(codepoint, >refCode)
     return refCode
 
@@ -1296,7 +1310,7 @@ otherwise use the extended name (never empty)
 ::method categoryName
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return ""
+    if codepoint == -1 then return "Unassigned"
     .RexxUnicode~codepointCategory(codepoint, , >refLabel)
     return refLabel
 
@@ -1313,7 +1327,7 @@ otherwise use the extended name (never empty)
 ::method bidiClass
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return "?"
     .RexxUnicode~codepointBidiClass(codepoint, >refCode)
     return refCode
 
@@ -1322,7 +1336,7 @@ otherwise use the extended name (never empty)
 ::method bidiClassName
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return ""
+    if codepoint == -1 then return "?"
     .RexxUnicode~codepointBidiClass(codepoint, , >refLabel)
     return refLabel
 
@@ -1339,7 +1353,7 @@ otherwise use the extended name (never empty)
 ::method decompositionType
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return "?"
     -- TODO enum code
     return .RexxUnicode~codepointDecompositionType(codepoint)
 
@@ -1348,7 +1362,7 @@ otherwise use the extended name (never empty)
 ::method decompositionTypeName
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return ""
+    if codepoint == -1 then return "?"
     -- TODO enum label
     return "?"
 
@@ -1382,7 +1396,7 @@ otherwise use the extended name (never empty)
 ::method boundClass
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return "?"
     -- TODO enum code
     return .RexxUnicode~codepointBoundClass(codepoint)
 
@@ -1391,7 +1405,7 @@ otherwise use the extended name (never empty)
 ::method boundClassName
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return ""
+    if codepoint == -1 then return "?"
     -- TODO enum label
     return "?"
 
@@ -1613,8 +1627,11 @@ Other helpers
     use strict arg hexdigits
     -- The 0xNNNN notation is easier to read,
     -- but the \x{NNNN} can be unescaped and supports an arbitrary number of N.
+    if hexdigits == "" then return ""
     return "\x{" || hexdigits || "}"
-    return "0x" || hexdigits -- CAUTION: this notation is not adapted to hexdigits containing spaces!
+
+    -- CAUTION: this notation is not adapted to hexdigits containing spaces!
+    return "0x" || hexdigits
 
     -- Don't use the Rexx "XXXX"x notation because less readable when embedded in a string
     return quoted(hexdigits) || "x"

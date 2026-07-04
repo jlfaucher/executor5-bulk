@@ -519,6 +519,19 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
 }
 
 
+/*
+utf8proc property field not exposed, internal use:
+    utf8proc_uint16_t decomp_seqindex;
+    utf8proc_uint16_t casefold_seqindex;
+    utf8proc_uint16_t uppercase_seqindex;
+    utf8proc_uint16_t lowercase_seqindex;
+    utf8proc_uint16_t titlecase_seqindex;
+    utf8proc_uint16_t comb_index;
+    unsigned bidi_mirrored:1;
+    unsigned comp_exclusion:1;
+*/
+
+
 // https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142
 const char *General_Category[] =
 {
@@ -587,41 +600,352 @@ RexxInteger *RexxUnicodeServicesClass::codepointCategory(RexxInteger *rexxCodepo
 }
 
 
-RexxInteger *RexxUnicodeServicesClass::codepointCombiningClass(RexxInteger *rexxCodepoint)
+// https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
+//     Ccc or CCC?
+//     For use in regular expression matching, fixed position classes (ccc=10 through ccc=199)
+//     which actually occur in the Unicode Character Database for any version are given predictable aliases
+//     of the form "Ccc10", "Ccc11", and so forth.
+//     The complete list of such aliases which are actually defined can be found in PropertyValueAliases.txt.
+//
+// PropertyValueAliases.txt
+//   CCC
+//
+// Decision: CCC in the table below.
+const char *Canonical_Combining_Class[] =
+{
+    // first column (numeric value) from PropertyValueAliases.txt
+    // second column (short name) from PropertyValueAliases.txt
+    // third column (long name) from PropertyValueAliases.txt
+    // fourth column (description) from https://www.unicode.org/reports/tr44/#CCC_Values_Table
+    /* 0 */   "NR",     "Not_Reordered",         // Spacing and enclosing marks; also many vowel and consonant signs, even if nonspacing
+    /* 1 */   "OV",     "Overlay",               // Marks which overlay a base letter or symbol
+    /* 2 */   "",       "",
+    /* 3 */   "",       "",
+    /* 4 */   "",       "",
+    /* 5 */   "",       "",
+    /* 6 */   "HANR",   "Han_Reading",           // Diacritic reading marks for CJK unified ideographs
+    /* 7 */   "NK",     "Nukta",                 // Diacritic nukta marks in Brahmi-derived scripts
+    /* 8 */   "KV",     "Kana_Voicing",          // Hiragana/Katakana voicing marks
+    /* 9 */   "VR",     "Virama",                // Viramas
+    /* 10 */  "CCC10",  "CCC10",                 // Start of fixed position classes
+    /* 11 */  "CCC11",  "CCC11",
+    /* 12 */  "CCC12",  "CCC12",
+    /* 13 */  "CCC13",  "CCC13",
+    /* 14 */  "CCC14",  "CCC14",
+    /* 15 */  "CCC15",  "CCC15",
+    /* 16 */  "CCC16",  "CCC16",
+    /* 17 */  "CCC17",  "CCC17",
+    /* 18 */  "CCC18",  "CCC18",
+    /* 19 */  "CCC19",  "CCC19",
+    /* 20 */  "CCC20",  "CCC20",
+    /* 21 */  "CCC21",  "CCC21",
+    /* 22 */  "CCC22",  "CCC22",
+    /* 23 */  "CCC23",  "CCC23",
+    /* 24 */  "CCC24",  "CCC24",
+    /* 25 */  "CCC25",  "CCC25",
+    /* 26 */  "CCC26",  "CCC26",
+    /* 27 */  "CCC27",  "CCC27",
+    /* 28 */  "CCC28",  "CCC28",
+    /* 29 */  "CCC29",  "CCC29",
+    /* 30 */  "CCC30",  "CCC30",
+    /* 31 */  "CCC31",  "CCC31",
+    /* 32 */  "CCC32",  "CCC32",
+    /* 33 */  "CCC33",  "CCC33",
+    /* 34 */  "CCC34",  "CCC34",
+    /* 35 */  "CCC35",  "CCC35",
+    /* 36 */  "CCC36",  "CCC36",
+    /* 37 */  "CCC37",  "CCC37",
+    /* 38 */  "CCC38",  "CCC38",
+    /* 39 */  "CCC39",  "CCC39",
+    /* 40 */  "CCC40",  "CCC40",
+    /* 41 */  "CCC41",  "CCC41",
+    /* 42 */  "CCC42",  "CCC42",
+    /* 43 */  "CCC43",  "CCC43",
+    /* 44 */  "CCC44",  "CCC44",
+    /* 45 */  "CCC45",  "CCC45",
+    /* 46 */  "CCC46",  "CCC46",
+    /* 47 */  "CCC47",  "CCC47",
+    /* 48 */  "CCC48",  "CCC48",
+    /* 49 */  "CCC49",  "CCC49",
+    /* 50 */  "CCC50",  "CCC50",
+    /* 51 */  "CCC51",  "CCC51",
+    /* 52 */  "CCC52",  "CCC52",
+    /* 53 */  "CCC53",  "CCC53",
+    /* 54 */  "CCC54",  "CCC54",
+    /* 55 */  "CCC55",  "CCC55",
+    /* 56 */  "CCC56",  "CCC56",
+    /* 57 */  "CCC57",  "CCC57",
+    /* 58 */  "CCC58",  "CCC58",
+    /* 59 */  "CCC59",  "CCC59",
+    /* 60 */  "CCC60",  "CCC60",
+    /* 61 */  "CCC61",  "CCC61",
+    /* 62 */  "CCC62",  "CCC62",
+    /* 63 */  "CCC63",  "CCC63",
+    /* 64 */  "CCC64",  "CCC64",
+    /* 65 */  "CCC65",  "CCC65",
+    /* 66 */  "CCC66",  "CCC66",
+    /* 67 */  "CCC67",  "CCC67",
+    /* 68 */  "CCC68",  "CCC68",
+    /* 69 */  "CCC69",  "CCC69",
+    /* 70 */  "CCC70",  "CCC70",
+    /* 71 */  "CCC71",  "CCC71",
+    /* 72 */  "CCC72",  "CCC72",
+    /* 73 */  "CCC73",  "CCC73",
+    /* 74 */  "CCC74",  "CCC74",
+    /* 75 */  "CCC75",  "CCC75",
+    /* 76 */  "CCC76",  "CCC76",
+    /* 77 */  "CCC77",  "CCC77",
+    /* 78 */  "CCC78",  "CCC78",
+    /* 79 */  "CCC79",  "CCC79",
+    /* 80 */  "CCC80",  "CCC80",
+    /* 81 */  "CCC81",  "CCC81",
+    /* 82 */  "CCC82",  "CCC82",
+    /* 83 */  "CCC83",  "CCC83",
+    /* 84 */  "CCC84",  "CCC84",
+    /* 85 */  "CCC85",  "CCC85",
+    /* 86 */  "CCC86",  "CCC86",
+    /* 87 */  "CCC87",  "CCC87",
+    /* 88 */  "CCC88",  "CCC88",
+    /* 89 */  "CCC89",  "CCC89",
+    /* 90 */  "CCC90",  "CCC90",
+    /* 91 */  "CCC91",  "CCC91",
+    /* 92 */  "CCC92",  "CCC92",
+    /* 93 */  "CCC93",  "CCC93",
+    /* 94 */  "CCC94",  "CCC94",
+    /* 95 */  "CCC95",  "CCC95",
+    /* 96 */  "CCC96",  "CCC96",
+    /* 97 */  "CCC97",  "CCC97",
+    /* 98 */  "CCC98",  "CCC98",
+    /* 99 */  "CCC99",  "CCC99",
+    /* 100 */ "CCC100", "CCC100",
+    /* 101 */ "CCC101", "CCC101",
+    /* 102 */ "CCC102", "CCC102",
+    /* 103 */ "CCC103", "CCC103",
+    /* 104 */ "CCC104", "CCC104",
+    /* 105 */ "CCC105", "CCC105",
+    /* 106 */ "CCC106", "CCC106",
+    /* 107 */ "CCC107", "CCC107",
+    /* 108 */ "CCC108", "CCC108",
+    /* 109 */ "CCC109", "CCC109",
+    /* 110 */ "CCC110", "CCC110",
+    /* 111 */ "CCC111", "CCC111",
+    /* 112 */ "CCC112", "CCC112",
+    /* 113 */ "CCC113", "CCC113",
+    /* 114 */ "CCC114", "CCC114",
+    /* 115 */ "CCC115", "CCC115",
+    /* 116 */ "CCC116", "CCC116",
+    /* 117 */ "CCC117", "CCC117",
+    /* 118 */ "CCC118", "CCC118",
+    /* 119 */ "CCC119", "CCC119",
+    /* 120 */ "CCC120", "CCC120",
+    /* 121 */ "CCC121", "CCC121",
+    /* 122 */ "CCC122", "CCC122",
+    /* 123 */ "CCC123", "CCC123",
+    /* 124 */ "CCC124", "CCC124",
+    /* 125 */ "CCC125", "CCC125",
+    /* 126 */ "CCC126", "CCC126",
+    /* 127 */ "CCC127", "CCC127",
+    /* 128 */ "CCC128", "CCC128",
+    /* 129 */ "CCC129", "CCC129",
+    /* 130 */ "CCC130", "CCC130",
+    /* 131 */ "CCC131", "CCC131",
+    /* 132 */ "CCC132", "CCC132",
+    /* 133 */ "CCC133", "CCC133",
+    /* 134 */ "CCC134", "CCC134",
+    /* 135 */ "CCC135", "CCC135",
+    /* 136 */ "CCC136", "CCC136",
+    /* 137 */ "CCC137", "CCC137",
+    /* 138 */ "CCC138", "CCC138",
+    /* 139 */ "CCC139", "CCC139",
+    /* 140 */ "CCC140", "CCC140",
+    /* 141 */ "CCC141", "CCC141",
+    /* 142 */ "CCC142", "CCC142",
+    /* 143 */ "CCC143", "CCC143",
+    /* 144 */ "CCC144", "CCC144",
+    /* 145 */ "CCC145", "CCC145",
+    /* 146 */ "CCC146", "CCC146",
+    /* 147 */ "CCC147", "CCC147",
+    /* 148 */ "CCC148", "CCC148",
+    /* 149 */ "CCC149", "CCC149",
+    /* 150 */ "CCC150", "CCC150",
+    /* 151 */ "CCC151", "CCC151",
+    /* 152 */ "CCC152", "CCC152",
+    /* 153 */ "CCC153", "CCC153",
+    /* 154 */ "CCC154", "CCC154",
+    /* 155 */ "CCC155", "CCC155",
+    /* 156 */ "CCC156", "CCC156",
+    /* 157 */ "CCC157", "CCC157",
+    /* 158 */ "CCC158", "CCC158",
+    /* 159 */ "CCC159", "CCC159",
+    /* 160 */ "CCC160", "CCC160",
+    /* 161 */ "CCC161", "CCC161",
+    /* 162 */ "CCC162", "CCC162",
+    /* 163 */ "CCC163", "CCC163",
+    /* 164 */ "CCC164", "CCC164",
+    /* 165 */ "CCC165", "CCC165",
+    /* 166 */ "CCC166", "CCC166",
+    /* 167 */ "CCC167", "CCC167",
+    /* 168 */ "CCC168", "CCC168",
+    /* 169 */ "CCC169", "CCC169",
+    /* 170 */ "CCC170", "CCC170",
+    /* 171 */ "CCC171", "CCC171",
+    /* 172 */ "CCC172", "CCC172",
+    /* 173 */ "CCC173", "CCC173",
+    /* 174 */ "CCC174", "CCC174",
+    /* 175 */ "CCC175", "CCC175",
+    /* 176 */ "CCC176", "CCC176",
+    /* 177 */ "CCC177", "CCC177",
+    /* 178 */ "CCC178", "CCC178",
+    /* 179 */ "CCC179", "CCC179",
+    /* 180 */ "CCC180", "CCC180",
+    /* 181 */ "CCC181", "CCC181",
+    /* 182 */ "CCC182", "CCC182",
+    /* 183 */ "CCC183", "CCC183",
+    /* 184 */ "CCC184", "CCC184",
+    /* 185 */ "CCC185", "CCC185",
+    /* 186 */ "CCC186", "CCC186",
+    /* 187 */ "CCC187", "CCC187",
+    /* 188 */ "CCC188", "CCC188",
+    /* 189 */ "CCC189", "CCC189",
+    /* 190 */ "CCC190", "CCC190",
+    /* 191 */ "CCC191", "CCC191",
+    /* 192 */ "CCC192", "CCC192",
+    /* 193 */ "CCC193", "CCC193",
+    /* 194 */ "CCC194", "CCC194",
+    /* 195 */ "CCC195", "CCC195",
+    /* 196 */ "CCC196", "CCC196",
+    /* 197 */ "CCC197", "CCC197",
+    /* 198 */ "CCC198", "CCC198",
+    /* 199 */ "CCC199", "CCC199",                // End of fixed position classes
+    /* 200 */ "ATBL",   "Attached_Below_Left",   // Marks attached at the bottom left
+    /* 201 */ "",       "",
+    /* 202 */ "ATB",    "Attached_Below",        // Marks attached directly below
+    /* 203 */ "",       "",
+    /* 204 */ "",       "",                      // Marks attached at the bottom right
+    /* 205 */ "",       "",
+    /* 206 */ "",       "",
+    /* 207 */ "",       "",
+    /* 208 */ "",       "",                      // Marks attached to the left
+    /* 209 */ "",       "",
+    /* 210 */ "",       "",                      // Marks attached to the right
+    /* 211 */ "",       "",
+    /* 212 */ "",       "",                      // Marks attached at the top left
+    /* 213 */ "",       "",
+    /* 214 */ "ATA",    "Attached_Above",        // Marks attached directly above
+    /* 215 */ "",       "",
+    /* 216 */ "ATAR",   "Attached_Above_Right",  // Marks attached at the top right
+    /* 217 */ "",       "",
+    /* 218 */ "BL",     "Below_Left",            // Distinct marks at the bottom left
+    /* 219 */ "",       "",
+    /* 220 */ "B",      "Below",                 // Distinct marks directly below
+    /* 221 */ "",       "",
+    /* 222 */ "BR",     "Below_Right",           // Distinct marks at the bottom right
+    /* 223 */ "",       "",
+    /* 224 */ "L",      "Left",                  // Distinct marks to the left
+    /* 225 */ "",       "",
+    /* 226 */ "R",      "Right",                 // Distinct marks to the right
+    /* 227 */ "",       "",
+    /* 228 */ "AL",     "Above_Left",            // Distinct marks at the top left
+    /* 229 */ "",       "",
+    /* 230 */ "A",      "Above",                 // Distinct marks directly above
+    /* 231 */ "",       "",
+    /* 232 */ "AR",     "Above_Right",           // Distinct marks at the top right
+    /* 233 */ "DB",     "Double_Below",          // Distinct marks subtending two bases
+    /* 234 */ "DA",     "Double_Above",          // Distinct marks extending above two bases
+    /* 235 */ "",       "",
+    /* 236 */ "",       "",
+    /* 237 */ "",       "",
+    /* 238 */ "",       "",
+    /* 239 */ "",       "",
+    /* 240 */ "IS",     "Iota_Subscript",        // Greek iota subscript only
+    /* 241 */ "",       "",
+    /* 242 */ "",       "",
+    /* 243 */ "",       "",
+    /* 244 */ "",       "",
+    /* 245 */ "",       "",
+    /* 246 */ "",       "",
+    /* 247 */ "",       "",
+    /* 248 */ "",       "",
+    /* 249 */ "",       "",
+    /* 250 */ "",       "",
+    /* 251 */ "",       "",
+    /* 252 */ "",       "",
+    /* 253 */ "",       "",
+    /* 254 */ "",       ""
+};
+
+RexxInteger *RexxUnicodeServicesClass::codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
     utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
+    if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
+
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
-    return new_integer(property->combining_class); // see utf8proc_category_t
+    utf8proc_propval_t combining_class = property->combining_class; // integer 0..254
+    utf8proc_propval_t index = combining_class;
+
+    // Check array out-of-bounds
+    int count = sizeof(Canonical_Combining_Class) / sizeof(Canonical_Combining_Class[0]);
+    bool rangeOk = index >= 0 && index < count/2;
+
+    if (refCode != OREF_NULL)
+    {
+        const char *strCode = rangeOk ? Canonical_Combining_Class[2 * index] : "?";
+        RexxString *rexxCode = new_string(strCode); // Protected<RexxString> not needed
+        refCode->setValue(rexxCode);
+    }
+
+    if (refLabel != OREF_NULL)
+    {
+        const char *strLabel = rangeOk ? Canonical_Combining_Class[1 + 2 * index] : "?";
+        RexxString *rexxLabel = new_string(strLabel); // Protected<RexxString> not needed
+        refLabel->setValue(rexxLabel);
+    }
+
+    return new_integer(combining_class); // see utf8proc_category_t
 }
 
 
 // https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types
+// DerivedBidiClass.txt
+//   #  All code points not explicitly listed for Bidi_Class
+//   #  have the value Left_To_Right (L).
+//   Not clear! utf8proc returns 0
+//     # 0590..05FF Hebrew
+//     # @missing: 0590..05FF; Right_To_Left
+//     ...
+//     # @missing: 1EF00..1EFFF; Right_To_Left
+// PropertyValueAliases.txt
+//   Define the short names and long names
 const char *Bidirectional_Character_Types[]=
 {
-    "L", "Left-to-Right",
-    "LRE", "Left-to-Right Embedding",
-    "LRO", "Left-to-Right Override",
-    "R", "Right-to-Left",
-    "AL", "Right-to-Left Arabic",
-    "RLE", "Right-to-Left Embedding",
-    "RLO", "Right-to-Left Override",
-    "PDF", "Pop Directional Format",
-    "EN", "European Number",
-    "ES", "European Number Separator",
-    "ET", "European Number Terminator",
-    "AN", "Arabic Number",
-    "CS", "Common Number Separator",
-    "NSM", "Nonspacing Mark",
-    "BN", "Boundary Neutral",
-    "B", "Paragraph Separator",
-    "S", "Segment Separator",
-    "WS", "Whitespace",
-    "ON", "Other Neutrals",
-    "LRI", "Left-to-Right Isolate",
-    "RLI", "Right-to-Left Isolate",
-    "FSI", "First Strong Isolate",
-    "PDI", "Pop Directional Isolate"
+    // first column (short name) from PropertyValueAliases.txt and DerivedBidiClass.txt
+    // second column (long name) from PropertyValueAliases.txt and DerivedBidiClass.txt
+    // third column (description) from https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types
+    "L",    "Left_To_Right",            // Left-to-Right
+    "LRE",  "Left_To_Right_Embedding",  // Left-to-Right Embedding
+    "LRO",  "Left_To_Right_Override",   // Left-to-Right Override
+    "R",    "Right_To_Left",            // Right-to-Left
+    "AL",   "Arabic_Letter",            // Right-to-Left Arabic
+    "RLE",  "Right_To_Left_Embedding",  // Right-to-Left Embedding
+    "RLO",  "Right_To_Left_Override",   // Right-to-Left Override
+    "PDF",  "Pop_Directional_Format",   // Pop Directional Format
+    "EN",   "European_Number",          // European Number
+    "ES",   "European_Separator",       // European Number Separator
+    "ET",   "European_Terminator",      // European Number Terminator
+    "AN",   "Arabic_Number",            // Arabic Number
+    "CS",   "Common_Separator",         // Common Number Separator
+    "NSM",  "Nonspacing_Mark",          // Nonspacing Mark
+    "BN",   "Boundary_Neutral",         // Boundary Neutral
+    "B",    "Paragraph_Separator",      // Paragraph Separator
+    "S",    "Segment_Separator",        // Segment Separator
+    "WS",   "White_Space",              // Whitespace
+    "ON",   "Other_Neutral",            // Other Neutrals
+    "LRI",  "Left_To_Right_Isolate",    // Left-to-Right Isolate
+    "RLI",  "Right_To_Left_Isolate",    // Right-to-Left Isolate
+    "FSI",  "First_Strong_Isolate",     // First Strong Isolate
+    "PDI",  "Pop_Directional_Isolate"   // Pop Directional Isolate
 };
 
 RexxInteger *RexxUnicodeServicesClass::codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
@@ -641,6 +965,8 @@ RexxInteger *RexxUnicodeServicesClass::codepointBidiClass(RexxInteger *rexxCodep
 
     if (refCode != OREF_NULL)
     {
+        // I don't use "L" as default value because DerivedBidiClass.txt defines many exceptions.
+        // Problem: these exceptions are all in comments... So, do they apply or not?
         const char *strCode = rangeOk ? Bidirectional_Character_Types[2 * index] : "?";
         RexxString *rexxCode = new_string(strCode); // Protected<RexxString> not needed
         refCode->setValue(rexxCode);
@@ -648,7 +974,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointBidiClass(RexxInteger *rexxCodep
 
     if (refLabel != OREF_NULL)
     {
-        const char *strLabel = rangeOk ? Bidirectional_Character_Types[1 + 2 * index] : "?";
+        const char *strLabel = rangeOk ? Bidirectional_Character_Types[1 + 2 * index] : "Code point not explicitly listed for Bidi_Class";
         RexxString *rexxLabel = new_string(strLabel); // Protected<RexxString> not needed
         refLabel->setValue(rexxLabel);
     }
@@ -666,45 +992,60 @@ RexxInteger *RexxUnicodeServicesClass::codepointBidiMirrored(RexxInteger *rexxCo
 }
 
 
-#if 0 // TODO
-/** Decomposition type. */
-typedef enum {
-  UTF8PROC_DECOMP_TYPE_FONT      = 1, /**< Font */
-  UTF8PROC_DECOMP_TYPE_NOBREAK   = 2, /**< Nobreak */
-  UTF8PROC_DECOMP_TYPE_INITIAL   = 3, /**< Initial */
-  UTF8PROC_DECOMP_TYPE_MEDIAL    = 4, /**< Medial */
-  UTF8PROC_DECOMP_TYPE_FINAL     = 5, /**< Final */
-  UTF8PROC_DECOMP_TYPE_ISOLATED  = 6, /**< Isolated */
-  UTF8PROC_DECOMP_TYPE_CIRCLE    = 7, /**< Circle */
-  UTF8PROC_DECOMP_TYPE_SUPER     = 8, /**< Super */
-  UTF8PROC_DECOMP_TYPE_SUB       = 9, /**< Sub */
-  UTF8PROC_DECOMP_TYPE_VERTICAL = 10, /**< Vertical */
-  UTF8PROC_DECOMP_TYPE_WIDE     = 11, /**< Wide */
-  UTF8PROC_DECOMP_TYPE_NARROW   = 12, /**< Narrow */
-  UTF8PROC_DECOMP_TYPE_SMALL    = 13, /**< Small */
-  UTF8PROC_DECOMP_TYPE_SQUARE   = 14, /**< Square */
-  UTF8PROC_DECOMP_TYPE_FRACTION = 15, /**< Fraction */
-  UTF8PROC_DECOMP_TYPE_COMPAT   = 16, /**< Compat */
-} utf8proc_decomp_type_t;
-#endif
+// https://www.unicode.org/reports/tr44/#Formatting_Tags_Table --> strange codes
+// DerivedDecompositionType.txt --> good codes
+//   #  All code points not explicitly listed for Decomposition_Type
+//   #  have the value None.
+const char *Compatibility_Formatting_Tags[]=
+{
+    "Font", "Font variant",
+    "Nobreak", "No-break version of a space or hyphen",
+    "Initial", "Initial presentation form (Arabic)",
+    "Medial", "Medial presentation form (Arabic)",
+    "Final", "Final presentation form (Arabic)",
+    "Isolated", "Isolated presentation form (Arabic)",
+    "Circle", "Encircled form",
+    "Super", "Superscript form",
+    "Sub", "Subscript form",
+    "Vertical", "Vertical layout presentation form",
+    "Wide", "Wide (or zenkaku) compatibility character",
+    "Narrow", "Narrow (or hankaku) compatibility character",
+    "Small", "Small variant form (CNS compatibility)",
+    "Square", "CJK squared font variant",
+    "Fraction", "Vulgar fraction form",
+    "Compat", "Unspecified compatibility character"
+};
 
-RexxInteger *RexxUnicodeServicesClass::codepointDecompositionType(RexxInteger *rexxCodepoint)
+RexxInteger *RexxUnicodeServicesClass::codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
     utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
-    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
-    return new_integer(property->decomp_type); // see utf8proc_decomp_type_t
+    if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
+    if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
-    /* not returned, internal use
-    utf8proc_uint16_t decomp_seqindex;
-    utf8proc_uint16_t casefold_seqindex;
-    utf8proc_uint16_t uppercase_seqindex;
-    utf8proc_uint16_t lowercase_seqindex;
-    utf8proc_uint16_t titlecase_seqindex;
-    utf8proc_uint16_t comb_index;
-    unsigned bidi_mirrored:1;
-    unsigned comp_exclusion:1;
-    */
+    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
+    utf8proc_propval_t decomp_type = property->decomp_type; // 1..16
+    utf8proc_propval_t index = decomp_type - 1;
+
+    // Check array out-of-bounds
+    int count = sizeof(Compatibility_Formatting_Tags) / sizeof(Compatibility_Formatting_Tags[0]);
+    bool rangeOk = index >= 0 && index < count/2;
+
+    if (refCode != OREF_NULL)
+    {
+        const char *strCode = rangeOk ? Compatibility_Formatting_Tags[2 * index] : "None";
+        RexxString *rexxCode = new_string(strCode); // Protected<RexxString> not needed
+        refCode->setValue(rexxCode);
+    }
+
+    if (refLabel != OREF_NULL)
+    {
+        const char *strLabel = rangeOk ? Compatibility_Formatting_Tags[1 + 2 * index] : "Code point not explicitly listed for Decomposition_Type";
+        RexxString *rexxLabel = new_string(strLabel); // Protected<RexxString> not needed
+        refLabel->setValue(rexxLabel);
+    }
+
+    return new_integer(decomp_type); // see utf8proc_decomp_type_t
 }
 
 
@@ -739,45 +1080,73 @@ RexxInteger *RexxUnicodeServicesClass::codepointCharWidth(RexxInteger *rexxCodep
 }
 
 
-#if 0 // TODO
-/** Boundclass property. (TR29) */
-typedef enum {
-  UTF8PROC_BOUNDCLASS_START              =  0, /**< Start */
-  UTF8PROC_BOUNDCLASS_OTHER              =  1, /**< Other */
-  UTF8PROC_BOUNDCLASS_CR                 =  2, /**< Cr */
-  UTF8PROC_BOUNDCLASS_LF                 =  3, /**< Lf */
-  UTF8PROC_BOUNDCLASS_CONTROL            =  4, /**< Control */
-  UTF8PROC_BOUNDCLASS_EXTEND             =  5, /**< Extend */
-  UTF8PROC_BOUNDCLASS_L                  =  6, /**< L */
-  UTF8PROC_BOUNDCLASS_V                  =  7, /**< V */
-  UTF8PROC_BOUNDCLASS_T                  =  8, /**< T */
-  UTF8PROC_BOUNDCLASS_LV                 =  9, /**< Lv */
-  UTF8PROC_BOUNDCLASS_LVT                = 10, /**< Lvt */
-  UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR = 11, /**< Regional indicator */
-  UTF8PROC_BOUNDCLASS_SPACINGMARK        = 12, /**< Spacingmark */
-  UTF8PROC_BOUNDCLASS_PREPEND            = 13, /**< Prepend */
-  UTF8PROC_BOUNDCLASS_ZWJ                = 14, /**< Zero Width Joiner */
+// Boundclass property. (TR29)
+// auxiliary/GraphemeBreakProperty.txt
+//   #  All code points not explicitly listed for Grapheme_Cluster_Break
+//   #  have the value Other (XX).
+// PropertyValueAliases.txt
+//     # Grapheme_Cluster_Break (GCB)
+const char *Grapheme_Cluster_Break[]=
+{
+    "Start",    "Start",
+    "XX",       "Other",
+    "CR",       "CR",
+    "LF",       "LF",
+    "CN",       "Control",
+    "EX",       "Extend",
+    "L",        "L",
+    "V",        "V",
+    "T",        "T",
+    "LV",       "LV",
+    "LVT",      "LVT",
+    "RI",       "Regional_Indicator",
+    "SM",       "SpacingMark",
+    "PP",       "Prepend",
+    "ZWJ",      "ZWJ",                  // Zero Width Joiner
 
   /* the following are no longer used in Unicode 11, but we keep
      the constants here for backward compatibility */
-  UTF8PROC_BOUNDCLASS_E_BASE             = 15, /**< Emoji Base */
-  UTF8PROC_BOUNDCLASS_E_MODIFIER         = 16, /**< Emoji Modifier */
-  UTF8PROC_BOUNDCLASS_GLUE_AFTER_ZWJ     = 17, /**< Glue_After_ZWJ */
-  UTF8PROC_BOUNDCLASS_E_BASE_GAZ         = 18, /**< E_BASE + GLUE_AFTER_ZJW */
+    "EB",       "E_Base",               // Emoji Base
+    "EM",       "E_Modifier",           // Emoji Modifier
+    "GAZ",      "Glue_After_Zwj",
+    "EBG",      "E_Base_GAZ",           // E_BASE + GLUE_AFTER_ZJW
 
   /* the Extended_Pictographic property is used in the Unicode 11
      grapheme-boundary rules, so we store it in the boundclass field */
-  UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC = 19,
-  UTF8PROC_BOUNDCLASS_E_ZWG = 20, /* UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC + ZWJ */
-} utf8proc_boundclass_t;
-#endif
+    "EP",       "Extended_Pictographic",
+    "EZWG",     "E_ZWG"                 // UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC + ZWJ
+};
 
-RexxInteger *RexxUnicodeServicesClass::codepointBoundClass(RexxInteger *rexxCodepoint)
+RexxInteger *RexxUnicodeServicesClass::codepointBoundClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
     utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
+    if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
+
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
-    return new_integer(property->boundclass); // see utf8proc_boundclass_t
+    utf8proc_propval_t boundclass = property->boundclass; // 0..19
+    utf8proc_propval_t index = boundclass;
+
+    // Check array out-of-bounds
+    int count = sizeof(Grapheme_Cluster_Break) / sizeof(Grapheme_Cluster_Break[0]);
+    bool rangeOk = index >= 0 && index < count/2;
+
+    if (refCode != OREF_NULL)
+    {
+        const char *strCode = rangeOk ? Grapheme_Cluster_Break[2 * index] : "XX";
+        RexxString *rexxCode = new_string(strCode); // Protected<RexxString> not needed
+        refCode->setValue(rexxCode);
+    }
+
+    if (refLabel != OREF_NULL)
+    {
+        const char *strLabel = rangeOk ? Grapheme_Cluster_Break[1 + 2 * index] : "Other";
+        RexxString *rexxLabel = new_string(strLabel); // Protected<RexxString> not needed
+        refLabel->setValue(rexxLabel);
+    }
+
+    return new_integer(boundclass); // see utf8proc_boundclass_t
 }
 
 
