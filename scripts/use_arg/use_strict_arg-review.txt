@@ -1,0 +1,360 @@
+https://sourceforge.net/p/oorexx/bugs/2060/
+USE STRICT ARG breaking change
+
+I don't think we need a big discusion of this,
+omitting argument names is an edge case,
+and quite irrelevant to most people.
+However, that doesn't mean it can't be improved.
+
+Review the differences in the output of the test cases between ooRexx 4.2 and ooRexx 5.3.
+rexx use_strict_arg_test.rex > use_strict_arg_test-out-42.txt 2>&1
+rexx use_strict_arg_test.rex > use_strict_arg_test-out-53.txt 2>&1
+
+no error in ooRexx 4.2, versus errors in ooRexx 5.3
+---------------------------------------------------
+tc = 15
+0
+Not enough arguments in invocation of R00; minimum expected is 1.
+Error code= 40.3
+tc = 16
+0
+Not enough arguments in invocation of R00; minimum expected is 1.
+Error code= 40.3
+tc = 17
+0
+Not enough arguments in invocation of R00; minimum expected is 1.
+Error code= 40.3
+
+    15: tc += 1; say "tc =" tc; call r00; say result
+    16: tc += 1; say "tc =" tc; call r00 , ; say result
+    17: tc += 1; say "tc =" tc; call r00 , , ; say result
+
+    ::routine r00
+        say arg(); use strict arg , ; return arg()
+
+
+tc = 43
+0
+Not enough arguments in invocation of R0D; minimum expected is 1.
+Error code= 40.3
+tc = 44
+0
+Not enough arguments in invocation of R0D; minimum expected is 1.
+Error code= 40.3
+tc = 45
+0
+Not enough arguments in invocation of R0D; minimum expected is 1.
+Error code= 40.3
+
+    43:  tc += 1; say "tc =" tc; call r0d; say result
+    44:  tc += 1; say "tc =" tc; call r0d , ; say result
+    45:  tc += 1; say "tc =" tc; call r0d , , ; say result
+
+    ::routine r0d
+        say arg(); use strict arg , a2=2; return arg()
+
+
+tc = 141
+0
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 142
+0
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 143
+0
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 144
+0
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+
+    141: tc += 1; say "tc =" tc; call r000; say result
+    142: tc += 1; say "tc =" tc; call r000 , ; say result
+    143: tc += 1; say "tc =" tc; call r000 , , ; say result
+    144: tc += 1; say "tc =" tc; call r000 , , , ; say result
+
+    ::routine r000
+        say arg(); use strict arg , , ; return arg()
+
+
+tc = 156
+1
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 157
+1
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 158
+1
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+tc = 159
+1
+Not enough arguments in invocation of R000; minimum expected is 2.
+Error code= 40.3
+
+    156: tc += 1; say "tc =" tc; call r000 1; say result
+    157: tc += 1; say "tc =" tc; call r000 1, ; say result
+    158: tc += 1; say "tc =" tc; call r000 1, , ; say result
+    159: tc += 1; say "tc =" tc; call r000 1, , , ; say result
+
+    ::routine r000
+        say arg(); use strict arg , , ; return arg()
+
+
+tc = 201
+0
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 202
+0
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 203
+0
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 204
+0
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+
+    201: tc += 1; say "tc =" tc; call r00d; say result
+    202: tc += 1; say "tc =" tc; call r00d , ; say result
+    203: tc += 1; say "tc =" tc; call r00d , , ; say result
+    204: tc += 1; say "tc =" tc; call r00d , , , ; say result
+
+    ::routine r00d
+        say arg(); use strict arg , , a3=3; return arg()
+
+
+tc = 216
+1
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 217
+1
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 218
+1
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+tc = 219
+1
+Not enough arguments in invocation of R00D; minimum expected is 2.
+Error code= 40.3
+
+    216: tc += 1; say "tc =" tc; call r00d 1; say result
+    217: tc += 1; say "tc =" tc; call r00d 1, ; say result
+    218: tc += 1; say "tc =" tc; call r00d 1, , ; say result
+    219: tc += 1; say "tc =" tc; call r00d 1, , , ; say result
+
+    ::routine r00d
+        say arg(); use strict arg , , a3=3; return arg()
+
+
+tc = 321
+0
+Not enough arguments in invocation of R0D0; minimum expected is 1.
+Error code= 40.3
+tc = 322
+0
+Not enough arguments in invocation of R0D0; minimum expected is 1.
+Error code= 40.3
+tc = 323
+0
+Not enough arguments in invocation of R0D0; minimum expected is 1.
+Error code= 40.3
+tc = 324
+0
+Not enough arguments in invocation of R0D0; minimum expected is 1.
+Error code= 40.3
+
+
+tc = 381
+0
+Not enough arguments in invocation of R0DD; minimum expected is 1.
+Error code= 40.3
+tc = 382
+0
+Not enough arguments in invocation of R0DD; minimum expected is 1.
+Error code= 40.3
+tc = 383
+0
+Not enough arguments in invocation of R0DD; minimum expected is 1.
+Error code= 40.3
+tc = 384
+0
+Not enough arguments in invocation of R0DD; minimum expected is 1.
+Error code= 40.3
+
+
+tc = 426
+1
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 427
+1
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 428
+1
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 429
+1
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+
+
+tc = 486
+1
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 487
+1
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 488
+1
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 489
+1
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+
+
+tc = 681
+0
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 682
+0
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 683
+0
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 684
+0
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+
+
+tc = 696
+1
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 697
+1
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 698
+1
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+tc = 699
+1
+Not enough arguments in invocation of RD00; minimum expected is 2.
+Error code= 40.3
+
+
+tc = 741
+0
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 742
+0
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 743
+0
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 744
+0
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+
+
+tc = 756
+1
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 757
+1
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 758
+1
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+tc = 759
+1
+Not enough arguments in invocation of RD0D; minimum expected is 2.
+Error code= 40.3
+
+
+
+
+
+
+-- minimum expected is 1 in ooRexx 4.2,  versus minimum expected is 2 in oo Rexx 5.3
+------------------------------------------------------------------------------------
+
+tc = 411
+0
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 412
+0
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 413
+0
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+tc = 414
+0
+Not enough arguments in invocation of R100; minimum expected is 2.
+Error code= 40.3
+
+    411: tc += 1; say "tc =" tc; call r100; say result
+    412: tc += 1; say "tc =" tc; call r100 , ; say result
+    413: tc += 1; say "tc =" tc; call r100 , , ; say result
+    414: tc += 1; say "tc =" tc; call r100 , , , ; say result
+
+    ::routine r100
+        say arg(); use strict arg a1, , ; return arg()
+
+
+tc = 471
+0
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 472
+0
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 473
+0
+Not enough arguments in invocation of R10D; minimum expected is 2.
+Error code= 40.3
+tc = 474
+0
+Not enough arguments in invocation of R10D; minimum expected is 2.
+
+    471: tc += 1; say "tc =" tc; call r10d; say result
+    472: tc += 1; say "tc =" tc; call r10d , ; say result
+    473: tc += 1; say "tc =" tc; call r10d , , ; say result
+    474: tc += 1; say "tc =" tc; call r10d , , , ; say result
+
+    ::routine r10d
+        say arg(); use strict arg a1, , a3=3; return arg()
