@@ -16,12 +16,13 @@ Native methods of RexxUnicodeServices
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean
-    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointCategory(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointCharWidth(RexxInteger *rexxCodepoint); // integer
-    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint); // integer 0..254
+    // The integer 0..254 returned by codepointCombiningClass is the standard Unicode value
+    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // integer 0..254, enum
     RexxInteger *codepointControlBoundary(RexxInteger *rexxCodepoint); // boolean
-    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
 
     RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);
