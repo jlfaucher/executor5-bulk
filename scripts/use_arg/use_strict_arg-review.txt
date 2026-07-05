@@ -4,7 +4,7 @@ USE STRICT ARG breaking change
 I don't think we need a big discusion of this,
 omitting argument names is an edge case,
 and quite irrelevant to most people.
-However, that doesn't mean it can't be improved.
+However, that doesn't mean it can't be reviewed.
 
 Review the differences in the output of the test cases between ooRexx 4.2 and ooRexx 5.3.
 rexx use_strict_arg_test.rex > use_strict_arg_test-out-42.txt 2>&1
@@ -175,6 +175,14 @@ tc = 324
 Not enough arguments in invocation of R0D0; minimum expected is 1.
 Error code= 40.3
 
+    321: tc += 1; say "tc =" tc; call r0d0; say result
+    322: tc += 1; say "tc =" tc; call r0d0 , ; say result
+    323: tc += 1; say "tc =" tc; call r0d0 , , ; say result
+    324: tc += 1; say "tc =" tc; call r0d0 , , , ; say result
+
+    ::routine r0d0
+        say arg(); use strict arg , a2=2, ; return arg()
+
 
 tc = 381
 0
@@ -192,6 +200,14 @@ tc = 384
 0
 Not enough arguments in invocation of R0DD; minimum expected is 1.
 Error code= 40.3
+
+    381: tc += 1; say "tc =" tc; call r0dd; say result
+    382: tc += 1; say "tc =" tc; call r0dd , ; say result
+    383: tc += 1; say "tc =" tc; call r0dd , , ; say result
+    384: tc += 1; say "tc =" tc; call r0dd , , , ; say result
+
+    ::routine r0dd
+        say arg(); use strict arg , a2=2, a3=3; return arg()
 
 
 tc = 426
@@ -211,6 +227,14 @@ tc = 429
 Not enough arguments in invocation of R100; minimum expected is 2.
 Error code= 40.3
 
+    426: tc += 1; say "tc =" tc; call r100 1; say result
+    427: tc += 1; say "tc =" tc; call r100 1, ; say result
+    428: tc += 1; say "tc =" tc; call r100 1, , ; say result
+    429: tc += 1; say "tc =" tc; call r100 1, , , ; say result
+
+    ::routine r100
+        say arg(); use strict arg a1, , ; return arg()
+
 
 tc = 486
 1
@@ -228,6 +252,14 @@ tc = 489
 1
 Not enough arguments in invocation of R10D; minimum expected is 2.
 Error code= 40.3
+
+    486: tc += 1; say "tc =" tc; call r10d 1; say result
+    487: tc += 1; say "tc =" tc; call r10d 1, ; say result
+    488: tc += 1; say "tc =" tc; call r10d 1, , ; say result
+    489: tc += 1; say "tc =" tc; call r10d 1, , , ; say result
+
+    ::routine r10d
+        say arg(); use strict arg a1, , a3=3; return arg()
 
 
 tc = 681
@@ -247,6 +279,14 @@ tc = 684
 Not enough arguments in invocation of RD00; minimum expected is 2.
 Error code= 40.3
 
+    681: tc += 1; say "tc =" tc; call rd00; say result
+    682: tc += 1; say "tc =" tc; call rd00 , ; say result
+    683: tc += 1; say "tc =" tc; call rd00 , , ; say result
+    684: tc += 1; say "tc =" tc; call rd00 , , , ; say result
+
+    ::routine rd00
+        say arg(); use strict arg a1=1, , ; return arg()
+
 
 tc = 696
 1
@@ -264,6 +304,14 @@ tc = 699
 1
 Not enough arguments in invocation of RD00; minimum expected is 2.
 Error code= 40.3
+
+    696: tc += 1; say "tc =" tc; call rd00 1; say result
+    697: tc += 1; say "tc =" tc; call rd00 1, ; say result
+    698: tc += 1; say "tc =" tc; call rd00 1, , ; say result
+    699: tc += 1; say "tc =" tc; call rd00 1, , , ; say result
+
+    ::routine rd00
+        say arg(); use strict arg a1=1, , ; return arg()
 
 
 tc = 741
@@ -283,6 +331,14 @@ tc = 744
 Not enough arguments in invocation of RD0D; minimum expected is 2.
 Error code= 40.3
 
+    741: tc += 1; say "tc =" tc; call rd0d; say result
+    742: tc += 1; say "tc =" tc; call rd0d , ; say result
+    743: tc += 1; say "tc =" tc; call rd0d , , ; say result
+    744: tc += 1; say "tc =" tc; call rd0d , , , ; say result
+
+    ::routine rd0d
+        say arg(); use strict arg a1=1, , a3=3; return arg()
+
 
 tc = 756
 1
@@ -300,6 +356,14 @@ tc = 759
 1
 Not enough arguments in invocation of RD0D; minimum expected is 2.
 Error code= 40.3
+
+    756: tc += 1; say "tc =" tc; call rd0d 1; say result
+    757: tc += 1; say "tc =" tc; call rd0d 1, ; say result
+    758: tc += 1; say "tc =" tc; call rd0d 1, , ; say result
+    759: tc += 1; say "tc =" tc; call rd0d 1, , , ; say result
+
+    ::routine rd0d
+        say arg(); use strict arg a1=1, , a3=3; return arg()
 
 
 
