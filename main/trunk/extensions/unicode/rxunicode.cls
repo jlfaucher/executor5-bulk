@@ -63,12 +63,13 @@ Native methods of RexxUnicodeServices
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean
-    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointBoundClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointCategory(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointCharWidth(RexxInteger *rexxCodepoint); // integer
-    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint); // integer 0..254
+    // The integer 0..254 returned by codepointCombiningClass is the standard Unicode value
+    RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // integer 0..254, enum
     RexxInteger *codepointControlBoundary(RexxInteger *rexxCodepoint); // boolean
-    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint); // enum
+    RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
 
     RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);
@@ -84,11 +85,16 @@ Constants
 
 ::constant maxCodepoint 1114111
 
--- Code to pass to utf8Transform as the "normalization" argument:
+-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization):
 ::constant NFC 1
 ::constant NFD 2
 ::constant NFKC 3
 ::constant NFKD 4
+
+-- Value to pass as the 'nlf' argument to utf8Transform (default: 0 no transformation):
+::constant NLF2LF 1
+::constant NLF2LS 2
+::constant NLF2PS 3
 
 
 ::method info class
@@ -852,7 +858,7 @@ How other languages are supporting escape characters for Unicode:
     self~decode
 
 
-::method decode
+::method decode private
     expose string indexB codepoint byteSequence error
     use strict arg -- none
     error = ""
@@ -963,7 +969,7 @@ Using a coroutine design helped me to finalize the implementation.
 I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
 Maybe it can be simplified...
 */
-::method decode
+::method decode private
     expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error -
            /* coroutine internal state */ -
            decodeNextStep previousCodepoint graphemeBreakArgs -
@@ -1302,8 +1308,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "Cn"
-    .RexxUnicode~codepointCategory(codepoint, >refCode)
-    return refCode
+    .RexxUnicode~codepointCategory(codepoint, >code)
+    return code
 
 
 -- http://www.unicode.org/reports/tr44/#General_Category_Values
@@ -1311,8 +1317,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "Unassigned"
-    .RexxUnicode~codepointCategory(codepoint, , >refLabel)
-    return refLabel
+    .RexxUnicode~codepointCategory(codepoint, , >label)
+    return label
 
 
 -- http://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
@@ -1320,7 +1326,18 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return -1
+    -- yes, return the numeric value, it's a Unicode standard value
     return .RexxUnicode~codepointCombiningClass(codepoint)
+
+
+-- http://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
+::method combiningClassName
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return "?"
+    -- yes, return the code
+    .RexxUnicode~codepointCombiningClass(codepoint, >code)
+    return code
 
 
 -- http://www.unicode.org/reports/tr44/#Bidi_Class_Values
@@ -1328,8 +1345,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    .RexxUnicode~codepointBidiClass(codepoint, >refCode)
-    return refCode
+    .RexxUnicode~codepointBidiClass(codepoint, >code)
+    return code
 
 
 -- http://www.unicode.org/reports/tr44/#Bidi_Class_Values
@@ -1337,8 +1354,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    .RexxUnicode~codepointBidiClass(codepoint, , >refLabel)
-    return refLabel
+    .RexxUnicode~codepointBidiClass(codepoint, , >label)
+    return label
 
 
 -- https://unicode.org/reports/tr9/
@@ -1354,8 +1371,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    -- TODO enum code
-    return .RexxUnicode~codepointDecompositionType(codepoint)
+    .RexxUnicode~codepointDecompositionType(codepoint, >code)
+    return code
 
 
 -- https://unicode.org/reports/tr15/
@@ -1363,8 +1380,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    -- TODO enum label
-    return "?"
+    .RexxUnicode~codepointDecompositionType(codepoint, , >label)
+    return label
 
 
 -- http://www.unicode.org/review/pr-5.html
@@ -1397,8 +1414,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    -- TODO enum code
-    return .RexxUnicode~codepointBoundClass(codepoint)
+    .RexxUnicode~codepointBoundClass(codepoint, >code)
+    return code
 
 
 -- https://unicode.org/reports/tr29/
@@ -1406,8 +1423,8 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    -- TODO enum label
-    return "?"
+    .RexxUnicode~codepointBoundClass(codepoint, , >label)
+    return label
 
 
 -- Simple case mappings in UnicodeData.txt, returns a single codepoint
@@ -1509,7 +1526,7 @@ otherwise use the extended name (never empty)
     return properties
 
 
-::method propertiesSpecialDisplay class
+::method propertiesSpecialDisplay class private
     expose specialDisplay
     use strict arg -- none
     if \ var("specialDisplay") then do
@@ -1643,7 +1660,7 @@ Other helpers
     return pluralText
 
 
-::method singularPluralCount private
+::routine singularPluralCount private
     use strict arg number, singularText="", pluralText="s"
     return number singularPlural(number, singularText, pluralText)
 
