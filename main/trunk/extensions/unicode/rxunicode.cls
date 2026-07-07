@@ -235,19 +235,72 @@ Additional codepoint services
     if codepoint < 0 then return .false
 
     /*
-    Non-printable categories - TODO is it correct?
+    The count of widths per category is calculated for Unicode 17.
 
-    Cc Control
-    Cf Format
-    Cn Unassigned (reserved, noncharacters)
-    Co Private_Use
-    Cs Surrogate
-    Zl Line_Separator
-    Zp Paragraph_Separator
+    categoryWidth. (49 items)
+    'Cc.0' :  65
+    'Cf.0' :  169       -- 169 Cf codepoints have a 0-width
+    'Cf.1' :  1         --   1 Cf codepoint has a 1-width
+    'Cn.1' :  814730
+    'Co.1' :  137468
+    'Cs.0' :  2048
+    'Ll.1' :  2257
+    'Ll.2' :  26
+    'Lm.1' :  379
+    'Lm.2' :  31
+    'Lo.1' :  17013
+    'Lo.2' :  124049
+    'Lt.1' :  31
+    'Lu.1' :  1860
+    'Lu.2' :  26
+    'Mc.0' :  467
+    'Mc.2' :  4
+    'Me.0' :  13
+    'Mn.0' :  2059
+    'Nd.1' :  760
+    'Nd.2' :  10
+    'Nl.1' :  223
+    'Nl.2' :  16
+    'No.1' :  838
+    'No.2' :  77
+    'Pc.1' :  4
+    'Pc.2' :  6
+    'Pd.1' :  19
+    'Pd.2' :  8
+    'Pe.1' :  48
+    'Pe.2' :  29
+    'Pf.1' :  10
+    'Pi.1' :  12
+    'Po.1' :  592
+    'Po.2' :  49
+    'Ps.1' :  51
+    'Ps.2' :  28
+    'Sc.1' :  58
+    'Sc.2' :  6
+    'Sk.1' :  115
+    'Sk.2' :  10
+    'Sm.1' :  947
+    'Sm.2' :  13
+    'So.1' :  5154
+    'So.2' :  2314
+    'Zl.0' :  1
+    'Zp.0' :  1
+    'Zs.1' :  16
+    'Zs.2' :  1
     */
 
-    category = self~codepointCategory(codepoint, >code)
-    return "Cc Cf Cn Co Cs Zl Zp"~wordpos(code) == 0
+    -- Codepoints having a display width of 0 are considered non-printable
+    width = self~codepointCharWidth(codepoint)
+    if width == 0 then return .false
+
+    -- Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
+    -- even though they have a display width of 1.
+    self~codepointCategory(codepoint, >categoryCode)
+    if categoryCode == "Cn" | categoryCode == "Co" then return .false
+
+    -- Other codepoints are considered as printable.
+    return .true
+
 
 /*
 Returns a printable string representation of this codepoint.

@@ -168,7 +168,7 @@ Backward-incompatible changes:
 - the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
 
 
-Add .RexxUnicode~stringInfo(string)
+Add .RexxUnicode~stringInfo(string [, >indexer])
 
 Add .RexxUnicode~stringIsASCII(string)
     Returns .true if the string contains only characters <= "7F"x
@@ -183,12 +183,13 @@ Add .RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, 
     Returns the string normalized to NFKC, with optional transformations applied.
 
 Add .RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)
-    NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+    NFKC preserves the original case of letters (e.g., 'A' remains 'A').
+    In contrast, NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+        Example: The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
+        Example: The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
     NFKC_CF is specifically optimized for identifier matching.
     As part of the "Default Case Folding" algorithm, it removes ignorable characters (such as certain formatting marks or zero-width spaces).
-    Examples:
-    The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
-    The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
+    NFKC retains these characters.
 
 Add .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
     Returns the string normalized to NFKD, with optional transformations applied.
@@ -203,6 +204,19 @@ Examples
     .RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
     .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
     .RexxUnicode~stringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+    -- Invalid string
+    -- U+FFFD Substitution of Maximal Subparts
+    -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+    .RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+    indexer~errors==
+/*
+        an Array (shape [4], 4 items)
+         1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+         2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+         3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+         4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+*/
 
     .RexxUnicode~stringIsASCII("Noel")=     -- 1
     .RexxUnicode~stringIsASCII("Noël")=     -- 0
@@ -654,25 +668,28 @@ Examples
 
 /*
 Add .RexxUnicode~unescape(string, buffer=.nil)
-    Escape characters are normally handled in string literals at parse time.
+    Returns a string in which escape sequences are replaced with their corresponding values.
+    If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+    Escape sequences are normally handled in string literals at parse time.
     This method handles them at run time instead.
 
-    Supported escape characters:
+    Supported escape sequences:
         \\                  "\"
         \a                  "07"x   audible bell (BEL)
         \b                  "08"x   backspace (BS)
         \f                  "0C"x   form feed (FF)
-        \n                  "0A"x   linefeed (LF)
+        \n                  "0A"x   line feed (LF)
         \r                  "0D"x   carriage return (CR)
         \t                  "09"x   horizontal tab (HT)
         \v                  "0B"x   vertical tab (VT)
 
         \N{Unicode name}    Character name in the Unicode database
-        \u{X..X}            Unicode scalar value, 1-8 hex digits
+        \u{X..X}            Unicode scalar value, 1 to 8 hex digits
         \uXXXX              Unicode scalar value, exactly 4 hex digits
         \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
         \x{X..X}            Arbitrary number of hex digits
-        \xXX                1 byte, exactly 2 hex digits
+        \xXX                One byte, exactly 2 hex digits
 
 Add .RexxUnicode~escape(string, buffer=.nil)
     Escapes characters that are not printable:
