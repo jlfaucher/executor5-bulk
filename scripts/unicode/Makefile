@@ -10,7 +10,8 @@
 ooRexxShellFiles = diary_examples
 
 # ooRexx scripts in the current directory
-scriptsFiles = enums_test \
+scriptsFiles = controlBoundary_test \
+               enums_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
