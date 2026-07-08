@@ -59,41 +59,41 @@ Examples
 [Unicode]
 
 Generalize support for -1 as a codepoint.
-This special codepoint -1 is returned in case of error.
+This special value -1 is returned in case of error.
 
 Examples
 */
 
-    -- The special codepoint -1 is encoded as the empty string
+    -- The special value -1 is encoded as the empty string
     .RexxUnicode~codepointUTF8Encoding(-1)=             -- ''
 
-    -- The special codepoint -1 is represented using \UXXXXXXXX, even though the resulting value is not a valid Unicode scalar value
+    -- The special value -1 is represented using \UXXXXXXXX, even though the resulting value is not a valid Unicode scalar value
     .RexxUnicode~codepointUnicodeEscapeNotation(-1)=    -- '\UFFFFFFFF'
 
-    -- The special codepoint -1 is not printable
+    -- The special value -1 is not printable
     .RexxUnicode~codepointIsPrintable(-1)=              -- 0
 
-    -- Since the special codepoint -1 is not printable, it is represented using Unicode escape notation
+    -- Since the special value -1 is not printable, it is represented using Unicode escape notation
     .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
 
-    -- The special codepoint -1 has no name
+    -- The special value -1 has no name
     .RexxUnicode~codepointCharName(-1)=                 -- ''
 
-    -- The special codepoint -1 has no extended name
+    -- The special value -1 has no extended name
     .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
 
-    -- The special codepoint -1 has no name alias
+    -- The special value -1 has no name alias
     .RexxUnicode~codepointCharNameAlias(-1)=            -- ''
 
-    -- Only -1 is supported as a special codepoint
+    -- Only -1 is supported as a special value
     -- All other negative codepoints are invalid
     .RexxUnicode~codepoint(-1)=                         -- -1
     .RexxUnicode~codepoint(-2)=                         -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
 
-    -- The special codepoint -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+    -- The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
     .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
 
-    -- The special codepoint -1 can be represented using a RexxUnicodeCharacter
+    -- The special value -1 can be represented using a RexxUnicodeCharacter
     .RexxUnicode~character(-1)=                         -- (An invalid character)
     .RexxUnicode~character(-1)~class=                   -- (The RexxUnicodeCharacter class)
     .RexxUnicode~character(-1)~info=

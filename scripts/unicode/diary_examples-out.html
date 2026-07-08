@@ -43,7 +43,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S7028Q600003a00180
+</span><span style="font-weight:bold;color:green;">Input queue name: S13aeQ600003a00300
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -148,40 +148,40 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepoi
 </span><span style="font-weight:bold;color:blue;">[Unicode]
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Generalize support for -1 as a codepoint.
-</span><span style="font-weight:bold;color:blue;">This special codepoint -1 is returned in case of error.
+</span><span style="font-weight:bold;color:blue;">This special value -1 is returned in case of error.
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Examples
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 is encoded as the empty string</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 is encoded as the empty string</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointUTF8Encoding(-1)=             </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 is represented using \UXXXXXXXX, even though the resulting value is not a valid Unicode scalar value</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 is represented using \UXXXXXXXX, even though the resulting value is not a valid Unicode scalar value</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointUnicodeEscapeNotation(-1)=    </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
 '\UFFFFFFFF'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 is not printable</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 is not printable</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointIsPrintable(-1)=              </span><span style="font-weight:bold;color:blue;">-- 0</span>
  0
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- Since the special codepoint -1 is not printable, it is represented using Unicode escape notation</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointPrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
 '\UFFFFFFFF'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 has no name</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 has no name</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointCharName(-1)=                 </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 has no extended name</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 has no extended name</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointExtendedCharName(-1)=         </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 has no name alias</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 has no name alias</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepointCharNameAlias(-1)=            </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- Only -1 is supported as a special codepoint</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- Only -1 is supported as a special value</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- All other negative codepoints are invalid</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepoint(-1)=                         </span><span style="font-weight:bold;color:blue;">-- -1</span>
 -1
@@ -189,11 +189,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~codepoi
 <span style="font-weight:bold;color:red;">Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF'</span>
 'U+FFFFFF'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special codepoint -1 can be represented using a RexxUnicodeCharacter</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- The special value -1 can be represented using a RexxUnicodeCharacter</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~character(-1)=                         </span><span style="font-weight:bold;color:blue;">-- (An invalid character)</span>
 (An invalid character)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~character(-1)~class=                   </span><span style="font-weight:bold;color:blue;">-- (The RexxUnicodeCharacter class)</span>

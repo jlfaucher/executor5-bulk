@@ -821,7 +821,7 @@ See the `codepoint` method for a definition of "codepoint identifier".
 -- Search directly a character
 .RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
--- Only -1 is supported as a special codepoint
+-- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~character(-1)=                     -- (An invalid character)
 .RexxUnicode~character(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
@@ -867,7 +867,7 @@ A codepoint identifier may be:
 -- Search directly a character
 .RexxUnicode~codepoint("🎅")=                   -- 127877
 
--- Only -1 is supported as a special codepoint
+-- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~codepoint(-1)=                     -- -1
 .RexxUnicode~codepoint(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
@@ -885,7 +885,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
  ```rexx
 .RexxUnicode~codepointCharName(2448~x2d)=       -- 'OCR DASH'
 
--- The special codepoint -1 has no name
+-- The special value -1 has no name
 .RexxUnicode~codepointCharName(-1)=             -- ''
  ```
 
@@ -900,7 +900,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
  ```rexx
 .RexxUnicode~codepointCharNameAlias(2448~x2d)=       -- 'MICR ON US SYMBOL'
 
--- The special codepoint -1 has no name alias
+-- The special value -1 has no name alias
 .RexxUnicode~codepointCharNameAlias(-1)=             -- ''
  ```
 
@@ -919,7 +919,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 ```rexx
 .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
 
--- The special codepoint -1 has no name alias
+-- The special value -1 has no name alias
 .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
 ```
 
@@ -943,7 +943,7 @@ Rules:
 .RexxUnicode~codepointIsPrintable(65)=            -- 1
 .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
 
--- The special codepoint -1 is not printable
+-- The special value -1 is not printable
 .RexxUnicode~codepointIsPrintable(-1)=            -- 0
 ```
 
@@ -963,7 +963,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~codepointPrintableString(65)=          -- 'A'
 .RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
 
--- Since the special codepoint -1 is not printable, it is represented using Unicode escape notation
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
 .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
 ```
 
@@ -1011,7 +1011,7 @@ Returns a U+XXXX string (4 to 6 hex digits) representing the codepoint passed as
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
-The special codepoint -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083](https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083)
 
@@ -1669,7 +1669,7 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 A RexxUnicodeCharacter instance is created from a codepoint and provides access 
 to the properties of the corresponding Unicode character.
 
-The special codepoint -1 can be represented using a RexxUnicodeCharacter.
+The special value -1 can be represented using a RexxUnicodeCharacter.
 
 `::requires "rxunicode.cls"`
 
