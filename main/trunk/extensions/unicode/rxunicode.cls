@@ -1465,7 +1465,7 @@ otherwise use the extended name (never empty)
     return .RexxUnicode~codepointIgnorable(codepoint)
 
 
--- http://unicode.org/reports/tr29/tr29-6.html
+-- https://www.unicode.org/reports/tr29/
 ::method controlBoundary
     expose codepoint
     use strict arg -- none

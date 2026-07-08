@@ -1,7 +1,7 @@
 # Unicode support
 
 The `RexxUnicodeServices` class is a native class that exposes the Unicode services
-supported by ooRexx. Its current implementation is based on the [utf8proc](https://juliastrings.github.io/utf8proc/)
+supported by ooRexx. Its current implementation is based on the [`utf8proc`](https://juliastrings.github.io/utf8proc/)
 library embedded in ooRexx.
 
 
@@ -13,7 +13,7 @@ library embedded in ooRexx.
 - The `RexxUnicodeCharacter` class.
 - The `ICU4ooRexxInterface` class.
 
-> [!CAUTION]
+> [!CAUTION]  
 > Testing these classes from `ooRexxShell` with `TUTOR` enabled showed that a
 > defensive barrier is needed.
 >
@@ -59,11 +59,13 @@ In the examples, you can replace `RexxUnicodeServices` by `RexxUnicode` if you l
 
 Returns the bidirectional character type of `codepoint` as an enumeration value.
 
-- If provided, `refCode` receives the short name.
-- If provided, `refLabel` receives the long name.
+- If provided, `refCode` receives the short name or `"?"`.
+- If provided, `refLabel` receives the long name or`"Code point not explicitly listed for Bidi_Class"`.
 
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
+
+**Enumeration values**
 
 ```rexx
 -- first column: short name (from PropertyValueAliases.txt and DerivedBidiClass.txt)
@@ -94,6 +96,13 @@ For portability, use refCode instead.
 "WS",   "White_Space"               -- Whitespace
 ```
 
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~codepointBidiClass("0608"~x2d, >code, >label)=; code=; label=      --  5; 'AL'; 'Arabic_Letter'
+.RexxUnicodeServices~codepointBidiClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
+.RexxUnicodeServices~codepointBidiClass(-1, >code, >label)=; code=; label=              --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
+```
 
 #### codepointBidiMirrored
 
@@ -115,6 +124,8 @@ Returns the `Grapheme_Cluster_Break` property value of `codepoint` as an enumera
 
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
+
+**Enumeration values**
 
 ```rexx
 -- https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries
@@ -149,6 +160,14 @@ For portability, use refCode instead.
 "EZWG",     "E_ZWG"
 ```
 
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~codepointBoundClass("AC01"~x2d, >code, >label)=; code=; label=      --  10; 'LVT'; 'LVT'
+.RexxUnicodeServices~codepointBoundClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  1; 'XX'; 'Other'
+.RexxUnicodeServices~codepointBoundClass(-1, >code, >label)=; code=; label=              --  1; 'XX'; 'Other'
+```
+
 
 #### codepointCategory
 
@@ -162,8 +181,10 @@ Returns the `General_Category` property value of `codepoint` as an enumeration v
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
 
+**Enumeration values**
+
 ```rexx
--- // https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142
 -- first column: short name
 -- second column: long name
 "Cc", "Control"
@@ -198,6 +219,14 @@ For portability, use refCode instead.
 "Zs", "Space_Separator"
 ```
 
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~codepointCategory("0903"~x2d, >code, >label)=; code=; label=      --  7; 'Mc'; 'Spacing_Mark'
+.RexxUnicodeServices~codepointCategory("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'Cn'; 'Unassigned'
+.RexxUnicodeServices~codepointCategory(-1, >code, >label)=; code=; label=              --  0; 'Cn'; 'Unassigned'
+```
+
 
 #### codepointCharWidth
 
@@ -212,72 +241,233 @@ instead of -1 as in `wcwidth`.
 
     .RexxUnicodeServices~codepointCombiningClass(codepoint [, [>refCode] [, >refLabel]])
 
-Returns an enum.
+Returns the `Canonical_Combining_Class` property value of `codepoint`.
 
-The integer 0..254 returned by codepointCombiningClass is the standard Unicode value
+The values in the `Canonical_Combining_Class` field in `UnicodeData.txt` are numeric values
+used by the Canonical Ordering Algorithm. Some of those values also have symbolic labels
+defined as property value aliases to make their intended use easier to understand. 
+
+- If provided, `refCode` receives the short name.
+- If provided, `refLabel` receives the long name.
+
+The numeric values from `0` to `254` returned by `codepointCombiningClass` are standard Unicode values.  
+Some values have neither a `refCode` nor a `refLabel`.
+
+**Enumeration values**
+
+```rexx
+-- https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
+-- first column (numeric value) from PropertyValueAliases.txt
+-- second column (short name) from PropertyValueAliases.txt
+-- third column (long name) from PropertyValueAliases.txt
+-- fourth column (description) from https://www.unicode.org/reports/tr44/#CCC_Values_Table
+/* 0 */   "NR",     "Not_Reordered"         -- Spacing and enclosing marks; also many vowel and consonant signs, even if nonspacing
+/* 1 */   "OV",     "Overlay"               -- Marks which overlay a base letter or symbol
+/* 2 */   "",       ""
+/* 3 */   "",       ""
+/* 4 */   "",       ""
+/* 5 */   "",       ""
+/* 6 */   "HANR",   "Han_Reading"           -- Diacritic reading marks for CJK unified ideographs
+/* 7 */   "NK",     "Nukta"                 -- Diacritic nukta marks in Brahmi-derived scripts
+/* 8 */   "KV",     "Kana_Voicing"          -- Hiragana/Katakana voicing marks
+/* 9 */   "VR",     "Virama"                -- Viramas
+
+/* 10 */  "CCC10",  "CCC10"                 -- Start of fixed position classes
+/* 11 to 198 */
+/* 199 */ "CCC199", "CCC199"                -- End of fixed position classes
+
+/* 200 */ "ATBL",   "Attached_Below_Left"   -- Marks attached at the bottom left
+/* 201 */ "",       ""
+/* 202 */ "ATB",    "Attached_Below"        -- Marks attached directly below
+/* 203 */ "",       ""
+/* 204 */ "",       ""                      -- Marks attached at the bottom right
+/* 205 */ "",       ""
+/* 206 */ "",       ""
+/* 207 */ "",       ""
+/* 208 */ "",       ""                      -- Marks attached to the left
+/* 209 */ "",       ""
+/* 210 */ "",       ""                      -- Marks attached to the right
+/* 211 */ "",       ""
+/* 212 */ "",       ""                      -- Marks attached at the top left
+/* 213 */ "",       ""
+/* 214 */ "ATA",    "Attached_Above"        -- Marks attached directly above
+/* 215 */ "",       ""
+/* 216 */ "ATAR",   "Attached_Above_Right"  -- Marks attached at the top right
+/* 217 */ "",       ""
+/* 218 */ "BL",     "Below_Left"            -- Distinct marks at the bottom left
+/* 219 */ "",       ""
+/* 220 */ "B",      "Below"                 -- Distinct marks directly below
+/* 221 */ "",       ""
+/* 222 */ "BR",     "Below_Right"           -- Distinct marks at the bottom right
+/* 223 */ "",       ""
+/* 224 */ "L",      "Left"                  -- Distinct marks to the left
+/* 225 */ "",       ""
+/* 226 */ "R",      "Right"                 -- Distinct marks to the right
+/* 227 */ "",       ""
+/* 228 */ "AL",     "Above_Left"            -- Distinct marks at the top left
+/* 229 */ "",       ""
+/* 230 */ "A",      "Above"                 -- Distinct marks directly above
+/* 231 */ "",       ""
+/* 232 */ "AR",     "Above_Right"           -- Distinct marks at the top right
+/* 233 */ "DB",     "Double_Below"          -- Distinct marks subtending two bases
+/* 234 */ "DA",     "Double_Above"          -- Distinct marks extending above two bases
+/* 235 */ "",       ""
+/* 236 */ "",       ""
+/* 237 */ "",       ""
+/* 238 */ "",       ""
+/* 239 */ "",       ""
+/* 240 */ "IS",     "Iota_Subscript"        -- Greek iota subscript only
+/* 241 */ "",       ""
+/* 242 */ "",       ""
+/* 243 */ "",       ""
+/* 244 */ "",       ""
+/* 245 */ "",       ""
+/* 246 */ "",       ""
+/* 247 */ "",       ""
+/* 248 */ "",       ""
+/* 249 */ "",       ""
+/* 250 */ "",       ""
+/* 251 */ "",       ""
+/* 252 */ "",       ""
+/* 253 */ "",       ""
+/* 254 */ "",       ""
+```
+
+**Examples:**
+
+```rexx
+.RexxUnicode~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
+.RexxUnicode~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
+.RexxUnicode~codepointCombiningClass(-1, >code, >label)=; code=; label=             --  0; 'NR'; 'Not_Reordered'
+```
 
 
 #### codepointControlBoundary
 
     .RexxUnicodeServices~codepointControlBoundary(codepoint)
 
-Returns a boolean.
+Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category, except for:
+
+        (<?> \x{E2808C} U+200C Cf Format "ZERO WIDTH NON-JOINER")
+        (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+
+> [!WARNING]  
+> This rule is not used internally by `utf8proc`
+> and does not appear in [Unicode Standard Annex #29][unicode_standard_annex_29].
+> Therefore, this method is likely to be deprecated unless a use case is identified.
 
 
 #### codepointDecompositionType
 
     .RexxUnicodeServices~codepointDecompositionType(codepoint [, [>refCode] [, >refLabel]])
 
-Returns an enum.
+Returns the `Decomposition_Type` property value of `codepoint` as an enumeration value.
+
+- If provided, `refCode` receives the short name or `"None"`.
+- If provided, `refLabel` receives the long name or `"Code point not explicitly listed for Decomposition_Type"`.
+
+The returned enumeration value is implementation-specific.  
+For portability, use refCode instead.
+
+**Enumeration values**
+
+```rexx
+-- https://unicode.org/reports/tr15/
+-- first column: short name (from DerivedDecompositionType.txt)
+-- second column: long name (from DerivedDecompositionType.txt)
+"Font",         "Font variant"
+"Nobreak",      "No-break version of a space or hyphen"
+"Initial",      "Initial presentation form (Arabic)"
+"Medial",       "Medial presentation form (Arabic)"
+"Final",        "Final presentation form (Arabic)"
+"Isolated",     "Isolated presentation form (Arabic)"
+"Circle",       "Encircled form"
+"Super",        "Superscript form"
+"Sub",          "Subscript form"
+"Vertical",     "Vertical layout presentation form"
+"Wide",         "Wide (or zenkaku) compatibility character"
+"Narrow",       "Narrow (or hankaku) compatibility character"
+"Small",        "Small variant form (CNS compatibility)"
+"Square",       "CJK squared font variant"
+"Fraction",     "Vulgar fraction form"
+"Compat",       "Unspecified compatibility character"
+```
+
+**Examples:**
+
+```rexx
+.RexxUnicode~codepointDecompositionType("0000"~x2d, >code, >label)=; code=; label=      --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicode~codepointDecompositionType("00A8"~x2d, >code, >label)=; code=; label=      --  16; 'Compat'; 'Unspecified compatibility character'
+.RexxUnicode~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
+.RexxUnicode~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicode~codepointDecompositionType(-1, >code, >label)=; code=; label=              --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+```
 
 
 #### codepointIgnorable
 
     .RexxUnicodeServices~codepointIgnorable(codepoint)
 
-Returns a boolean.
+Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
 
 #### codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower(codepoint)
 
-Returns a boolean.
+Returns `.true` if the codepoint corresponds to a lower-case character
+and `.false` otherwise.
+
 
 
 #### codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper(codepoint)
 
-Returns a boolean.
+Returns `.true` if the codepoint corresponds to an upper-case character
+and `.false` otherwise.
 
 
 #### codepointToLower
 
     .RexxUnicodeServices~codepointToLower(codepoint)
 
-Returns a codepoint.
+Returns the codepoint of the corresponding lower-case character.  
+If `codepoint` has no lower-case mapping, returns `codepoint`.
+
+This method uses the simple case mappings defined in `UnicodeData.txt`
+and always returns a single codepoint.
 
 
 #### codepointToTitle
 
     .RexxUnicodeServices~codepointToTitle(codepoint)
 
-Returns a codepoint.
+Returns the codepoint of the corresponding title-case character.  
+If `codepoint` has no title-case mapping, returns `codepoint`.
+
+This method uses the simple case mappings defined in `UnicodeData.txt`
+and always returns a single codepoint.
 
 
 #### codepointToUpper
 
     .RexxUnicodeServices~codepointToUpper(codepoint)
 
-Returns a codepoint.
+Returns the codepoint of the corresponding upper-case character.  
+If `codepoint` has no upper-case mapping, returns `codepoint`.
+
+This method uses the simple case mappings defined in `UnicodeData.txt`
+and always returns a single codepoint.
 
 
 #### graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak(array)
 
-Returns `.true` if a grapheme break is detected.
+Returns .true if there is a grapheme break between the two consecutive codepoints passed in `array`.
+
+**Example:**
 
 ```rexx
 -- `state` is persistent state. Its initial value must be 0.
@@ -305,6 +495,8 @@ Returns `.true` if the system is little-endian.
     .RexxUnicodeServices~unicodeVersion
 
 Returns the Unicode version supported by the `utf8proc` library.
+
+**Example:**
 
 ```rexx
 say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
@@ -339,7 +531,7 @@ In case of error, the received size is negative, indicating the number of bytes 
 to follow the U+FFFD Substitution of Maximal Subparts.  
 `refErrorCode` and `refErrorMsg` receive a detailed description of the error.
 
-Error codes and messages:
+**Error codes and messages:**
 
 ```
 - "CONTINUATION_ERROR_RANGE"  
@@ -359,6 +551,9 @@ Error codes and messages:
 - "TRUNCATED"  
   "Truncated, expected %i bytes"
 ```
+
+**Example:**
+
 
 ```rexx
 -- The decoding part of the CodePointSupplier class
@@ -403,6 +598,8 @@ Returns the mutable buffer passed with the destination argument.
 If provided, `refSizeB` receives the size of the encoded byte sequence (0..4).
 
 
+**Example:**
+
 ```rexx
 mb = .MutableBuffer~new
 do codepoint over ("006F"~x2d, "00EB"~x2d, "20AC"~x2d, "1F385"~x2d, "110000"~x2d)
@@ -428,6 +625,8 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
     .RexxUnicodeServices~utf8procVersion
 
 Returns the version of the `utf8proc` library.
+
+**Example:**
 
 ```rexx
 say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
@@ -509,7 +708,7 @@ Mapping rules:
 
 ```rexx
 -- Value to pass as the 'nlf' argument to utf8Transform (default: 0 no transformation).
--- These constants are defined in the RexxUnicode class.
+-- These constants are declared in the RexxUnicode class.
 -- If rxunicode.cls is not loaded, use the numeric value directly..
 ::constant NLF2LF 1
 ::constant NLF2LS 2
@@ -534,7 +733,7 @@ and should be converted to the codepoint for paragraph separation (PS).
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
--- These constants are defined in the RexxUnicode class.
+-- These constants are declared in the RexxUnicode class.
 -- If rxunicode.cls is not loaded, use the numeric value directly..
 ::constant NFC 1
 ::constant NFD 2
@@ -705,8 +904,7 @@ tstring=; .RexxUnicode~C2U(tstring)=
 
 ### Instance methods
 
-The `RexxUnicodeServices` class defines no instance methods of its own.  
-Since the class cannot be instantiated, the inherited instance methods from Object cannot be used either.
+The `RexxUnicodeServices` class defines no instance methods of its own.
 
 
 ## RexxUnicode Class
@@ -767,6 +965,8 @@ Returns an ASCII string containing a sequence of U+XXXX (4 to 6 hex digits).
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
 .RexxUnicode~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
@@ -791,6 +991,8 @@ The codepoints are separated by a single space.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
 .RexxUnicode~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
@@ -803,6 +1005,8 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 Gets a RexxUnicodeCharacter from a codepoint identifier.  
 See the `codepoint` method for a definition of "codepoint identifier".
+
+**Examples:**
 
 ```rexx
 -- Search by decimal value
@@ -834,7 +1038,7 @@ See the `codepoint` method for a definition of "codepoint identifier".
 
 Returns `.true` if `codepoint` is in the range 0...RexxUnicode~maxCodepoint.  
 The range U+D800-U+DFFF is allowed (surrogates).  
-If minusOneAllowed is true then -1 is allowed (special value used in case of error).
+If `minusOneAllowed` is true then -1 is allowed (special value used in case of error).
 
 
 #### codepoint
@@ -849,6 +1053,8 @@ A codepoint identifier may be:
 - a U+ notation,
 - a character name,
 - or a UTF-8 encoded character.
+
+**Examples:**
 
 ```rexx
 -- Search by decimal value
@@ -882,6 +1088,8 @@ Returns the Unicode standard name for the given codepoint, or an empty string if
 
 This method requires the `ICU4ooRexx` class. If it is not loaded, the method returns an empty string or, if requested, raises an error.
 
+**Examples:**
+
  ```rexx
 .RexxUnicode~codepointCharName(2448~x2d)=       -- 'OCR DASH'
 
@@ -896,6 +1104,8 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 Returns the Unicode name alias for the given codepoint, or an empty string if not available.
 
 This method requires the `ICU4ooRexx` class. If it is not loaded, the method returns an empty string or, if requested, raises an error.
+
+**Examples:**
 
  ```rexx
 .RexxUnicode~codepointCharNameAlias(2448~x2d)=       -- 'MICR ON US SYMBOL'
@@ -916,6 +1126,8 @@ An extended name is either the standard name if defined, or a codepoint label al
 
 This method requires the `ICU4ooRexx` class. If it is not loaded, the method returns an empty string or, if requested, raises an error.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
 
@@ -931,12 +1143,15 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 Returns `.true` if the codepoint is printable.
 
 Rules:
+
 - Codepoints having a display width of 0 are considered non-printable.
-- Mc, Me and Mn codepoints are considered printable, even though they have
+- `Mc`, `Me` and `Mn` codepoints are considered printable, even though they have
   a display width of 0, because some fonts provide visible glyphs for them.
-- Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
+- Unassigned (`Cn`) and private-use (`Co`) codepoints are considered non-printable,
   even though they have a display width of 1.
 - Other codepoints are considered printable.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~codepointIsPrintable(0)=             -- 0
@@ -958,6 +1173,8 @@ non-printable codepoints are returned as a Unicode escape notation.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~codepointPrintableString(0)=           -- '\u0000'
 .RexxUnicode~codepointPrintableString(65)=          -- 'A'
@@ -972,9 +1189,11 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
     .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
 
-Returns the Unicode escape notation \uXXXX or \UXXXXXXXX for the given codepoin.
+Returns the Unicode escape notation `\uXXXX` or `\UXXXXXXXX` for the given codepoin.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
@@ -993,6 +1212,8 @@ Returns the UTF-8 encoding for the given codepoint.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~codepointUTF8Encoding(0)~c2x=          -- 00
 .RexxUnicode~codepointUTF8Encoding(65)~c2x=         -- 41
@@ -1007,13 +1228,15 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
     .RexxUnicode~D2U(codepoint, buffer=.nil)
 
-Returns a U+XXXX string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
+Returns a `U+XXXX` string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
-The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+The special value -1 is represented using `U+FFFFFF`, even though the resulting value is not a valid Unicode scalar value
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083](https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083)
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~D2U(235)=                              -- 'U+00EB'
@@ -1027,7 +1250,45 @@ The special value -1 is represented using U+FFFFFF, even though the resulting va
 ```
 
 
-#### escape
+#### h_UAX44_LM2
+
+    .RexxUnicode~h_UAX44_LM2(name)
+
+h_UAX44_LM2 delegates either to ICU4ooRexx, if registered,
+or to .RexxUnicode~UAX44_LM2 (slower, but always available).
+
+**Examples:**
+
+```rexx
+.RexxUnicode~h_UAX44_LM2(" MICR on US SYMBOL")=     -- 'micronussymbol'
+
+-- ASCII name only
+.RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
+```
+
+
+#### info
+
+    .RexxUnicode~info
+
+Returns a `StringTable` containing information about the Unicode environment.
+
+**Example output**
+
+```rexx
+.RexxUnicode~info=
+    /*
+    a StringTable (5 items)
+    'ICU4ooRexxIsRegistered' :  1
+    'maxCodepoint'           :  1114111
+    'systemIsLittleEndian'   :  1
+    'unicodeVersion'         : '17.0.0'
+    'utf8procVersion'        : '2.11.3'
+    */
+```
+
+
+#### stringEscape
 
     .RexxUnicode~stringEscape(string, buffer=.nil)
 
@@ -1038,6 +1299,8 @@ Returns a string in which non-printable codepoints and invalid byte sequences ar
   otherwise, Unicode escape notation (`\uXXXX` or `\UXXXXXXXX`) is used.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
@@ -1061,24 +1324,6 @@ Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be UTF-8 decode
 ```
 
 
-#### h_UAX44_LM2
-
-    .RexxUnicode~h_UAX44_LM2(name)
-
-h_UAX44_LM2 delegates either to ICU4ooRexx, if registered,
-or to .RexxUnicode~UAX44_LM2 (slower, but always available).
-
-```rexx
-.RexxUnicode~h_UAX44_LM2(" MICR on US SYMBOL")=     -- 'micronussymbol'
-
--- ASCII name only
-.RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
-```
-
-
-#### INFO
-
-
 #### stringInfo
 
     .RexxUnicode~stringInfo(string [, >indexer])
@@ -1093,13 +1338,15 @@ Returns a string providing information about the given string:
 
 If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
 .RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
 .RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
 .RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
 .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicode~stringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
@@ -1122,6 +1369,8 @@ indexer~errors==
 
 Returns `.true` if the given string contains only characters <= "7F"x
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~stringIsASCII("Noel")=     -- 1
 .RexxUnicode~stringIsASCII("Noël")=     -- 0
@@ -1135,6 +1384,8 @@ Returns `.true` if the given string contains only characters <= "7F"x
 Returns the input string normalized to NFC, with optional transformations applied.
 
 See the `utf8Transform` method for a description of the optional transformation parameters.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~stringToNFC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
@@ -1150,6 +1401,8 @@ Returns the input string normalized to NFD, with optional transformations applie
 
 See the `utf8Transform` method for a description of the optional transformation parameters.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~stringToNFD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
 .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
@@ -1163,6 +1416,8 @@ See the `utf8Transform` method for a description of the optional transformation 
 Returns the input string normalized to NFKC, with optional transformations applied.
 
 See the `utf8Transform` method for a description of the optional transformation parameters.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~stringToNFKC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
@@ -1179,14 +1434,16 @@ Returns the input string normalized to NFKC_CF, with optional transformations ap
 NFKC preserves the original case of letters (e.g., 'A' remains 'A').  
 In contrast, NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
 
-- Example: The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
-- Example: The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
+- Example: The German sharp s ('ß') remains 'ß' in NFKC but maps to 'ss' in NFKC_CF.
+- Example: The Greek final sigma ('ς') maps to the standard sigma ('σ') in NFKC_CF, whereas NFKC leaves it unchanged.
 
 NFKC_CF is specifically optimized for identifier matching.  
 As part of the "Default Case Folding" algorithm, it removes ignorable characters (such as certain formatting marks or zero-width spaces).  
 NFKC retains these characters.
 
 See the `utf8Transform` method for a description of the optional transformation parameters.
+
+**Examples:**
 
 ```rexx
 .RexxUnicode~stringToNFKC_CF("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'
@@ -1202,88 +1459,15 @@ Returns the input string normalized to NFKD, with optional transformations appli
 
 See the `utf8Transform` method for a description of the optional transformation parameters.
 
+**Examples:**
+
 ```rexx
 .RexxUnicode~stringToNFKD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
 .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
 ```
 
 
-#### U2C
-
-    .RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)
-
-Encodes an ASCII string of the form "U+XXXX.. U+XXXX.. ..." into a UTF-8 string.
-
-The only valid separators are one or more spaces.
-
-If a buffer is passed, the decoded characters are appended to it.  
-The update is atomic: either all decoded characters are appended, or the buffer is left unchanged.  
-If an error occurs, any characters appended during this call are discarded.
-
-The result is either a string or the buffer passed as argument.
-
-```rexx
-.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
-.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
-
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
-
--- The update is atomic when passing a buffer:
--- either all decoded characters are appended, or the buffer is left unchanged.
-b = .MutableBuffer~new("🤶 ")
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
-b=                                                      -- M'🤶 '
-```
-
-
-#### U2D
-
-    .RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, >refLength]
-
-Converts "U+XXXX.." to a decimal value.
-
-If `refLength` is provided by the caller, extra characters after the U+XXXX.. are allowed.  
-Otherwise UPlusCodepoint must be strictly "U+" followed by 4 to 6 hex digits.
-
-If provided, `refLength` receives the length of "U+XXXX..", allowing to skip it when parsing.
-
-Returns the decimal value if no error occurs.  
-Otherwise, returns -1 or, if requested, raises an error.
-
-```rexx
-.RexxUnicode~U2D("U+00EB")=                                                                 -- 235
-.RexxUnicode~U2D("U+00EB ")=                                                                -- -1
-.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
-.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
-```
-
-
-#### UAX44_LM2
-
-```rexx
-.RexxUnicode~UAX44_LM2(" MICR on US SYMBOL")=       -- 'micronussymbol'
-
--- ASCII name only
-.RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must be an ASCII string; found "Père Noël".
-```
-
-
-#### UAX44_LM3
-
-```rexx
-.RexxUnicode~UAX44_LM3("Upper case")=               -- 'uppercase'
-.RexxUnicode~UAX44_LM3(" Is Upper case")=           -- 'uppercase'
-.RexxUnicode~UAX44_LM3("Is Pere Noel")=             -- 'perenoel'
-
--- ASCII name only
-.RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
-```
-
-
-#### unescape
+#### stringUnescape
 
     .RexxUnicode~stringUnescape(string, buffer=.nil)
 
@@ -1294,7 +1478,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 Escape sequences are normally handled in string literals at parse time.
 This method handles them at run time instead.
 
-##### Supported escape sequences:
+**Supported escape sequences**
 
     \\                  "\"
     \a                  "07"x   audible bell (BEL)
@@ -1312,7 +1496,7 @@ This method handles them at run time instead.
     \x{X..X}            Arbitrary number of hex digits
     \xXX                One byte, exactly 2 hex digits
 
-##### Examples
+**Examples**
 
 ```rexx
 .RexxUnicode~stringUnescape("\\")=            -- '\'
@@ -1342,10 +1526,104 @@ This method handles them at run time instead.
 ```
 
 
+#### U2C
+
+    .RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)
+
+Encodes an ASCII string of the form `"U+XXXX.. U+XXXX.. ..."` into a UTF-8 string.
+
+The only valid separators are one or more spaces.
+
+If a buffer is passed, the decoded characters are appended to it.  
+The update is atomic: either all decoded characters are appended, or the buffer is left unchanged.  
+If an error occurs, any characters appended during this call are discarded.
+
+The result is either a string or the buffer passed as argument.
+
+**Examples:**
+
+```rexx
+.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
+.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
+
+.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
+
+-- The update is atomic when passing a buffer:
+-- either all decoded characters are appended, or the buffer is left unchanged.
+b = .MutableBuffer~new("🤶 ")
+.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+b=                                                      -- M'🤶 '
+```
+
+
+#### U2D
+
+    .RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, >refLength]
+
+Converts `"U+XXXX.."` to a decimal value.
+
+If `refLength` is provided by the caller, extra characters after the `U+XXXX..` are allowed.  
+Otherwise UPlusCodepoint must be strictly `"U+"` followed by 4 to 6 hex digits.
+
+If provided, `refLength` receives the length of `"U+XXXX.."`, allowing to skip it when parsing.
+
+Returns the decimal value if no error occurs.  
+Otherwise, returns -1 or, if requested, raises an error.
+
+**Examples:**
+
+```rexx
+.RexxUnicode~U2D("U+00EB")=                                                                 -- 235
+.RexxUnicode~U2D("U+00EB ")=                                                                -- -1
+.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
+.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
+.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+```
+
+
+#### UAX44_LM2
+
+    .RexxUnicode~UAX44_LM2(string)
+
+Returns a string ready for comparison using the [loose matching rule UAX44-LM2][uax44_lm2] where
+case, whitespace, underscore ('_'), and all medial hyphens except the hyphen in U+1180 HANGUL JUNGSEONG O-E
+are removed.
+
+**Examples:**
+
+```rexx
+.RexxUnicode~UAX44_LM2(" MICR on US SYMBOL")=       -- 'micronussymbol'
+
+-- ASCII name only
+.RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must be an ASCII string; found "Père Noël".
+```
+
+
+#### UAX44_LM3
+
+    .RexxUnicode~UAX44_LM3(string)
+
+Returns a string ready for comparison using the [loose matching rule UAX44-LM3][uax44_lm3] where
+case, whitespace, underscore ('_'), hyphens, and any initial prefix string "is"
+are removed.
+
+**Examples:**
+
+```rexx
+.RexxUnicode~UAX44_LM3("Upper case")=               -- 'uppercase'
+.RexxUnicode~UAX44_LM3(" Is Upper case")=           -- 'uppercase'
+.RexxUnicode~UAX44_LM3("Is Pere Noel")=             -- 'perenoel'
+
+-- ASCII name only
+.RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
+```
+
+
 ### Instance methods
 
 The `RexxUnicode` class defines no instance methods of its own.
-Since the class cannot be instantiated, the inherited instance methods from Object cannot be used either.
 
 
 ## RexxUnicodeCodepointSupplier Class
@@ -1354,6 +1632,8 @@ A `RexxUnicodeCodepointSupplier` instance is an iterator created from a
 UTF-8 string and allows enumeration of the string's codepoints.
 
 `::requires "rxunicode.cls"`
+
+**Examples:**
 
 ```rexx
 -- the default index type is the codepoint index
@@ -1490,6 +1770,8 @@ UTF-8 string and allows enumeration of the string's graphemes.
 
 `::requires "rxunicode.cls"`
 
+**Examples:**
+
 ```rexx
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
@@ -1599,6 +1881,8 @@ UTF-8 string and allows enumeration of the string's graphemes.
 ## RexxUnicodeStringIndexer Class
 
 `::requires "rxunicode.cls"`
+
+**Examples:**
 
 ```rexx
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
@@ -1802,3 +2086,6 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 
 
 [examples_internal_errors]: https://github.com/jlfaucher/executor5-bulk/blob/82f9531bb7b6d4be62f33b201ba62e53a74be640/main/trunk/extensions/unicode/rxunicode.cls#L1725-L1769 "Examples of internal errors"
+[unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29"
+[uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
+[uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
